@@ -8,7 +8,6 @@ var UsersController = Class('UsersController').inherits(RestfulController)({
 
     show : function show(req, res) {
       User.findById(req.params.id, function(err, user) {
-        console.log('USER', user)
         res.render('users/show.html', {layout : 'application', user : user[0]});
       })
     },
