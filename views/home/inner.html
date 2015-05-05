@@ -8,7 +8,6 @@
     <div class="voice-stats">
       <span class="-inline-block"><b><%= voiceInfo.postCount %></b> posts</span> &middot;
       <span class="-inline-block"><b><%= voiceInfo.followersCount %></b> followers</span> &middot;
-
     </div>
   </section>
 
@@ -16,7 +15,7 @@
     <article class="voice-card-about post-card">
       <div class="voice-card-about-updated-at"><%= voiceInfo.updatedAt %></div>
       <div class="voice-card-about-header -row">
-        <div class="float-left">
+        <div class="-float-left">
           <img class="voice-card-about-logo -float-left" src="/img/views/voice/cv-logo-placeholder.png" width="28" height="32" alt="">
           <h3 class="voice-card-about-title -font-bold -float-left">About this Voice</h3>
         </div>
@@ -65,24 +64,8 @@
           </button>
         </div>
         <button class="ui-btn -sm -outline">moderate</button>
-        <div class="-inline-block ui-has-popover">
-          <div class="request-contribute-popover ui-popover -top-left">
-            <div class="popover-content">
-              <div class="request-contribute-popover-default">
-                <h2 class="-m0">Want to help out by posting relevant content?</h2>
-                <p class="-mb1">Brifly state why you be a valuable content contributor to this Voice.</p>
-                <textarea id="" class="ui-textarea -block -mb1" name="" rows="4" placeholder="140 characters max."></textarea>
-                <button class="ui-btn -primary">Submit Request</button>
-                <button class="ui-btn">Cancel</button>
-              </div>
-              <div class="request-contribute-popover-done -text-center">
-                <h2 class="-mb0">Thanks for the interest to help out!</h2>
-                <p class="-mb1">We will review your request as soon as possible and may contact you to get some more information or directly with a response.</p>
-                <button class="ui-btn -primary -font-bold">OK</button>
-              </div>
-            </div>
-          </div>
-          <button class="ui-btn -sm -primary">Request to Contribute</button>
+        <div class="request-to-contribute-container -inline-block">
+          <button class="request-to-contribute-button ui-btn -sm -primary">Request to Contribute</button>
         </div>
       </div
     </div>
@@ -95,5 +78,10 @@
 
   <%= JSON.stringify(posts) %>.forEach(function(post) {
     posts.push(CV.Post.create(post).render(postsContainer));
+  });
+
+  new CV.PopoverRequestToContribute({
+    toggler: document.querySelector('.request-to-contribute-button'),
+    container: document.querySelector('.request-to-contribute-container')
   });
 </script>
