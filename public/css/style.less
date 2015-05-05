@@ -1,0 +1,55 @@
+
+/* =========================================================================== *
+ *  vendor :: sanitize.css - render elements consistently across browsers
+ * =========================================================================== */
+@import (inline) "../../node_modules/sanitize.css/dist/sanitize.css";
+
+/* =========================================================================== *
+ *  lib :: kabinett
+ * =========================================================================== */
+@import "kabinett-config";
+
+
+
+
+/* =========================================================================== *
+ * cv globals / general styles
+ * =========================================================================== */
+@cv-sidebar-width: 214px;
+@cv-sidebar-collapsed-width: 60px;
+@cv-header-height: 74px;
+@cv-voice-footer-height: 46px;
+
+a {color: @color-primary}
+
+.cv-main-logo {
+  padding: 1.15rem 0 0 .6rem;
+  white-space: nowrap;
+
+  &-type {
+    font-size: 20px;
+    padding: .4rem 0 0 .3rem;
+  }
+
+  .logo-type-cv {color: @color-grey-dark}
+  .logo-type-by {color: @color-grey-light}
+}
+
+/* =========================================================================== *
+ * cv components
+ * =========================================================================== */
+@import './components/header';
+@import './components/sidebar';
+@import './components/footer';
+@import './components/tags';
+@import './components/voice-cover';
+@import './components/card';
+@import './components/responsive-slider';
+@import './components/post';
+
+/* =========================================================================== *
+ * cv views
+ * =========================================================================== */
+@import './views/home';
+@import './views/inner';
+@import './views/voice';

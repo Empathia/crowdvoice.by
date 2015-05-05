@@ -1,0 +1,196 @@
+.page-home {
+  .yield {padding-top: @cv-header-height}
+}
+
+.homepage-intro,
+.homepage-featured-voices,
+.homepage-organization-cards,
+.homepage-category-list {
+  padding-left: @cv-sidebar-width;
+  padding-right: 2rem;
+}
+
+.homepage-heading-wrapper {
+  border-top: 1px solid @color-grey-light;
+
+  .homepage-heading {
+    font-size: 28px;
+    display: inline-block;
+    margin: -1px 0 0;
+    padding: .3em .1em 1.5em;
+    border-top: 1px solid @color-primary;
+  }
+}
+
+/* =========================================================================== *
+ *  intro
+ * =========================================================================== */
+.homepage-intro {
+  min-height: 683px;
+  padding-top: 65px;
+  background-color: #fff;
+  background-image: url("/img/views/home/illustration-30-b.jpg");
+  background-position: 125% 50%;
+  background-repeat: no-repeat;
+  background-size: 60%;
+
+  .intro-description {
+    font-size: 17px;
+    margin-bottom: 60px;
+    width: 45vw;
+  }
+
+  .intro-description-text {
+    font-size: 1em;
+  }
+
+  .stats {
+    font-size: 1rem;
+    margin-bottom: 60px;
+
+    &-col {
+      padding-right: 1.5em;
+    }
+
+    &-number {
+      font-size: 1.538em;
+    }
+
+    &-label {
+      font-size: 1em;
+    }
+  }
+}
+
+.homepage-intro-banner {
+  font-size: 1rem;
+
+  .intro-heading {
+    font-size: 2.308em;
+  }
+
+  .intro-sub-heading {
+    font-size: 6.154em;
+    line-height: 1em;
+  }
+}
+
+@media (min-width: 1300px) {
+  .homepage-intro {
+    .homepage-intro-banner,
+    .intro-description-text,
+    .stats {font-size: 1.25em}
+  }
+}
+
+@media (min-width: 1500px) {
+  .homepage-intro {
+    .homepage-intro-banner,
+    .intro-description-text,
+    .stats {font-size: 1.4em}
+  }
+}
+
+/* =========================================================================== *
+ *  featured voices
+ * =========================================================================== */
+.homepage-featured-voices {
+  margin-bottom: 100px;
+
+  .heading-right {
+    padding-top: 1rem;
+  }
+}
+
+/* =========================================================================== *
+ *  category list
+ * =========================================================================== */
+.homepage-category-list {
+  margin-bottom: 110px;
+  padding-top: 110px;
+  background: transparent url('/img/views/home/categories-background.jpg') 50% 0 repeat-x;
+}
+
+.homepage-category-list-heading {
+  font-size: 48px;
+  line-height: 1.2em;
+  margin-bottom: 50px;
+}
+
+.homepage-category-list-item {
+  float: left;
+  width: 20%;
+  position: relative;
+  margin-bottom: 1px;
+  overflow: hidden;
+  transform: translateZ(0);
+
+  .categories_link {
+    font-size: 18px;
+    position: relative;
+    display: table;
+    width: 100%;
+    height: 15vw;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+
+    &-inner {
+
+      display: table-cell;
+      vertical-align: middle;
+    }
+  }
+
+  &:hover {
+    .homepage-category-cover {
+      transform: scale(1.1);
+    }
+  }
+}
+
+.homepage-category-list-item-inner {
+  position: relative;
+  margin-right: 1px;
+  overflow: hidden;
+}
+
+.homepage-category-cover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: transform 480ms ease;
+}
+
+.homepage-category-list-item:nth-child(1)   {border-top-left-radius: 6px}
+.homepage-category-list-item:nth-child(5)   {border-top-right-radius: 6px}
+.homepage-category-list-item:nth-child(6)   {border-bottom-left-radius: 6px}
+.homepage-category-list-item:nth-child(10)  {border-bottom-right-radius: 6px}
+
+.homepage-category-list-item:nth-child(5)   .homepage-category-list-item-inner,
+.homepage-category-list-item:nth-child(10)  .homepage-category-list-item-inner {margin-right: 0}
+
+.homepage-category-list-cta {
+  margin-top: 70px;
+
+  .ui-btn {
+    padding: .6em 3em;
+
+    div:last-child {
+      font-size: 16px;
+      line-height: 1.5em;
+      opacity: .5;
+    }
+  }
+}
+
+/* =========================================================================== *
+ *  organization cards
+ * =========================================================================== */
+.homepage-organization-cards {
+  .widget-card {
+    padding: 0 1rem;
+  }
+}

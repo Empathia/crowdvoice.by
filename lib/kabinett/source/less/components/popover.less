@@ -1,0 +1,65 @@
+@{ns}-popover {
+  position: relative;
+  border: 1px solid currentColor;
+  background-color: @color-white;
+  border-radius: 6px;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    border-width: @popover-arrow-size;
+    border-style: solid;
+    border-color: transparent;
+  }
+
+  &@{-}top::before,
+  &@{-}top::after {
+    top: 100%;
+    left: 50%;
+    margin-left: unit(-@popover-arrow-size, px);
+  }
+
+
+  &@{-}top::before,
+  &@{-}top-left::before {
+    border-top-color: inherit;
+  }
+
+  &@{-}top::after,
+  &@{-}top-left::after {
+    margin-top: -1px;
+    border-top-color: @color-white;
+  }
+
+  &@{-}top-left::before,
+  &@{-}top-left::after {
+    top: 100%;
+    right: 3rem;
+  }
+}
+
+
+.popover-content {
+  padding: 2rem;
+}
+
+@{ns}-has-popover {
+  position: relative;
+
+  @{ns}-popover {
+    position: absolute;
+
+    &@{-}top {
+      left: 50%;
+      bottom: 100%;
+      transform: translate(-50%, -10px);
+
+      &-left {
+        bottom: 100%;
+        right: 0;
+        transform: translate(0, -10px);
+      }
+    }
+  }
+}

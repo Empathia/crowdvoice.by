@@ -1,0 +1,99 @@
+<main role="main" class="cv-main-content -rel">
+  <div class="voice-background-cover">
+    <img class="voice-background-cover-image" src="/img/sample/voices/cover-00.jpg" alt="">
+  </div>
+
+  <section class="voice-intro -rel">
+    <h1 class="voice-heading -font-bold -m0"><%= voiceInfo.title %></h1>
+    <div class="voice-stats">
+      <span class="-inline-block"><b><%= voiceInfo.postCount %></b> posts</span> &middot;
+      <span class="-inline-block"><b><%= voiceInfo.followersCount %></b> followers</span> &middot;
+
+    </div>
+  </section>
+
+  <section class="voice-posts -rel">
+    <article class="voice-card-about post-card">
+      <div class="voice-card-about-updated-at"><%= voiceInfo.updatedAt %></div>
+      <div class="voice-card-about-header -row">
+        <div class="float-left">
+          <img class="voice-card-about-logo -float-left" src="/img/views/voice/cv-logo-placeholder.png" width="28" height="32" alt="">
+          <h3 class="voice-card-about-title -font-bold -float-left">About this Voice</h3>
+        </div>
+        <button class="ui-btn -sm -outline -float-right">Hide</button>
+      </div>
+      <div class="voice-card-about-description">
+        <%= voiceInfo.description %>
+      </div>
+    </article>
+  </section>
+
+  <footer class="voice-footer">
+    <button class="voice-add-post-button ui-btn -primary">+</button>
+    <div class="voice-footer-inner -clearfix">
+      <div class="voice-footer-left -float-left">
+        <div class="voice-footer-title -font-bold">
+          <%= voiceInfo.title %>
+        </div>
+        <div class="voice-footer-by -color-grey">
+          by <%= voiceInfo.author.name %>
+        </div>
+      </div>
+      <div class="voice-footer-right -float-right">
+        View
+        <div class="ui-select -sm -separator">
+          <svg class="ui-select-svg">
+            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-arrow-up-down"></use>
+          </svg>
+          <select class="ui-select-select">
+            <option value="">Option I</option>
+            <option value="">Option II</option>
+            <option value="">Option III</option>
+          </select>
+        </div>
+        <button class="ui-btn -sm -outline">Follow Voice</button>
+        <div class="ui-btn-group">
+          <button class="ui-btn -sm -outline">
+            <svg class="voice-footer-svg">
+              <use xlink:href="#svg-embed"></use>
+            </svg>
+          </button>
+          <button class="ui-btn -sm -outline">
+            <svg class="voice-footer-svg">
+              <use xlink:href="#svg-share"></use>
+            </svg>
+          </button>
+        </div>
+        <button class="ui-btn -sm -outline">moderate</button>
+        <div class="-inline-block ui-has-popover">
+          <div class="request-contribute-popover ui-popover -top-left">
+            <div class="popover-content">
+              <div class="request-contribute-popover-default">
+                <h2 class="-m0">Want to help out by posting relevant content?</h2>
+                <p class="-mb1">Brifly state why you be a valuable content contributor to this Voice.</p>
+                <textarea id="" class="ui-textarea -block -mb1" name="" rows="4" placeholder="140 characters max."></textarea>
+                <button class="ui-btn -primary">Submit Request</button>
+                <button class="ui-btn">Cancel</button>
+              </div>
+              <div class="request-contribute-popover-done -text-center">
+                <h2 class="-mb0">Thanks for the interest to help out!</h2>
+                <p class="-mb1">We will review your request as soon as possible and may contact you to get some more information or directly with a response.</p>
+                <button class="ui-btn -primary -font-bold">OK</button>
+              </div>
+            </div>
+          </div>
+          <button class="ui-btn -sm -primary">Request to Contribute</button>
+        </div>
+      </div
+    </div>
+  </footer>
+</main>
+
+<script>
+  var postsContainer = document.querySelector('.voice-posts');
+  var posts = [];
+
+  <%= JSON.stringify(posts) %>.forEach(function(post) {
+    posts.push(CV.Post.create(post).render(postsContainer));
+  });
+</script>

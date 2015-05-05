@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Crowdvoice.by – A new way to organize information and strengthen movements that matter to you</title>
+  <meta name="description" content="A new way to organize information and strengthen movements that matter to you">
+  <link rel="icon" type="image/gif" href="/img/favicon.png" />
+
+  <script src="/dist/bundle.js"></script>
+</head>
+
+<% if (typeof pageName !== "undefined") { %>
+<body class="<%= pageName %>">
+<% } else { %>
+<body class="page-inner">
+<% } %>
+
+  <%= renderPartial('shared/svg/sprite.svg') %>
+
+  <header class="cv-main-header -color-bg-white -clearfix">
+    <div class="-float-left">
+      <a class="cv-main-logo -inline-block" href="/">
+        <img class="-inline-block" src="/img/global/logo.png" width="36" height="41" />
+        <span class="cv-main-logo-type -inline-block">
+          <b class="-color-grey-dark">Crowdvoice</b>
+          <% if (typeof voiceInfo === "undefined") { %>
+            <span class="-color-grey-light">by&hellip;</span>
+          <% } else { %>
+            <span class="-color-grey-light">by</span>
+          <% } %>
+        </span>
+      </a>
+
+      <div class="header-login-actions -inline-block -color-grey-light">
+        <% if (typeof currentUser === "undefined") { %>
+          <a href="">Signup</a> or <a href="">Login</a>
+        <% } else { %>
+          <div class="account-info">
+            <img class="account-info-avatar -rounded" width="22" height="22" src="/img/sample/avatars/<%= voiceInfo.author.avatar.small %>">
+            <span class="account-info-name -font-bold -color-grey-dark"><%= voiceInfo.author.name %></span>
+            <span class="actions-wrapper -inline-block">
+              <svg class="actions-dropdown-svg -block">
+                <use xlink:href="#svg-arrow-down-2"></use>
+              </svg>
+            </span>
+          </div>
+        <% } %>
+      </div>
+    </div>
+
+    <div class="-float-right -text-right">
+      <div class="header-actions">
+        <% if (typeof currentUser !== "undefined") { %>
+          <a class="ui-btn -transparent" href="#">
+            <svg class="header-actions-svg">
+              <use xlink:href="#svg-bell"></use>
+            </svg>
+          </a>
+          <a class="ui-btn -transparent" href="#">
+            <svg class="header-actions-svg">
+              <use xlink:href="#svg-activity"></use>
+            </svg>
+          </a>
+        <% } %>
+        <form class="header-search -inline-block" role="search">
+          <a class="ui-btn" href="#">
+            <svg class="header-actions-svg header-search-svg">
+              <use xlink:href="#svg-search"></use>
+            </svg>
+          </a>
+        </form>
+        <% if (typeof currentUser !== "undefined") { %>
+          <button class="ui-btn -primary">Create a Voice</button>
+        <% } %>
+      </div>
+    </div>
+  </header>
+
+  <aside role="complementary" class="cv-main-sidebar">
+    <nav role="navigation" class="sidebar-nav">
+      <a class="cv-main-logo -block" href="/">
+        <img class="-inline-block" src="/img/global/logo.png" width="36" height="41" />
+        <span class="cv-main-logo-type -inline-block">
+          <b class="logo-type-cv">Crowdvoice</b>
+          <% if (typeof voiceInfo === "undefined") { %>
+            <span class="-color-grey-light">by&hellip;</span>
+          <% } else { %>
+            <span class="-color-grey-light">by</span>
+          <% } %>
+        </span>
+      </a>
+
+      <a href="#" class="sidebar-link -is-active">
+        <svg class="sidebar-link-svg"><use xlink:href="#svg-home"></use></svg>
+        <span class="sidebar-link-label">Home</span>
+      </a>
+
+      <a href="#" class="sidebar-link">
+        <svg class="sidebar-link-svg"><use xlink:href="#svg-fist"></use></svg>
+        <span class="sidebar-link-label">About</span>
+      </a>
+
+      <h4 class="sidebar-heading -upper">Discover</h4>
+
+      <a href="#" class="sidebar-link">
+        <svg class="sidebar-link-svg"><use xlink:href="#svg-trending"></use></svg>
+        <span class="sidebar-link-label">Trending</span>
+      </a>
+
+      <a href="#" class="sidebar-link">
+        <svg class="sidebar-link-svg"><use xlink:href="#svg-star"></use></svg>
+        <span class="sidebar-link-label">New</span>
+      </a>
+
+      <a href="#" class="sidebar-link">
+        <svg class="sidebar-link-svg"><use xlink:href="#svg-thumbs-up"></use></svg>
+        <span class="sidebar-link-label">Recommended</span>
+      </a>
+
+      <a href="#" class="sidebar-link">
+        <svg class="sidebar-link-svg"><use xlink:href="#svg-browse"></use></svg>
+        <span class="sidebar-link-label">Browse</span>
+      </a>
+
+      <a href="#" class="sidebar-link">
+        <svg class="sidebar-link-svg"><use  xlink:href="#svg-map-pin"></use></svg>
+        <span class="sidebar-link-label">On the Map</span>
+      </a>
+
+      <% if (typeof currentUser !== "undefined") { %>
+        <h4 class="sidebar-heading -upper">My Stuff</h4>
+
+        <a href="" class="sidebar-link">
+          <svg class="sidebar-link-svg"><use xlink:href="#svg-my-voices"></use></svg>
+          <span class="sidebar-link-label">My Voices</span>
+        </a>
+
+        <a href="" class="sidebar-link">
+          <svg class="sidebar-link-svg"><use xlink:href="#svg-saved"></use></svg>
+          <span class="sidebar-link-label">Saved Posts</span>
+        </a>
+
+        <a href="" class="sidebar-link">
+          <svg class="sidebar-link-svg"><use xlink:href="#svg-stats"></use></svg>
+          <span class="sidebar-link-label">Stats</span>
+        </a>
+
+        <a href="" class="sidebar-link">
+          <svg class="sidebar-link-svg"><use xlink:href="#svg-messages-read"></use></svg>
+          <span class="sidebar-link-label">Messages</span>
+        </a>
+      <% } %>
+    </nav>
+  </aside>
+
+  <div class="yield">
+    <%= yield %>
+  </div>
+</body>
+</html>

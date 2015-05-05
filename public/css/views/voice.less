@@ -1,0 +1,127 @@
+.page-inner {
+  background-color: @color-grey-lighter;
+
+  .cv-main-content {
+    padding: 0 80px 0 40px;
+  }
+}
+
+.voice-background-cover {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(to bottom,rgba(0,0,0,0) 50%, @color-grey-lighter);
+  }
+}
+
+.voice-background-cover-image {
+  width: 100%;
+}
+
+.voice-heading {
+  font-size: 46px;
+  line-height: 1em;
+  width: 50%;
+  padding: 1.3em 0 .45em;
+  color: @color-white;
+}
+
+.voice-stats {
+  padding: .5em 0 6em;
+  border-top: 1px solid rgba(255, 255, 255, .2);
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.voice-posts {
+  padding-bottom: @cv-voice-footer-height;
+  // column-count: 3;
+  // column-gap: 1.5rem;
+
+  .post-card {
+    width: 30%;
+    margin: 0 .5rem 1rem;
+
+    &:hover {
+      box-shadow: 0 0 0 2px @color-primary;
+
+      .post-card-actions {display: block}
+    }
+  }
+
+  .voice-card-about {
+    padding: 25px;
+
+    &:hover {box-shadow: none}
+  }
+}
+
+.voice-card-about-updated-at {
+
+}
+
+.voice-card-about-description {
+  p {margin-bottom: 1em}
+  p:last-child {margin-bottom: 0}
+}
+
+.voice-card-about-header {
+  margin-bottom: 1.75rem;
+}
+
+.voice-card-about-title {
+  font-size: 20px;
+  margin: 0 0 0 .5em;
+}
+
+.voice-footer {
+  position: fixed;
+  bottom: 0;
+  left: @cv-sidebar-collapsed-width;
+  right: 0;
+  height: @cv-voice-footer-height;
+  border-top: 2px solid rgba(0,0,0,0.25);
+  background-color: @color-white;
+  background-clip: content-box;
+
+  &-inner {
+    padding: 0 2rem;
+  }
+
+  &-right {
+    padding-top: .8rem;
+  }
+}
+
+.voice-footer-title {
+  padding-top: 5px;
+  line-height: 1.5;
+}
+
+.voice-footer-by {
+  font-size: .8rem;
+  line-height: 1;
+}
+
+.voice-footer-svg {
+  width: 14px;
+  height: 14px;
+}
+
+.voice-add-post-button {
+  position: fixed;
+  width: 50px;
+  height: 50px;
+  right: 2rem;
+  bottom: 6em;
+  border-radius: 50%;
+}
+

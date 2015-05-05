@@ -1,0 +1,166 @@
+<main role="main" class="cv-main-content">
+  <section class="homepage-intro">
+    <header class="homepage-intro-banner" role="banner">
+      <hgroup>
+        <h1 class="intro-heading -font-light -m0">Create, curate, amplify and&hellip;</h1>
+        <h2 class="intro-sub-heading -font-bold -mt0">CrowdVoice!</h2>
+      </hgroup>
+    </header>
+
+    <div class="intro-description">
+      <p class="intro-description-text">Organize information about the causes that matter to you. Strengthen movements by collecting and crowdsourcing links, images, videos or create your own content.
+        <a href="" class="-font-bold">join the raising voices of the world!</a>
+      </p>
+    </div>
+
+    <article role="article" class="stats -row">
+      <div class="stats-col -inline-block">
+        <p class="stats-number -font-bold"><%= globalStats.countries %></p>
+        <p class="stats-label">Countries</p>
+      </div>
+      <div class="stats-col -inline-block">
+        <p class="stats-number -font-bold"><%= globalStats.organizations %></p>
+        <p class="stats-label">Organizations</p>
+      </div>
+      <div class="stats-col -inline-block">
+        <p class="stats-number -font-bold"><%= globalStats.voices %></p>
+        <p class="stats-label">Voices created</p>
+      </div>
+      <div class="stats-col -inline-block">
+        <p class="stats-number -font-bold"><%= globalStats.posts %></p>
+        <p class="stats-label">Posts published</p>
+      </div>
+      <div class="stats-col -inline-block">
+        <p class="stats-number -font-bold"><%= globalStats.people %></p>
+        <p class="stats-label">People impacted</p>
+      </div>
+    </article>
+
+    <div class="-inline-block -mr1">
+      <button class="ui-btn -primary -lg -pr3 -pl3 -font-bold">Sign Up Now!</button>
+      <p class="-text-center">or <a href="">Log in</a></p>
+    </div>
+    <button class="ui-btn -lg -color-primary -outline -pr3 -pl3">Learn More</button>
+  </section><!-- @homepageintro -->
+
+  <section class="homepage-featured-voices">
+    <div class="homepage-heading-wrapper">
+      <div class="-clearfix">
+        <div class="-float-left">
+          <h2 class="homepage-heading -font-light">Featured Voices</h2>
+        </div>
+        <div class="heading-right -float-right">
+          <button class="ui-btn -color-primary -outline">Explore All Voices</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="-row -mb5">
+      <div class="-col-8 -pr1 voice-cover-test"></div>
+      <div class="-col-4 -pl1 voice-cover-test-2"></div>
+    </div>
+
+    <div class="-row">
+      <div class="-col-4 -pr1 voice-cover-test-3"></div>
+      <div class="-col-4 -pr1 -pl1 voice-cover-test-4"></div>
+      <div class="-col-4 -pl1 voice-cover-test-5"></div>
+    </div>
+  </section><!-- @homepage-featured-voices -->
+
+  <section class="homepage-category-list">
+    <h2 class="homepage-category-list-heading -font-light -text-center">Participate in hundreds of <em>Voices</em> created to spread and amplify issues on:</h2>
+
+    <div class="homepage-category-list-row -row">
+    </div>
+
+    <div class="homepage-category-list-cta -text-center">
+      <button class="ui-btn -xl -primary -free-size">
+        <div class="-font-bold">Create a Voice!</div>
+        <div>Sign Up Now!</div>
+      </button>
+    </div>
+  </section><!-- @homepage-category-list -->
+
+  <section class="homepage-organization-cards">
+    <div class="homepage-heading-wrapper -clearfix">
+      <h2 class="homepage-heading -font-light -float-left">Most Active Organizations</h2>
+    </div>
+
+    <div class="-row -mb5 homepage-organization-cards-holder widget-responsive-slider">
+      <div class="slider-list-wrapper">
+        <div class="slider-list"></div>
+      </div>
+      <button class="slider-arrow slider-prev">
+        <svg class="slider-arrow-svg"><use xlink:href="#svg-arrow-left"></use></svg>
+      </button>
+      <button class="slider-arrow slider-next">
+        <svg class="slider-arrow-svg"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button>
+      <div class="slider-dots"></div>
+    </div>
+  </section><!-- @homepage-organization-cards -->
+</main>
+
+<footer role="contentinfo" class="cv-main-footer -hide">
+  <div class="cv-main-footer-inner">
+    <div class="-row">
+      <div class="footer-links-container -col-6">
+        <img class="footer-logo" src="/img/global/logo-footer.png" width="53" height="60" />
+        <nav class="footer-nav -inline-block" role="navigation">
+          <a href="#">Home</a>
+          <a href="#">About</a>
+          <a href="#">Browse</a>
+          <a href="#">Support</a>
+        </nav>
+        <div class="footer-social -inline-block">
+          [facebook] [twitter]
+        </div>
+      </div>
+      <div class="footer-subscribe-container -col-6">
+        <div class="ui-input-group">
+          <input class="ui-input -md" type="text" placeholder="Enter your email here to subscribe to our newsletter">
+          <span class="ui-input-group-btn">
+            <button class="ui-btn -primary -md -font-bold">Subscribe Me</button>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  var featuredVoicesData = <%= JSON.stringify(featuredVoices) %>;
+  var orgsData = <%= JSON.stringify(mostActiveOrganizations) %>;
+  var categoriesData = <%= JSON.stringify(categories) %>;
+
+  var featuredVoiceTest = document.querySelector('.voice-cover-test');
+  var categoriesHolder = document.querySelector('.homepage-category-list-row');
+  var orgsHolder = document.querySelector('.homepage-organization-cards-holder');
+  var orgsList = orgsHolder.querySelector('.slider-list');
+
+  new VoiceCover( featuredVoicesData[0] ).render(featuredVoiceTest);
+  new VoiceCover( featuredVoicesData[1] ).render( document.querySelector('.voice-cover-test-2') );
+  new VoiceCover( featuredVoicesData[2] ).render( document.querySelector('.voice-cover-test-3') );
+  new VoiceCover( featuredVoicesData[3] ).render( document.querySelector('.voice-cover-test-4') );
+  new VoiceCover( featuredVoicesData[4] ).render( document.querySelector('.voice-cover-test-5') );
+  // featuredVoicesData.forEach(function(voice) {
+  //   new VoiceCover(voice).render(featuredVoiceTest);
+  // });
+
+  categoriesData.forEach(function(category) {
+    new CategoryCover({data: category}).render(categoriesHolder);
+  });
+
+  var orgs = orgsData.map(function(org) {
+    var card = new CV.Card(org);
+    card.element[0].classList.add('slider-item');
+
+    return card.render(orgsList);
+  });
+
+  new CV.ResponsiveSlider({
+    element : orgsHolder,
+    dots : true,
+    minSlideWidth : 300
+  });
+</script>
