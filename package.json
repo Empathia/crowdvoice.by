@@ -1,0 +1,68 @@
+{
+  "name": "cr",
+  "description": "CrowdVoice By",
+  "version": "0.0.1",
+  "keywords": [
+    "neon",
+    "mvc",
+    "fullstack",
+    "cli",
+    "frontend",
+    "backend",
+    "stack",
+    "bootstrap",
+    "backend",
+    "orm",
+    "postgres",
+    "mysql",
+    "database",
+    "widget",
+    "full",
+    "generator"
+  ],
+  "engines": {
+    "node": ">=0.10.33"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node bin/server.js"
+  },
+  "dependencies": {
+    "autoprefixer-loader": "^1.2.0",
+    "compression-webpack-plugin": "^0.2.0",
+    "connect-redis": "^2.2.0",
+    "css-loader": "^0.9.1",
+    "file-loader": "^0.8.1",
+    "imports-loader": "^0.6.3",
+    "knex": "^0.8.3",
+    "less": "^2.4.0",
+    "less-loader": "^2.2.0",
+    "mysql": "^2.6.2",
+    "neon": "^2.0.0",
+    "neonode-core": "^2.1.1",
+    "path": "^0.11.14",
+    "pg": "^4.3.0",
+    "redis": "^0.12.1",
+    "style-loader": "^0.9.0",
+    "url-loader": "^0.5.5",
+    "webpack": "^1.7.3"
+  },
+  "_id": "neonode@2.0.7",
+  "_npmVersion": "2.8.3",
+  "_nodeVersion": "1.8.1",
+  "_npmUser": {
+    "name": "sgarza",
+    "email": "sergio@delagarza.io"
+  },
+  "dist": {
+    "shasum": "11564dc300e88476ba344d454ebd99091e5ab148",
+    "tarball": "http://registry.npmjs.org/neonode/-/neonode-2.0.7.tgz"
+  },
+  "maintainers": [
+    {
+      "name": "sgarza",
+      "email": "sergio@delagarza.io"
+    }
+  ],
+  "directories": {}
+}
