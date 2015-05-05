@@ -1,0 +1,109 @@
+
+@kabinet-path: "../../lib/kabinett/source/less";
+
+@import '@{kabinet-path}/core/_variables';
+
+/* =========================================================================== *
+ *  global base variables
+ * =========================================================================== */
+@root-font-size: 13px;
+@root-font-family: 'Open Sans', sans-serif;
+@root-text-color: #666;
+
+@headings-color: #333;
+@color-primary: #ef631f;
+
+/* =========================================================================== *
+ *  buttons variables
+ * =========================================================================== */
+@btn-default-font-size: 12px;
+@btn-default-height: 30px;
+@btn-default-radius: 4px;
+
+@btn-sm-font-size: 10px;
+@btn-sm-height: 23px;
+
+@btn-md-font-size: 14px;
+@btn-md-height: 33px;
+
+@btn-lg-font-size: 15px;
+@btn-lg-height: 52px;
+
+@btn-xl-font-size: 24px;
+@btn-xl-height: 60px;
+
+// kabinett base
+@import '@{kabinet-path}/core/base';
+
+// kabinett modules
+@import '@{kabinet-path}/modules/typography';
+@import '@{kabinet-path}/modules/layout/grid';
+// @import '@{kabinet-path}/modules/animations';
+
+// kabinett components
+@import '@{kabinet-path}/components/button';
+@import '@{kabinet-path}/components/input';
+@import '@{kabinet-path}/components/select';
+@import '@{kabinet-path}/components/checkbox';
+@import '@{kabinet-path}/components/radio';
+// @import '@{kabinet-path}/components/table';
+// @import '@{kabinet-path}/components/spinner';
+@import '@{kabinet-path}/components/tooltip';
+@import '@{kabinet-path}/components/popover';
+
+// kabinett utilities
+// @import '@{kabinet-path}/core/utilities';
+@import '@{kabinet-path}/utilities/layout';
+@import '@{kabinet-path}/utilities/presentation';
+@import '@{kabinet-path}/utilities/elements';
+@import '@{kabinet-path}/utilities/typography';
+@import '@{kabinet-path}/utilities/colors/base';
+// @import '@{kabinet-path}/utilities/colors/flat-ui';
+
+
+
+/* =========================================================================== *
+  overrides :: button
+ * =========================================================================== */
+// Button States Creation
+// @author Noel Delgado
+// @param {Color} @bg-color
+// @param {Color} @text-color
+.mixin-kabinett-button(@bg-color, @text-color) {
+  background-color: @bg-color;
+  color: @text-color;
+
+  &:hover, &.-is-hover    {background-color: saturate(@bg-color, 20%)}
+  &:active, &.-is-active  {background-color: desaturate(@bg-color, 20%)}
+}
+
+@{ns}-btn {
+  border-color: transparent;
+  transition: background-color 240ms ease;
+
+  &:active, &.-is-active {transition-duration: 0}
+
+  &.-primary {
+    .mixin-kabinett-button(@color-primary, @color-white);
+    box-shadow: inset 0 -3px 0 fade(@color-black, 15%);
+  }
+
+  &.-outline {border-color: currentColor}
+
+  &.-overlay {
+    .mixin-kabinett-button(fade(@color-black, 50%), @color-white);
+    border: 2px solid @color-grey;
+  }
+}
+
+/******************************************************************
+  overrides :: input + textarea
+ *****************************************************************/
+@{ns}-input,
+@{ns}-textarea {
+  background-color: @color-white;
+  box-shadow: inset 0 2px 0 fade(@color-black, 10);
+
+  &:focus,
+  &.-is-focus {border-color: @color-primary}
+}

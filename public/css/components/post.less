@@ -1,0 +1,255 @@
+.post-card {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  background-color: #fff;
+  background-image: linear-gradient(to bottom, #fff, #f7f7f7);
+  border-radius: 6px;
+  border-width: 0 1px 2px 1px;
+  border-style: none solid solid;
+  border-color: transparent tint(@color-black, 86) tint(@color-black, 86);
+}
+
+.post-card.video {
+  .post-card-image-wrapper {
+    padding: 18px 0;
+    background-color: #000;
+
+    iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
+
+.post-card-image-wrapper,
+.post-card-audio-player-wrapper {
+  position: relative;
+  overflow: hidden;
+  border-bottom: 4px solid #e5e5e5;
+  border-radius: 5px 5px 0 0;
+}
+
+.post-card-image-wrapper {
+  display: none;
+  min-height: 60px;
+  margin: 0 -1px;
+  text-align: center;
+  background-color: #e5e5e5;
+
+  .post-card-play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -18px 0 0 -28px;
+    padding: .6rem 1.55rem;
+    background-color: fade(#000, 80%);
+  }
+
+  .post-card-svg-play {
+    width: 17px;
+    height: 20px;
+    fill: @color-white;
+  }
+}
+
+.post-card-image {
+  max-width: 100%;
+}
+
+.post-card-play-button {border-radius: 6px}
+
+.post-card-audio-player-wrapper {
+  height: 60px;
+
+  .post-card-play-button {
+    display: inline-block;
+    padding: .5rem .6rem;
+    border: 1px solid @color-grey-light;
+    margin: 1rem;
+  }
+
+  .post-card-svg-play,
+  .post-card-svg-pause {
+    width: 14px;
+    height: 16px;
+    fill: @color-grey-dark;
+  }
+
+  // init state
+  .post-card-svg-play {display: block}
+
+  .post-card-audio-player-text .loaded,
+  .post-card-svg-pause {display: none}
+
+
+  &.-is-downloading {
+    pointer-events: none;
+
+    .post-card-audio-player-progress-wrapper {
+      background-color: @color-grey-lighter;
+      background-image: linear-gradient(
+        -45deg,
+        rgba(0,0,0, .1) 25%,
+        transparent 25%,
+        transparent 50%,
+        rgba(0,0,0, .1) 50%,
+        rgba(0,0,0, .1) 75%,
+        transparent 75%,
+        transparent
+      );
+      background-size: 50px 50px;
+      animation: loading-stripes 2s linear infinite;
+    }
+  }
+
+  &.-is-playing {
+    .post-card-svg-play {display: none}
+    .post-card-svg-pause {display: block}
+  }
+
+  &.-is-loaded {
+    .post-card-audio-player-text .init {display: none}
+    .post-card-audio-player-text .loaded {display: block}
+    .post-card-audio-player-progress-wrapper {cursor: pointer}
+  }
+}
+
+.post-card-audio-player-text {
+  display: inline-block;
+  vertical-align: top;
+  padding-top: 18px;
+  pointer-events: none;
+}
+
+.post-card-audio-player-progress-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.post-card-audio-player-progress {
+  width: 100%;
+  height: 100%;
+  background: #EAFFC9;
+  transform: translateX(-100%);
+  transition: transform 200ms ease;
+}
+
+.post-card-meta {
+  font-size: 12px;
+  margin-bottom: .75em;
+  color: @color-grey-light;
+
+  a {
+    color: @color-grey;
+    text-decoration: underline;
+  }
+}
+
+.post-card-meta-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 5px;
+  vertical-align: text-bottom;
+  fill: @color-grey-light;
+}
+
+
+
+/* ======= INFO ======= */
+.post-card-info {
+  padding: 20px 25px 45px;
+}
+
+.post-card-title {
+  font-size: 26px;
+  line-height: 34px;
+  margin-top: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.post-card-description {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: @color-grey;
+}
+
+.post-card-quote {
+  .post-card-title;
+  font-style: italic;
+  color: @headings-color;
+
+  &::before {content: '“'}
+  &::after {content: '”'}
+
+}
+
+.post-card-quote-author {
+  .post-card-description;
+    font-size: 15px;
+    margin-top: 1rem;
+
+    &::before {content: '– '}
+}
+
+.post-card-activity {
+  font-size: 12px;
+  line-height: 1;
+  margin: 1.5rem 0;
+  color: @color-grey-light;
+  fill: @color-grey-light;
+}
+
+.post-card-activity-svg {margin-right: 5px}
+
+.post-card-activity-repost .post-card-activity-svg {
+  width: 14px;
+  height: 12px;
+}
+
+.post-card-activity-saved .post-card-activity-svg {
+  width: 7px;
+  height: 12px;
+}
+
+
+/* ======= ACTIONS ======= */
+.post-card-actions {
+  display: none;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 45px;
+  background-color: @color-white;
+  text-align: center;
+  border-radius: 0 0 5px 5px;
+
+  svg {
+    width: 20px;
+    height: 20px;
+    fill: @color-grey-light;
+  }
+}
+
+.post-card-actions-item {
+  height: 100%;
+  padding-top: 1rem;
+  border-right: 1px solid @color-grey-lighter;
+  cursor: pointer;
+  transition: background-color 140ms ease;
+
+  &:last-child {border-right: 0}
+
+  &:hover {background-color: @color-grey-lighter}
+}
+
+@keyframes loading-stripes {
+  100% {background-position: 50px 50px}
+}

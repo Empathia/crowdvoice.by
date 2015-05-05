@@ -1,0 +1,76 @@
+/**
+  Input Element
+  .{{ns}}-input
+  .{{ns}}-textarea
+
+  @example
+    <input type="..." class="{{ns}}-input"/>
+    <textarea class="{{ns}}-textarea"></textarea>
+*/
+
+@{ns}-input,
+@{ns}-textarea {
+  font-size: @btn-default-font-size;
+  display: inline-block;
+  vertical-align: top;
+  height: @btn-default-height;
+  padding: 0 1em;
+  border: 1px solid;
+
+  border-color: currentColor;
+  border-radius: @btn-default-radius;
+  outline: none;
+
+
+  /** ===== MODIFIERS ===== */
+
+  &.error,
+  @{ns}-input-wrapper.error & {
+    background-color: lighten(@color-danger, 40%);
+    border-color: @color-danger;
+  }
+}
+
+@{ns}-textarea {
+  height: auto;
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+
+
+
+/** ===== WRAPPER ====== **/
+
+@{ns}-input-wrapper {
+  position: relative;
+}
+
+
+
+/** ===== GROUP ====== **/
+
+@{ns}-input-group {
+  display: table;
+  width: 100%;
+
+  @{ns}-input,
+  @{ns}-input-group-btn {
+    display: table-cell;
+  }
+
+  @{ns}-input {
+    width: 100%;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  @{ns}-input-group-btn {
+    width: 1%;
+    white-space: nowrap;
+
+    @{ns}-btn {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+  }
+}

@@ -1,0 +1,15 @@
+.cv-tags {
+  font-size: 12px;
+  margin-bottom: 1em;
+
+  &-list-item:not(:last-child):after {
+    color: @color-grey;
+    content: ',';
+    margin-right: .25rem;
+  }
+
+  &-tag {
+    color: @color-grey;
+    text-decoration: underline;
+  }
+}

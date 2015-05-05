@@ -1,0 +1,48 @@
+/**
+  Kabinett – Module Utilities Presentation
+*/
+
+// text
+.-upper {text-transform: uppercase}
+.-lower {text-transform: lowercase}
+
+.-text-left {text-align: left}
+.-text-center {text-align: center}
+.-text-right {text-align: right}
+
+// general
+.-muted {opacity: .5}
+.-rounded {border-radius: 2em}
+.-br1 {border-radius: 1em}
+.-br2 {border-radius: 2em}
+.-br3 {border-radius: 3em}
+.-br4 {border-radius: 4em}
+.-br5 {border-radius: 5em}
+.-br1px {border-radius: 1px}
+.-br2px {border-radius: 2px}
+.-br3px {border-radius: 3px}
+.-br4px {border-radius: 4px}
+.-br5px {border-radius: 5px}
+
+// images
+.-img-cover {
+  background-size: cover;
+  background-position: 50% 50%;
+}
+.-img-contain {background-size: contain}
+
+.-inner-shadow-t {
+  box-shadow: inset 0 2px 0 fade(#000, 10);
+}
+
+.-inner-shadow-b {
+  box-shadow: 0 -2px 0 0 fade(#000, 10) inset;
+
+  &.active,
+  &:active {
+    box-shadow: inset 0 2px 0 0 fade(#000, 10);
+  }
+}
+
+// lists
+.-list-clean {list-style: none}
