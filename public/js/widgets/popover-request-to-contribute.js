@@ -26,7 +26,7 @@ Class(CV, 'PopoverRequestToContribute').inherits(Widget)({
 
             this.popOver = new CV.Popover({
                 className: 'request-contribute-popover',
-                placement: 'topleft',
+                placement: 'top',
                 toggler: document.querySelector('.request-to-contribute-button'),
                 container: document.querySelector('.request-to-contribute-container'),
                 content: this.constructor.HTML_DEFAULT_CONTENT
