@@ -8,7 +8,7 @@ var config = {
     // ***********************
     // Postgres
     // ***********************
-    development : "postgres://noeldelgado@localhost/crowdvoice-by-test",
+    development : "postgres://sgarza@localhost/validations",
     production  :  ""
 
     // ***********************
