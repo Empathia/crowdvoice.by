@@ -27,5 +27,6 @@ require('./widgets/post-video.js');
 require('./widgets/post-audio.js');
 require('./widgets/post-link.js');
 require('./widgets/post-quote.js');
+require('./widgets/button.js');
 
 require('./widgets/audio.js');

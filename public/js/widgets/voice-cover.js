@@ -26,17 +26,19 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
           <button class="voice-cover-hover-overlay-button ui-btn -md -overlay -font-semi-bold">View Voice</button>\
         </a>\
       </div>\
-      <div class="author">\
-        <a class="author-anchor" href="{{voice-author-url}}">\
-          <img class="author-avatar -rounded" src="{{voice-author-avatar-small}}" alt="">\
-          <span class="author-username">{{voice-author-name}}</span>\
-        </a>\
+      <div class="voice-content">\
+        <div class="author">\
+          <a class="author-anchor" href="{{voice-author-url}}">\
+            <img class="author-avatar -rounded" src="{{voice-author-avatar-small}}" alt="">\
+            <span class="author-username">{{voice-author-name}}</span>\
+          </a>\
+        </div>\
+        <h2 class="voice-cover-title -font-bold">{{voice-title}}</h2>\
+        <p class="voice-cover-description">{{voice-description}}</p>\
+        <div class="meta">\
+          <span class="voice-cover-followers">{{voice-followers}}</span> followers &middot;&nbsp;\
+          Updated <time class="voice-cover-datetime" datetime="{{voice-updated-at-iso}}">{{voice-updated-at-human}}</time></div>\
       </div>\
-      <h2 class="voice-cover-title -font-bold">{{voice-title}}</h2>\
-      <p class="voice-cover-description">{{voice-description}}</p>\
-      <div class="meta">\
-        <span class="voice-cover-followers">{{voice-followers}}</span> followers &middot;&nbsp;\
-        Updated <time class="voice-cover-datetime" datetime="{{voice-updated-at-iso}}">{{voice-updated-at-human}}</time></div>\
     </article>\
   ',
 
@@ -112,6 +114,9 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
         this.dom.updateAttr('href', anchor[0], tag.url);
 
         this.tagListElement.append(temp);
+
+        this.element.find('.meta').prepend(this.tagListElement.clone().append('&nbsp;&middot;&nbsp;'));
+
       }, this);
 
       return this;
