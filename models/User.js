@@ -1,17 +1,14 @@
-var bcrypt = require('bcrypt-nodejs');
-
 var User = Class('User').inherits(Argon.KnexModel)({
 
   validations : {
     email: [
       'email', 'required',
-      { 
-        rule: function (val) {
+      {
+        rule: function (val, params, context) {
           return db('Users').where('email', '=', val).then(function(resp) {
-            if (resp.length > 0) throw new Error('This email address is already in use.')
+            if (resp.length > 0) throw new Checkit.FieldError('The email address is already in use.');
           });
-        },
-        message: 'test'
+        }
       }
     ]
   },

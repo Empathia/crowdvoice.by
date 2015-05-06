@@ -30,7 +30,7 @@ var UsersController = Class('UsersController').inherits(RestfulController)({
         if (err) {
           logger.error(err);
 
-          return res.render('shared/500.html', {layout : false, error : err})
+          return res.render('shared/500.html', {layout : false, error : user.errors})
         }
 
         return res.redirect('/user/' + user.id);
