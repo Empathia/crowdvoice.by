@@ -16,9 +16,14 @@ window.soundManager = require('SoundManager2').soundManager;
 
 require('./../css/style.less');
 
+// widgets
+require('./widgets/popover.js');
+require('./widgets/popover-request-to-contribute.js');
+require('./widgets/responsive-slider.js');
+
+// components
 require('./widgets/card.js');
 require('./widgets/voice-cover.js');
-require('./widgets/responsive-slider.js');
 require('./widgets/category-cover.js');
 
 require('./widgets/post.js');
