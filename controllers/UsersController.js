@@ -1,5 +1,12 @@
 var UsersController = Class('UsersController').inherits(RestfulController)({
   prototype : {
+    _initRouter : function() {
+      // Call constructor router
+      RestfulController.prototype._initRouter.apply(this, arguments);
+
+      application.router.route('/signup').get(this.new);
+    },
+
     index : function index(req, res) {
       User.all(function(err, users) {
         res.render('users/index.html', {layout : 'application', users : users});
@@ -13,7 +20,6 @@ var UsersController = Class('UsersController').inherits(RestfulController)({
     },
 
     new : function(req, res) {
-      // console.log('res', res)
       res.render('users/new.html');
     },
 
