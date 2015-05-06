@@ -36,42 +36,50 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
       <div class="card_background-image-wrapper -img-cover"></div>\
       <div class="card_info-wrapper">\
         <img class="card_avatar -rounded" alt="{{author.full_name}}’s avatar image"/>\
-        <p class="card_username">\
-          <a class="card_username-link"></a>\
-        </p>\
-        <h3 class="card_fullname">OpenGovFoundation</h3>\
-        <p class="card_description">\
-          <i class="card_description-text"></i>\
-        </p>\
-        <div class="card_meta">\
-          <div class="card_meta-location -inline">\
-            <svg class="card_meta-svg -color-grey-light">\
-              <use xlink:href="#svg-map-pin"></use>\
-            </svg>\
-            <span class="card_meta-location-text"></span>\
+        <div class="pan-separator">\
+          <p class="card_username">\
+            <a class="card_username-link"></a>\
+          </p>\
+          <h3 class="card_fullname">OpenGovFoundation</h3>\
+          <div class="card_stats">\
+            <div class="-row">\
+              <div class="-col-3">\
+                <p class="stats-number card_total-voices-text -font-bold"></p>\
+                <p class="stats-label card_total-voices-label-text"></p>\
+              </div>\
+              <div class="-col-3">\
+                <p class="stats-number card_total-followers-text -font-bold"></p>\
+                <p class="stats-label card_total-followers-label-text"></p>\
+              </div>\
+              <div class="-col-3">\
+                <p class="stats-number card_total-following-text -font-bold"></p>\
+                <p class="stats-label card_total-following-label-text"></p>\
+              </div>\
+              <div class="-col-3 card_collaborations-wrapper">\
+                <p class="stats-number card_collaborations-text -font-bold"></p>\
+                <p class="stats-label card_collaborations-label-text"></p>\
+              </div>\
+            </div>\
           </div>\
-          <div class="card_meta-joined-at -inline">\
-            <svg class="card_meta-svg -color-grey-light">\
-              <use xlink:href="#svg-calendar"></use>\
-            </svg>\
-            <time class="card_meta-joined-at-text" datetime=""></time>\
+          <p class="card_description">\
+            <i class="card_description-text"></i>\
+          </p>\
+          <div class="card_meta">\
+            <div class="card_meta-location -inline">\
+              <svg class="card_meta-svg -color-grey-light">\
+                <use xlink:href="#svg-map-pin"></use>\
+              </svg>\
+              <span class="card_meta-location-text"></span>\
+            </div>\
+            <div class="card_meta-joined-at -inline">\
+              <svg class="card_meta-svg -color-grey-light">\
+                <use xlink:href="#svg-calendar"></use>\
+              </svg>\
+              <time class="card_meta-joined-at-text" datetime=""></time>\
+            </div>\
           </div>\
         </div>\
-        <div class="card_stats">\
-          <div class="-row">\
-            <div class="-col-4">\
-              <p class="stats-number card_total-voices-text -font-bold"></p>\
-              <p class="stats-label">Voices</p>\
-            </div>\
-            <div class="-col-4 card_collaborations-wrapper">\
-              <p class="stats-number card_collaborations-text -font-bold"></p>\
-              <p class="stats-label card_collaborations-label-text"></p>\
-            </div>\
-            <div class="-col-4">\
-              <p class="stats-number card_total-followers-text -font-bold"></p>\
-              <p class="stats-label">Followers</p>\
-            </div>\
-          </div>\
+        <div class="card_actions">\
         </div>\
       </div>\
     </article>\
@@ -90,8 +98,14 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
       this.descriptionEl = this.el.querySelector('.card_description-text');
       this.locationEl = this.el.querySelector('.card_meta-location-text');
       this.joinedAtEl = this.el.querySelector('.card_meta-joined-at-text');
+      this.actionsEl = this.el.querySelector('.card_actions');
+
       this.totalVoicesEl = this.el.querySelector('.card_total-voices-text');
+      this.totalVoicesLabelEl = this.el.querySelector('.card_total-voices-label-text');
       this.totalFollowersEl = this.el.querySelector('.card_total-followers-text');
+      this.totalFollowersLabelEl = this.el.querySelector('.card_total-followers-label-text');
+      this.totalFollowingEl = this.el.querySelector('.card_total-following-text');
+      this.totalFollowingLabelEl = this.el.querySelector('.card_total-following-label-text');
       this.collaborationsEl = this.el.querySelector('.card_collaborations-text');
       this.collaborationsLabelEl = this.el.querySelector('.card_collaborations-label-text');
 
@@ -117,15 +131,32 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
       this.dom.updateText(this.locationEl, this.author.location);
       this.dom.updateText(this.joinedAtEl, moment(this.author.created_at).format('MMM YYYY'));
       this.dom.updateText(this.totalVoicesEl, this.format.numbers(this.author.total_voices));
+      this.dom.updateText(this.totalVoicesLabelEl, 'Voices');
       this.dom.updateText(this.totalFollowersEl, this.format.numbers(this.author.followers));
+      this.dom.updateText(this.totalFollowersLabelEl, 'Followers');
+      this.dom.updateText(this.totalFollowingEl, this.format.numbers(this.author.following));
+      this.dom.updateText(this.totalFollowingLabelEl, 'Following');
 
       if (this.type === "organization") {
-        this.dom.updateText(this.collaborationsLabelEl, 'Collaborators');
+        this.dom.updateText(this.collaborationsLabelEl, 'Members');
         this.dom.updateText(this.collaborationsEl, this.format.numbers(this.author.collaborators));
       } else {
-        this.dom.updateText(this.collaborationsLabelEl, 'Collaborations');
+        this.dom.updateText(this.collaborationsLabelEl, 'Members');
         this.dom.updateText(this.collaborationsEl, this.format.numbers(this.author.collaborations));
       }
+
+      var btnActions = {
+        "1": {name: 'Join'},
+        "2": {name: 'Message'},
+        "3": {name: 'Follow'}
+      };
+
+      new Button({
+          style   : '',
+          type    : 'multiple',
+          name    : 'buttonActions',
+          options : btnActions
+      }).render(this.actionsEl);
 
       return this;
     }
