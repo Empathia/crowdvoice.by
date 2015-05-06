@@ -5,7 +5,7 @@ var User = Class('User').inherits(Argon.KnexModel)({
       'required',
       {
         rule: function (val) {
-          return db('Users').where('username', '=', val).then(function(resp) {
+          return db('Users').where('username', '=', val).andWhere('id', '!=', this.target.id).then(function(resp) {
             if (resp.length > 0) throw new Checkit.FieldError('This username is already in use.')
           });
         },
@@ -16,7 +16,7 @@ var User = Class('User').inherits(Argon.KnexModel)({
       'email', 'required',
       {
         rule: function (val, params, context) {
-          return db('Users').where('email', '=', val).then(function(resp) {
+          return db('Users').where('email', '=', val).andWhere('id', '!=', this.target.id).then(function(resp) {
             if (resp.length > 0) throw new Checkit.FieldError('The email address is already in use.');
           });
         },
@@ -33,7 +33,21 @@ var User = Class('User').inherits(Argon.KnexModel)({
   })),
 
   prototype : {
+    toJson: function toJson () {
+      var json = {},
+        model = this,
+        filtered = [
+          'errors', 'eventListeners', '_csrf', 'encryptedPassword', 'deleted'
+        ];
 
+      Object.keys(this).forEach(function (property) {
+        if (filtered.indexOf(property) === -1) {
+          json[property] = model[property];
+        }
+      });
+
+      return json;
+    }
   }
 });
 
