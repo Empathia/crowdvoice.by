@@ -1,8 +1,24 @@
+/**
+  Popover
+  .{{ns}}-popover
+
+  @example
+    <div class="{{ns}}-popover active">
+      <div class="popover-title"></div>
+      <div class="popover-content">
+        <p>Hello</p>
+      </div>\
+    </div>
+*/
+
 @{ns}-popover {
+  display: none;
   position: relative;
   border: 1px solid currentColor;
   background-color: @color-white;
   border-radius: 6px;
+
+  &.active {display: block}
 
   &::before,
   &::after {
@@ -13,6 +29,8 @@
     border-color: transparent;
   }
 
+  /** ===== MODIFIERS ===== */
+
   &@{-}top::before,
   &@{-}top::after {
     top: 100%;
@@ -20,25 +38,13 @@
     margin-left: unit(-@popover-arrow-size, px);
   }
 
+  &@{-}top::before {border-top-color: inherit}
 
-  &@{-}top::before,
-  &@{-}top-left::before {
-    border-top-color: inherit;
-  }
-
-  &@{-}top::after,
-  &@{-}top-left::after {
+  &@{-}top::after {
     margin-top: -1px;
     border-top-color: @color-white;
   }
-
-  &@{-}top-left::before,
-  &@{-}top-left::after {
-    top: 100%;
-    right: 3rem;
-  }
 }
-
 
 .popover-content {
   padding: 2rem;
@@ -54,12 +60,6 @@
       left: 50%;
       bottom: 100%;
       transform: translate(-50%, -10px);
-
-      &-left {
-        bottom: 100%;
-        right: 0;
-        transform: translate(0, -10px);
-      }
     }
   }
 }

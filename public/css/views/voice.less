@@ -125,3 +125,16 @@
   border-radius: 50%;
 }
 
+@{ns}-popover.request-contribute-popover.widget {
+  bottom: 100%;
+  left: initial;
+  right: 0;
+  transform: translate(0, -10px);
+
+  &::before,
+  &::after {
+    top: 100%;
+    right: 3rem;
+    left: initial;
+  }
+}

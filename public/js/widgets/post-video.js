@@ -82,7 +82,6 @@ Class(CV, 'PostVideo').inherits(CV.Post)({
         },
 
         _bindEvents : function _bindEvents() {
-            console.log('click')
             this.addVideoHandler = this.addVideo.bind(this);
             this.videoWrapper.addEventListener('click', this.addVideoHandler);
         },
