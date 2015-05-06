@@ -1,24 +1,8 @@
 {
-  "name": "cr",
-  "description": "CrowdVoice By",
+  "name": "crowdvoice-by",
+  "description": "CrowdVoice.by",
   "version": "0.0.1",
   "keywords": [
-    "neon",
-    "mvc",
-    "fullstack",
-    "cli",
-    "frontend",
-    "backend",
-    "stack",
-    "bootstrap",
-    "backend",
-    "orm",
-    "postgres",
-    "mysql",
-    "database",
-    "widget",
-    "full",
-    "generator"
   ],
   "engines": {
     "node": ">=0.10.33"
@@ -47,23 +31,5 @@
     "style-loader": "^0.9.0",
     "url-loader": "^0.5.5",
     "webpack": "^1.7.3"
-  },
-  "_id": "neonode@2.0.7",
-  "_npmVersion": "2.8.3",
-  "_nodeVersion": "1.8.1",
-  "_npmUser": {
-    "name": "sgarza",
-    "email": "sergio@delagarza.io"
-  },
-  "dist": {
-    "shasum": "11564dc300e88476ba344d454ebd99091e5ab148",
-    "tarball": "http://registry.npmjs.org/neonode/-/neonode-2.0.7.tgz"
-  },
-  "maintainers": [
-    {
-      "name": "sgarza",
-      "email": "sergio@delagarza.io"
-    }
-  ],
-  "directories": {}
+  }
 }
