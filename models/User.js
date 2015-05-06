@@ -11,7 +11,7 @@ var User = Class('User').inherits(Argon.KnexModel)({
             if (resp.length > 0) throw new Error('This email address is already in use.')
           });
         },
-        message: 'test'
+        message: 'This email address is already in use.'
       }
     ]
   },
