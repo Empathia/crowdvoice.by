@@ -8,8 +8,8 @@ exports.up = function(knex, Promise) {
       t.integer('entity_id').defaultTo(0);
       t.string('username', 512).defaultTo(null);
       t.string('email', 254).index().unique();
-      t.string('encryptedPassword', 512).defaultTo(null);
-      t.string('passwordSalt', 512).defaultTo(null);
+      t.string('encrypted_password', 512).defaultTo(null);
+      t.string('password_salt', 512).defaultTo(null);
 
       t.timestamps();
     })
