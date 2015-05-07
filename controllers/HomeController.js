@@ -555,260 +555,27 @@ var HomeController = Class('HomeController')({
     },
 
     profile : function(req, res) {
+      var demoOrganizations = require('./../public/demo-data/organizations.js');
+      var demoVoices = require('./../public/demo-data/voices.js');
+
       res.render('home/profile.html', {
         layout : 'application',
-
-        currentUser : {},
-
-        voiceInfo : {
-          id: '',
-          title: 'Continued Effects of the Fukushima Disaster',
-          description: '<p>On March 11, 2011, a tsunami and earthquake damaged the Fukushima Daiichi power plant in Fukushima, Japan. Subsequent equipment failures led to the release of nuclear material into the surrounding ground and ocean. Initially, studies conducted by TEPCO, the company operating the plant, concluded that the risks posed by the fallout were relatively small, and that radioactive material from the incident had been contained.</p>\
-            <p>On July 22, 2013, it came to light that Fukushima Daiichi is still leaking into the Pacific Ocean, and that over 300 metric tons of contaminated water had been released since the disaster, posing a possible threat to ecosystems and public health.</p>',
-          latitude: '',
-          longitud: '',
-          status: 'STATUS_PUBLIC',
-          firstPostDate: '',
-          lastPostDate: '',
-          postCount: 17,
-          followersCount: 310,
-          createdAt: '2015-03-30T13:59:47Z',
-          updatedAt: '2015-03-30T13:59:47Z',
-          author : {
-            name : 'The Guardian',
-            avatar : {
-              medium: 'org-01.jpg',
-              small : 'org-00.jpg'
-            }
-          }
-        },
-
-        featuredVoices : [
-          {
-            url : '/inner',
-            tags : [
-              {
-                name: 'Current Events',
-                url: '/topic/current-events'
-              },
-              {
-                name: 'Health',
-                url: '/topic/health'
-              }
-            ],
-            image_cover : '/img/sample/covers/feat-00.jpg',
-            author : {
-              avatar: '/img/sample/avatars/sm/org-00.jpg',
-              username: 'guardian',
-              url: '/organization-test'
-            },
-            title: 'Continued Effects of the Fukushima Disaster',
-            description: 'On March 11, 2011, a tsunami and earthquake damaged the Fukushima Daiichi power plant in Fukushima, Japan. Subsequent equipment failures led to the release of nuclear material into the surrounding ground and ocean. It is regarded as the biggest nuclear disaster since Chernobyl. Initially, studies conducted by TEPCO, the company operating the plant, concluded that the risks',
-            followers : 3296,
-            updated_at: '2015-03-30T13:59:47Z',
-            gallery : []
-          },
-
-          {
-            url : '/inner',
-            tags : [
-              {
-                name: 'Conflict',
-                url: '/topic/conflict'
-              }
-            ],
-            image_cover : '/img/sample/covers/feat-01.jpg',
-            author : {
-              avatar: '/img/sample/avatars/sm/org-00.jpg',
-              username: 'guardian',
-              url: '/organization-test'
-            },
-            title: 'Ferguson Unrest',
-            description: 'An ongoing series of protests and civil disorder began the day after the fatal shooting of Michael Brown on August 9, 2014, in Ferguson, Missouri. The unrest sparked a vigorous debate',
-            followers : 288,
-            updated_at: '2015-04-23T13:59:47Z',
-            gallery : ['/img/sample/covers/feat-00.jpg', '/img/sample/covers/feat-01.jpg', '/img/sample/covers/feat-02.jpg']
-          },
-
-          {
-            url : '/inner',
-            tags : [
-              {
-                name: 'Conflict',
-                url: '/topic/conflict'
-              }
-            ],
-            image_cover : '/img/sample/covers/feat-02.jpg',
-            author : {
-              avatar: '/img/sample/avatars/sm/org-00.jpg',
-              username: 'guardian',
-              url: '/organization-test'
-            },
-            title: 'Civil War in Syria',
-            description: 'With thousands of schools destroyed in the conflict, and families being displaced from their homes and communities, maintaining any meaningful form of structured education',
-            followers : 763,
-            updated_at: '2015-04-22T13:59:47Z',
-            gallery : ['/img/sample/covers/feat-00.jpg', '/img/sample/covers/feat-01.jpg', '/img/sample/covers/feat-02.jpg']
-          },
-          {
-            url : '/inner',
-            tags : [
-              {
-                name: 'Politics',
-                url: '/topic/politics'
-              }
-            ],
-            image_cover : '/img/sample/covers/feat-00.jpg',
-            author : {
-              avatar: '/img/sample/avatars/sm/org-00.jpg',
-              username: 'guardian',
-              url: '/organization-test'
-            },
-            title: 'U.S Presidential Elections 2016',
-            description: 'The United States presidential election of 2016 will be the 58th quadrennial U.S. presidential election and is scheduled for Tuesday, November 8, 2016. Voters in the election will',
-            followers : 324,
-            updated_at: '2015-04-21T13:59:47Z',
-            gallery : []
-          },
-
-          {
-            url : '/inner',
-            tags : [
-              {
-                name: 'Current Events',
-                url: '/topic/current-events'
-              }
-            ],
-            image_cover : '/img/sample/covers/feat-00.jpg',
-            author : {
-              avatar: '/img/sample/avatars/sm/org-00.jpg',
-              username: 'guardian',
-              url: '/organization-test'
-            },
-            title: 'Unemployment in Detroit',
-            description: 'The latest extension is the fourth since the recession began, which means some unemployed workers in the state could qualify for up to 99 weeks of benefits',
-            followers : 172,
-            updated_at: '2015-04-21T13:59:47Z',
-            gallery : []
-          }
-        ],
-        /* =========================================================================== *
-         *  ORG
-         * =========================================================================== */
-        mostActiveOrganizations : [
-          {
-            type: 'organization',
-            author : {
-              profile_url : '/organization-test',
-              profile_cover : 'img/sample/covers/org-00.jpg',
-              avatar : 'img/sample/avatars/org-00.jpg',
-              username : 'OpenGovFoundation',
-              full_name : 'OpenGovFoundation',
-              description : "Building free technologies to support your ability to participate in gov't & hold it accountable. http://AmericaDecoded.org , MyMadison.io, #OpenGov & #OpenData",
-              location : 'London, UK',
-              created_at : '2015-02-10T13:59:47Z',
-              total_voices : 32,
-              collaborators : 12,
-              followers : 341,
-              following : 483
-            }
-          },
-          {
-            type: 'organization',
-            author : {
-              profile_url : '/organization-test-1',
-              profile_cover : 'img/sample/covers/org-01.jpg',
-              avatar : 'img/sample/avatars/org-01.jpg',
-              username : 'guardian',
-              full_name : 'The Guardian',
-              description : "Winner of the Pulitzer prize. Top stories, special features, live blogs and more.",
-              location : 'London, UK',
-              created_at : '2015-02-20T13:59:47Z',
-              total_voices : 27,
-              collaborators : 6,
-              followers : 125,
-              following : 583
-            }
-          },
-          {
-            type: 'organization',
-            author : {
-              profile_url : '/organization-test-2',
-              profile_cover : 'img/sample/covers/org-02.jpg',
-              avatar : 'img/sample/avatars/org-02.jpg',
-              username : 'SyriaDeeply',
-              full_name : 'Syria Deeply',
-              description : "An independent single-topic news site focusing on stories and commentary about the war in Syria. Analysis and breaking news about Syria.",
-              location : 'Oxford, UK',
-              created_at : '2015-02-28T13:59:47Z',
-              total_voices : 25,
-              collaborators : 9,
-              followers : 239,
-              following : 934
-            }
-          },
-          {
-            type: 'organization',
-            author : {
-              profile_url : '/organization-test-3',
-              profile_cover : 'img/sample/covers/org-03.jpg',
-              avatar : 'img/sample/avatars/org-03.jpg',
-              username : 'IPPF',
-              full_name : 'International Planned Parenthood Federation',
-              description : 'We aim to improve the quality of life of individuals by campaigning for sexual and reproductive health and rights.',
-              location : 'London, UK',
-              created_at : '2015-01-01T13:59:47Z',
-              total_voices : 32,
-              collaborators : 12,
-              followers : 354,
-              following : 235
-            }
-          },
-          {
-            type: 'organization',
-            author : {
-              profile_url : '/organization-test-4',
-              profile_cover : 'img/sample/covers/org-04.jpg',
-              avatar : 'img/sample/avatars/org-04.jpg',
-              username : 'Schoolzilla',
-              full_name : 'Schoolzila',
-              description : 'Schoolzilla empowers schools to do more with data. Collect and organize all your data to find the insights that matter.',
-              location : 'Oackland, CA',
-              created_at : '2015-03-01T13:59:47Z',
-              total_voices : 27,
-              collaborators : 6,
-              followers : 121,
-              following : 745
-            }
-          },
-          {
-            type: 'organization',
-            author : {
-              profile_url : '/organization-test-5',
-              profile_cover : 'img/sample/covers/org-05.jpg',
-              avatar : 'img/sample/avatars/org-05.jpg',
-              username : 'OXFAM',
-              full_name : 'OXFAM Internationl',
-              description : 'Our vision is a just world without poverty. A world where people are valued and treated equally enjoying their rights as full citizens.',
-              location : 'Oxford, UK',
-              created_at : '2015-02-01T13:59:47Z',
-              total_voices : 25,
-              collaborators : 9,
-              followers : 272,
-              following : 627
-            }
-          }
-        ]
+        voices : demoVoices,
+        organizations : demoOrganizations
       });
     },
 
     kabinett : function(req, res) {
         res.render('test/index.html', {layout: 'application'});
     }
+
   }
 });
 
 module.exports = new HomeController();
+
+
+
 
 
 
