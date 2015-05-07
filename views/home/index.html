@@ -1,3 +1,11 @@
+<h2>
+    <% if (currentUser) { %>
+        Logged in as: <%= currentUser.username %> <a href="/logout">logout</a>
+    <% } else { %>
+        <a href="/login">Login</a>
+    <% } %>
+</h2>
+
 <p><i>HomeController.js:index() (/views/home/index.html)</i></p>
 
 <% posts.forEach(function(post) { %>
