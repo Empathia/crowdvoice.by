@@ -8,9 +8,10 @@ exports.up = function(knex, Promise) {
       t.text('description').defaultTo(null);
       t.string('latitude').defaultTo(null);
       t.string('longitude').defaultTo(null);
-      t.integer('ownerId').defaultTo(0);
-      t.string('status').notNullable();
-      t.string('type').notNullable();
+      t.string('location_name').defaultTo(null);
+      t.integer('owner_id').index().defaultTo(0);
+      t.string('status').index().notNullable();
+      t.string('type').index().notNullable();
       t.string('twitter_search', 512).defaultTo(null);
       t.dateTime('tweet_last_fetch_at').defaultTo(null);
       t.string('rss_url', 512).defaultTo(null);
