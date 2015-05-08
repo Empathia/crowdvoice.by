@@ -2,22 +2,13 @@
 
 
   <section class="profile-voices-intro">
-      <h1 class="profile-heading -font-bold -m0">The International Parenthood Federation</h1>
+      <h1 class="profile-heading -font-bold -m0">Saved Posts</h1>
 
       <article role="article" class="profile-menu -row -rel">
-        <div class="profile-tabs">
-          <div class="menu-item p-drafts active menu-tab -inline-block">
-            <p class="-font-bold">Drafts</p>
-          </div>
-          <div class="menu-item p-unlisted menu-tab -inline-block">
-            <p class="-font-bold">Unlisted</p>
-          </div>
-          <div class="menu-item p-public menu-tab -inline-block">
-            <p class="-font-bold">Public</p>
-          </div>
-          <div class="menu-item p-archive menu-tab -inline-block">
-            <p class="-font-bold">Archive</p>
-          </div>
+        <div class="-float-left leftside">
+          <span class="sub-title">View</span>
+        </div>
+        <div class="-float-right rigthside">
         </div>
       </article>
 
@@ -36,7 +27,23 @@
 <script>
 
   var postsContainer = document.querySelector('.voice-posts');
+  var menuContainer = document.querySelector('.profile-menu');
+  var menuLeftContainer = document.querySelector('.profile-menu .leftside');
+  var menuRightContainer = document.querySelector('.profile-menu .rigthside');
+
+
   var posts = [];
+  new Check({ label : 'All Posts', name : '' }).render(menuLeftContainer);
+  new Check({ label : 'Images', name : '' }).render(menuLeftContainer);
+  new Check({ label : 'Videos', name : '' }).render(menuLeftContainer);
+  new Check({ label : 'Audio', name : '' }).render(menuLeftContainer);
+  new Check({ label : 'Articles', name : '' }).render(menuLeftContainer);
+  new Check({ label : 'Text', name : '' }).render(menuLeftContainer);
+  new Check({ label : 'Tweets', name : '' }).render(menuLeftContainer);
+
+  new Input({type : 'search', placeholder : 'Search posts...'}).render(menuRightContainer);
+
+
 
   <%= JSON.stringify(posts) %>.forEach(function(post) {
     posts.push(CV.Post.create(post).render(postsContainer));
