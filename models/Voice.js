@@ -1,6 +1,38 @@
 var Voice = Class('Voice').inherits(Argon.KnexModel)({
 
-  validations : {},
+  validations : {
+    ownerId : ['required'],
+    title : [
+      {
+        rule: function (val) {
+          if (val && val.length > 512) {
+            throw new Checkit.FieldError('The title must be less than 512 characters.')
+          }
+        },
+        message: 'The title must be less than 512 characters.'
+      }
+    ],
+    twitterSearch : [
+      {
+        rule: function (val) {
+          if (val && val.length > 512) {
+            throw new Checkit.FieldError('The Tweeter Search String (twitterSearch) must be less than 512 characters.')
+          }
+        },
+        message: 'The Tweeter Search String (twitterSearch) must be less than 512 characters.'
+      }
+    ],
+    rssUrl : [
+      {
+        rule: function (val) {
+          if (val && val.length > 512) {
+            throw new Checkit.FieldError('The RSS URL (rssUrl) must be less than 512 characters.')
+          }
+        },
+        message: 'The RSS URL (rssUrl) must be less than 512 characters.'
+      }
+    ]
+  },
 
   storage : (new Argon.Storage.Knex({
     tableName : 'Voices',
