@@ -9,6 +9,8 @@ var HomeController = Class('HomeController')({
       application.router.route('/').get(this.index);
       application.router.route('/inner').get(this.inner);
       application.router.route('/profile').get(this.profile);
+      application.router.route('/profile/voices').get(this.profileVoices);
+      application.router.route('/profile/saved').get(this.profileSaved);
       application.router.route('/kabinett').get(this.kabinett);
     },
 
@@ -562,6 +564,31 @@ var HomeController = Class('HomeController')({
         layout : 'application',
         voices : demoVoices,
         organizations : demoOrganizations
+      });
+    },
+
+    profileVoices : function(req, res) {
+      var demoOrganizations = require('./../public/demo-data/organizations.js');
+      var demoVoices = require('./../public/demo-data/voices.js');
+
+      res.render('home/profile-voices.html', {
+        layout : 'application',
+        voices : demoVoices,
+        organizations : demoOrganizations
+      });
+    },
+
+    profileSaved : function(req, res) {
+      var demoOrganizations = require('./../public/demo-data/organizations.js');
+      var demoVoices = require('./../public/demo-data/voices.js');
+      var demoPosts = require('./../public/demo-data/posts.js');
+
+
+      res.render('home/profile-saved.html', {
+        layout : 'application',
+        voices : demoVoices,
+        organizations : demoOrganizations,
+        posts : demoPosts
       });
     },
 

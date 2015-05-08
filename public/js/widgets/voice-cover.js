@@ -39,6 +39,8 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
           <span class="voice-cover-followers">{{voice-followers}}</span> followers &middot;&nbsp;\
           Updated <time class="voice-cover-datetime" datetime="{{voice-updated-at-iso}}">{{voice-updated-at-human}}</time></div>\
       </div>\
+      <div class="voice-actions">\
+      </div>\
     </article>\
   ',
 
@@ -71,6 +73,8 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
       this.tagListElement = this.element.find('.cv-tags');
       this.voiceCoverElement = this.element.find('.voice-cover');
       this.dateTimeElement = this.el.querySelector('.voice-cover-datetime');
+      this.actionsElement = this.element.find('.voice-actions');
+
 
       this.dom.updateAttr('href', this.el.querySelector('.voice-cover-hover-overlay'), this.url);
       this.dom.updateAttr('title', this.el.querySelector('.voice-cover-hover-overlay'), this.title + ' voice');
@@ -92,7 +96,13 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
       if (this.gallery.length >= 3) {
         this.createGallery(this.gallery);
       }
-
+      if (this.style == 'list'){
+        this.element.addClass('list-style');
+      }
+      if (this.hasActions){
+        this.element.addClass('hasActions');
+        this.addActions();
+      }
       // 21 == 3 weeks (days)
       if (moment().diff(moment(this.dom.updated_at), 'days') <= 21) {
         this.addNewBadge();
@@ -163,6 +173,34 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
       });
 
       return this;
+    },
+
+    /**
+     * Adds action buttons to the voice.
+     * @method addActions <private> [Function]
+     * @return undefined
+     */
+    addActions : function addActions() {
+
+      var btnTwiceOptions = {
+        "1": {name: 'Edit'},
+        "2": {name: 'Republish as ...'}
+      };
+
+      new Button({
+          style   : '',
+          type    : 'twice',
+          name    : 'buttonTwice',
+          options : btnTwiceOptions
+      }).render(this.actionsElement);
+
+      new Button({
+          style   : 'primary',
+          type    : 'single',
+          label   : 'Delete',
+          name    : 'buttonFollow'
+      }).render(this.actionsElement);
+
     }
   }
 });
