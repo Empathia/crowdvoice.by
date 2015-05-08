@@ -1,0 +1,14 @@
+#!/usr/bin/env node
+
+require('neonode-core');
+
+var repl = require("repl");
+var env    = process.env.NODE_ENV || "development";
+
+var replServer = repl.start({
+    prompt: "crowdvoice.by(" + env + ")> ",
+});
+
+replServer.context.Entity = Entity;
+replServer.context.User = User;
+replServer.context.Voice = Voice;
