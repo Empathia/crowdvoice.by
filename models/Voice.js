@@ -39,7 +39,7 @@ var Voice = Class('Voice').inherits(Argon.KnexModel)({
       callback(err, data);
       Model.dispatch('afterFindById');
     });
-  }
+  },
 
   prototype : {
     updatePostCount : function updatePostCount(param, callback) {
