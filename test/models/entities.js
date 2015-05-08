@@ -13,24 +13,6 @@ describe('Entity Model', function () {
     isAnonymous: false
   };
 
-  describe('Basic operations', function () {
-
-    beforeEach(function (done) {
-      db('Entities').del().then(function (err, result) {
-        done();
-      });
-    });
-
-    it('should create an entity record', function (done) {
-      var entity = new Entity(entityData1);
-      entity.save(function (err) {
-        assert(err === null);
-        done();
-      });
-    });
-
-  });
-
   describe('Validations', function () {
     it('should validate that type is present', function (done) {
       var data = clone(entityData1), entity;
