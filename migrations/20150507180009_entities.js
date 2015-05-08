@@ -8,7 +8,7 @@ exports.up = function(knex, Promise) {
       t.string('type', 32).defaultTo("person");
       t.string('name', 512).defaultTo(null);
       t.string('lastname', 512).defaultTo(null);
-      t.boolean('isAnonymous').defaultTo(false);
+      t.boolean('is_anonymous').defaultTo(false);
 
       t.timestamps();
     })
