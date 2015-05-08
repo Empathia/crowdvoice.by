@@ -194,20 +194,89 @@ describe('Entity Model', function () {
       });
     })
 
-    it('follows should return all follows of the current entity', function (done) {
-      e1.follows(function (follows) {
-        assert(follows.length === 1);
-        assert(follows[0].name = 'org2');
+    it('followedEntities should return all followedEntities of the current entity', function (done) {
+      e1.followedEntities(function (entities) {
+        assert(entities.length === 1);
+        assert(entities[0].name = 'org2');
         done();
       });
     })
 
-    it('follows should return a query', function (done) {
-      e1.follows().where('type', '=', 'person').then(function (follows) {
-        assert(follows.length === 0);
+    it('followedEntities should return a query', function (done) {
+      e1.followedEntities().where('type', '=', 'person').then(function (entities) {
+        assert(entities.length === 0);
         done();
       });
     })
+  });
+
+  describe('VoiceFollowers', function (done) {
+    var e1, v1, v2;
+    
+    var voiceData1 = {
+      title: 'test1',
+      status: 'nothing',
+      type: 'nothing'
+    };
+
+    before(function (done) {
+      db('Voices').del().then(function () {
+        done();
+      });
+    });
+    before(function (done) {
+      e1 = new Entity(entityData1);
+      e1.save(done);
+    });
+    before(function (done) {
+      db('VoiceFollowers').del().then(function () {
+        done();
+      });
+    });
+    before(function (done) {
+      db('Voices').insert(voiceData1, 'id').then(function (ids) {
+        v1 = clone(voiceData1);
+        v1.id = ids[0];
+        done();
+      });
+    });
+    before(function (done) {
+      var data = clone(voiceData1);
+      data.title = 'test2';
+      db('Voices').insert(data, 'id').then(function (ids) {
+        v2 = clone(data);
+        v2.id = ids[0];
+        done();
+      })
+      v2 = data;
+    });
+
+    it('followVoice should create a VoiceFollowers relation', function (done) {
+      e1.followVoice(v1, function (err) {
+        db('VoiceFollowers').where('entity_id', '=', e1.id).andWhere('voice_id', '=', v1.id).then(function (result) {
+          assert(result[0].entity_id === e1.id);
+          assert(result[0].voice_id === v1.id);
+          done();
+        });
+      });
+    });
+
+    it('followedVoices should return all followedVoices of the current entity', function (done) {
+      e1.followVoice(v2, function (err) {
+        e1.followedVoices(function (voices) {
+          assert(voices.length === 2);
+          done();
+        });
+      });
+    });
+
+    it('followedVoices should return a query', function (done) {
+      e1.followedVoices().where('title', '=', 'test2').then(function (voices) {
+        assert(voices.length === 1);
+        done();
+      });
+    })
+    
   });
 
 });
