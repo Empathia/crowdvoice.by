@@ -55,14 +55,47 @@ var Entity = Class('Entity').inherits(Argon.KnexModel)({
         }
       },
 
-      /* Returns the follows made by the current entity
-       * @method: follows
+      /* Returns the followedEntities made by the current entity
+       * @method: followedEntities
        */
-      follows : function follows (done) {
+      followedEntities : function followedEntities (done) {
         var query = db('Entities').
             select('Entities.*').
             rightJoin('EntityFollower', 'Entities.id', 'EntityFollower.followed_id').
             where('follower_id', '=', this.id);
+
+        if (done) {
+          query.then(done);
+        } else {
+          return query;
+        }
+      },
+
+      /* Follows a voice
+       * @method followVoice
+       * @params:
+       *  + voice
+       *  + callback
+       */
+      followVoice: function followVoice (voice, done) {
+        db('VoiceFollowers').insert({
+          entity_id: this.id,
+          voice_id: voice.id
+        }).then(function (err, result) {
+          done(err, result);
+        });
+      },
+
+      /* Followed voices
+       * @method: followedVoices
+       * @params:
+       *  + callback
+       */
+      followedVoices: function followedVoices (done) {
+        var query = db('Voices').
+            select('Voices.*').
+            rightJoin('VoiceFollowers', 'Voices.id', 'VoiceFollowers.voice_id').
+            where('entity_id', '=', this.id);
 
         if (done) {
           query.then(done);
