@@ -64,15 +64,13 @@ var Post = Class('Post').inherits(Argon.KnexModel)({
       this.bind('afterCreate', function(data) {
         Voice.findById(model.voiceId, function(err, result) {
           var voice = new Voice(result);
-          voice.postCount++;
-
-          voice.save(function(err, saveResult) {
+          voice.updatePostCount(true, function(err, saveResult) {
             if (err) {
               return throw new Error(err);
             } else {
               logger.log('Voice ' + voice.id + ' postCount updated ' + voice.postCount);
             }
-          })
+          });
         });
       });
 
@@ -80,15 +78,13 @@ var Post = Class('Post').inherits(Argon.KnexModel)({
       this.bind('afterDestroy', function(data) {
         Voice.findById(model.voiceId, function(err, result) {
           var voice = new Voice(result);
-          voice.postCount--;
-
-          voice.save(function(err, saveResult) {
+          voice.updatePostCount(false, function(err, saveResult) {
             if (err) {
               return throw new Error(err);
             } else {
               logger.log('Voice ' + voice.id + ' postCount updated ' + voice.postCount);
             }
-          })
+          });
         });
       })
     }
