@@ -36,21 +36,7 @@ var Voice = Class('Voice').inherits(Argon.KnexModel)({
   },
 
   storage : (new Argon.Storage.Knex({
-    tableName : 'Voices',
-    queries : {
-      findPosts : function(requestObj, callback) {
-        switch (requestObj.clauseType) {
-          case 'where':
-            db(requestObj.model.storage.tableName).where(requestObj.params).andWhere('voice_id', requestObj.voiceId).exec(callback);
-            break;
-          case 'whereRaw':
-            db(requestObj.model.storage.tableName).whereRaw(requestObj.params[0], requestObj.params[1]).andWhere('voice_id', requestObj.voiceId).exec(callback);
-            break;
-          default:
-            db(requestObj.model.storage.tableName).where('voice_id', requestObj.voiceId).exec(callback)
-        }
-      }
-    }
+    tableName : 'Voices'
   })),
 
   findByOwnerId : function findByOwnerId(ownerId, callback) {
