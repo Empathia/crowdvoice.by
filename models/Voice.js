@@ -105,38 +105,26 @@ var Voice = Class('Voice').inherits(Argon.KnexModel)({
       this.save(callback);
     },
 
-    // Has Many Posts Association
+    /**
+    Has Many Posts Association
+    @method posts <public>
+    @property whereClause <Object> {'voice_id' : 1, approved : true}
+    @return undefined
+    **/
     posts : function posts(whereClause, callback) {
       var model = this;
 
       if (!model.id) {
-        return [];
+        return callback(null, []);
       }
 
-      var request = {
-        action : 'findPosts',
-        voiceId : model.id
+      if (!whereClause) {
+        whereClause = {}
       }
 
-      switch (whereClause.constructor) {
-        case Object:
-          request.clauseType = 'where';
-          break;
-        case Array:
-          if (whereClause.length === 2) {
-            request.clauseType = 'whereRaw';
-          }
-          break;
-      }
+      whereClause['voice_id'] = model.id;
 
-      request.params = whereClause;
-
-      this.constructor.dispatch('beforeFindPosts');
-
-      this.constructor.storage.findPosts(request, function(err, data) {
-        callback(err, data);
-        model.constructor.dispatch('afterFindPosts');
-      });
+      Post.find(whereClause, callback);
     }
   }
 });
