@@ -3,6 +3,7 @@ var Voice = Class('Voice').inherits(Argon.KnexModel)({
   validations : {
     ownerId : ['required'],
     title : [
+      'required',
       {
         rule: function (val) {
           if (val && val.length > 512) {
@@ -67,13 +68,33 @@ var Voice = Class('Voice').inherits(Argon.KnexModel)({
 
     this.dispatch('beforeFindByOwnerId');
 
-    this.storage.findByOwnerId(request, function(err, data) {
+    this.storage.findById(request, function(err, data) {
       callback(err, data);
-      Model.dispatch('afterFindById');
+      Model.dispatch('afterFindByOwnerId');
     });
   },
 
   prototype : {
+    id : null,
+    title : null,
+    description : '',
+    latitude : null,
+    longitude : null,
+    locationName : null,
+    ownerId : null,
+    status : null,
+    type : null,
+    twitterSearch : null,
+    tweetLastFetchAt : null,
+    rssUrl : null,
+    rssLastFetchAt : null,
+    firstPostDate : null,
+    lastPostDate : null,
+    postCount : 0,
+    createdAt : null,
+    updatedAt : null,
+
+
     updatePostCount : function updatePostCount(param, callback) {
       if (param) {
         this.postCount++;
