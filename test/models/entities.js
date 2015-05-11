@@ -4,6 +4,7 @@
 require('neonode-core');
 require('tellurium');
 require('./../../lib/TelluriumConsoleReporter.js');
+var clone = require('clone');
 var async = require('async');
 
 CONFIG.database.logQueries = false;
@@ -235,6 +236,48 @@ Tellurium.suite('Entity Model - Relations')(function () {
             db('VoiceFollowers').where('entity_id', '=', e1.id).andWhere('voice_id', '=', v1.id).then(function (result) {
               spec.assert(result[0].entity_id === e1.id).toBe(true);
               spec.assert(result[0].voice_id === v1.id).toBe(true);
+              done();
+            });
+          }
+        ], function () {
+          spec.completed();
+        });
+
+      });
+    });
+  });
+
+  this.describe('inviteEntity')(function (done) {
+
+    var entityData = {
+      type: 'person',
+      name: 'John',
+      lastname: 'Doe',
+      isAnonymous: false
+    };
+
+    this.specify('inviteEntity should create an InvitationRequest relation')(function (spec) {
+      var e1, e2;
+
+      spec.registry.setup(function () {
+        async.series([
+          function (done) {
+            e1 = new Entity(spec.registry.data);
+            e1.save(done);
+          },
+          function (done) {
+            var data = clone(entityData);
+            data.name = 'org1';
+            e2 = new Entity(data);
+            e2.save(done);
+          },
+          function (done) {
+            e2.inviteEntity(e1, done);
+          },
+          function (done) {
+            db('InvitationRequest').where('invited_entity_id', '=', e1.id).andWhere('invitator_entity_id', '=', v1.id).then(function (result) {
+              spec.assert(result[0].invited_entity_id === e1.id).toBe(true);
+              spec.assert(result[0].invitator_entity_id === e2.id).toBe(true);
               done();
             });
           }
