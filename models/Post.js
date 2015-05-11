@@ -1,5 +1,20 @@
 var Post = Class('Post').inherits(Argon.KnexModel)({
 
+  // Source services:
+  SOURCE_SERVICE_RAW:     "raw",
+  SOURCE_SERVICE_LINK:    "link",
+  SOURCE_SERVICE_VIMEO:   "vimeo",
+  SOURCE_SERVICE_YOUTUBE: "youtube",
+  SOURCE_SERVICE_YFROG:   "yfrog",
+  SOURCE_SERVICE_TWITPIC: "twitpic",
+  SOURCE_SERVICE_FLICKR:  "flickr",
+
+  // Source types:
+  SOURCE_TYPE_IMAGE:      "image",
+  SOURCE_TYPE_VIDEO:      "video",
+  SOURCE_TYPE_LINK:       "link",
+  SOURCE_TYPE_VIDEO:      "text",
+
   validations : {
     voiceId       : ['required'],
     sourceType    : ['required'],
@@ -50,12 +65,15 @@ var Post = Class('Post').inherits(Argon.KnexModel)({
     updatedAt     : null,
 
     init : function init(config) {
-      Argon.KnexMode.prototype.call(this, config);
+      Argon.KnexModel.prototype.init.call(this, config);
 
       var model = this;
 
+      model.publishedAt = new Date();
+
       // Set publishedAt to be the same as createdAt on create
       this.bind('beforeCreate', function() {
+        console.log('BEFORECREATE'.green)
         model.publishedAt =  model.createdAt;
       });
 
@@ -63,10 +81,10 @@ var Post = Class('Post').inherits(Argon.KnexModel)({
       // Update the voice.postCount on create
       this.bind('afterCreate', function(data) {
         Voice.findById(model.voiceId, function(err, result) {
-          var voice = new Voice(result);
+          var voice = new Voice(result[0]);
           voice.updatePostCount(true, function(err, saveResult) {
             if (err) {
-              return throw new Error(err);
+              throw new Error(err);
             } else {
               logger.log('Voice ' + voice.id + ' postCount updated ' + voice.postCount);
             }
@@ -77,10 +95,10 @@ var Post = Class('Post').inherits(Argon.KnexModel)({
       // Update the voice.postCount on destroy
       this.bind('afterDestroy', function(data) {
         Voice.findById(model.voiceId, function(err, result) {
-          var voice = new Voice(result);
+          var voice = new Voice(result[0]);
           voice.updatePostCount(false, function(err, saveResult) {
             if (err) {
-              return throw new Error(err);
+              throw new Error(err);
             } else {
               logger.log('Voice ' + voice.id + ' postCount updated ' + voice.postCount);
             }
@@ -91,4 +109,4 @@ var Post = Class('Post').inherits(Argon.KnexModel)({
   }
 });
 
-module.exports = Voice;
+module.exports = Post;
