@@ -29,10 +29,11 @@ var Entity = Class('Entity').inherits(Argon.KnexModel)({
        *  + callback
        */
       followEntity : function followEntity (entity, done) {
-        db('EntityFollower').insert({
-          follower_id: this.id,
-        followed_id: entity.id
-        }).then(function (err, result) {
+        var entityFollower = new EntityFollower({
+          followerId: this.id,
+          followedId: entity.id
+        });
+        entityFollower.save(function (err, result) {
           done(err, result);
         });
       },
@@ -78,10 +79,11 @@ var Entity = Class('Entity').inherits(Argon.KnexModel)({
        *  + callback
        */
       followVoice: function followVoice (voice, done) {
-        db('VoiceFollowers').insert({
+        var vf = new VoiceFollower({
           entity_id: this.id,
           voice_id: voice.id
-        }).then(function (err, result) {
+        });
+        vf.save(function (err, result) {
           done(err, result);
         });
       },
