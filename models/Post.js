@@ -69,11 +69,15 @@ var Post = Class('Post').inherits(Argon.KnexModel)({
 
       var model = this;
 
-      model.publishedAt = new Date();
+      // Ensure publishedAt is present to prevent a validation error
+      this.bind('beforeValidate', function() {
+        if (!model.publishedAt) {
+          model.publishedAt =  new Date();
+        }
+      });
 
       // Set publishedAt to be the same as createdAt on create
-      this.bind('beforeCreate', function() {
-        console.log('BEFORECREATE'.green)
+      this.bind('beforeCreate', function(){
         model.publishedAt =  model.createdAt;
       });
 
