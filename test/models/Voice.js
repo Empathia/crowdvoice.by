@@ -162,6 +162,27 @@ Tellurium.suite('Voice Model')(function() {
         postCount : 0
       }
 
+      spec.registry.postData = {
+        approved      : false,
+        image         : null,
+        imageWidth    : null,
+        imageHeight   : null,
+        sourceType    : Post.SOURCE_SERVICE_LINK,
+        sourceUrl     : 'http://google.com',
+        sourceService : Post.SOURCE_TYPE_LINK,
+        title         : 'title',
+        description   : 'description',
+        voiceId       : null
+      }
+
+      db('Voices').del().exec(function(err, data) {
+        return;
+      });
+
+      db('Posts').del().exec(function(err, data) {
+        return;
+      })
+
     });
 
     desc.specify('Pass Create a Voice Record')(function(spec) {
@@ -169,11 +190,9 @@ Tellurium.suite('Voice Model')(function() {
 
       var voice = new Voice(data);
 
-      db('Voices').del().exec(function(err, result) {
-        voice.save(function(err, savedData) {
-          spec.assert(voice.id).toBe(savedData[0])
-          spec.completed();
-        })
+      voice.save(function(err, savedData) {
+        spec.assert(voice.id).toBe(savedData[0])
+        spec.completed();
       });
     });
 
@@ -184,41 +203,108 @@ Tellurium.suite('Voice Model')(function() {
 
       var voice = new Voice(data);
 
-      db('Voices').del().exec(function(err, result) {
-        voice.save(function(err, savedData) {
+      voice.save(function(err, savedData) {
+        spec.assert(voice.errors).toBeInstanceOf(Checkit.Error);
+        spec.completed();
+      });
+    });
+
+    desc.specify('Pass Update a Voice Record')(function(spec) {
+      var data = spec.registry.data;
+
+      var voice = new Voice(data);
+
+      voice.save(function(err, savedData) {
+        spec.assert(voice.id).toBe(savedData[0]);
+
+        voice.title = 'New Voice title'
+
+        voice.save(function(destErr, destResult) {
+          spec.assert(voice.title).toBe('New Voice title');
+          spec.completed();
+        });
+      });
+    });
+
+    desc.specify('Fail Update a voice Record because a validation error')(function(spec) {
+      var data = spec.registry.data;
+
+      var voice = new Voice(data);
+
+      voice.save(function(err, savedData) {
+        spec.assert(voice.id).toBe(savedData[0]);
+
+        voice.title = 'New Voice title';
+        voice.ownerId = null;
+
+        voice.save(function(destErr, destResult) {
           spec.assert(voice.errors).toBeInstanceOf(Checkit.Error);
           spec.completed();
         });
       });
     });
 
-    desc.specify('Pass Create a Post Record related to a Voice')(function(spec){
+    desc.specify('Pass Delete a Voice Record')(function(spec) {
       var data = spec.registry.data;
 
       var voice = new Voice(data);
 
-      db('Voices').del().exec(function(err, result) {
-        voice.save(function(err, savedData) {
-          var post = new Post({
-            approved      : false,
-            image         : null,
-            imageWidth    : null,
-            imageHeight   : null,
-            sourceType    : Post.SOURCE_SERVICE_LINK,
-            sourceUrl     : 'http://google.com',
-            sourceService : Post.SOURCE_TYPE_LINK,
-            title         : 'title',
-            description   : 'description',
-            voiceId       : voice.id
-          });
+      voice.save(function(err, savedData) {
+        spec.assert(voice.id).toBe(savedData[0]);
 
-          post.save(function(err, postResult) {
-            spec.assert(err).toBe(null);
-            spec.completed();
-          })
+        voice.destroy(function(destErr, destResult) {
+          spec.assert(voice.id).toBe(null);
+          spec.completed();
         });
-      });
+      })
     });
+
+    desc.specify('Pass Create and Delete a Post Record related to a Voice')(function(spec){
+      var data      = spec.registry.data;
+      var postData  = spec.registry.postData;
+
+      var voice     = new Voice(data);
+
+      voice.save(function(voiceErr, voiceResult) {
+        postData.voiceId = voice.id;
+
+        var post = new Post(postData);
+
+        post.save(function(postErr, postResult) {
+          spec.assert(voiceErr).toBe(null);
+          spec.assert(postErr).toBe(null);
+
+
+          setTimeout(function(){
+            post.destroy(function(destErr, destResult) {
+              spec.assert(post.id).toBe(null);
+              spec.completed();
+            });
+          }, 1000)
+        })
+      });
+
+    });
+
+    desc.specify('Fail Create a Post Record related to a Voice')(function(spec) {
+      var data      = spec.registry.data;
+      var postData  = spec.registry.postData;
+
+      var voice     = new Voice(data);
+
+      voice.save(function(voiceErr, voiceResult) {
+        var post = new Post(postData);
+
+        post.save(function(postErr, postResult) {
+          spec.assert(voiceErr).toBe(null);
+          spec.assert(postResult).toBe(undefined);
+          spec.completed();
+        });
+      })
+
+    });
+
+
   });
 });
 
