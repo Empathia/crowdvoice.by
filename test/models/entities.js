@@ -290,6 +290,47 @@ Tellurium.suite('Entity Model - Relations')(function () {
     });
   });
 
+  this.describe('ownOrganization')(function (done) {
+
+    var entityData = {
+      type: 'organization',
+      name: 'org1',
+      isAnonymous: false
+    };
+
+    this.specify('ownOrganization should create an EntityOwner relation')(function (spec) {
+      var e1, e2;
+
+      spec.registry.setup(function () {
+        async.series([
+          function (done) {
+            e1 = new Entity(spec.registry.data);
+            e1.save(done);
+          },
+          function (done) {
+            var data = clone(entityData);
+            data.name = 'org2';
+            e2 = new Entity(data);
+            e2.save(done);
+          },
+          function (done) {
+            e1.ownOrganization(e2, done);
+          },
+          function (done) {
+            db('EntityOwner').where('owner_id', '=', e1.id).andWhere('owned_id', '=', e2.id).then(function (result) {
+              spec.assert(result[0].owner_id === e1.id).toBe(true);
+              spec.assert(result[0].owned_id === e2.id).toBe(true);
+              done();
+            });
+          }
+        ], function () {
+          spec.completed();
+        });
+
+      });
+    });
+  });
+
 });
 
 Tellurium.run();
