@@ -79,10 +79,11 @@ var Entity = Class('Entity').inherits(Argon.KnexModel)({
        *  + callback
        */
       followVoice: function followVoice (voice, done) {
-        db('VoiceFollowers').insert({
+        var vf = new VoiceFollower({
           entity_id: this.id,
           voice_id: voice.id
-        }).then(function (err, result) {
+        });
+        vf.save(function (err, result) {
           done(err, result);
         });
       },
