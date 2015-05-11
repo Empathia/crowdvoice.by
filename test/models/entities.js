@@ -282,7 +282,8 @@ Tellurium.suite('Entity Model - Relations')(function () {
               done();
             });
           }
-        ], function () {
+        ], function (err) {
+          spec.assert(err ? true : false).toBe(false);
           spec.completed();
         });
 
@@ -323,7 +324,8 @@ Tellurium.suite('Entity Model - Relations')(function () {
               done();
             });
           }
-        ], function () {
+        ], function (err) {
+          spec.assert(err ? true : false).toBe(false);
           spec.completed();
         });
 
