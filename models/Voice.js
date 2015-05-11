@@ -1,5 +1,12 @@
 var Voice = Class('Voice').inherits(Argon.KnexModel)({
 
+  STATUS_DRAFT:     'STATUS_DRAFT',
+  STATUS_UNLISTED:  'STATUS_UNLISTED',
+  STATUS_PUBLISHED: 'STATUS_PUBLISHED',
+
+  TYPE_PUBLIC:      'TYPE_PUBLIC',
+  TYPE_CLOSED:      'TYPE_CLOSED',
+
   validations : {
     ownerId : ['required'],
     title : [
