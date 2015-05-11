@@ -119,6 +119,16 @@ var Entity = Class('Entity').inherits(Argon.KnexModel)({
         invite.save(function (err, result) {
           done(err, result);
         });
+      },
+
+      ownOrganization: function ownOrganization (organization, done) {
+        var ownerRelation = new EntityOwner({
+          ownerId: this.id,
+          ownedId: organization.id
+        });
+        ownerRelation.save(function (err, result) {
+          done(err, result);
+        });
       }
   }
 });
