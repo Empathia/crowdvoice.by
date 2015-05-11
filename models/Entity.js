@@ -80,8 +80,8 @@ var Entity = Class('Entity').inherits(Argon.KnexModel)({
        */
       followVoice: function followVoice (voice, done) {
         var vf = new VoiceFollower({
-          entity_id: this.id,
-          voice_id: voice.id
+          entityId: this.id,
+          voiceId: voice.id
         });
         vf.save(function (err, result) {
           done(err, result);
@@ -104,6 +104,21 @@ var Entity = Class('Entity').inherits(Argon.KnexModel)({
         } else {
           return query;
         }
+      },
+
+      /* Invite another entity to join the organization
+       * @method inviteEntity
+       * @property entity <Object>
+       * @return undefined
+       */
+      inviteEntity: function inviteEntity (entity, done) {
+        var invite = new InvitationRequest({
+          invitatorEntityId: this.id,
+          invitedEntityId: entity.id
+        });
+        invite.save(function (err, result) {
+          done(err, result);
+        });
       }
   }
 });

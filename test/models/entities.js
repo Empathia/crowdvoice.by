@@ -234,12 +234,13 @@ Tellurium.suite('Entity Model - Relations')(function () {
           },
           function (done) {
             db('VoiceFollowers').where('entity_id', '=', e1.id).andWhere('voice_id', '=', v1.id).then(function (result) {
-              spec.assert(result[0].entity_id === e1.id).toBe(true);
-              spec.assert(result[0].voice_id === v1.id).toBe(true);
+              spec.assert(result[0].entity_id).toBe(e1.id);
+              spec.assert(result[0].voice_id).toBe(v1.id);
               done();
             });
           }
-        ], function () {
+        ], function (err) {
+          spec.assert(err ? true : false).toBe(false);
           spec.completed();
         });
 
@@ -275,7 +276,7 @@ Tellurium.suite('Entity Model - Relations')(function () {
             e2.inviteEntity(e1, done);
           },
           function (done) {
-            db('InvitationRequest').where('invited_entity_id', '=', e1.id).andWhere('invitator_entity_id', '=', v1.id).then(function (result) {
+            db('InvitationRequest').where('invited_entity_id', '=', e1.id).andWhere('invitator_entity_id', '=', e2.id).then(function (result) {
               spec.assert(result[0].invited_entity_id === e1.id).toBe(true);
               spec.assert(result[0].invitator_entity_id === e2.id).toBe(true);
               done();
