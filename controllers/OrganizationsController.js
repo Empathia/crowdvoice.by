@@ -9,7 +9,7 @@ var OrganizationsController = Class('OrganizationsController').inherits(RestfulC
     getOrganization : function getOrganization (req, res, next) {
       Entity.find({
         type: 'organization',
-        profileName: 'req.params.profile_name
+        profileName: req.params.profile_name
       }, function (err, result) {
         if (err) { next(err); return; }
         if (result.length === 0) { next(new Error('Not found')); return; }
