@@ -86,6 +86,15 @@ var Post = Class('Post').inherits(Argon.KnexModel)({
       this.bind('afterCreate', function(data) {
         Voice.findById(model.voiceId, function(err, result) {
           var voice = new Voice(result[0]);
+
+          if (!voice.firstPostDate) {
+            voice.firstPostDate = model.publishedAt;
+          }
+
+          if (!voice.lastPostDate || voice.lastPostDate < model.publishedAt) {
+            voice.lastPostDate = model.publishedAt;
+          }
+
           voice.updatePostCount(true, function(err, saveResult) {
             if (err) {
               throw new Error(err);
@@ -100,12 +109,28 @@ var Post = Class('Post').inherits(Argon.KnexModel)({
       this.bind('afterDestroy', function(data) {
         Voice.findById(model.voiceId, function(err, result) {
           var voice = new Voice(result[0]);
-          voice.updatePostCount(false, function(err, saveResult) {
-            if (err) {
-              throw new Error(err);
+
+          Post.find(['ORDER BY published_at ASC LIMIT ?', [1]], function(postErr, postResult){
+            if (postResult.length === 0) {
+              voice.firstPostDate = null;
+              voice.lastPostDate  = null;
             } else {
-              logger.log('Voice ' + voice.id + ' postCount updated ' + voice.postCount);
+              voice.firstPostDate = postResult[0].publishedAt;
             }
+
+            Post.find(['ORDER BY published_at DESC LIMIT ?', [1]], function(lastPostErr, lastPostResult) {
+              if (lastPostResult.length > 0) {
+                voice.lastPostDate = lastPostResult[0].publishedAt;
+              }
+
+              voice.updatePostCount(false, function(voiceErr, saveResult) {
+                if (voiceErr) {
+                  throw new Error(voiceErr);
+                } else {
+                  logger.log('Voice ' + voice.id + ' postCount updated ' + voice.postCount);
+                }
+              });
+            });
           });
         });
       })
