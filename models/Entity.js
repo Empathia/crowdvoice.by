@@ -14,13 +14,14 @@ var Entity = Class('Entity').inherits(Argon.KnexModel)({
     ],
     name: ['required', 'minLength:1', 'maxLength:512'],
     lastname: ['minLength:1', 'maxLength:512'],
-    isAnonymous: ['boolean']
+    isAnonymous: ['boolean'],
+    profileName: ['required', 'url']
   },
 
   storage : (new Argon.Storage.Knex({
     tableName : 'Entities'
   })),
-  
+
   prototype : {
       /* Starts following an entity
        * @method: followEntity
