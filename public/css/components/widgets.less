@@ -115,6 +115,147 @@
   fill: #b8b8c1;
 }
 
+.cv-select{
+  height: 26px;
+  max-width: 169px;
+  font-size: 12px;
+  /*font-weight: bold;*/
+  color: #6f6f6f;
+  display: inline-block;
+  position:relative;
+  min-width: 100px;
+  vertical-align: top;
+  text-align: left;
+height: 100%;
+  margin-bottom: 10px;
+  margin-right: 5px;
+}
+.cv-select > label{
+  display: block;
+  color: #999999;
+  font-size: 12px;
+  height: 21px;
+}
+.cv-select label span{
+  color: #b3b3b3;
+  padding-left: 5px;
+  font-size: 11px;
+}
+.cv-select .head{
+  cursor: pointer;
+  height: 100%;
+  box-shadow: inset 0px -2px 0px #f2f2f2;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #ffffff;
+}
+.cv-select .head:after{
+  content: "";
+  background: url('/img/dropdown-i-arrow.svg') center no-repeat;
+  width: 12px;
+  height: 22px;
+  display: inline-block;
+  float: right;
+  margin-right: 8px;
+}
+.cv-select.active .head{
+  background: #f2f2f2;
+  box-shadow: inset 0px 2px 0px #e6e6e6;
+}
+.cv-select.active .head label:hover{
+  cursor: pointer;
+}
+.cv-select.active .head:after{
+  transform: rotate(180deg);
+}
+.cv-select .head label{
+  display: inline-block;
+  padding: 2px 15px 0px 10px;
+  white-space: nowrap;
+  max-width: 115px;
+}
+.cv-select .body{
+  display: none;
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,.2);
+  border-radius: 3px;
+  margin-top: 1px;
+  box-shadow: 0px 3px 6px rgba(0,0,0, .18);
+  border-bottom: 1px solid transparent;
+  padding: 9px;
+  padding-top: 10px;
+  position: absolute;/* fix */
+  z-index: 1;
+  min-width: 140px;
+}
+.cv-select .body ul,
+.cv-select .body li{
+  list-style: none;
+}
+.cv-select .body li{
+  margin: 5px auto;
+
+}
+.cv-select .body li:hover{
+  cursor: pointer;
+}
+.cv-select .body li.selected .option{
+  background: url('/img/dropdown-i-arrow.png') left 50% no-repeat;
+}
+.cv-select .body li .option{
+  padding-left: 17px;
+}
+.cv-select .body li .check{
+  margin: 7px auto;
+  padding-left: 6px;
+}
+
+.cv-select.over{
+  font-weight: bold;
+  font-size: 14px;
+  width: 160px;
+}
+.cv-select.over .head{
+  border: none;
+  box-shadow: none;
+  background: none;
+}
+.cv-select.over .body{
+  width: 110%;
+  top: -15px;
+  left: -17px;
+}
+
+.cv-select.mini{
+  height: 25px;
+  font-size: 11px;
+  font-weight: normal;
+}
+.cv-select.mini .body{
+  margin-top: 2px;
+}
+.cv-select.mini .head{
+  height: 25px;
+}
+
+.cv-select.icon{
+  max-width: 49px;
+  min-width: 49px;
+}
+.cv-select.icon .head label{
+  height: 100%;
+  background: url('/img/ico-gear.svg');
+  width: 24px;
+  background-repeat: no-repeat;
+  background-position: 10px 50%;
+}
+
+.cv-select.icon .body{
+  min-width: 106px;
+}
+.cv-select.icon .body li .option{
+  padding-left: 5px;
+}
 
 
 

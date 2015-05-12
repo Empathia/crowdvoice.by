@@ -35,6 +35,7 @@ require('./widgets/post-quote.js');
 require('./widgets/button.js');
 require('./widgets/check.js');
 require('./widgets/input.js');
+require('./widgets/select.js');
 
 
 require('./widgets/audio.js');

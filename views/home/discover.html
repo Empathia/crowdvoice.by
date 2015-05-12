@@ -1,0 +1,158 @@
+<main role="main" class="cv-main-content -rel">
+
+  <section class="profile-voices-intro">
+      <h1 class="profile-heading -inline-block -font-bold -m0">Trending</h1>
+      <div class="profile-select-options -inline-block">
+
+      </div>
+
+      <article role="article" class="profile-menu -row -rel">
+        <div class="profile-tabs">
+          <div class="menu-item p-drafts active menu-tab -inline-block">
+            <p class="-font-bold">Popular Voices</p>
+          </div>
+          <div class="menu-item p-unlisted menu-tab -inline-block">
+            <p class="-font-bold">Most Updated Voices</p>
+          </div>
+          <div class="menu-item p-public menu-tab -inline-block">
+            <p class="-font-bold">Popular Users</p>
+          </div>
+          <div class="menu-item p-archive menu-tab -inline-block">
+            <p class="-font-bold">Popular Organizations</p>
+          </div>
+        </div>
+        <div class="profile-list-type">
+          <div class="style-grid active"><img src="/img/sample/icons/grid.png" alt=""></div>
+          <div class="style-list"><img src="/img/sample/icons/list.png" alt=""></div>
+        </div>
+      </article>
+
+  </section>
+
+  <section class="profile-body profile-menu-content -rel">
+
+
+    <div class="p-drafts active el-list">
+      <div class="-row">
+        <div class="-col-3 -pr1 draft-test-1 grid-item"></div>
+        <div class="-col-3 -pr1 draft-test-2 grid-item"></div>
+        <div class="-col-3 -pr1 draft-test-3 grid-item"></div>
+        <div class="-col-3 -pr1 draft-test-4 grid-item"></div>
+        <div class="-col-3 -pr1 draft-test-5 grid-item"></div>
+      </div>
+    </div>
+
+    <div class="p-unlisted el-list">
+      <div class="-col-3 -pr1 unlisted-test-1 grid-item"></div>
+      <div class="-col-3 -pr1 unlisted-test-2 grid-item"></div>
+      <div class="-col-3 -pr1 unlisted-test-3 grid-item"></div>
+      <div class="-col-3 -pr1 unlisted-test-4 grid-item"></div>
+      <div class="-col-3 -pr1 unlisted-test-5 grid-item"></div>
+    </div>
+
+    <div class="p-public el-list">
+      <div class="-col-3 -pr1 public-test-1 grid-item"></div>
+      <div class="-col-3 -pr1 public-test-2 grid-item"></div>
+      <div class="-col-3 -pr1 public-test-3 grid-item"></div>
+      <div class="-col-3 -pr1 public-test-4 grid-item"></div>
+      <div class="-col-3 -pr1 public-test-5 grid-item"></div>
+      <div class="-col-3 -pr1 public-test-6 grid-item"></div>
+    </div>
+
+    <div class="p-archive el-list">
+      <div class="-col-3 -pr1 archive-test-1 grid-item"></div>
+      <div class="-col-3 -pr1 archive-test-2 grid-item"></div>
+      <div class="-col-3 -pr1 archive-test-3 grid-item"></div>
+      <div class="-col-3 -pr1 archive-test-4 grid-item"></div>
+      <div class="-col-3 -pr1 archive-test-5 grid-item"></div>
+      <div class="-col-3 -pr1 archive-test-6 grid-item"></div>
+    </div>
+
+  </section>
+
+</main>
+
+<script>
+  var postsContainer = document.querySelector('.voice-posts');
+  var posts = [];
+
+  var featuredVoicesData = <%= JSON.stringify(voices) %>;
+
+  new VoiceCover( featuredVoicesData[0] ).render( document.querySelector('.draft-test-1') );
+  new VoiceCover( featuredVoicesData[1] ).render( document.querySelector('.draft-test-2') );
+  new VoiceCover( featuredVoicesData[2] ).render( document.querySelector('.draft-test-3') );
+  new VoiceCover( featuredVoicesData[3] ).render( document.querySelector('.draft-test-4') );
+  new VoiceCover( featuredVoicesData[4] ).render( document.querySelector('.draft-test-5') );
+
+  new VoiceCover( featuredVoicesData[4] ).render( document.querySelector('.unlisted-test-1') );
+  new VoiceCover( featuredVoicesData[3] ).render( document.querySelector('.unlisted-test-2') );
+  new VoiceCover( featuredVoicesData[2] ).render( document.querySelector('.unlisted-test-3') );
+  new VoiceCover( featuredVoicesData[1] ).render( document.querySelector('.unlisted-test-4') );
+  new VoiceCover( featuredVoicesData[0] ).render( document.querySelector('.unlisted-test-5') );
+
+  var orgsData = <%= JSON.stringify(organizations) %>;
+
+  new CV.Card(orgsData[0]).render(document.querySelector('.public-test-1'));
+  new CV.Card(orgsData[1]).render(document.querySelector('.public-test-2'));
+  new CV.Card(orgsData[2]).render(document.querySelector('.public-test-3'));
+  new CV.Card(orgsData[3]).render(document.querySelector('.public-test-4'));
+  new CV.Card(orgsData[4]).render(document.querySelector('.public-test-5'));
+  new CV.Card(orgsData[5]).render(document.querySelector('.public-test-6'));
+
+  new CV.Card(orgsData[5]).render(document.querySelector('.archive-test-1'));
+  new CV.Card(orgsData[4]).render(document.querySelector('.archive-test-2'));
+  new CV.Card(orgsData[3]).render(document.querySelector('.archive-test-3'));
+  new CV.Card(orgsData[2]).render(document.querySelector('.archive-test-4'));
+  new CV.Card(orgsData[1]).render(document.querySelector('.archive-test-5'));
+  new CV.Card(orgsData[0]).render(document.querySelector('.archive-test-6'));
+
+  $( document ).ready(function() {
+
+    var btnActions = ['.p-drafts', '.p-unlisted', '.p-public', '.p-archive'];
+    for (i = 0; i < btnActions.length; i++){
+      $('.profile-menu ' + btnActions[i]).on('click', createCallback(btnActions[i]));
+    }
+
+    function createCallback( elClass ){
+      return function(){
+        $('.profile-menu .menu-tab').removeClass('active');
+        $(this).addClass('active');
+        $('.profile-menu-content .el-list').removeClass('active');
+        $('.profile-menu-content ' + elClass).addClass('active');
+      }
+    }
+
+    $('.style-grid').on('click', function(){
+      $(this).addClass('active');
+      $('.style-list').removeClass('active');
+      $('.grid-item').addClass('-col-3 -pr1');
+      $('.cv-voice-cover, .widget-card').removeClass('list-style');
+    });
+
+    $('.style-list').on('click', function(){
+      $(this).addClass('active');
+      $('.style-grid').removeClass('active');
+      $('.grid-item').removeClass('-col-3 -pr1');
+      $('.cv-voice-cover, .widget-card').addClass('list-style');
+    });
+
+
+  });
+
+  var allZones = {
+    "1": {name: 'This Week', active: true},
+    "2": {name: 'This Month'},
+    "3": {name: 'All Time'}
+  };
+  new Select({
+    label : 'Choose Zone',
+    name  : 'select',
+    options: allZones
+  }).render($('.profile-select-options'));
+
+</script>
+
+
+
+
+
