@@ -13,6 +13,8 @@ var HomeController = Class('HomeController')({
       application.router.route('/profile/saved').get(this.profileSaved);
       application.router.route('/profile/messages').get(this.profileMessages);
       application.router.route('/discover').get(this.discover);
+      application.router.route('/discover/recommended').get(this.discoverRecommended);
+      application.router.route('/discover/onboarding').get(this.discoverOnboarding);
 
       application.router.route('/kabinett').get(this.kabinett);
     },
@@ -617,6 +619,23 @@ var HomeController = Class('HomeController')({
         layout : 'application',
         voices : demoVoices,
         organizations : demoOrganizations
+      });
+    },
+
+    discoverRecommended : function(req, res) {
+      var demoOrganizations = require('./../public/demo-data/organizations.js');
+      var demoVoices = require('./../public/demo-data/voices.js');
+
+      res.render('home/discover-recommended.html', {
+        layout : 'application',
+        voices : demoVoices,
+        organizations : demoOrganizations
+      });
+    },
+
+    discoverOnboarding : function(req, res) {
+      res.render('home/discover-onboarding.html', {
+        layout : 'application'
       });
     },
 
