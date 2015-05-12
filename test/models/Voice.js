@@ -271,17 +271,26 @@ Tellurium.suite('Voice Model')(function() {
         var post = new Post(postData);
 
         post.save(function(postErr, postResult) {
-          spec.assert(voiceErr).toBe(null);
-          spec.assert(postErr).toBe(null);
-
-
           setTimeout(function(){
-            post.destroy(function(destErr, destResult) {
-              spec.assert(post.id).toBe(null);
-              spec.completed();
+            Voice.findById(voice.id, function(voiceErr, voiceResult) {
+              spec.assert(voiceErr).toBe(null);
+              spec.assert(postErr).toBe(null);
+              spec.assert(post.publishedAt.getTime()).toBe(voiceResult[0].firstPostDate.getTime());
+              spec.assert(post.publishedAt.getTime()).toBe(voiceResult[0].lastPostDate.getTime());
+
+              setTimeout(function(){
+                post.destroy(function(destErr, destResult) {
+                  Voice.find(voice.id, function(secondRunVoiceErr, secondRunVoiceResult) {
+                    spec.assert(secondRunVoiceResult[0].firstPostDate).toBe(null);
+                    spec.assert(secondRunVoiceResult[0].lastPostDate).toBe(null);
+                    spec.assert(post.id).toBe(null);
+                    spec.completed();
+                  });
+                });
+              }, 1000)
             });
-          }, 1000)
-        })
+          }, 1000);
+        });
       });
 
     });
