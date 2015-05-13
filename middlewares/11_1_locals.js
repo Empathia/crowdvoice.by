@@ -26,5 +26,17 @@ module.exports = function(req, res, next) {
     res.locals.hashids = global.hashids;
   }
 
-  next();
+  // Add currentEntity
+  if (req.user) {
+    var currentUser = new User(req.user);
+    currentUser.entity(function (err, entity) {
+      res.locals.currentEntity = entity;
+
+      next();
+    });
+  } else {
+    res.locals.currentEntity = null;
+    next();
+  }
+
 }
