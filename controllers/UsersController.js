@@ -26,16 +26,37 @@ var UsersController = Class('UsersController').inherits(RestfulController)({
     },
 
     new : function(req, res) {
-      res.render('users/new.html');
+      res.render('users/new.html', {errors: null});
     },
 
     create : function create(req, res, next) {
-      var user = new User(req.body);
+      var entity = new Entity({
+        type: 'person',
+        name: req.body['name'],
+        lastname: req.body['lastname'],
+        profileName: req.body['profileName'],
+        isAnonymous: req.body['isAnonymous'] === "true" ? true : false
+      });
 
-      user.save(function(err, result) {
+      entity.save(function(err, result) {
         if (err) { next(err); return; }
 
-        return res.redirect('/user/' + user.id);
+        var user = new User({
+          entityId: entity.id,
+          username: req.body['username'],
+          email: req.body['email'],
+          password: req.body['password']
+        });  
+
+        user.save(function (err) {
+          if (err) {
+            entity.destroy(function () {});
+            res.render('users/new.html', {errors: err});
+          } else {
+            res.redirect('/user/' + user.id);
+          }
+        });
+
       });
     },
 
@@ -44,7 +65,7 @@ var UsersController = Class('UsersController').inherits(RestfulController)({
         if (err) { next(err); return; }
         if (user.length === 0) { next(); return; }
 
-        res.render('users/edit.html', {layout : false, user: user[0]});
+        res.render('users/edit.html', {layout : 'application', user: user[0]});
       });
     },
 

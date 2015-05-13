@@ -1,6 +1,22 @@
+<% if (errors) { %>
+    <%= errors %>
+<% } %>
+
 <form action="/user" method="post" accept-charset="utf-8">
     <p>
         <span>Username: </span> <input type="text" name="username" value="user1">
+    </p>
+    <p>
+        <span>Name: </span> <input type="text" name="name" value="John">
+    </p>
+    <p>
+        <span>Profile Name: </span> <input type="text" name="profileName" value="John">
+    </p>
+    <p>
+        <span>Last name: </span> <input type="text" name="lastname" value="Doe">
+    </p>
+    <p>
+        <span>Is it Anonymous?: </span> <input type="checkbox" name="isAnonymous" value="true">
     </p>
     <p>
         <span>Email: </span> <input type="text" name="email" value="user1@crowdvoice.by">
