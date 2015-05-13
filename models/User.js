@@ -33,6 +33,12 @@ var User = Class('User').inherits(Argon.KnexModel)({
   })),
 
   prototype : {
+    entity : function entity (done) {
+      Entity.find({id: this.entityId}, function (err, result) {
+        done(err, result[0]);
+      });
+    },
+
     toJson: function toJson () {
       var json = {},
         model = this,

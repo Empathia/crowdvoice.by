@@ -39,12 +39,26 @@ var Entity = Class('Entity').inherits(Argon.KnexModel)({
        *  + callback
        */
       followEntity : function followEntity (entity, done) {
-        var entityFollower = new EntityFollower({
-          followerId: this.id,
-          followedId: entity.id
-        });
-        entityFollower.save(function (err, result) {
-          done(err, result);
+        var currentEntity = this;
+
+        // We try to find first if the relation already exists,
+        // so we don't duplicate it.
+        EntityFollower.find({
+          follower_id: currentEntity.id,
+          followed_id: entity.id
+        }, function (err, result) {
+          if (err) { done(err); return; }
+          if (result.length > 0) {
+            done(null);
+          } else {
+            var entityFollower = new EntityFollower({
+              followerId: currentEntity.id,
+              followedId: entity.id
+            });
+            entityFollower.save(function (err, result) {
+              done(err, result);
+            });
+          }
         });
       },
 
@@ -131,6 +145,11 @@ var Entity = Class('Entity').inherits(Argon.KnexModel)({
         });
       },
 
+      /* Make an organization belong to current entity.
+       * @method ownOrganization
+       * @property organization <Object>
+       * @return undefined
+       */
       ownOrganization: function ownOrganization (organization, done) {
         var ownerRelation = new EntityOwner({
           ownerId: this.id,
@@ -139,7 +158,25 @@ var Entity = Class('Entity').inherits(Argon.KnexModel)({
         ownerRelation.save(function (err, result) {
           done(err, result);
         });
-      }
+      },
+
+      /* Return owner, if any.
+       * @method owner
+       * @return entity <Object>
+       */
+      owner: function owner (done) {
+        if (!done) { return; }
+
+        EntityOwner.find({
+          ownedId: this.id
+        }, function (err, result) {
+          if (err) { done(err); return; }
+          Entity.find({id: result[0].owner_id}, function (err, result) {
+            if (err) { done(err); return; }
+            done(null, result[0]);
+          });
+        });
+      },
   }
 });
 

@@ -1,6 +1,6 @@
 var OrganizationsController = Class('OrganizationsController').inherits(RestfulController)({
 
-  routesBlackList: /(signup|login|logout|user|organization|entity|dist)/,
+  routesBlackList: /(signup|login|logout|user|organization|entity|dist|session)/,
 
   isBlackListed : function isBlackListed (path) {
     return path.match(this.routesBlackList) ? true : false;
@@ -17,6 +17,8 @@ var OrganizationsController = Class('OrganizationsController').inherits(RestfulC
       application.router.route('/:profile_name/edit').get(this.edit);
       application.router.route('/:profile_name').get(this.show);
       application.router.route('/:profile_name').put(this.update);
+
+      application.router.route('/:profile_name/follow').post(this.follow);
     },
 
     getOrganization : function getOrganization (req, res, next) {
@@ -29,7 +31,7 @@ var OrganizationsController = Class('OrganizationsController').inherits(RestfulC
         if (err) { next(err); return; }
         if (result.length === 0) { next(new Error('Not found')); return; }
 
-        res.locals.organization = result[0];
+        res.locals.organization = new Entity(result[0]);
         next();
       });
     },
@@ -85,6 +87,32 @@ var OrganizationsController = Class('OrganizationsController').inherits(RestfulC
           res.render('organizations/edit.html', {errors: err});
         } else {
           res.redirect('/' + org.profileName + '/edit');
+        }
+      });
+    },
+
+    follow : function follow (req, res, next) {
+      var org = res.locals.organization, follower;
+      var afterFollow = function (err) {
+        if (err) { next(err); }
+        res.redirect('/' + org.profileName);
+      };
+
+      Entity.find({ id: req.body.followAs }, function (err, result) {
+        if (err) { next(err); return; }
+        follower = new Entity(result[0]);
+
+        if (follower.id !== req.user.entityId) {
+          follower.owner(function (err, owner) {
+            if (err) { next(err); return; }
+            if (owner.id !== req.user.entityId) {
+              next(new Error('Cannot follow because entity does not belong to user.'));
+            } else {
+              follower.followEntity(org, afterFollow);
+            }
+          });
+        } else {
+          follower.followEntity(org, afterFollow);
         }
       });
     }
