@@ -39,7 +39,10 @@ var UsersController = Class('UsersController').inherits(RestfulController)({
       });
 
       entity.save(function(err, result) {
-        if (err) { next(err); return; }
+        if (err) {
+          res.render('users/new.html', {errors: err});
+          return;
+        }
 
         var user = new User({
           entityId: entity.id,
