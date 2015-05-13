@@ -15,7 +15,16 @@ var Entity = Class('Entity').inherits(Argon.KnexModel)({
     name: ['required', 'minLength:1', 'maxLength:512'],
     lastname: ['minLength:1', 'maxLength:512'],
     isAnonymous: ['boolean'],
-    profileName: ['required', 'url']
+    profileName: [
+      'required',
+      {
+        rule: function (val) {
+          if (val.match(/[^a-zA-Z0-9_-]/)) {
+            throw new Checkit.FieldError('* profileName should only contain letters, numbers and dashes.')
+          }
+        }
+      }
+    ]
   },
 
   storage : (new Argon.Storage.Knex({
