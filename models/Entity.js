@@ -136,12 +136,26 @@ var Entity = Class('Entity').inherits(Argon.KnexModel)({
        * @return undefined
        */
       inviteEntity: function inviteEntity (entity, done) {
-        var invite = new InvitationRequest({
-          invitatorEntityId: this.id,
-          invitedEntityId: entity.id
-        });
-        invite.save(function (err, result) {
-          done(err, result);
+        var currentEntity = this;
+
+        // We try to find first if the relation already exists,
+        // so we don't duplicate it.
+        InvitationRequest.find({
+          invitator_entity_id: currentEntity.id,
+          invited_entity_id: entity.id
+        }, function (err, result) {
+          if (err) { done(err); return; }
+          if (result.length > 0) {
+            done(null);
+          } else {
+            var invite = new InvitationRequest({
+              invitatorEntityId: currentEntity.id,
+              invitedEntityId: entity.id
+            });
+            invite.save(function (err, result) {
+              done(err, result);
+            });
+          }
         });
       },
 

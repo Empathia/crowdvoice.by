@@ -19,6 +19,7 @@ var OrganizationsController = Class('OrganizationsController').inherits(RestfulC
       application.router.route('/:profile_name').put(this.update);
 
       application.router.route('/:profile_name/follow').post(this.follow);
+      application.router.route('/:profile_name/invite').post(this.invite);
     },
 
     getOrganization : function getOrganization (req, res, next) {
@@ -114,6 +115,20 @@ var OrganizationsController = Class('OrganizationsController').inherits(RestfulC
         } else {
           follower.followEntity(org, afterFollow);
         }
+      });
+    },
+
+    invite : function invite (req, res, next) {
+      var org = res.locals.organization;
+      Entity.find({id: req.body.entityId}, function (err, result) {
+        if (err) { next(err); return; }
+        if (result.length === 0) { next(new Error('Not found')); return; }
+
+        entity = result[0];
+        org.inviteEntity(entity, function (err) {
+          if (err) { next(err); return; }
+          res.redirect('/' + org.profileName);
+        });
       });
     }
 
