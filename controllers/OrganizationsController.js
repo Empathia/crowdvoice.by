@@ -34,6 +34,11 @@ var OrganizationsController = Class('OrganizationsController').inherits(RestfulC
         if (result.length === 0) { next(new Error('Not found')); return; }
 
         res.locals.organization = new Entity(result[0]);
+
+        // Filter sensitive data
+        res.locals.organization
+        delete(res.locals.organization.id);
+
         next();
       });
     },
@@ -41,7 +46,20 @@ var OrganizationsController = Class('OrganizationsController').inherits(RestfulC
     index : function index (req, res, next) {
       Entity.find({ type: 'organization' }, function (err, result) {
         if (err) { next(err); return; }
-        res.render('organizations/index.html', {organizations: result});
+
+        // Filter sensitive data
+        result.forEach(function (org) {
+          delete(org.id);
+        });
+
+        res.format({
+          'text/html': function () {
+            res.render('organizations/index.html', {organizations: result});
+          },
+          'application/json': function () {
+            res.send(result);
+          }
+        });
       });
     },
 
@@ -137,6 +155,11 @@ var OrganizationsController = Class('OrganizationsController').inherits(RestfulC
       var org = res.locals.organization;
       Voice.find({owner_id: org.id}, function (err, result) {
         if (err) { next(err); return; }
+
+        // Filter hidden info.
+        result.forEach(function (voice) {
+          delete(voice.ownerId);
+        });
 
         res.format({
           'application/json': function () {
