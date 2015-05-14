@@ -33,12 +33,18 @@ var User = Class('User').inherits(Argon.KnexModel)({
   })),
 
   prototype : {
+    /* Returns the user's associated entity
+     * @method entity
+     */
     entity : function entity (done) {
       Entity.find({id: this.entityId}, function (err, result) {
         done(err, result[0]);
       });
     },
 
+    /* Returns the model raw data. It also filters the sensitive data.
+     * @method toJson
+     */
     toJson: function toJson () {
       var json = {},
         model = this,
