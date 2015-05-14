@@ -8,7 +8,7 @@ var OrganizationsController = Class('OrganizationsController').inherits(RestfulC
 
   prototype : {
 
-    _initRouter : function() {
+    _initRouter : function () {
       application.router.route('/organizations').get(this.index);
       application.router.route('/organization').post(this.create);
       application.router.route('/organization/new').get(this.new);
@@ -20,6 +20,7 @@ var OrganizationsController = Class('OrganizationsController').inherits(RestfulC
 
       application.router.route('/:profile_name/follow').post(this.follow);
       application.router.route('/:profile_name/invite').post(this.invite);
+      application.router.route('/:profile_name/voices').get(this.voices);
     },
 
     getOrganization : function getOrganization (req, res, next) {
@@ -119,7 +120,7 @@ var OrganizationsController = Class('OrganizationsController').inherits(RestfulC
     },
 
     invite : function invite (req, res, next) {
-      var org = res.locals.organization;
+      var org = res.locals.organization, entity;
       Entity.find({id: req.body.entityId}, function (err, result) {
         if (err) { next(err); return; }
         if (result.length === 0) { next(new Error('Not found')); return; }
@@ -128,6 +129,22 @@ var OrganizationsController = Class('OrganizationsController').inherits(RestfulC
         org.inviteEntity(entity, function (err) {
           if (err) { next(err); return; }
           res.redirect('/' + org.profileName);
+        });
+      });
+    },
+
+    voices : function voices (req, res, next) {
+      var org = res.locals.organization;
+      Voice.find({owner_id: org.id}, function (err, result) {
+        if (err) { next(err); return; }
+
+        res.format({
+          'application/json': function () {
+            res.send(result);
+          },
+          'text/html': function () {
+            next(new Error('Not found'));
+          }
         });
       });
     }
