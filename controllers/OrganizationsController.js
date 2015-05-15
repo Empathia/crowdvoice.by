@@ -31,9 +31,14 @@ var OrganizationsController = Class('OrganizationsController').inherits(RestfulC
         profile_name: req.params.profile_name
       }, function (err, result) {
         if (err) { next(err); return; }
-        if (result.length === 0) { next(new Error('Not found')); return; }
+        if (result.length === 0) { 
+          res.status(404);
+          res.render('shared/404.html');
+          return;
+        }
 
         res.locals.organization = new Entity(result[0]);
+        req.organization = new Entity(result[0]);
 
         // Filter sensitive data
         res.locals.organization
@@ -57,7 +62,7 @@ var OrganizationsController = Class('OrganizationsController').inherits(RestfulC
             res.render('organizations/index.html', {organizations: result});
           },
           'application/json': function () {
-            res.send(result);
+            res.json(result);
           }
         });
       });
@@ -96,12 +101,14 @@ var OrganizationsController = Class('OrganizationsController').inherits(RestfulC
     update : function update (req, res, next) {
       if (OrganizationsController.isBlackListed(req.path)) { next(); return; }
 
-      var org = new Entity(res.locals.organization);
+      var org = req.organization;
       org.setProperties({
-        name: req.body['name'],
-        profileName: req.body['profileName'],
-        isAnonymous: req.body['isAnonymous'] === "true" ? true : false
+        name: req.body['name'] || org.name,
+        profileName: req.body['profileName'] || org.profileName,
       });
+      if (typeof(req.body['isAnonymous']) !== 'undefined') {
+        org.isAnonymous = (req.body['isAnonymous'] === "true") ? true : false
+      }
       org.save(function (err) {
         if (err) {
           res.render('organizations/edit.html', {errors: err});
@@ -112,7 +119,7 @@ var OrganizationsController = Class('OrganizationsController').inherits(RestfulC
     },
 
     follow : function follow (req, res, next) {
-      var org = res.locals.organization, follower;
+      var org = req.organization, follower;
       var afterFollow = function (err) {
         if (err) { next(err); }
         res.redirect('/' + org.profileName);
@@ -138,7 +145,7 @@ var OrganizationsController = Class('OrganizationsController').inherits(RestfulC
     },
 
     invite : function invite (req, res, next) {
-      var org = res.locals.organization, entity;
+      var org = req.organization, entity;
       Entity.find({id: req.body.entityId}, function (err, result) {
         if (err) { next(err); return; }
         if (result.length === 0) { next(new Error('Not found')); return; }
@@ -152,7 +159,7 @@ var OrganizationsController = Class('OrganizationsController').inherits(RestfulC
     },
 
     voices : function voices (req, res, next) {
-      var org = res.locals.organization;
+      var org = req.organization;
       Voice.find({owner_id: org.id}, function (err, result) {
         if (err) { next(err); return; }
 
