@@ -1,0 +1,118 @@
+<main role="main" class="cv-main-content -rel">
+<div class="ui">
+
+<div class="-col-4 -pr1 row1"><br></div>
+<div class="-col-4 -pr1 row2"><br></div>
+<div class="-col-4 -pr1 row3"><br>r3</div>
+
+</div>
+</main>
+
+<script>
+
+var years= {
+    "2014" : [
+        {name: 'November', count: '431'},
+        {name: 'October', count: '32'},
+        {name: 'April', count: '958', selected: true},
+        {name: 'February',count: '283'}
+    ],
+    "2015" : [
+        {name: 'December', count: '32'},
+        {name: 'November', count: '423'},
+        {name: 'October', count: '623'},
+        {name: 'September', count: '263'},
+        {name: 'August', count: '292'},
+        {name: 'July', count: '391'},
+        {name: 'June', count: '23'},
+        {name: 'May', count: '94'},
+        {name: 'April', count: '238'},
+        {name: 'March', count: '193'},
+        {name: 'February', count: '482'},
+        {name: 'January', count: '39'},
+    ]
+}
+
+new JumpToDate({
+    style   : '',
+    type    : '',
+    years   : years,
+    name    : 'JTD'
+}).render(document.querySelector('.ui .row1'));
+
+new Button({
+    style   : 'primary',
+    type    : 'single',
+    label   : 'Follow Voice',
+    name    : 'buttonFoll'
+}).render(document.querySelector('.ui .row2'));
+new Button({
+    style   : 'primary following',
+    type    : 'single',
+    label   : 'Following',
+    name    : 'buttonFoll'
+}).render(document.querySelector('.ui .row2'));
+
+
+//Normal
+var allZones = {
+  "1": {name: 'This Week', active: true},
+  "2": {name: 'This Month'},
+  "3": {name: 'All Time'}
+};
+new Select({
+  label : 'Choose Zone',
+  name  : 'select',
+  options: allZones
+}).render(document.querySelector('.ui .row2'));
+
+//Checkbox
+var allGrades = {
+  "1": {name: 'Myself'},
+  "2": {name: 'Organization 01'},
+  "3": {name: 'Organization 02'},
+  "4": {name: 'Organization 03'}
+};
+
+new Select({
+    type    : 'check',
+    label : 'Follow voice as...',
+    name  : 'selectFollow',
+    style : '',
+    options: allGrades,
+}).render(document.querySelector('.ui .row2'));
+
+//Multiple
+var allMulti = {
+  "1": {name: 'Myself'},
+  "2": {
+    name: 'Organization 01',
+    sub: {
+      "0": {name: 'Public'},
+      "1": {name: 'Anonimously'}
+    }
+  },
+  "3": {name: 'Organization 02'},
+  "4": {name: 'Organization 03'}
+};
+new Select({
+  label : 'Multiple',
+  name  : 'select',
+  options: allMulti
+}).render(document.querySelector('.ui .row2'));
+
+$( document ).ready(function() {
+
+});
+
+</script>
+
+
+
+
+
+
+
+
+
+

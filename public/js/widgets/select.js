@@ -1,5 +1,3 @@
-// Create a simple Class
-
 Class('Select').inherits(Widget)({
 
 	ELEMENT_CLASS : 'cv-select',
@@ -8,6 +6,7 @@ Class('Select').inherits(Widget)({
         <div class="">\
             <div class="head">\
               <label></label>\
+              <div class=count>3</div>\
             </div>\
             <div class="body">\
               <ul>\
@@ -21,11 +20,13 @@ Class('Select').inherits(Widget)({
         style           : null,
         label           : null,
         options         : null,
+        optionSelected  : null,
+        checkedCount    : 0,
         labelEl         : null,
         optionsEl       : null,
         headEl          : null,
         bodyEl          : null,
-        optionSelected  : null,
+
 
         init : function(config){
             Widget.prototype.init.call(this, config);
@@ -33,29 +34,27 @@ Class('Select').inherits(Widget)({
             this.bodyEl = this.element.find('.body');
             this.labelEl = this.element.find('label');
             this.optionsEl = this.element.find('ul');
+            this.countEl = this.element.find('.count');
 
             if (this.style){ this.element.addClass(this.style) }
             if (this.label){ this.labelEl.text(this.label) };
 
-            //this.filtersElement = document.querySelector(".filters");
-            //console.log('init ScheduleController');
-            //console.log(this.scheduleElement);
             this.fillOptions();
             this.bindActions();
         },
 
         fillOptions : function(){
-            //var optionEl = $('<li><div class="option"></div></li>').last().clone();
             if (this.type == "check"){
-
-                var optionEl = $('<li class="default"></li>');
-                this.appendChild(new Check({
-                    label       : this.label,
-                    name        : this.name + '-' + 0,
-                })).render(optionEl);
-
-                this.optionsEl.append(optionEl);
-
+                this.element.addClass('check');
+                this.countEl.css('opacity', 0);
+            //    var optionEl = $('<li class="default"></li>');
+            //    this.appendChild(new Check({
+            //        label       : this.label,
+            //        name        : this.name + '-' + 0,
+            //    })).render(optionEl);
+            //
+            //    this.optionsEl.append(optionEl);
+            //
             }
 
             for (var key in this.options) {
@@ -64,10 +63,18 @@ Class('Select').inherits(Widget)({
                     if (this.type == "check"){
 
                         var optionEl = $('<li></li>');
-                        this.appendChild(new Check({
+                        var check = this.appendChild(new Check({
+                            id          : key,
                             label       : this.options[key].name,
                             name        : this.name + '-' + key,
                         })).render(optionEl);
+
+                        check.bind('checked', function(){
+                            this.updateCount(true);
+                        }.bind(this));
+                        check.bind('unchecked', function(){
+                            this.updateCount(false);
+                        }.bind(this));
 
                     } else {
                         var optionEl = $('<li><div data-id="'+ key +'" class="option">'+this.options[key].name+'</div></li>');
@@ -77,6 +84,18 @@ Class('Select').inherits(Widget)({
                         optionEl.addClass('selected');
                         this.labelEl.text(this.options[key].name);
                     }
+
+                    if(this.options[key].sub){
+                        var subOptions = this.options[key].sub;
+                        var subListEl = $('<ul></ul>');
+
+                        for (var subkey in subOptions) {
+                            var subOptionEl = $('<li><div data-id="'+ subkey +'" class="option">'+subOptions[subkey].name+'</div></li>');
+                            subListEl.append(subOptionEl);
+                        }
+                        optionEl.append(subListEl);
+                    }
+
                     this.optionsEl.append(optionEl);
                 }
             }
@@ -108,6 +127,25 @@ Class('Select').inherits(Widget)({
                     that.close();
                 });
             }
+        },
+
+        updateCount : function(added){
+
+            if (added){
+                this.checkedCount++;
+            } else {
+                this.checkedCount--;
+            }
+
+            if(this.checkedCount){
+                this.countEl.text(this.checkedCount);
+                this.countEl.css('opacity', 1);
+                this.element.addClass('following');
+            } else {
+                this.countEl.css('opacity', 0);
+                this.element.removeClass('following');
+            }
+
         },
 
         open : function(){
