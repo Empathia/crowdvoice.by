@@ -20,14 +20,26 @@
   display: inline-block;
 
 }
-
+.cv-button.following{
+  background: url('/img/dropdown-i-arrow.png') 10px 50% no-repeat;
+  padding-left: 27px;
+}
 .cv-button.primary{
-  background: #ef631f;
+  background-color: #ef631f;
   border: none;
   box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.15);
   color: #ffffff;
   line-height: 19px;
 }
+.cv-button.clean{
+  background-color: #fff;
+  border: none;
+  box-shadow: none;
+  color: #333;
+  font-weight: bold;
+  line-height: 19px;
+}
+
 .cv-button.full{
   width: 100%;
   margin: 0;
@@ -126,10 +138,11 @@
   min-width: 100px;
   vertical-align: top;
   text-align: left;
-height: 100%;
+  height: 100%;
   margin-bottom: 10px;
   margin-right: 5px;
 }
+
 .cv-select > label{
   display: block;
   color: #999999;
@@ -158,8 +171,18 @@ height: 100%;
   float: right;
   margin-right: 8px;
 }
+.cv-select.check .head:after{
+  display: none;
+}
+.cv-select.following .head{
+  background: url('/img/dropdown-i-arrow.png') 10px 50% no-repeat;
+  padding-left: 17px;
+}
+.cv-select.check .count{
+  display: block;
+}
 .cv-select.active .head{
-  background: #f2f2f2;
+  background-color: #f2f2f2;
   box-shadow: inset 0px 2px 0px #e6e6e6;
 }
 .cv-select.active .head label:hover{
@@ -170,9 +193,25 @@ height: 100%;
 }
 .cv-select .head label{
   display: inline-block;
-  padding: 2px 15px 0px 10px;
+  padding: 2px 10px 2px 10px;
   white-space: nowrap;
   max-width: 115px;
+}
+.cv-select .count{
+  width: 16px;
+  height: 22px;
+  display: inline-block;
+  float: right;
+  margin-right: 8px;
+  display: none;
+  padding-top: 2px;
+  font-size: 11px;
+}
+.cv-select .count:before{
+  content: "(";
+}
+.cv-select .count:after{
+  content: ")";
 }
 .cv-select .body{
   display: none;
@@ -194,16 +233,35 @@ height: 100%;
 }
 .cv-select .body li{
   margin: 5px auto;
-
+  position: relative;
+}
+.cv-select .body li:hover ul{
+  display: block;
+}
+.cv-select .body li ul{
+  position: absolute;
+  top: -5px;
+  left: 100%;
+  width: 150px;
+  background: #fff;
+  /*margin-left: 9px;*/
+  box-shadow: 9px 8px 9px -7px rgba(0, 0, 0, 0.18);
+  display: none;
 }
 .cv-select .body li:hover{
   cursor: pointer;
+  background: #eee;
+}
+.cv-select.check .body li:hover{
+  background: none;
 }
 .cv-select .body li.selected .option{
-  background: url('/img/dropdown-i-arrow.png') left 50% no-repeat;
+  /*background: url('/img/dropdown-i-arrow.png') left 50% no-repeat;*/
+  font-weight: bold;
 }
 .cv-select .body li .option{
-  padding-left: 17px;
+  padding-left: 7px;
+  /*padding-left: 17px;*/
 }
 .cv-select .body li .check{
   margin: 7px auto;
@@ -256,6 +314,114 @@ height: 100%;
 .cv-select.icon .body li .option{
   padding-left: 5px;
 }
+
+.cv-jumptodate{
+  width: 300px;
+  max-height: 440px;
+  position: relative;
+  /*top: 20px;
+  left: 30px;*/
+  background: #fff;
+  box-shadow: 0px 1px 5px rgba(0,0,0, .25);
+  border-radius: 10px;
+  .header{
+    height: 63px;
+    border-bottom: 1px solid #ccc;
+    position: relative;
+    padding-top: 10px;
+    .line{
+      position: absolute;
+      width: 100%;
+      background: #ccc;
+      height: 1px;
+      left: 0px;
+      top: 36px;
+    }
+    h3{
+      display: inline-block;
+      width: auto;
+      margin: 13px 0px 0px 18px;
+      color: #666;
+      position: relative;
+      z-index: 1;
+      background: #fff;
+      padding: 0px 5px;
+    }
+    button{
+      float: right;
+      margin: 14px 15px 0px 0px;
+      position: relative;
+      z-index: 1;
+    }
+  }
+  .body-wrapper{
+    border-bottom-right-radius: 10px;
+    overflow: hidden;
+  }
+  .body{
+    max-height: 377px;
+    overflow-y: scroll;
+    .year{
+      .month-title{
+          height: 25px;
+          border-bottom: 1px solid #ccc;
+          background: #eee;
+          padding: 2px 0px 0px 15px;
+          color: #aaa;
+      }
+      ul{
+        list-style: none;
+        li{
+          cursor: pointer;
+          height: 36px;
+          border-bottom: 1px solid #ccc;
+          padding: 7px 0px 0px 40px;
+          span{
+              color: #999;
+              font-size: 11px;
+              padding-top: 2px;
+              display: inline-block;
+              padding-left: 5px;
+          }
+        }
+        li.selected{
+          background: url('/img/dropdown-i-arrow.png') 15px 50% no-repeat;
+          font-weight: bold;
+        }
+        li:hover{
+          background-color: #f6f6f6;
+        }
+      }
+      ul:last-child li:last-child{
+        border-bottom: none;
+      }
+    }
+  }
+
+  .arrow {
+    width: 24px;
+    height: 24px;
+    padding: 5px;
+    overflow: hidden;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -12px;
+  }
+  .arrow div{
+    transform: rotate(45deg);
+    width: 14px;
+    height: 14px;
+    background: #fff;
+    box-shadow: 0px 0px 5px rgba(0,0,0,.2);
+    border: 1px solid rgba(0,0,0,.25);
+    margin-top: -12px;
+  }
+
+}
+
+
+
 
 
 

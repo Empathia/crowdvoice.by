@@ -15,6 +15,7 @@ var HomeController = Class('HomeController')({
       application.router.route('/discover').get(this.discover);
       application.router.route('/discover/recommended').get(this.discoverRecommended);
       application.router.route('/discover/onboarding').get(this.discoverOnboarding);
+      application.router.route('/ui').get(this.ui);
 
       application.router.route('/kabinett').get(this.kabinett);
     },
@@ -635,6 +636,12 @@ var HomeController = Class('HomeController')({
 
     discoverOnboarding : function(req, res) {
       res.render('home/discover-onboarding.html', {
+        layout : 'application'
+      });
+    },
+
+    ui : function(req, res) {
+      res.render('home/ui.html', {
         layout : 'application'
       });
     },
