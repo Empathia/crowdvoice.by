@@ -38,6 +38,15 @@ var years= {
     ]
 }
 
+new Modal({
+    style       : '',
+    type        : '',
+    title       : 'Share',
+    name        : 'share',
+    action      : Share,
+    //actionData  : years,
+}).render(document.querySelector('body'));
+
 new Notification({
     style       : '',
     type        : '',
