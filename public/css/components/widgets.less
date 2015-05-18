@@ -318,7 +318,20 @@
 .cv-bubble.full{
   width: 600px;
 }
-.cv-bubble{
+.cv-modal-container{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0, .5);
+  top: 0;
+  left: 0;
+  z-index: 10;
+  .cv-modal{
+    left: 50%;
+    top: 50%;
+  }
+}
+.cv-bubble,.cv-modal{
   width: 300px;
   max-height: 440px;
   position: relative;

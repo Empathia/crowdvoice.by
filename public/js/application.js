@@ -43,5 +43,7 @@ require('./widgets/bubble/voices-list.js');
 require('./widgets/bubble/share.js');
 require('./widgets/bubble/help.js');
 require('./widgets/notification.js');
+require('./widgets/modal.js');
+
 
 require('./widgets/audio.js');
