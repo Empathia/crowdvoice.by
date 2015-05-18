@@ -23,6 +23,7 @@ var voices = [
     updated_at: '2015-03-30T13:59:47Z',
     gallery : [],
     style : '',
+    type : '',
     hasActions : false
   },
 
@@ -46,6 +47,7 @@ var voices = [
     updated_at: '2015-04-23T13:59:47Z',
     gallery : ['/img/sample/covers/feat-00.jpg', '/img/sample/covers/feat-01.jpg', '/img/sample/covers/feat-02.jpg'],
     style : '',
+    type : '',
     hasActions : false
   },
 
@@ -69,6 +71,7 @@ var voices = [
     updated_at: '2015-04-22T13:59:47Z',
     gallery : ['/img/sample/covers/feat-00.jpg', '/img/sample/covers/feat-01.jpg', '/img/sample/covers/feat-02.jpg'],
     style : '',
+    type : '',
     hasActions : false
   },
   {
@@ -91,6 +94,7 @@ var voices = [
     updated_at: '2015-04-21T13:59:47Z',
     gallery : [],
     style : '',
+    type : '',
     hasActions : false
   },
 
@@ -114,6 +118,7 @@ var voices = [
     updated_at: '2015-04-21T13:59:47Z',
     gallery : [],
     style : '',
+    type : '',
     hasActions : false
   }
 ]

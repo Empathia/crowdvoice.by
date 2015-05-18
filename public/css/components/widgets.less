@@ -315,7 +315,10 @@
   padding-left: 5px;
 }
 
-.cv-jumptodate{
+.cv-bubble.full{
+  width: 600px;
+}
+.cv-bubble{
   width: 300px;
   max-height: 440px;
   position: relative;
@@ -361,7 +364,33 @@
   .body{
     max-height: 377px;
     overflow-y: scroll;
-    .year{
+
+  }
+
+  .arrow {
+    width: 24px;
+    height: 24px;
+    padding: 5px;
+    overflow: hidden;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -12px;
+  }
+  .arrow div{
+    transform: rotate(45deg);
+    width: 14px;
+    height: 14px;
+    background: #fff;
+    box-shadow: 0px 0px 5px rgba(0,0,0,.2);
+    border: 1px solid rgba(0,0,0,.25);
+    margin-top: -12px;
+  }
+
+}
+
+.cv-jumptodate{
+  .year{
       .month-title{
           height: 25px;
           border-bottom: 1px solid #ccc;
@@ -396,36 +425,122 @@
         border-bottom: none;
       }
     }
-  }
+}
 
-  .arrow {
-    width: 24px;
-    height: 24px;
-    padding: 5px;
-    overflow: hidden;
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-left: -12px;
-  }
-  .arrow div{
-    transform: rotate(45deg);
-    width: 14px;
-    height: 14px;
-    background: #fff;
-    box-shadow: 0px 0px 5px rgba(0,0,0,.2);
-    border: 1px solid rgba(0,0,0,.25);
-    margin-top: -12px;
-  }
+.cv-voiceslist{
+  padding: 30px 35px;
+}
 
+.cv-share{
+  ul{
+    list-style: none;
+    li{
+      cursor: pointer;
+      height: 42px;
+      border-bottom: 1px solid #ccc;
+      padding: 12px 0px 0px 60px;
+      input{
+        width: 75%;
+      }
+      ::-webkit-input-placeholder{
+         font-style: italic;
+      }
+      ::-moz-placeholder{
+         font-style: italic;
+      }
+      :-ms-input-placeholder {
+         font-style: italic;
+      }
+      button{
+        height: 22px;
+      }
+    }
+    li.selected{
+      font-weight: bold;
+    }
+    li:hover{
+      background-color: #f6f6f6;
+    }
+    li.twitter{
+      background: url('/img/icons/icon-share-twitter.png') 30px 50% no-repeat;
+    }
+    li.facebook{
+      background: url('/img/icons/icon-share-facebook.png') 30px 50% no-repeat;
+    }
+    li.google{
+      background: url('/img/icons/icon-share-googleplus.png') 30px 50% no-repeat;
+    }
+    li.email{
+      background: url('/img/icons/icon-share-email.png') 30px 50% no-repeat;
+    }
+  }
+  ul:last-child li:last-child{
+    border-bottom: none;
+  }
 }
 
 
+.cv-help{
+  padding: 35px;
+  height: 240px;
+  textarea{
+    height: 85px;
+  }
+  .sent{
+    text-align: center;
+    h1{
+      margin: 0;
+    }
+    p{
+      max-width: 420px;
+      margin: 0 auto;
+      margin-bottom: 10px;
+    }
+  }
+}
 
-
-
-
-
-
-
+.cv-notification{
+  width: 480px;
+  max-height: 440px;
+  position: relative;
+  padding: 20px;
+  /*top: 20px;
+  left: 30px;*/
+  background: #fff;
+  box-shadow: 0px 1px 5px rgba(0,0,0, .25);
+  border-radius: 10px;
+  overflow: hidden;
+  .close{
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: url('/img/icons/icon-notification-close.png') 50% no-repeat;
+    width: 30px;
+    height: 100%;
+    background-color: #eee;
+    cursor: pointer;
+  }
+  a{
+    text-decoration: underline;
+  }
+  .notification-text{
+    padding: 15px 0px 0px 35px;
+    font-size: 11px;
+    span{
+      color: #999;
+      display: block;
+    }
+  }
+  img{
+    width: 25px;
+    height: 25px;
+  }
+  .image{
+    padding-right: 10px;
+  }
+  .info{
+    height: 25px;
+    line-height: 25px;
+  }
+}
 

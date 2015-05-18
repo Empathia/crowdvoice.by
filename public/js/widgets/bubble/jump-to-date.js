@@ -4,19 +4,8 @@ Class('JumpToDate').inherits(Widget)({
 
     HTML : '\
         <div>\
-            <div class="header">\
-                <h3>Jump to...</h3>\
-                <div class="line"></div>\
-            </div>\
-            <div class="body-wrapper">\
-                <div class="body"></div>\
-            </div>\
-            <div class="arrow"><div></div></div>\
         </div>\
     ',
-
-
-    YEAR_ELEMENT : '<div class="year"><span></span></div>',
 
     prototype        : {
         type            : null,
@@ -25,7 +14,6 @@ Class('JumpToDate').inherits(Widget)({
 
         init : function(config){
             Widget.prototype.init.call(this, config);
-
 
             for (var year in this.years) {
 
@@ -39,15 +27,8 @@ Class('JumpToDate').inherits(Widget)({
                         '<li class="' + selectedClass + '">'+month.name+'<span> (' + month.count + ')</span></li>'
                         );
                 });
-                this.element.find('.body').append(yearDOM);
+                this.element.append(yearDOM);
             }
-
-            new Button({
-                style   : 'clean',
-                type    : 'single',
-                label   : 'X',
-                name    : 'buttonDone'
-            }).render(this.element.find('.header'));
 
         }
 

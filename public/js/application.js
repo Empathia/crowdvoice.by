@@ -24,6 +24,7 @@ require('./widgets/responsive-slider.js');
 // components
 require('./widgets/card.js');
 require('./widgets/voice-cover.js');
+require('./widgets/voice-cover-mini.js');
 require('./widgets/category-cover.js');
 
 require('./widgets/post.js');
@@ -36,7 +37,11 @@ require('./widgets/button.js');
 require('./widgets/check.js');
 require('./widgets/input.js');
 require('./widgets/select.js');
-require('./widgets/jump-to-date.js');
-
+require('./widgets/bubble.js');
+require('./widgets/bubble/jump-to-date.js');
+require('./widgets/bubble/voices-list.js');
+require('./widgets/bubble/share.js');
+require('./widgets/bubble/help.js');
+require('./widgets/notification.js');
 
 require('./widgets/audio.js');
