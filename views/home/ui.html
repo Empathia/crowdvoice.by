@@ -1,14 +1,19 @@
 <main role="main" class="cv-main-content -rel">
-<div class="ui">
 
-<div class="-col-4 -pr1 row1"><br></div>
-<div class="-col-4 -pr1 row2"><br></div>
-<div class="-col-4 -pr1 row3"><br>r3</div>
+  <div class="ui">
 
-</div>
+    <div class="-col-7 -pr1 col1"><br></div>
+    <div class="-col-5 -pr1 col2"><br></div>
+
+    <div class="-col-12"><br></div>
+
+  </div>
+
 </main>
 
 <script>
+
+var voices = <%= JSON.stringify(voices) %>;
 
 var years= {
     "2014" : [
@@ -33,25 +38,70 @@ var years= {
     ]
 }
 
-new JumpToDate({
-    style   : '',
-    type    : '',
-    years   : years,
-    name    : 'JTD'
-}).render(document.querySelector('.ui .row1'));
+new Notification({
+    style       : '',
+    type        : '',
+    title       : '',
+    name        : 'notification',
+    //action      : Share,
+    //actionData  : years,
+}).render(document.querySelector('.ui .col1'));
+$('.ui .col1').append('<br>');
+
+new Bubble({
+    style       : 'full',
+    type        : '',
+    title       : 'Want to help out?',
+    name        : 'help',
+    action      : Help,
+    //actionData  : years,
+}).render(document.querySelector('.-col-12'));
+
+$('.-col-12').append('<br>');
+
+new Bubble({
+    style       : '',
+    type        : '',
+    title       : 'Share',
+    name        : 'share',
+    action      : Share,
+    //actionData  : years,
+    width       : 420,
+}).render(document.querySelector('.ui .col1'));
+
+$('.ui .col1').append('<br>');
+
+new Bubble({
+    style       : '',
+    type        : '',
+    title       : 'Jump to...',
+    name        : 'JTD',
+    action      : JumpToDate,
+    actionData  : years,
+}).render(document.querySelector('.ui .col1'));
+
+new Bubble({
+    style       : '',
+    type        : '',
+    title       : 'Related Voices',
+    name        : 'relatedBubble',
+    action      : VoicesList,
+    actionData  : voices,
+    width       : 480,
+}).render(document.querySelector('.-col-12'));
 
 new Button({
     style   : 'primary',
     type    : 'single',
     label   : 'Follow Voice',
     name    : 'buttonFoll'
-}).render(document.querySelector('.ui .row2'));
+}).render(document.querySelector('.ui .col2'));
 new Button({
     style   : 'primary following',
     type    : 'single',
     label   : 'Following',
     name    : 'buttonFoll'
-}).render(document.querySelector('.ui .row2'));
+}).render(document.querySelector('.ui .col2'));
 
 
 //Normal
@@ -64,7 +114,7 @@ new Select({
   label : 'Choose Zone',
   name  : 'select',
   options: allZones
-}).render(document.querySelector('.ui .row2'));
+}).render(document.querySelector('.ui .col2'));
 
 //Checkbox
 var allGrades = {
@@ -80,7 +130,7 @@ new Select({
     name  : 'selectFollow',
     style : '',
     options: allGrades,
-}).render(document.querySelector('.ui .row2'));
+}).render(document.querySelector('.ui .col2'));
 
 //Multiple
 var allMulti = {
@@ -99,7 +149,7 @@ new Select({
   label : 'Multiple',
   name  : 'select',
   options: allMulti
-}).render(document.querySelector('.ui .row2'));
+}).render(document.querySelector('.ui .col2'));
 
 $( document ).ready(function() {
 
