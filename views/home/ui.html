@@ -1,7 +1,7 @@
 <main role="main" class="cv-main-content -rel">
 
   <div class="ui">
-
+    <a href="#" class="create-voice">Create Voice</a>
     <div class="-col-7 -pr1 col1"><br></div>
     <div class="-col-5 -pr1 col2"><br></div>
 
@@ -12,6 +12,14 @@
 </main>
 
 <script>
+
+$( document ).ready(function() {
+
+  $('.create-voice').on('click', function(){
+    console.log(createVoice);
+    createVoice.show();
+  });
+});
 
 var voices = <%= JSON.stringify(voices) %>;
 
@@ -38,14 +46,14 @@ var years= {
     ]
 }
 
-new Modal({
+var createVoice = new Modal({
     style       : '',
     type        : '',
-    title       : 'Share',
-    name        : 'share',
-    action      : Share,
-    //actionData  : years,
-}).render(document.querySelector('body'));
+    title       : 'Create a Voice',
+    name        : 'createAVoiceModal',
+    action      : CreateVoice,
+    width       : 960,
+});//.render(document.querySelector('body'));
 
 new Notification({
     style       : '',
@@ -134,11 +142,15 @@ var allGrades = {
 };
 
 new Select({
-    type    : 'check',
-    label : 'Follow voice as...',
-    name  : 'selectFollow',
-    style : '',
-    options: allGrades,
+    type      : 'check',
+    label     : 'Follow voice as...',
+    name      : 'selectFollow',
+    style     : '',
+    options   : allGrades,
+    hasArrow  : false,
+    hasTitle  : true,
+    title     : "Title (?)",
+    subTitle  : "65 Characters max"
 }).render(document.querySelector('.ui .col2'));
 
 //Multiple

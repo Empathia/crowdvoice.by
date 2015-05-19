@@ -23,28 +23,33 @@ Class('Modal').inherits(Widget)({
         action          : null,
         actionData      : null,
         width           : null,
+        modalElement    : null,
 
         init : function(config){
             Widget.prototype.init.call(this, config);
 
-            var modalElement = this.element.find('.cv-modal');
+            this.modalElement = this.element.find('.cv-modal');
 
             if( this.style ){ this.element.addClass(this.style) };
             if( this.width ){
-                modalElement.css('width', this.width + 'px');
+                this.modalElement.css('width', this.width + 'px');
             };
 
             this.element.find('.title').text(this.title);
             this.bodyElement = this.element.find('.body');
 
+            var closeButton;
             this.appendChild(
-                new Button({
+                closeButton = new Button({
                     style   : 'clean',
                     type    : 'single',
                     label   : 'X',
                     name    : 'actionButton'
                 }).render(this.element.find('.header'))
             );
+            closeButton.bind('click', function(){
+                this.hide();
+            }.bind(this));
 
             if(this.action){
                 new this.action({
@@ -55,15 +60,20 @@ Class('Modal').inherits(Widget)({
                 }).render(this.bodyElement);
             };
 
-            setTimeout( function(){
-                modalElement.css({
-                    'margin-left': -1*(modalElement.width()/2),
-                    'margin-top': -1*(modalElement.height()/2)
-                });
-            }, 0 );
+        },
 
-
-
+        show : function(){
+            $('body').css('overflow', 'hidden');
+            this.render('body');
+            this.element.show();
+            this.modalElement.css({
+                'margin-left': -1*(this.modalElement.width()/2),
+                'margin-top': -1*(this.modalElement.height()/2)
+            });
+        },
+        hide : function(){
+            $('body').css('overflow', 'auto');
+            this.element.hide();
         }
 
     }

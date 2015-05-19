@@ -33,10 +33,7 @@ require('./widgets/post-video.js');
 require('./widgets/post-audio.js');
 require('./widgets/post-link.js');
 require('./widgets/post-quote.js');
-require('./widgets/button.js');
-require('./widgets/check.js');
-require('./widgets/input.js');
-require('./widgets/select.js');
+
 require('./widgets/bubble.js');
 require('./widgets/bubble/jump-to-date.js');
 require('./widgets/bubble/voices-list.js');
@@ -44,6 +41,13 @@ require('./widgets/bubble/share.js');
 require('./widgets/bubble/help.js');
 require('./widgets/notification.js');
 require('./widgets/modal.js');
+require('./widgets/forms/create-voice.js');
+
+require('./widgets/elements/image.js');
+require('./widgets/elements/button.js');
+require('./widgets/elements/check.js');
+require('./widgets/elements/input.js');
+require('./widgets/elements/select.js');
 
 
 require('./widgets/audio.js');
