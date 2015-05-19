@@ -7,8 +7,6 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
             Widget.prototype.init.call(this, config);
 
             this.el = this.element[0];
-
-            console.log(' voice posts layer');
         },
 
         /* Sets the heigth of the layer. If a number is provided it will

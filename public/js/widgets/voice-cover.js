@@ -103,8 +103,9 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
         this.element.addClass('hasActions');
         this.addActions();
       }
+
       // 21 == 3 weeks (days)
-      if (moment().diff(moment(this.dom.updated_at), 'days') <= 21) {
+      if (moment().diff(moment(this.updated_at), 'days') <= 21) {
         this.addNewBadge();
       }
     },
