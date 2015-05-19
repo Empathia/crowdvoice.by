@@ -30,6 +30,7 @@ require('./widgets/category-cover.js');
 require('./views/voice');
 require('./widgets/voice-post-layers-manager');
 require('./widgets/voice-posts-layer');
+require('./widgets/voice-about-box');
 require('./widgets/post.js');
 require('./widgets/post-image.js');
 require('./widgets/post-video.js');
