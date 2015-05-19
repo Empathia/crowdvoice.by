@@ -191,6 +191,42 @@ var Entity = Class('Entity').inherits(Argon.KnexModel)({
           });
         });
       },
+
+      isOwnerOf : function isOwnerOf(entityId, callback) {
+        if (!this.id) {
+          return callback("Entity doesn't have an id");
+        }
+
+        EntityOwner.find({'owner_id' : this.id, 'owned_id' : entityId}, function(err, result) {
+          if (err) {
+            return callback(err);
+          }
+
+          if (result.length === 0) {
+            return callback(null, false);
+          } else {
+            return callback(null, true);
+          }
+        });
+      },
+
+      isMemberOf : function isMemberOf(entityId, callback) {
+        if (!this.id) {
+          return callback("Entity doesn't have an id");
+        }
+
+        EntityMembership.find({'entity_id' : entityId, 'member_id' : this.id}, function(err, result) {
+          if (err) {
+            return callback(err);
+          }
+
+          if (result.length === 0) {
+            return callback(null, false);
+          } else {
+            return callback(null, true);
+          }
+        });
+      },
   }
 });
 
