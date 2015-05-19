@@ -27,6 +27,7 @@ require('./widgets/voice-cover.js');
 require('./widgets/voice-cover-mini.js');
 require('./widgets/category-cover.js');
 
+require('./views/voice');
 require('./widgets/post.js');
 require('./widgets/post-image.js');
 require('./widgets/post-video.js');

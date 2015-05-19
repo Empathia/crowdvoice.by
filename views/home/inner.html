@@ -6,12 +6,25 @@
   <section class="voice-intro -rel">
     <h1 class="voice-heading -font-bold -m0"><%= voiceInfo.title %></h1>
     <div class="voice-stats">
-      <span class="-inline-block"><b><%= voiceInfo.postCount %></b> posts</span> &middot;
-      <span class="-inline-block"><b><%= voiceInfo.followersCount %></b> followers</span> &middot;
+      <span class="-inline-block">
+        <b class="voice-stats__post-count"><%= voiceInfo.postCount %></b> posts
+      </span> &middot;
+      <span class="-inline-block">
+        <b class="voice-stats__followers">0</b> followers
+      </span>
+
+      <% if(voiceInfo.locationName) { %>
+        &middot;
+        <span class="-inline-block">
+          <%= voiceInfo.locationName %>
+        </span>
+      <% } %>
+
     </div>
   </section>
 
   <section class="voice-posts -rel">
+    <!--
     <article class="voice-card-about post-card">
       <div class="voice-card-about-updated-at"><%= voiceInfo.updatedAt %></div>
       <div class="voice-card-about-header -row">
@@ -25,6 +38,7 @@
         <%= voiceInfo.description %>
       </div>
     </article>
+    -->
   </section>
 
   <footer class="voice-footer">
@@ -73,7 +87,20 @@
 </main>
 
 <script>
-  var postsContainer = document.querySelector('.voice-posts');
+  var voiceInfo = <%= JSON.stringify(voiceInfo) %>;
+  var otherOptions = {
+    followerCount         : 1260,
+    postCountElement      : document.querySelector('.voice-stats__post-count'),
+    followersCountElement : document.querySelector('.voice-stats__followers')
+  };
+
+  for (var propertyName in otherOptions) {
+    voiceInfo[propertyName] = otherOptions[propertyName];
+  }
+
+  var Voice = new CV.Voice( voiceInfo );
+
+  /*var postsContainer = document.querySelector('.voice-posts');
   var posts = [];
 
   <%= JSON.stringify(posts) %>.forEach(function(post) {
@@ -83,5 +110,5 @@
   new CV.PopoverRequestToContribute({
     toggler: document.querySelector('.request-to-contribute-button'),
     container: document.querySelector('.request-to-contribute-container')
-  });
+  });*/
 </script>
