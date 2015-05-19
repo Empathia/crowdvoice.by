@@ -1,7 +1,7 @@
 
 var moment = require('moment');
 
-Class(CV, 'VoicePostLayersManager').includes(NodeSupport)({
+Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
     prototype : {
 
         /* DEFAULT BASIC OPTIONS */
@@ -10,6 +10,7 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport)({
         averagePostTotal : 100,
         averagePostWidth : 350,
         averagePostHeight : 100,
+        description : '',
 
         /* PRIVATE PROPERTIES */
         /* holds the references of the VoicePostsLayer children instances */
@@ -69,6 +70,10 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport)({
                     dateString : dateString
                 });
 
+                // handle special case
+                // append CV.VoiceAboutBox to the first layer
+                if (i == 0) this._appendVoiceAboutBox(layer);
+
                 layer.setHeight(this.getAverageLayerHeight());
 
                 this._layers.push(layer);
@@ -81,6 +86,21 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport)({
             this.el.appendChild(frag);
 
             firstDate = lastDate = totalLayers = frag = i = null;
+        },
+
+        _appendVoiceAboutBox : function _appendVoiceAboutBox(layer) {
+            var voiceAboutBox = new CV.VoiceAboutBox({
+                name : 'voiceAboutBox',
+                description : this.description
+            });
+
+            layer.appendChild(voiceAboutBox).render(layer.element);
+
+            if (localStorage['cvby__voice' + this.id + '__about-read']) {
+                voiceAboutBox.deactivate();
+            } else voiceAboutBox.activate();
+
+            voiceAboutBox = null;
         },
 
         /* Returns the value hold by the `_averageLayerHeight` property.

@@ -11,34 +11,19 @@
       </span> &middot;
       <span class="-inline-block">
         <b class="voice-stats__followers">0</b> followers
-      </span>
+      </span> &middot;
 
       <% if(voiceInfo.locationName) { %>
-        &middot;
         <span class="-inline-block">
           <%= voiceInfo.locationName %>
-        </span>
+        </span> &middot;
       <% } %>
 
+      <button class="voice-about-show-btn ui-btn -sm -outline">About</button>
     </div>
   </section>
 
   <section class="voice-posts -rel">
-    <!--
-    <article class="voice-card-about post-card">
-      <div class="voice-card-about-updated-at"><%= voiceInfo.updatedAt %></div>
-      <div class="voice-card-about-header -row">
-        <div class="-float-left">
-          <img class="voice-card-about-logo -float-left" src="/img/views/voice/cv-logo-placeholder.png" width="28" height="32" alt="">
-          <h3 class="voice-card-about-title -font-bold -float-left">About this Voice</h3>
-        </div>
-        <button class="ui-btn -sm -outline -float-right">Hide</button>
-      </div>
-      <div class="voice-card-about-description">
-        <%= voiceInfo.description %>
-      </div>
-    </article>
-    -->
   </section>
 
   <footer class="voice-footer">
@@ -91,7 +76,8 @@
   var otherOptions = {
     followerCount         : 1260,
     postCountElement      : document.querySelector('.voice-stats__post-count'),
-    followersCountElement : document.querySelector('.voice-stats__followers')
+    followersCountElement : document.querySelector('.voice-stats__followers'),
+    aboutBoxButtonElement : document.querySelector('.voice-about-show-btn')
   };
 
   for (var propertyName in otherOptions) {

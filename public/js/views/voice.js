@@ -1,5 +1,5 @@
 
-Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport)({
+Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport)({
 
     STATUS_DRAFT : 'STATUS_DRAFT',
     STATUS_UNLISTED : 'STATUS_UNLISTED',
@@ -35,6 +35,7 @@ Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport)({
         followerCount : 0,
         postCountElement : null,
         followersCountElement : null,
+        aboutBoxButtonElement : null,
 
         init : function init(config) {
             this.status = CV.Voice.STATUS_DRAFT;
@@ -47,6 +48,8 @@ Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport)({
             // update standalone ui elements
             this.dom.updateText(this.postCountElement, this.format.numberUS(this.postCount));
             this.dom.updateText(this.followersCountElement, this.format.numberUS(this.followerCount));
+
+            this._bindEvents();
 
             // children
             this._appendLayersManager();
@@ -65,11 +68,76 @@ Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport)({
 
             this.appendChild(
                 new CV.VoicePostLayersManager({
+                    name : 'voicePostLayersManager',
                     element : document.querySelector('.voice-posts'),
+                    id : this.id,
+                    description : this.description,
                     firstPostDate : this.firstPostDate,
                     lastPostDate : this.lastPostDate
                 })
             );
+        },
+
+        _bindEvents : function _bindEvents() {
+            this.showAboutBoxRef = this.showAboutBoxButtonHandler.bind(this);
+            this.aboutBoxButtonElement.addEventListener('click', this.showAboutBoxRef);
+
+            this._deactivateButtonRef = this._deactivateButton.bind(this);
+            CV.VoiceAboutBox.bind('activate', this._deactivateButtonRef);
+
+            this._activateButtonRef = this._activateButton.bind(this);
+            CV.VoiceAboutBox.bind('deactivate', this._activateButtonRef);
+        },
+
+        _deactivateButton : function _deactivateButton() {
+            this.aboutBoxButtonElement.style.display = 'none';
+        },
+
+        _activateButton : function _activateButton() {
+            this.aboutBoxButtonElement.style.display = '';
+            localStorage['cvby__voice' + this.id + '__about-read'] = true;
+        },
+
+        showAboutBoxButtonHandler : function showAboutBoxButtonHandler() {
+            CV.Voice.dispatch('voiceAboutBox:show');
+        },
+
+        destroy : function destroy() {
+            Widget.prototype.destroy.call(this);
+
+            this.aboutBoxButtonElement.removeEventListener('click', this.showAboutBoxRef);
+            this.showAboutBoxRef = null;
+
+            CV.VoiceAboutBox.unbind('activate', this._deactivateButtonRef);
+            this._deactivateButtonRef = null;
+
+            CV.VoiceAboutBox.unbind('deactivate', this._activateButtonRef);
+            this._activateButtonRef = null;
+
+            this.id = null;
+            this.title = null;
+            this.description = null;
+            this.backgroundImage = null;
+            this.latitude = null;
+            this.longitude = null;
+            this.locationName = null;
+            this.ownerId = null;
+            this.status = null;
+            this.type = null;
+            this.twitterSearch = null;
+            this.tweetLastFetchAt = null;
+            this.rssUrl = null;
+            this.rssLastFetchAt = null;
+            this.firstPostDate = null;
+            this.lastPostDate = null;
+            this.postCount = null;
+            this.createdAt = null;
+            this.updatedAt = null;
+
+            this.followerCount = null;
+            this.postCountElement = null;
+            this.followersCountElement = null;
+            this.aboutBoxButtonElement = null;
         }
     }
 });
