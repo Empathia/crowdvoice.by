@@ -6,9 +6,14 @@ CONFIG.database.logQueries = false;
 
 require('tellurium');
 
-require('./../../lib/TelluriumConsoleReporter.js');
+require(process.cwd() + '/node_modules/tellurium/reporters/pretty');
+
+Tellurium.reporter = new Tellurium.Reporter.Pretty({
+  colorsEnabled : true
+})
 
 Tellurium.suite('Voice Model')(function() {
+
   this.describe('Validations')(function(desc) {
 
     this.beforeEach(function(spec){
@@ -267,7 +272,6 @@ Tellurium.suite('Voice Model')(function() {
 
       voice.save(function(voiceErr, voiceResult) {
         postData.voiceId = voice.id;
-
         var post = new Post(postData);
 
         post.save(function(postErr, postResult) {
@@ -280,14 +284,16 @@ Tellurium.suite('Voice Model')(function() {
 
               setTimeout(function(){
                 post.destroy(function(destErr, destResult) {
-                  Voice.find(voice.id, function(secondRunVoiceErr, secondRunVoiceResult) {
-                    spec.assert(secondRunVoiceResult[0].firstPostDate).toBe(null);
-                    spec.assert(secondRunVoiceResult[0].lastPostDate).toBe(null);
-                    spec.assert(post.id).toBe(null);
-                    spec.completed();
-                  });
+                  setTimeout(function() {
+                    Voice.find(voice.id, function(secondRunVoiceErr, secondRunVoiceResult) {
+                      spec.assert(secondRunVoiceResult[0].firstPostDate).toBe(null);
+                      spec.assert(secondRunVoiceResult[0].lastPostDate).toBe(null);
+                      spec.assert(post.id).toBe(null);
+                      spec.completed();
+                    });
+                  }, 1000);
                 });
-              }, 1000)
+              }, 1000);
             });
           }, 1000);
         });

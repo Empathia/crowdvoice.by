@@ -3,7 +3,13 @@
 
 require('neonode-core');
 require('tellurium');
-require('./../../lib/TelluriumConsoleReporter.js');
+
+require(process.cwd() + '/node_modules/tellurium/reporters/pretty');
+
+Tellurium.reporter = new Tellurium.Reporter.Pretty({
+  colorsEnabled : true
+});
+
 var clone = require('clone');
 var async = require('async');
 
