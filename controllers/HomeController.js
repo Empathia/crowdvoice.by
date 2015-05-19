@@ -324,19 +324,23 @@ var HomeController = Class('HomeController')({
         currentUser : {},
 
         voiceInfo : {
-          id: '',
+          id: null,
           title: 'Continued Effects of the Fukushima Disaster',
           description: '<p>On March 11, 2011, a tsunami and earthquake damaged the Fukushima Daiichi power plant in Fukushima, Japan. Subsequent equipment failures led to the release of nuclear material into the surrounding ground and ocean. Initially, studies conducted by TEPCO, the company operating the plant, concluded that the risks posed by the fallout were relatively small, and that radioactive material from the incident had been contained.</p>\
             <p>On July 22, 2013, it came to light that Fukushima Daiichi is still leaking into the Pacific Ocean, and that over 300 metric tons of contaminated water had been released since the disaster, posing a possible threat to ecosystems and public health.</p>',
+          backgroundImage: '/img/sample/voices/cover-00.jpg',
           latitude: '',
           longitud: '',
+          locationName : 'London, UK',
+          ownerID: null,
           status: 'STATUS_PUBLIC',
+          type: 'TYPE_PUBLIC',
           firstPostDate: '',
           lastPostDate: '',
-          postCount: 17,
-          followersCount: 310,
+          postCount: 1100,
           createdAt: '2015-03-30T13:59:47Z',
           updatedAt: '2015-03-30T13:59:47Z',
+
           author : {
             name : 'The Guardian',
             avatar : {
