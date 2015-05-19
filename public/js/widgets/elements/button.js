@@ -14,7 +14,7 @@ Class('Button').inherits(Widget)({
 
         init : function(config){
             Widget.prototype.init.call(this, config);
-
+            var button = this;
             if (this.style){ this.element.addClass(this.style) };
             if (this.type == "single" || this.type == null){
                 this.element.text(this.label);
@@ -26,7 +26,9 @@ Class('Button').inherits(Widget)({
             if(this.type == "multiple"){
                 this.createMultiple();
             }
-
+            this.element.on('click', function(){
+                button.dispatch('click');
+            })
 
         },
 
