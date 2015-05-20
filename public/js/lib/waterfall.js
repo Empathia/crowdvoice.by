@@ -108,5 +108,18 @@
         this._items = [];
     };
 
+    Waterfall.prototype.destroy = function destroy() {
+        this.containerElement = null;
+        this.items = null;
+        this.columnWidth = null;
+        this.gutter = null;
+        this.centerItems = null;
+
+        this.AVAILABLE_WIDTH = null;
+        this._blocks = null;
+        this._items = null;
+        this._spaceLeft = null;
+    };
+
     return Waterfall;
 }));
