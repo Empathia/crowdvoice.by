@@ -1,7 +1,20 @@
 <main role="main" class="cv-main-content -rel">
 
   <div class="ui">
-
+    <br>
+    <div class="-col-12"><b>Modals:</b>
+      <br>
+      <a href="#" class="create-voice">Create voice</a><br>
+      <a href="#" class="create-organization">Create organization</a><br>
+      <a href="#" class="invite-contribute">Invite to contribute</a><br>
+      <a href="#" class="manage-contributors">Manage Contributors</a><br>
+      <a href="#" class="request-membership">Request Membership</a><br>
+      <a href="#" class="manage-related-voices">Manage Related Voices</a><br>
+      <a href="#" class="report">Report</a><br>
+      <a href="#" class="block">Block</a>
+      <br>
+      <br>
+    </div>
     <div class="-col-7 -pr1 col1"><br></div>
     <div class="-col-5 -pr1 col2"><br></div>
 
@@ -12,6 +25,35 @@
 </main>
 
 <script>
+
+$( document ).ready(function() {
+
+  $('.create-voice').on('click', function(){
+    createVoice.show();
+  });
+  $('.create-organization').on('click', function(){
+    createOrganization.show();
+  });
+  $('.invite-contribute').on('click', function(){
+    inviteToContribute.show();
+  });
+  $('.manage-contributors').on('click', function(){
+    manageContributors.show();
+  });
+  $('.request-membership').on('click', function(){
+    requestMembership.show();
+  });
+  $('.manage-related-voices').on('click', function(){
+    manageRelatedVoices.show();
+  });
+  $('.report').on('click', function(){
+    report.show();
+  });
+  $('.block').on('click', function(){
+    block.show();
+  });
+
+});
 
 var voices = <%= JSON.stringify(voices) %>;
 
@@ -37,6 +79,79 @@ var years= {
         {name: 'January', count: '39'},
     ]
 }
+
+var createVoice = new Modal({
+    style       : '',
+    type        : '',
+    title       : 'Create a Voice',
+    name        : 'createAVoiceModal',
+    action      : CreateVoice,
+    width       : 960,
+});//.render(document.querySelector('body'));
+
+var createOrganization = new Modal({
+    style       : '',
+    type        : '',
+    title       : 'Create an Organization',
+    name        : 'createAnOrganizationModal',
+    action      : CreateOrganization,
+    width       : 540,
+});//.render(document.querySelector('body'));
+
+var inviteToContribute = new Modal({
+    style       : '',
+    type        : '',
+    title       : 'Invite to Contribute',
+    name        : 'inviteToContributeModal',
+    action      : InviteToContribute,
+    width       : 650,
+});
+
+var manageContributors = new Modal({
+    style       : '',
+    type        : '',
+    title       : 'Manage Contributors',
+    name        : 'manageContributorsModal',
+    action      : ManageContributors,
+    width       : 900,
+});
+
+var requestMembership = new Modal({
+    style       : '',
+    type        : '',
+    title       : 'Request Membership',
+    name        : 'requestmembershipModal',
+    action      : RequestMembership,
+    width       : 650,
+});
+
+var manageRelatedVoices = new Modal({
+    style       : '',
+    type        : '',
+    title       : 'Manage Related Voices',
+    name        : 'manageRelatedVoicesModal',
+    action      : ManageRelatedVoices,
+    width       : 900,
+});
+
+var report = new Modal({
+    style       : '',
+    type        : '',
+    title       : 'Report / Claim',
+    name        : 'reportModal',
+    action      : Report,
+    width       : 650,
+});
+
+
+var block = new Modal({
+    style       : '',
+    type        : '',
+    title       : 'Block',
+    name        : 'blockModal',
+    action      : Block,
+    width       : 700,
+});
 
 new Notification({
     style       : '',
@@ -125,11 +240,15 @@ var allGrades = {
 };
 
 new Select({
-    type    : 'check',
-    label : 'Follow voice as...',
-    name  : 'selectFollow',
-    style : '',
-    options: allGrades,
+    type      : 'check',
+    label     : 'Follow voice as...',
+    name      : 'selectFollow',
+    style     : '',
+    options   : allGrades,
+    hasArrow  : false,
+    hasTitle  : true,
+    title     : "Title (?)",
+    subTitle  : "65 Characters max"
 }).render(document.querySelector('.ui .col2'));
 
 //Multiple

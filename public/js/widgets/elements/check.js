@@ -5,7 +5,7 @@ Class('Check').inherits(Widget)({
     HTML : '\
         <div>\
             <input type="checkbox">\
-            <label></label>\
+            <span class="label"></span>\
         </div>\
     ',
 
@@ -17,7 +17,7 @@ Class('Check').inherits(Widget)({
 
         init : function(config){
             Widget.prototype.init.call(this, config);
-            this.labelEl = this.element.find('label');
+            this.labelEl = this.element.find('.label');
             this.checkboxEl = this.element.find('input');
 
             if (this.label){ this.labelEl.text(this.label) };
