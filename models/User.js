@@ -5,7 +5,11 @@ var User = Class('User').inherits(Argon.KnexModel)({
       'required',
       {
         rule: function (val) {
-          return db('Users').where('username', '=', val).andWhere('id', '!=', this.target.id).then(function(resp) {
+          var query = db('Users').where('username', '=', val);
+          if (this.target.id) {
+            query.andWhere('id', '!=', this.target.id);
+          }
+          return query.then(function(resp) {
             if (resp.length > 0) throw new Checkit.FieldError('This username is already in use.')
           });
         },
@@ -16,7 +20,11 @@ var User = Class('User').inherits(Argon.KnexModel)({
       'email', 'required',
       {
         rule: function (val, params, context) {
-          return db('Users').where('email', '=', val).andWhere('id', '!=', this.target.id).then(function(resp) {
+          var query = db('Users').where('email', '=', val);
+          if (this.target.id) {
+            query.andWhere('id', '!=', this.target.id);
+          }
+          return query.then(function(resp) {
             if (resp.length > 0) throw new Checkit.FieldError('The email address is already in use.');
           });
         },
@@ -33,6 +41,10 @@ var User = Class('User').inherits(Argon.KnexModel)({
   })),
 
   prototype : {
+    username: null,
+    password: null,
+
+
     /* Returns the user's associated entity
      * @method entity
      */
