@@ -164,7 +164,7 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
                 description : this.description
             });
 
-            layer.appendChild(voiceAboutBox).render(layer.element);
+            layer.appendChild(voiceAboutBox).render(layer.postContainerElement);
 
             if (localStorage['cvby__voice' + this.id + '__about-read']) {
                 voiceAboutBox.deactivate();
