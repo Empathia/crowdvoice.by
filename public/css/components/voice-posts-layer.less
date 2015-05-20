@@ -1,5 +1,21 @@
 .cv-voice-posts-layer {
+  position: relative;
   min-height: 100px;
-  background-color: rgba(0, 244, 0, .25);
+  padding-left: 1px;
+  // background-color: rgba(0, 244, 0, .25);
   margin-bottom: 1rem;
+}
+
+.cv-voice-posts-layer__posts {
+  width: e('calc(100% - 100px)');
+  // background-color: rgba(135, 206, 235, .5);
+}
+
+.cv-voice-posts-layer__ticks {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 90px;
+  z-index: 0;
 }

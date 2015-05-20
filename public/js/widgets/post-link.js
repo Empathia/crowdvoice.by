@@ -63,8 +63,8 @@ Class(CV, 'PostLink').inherits(CV.Post)({
                 this.dom.updateText(this.sourceElement, 'posted ');
             }
 
-            this.dom.updateText(this.dateTimeElement, "on " + moment(this.created_at).format('MMM DD, YYYY'));
-            this.dom.updateAttr('datetime', this.dateTimeElement, this.created_at);
+            this.dom.updateText(this.dateTimeElement, "on " + moment(this.createdAt).format('MMM DD, YYYY'));
+            this.dom.updateAttr('datetime', this.dateTimeElement, this.createdAt);
 
             this.dom.updateText(this.el.querySelector('.post-card-title'), this.title);
             this.dom.updateText(this.el.querySelector('.post-card-description'), this.description);
