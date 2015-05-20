@@ -1,4 +1,4 @@
-Class('VoicesList').inherits(Widget)({
+Class(CV, 'VoicesList').inherits(Widget)({
 
 	ELEMENT_CLASS : 'cv-voiceslist',
 
@@ -30,7 +30,7 @@ Class('VoicesList').inherits(Widget)({
                 var voiceMini = new VoiceCoverMini( voice ).render( this.element );
 
                 if(list.hasButton){
-                    new Button({
+                    new CV.Button({
                         style   : '',
                         type    : 'single',
                         label   : 'Remove',

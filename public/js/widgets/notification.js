@@ -1,4 +1,4 @@
-Class('Notification').inherits(Widget)({
+Class(CV, 'Notification').inherits(Widget)({
 
 	ELEMENT_CLASS : 'cv-notification',
 
@@ -35,7 +35,7 @@ Class('Notification').inherits(Widget)({
             this.bodyElement = this.element.find('.body');
 
             this.appendChild(
-                new Button({
+                new CV.Button({
                     style   : 'clean',
                     type    : 'single',
                     label   : 'X',

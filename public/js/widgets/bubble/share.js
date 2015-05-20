@@ -1,4 +1,4 @@
-Class('Share').inherits(Widget)({
+Class(CV, 'Share').inherits(Widget)({
 
 	ELEMENT_CLASS : 'cv-share',
 

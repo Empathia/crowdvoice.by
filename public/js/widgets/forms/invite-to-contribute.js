@@ -1,4 +1,4 @@
-Class('InviteToContribute').inherits(Widget)({
+Class(CV, 'InviteToContribute').inherits(Widget)({
 
 	ELEMENT_CLASS : 'cv-form-invite-to-contribute',
 
@@ -26,7 +26,7 @@ Class('InviteToContribute').inherits(Widget)({
 			  "2": {name: 'Ferguson Unrest'},
 			  "3": {name: 'Unemployment in Detroit'}
 			};
-			new Select({
+			new CV.Select({
 			  	label 		: 'Select one',
 			  	name  		: 'select',
 			  	style 		: 'full',
@@ -35,7 +35,7 @@ Class('InviteToContribute').inherits(Widget)({
 		    	title 		: "To which of your voices would you like to invite this user to?"
 			}).render(this.element.find('.placeholder-main'));
 
-			new Input({
+			new CV.Input({
 			    type    	: '',
 			    name  		: '',
 			    style 		: '',
@@ -48,7 +48,7 @@ Class('InviteToContribute').inherits(Widget)({
 
 			//********** bottom ***********
 
-            new Button({
+            new CV.Button({
 			    style   : 'primary full',
 			    type    : 'single',
 			    label   : 'Invite Esra\'a Al Shafei',

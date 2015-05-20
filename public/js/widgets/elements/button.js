@@ -1,4 +1,4 @@
-Class('Button').inherits(Widget)({
+Class(CV, 'Button').inherits(Widget)({
 
 	ELEMENT_CLASS : 'cv-button',
 

@@ -80,80 +80,80 @@ var years= {
     ]
 }
 
-var createVoice = new Modal({
+var createVoice = new CV.Modal({
     style       : '',
     type        : '',
     title       : 'Create a Voice',
     name        : 'createAVoiceModal',
-    action      : CreateVoice,
+    action      : CV.CreateVoice,
     width       : 960,
 });//.render(document.querySelector('body'));
 
-var createOrganization = new Modal({
+var createOrganization = new CV.Modal({
     style       : '',
     type        : '',
     title       : 'Create an Organization',
     name        : 'createAnOrganizationModal',
-    action      : CreateOrganization,
+    action      : CV.CreateOrganization,
     width       : 540,
 });//.render(document.querySelector('body'));
 
-var inviteToContribute = new Modal({
+var inviteToContribute = new CV.Modal({
     style       : '',
     type        : '',
     title       : 'Invite to Contribute',
     name        : 'inviteToContributeModal',
-    action      : InviteToContribute,
+    action      : CV.InviteToContribute,
     width       : 650,
 });
 
-var manageContributors = new Modal({
+var manageContributors = new CV.Modal({
     style       : '',
     type        : '',
     title       : 'Manage Contributors',
     name        : 'manageContributorsModal',
-    action      : ManageContributors,
+    action      : CV.ManageContributors,
     width       : 900,
 });
 
-var requestMembership = new Modal({
+var requestMembership = new CV.Modal({
     style       : '',
     type        : '',
     title       : 'Request Membership',
     name        : 'requestmembershipModal',
-    action      : RequestMembership,
+    action      : CV.RequestMembership,
     width       : 650,
 });
 
-var manageRelatedVoices = new Modal({
+var manageRelatedVoices = new CV.Modal({
     style       : '',
     type        : '',
     title       : 'Manage Related Voices',
     name        : 'manageRelatedVoicesModal',
-    action      : ManageRelatedVoices,
+    action      : CV.ManageRelatedVoices,
     width       : 900,
 });
 
-var report = new Modal({
+var report = new CV.Modal({
     style       : '',
     type        : '',
     title       : 'Report / Claim',
     name        : 'reportModal',
-    action      : Report,
+    action      : CV.Report,
     width       : 650,
 });
 
 
-var block = new Modal({
+var block = new CV.Modal({
     style       : '',
     type        : '',
     title       : 'Block',
     name        : 'blockModal',
-    action      : Block,
+    action      : CV.Block,
     width       : 700,
 });
 
-new Notification({
+new CV.Notification({
     style       : '',
     type        : '',
     title       : '',
@@ -163,55 +163,55 @@ new Notification({
 }).render(document.querySelector('.ui .col1'));
 $('.ui .col1').append('<br>');
 
-new Bubble({
+new CV.Bubble({
     style       : 'full',
     type        : '',
     title       : 'Want to help out?',
     name        : 'help',
-    action      : Help,
+    action      : CV.Help,
     //actionData  : years,
 }).render(document.querySelector('.-col-12'));
 
 $('.-col-12').append('<br>');
 
-new Bubble({
+new CV.Bubble({
     style       : '',
     type        : '',
     title       : 'Share',
     name        : 'share',
-    action      : Share,
+    action      : CV.Share,
     //actionData  : years,
     width       : 420,
 }).render(document.querySelector('.ui .col1'));
 
 $('.ui .col1').append('<br>');
 
-new Bubble({
+new CV.Bubble({
     style       : '',
     type        : '',
     title       : 'Jump to...',
     name        : 'JTD',
-    action      : JumpToDate,
+    action      : CV.JumpToDate,
     actionData  : years,
 }).render(document.querySelector('.ui .col1'));
 
-new Bubble({
+new CV.Bubble({
     style       : '',
     type        : '',
     title       : 'Related Voices',
     name        : 'relatedBubble',
-    action      : VoicesList,
+    action      : CV.VoicesList,
     actionData  : voices,
     width       : 480,
 }).render(document.querySelector('.-col-12'));
 
-new Button({
+new CV.Button({
     style   : 'primary',
     type    : 'single',
     label   : 'Follow Voice',
     name    : 'buttonFoll'
 }).render(document.querySelector('.ui .col2'));
-new Button({
+new CV.Button({
     style   : 'primary following',
     type    : 'single',
     label   : 'Following',
@@ -225,7 +225,7 @@ var allZones = {
   "2": {name: 'This Month'},
   "3": {name: 'All Time'}
 };
-new Select({
+new CV.Select({
   label : 'Choose Zone',
   name  : 'select',
   options: allZones
@@ -239,7 +239,7 @@ var allGrades = {
   "4": {name: 'Organization 03'}
 };
 
-new Select({
+new CV.Select({
     type      : 'check',
     label     : 'Follow voice as...',
     name      : 'selectFollow',
@@ -264,7 +264,7 @@ var allMulti = {
   "3": {name: 'Organization 02'},
   "4": {name: 'Organization 03'}
 };
-new Select({
+new CV.Select({
   label : 'Multiple',
   name  : 'select',
   options: allMulti

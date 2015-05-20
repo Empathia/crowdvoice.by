@@ -188,14 +188,14 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
         "2": {name: 'Republish as ...'}
       };
 
-      new Button({
+      new CV.Button({
           style   : '',
           type    : 'twice',
           name    : 'buttonTwice',
           options : btnTwiceOptions
       }).render(this.actionsElement);
 
-      new Button({
+      new CV.Button({
           style   : 'primary',
           type    : 'single',
           label   : 'Delete',

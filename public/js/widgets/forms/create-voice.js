@@ -1,4 +1,4 @@
-Class('CreateVoice').inherits(Widget)({
+Class(CV, 'CreateVoice').inherits(Widget)({
 
 	ELEMENT_CLASS : 'cv-form-create-voice',
 
@@ -47,7 +47,7 @@ Class('CreateVoice').inherits(Widget)({
 
 
 
-	        new Image({
+	        new CV.Image({
 			    type    	: '',
 			    name  		: '',
 			    style 		: '',
@@ -55,7 +55,7 @@ Class('CreateVoice').inherits(Widget)({
 			    title 		: "Background image (?)"
 			}).render(this.element.find('.placeholder-image'));
 
-	        new Input({
+	        new CV.Input({
 			    type    	: '',
 			    name  		: '',
 			    style 		: '',
@@ -64,7 +64,7 @@ Class('CreateVoice').inherits(Widget)({
 			    subTitle 	: "65 characters max"
 			}).render(this.element.find('.placeholder-title'));
 
-			new Input({
+			new CV.Input({
 			    type    	: '',
 			    name  		: '',
 			    style 		: '',
@@ -82,7 +82,7 @@ Class('CreateVoice').inherits(Widget)({
 			  "4": {name: 'Organization 03'}
 			};
 
-			new Select({
+			new CV.Select({
 			    type    	: 'check',
 			    label 		: 'Select at least one',
 			    name  		: 'selectFollow',
@@ -92,7 +92,7 @@ Class('CreateVoice').inherits(Widget)({
 			    title 		: "Voice topics (?)"
 			}).render(this.element.find('.placeholder-topics'));
 
-			new Input({
+			new CV.Input({
 			    type    	: '',
 			    name  		: '',
 			    style 		: '',
@@ -100,7 +100,7 @@ Class('CreateVoice').inherits(Widget)({
 			    title 		: "Twitter hashtags (?)"
 			}).render(this.element.find('.placeholder-twitter'));
 
-			new Input({
+			new CV.Input({
 			    type    	: '',
 			    name  		: '',
 			    style 		: '',
@@ -109,7 +109,7 @@ Class('CreateVoice').inherits(Widget)({
 			    title 		: "Location (?)"
 			}).render(this.element.find('.placeholder-latitude'));
 
-			new Input({
+			new CV.Input({
 			    type    	: '',
 			    name  		: '',
 			    style 		: '',
@@ -124,7 +124,7 @@ Class('CreateVoice').inherits(Widget)({
 			  "2": {name: 'Closed'},
 			  "3": {name: 'Pending'}
 			};
-			new Select({
+			new CV.Select({
 			  	label 		: 'Select one',
 			  	name  		: 'select',
 			  	style 		: 'full',
@@ -139,7 +139,7 @@ Class('CreateVoice').inherits(Widget)({
 			  "2": {name: 'Heisen Berg'},
 			  "3": {name: 'Cha Belo'}
 			};
-			new Select({
+			new CV.Select({
 			  	label 		: 'Select one',
 			  	name  		: 'select',
 			  	style 		: 'full',
@@ -148,7 +148,7 @@ Class('CreateVoice').inherits(Widget)({
 		    	title 		: "Voice ownership (?)"
 			}).render(this.element.find('.placeholder-voice-ownership'));
 
-			new Input({
+			new CV.Input({
 			    type    	: '',
 			    name  		: '',
 			    style 		: '',
@@ -158,13 +158,13 @@ Class('CreateVoice').inherits(Widget)({
 			}).render(this.element.find('.placeholder-rss'));
 
 			//********** bottom ***********
-            var check = this.appendChild(new Check({
+            var check = this.appendChild(new CV.Check({
                 id          : 1,
                 label       : "Create Anonymously (?)",
                 name        : "checkAnon"
             })).render(sendElement);
 
-            new Button({
+            new CV.Button({
 			    style   : 'primary full',
 			    type    : 'single',
 			    label   : 'Send',

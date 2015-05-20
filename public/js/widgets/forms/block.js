@@ -1,4 +1,4 @@
-Class('Block').inherits(Widget)({
+Class(CV, 'Block').inherits(Widget)({
 
 	ELEMENT_CLASS : 'cv-form-report',
 
@@ -28,18 +28,14 @@ Class('Block').inherits(Widget)({
             Widget.prototype.init.call(this, config);
             var sendElement = this.element.find('.send');
 
-
-
-
-			//********** bottom ***********
-			new Button({
+			new CV.Button({
 			    style   : 'full',
 			    type    : 'single',
 			    label   : 'Don\'t Block',
 			    name    : 'buttonSend'
 			}).render(this.element.find('.placeholder-dont'));
 
-            new Button({
+            new CV.Button({
 			    style   : 'primary full',
 			    type    : 'single',
 			    label   : 'Block',

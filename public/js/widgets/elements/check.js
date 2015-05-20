@@ -1,4 +1,4 @@
-Class('Check').inherits(Widget)({
+Class(CV, 'Check').inherits(Widget)({
 
 	ELEMENT_CLASS : 'cv-check',
 
