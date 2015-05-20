@@ -42,6 +42,8 @@ Class(CV, 'PostVideo').inherits(CV.Post)({
     reV : new RegExp('[0-9]+'),
 
     prototype : {
+        imageLoaded : false,
+
         init : function init(config) {
             Widget.prototype.init.call(this, config);
 
@@ -55,6 +57,8 @@ Class(CV, 'PostVideo').inherits(CV.Post)({
             if (this.image) {
                 this.imageWrapperElement.style.height = this.imageHeight + 'px';
                 this.imageWrapperElement.style.display = 'block';
+            } else {
+                this.imageLoaded = true;
             }
 
             if (this.sourceUrl && this.sourceService) {
@@ -83,6 +87,13 @@ Class(CV, 'PostVideo').inherits(CV.Post)({
         _bindEvents : function _bindEvents() {
             this.addVideoHandler = this.addVideo.bind(this);
             this.imageWrapperElement.addEventListener('click', this.addVideoHandler);
+        },
+
+        loadImage : function loadImage() {
+            if (this.image) {
+                this.dom.updateBgImage(this.imageWrapperElement, this.image);
+                this.imageLoaded = true;
+            }
         },
 
         addVideo : function() {

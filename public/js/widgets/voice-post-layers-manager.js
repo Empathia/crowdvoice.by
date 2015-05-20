@@ -13,6 +13,8 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
         description : '',
 
         /* PRIVATE PROPERTIES */
+        el : null,
+        _window : null,
         /* socket io instance holder */
         _socket : null,
         /* holds the references of the VoicePostsLayer children instances */
@@ -24,6 +26,9 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
         _averageLayerHeight : 0,
         _listenScrollEvent : true,
         _isInitialLoad : true,
+        _lastScrollTop : 0,
+        _scrollTimer : null,
+        _scrollTime : 250,
 
         init : function init(config) {
             Object.keys(config || {}).forEach(function(propertyName) {
@@ -31,6 +36,7 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
             }, this);
 
             this.el = this.element;
+            this._window = window;
             this._socket = io();
 
             this._setGlobarVars();
@@ -43,6 +49,24 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
 
         _bindEvents : function _bindEvents() {
             this._socket.on('monthData', this.loadLayer.bind(this));
+
+            this._scrollHandlerRef = this.scrollHandler.bind(this);
+            this._window.addEventListener('scroll', this._scrollHandlerRef);
+        },
+
+        scrollHandler : function scrollHandler() {
+            var st = window.scrollY;
+            var scrollingUpwards = (st < this._lastScrollTop);
+
+            if (!this._listenScrollEvent) return;
+
+            this._lastScrollTop = st;
+
+            if (this._scrollTimer) this._window.clearTimeout(this._scrollTimer);
+
+            this._scrollTimer = this._window.setTimeout(function() {
+                this.loadImagesVisibleOnViewport();
+            }.bind(this), this._scrollTime);
         },
 
         _checkInitialHash : function _checkInitialHash() {
@@ -61,7 +85,7 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
          * @return undefined
          */
         _setGlobarVars : function _setGlobarVars() {
-            this._windowInnerHeight = window.innerHeight;
+            this._windowInnerHeight = this._window.innerHeight;
             this._availableWidth = this.element.clientWidth;
             this._updateAverageLayerHeight();
         },
@@ -179,7 +203,7 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
 
             if (this._isInitialLoad) {
                 this._isInitialLoad = false;
-                // this.loadImagesVisibleOnViewport();
+                this.loadImagesVisibleOnViewport();
             }
 
             if (scrollDirection) {
@@ -219,6 +243,22 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
          */
         getAverageLayerHeight : function getAverageLayerHeight() {
             return this._averageLayerHeight;
+        },
+
+        isScrolledIntoView : function isScrolledIntoView(el) {
+            var r = el.getBoundingClientRect();
+
+            return ((r.top < this._windowInnerHeight) && (r.bottom >= 0));
+        },
+
+        loadImagesVisibleOnViewport : function loadImagesVisibleOnViewport() {
+            this.getCurrentMonthLayer().getPosts().forEach(function(post) {
+                if (post.imageLoaded === false) {
+                    if (this.isScrolledIntoView(post.el)) {
+                        post.loadImage();
+                    }
+                }
+            }, this);
         }
     }
 });
