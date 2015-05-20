@@ -22,7 +22,7 @@ Class(CV, 'Post').inherits(Widget).includes(CV.WidgetUtils)({
     ',
 
     create : function create(config) {
-        var type = this.prototype.format.capitalizeFirstLetter(config.source_type);
+        var type = this.prototype.format.capitalizeFirstLetter(config.sourceType);
 
         return new window['CV']['Post' + type](config);
     },

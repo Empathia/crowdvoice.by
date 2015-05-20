@@ -72,15 +72,15 @@ Class(CV, 'PostAudio').inherits(CV.Post)({
 
             this.el.insertAdjacentHTML('beforeend', this.constructor.ACTIONS_HTML);
 
-            if (this.image_url) {
-                this.dom.updateAttr('src', this.el.querySelector('.post-card-image'), this.image_url);
+            if (this.image) {
+                this.dom.updateAttr('src', this.el.querySelector('.post-card-image'), this.image);
                 this.dom.show(this.el.querySelector('.post-card-image-wrapper'));
             }
 
-            if (this.source_url && this.source_service) {
+            if (this.sourceUrl && this.sourceService) {
                 var a = this.dom.create('a');
-                this.dom.updateAttr('href', a, this.source_url);
-                this.dom.updateText(a, this.source_service + " ");
+                this.dom.updateAttr('href', a, this.sourceUrl);
+                this.dom.updateText(a, this.sourceService + " ");
                 this.dom.updateText(this.sourceElement, 'from ');
                 this.sourceElement.appendChild(a);
             } else {
@@ -99,7 +99,7 @@ Class(CV, 'PostAudio').inherits(CV.Post)({
 
             this.dom.updateText(this.el.querySelector('.post-card-audio-player-total-time-db'), this.audio_duration);
 
-            this.audio = new CV.Audio(this.source_url);
+            this.audio = new CV.Audio(this.sourceUrl);
 
             this._bindEvents();
         },

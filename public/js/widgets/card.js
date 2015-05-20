@@ -130,19 +130,19 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
       this.dom.updateText(this.descriptionEl, this.author.description);
       this.dom.updateText(this.locationEl, this.author.location);
       this.dom.updateText(this.joinedAtEl, moment(this.author.created_at).format('MMM YYYY'));
-      this.dom.updateText(this.totalVoicesEl, this.format.numbers(this.author.total_voices));
+      this.dom.updateText(this.totalVoicesEl, this.format.numberUS(this.author.total_voices));
       this.dom.updateText(this.totalVoicesLabelEl, 'Voices');
-      this.dom.updateText(this.totalFollowersEl, this.format.numbers(this.author.followers));
+      this.dom.updateText(this.totalFollowersEl, this.format.numberUS(this.author.followers));
       this.dom.updateText(this.totalFollowersLabelEl, 'Followers');
-      this.dom.updateText(this.totalFollowingEl, this.format.numbers(this.author.following));
+      this.dom.updateText(this.totalFollowingEl, this.format.numberUS(this.author.following));
       this.dom.updateText(this.totalFollowingLabelEl, 'Following');
 
       if (this.type === "organization") {
         this.dom.updateText(this.collaborationsLabelEl, 'Members');
-        this.dom.updateText(this.collaborationsEl, this.format.numbers(this.author.collaborators));
+        this.dom.updateText(this.collaborationsEl, this.format.numberUS(this.author.collaborators));
       } else {
         this.dom.updateText(this.collaborationsLabelEl, 'Members');
-        this.dom.updateText(this.collaborationsEl, this.format.numbers(this.author.collaborations));
+        this.dom.updateText(this.collaborationsEl, this.format.numberUS(this.author.collaborations));
       }
 
       var btnActions = {

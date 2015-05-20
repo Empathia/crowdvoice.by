@@ -8,7 +8,7 @@ window.$ = jQuery;
 // our namespace
 window.CV = {};
 
-require('../../lib/js/widget-utils.js');
+require('./lib/widget-utils.js');
 require('./vendor/Widget.js');
 
 window.validate = require('validate');
@@ -27,6 +27,10 @@ require('./widgets/voice-cover.js');
 require('./widgets/voice-cover-mini.js');
 require('./widgets/category-cover.js');
 
+require('./views/voice');
+require('./widgets/voice-post-layers-manager');
+require('./widgets/voice-posts-layer');
+require('./widgets/voice-about-box');
 require('./widgets/post.js');
 require('./widgets/post-image.js');
 require('./widgets/post-video.js');
