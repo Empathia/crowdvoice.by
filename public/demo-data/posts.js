@@ -83,6 +83,7 @@ var posts = [
     created_at: '2015-03-30T13:59:47Z',
   },
 
+/*
   {
     source_type: 'audio',
     source_url: '/img/sample/Halloween_Vocals-Mike_Koenig-517765553.mp3',
@@ -147,6 +148,7 @@ var posts = [
     total_saves: 4,
     created_at: '2015-03-30T13:59:47Z'
   },
+*/
 
   {
     source_type: 'image',
