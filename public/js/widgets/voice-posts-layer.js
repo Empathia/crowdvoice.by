@@ -1,14 +1,31 @@
 
+var Waterfall = require('../lib/waterfall');
+
 Class(CV, 'VoicePostsLayer').inherits(Widget)({
     HTML : '<div class="cv-voice-posts-layer"></div>',
 
     prototype : {
+        /* OPTIONS */
+        dateString : '',
+        columnWidth : 350,
+
+        /* PRIVATE PROPERTIES */
         _finalHeightIsKnow : false,
+        waterfall : null,
 
         init : function init(config) {
             Widget.prototype.init.call(this, config);
 
             this.el = this.element[0];
+
+            this.waterfall = new Waterfall({
+                containerElement : this.el,
+                columnWidth : this.columnWidth,
+                gutter : 20,
+                centerItems : true
+            });
+
+            this.el.dataset.date = this.dateString;
         },
 
         /* Sets the heigth of the layer. If a number is provided it will
@@ -41,7 +58,10 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
                 this.appendChild(CV.Post.create(posts[i])).render(frag);
             }
 
+            this.waterfall.addItems([].slice.call(frag.childNodes, 0));
             this.el.appendChild(frag);
+            this.waterfall.layout();
+
             this._finalHeightIsKnow = true;
         },
 
@@ -63,6 +83,8 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
             while (this.children.length > 0) {
                 this.children[0].destroy();
             }
+
+            this.waterfall.flushItems();
         }
     }
 });

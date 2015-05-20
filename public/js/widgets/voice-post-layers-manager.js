@@ -92,7 +92,8 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
                 dateString = moment(this.lastPostDate).month(-i).format('YYYY-MM');
                 layer = new CV.VoicePostsLayer({
                     name : 'postsLayer_' + dateString,
-                    dateString : dateString
+                    dateString : dateString,
+                    columnWidth : this.columnWidth
                 });
 
                 // handle special case
