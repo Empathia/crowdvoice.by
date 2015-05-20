@@ -11,12 +11,17 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
 
         /* PRIVATE PROPERTIES */
         _finalHeightIsKnow : false,
+        _resizeTimer : null,
+        _resizeTime : 250,
+        _resizeHandlerRef : null,
+        _window : null,
         waterfall : null,
 
         init : function init(config) {
             Widget.prototype.init.call(this, config);
 
             this.el = this.element[0];
+            this._window = window;
 
             this.waterfall = new Waterfall({
                 containerElement : this.el,
@@ -26,6 +31,24 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
             });
 
             this.el.dataset.date = this.dateString;
+
+            this._bindEvents();
+        },
+
+        _bindEvents : function _bindEvents() {
+            this._resizeHandlerRef = this.resizeHandler.bind(this);
+            this._window.addEventListener('resize', this._resizeHandlerRef);
+        },
+
+        resizeHandler : function resizeHandler() {
+            var _this = this;
+
+            if (this._resizeTimer) this._window.clearInterval(this._resizeTimer);
+
+            this._resizeTimer = this._window.setTimeout(function() {
+                if (_this.waterfall.getItems().length)
+                    _this.waterfall.layout();
+            }, this._resizeTime);
         },
 
         /* Sets the heigth of the layer. If a number is provided it will
@@ -85,6 +108,25 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
             }
 
             this.waterfall.flushItems();
+        },
+
+        destroy : function destroy() {
+            Widget.prototype.destroy.call(this);
+
+            this._window.removeEventListener('resize', this._resizeHandlerRef);
+            this._resizeHandlerRef = null;
+
+            this.waterfall.destroy();
+
+            this.dateString = null;
+            this.columnWidth = null;
+
+            this._finalHeightIsKnow = false;
+            this._resizeTimer = null;
+            this._resizeTime = 250;
+            this._resizeHandlerRef = null;
+            this._window = null;
+            this.waterfall = null;
         }
     }
 });
