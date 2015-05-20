@@ -8,7 +8,7 @@ window.$ = jQuery;
 // our namespace
 window.CV = {};
 
-require('../../lib/js/widget-utils.js');
+require('./lib/widget-utils.js');
 require('./vendor/Widget.js');
 
 window.validate = require('validate');
