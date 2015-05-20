@@ -23,12 +23,19 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
         _currentMonthString : '',
         _availableWidth : 0,
         _windowInnerHeight : 0,
+        _windowInnerWidth : 0,
         _averageLayerHeight : 0,
         _listenScrollEvent : true,
         _isInitialLoad : true,
         _lastScrollTop : 0,
         _scrollTimer : null,
         _scrollTime : 250,
+        /* layer offset left to perform hit-test on layer elements
+         * sidebar = 60, main-container-padding-left = 40
+         */
+        _layersOffsetLeft : 100,
+
+        LAYER_CLASSNAME : 'cv-voice-posts-layer',
 
         init : function init(config) {
             Object.keys(config || {}).forEach(function(propertyName) {
@@ -57,8 +64,20 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
         scrollHandler : function scrollHandler() {
             var st = window.scrollY;
             var scrollingUpwards = (st < this._lastScrollTop);
+            var y = 1;
+            var el;
 
             if (!this._listenScrollEvent) return;
+
+            if (!scrollingUpwards) y = this._windowInnerHeight - 1;
+
+            el = document.elementFromPoint(this._layersOffsetLeft, y);
+
+            if (el.classList.contains(this.LAYER_CLASSNAME)) {
+                if (el.dataset.date !== this._currentMonthString) {
+                    this._beforeRequest(el.dataset.date, scrollingUpwards);
+                }
+            }
 
             this._lastScrollTop = st;
 
@@ -86,6 +105,7 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
          */
         _setGlobarVars : function _setGlobarVars() {
             this._windowInnerHeight = this._window.innerHeight;
+            this._windowInnerWidth = this._window.innerWidth;
             this._availableWidth = this.element.clientWidth;
             this._updateAverageLayerHeight();
         },
@@ -154,7 +174,6 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
         },
 
         _beforeRequest : function _beforeRequest(dateString, scrollDirection) {
-            console.log(dateString)
             if (dateString == this._currentMonthString) {
                 return;
             }

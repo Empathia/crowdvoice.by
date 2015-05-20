@@ -73,7 +73,10 @@ Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport)({
                     id : this.id,
                     description : this.description,
                     firstPostDate : this.firstPostDate,
-                    lastPostDate : this.lastPostDate
+                    lastPostDate : this.lastPostDate,
+                    averagePostTotal : 120,
+                    averagePostWidth : 350,
+                    averagePostHeight : 500
                 })
             );
         },
