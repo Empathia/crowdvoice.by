@@ -10,7 +10,6 @@ Tellurium.reporter = new Tellurium.Reporter.Pretty({
   colorsEnabled : true
 });
 
-var clone = require('clone');
 var async = require('async');
 var crypto = require('crypto');
 
@@ -24,6 +23,8 @@ function setup (done) {
   Promise.all([
     db('Entities').del(),
     db('EntityFollower').del(),
+    db('EntityOwner').del(),
+    db('Voices').del(),
   ]).then(function () {
     done();
   });
