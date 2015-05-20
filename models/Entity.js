@@ -227,6 +227,14 @@ var Entity = Class('Entity').inherits(Argon.KnexModel)({
           }
         });
       },
+
+      /* Return voices for which the current entity is owner.
+       * @method voices
+       * @return voices <Array>
+       */
+      voices: function voices (done) {
+        Voice.find({owner_id: this.id}, done);
+      }
   }
 });
 
