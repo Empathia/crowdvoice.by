@@ -1,4 +1,4 @@
-Class('RequestMembership').inherits(Widget)({
+Class(CV, 'RequestMembership').inherits(Widget)({
 
 	ELEMENT_CLASS : 'cv-form-request-membership',
 
@@ -21,7 +21,7 @@ Class('RequestMembership').inherits(Widget)({
             Widget.prototype.init.call(this, config);
             var sendElement = this.element.find('.send');
 
-			new Input({
+			new CV.Input({
 			    type    	: '',
 			    name  		: '',
 			    style 		: '',
@@ -33,7 +33,7 @@ Class('RequestMembership').inherits(Widget)({
 
 			//********** bottom ***********
 
-            new Button({
+            new CV.Button({
 			    style   : 'primary full',
 			    type    : 'single',
 			    label   : 'Submit Request',

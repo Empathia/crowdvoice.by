@@ -33,20 +33,20 @@
 
 
   var posts = [];
-  new Check({ label : 'All Posts', name : '' }).render(menuLeftContainer);
-  new Check({ label : 'Images', name : '' }).render(menuLeftContainer);
-  new Check({ label : 'Videos', name : '' }).render(menuLeftContainer);
-  new Check({ label : 'Audio', name : '' }).render(menuLeftContainer);
-  new Check({ label : 'Articles', name : '' }).render(menuLeftContainer);
-  new Check({ label : 'Text', name : '' }).render(menuLeftContainer);
-  new Check({ label : 'Tweets', name : '' }).render(menuLeftContainer);
+  new CV.Check({ label : 'All Posts', name : '' }).render(menuLeftContainer);
+  new CV.Check({ label : 'Images', name : '' }).render(menuLeftContainer);
+  new CV.Check({ label : 'Videos', name : '' }).render(menuLeftContainer);
+  new CV.Check({ label : 'Audio', name : '' }).render(menuLeftContainer);
+  new CV.Check({ label : 'Articles', name : '' }).render(menuLeftContainer);
+  new CV.Check({ label : 'Text', name : '' }).render(menuLeftContainer);
+  new CV.Check({ label : 'Tweets', name : '' }).render(menuLeftContainer);
 
-  new Input({type : 'search', placeholder : 'Search posts...'}).render(menuRightContainer);
-
-
+  new CV.Input({type : 'search', placeholder : 'Search posts...'}).render(menuRightContainer);
 
   <%= JSON.stringify(posts) %>.forEach(function(post) {
-    posts.push(CV.Post.create(post).render(postsContainer));
+    var postContainer = $('<div class="-col-6 -pr1 -pl1"></div>')
+    posts.push(CV.Post.create(post).render(postContainer));
+    $(postsContainer).append(postContainer);
   });
 
 </script>

@@ -1,4 +1,4 @@
-Class('Input').inherits(Widget)({
+Class(CV, 'Input').inherits(Widget)({
 
 	ELEMENT_CLASS : '',
 
@@ -33,7 +33,8 @@ Class('Input').inherits(Widget)({
             if (this.style){ this.inputEl.addClass(this.style) };
             if (this.type == "search"){
                 //add icon
-                this.inputEl.find('svg').show();
+                this.inputEl.addClass('search');
+
             }
             if (!this.isArea){
                 this.inputEl.append(this.constructor.INPUT_ELEMENT);

@@ -1,4 +1,4 @@
-Class('CreateOrganization').inherits(Widget)({
+Class(CV, 'CreateOrganization').inherits(Widget)({
 
 	ELEMENT_CLASS : 'cv-form-create-organization',
 
@@ -27,7 +27,7 @@ Class('CreateOrganization').inherits(Widget)({
 
             //name handler description location
 
-			new Input({
+			new CV.Input({
 			    type    	: '',
 			    name  		: '',
 			    style 		: '',
@@ -35,7 +35,7 @@ Class('CreateOrganization').inherits(Widget)({
 			    title 		: "Organization Name",
 			}).render(this.element.find('.placeholder-main'));
 
-			new Input({
+			new CV.Input({
 			    type    	: '',
 			    name  		: '',
 			    style 		: '',
@@ -44,7 +44,7 @@ Class('CreateOrganization').inherits(Widget)({
 			    title 		: "Handler",
 			}).render(this.element.find('.placeholder-main'));
 
-			new Input({
+			new CV.Input({
 			    type    	: '',
 			    name  		: '',
 			    style 		: '',
@@ -54,7 +54,7 @@ Class('CreateOrganization').inherits(Widget)({
 			    subTitle 	: "140 characters max"
 			}).render(this.element.find('.placeholder-main'));
 
-			new Input({
+			new CV.Input({
 			    type    	: '',
 			    name  		: '',
 			    style 		: '',
@@ -62,7 +62,7 @@ Class('CreateOrganization').inherits(Widget)({
 			    title 		: "Location",
 			}).render(this.element.find('.placeholder-main'));
 
-	        new Image({
+	        new CV.Image({
 			    type    	: '',
 			    name  		: '',
 			    style 		: '',
@@ -70,7 +70,7 @@ Class('CreateOrganization').inherits(Widget)({
 			    title 		: "Logo / badge"
 			}).render(this.element.find('.placeholder-logo'));
 
-			new Image({
+			new CV.Image({
 			    type    	: '',
 			    name  		: '',
 			    style 		: '',
@@ -80,7 +80,7 @@ Class('CreateOrganization').inherits(Widget)({
 
 			//********** bottom ***********
 
-            new Button({
+            new CV.Button({
 			    style   : 'primary full',
 			    type    : 'single',
 			    label   : 'Create Organization',

@@ -1,4 +1,4 @@
-Class('Modal').inherits(Widget)({
+Class(CV, 'Modal').inherits(Widget)({
 
 	ELEMENT_CLASS : 'cv-modal-container',
 
@@ -40,7 +40,7 @@ Class('Modal').inherits(Widget)({
 
             var closeButton;
             this.appendChild(
-                closeButton = new Button({
+                closeButton = new CV.Button({
                     style   : 'clean',
                     type    : 'single',
                     label   : 'X',

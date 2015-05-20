@@ -1,4 +1,4 @@
-Class('JumpToDate').inherits(Widget)({
+Class(CV, 'JumpToDate').inherits(Widget)({
 
 	ELEMENT_CLASS : 'cv-jumptodate',
 

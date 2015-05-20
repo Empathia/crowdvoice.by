@@ -1,4 +1,4 @@
-Class('UsersList').inherits(Widget)({
+Class(CV, 'UsersList').inherits(Widget)({
 
 	ELEMENT_CLASS : 'cv-userslist',
 
@@ -44,7 +44,7 @@ Class('UsersList').inherits(Widget)({
                 var userEl = $(userDOM);
 
                 if(this.hasButton){
-                    new Button({
+                    new CV.Button({
                         style   : '',
                         type    : 'single',
                         label   : 'Remove',

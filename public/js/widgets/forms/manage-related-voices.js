@@ -1,4 +1,4 @@
-Class('ManageRelatedVoices').inherits(Widget)({
+Class(CV, 'ManageRelatedVoices').inherits(Widget)({
 
 	ELEMENT_CLASS : 'cv-form-manage-related-voices',
 
@@ -21,7 +21,7 @@ Class('ManageRelatedVoices').inherits(Widget)({
             Widget.prototype.init.call(this, config);
             var sendElement = this.element.find('.send');
 
-			new Input({
+			new CV.Input({
 			    type    	: '',
 			    name  		: '',
 			    style 		: '',
@@ -30,7 +30,7 @@ Class('ManageRelatedVoices').inherits(Widget)({
 			    title 		: "Add voices that are related to this voice (?)"
 			}).render(this.element.find('.placeholder-main'));
 
-			new VoicesList({
+			new CV.VoicesList({
 			    type    	: '',
 			    name  		: '',
 			    style 		: '',

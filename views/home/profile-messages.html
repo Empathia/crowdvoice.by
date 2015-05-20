@@ -199,11 +199,11 @@
 
   //new Check({ label : 'Tweets', name : '' }).render(menuLeftContainer);
 
-	new Input({type : 'search', placeholder : 'Search...'}).render(searchElement);
+	new CV.Input({type : 'search', placeholder : 'Search...'}).render(searchElement);
 
-	new Input({style : '', type : '', isArea : true, placeholder : 'Write a reply'}).render(createElement);
+	new CV.Input({style : '', type : '', isArea : true, placeholder : 'Write a reply'}).render(createElement);
 
-	var btn = new Button({
+	var btn = new CV.Button({
 		style   : 'primary',
 		type    : 'single',
 		label   : 'Reply',
@@ -227,7 +227,7 @@
 		"2": {name: 'Accept as an Anonymous Member'},
 		"3": {name: 'Refuse'}
 	};
-	new Button({
+	new CV.Button({
 		style   : '',
 		type    : 'multiple',
 		name    : 'buttonMultiple',

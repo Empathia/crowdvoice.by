@@ -1,4 +1,4 @@
-Class('ManageContributors').inherits(Widget)({
+Class(CV, 'ManageContributors').inherits(Widget)({
 
 	ELEMENT_CLASS : 'cv-form-manage-contributors',
 
@@ -22,7 +22,7 @@ Class('ManageContributors').inherits(Widget)({
             var sendElement = this.element.find('.send');
 
 
-			new Input({
+			new CV.Input({
 			    type    	: '',
 			    name  		: '',
 			    style 		: '',
@@ -31,7 +31,7 @@ Class('ManageContributors').inherits(Widget)({
 			    title 		: "Invite users to contribute (?)"
 			}).render(this.element.find('.placeholder-main'));
 
-			new Input({
+			new CV.Input({
 			    type    	: '',
 			    name  		: '',
 			    style 		: '',
@@ -71,7 +71,7 @@ Class('ManageContributors').inherits(Widget)({
 			  }
 			];
 
-			new UsersList({
+			new CV.UsersList({
 			    type    	: '',
 			    name  		: '',
 			    style 		: '',

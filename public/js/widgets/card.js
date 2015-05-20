@@ -151,7 +151,7 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
         "3": {name: 'Follow'}
       };
 
-      new Button({
+      new CV.Button({
           style   : '',
           type    : 'multiple',
           name    : 'buttonActions',

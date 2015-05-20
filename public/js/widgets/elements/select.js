@@ -1,4 +1,4 @@
-Class('Select').inherits(Widget)({
+Class(CV, 'Select').inherits(Widget)({
 
 	ELEMENT_CLASS : '',
 
@@ -80,7 +80,7 @@ Class('Select').inherits(Widget)({
                     if (this.type == "check"){
 
                         var optionEl = $('<li></li>');
-                        var check = this.appendChild(new Check({
+                        var check = this.appendChild(new CV.Check({
                             id          : key,
                             label       : this.options[key].name,
                             name        : this.name + '-' + key,

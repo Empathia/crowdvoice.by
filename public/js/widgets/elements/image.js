@@ -1,4 +1,4 @@
-Class('Image').inherits(Widget)({
+Class(CV, 'Image').inherits(Widget)({
 
 	ELEMENT_CLASS : '',
 

@@ -1,4 +1,4 @@
-Class('Report').inherits(Widget)({
+Class(CV, 'Report').inherits(Widget)({
 
 	ELEMENT_CLASS : 'cv-form-report',
 
@@ -26,7 +26,7 @@ Class('Report').inherits(Widget)({
 			  "2": {name: 'Ferguson Unrest'},
 			  "3": {name: 'Unemployment in Detroit'}
 			};
-			new Select({
+			new CV.Select({
 			  	label 		: 'Select one',
 			  	name  		: 'select',
 			  	style 		: 'full',
@@ -35,7 +35,7 @@ Class('Report').inherits(Widget)({
 		    	title 		: "Why are you reporting?"
 			}).render(this.element.find('.placeholder-main'));
 
-			new Input({
+			new CV.Input({
 			    type    	: '',
 			    name  		: '',
 			    style 		: '',
@@ -49,7 +49,7 @@ Class('Report').inherits(Widget)({
 
 			//********** bottom ***********
 
-            new Button({
+            new CV.Button({
 			    style   : 'primary full',
 			    type    : 'single',
 			    label   : 'Submit',

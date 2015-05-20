@@ -1,4 +1,4 @@
-Class('Bubble').inherits(Widget)({
+Class(CV, 'Bubble').inherits(Widget)({
 
 	ELEMENT_CLASS : 'cv-bubble',
 
@@ -32,7 +32,7 @@ Class('Bubble').inherits(Widget)({
             this.bodyElement = this.element.find('.body');
 
             this.appendChild(
-                new Button({
+                new CV.Button({
                     style   : 'clean',
                     type    : 'single',
                     label   : 'X',
