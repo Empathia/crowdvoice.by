@@ -42,6 +42,14 @@ require('./widgets/bubble/help.js');
 require('./widgets/notification.js');
 require('./widgets/modal.js');
 require('./widgets/forms/create-voice.js');
+require('./widgets/forms/create-organization.js');
+require('./widgets/forms/invite-to-contribute.js');
+require('./widgets/forms/manage-contributors.js');
+require('./widgets/forms/manage-related-voices.js');
+require('./widgets/forms/users-list.js');
+require('./widgets/forms/request-membership.js');
+require('./widgets/forms/report.js');
+require('./widgets/forms/block.js');
 
 require('./widgets/elements/image.js');
 require('./widgets/elements/button.js');

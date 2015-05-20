@@ -17,6 +17,7 @@ Class('VoiceCoverMini').inherits(Widget).includes(CV.WidgetUtils)({
           </div>\
         </div>\
       </div>\
+      <div class="action"></div>\
     </article>\
   ',
 
