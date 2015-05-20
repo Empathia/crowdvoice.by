@@ -22,6 +22,8 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
         _availableWidth : 0,
         _windowInnerHeight : 0,
         _averageLayerHeight : 0,
+        _listenScrollEvent : true,
+        _isInitialLoad : true,
 
         init : function init(config) {
             Object.keys(config || {}).forEach(function(propertyName) {
@@ -152,8 +154,58 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
             this._socket.emit('getMonth', dateString, scrollDirection);
         },
 
+        /* Fills a specific layer with childs (posts).
+         * Stores the server response.
+         * Updates the _listenScrollEvent flag.
+         * @param postsData <required> [Objects Array] the raw data of Post
+         *  Models retrived from the server. We us this data to crate Post
+         *  Widgets.
+         * @dateString <required> [String] the data's month-year we received
+         * @scrollDirection <optional> [Boolean] {false} false for downwards
+         *  1 for upwards
+         * @return undefined
+         */
         loadLayer : function loadLayer(postsData, dateString, scrollDirection) {
-            console.log( this.getCurrentMonthLayer())
+            var currentLayer = this.getCurrentMonthLayer();
+
+            this._listenScrollEvent = false;
+
+            if (typeof this._cachedData[dateString] === 'undefined') {
+                this._cachedData[dateString] = postsData;
+            }
+
+            currentLayer.addPosts(postsData);
+
+            if (this._isInitialLoad) {
+                this._isInitialLoad = false;
+                // this.loadImagesVisibleOnViewport();
+            }
+
+            if (scrollDirection) {
+                var next = currentLayer.getNextSibling();
+                next = next && next.getNextSibling();
+
+                if (next) next.empty();
+
+                if (currentLayer.isFinalHeightKnow() === false) {
+                    // compensate the heigth difference when scrolling up
+                    var diff = currentLayer.getHeight() - this.getAverageLayerHeight();
+                    var y = window.scrollY + diff;
+
+                    window.scrollTo(0, y);
+                }
+
+                this._listenScrollEvent = true;
+
+                return;
+            }
+
+            var prev = currentLayer.getPreviousSibling();
+            prev = prev && prev.getPreviousSibling();
+
+            if (prev) prev.empty();
+
+            this._listenScrollEvent = true;
         },
 
         getCurrentMonthLayer : function getCurrentMonthLayer() {
