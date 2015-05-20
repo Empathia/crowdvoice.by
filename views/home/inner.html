@@ -1,3 +1,5 @@
+<script src="/socket.io/socket.io.js"></script>
+
 <main role="main" class="cv-main-content -rel">
   <div class="voice-background-cover">
     <img class="voice-background-cover-image" src="/img/sample/voices/cover-00.jpg" alt="">
@@ -6,25 +8,24 @@
   <section class="voice-intro -rel">
     <h1 class="voice-heading -font-bold -m0"><%= voiceInfo.title %></h1>
     <div class="voice-stats">
-      <span class="-inline-block"><b><%= voiceInfo.postCount %></b> posts</span> &middot;
-      <span class="-inline-block"><b><%= voiceInfo.followersCount %></b> followers</span> &middot;
+      <span class="-inline-block">
+        <b class="voice-stats__post-count"><%= voiceInfo.postCount %></b> posts
+      </span> &middot;
+      <span class="-inline-block">
+        <b class="voice-stats__followers">0</b> followers
+      </span> &middot;
+
+      <% if(voiceInfo.locationName) { %>
+        <span class="-inline-block">
+          <%= voiceInfo.locationName %>
+        </span> &middot;
+      <% } %>
+
+      <button class="voice-about-show-btn ui-btn -sm -outline">About</button>
     </div>
   </section>
 
   <section class="voice-posts -rel">
-    <article class="voice-card-about post-card">
-      <div class="voice-card-about-updated-at"><%= voiceInfo.updatedAt %></div>
-      <div class="voice-card-about-header -row">
-        <div class="-float-left">
-          <img class="voice-card-about-logo -float-left" src="/img/views/voice/cv-logo-placeholder.png" width="28" height="32" alt="">
-          <h3 class="voice-card-about-title -font-bold -float-left">About this Voice</h3>
-        </div>
-        <button class="ui-btn -sm -outline -float-right">Hide</button>
-      </div>
-      <div class="voice-card-about-description">
-        <%= voiceInfo.description %>
-      </div>
-    </article>
   </section>
 
   <footer class="voice-footer">
@@ -73,7 +74,21 @@
 </main>
 
 <script>
-  var postsContainer = document.querySelector('.voice-posts');
+  var voiceInfo = <%= JSON.stringify(voiceInfo) %>;
+  var otherOptions = {
+    followerCount         : 1260,
+    postCountElement      : document.querySelector('.voice-stats__post-count'),
+    followersCountElement : document.querySelector('.voice-stats__followers'),
+    aboutBoxButtonElement : document.querySelector('.voice-about-show-btn')
+  };
+
+  for (var propertyName in otherOptions) {
+    voiceInfo[propertyName] = otherOptions[propertyName];
+  }
+
+  var Voice = new CV.Voice( voiceInfo );
+
+  /*var postsContainer = document.querySelector('.voice-posts');
   var posts = [];
 
   <%= JSON.stringify(posts) %>.forEach(function(post) {
@@ -83,5 +98,5 @@
   new CV.PopoverRequestToContribute({
     toggler: document.querySelector('.request-to-contribute-button'),
     container: document.querySelector('.request-to-contribute-container')
-  });
+  });*/
 </script>

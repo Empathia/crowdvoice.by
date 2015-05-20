@@ -6,7 +6,6 @@ Class(CV, 'PostVideo').inherits(CV.Post)({
     HTML : '\
     <article class="post-card video">\
         <div class="post-card-image-wrapper">\
-            <img class="post-card-image"/>\
             <div class="post-card-play-button">\
                 <svg class="post-card-svg-play">\
                     <use xlink:href="#svg-play"></use>\
@@ -43,25 +42,29 @@ Class(CV, 'PostVideo').inherits(CV.Post)({
     reV : new RegExp('[0-9]+'),
 
     prototype : {
+        imageLoaded : false,
+
         init : function init(config) {
             Widget.prototype.init.call(this, config);
 
             this.el = this.element[0];
             this.sourceElement = this.el.querySelector('.post-card-meta-source');
             this.dateTimeElement = this.el.querySelector('.post-card-meta-date');
-            this.videoWrapper = this.el.querySelector('.post-card-image-wrapper');
+            this.imageWrapperElement = this.el.querySelector('.post-card-image-wrapper');
 
             this.el.insertAdjacentHTML('beforeend', this.constructor.ACTIONS_HTML);
 
-            if (this.image_url) {
-                this.dom.updateAttr('src', this.el.querySelector('.post-card-image'), this.image_url);
-                this.dom.show(this.el.querySelector('.post-card-image-wrapper'));
+            if (this.image) {
+                this.imageWrapperElement.style.height = this.imageHeight + 'px';
+                this.imageWrapperElement.style.display = 'block';
+            } else {
+                this.imageLoaded = true;
             }
 
-            if (this.source_url && this.source_service) {
+            if (this.sourceUrl && this.sourceService) {
                 var a = this.dom.create('a');
-                this.dom.updateAttr('href', a, this.source_url);
-                this.dom.updateText(a, this.source_service + " ");
+                this.dom.updateAttr('href', a, this.sourceUrl);
+                this.dom.updateText(a, this.sourceService + " ");
                 this.dom.updateText(this.sourceElement, 'from ');
                 this.sourceElement.appendChild(a);
             } else {
@@ -83,27 +86,34 @@ Class(CV, 'PostVideo').inherits(CV.Post)({
 
         _bindEvents : function _bindEvents() {
             this.addVideoHandler = this.addVideo.bind(this);
-            this.videoWrapper.addEventListener('click', this.addVideoHandler);
+            this.imageWrapperElement.addEventListener('click', this.addVideoHandler);
+        },
+
+        loadImage : function loadImage() {
+            if (this.image) {
+                this.dom.updateBgImage(this.imageWrapperElement, this.image);
+                this.imageLoaded = true;
+            }
         },
 
         addVideo : function() {
-            this.videoWrapper.removeEventListener('click', this.addVideoHandler);
+            this.imageWrapperElement.removeEventListener('click', this.addVideoHandler);
 
             var iframe = document.createElement('iframe');
             this.dom.updateAttr('frameborder', iframe, 0);
             this.dom.updateAttr('allowfullscreen', iframe, true);
 
-            if (this.source_service === 'youtube') {
-                var id = this.source_url.match(this.constructor.reYT)[1];
+            if (this.sourceService === 'youtube') {
+                var id = this.sourceUrl.match(this.constructor.reYT)[1];
                 this.dom.updateAttr('src', iframe, 'https://www.youtube.com/embed/' + id + '?autoplay=1');
             }
 
-            if (this.source_service === 'vimeo') {
-                var id = this.source_url.match(this.constructor.reV)[0];
+            if (this.sourceService === 'vimeo') {
+                var id = this.sourceUrl.match(this.constructor.reV)[0];
                 this.dom.updateAttr('src', iframe, 'https://player.vimeo.com/video/' + id + '?autoplay=1');
             }
 
-            this.videoWrapper.appendChild(iframe);
+            this.imageWrapperElement.appendChild(iframe);
         }
     }
 });

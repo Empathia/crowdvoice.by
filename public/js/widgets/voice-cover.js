@@ -89,7 +89,7 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
       this.dom.updateText(this.el.querySelector('.voice-cover-title'), this.title);
       this.dom.updateText(this.el.querySelector('.voice-cover-description'), this.description);
 
-      this.dom.updateText(this.el.querySelector('.voice-cover-followers'), this.format.numbers(this.followers));
+      this.dom.updateText(this.el.querySelector('.voice-cover-followers'), this.format.numberUS(this.followers));
       this.dom.updateText(this.dateTimeElement, moment(this.updated_at).fromNow());
       this.dom.updateAttr('datetime', this.dateTimeElement, this.updated_at);
 
@@ -103,8 +103,9 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
         this.element.addClass('hasActions');
         this.addActions();
       }
+
       // 21 == 3 weeks (days)
-      if (moment().diff(moment(this.dom.updated_at), 'days') <= 21) {
+      if (moment().diff(moment(this.updated_at), 'days') <= 21) {
         this.addNewBadge();
       }
     },

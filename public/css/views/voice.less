@@ -60,6 +60,7 @@
 }
 
 .voice-stats {
+  height: 30px;
   padding: .5em 0 6em;
   border-top: 1px solid rgba(255, 255, 255, .2);
   color: rgba(255, 255, 255, 0.5);
@@ -71,8 +72,7 @@
   // column-gap: 1.5rem;
 
   .post-card {
-    width: 30%;
-    margin: 0 .5rem 1rem;
+    width: 350px;
 
     &:hover {
       box-shadow: 0 0 0 2px @color-primary;
@@ -82,9 +82,14 @@
   }
 
   .voice-card-about {
+    display: none;
     padding: 25px;
 
     &:hover {box-shadow: none}
+
+    &.active {
+      display: inline-block;
+    }
   }
 }
 
