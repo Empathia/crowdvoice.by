@@ -1,6 +1,6 @@
 var OrganizationsController = Class('OrganizationsController').inherits(RestfulController)({
 
-  routesBlackList: /(signup|login|logout|user|organization|entity|dist|session)/,
+  routesBlackList: /^\/(signup|login|logout|user|organization|entity|dist|session)($|\/)/,
 
   isBlackListed : function isBlackListed (path) {
     return path.match(this.routesBlackList) ? true : false;
@@ -13,25 +13,24 @@ var OrganizationsController = Class('OrganizationsController').inherits(RestfulC
       application.router.route('/organization').post(this.create);
       application.router.route('/organization/new').get(this.new);
 
-      application.router.route('/:profile_name*').all(this.getOrganization);
-      application.router.route('/:profile_name/edit').get(this.edit);
-      application.router.route('/:profile_name').get(this.show);
-      application.router.route('/:profile_name').put(this.update);
+      application.router.route('/organization/:id*').all(this.getOrganization);
+      application.router.route('/:profile_name').get(this.showByProfileName);
+      application.router.route('/organization/:id').get(this.show);
+      application.router.route('/organization/:id').put(this.update);
+      application.router.route('/organization/:id/edit').get(this.edit);
 
-      application.router.route('/:profile_name/follow').post(this.follow);
-      application.router.route('/:profile_name/invite').post(this.invite);
-      application.router.route('/:profile_name/voices').get(this.voices);
+      application.router.route('/organization/:id/follow').post(this.follow);
+      application.router.route('/organization/:id/invite_entity').post(this.inviteEntity);
+      application.router.route('/organization/:id/voices').get(this.voices);
     },
 
     getOrganization : function getOrganization (req, res, next) {
-      if (OrganizationsController.isBlackListed(req.path)) { next(); return; }
-
       Entity.find({
-        type: 'organization',
-        profile_name: req.params.profile_name
+        id: req.params.id,
+        type: 'organization'
       }, function (err, result) {
         if (err) { next(err); return; }
-        if (result.length === 0) { 
+        if (result.length === 0) {
           res.status(404);
           res.render('shared/404.html');
           return;
@@ -40,11 +39,27 @@ var OrganizationsController = Class('OrganizationsController').inherits(RestfulC
         res.locals.organization = new Entity(result[0]);
         req.organization = new Entity(result[0]);
 
-        // Filter sensitive data
-        res.locals.organization
-        delete(res.locals.organization.id);
-
         next();
+      });
+    },
+
+    showByProfileName : function showByProfileName (req, res, next) {
+      if (OrganizationsController.isBlackListed(req.path)) { next(); return; }
+
+      Entity.find({
+        type: 'organization',
+        profile_name: req.params.profile_name
+      }, function (err, result) {
+        if (err) { next(err); return; }
+        if (result.length === 0) {
+          res.status(404);
+          res.render('shared/404.html');
+          return;
+        }
+
+        res.locals.organization = new Entity(result[0]);
+        req.organization = new Entity(result[0]);
+        res.render('organizations/show.html');
       });
     },
 
@@ -69,12 +84,10 @@ var OrganizationsController = Class('OrganizationsController').inherits(RestfulC
     },
 
     show : function show (req, res, next) {
-      if (OrganizationsController.isBlackListed(req.path)) { next(); return; }
       res.render('organizations/show.html');
     },
 
     edit : function edit (req, res, next) {
-      if (OrganizationsController.isBlackListed(req.path)) { next(); return; }
       res.render('organizations/edit.html', {errors: null});
     },
 
@@ -99,8 +112,6 @@ var OrganizationsController = Class('OrganizationsController').inherits(RestfulC
     },
 
     update : function update (req, res, next) {
-      if (OrganizationsController.isBlackListed(req.path)) { next(); return; }
-
       var org = req.organization;
       org.setProperties({
         name: req.body['name'] || org.name,
@@ -113,7 +124,7 @@ var OrganizationsController = Class('OrganizationsController').inherits(RestfulC
         if (err) {
           res.render('organizations/edit.html', {errors: err});
         } else {
-          res.redirect('/' + org.profileName + '/edit');
+          res.redirect('/organization/' + org.id + '/edit');
         }
       });
     },
@@ -144,16 +155,21 @@ var OrganizationsController = Class('OrganizationsController').inherits(RestfulC
       });
     },
 
-    invite : function invite (req, res, next) {
+    inviteEntity : function inviteEntity (req, res, next) {
       var org = req.organization, entity;
       Entity.find({id: req.body.entityId}, function (err, result) {
         if (err) { next(err); return; }
         if (result.length === 0) { next(new Error('Not found')); return; }
 
+        var user = new User(req.user);
         entity = result[0];
-        org.inviteEntity(entity, function (err) {
+        user.entity(function (err, currentEntity) {
           if (err) { next(err); return; }
-          res.redirect('/' + org.profileName);
+          if (currentEntity.id !== org.id) { next(new Error('Not Authorized')); }
+          org.inviteEntity(entity, function (err) {
+            if (err) { next(err); return; }
+            res.redirect('/' + org.profileName);
+          });
         });
       });
     },
