@@ -32,7 +32,7 @@
         var c = this.containerElement;
         var columnsCount = 0;
 
-        this.AVAILABLE_WIDTH = (c.innerWidth || c.offsetWidth);
+        this.AVAILABLE_WIDTH = (c.offsetWidth || c.innerWidth);
         this._colWidth = this.columnWidth || this.getItems()[0].offsetWidth;
         this._blocks = [];
         columnsCount = ~~(this.AVAILABLE_WIDTH / (this._colWidth + this.gutter * 2));
