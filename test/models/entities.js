@@ -3,12 +3,7 @@
 
 require('neonode-core');
 require('tellurium');
-
-require(process.cwd() + '/node_modules/tellurium/reporters/pretty');
-
-Tellurium.reporter = new Tellurium.Reporter.Pretty({
-  colorsEnabled : true
-});
+require('./../../lib/TelluriumConsoleReporter.js');
 
 var async = require('async');
 var crypto = require('crypto');
@@ -19,21 +14,22 @@ function uid (number) {
 
 CONFIG.database.logQueries = false;
 
-function setup (done) {
-  Promise.all([
-    db('Entities').del(),
-    db('EntityFollower').del(),
-    db('EntityOwner').del(),
-    db('Voices').del(),
-  ]).then(function () {
-    done();
-  });
-}
-
 /* Entity Model Tests
  *
  */
 Tellurium.suite('Entity Model')(function () {
+  this.setup(function () {
+    var setup = this;
+
+    Promise.all([
+      db('Entities').del(),
+      db('EntityFollower').del(),
+      db('EntityOwner').del(),
+      db('Voices').del(),
+    ]).then(function () {
+      setup.completed();
+    });
+  });
 
   this.beforeEach(function (spec) {
     spec.registry.entityData = {
@@ -340,6 +336,4 @@ Tellurium.suite('Entity Model')(function () {
 
 });
 
-setup(function () {
-  Tellurium.run();
-});
+Tellurium.run();

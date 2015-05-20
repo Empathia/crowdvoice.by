@@ -16,16 +16,6 @@ var urlBase = 'http://localhost:3000';
 var csrf;
 var cookies;
 
-function setup (done) {
-  Promise.all([
-    db('Users').del(),
-    db('Voices').del(),
-    db('Entities').del(),
-  ]).then(function () {
-    done();
-  });
-}
-
 function uid (number) {
   return crypto.randomBytes(number).toString('hex');
 }
@@ -37,6 +27,17 @@ function rid() {
  *
  */
 Tellurium.suite('Organizations Controller')(function () {
+
+  this.setup(function () {
+    var setup = this;
+    Promise.all([
+      db('Users').del(),
+      db('Voices').del(),
+      db('Entities').del(),
+    ]).then(function () {
+      setup.completed();
+    });
+  });
 
   this.beforeEach(function (spec) {
     spec.registry.userData = {
@@ -402,7 +403,5 @@ Tellurium.suite('Organizations Controller')(function () {
 });
 
 application.server.listen(CONFIG.port, function () {
-  setup(function () {
-    Tellurium.run();
-  });
+  Tellurium.run();
 });
