@@ -4,6 +4,10 @@
   .cv-main-content {
     padding: 0 80px 0 40px;
   }
+
+  &.page-voice .cv-main-content {
+    padding-right: 0;
+  }
 }
 
 .cv-voice-cover.hasActions{
@@ -72,6 +76,7 @@
   // column-gap: 1.5rem;
 
   .post-card {
+    position: absolute;
     width: 350px;
 
     &:hover {
@@ -113,7 +118,7 @@
 
 .voice-footer {
   position: fixed;
-  bottom: 0;
+  bottom: 1px;
   left: @cv-sidebar-collapsed-width;
   right: 0;
   height: @cv-voice-footer-height;

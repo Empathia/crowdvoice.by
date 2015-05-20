@@ -7,7 +7,7 @@ var HomeController = Class('HomeController')({
 
     _initRouter : function() {
       application.router.route('/').get(this.index);
-      application.router.route('/inner').get(this.inner);
+      application.router.route('/voice').get(this.voice);
       application.router.route('/profile').get(this.profile);
       application.router.route('/profile/voices').get(this.profileVoices);
       application.router.route('/profile/saved').get(this.profileSaved);
@@ -54,9 +54,11 @@ var HomeController = Class('HomeController')({
       });
     },
 
-    inner : function(req, res) {
-      res.render('home/inner.html', {
+    voice : function(req, res) {
+      res.render('home/voice.html', {
         layout : 'application',
+
+        pageName : 'page-inner page-voice',
 
         currentUser : {},
 
