@@ -1,7 +1,7 @@
 <% if (errors !== undefined) { %>
     <%= errors %>
 <% } %>
-<form action="/<%= organization.profileName %>?_method=PUT" method="POST" accept-charset="utf-8">
+<form action="/organization/<%= organization.id %>?_method=PUT" method="POST" accept-charset="utf-8">
     <p>
         <span>Organization Name: </span> <input type="text" name="name" value="<%= organization.name %>">
     </p>
