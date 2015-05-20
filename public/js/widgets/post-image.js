@@ -3,9 +3,7 @@ var moment = require('moment');
 Class(CV, 'PostImage').inherits(CV.Post)({
     HTML : '\
     <article class="post-card image">\
-        <div class="post-card-image-wrapper">\
-            <img class="post-card-image"/>\
-        </div>\
+        <div class="post-card-image-wrapper"></div>\
         <div class="post-card-info">\
             <div class="post-card-meta">\
                 <span class="post-card-meta-source"></span>\
@@ -38,20 +36,21 @@ Class(CV, 'PostImage').inherits(CV.Post)({
             Widget.prototype.init.call(this, config);
 
             this.el = this.element[0];
+            this.imageWrapperElement = this.el.querySelector('.post-card-image-wrapper');
             this.sourceElement = this.el.querySelector('.post-card-meta-source');
             this.dateTimeElement = this.el.querySelector('.post-card-meta-date');
 
             this.el.insertAdjacentHTML('beforeend', this.constructor.ACTIONS_HTML);
 
-            if (this.image_url) {
-                this.dom.updateAttr('src', this.el.querySelector('.post-card-image'), this.image_url);
-                this.dom.show(this.el.querySelector('.post-card-image-wrapper'));
+            if (this.image) {
+                this.imageWrapperElement.style.height = this.imageHeight + 'px';
+                this.imageWrapperElement.style.display = 'block';
             }
 
-            if (this.source_url && this.source_service) {
+            if (this.sourceUrl && this.sourceService) {
                 var a = this.dom.create('a');
-                this.dom.updateAttr('href', a, this.source_url);
-                this.dom.updateText(a, this.source_service + " ");
+                this.dom.updateAttr('href', a, this.sourceUrl);
+                this.dom.updateText(a, this.sourceService + " ");
                 this.dom.updateText(this.sourceElement, 'from ');
                 this.sourceElement.appendChild(a);
             } else {

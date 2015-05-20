@@ -40,10 +40,10 @@ Class(CV, 'PostQuote').inherits(CV.Post)({
 
             this.el.insertAdjacentHTML('beforeend', this.constructor.ACTIONS_HTML);
 
-            if (this.source_url && this.source_service) {
+            if (this.sourceUrl && this.sourceService) {
                 var a = this.dom.create('a');
-                this.dom.updateAttr('href', a, this.source_url);
-                this.dom.updateText(a, this.source_service + " ");
+                this.dom.updateAttr('href', a, this.sourceUrl);
+                this.dom.updateText(a, this.sourceService + " ");
                 this.dom.updateText(this.sourceElement, 'from ');
                 this.sourceElement.appendChild(a);
             } else {
