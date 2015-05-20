@@ -27,7 +27,7 @@ Class('Modal').inherits(Widget)({
 
         init : function(config){
             Widget.prototype.init.call(this, config);
-
+            var modal = this;
             this.modalElement = this.element.find('.cv-modal');
 
             if( this.style ){ this.element.addClass(this.style) };
@@ -50,6 +50,13 @@ Class('Modal').inherits(Widget)({
             closeButton.bind('click', function(){
                 this.hide();
             }.bind(this));
+
+            this.element.bind('click', function(e){
+                if( e.target !== this ){
+                   return;
+               }
+                modal.hide();
+            });
 
             if(this.action){
                 new this.action({
