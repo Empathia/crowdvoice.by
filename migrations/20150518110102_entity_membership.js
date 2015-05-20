@@ -1,7 +1,7 @@
 'use strict';
 
 exports.up = function(knex, Promise) {
- return Promise.all([
+  return Promise.all([
     knex.schema.createTable('EntityMembership', function (t) {
       t.increments('id').primary();
 
