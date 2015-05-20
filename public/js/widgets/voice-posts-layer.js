@@ -43,7 +43,7 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
         resizeHandler : function resizeHandler() {
             var _this = this;
 
-            if (this._resizeTimer) this._window.clearInterval(this._resizeTimer);
+            if (this._resizeTimer) this._window.clearTimeout(this._resizeTimer);
 
             this._resizeTimer = this._window.setTimeout(function() {
                 if (_this.waterfall.getItems().length)
