@@ -20,6 +20,10 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
             }
 
             this.el.style.height = height;
+        },
+
+        getPosts : function getPosts() {
+            return this.children;
         }
     }
 });

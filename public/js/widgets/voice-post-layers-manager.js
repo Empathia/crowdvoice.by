@@ -13,8 +13,12 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
         description : '',
 
         /* PRIVATE PROPERTIES */
+        /* socket io instance holder */
+        _socket : null,
         /* holds the references of the VoicePostsLayer children instances */
         _layers : [],
+        _cachedData : {},
+        _currentMonthString : '',
         _availableWidth : 0,
         _windowInnerHeight : 0,
         _averageLayerHeight : 0,
@@ -25,9 +29,28 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
             }, this);
 
             this.el = this.element;
+            this._socket = io();
 
             this._setGlobarVars();
             this._createEmptyLayers();
+
+            this._bindEvents();
+
+            this._checkInitialHash();
+        },
+
+        _bindEvents : function _bindEvents() {
+            this._socket.on('monthData', this.loadLayer.bind(this));
+        },
+
+        _checkInitialHash : function _checkInitialHash() {
+            var hash = window.location.hash;
+
+            if (hash !== "" && /^\d{4}-\d{2}$/.test(hash)) {
+                return this._beforeRequest(hash);
+            }
+
+            this._beforeRequest( this._layers[0].dateString );
         },
 
         /* Cache variables values that depend on window’s size. This method is
@@ -101,6 +124,40 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
             } else voiceAboutBox.activate();
 
             voiceAboutBox = null;
+        },
+
+        _beforeRequest : function _beforeRequest(dateString, scrollDirection) {
+            console.log(dateString)
+            if (dateString == this._currentMonthString) {
+                return;
+            }
+
+            this._currentMonthString = dateString;
+
+            // prevent to append childs if the layer is already filled
+            if (this['postsLayer_' + dateString].getPosts().length > 1) {
+                return;
+            }
+
+            // load from cache
+            if (typeof this._cachedData[dateString] !== 'undefined') {
+                return this.loadLayer(
+                    this._cachedData[dateString],
+                    dateString,
+                    scrollDirection
+                );
+            }
+
+            // request to the server
+            this._socket.emit('getMonth', dateString, scrollDirection);
+        },
+
+        loadLayer : function loadLayer(postsData, dateString, scrollDirection) {
+            console.log( this.getCurrentMonthLayer())
+        },
+
+        getCurrentMonthLayer : function getCurrentMonthLayer() {
+            return this['postsLayer_' + this._currentMonthString];
         },
 
         /* Returns the value hold by the `_averageLayerHeight` property.
