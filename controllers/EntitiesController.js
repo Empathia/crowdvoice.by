@@ -1,5 +1,13 @@
 var EntitiesController = Class('EntitiesController')({
+  routesWhiteList: /^\/(person|signup|login|logout|user|organization|entity|dist|session)(es|s|$|\/)/,
+
+  isWhiteListed : function isWhiteListed (path) {
+    return path.match(this.routesWhiteList) ? true : false;
+  },
+
   prototype : {
+    
+
     init : function () {
       this._initRouter();
       return this;
@@ -11,6 +19,10 @@ var EntitiesController = Class('EntitiesController')({
     },
 
     show : function (req, res, next) {
+      if (EntitiesController.isWhiteListed(req.path)) {
+        return next();
+      }
+
       Entity.find({
         profile_name: req.params.profile_name
       }, function (err, result) {
