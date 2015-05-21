@@ -269,7 +269,7 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
      * @return null
      */
     createMessage : function createMessage(params, callback) {
-      if (!paramas || !(params instanceof Object)) {
+      if (!params || !(params instanceof Object)) {
         return callback('params is undefined!');
       }
 
@@ -293,7 +293,11 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
 
       var message = new Message(params);
 
-      message.save(callback);
+      message.save(function(err, result) {
+        console.log(message)
+        console.log(message.errors.errors)
+        callback(err, message);
+      });
     },
 
     /* Has Many Messages Relationship
