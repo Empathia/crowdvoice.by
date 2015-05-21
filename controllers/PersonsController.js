@@ -5,13 +5,17 @@ var PersonsController = Class('PersonsController').inherits(RestfulController)({
     // },
 
     index : function index (req, res) {
-      res.format({
-        'text/html': function () {
-          res.render('persons/index.html', {layout : false});
-        },
-        'application/json': function () {
-          res.json([]);
-        }
+      Entity.find({type:'person'}, function (err, result) {
+        if (err) { next(err); return; }
+
+        res.format({
+          'text/html': function () {
+            res.render('persons/index.html', {persons: result});
+          },
+          'application/json': function () {
+            res.json(result);
+          }
+        });
       });
     },
 
