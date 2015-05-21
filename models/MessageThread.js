@@ -294,8 +294,6 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
       var message = new Message(params);
 
       message.save(function(err, result) {
-        console.log(message)
-        console.log(message.errors.errors)
         callback(err, message);
       });
     },
