@@ -14,7 +14,6 @@ var OrganizationsController = Class('OrganizationsController').inherits(RestfulC
       application.router.route('/organization/new').get(this.new);
 
       application.router.route('/organization/:id*').all(this.getOrganization);
-      application.router.route('/:profile_name').get(this.showByProfileName);
       application.router.route('/organization/:id').get(this.show);
       application.router.route('/organization/:id').put(this.update);
       application.router.route('/organization/:id/edit').get(this.edit);
