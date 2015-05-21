@@ -32,6 +32,15 @@ var Entity = Class('Entity').inherits(Argon.KnexModel)({
   })),
 
   prototype : {
+      id: null,
+      type: null,
+      name: null,
+      lastname: null,
+      profileName: null,
+      isAnonymous: false,
+      createdAt: null,
+      updatedAt: null,
+
       /* Starts following an entity
        * @method: followEntity
        * @params:
