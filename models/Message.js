@@ -17,7 +17,7 @@ var Message = Class('Message').inherits(Argon.KnexModel)({
       'required',
       {
         rule : function(val) {
-          return db('MessageThread').where({id : val}).then(function(thread){
+          return db('MessageThreads').where({id : val}).then(function(thread){
             if (thread.length === 0) {
               throw new Checkit.FieldError("Thread doesn't exists")
             }
@@ -29,12 +29,15 @@ var Message = Class('Message').inherits(Argon.KnexModel)({
         rule : function(val) {
           var rule = this;
 
-          return db('MessageThread').where({id : val}).then(function(thread) {
+          return db('MessageThreads').where({id : val}).then(function(thread) {
             thread = thread[0];
 
-            var isSenderThreadParticipant   = thread.senderPersonId   === (rule.target.senderPersonId || rule.target.receiverEntityId) ? true : false;
-            var isReceiverThreadParticipant = thread.receiverEntityId === (rule.target.senderPersonId || rule.target.receiverEntityId) ? true : false;
+            console.log(thread, rule.target.senderPersonId, rule.target.receiverEntityId)
 
+            var isSenderThreadParticipant   = thread['sender_person_id']   === (rule.target.senderPersonId || rule.target.receiverEntityId) ? true : false;
+            var isReceiverThreadParticipant = thread['receiver_entity_id'] === (rule.target.senderPersonId || rule.target.receiverEntityId) ? true : false;
+
+            console.log(isReceiverThreadParticipant, isSenderThreadParticipant)
             if (!isSenderThreadParticipant && !isReceiverThreadParticipant) {
               throw new Checkit.FieldError("Message participants are not part of the thread")
             }
@@ -91,7 +94,7 @@ var Message = Class('Message').inherits(Argon.KnexModel)({
             throw new Checkit.FieldError("Message doesn't have a related thread");
           }
 
-          return db('MessageThread').where({id : rule.target.threadId}).then(function(thread) {
+          return db('MessageThreads').where({id : rule.target.threadId}).then(function(thread) {
             thread = thread[0];
 
             var isThreadSender = false;
@@ -118,7 +121,7 @@ var Message = Class('Message').inherits(Argon.KnexModel)({
       {
         rule : function(val) {
           return db('Entities').where({id : val}).then(function(senderEntity) {
-            if (senderEntityId.length === 0) {
+            if (senderEntity.length === 0) {
               throw new Checkit.FieldError("senderEntity doesn't exist")
             }
           })
@@ -161,30 +164,29 @@ var Message = Class('Message').inherits(Argon.KnexModel)({
             senderEntity = senderEntity[0];
 
             if (senderEntity.type === 'organization') {
-                return db('Entities').where({id : rule.target.senderPersonId}).then(function(senderPerson) {
-                  senderPerson = senderPerson[0];
+              return db('Entities').where({id : rule.target.senderPersonId}).then(function(senderPerson) {
+                senderPerson = senderPerson[0];
 
-                  return db('EntityOwner').where({'owner_id' : senderPerson.id, 'owned_id' : senderEntity.id}).then(function(owner) {
-                    return db('EntityMembership').where({'entity_id' : senderEntity.id, 'member_id' : senderPerson.id}).then(function(member) {
-                      var isOwner  = false;
-                      var isMember = false;
+                return db('EntityOwner').where({'owner_id' : senderPerson.id, 'owned_id' : senderEntity.id}).then(function(owner) {
+                  return db('EntityMembership').where({'entity_id' : senderEntity.id, 'member_id' : senderPerson.id}).then(function(member) {
+                    var isOwner  = false;
+                    var isMember = false;
 
-                      if (owner.length !== 0) {
-                        isOwner = true;
-                      }
+                    if (owner.length !== 0) {
+                      isOwner = true;
+                    }
 
-                      if (member.length !== 0) {
-                        isMember = true;
-                      }
+                    if (member.length !== 0) {
+                      isMember = true;
+                    }
 
-                      if (!isOwner && !isMember) {
-                        throw new Checkit.FieldError("The sender Person is not owner or member of the sender Organization");
-                      }
-                    });
-
+                    if (!isOwner && !isMember) {
+                      throw new Checkit.FieldError("The sender Person is not owner or member of the sender Organization");
+                    }
                   });
-                })
-              }
+
+                });
+              })
             }
           });
         },
@@ -198,7 +200,7 @@ var Message = Class('Message').inherits(Argon.KnexModel)({
             senderEntity = senderEntity[0];
 
             if (senderEntity.type === 'organization') {
-              return db('MessageThread').where({id : rule.target.threadId}).then(function(thread) {
+              return db('MessageThreads').where({id : rule.target.threadId}).then(function(thread) {
                 if (senderEntity.id !== thread.senderEntityId) {
                   throw new Checkit.FieldError("senderEntity is an organization and is not the same as thread.senderEntity")
                 }
@@ -250,17 +252,17 @@ var Message = Class('Message').inherits(Argon.KnexModel)({
         rule : function(val) {
           var rule = this;
 
-          return db('MessageThread').where({id : rule.target.threadId}).then(function(thread) {
+          return db('MessageThreads').where({id : rule.target.threadId}).then(function(thread) {
             thread = thread[0];
 
             var isThreadSender = false;
             var isThreadReceiver = false;
 
-            if (thread.senderPersonId === val) {
+            if (thread['sender_person_id'] === val) {
               isThreadSender = true;
             }
 
-            if (thread.receiverEntityId === val) {
+            if (thread['receiver_entity_id'] === val) {
               isThreadReceiver = true
             }
 
@@ -269,6 +271,31 @@ var Message = Class('Message').inherits(Argon.KnexModel)({
             }
           })
         }
+      }
+    ],
+
+    invitationRequestId : [
+      {
+        rule : function(val) {
+          var rule = this;
+
+          if (rule.target.type.match(/(invitation_(voice|organization)/)) {
+            if (!val) {
+              throw new Checkit.FieldError("invitationRequestId is requiered for message of type invitation_(voice|organization)")
+            }
+          }
+        },
+        message : "invitationRequestId is requiered for message of type invitation_(voice|organization)"
+      },
+      {
+        rule : function(val) {
+          return db('InvitationRequest').where({id : val}).then(function(invitationRequest) {
+            if (invitationRequest.length === 0) {
+              throw new Checkit.FieldError("invitationRequest doesn't exists")
+            }
+          })
+        },
+        message : "invitationRequest doesn't exists"
       }
     ],
 
@@ -340,10 +367,10 @@ var Message = Class('Message').inherits(Argon.KnexModel)({
   TYPE_REQUEST_VOICE            : 'request_voice',
   TYPE_REQUEST_ORGANIZATION     : 'request_organization',
   TYPE_INVITATION_VOICE         : 'invitation_voice',
-  TYPE_INVITATION_ORGANIZATION  : 'invitation_organization'
+  TYPE_INVITATION_ORGANIZATION  : 'invitation_organization',
 
   prototype : {
-    type : Message.TYPE_MESSAGE,
+    type : 'message',
     senderPersonId : null,
     senderEntityId : null,
     receiverEntityId : null,
@@ -353,7 +380,7 @@ var Message = Class('Message').inherits(Argon.KnexModel)({
     organizationId : null,
     message : null,
     hiddenForSender : false,
-    hiddenForReceiver : false
+    hiddenForReceiver : false,
 
     isPersonSender : function isPersonSender(personId) {
       return personId === this.senderPersonId ? true : false;
