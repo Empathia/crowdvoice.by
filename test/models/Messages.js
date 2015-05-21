@@ -18,7 +18,7 @@ Tellurium.suite('Messages Model')(function() {
   var suite = this;
   this.setup(function() {
     var setup = this;
-    console.log('setup')
+
     async.waterfall([
       function(callback) {
         var senderPerson = new Entity({
@@ -104,6 +104,17 @@ Tellurium.suite('Messages Model')(function() {
           suite.registry.thread = thread;
           callback(err, thread);
         })
+      },
+      function(thread, callback) {
+        var invitation = new InvitationRequest({
+          invitatorEntityId : suite.registry.senderPerson.id,
+          invitedEntityId : suite.registry.receiverEntity.id
+        });
+
+        invitation.save(function(err, result) {
+          suite.registry.invitation = invitation;
+          callback(err, invitation);
+        })
       }
     ], function(err, result) {
       if (err) {
@@ -133,7 +144,41 @@ Tellurium.suite('Messages Model')(function() {
       }
     });
 
-    desc.specify('Pass create a message')(function(spec) {
+    desc.specify('Pass Validation')(function(spec) {
+      var thread = suite.registry.thread;
+
+      var message = new Message({
+        type : Message.TYPE_MESSAGE,
+        senderPersonId : suite.registry.senderPerson.id,
+        senderEntityId : suite.registry.senderPerson.id,
+        receiverEntityId : suite.registry.receiverEntity.id,
+        threadId : thread.id,
+        message : 'hola'
+      })
+
+      message.isValid(function(valid) {
+        spec.assert(valid).toBe(true);
+        spec.completed();
+      });
+    })
+
+    desc.specify('Fail Validation')(function(spec) {
+      var message = new Message({
+        type : Message.TYPE_MESSAGE,
+        senderPersonId : suite.registry.senderPerson.id,
+        senderEntityId : suite.registry.senderPerson.id,
+        receiverEntityId : suite.registry.receiverEntity.id,
+        threadId : 9876,
+        message : 'hola'
+      })
+
+      message.isValid(function(valid) {
+        spec.assert(valid).toBe(false);
+        spec.completed();
+      });
+    });
+
+    desc.specify('Pass create a message With Thread.createMessage Factory')(function(spec) {
       var thread = suite.registry.thread;
 
       thread.createMessage({
@@ -142,6 +187,20 @@ Tellurium.suite('Messages Model')(function() {
         message : 'Hola'
       }, function(err, result) {
         spec.assert(result.id).toBeGreaterThan(0);
+        spec.completed();
+      });
+
+    });
+
+    desc.specify('Fail create a message With Thread.createMessage Factory')(function(spec) {
+      var thread = suite.registry.thread;
+
+      thread.createMessage({
+        type : Message.TYPE_MESSAGE,
+        senderPersonId : 1234,
+        message : 'Hola'
+      }, function(err, result) {
+        spec.assert(result.id).toBe(undefined);
         spec.completed();
       });
 
