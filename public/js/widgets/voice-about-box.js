@@ -58,6 +58,8 @@ Class(CV, 'VoiceAboutBox').inherits(Widget).includes(CV.WidgetUtils)({
             this.closeButtonElement.removeEventListener('click', this.hideClickHandlerRef);
             this.hideClickHandlerRef = null;
 
+            CV.Voice.unbind('voiceAboutBox:show', this.showBoxHandlerRef);
+
             this.el = null;
             this.closeButtonElement = null;
         }
