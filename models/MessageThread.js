@@ -1,3 +1,4 @@
+var async = require('async')
 var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
 
   validations : {
