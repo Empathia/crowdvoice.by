@@ -1,6 +1,6 @@
 var voices = [
   {
-    url : '/inner',
+    url : '/voice',
     tags : [
       {
         name: 'Current Events',
@@ -28,7 +28,7 @@ var voices = [
   },
 
   {
-    url : '/inner',
+    url : '/voice',
     tags : [
       {
         name: 'Conflict',
@@ -52,7 +52,7 @@ var voices = [
   },
 
   {
-    url : '/inner',
+    url : '/voice',
     tags : [
       {
         name: 'Conflict',
@@ -75,7 +75,7 @@ var voices = [
     hasActions : false
   },
   {
-    url : '/inner',
+    url : '/voice',
     tags : [
       {
         name: 'Politics',
@@ -99,7 +99,7 @@ var voices = [
   },
 
   {
-    url : '/inner',
+    url : '/voice',
     tags : [
       {
         name: 'Current Events',
