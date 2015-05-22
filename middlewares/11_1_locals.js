@@ -31,11 +31,13 @@ module.exports = function(req, res, next) {
     var currentUser = new User(req.user);
     currentUser.entity(function (err, entity) {
       res.locals.currentEntity = entity;
+      req.currentPerson = entity;
 
       next();
     });
   } else {
     res.locals.currentEntity = null;
+    req.currentPerson = null;
     next();
   }
 
