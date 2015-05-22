@@ -33,7 +33,7 @@
         var columnsCount = 0;
 
         this.AVAILABLE_WIDTH = (c.offsetWidth || c.innerWidth);
-        this._colWidth = this.columnWidth || this.getItems()[0].offsetWidth;
+        this._colWidth = this.columnWidth || this._getVisibleItems()[0].offsetWidth;
         this._blocks = [];
         columnsCount = ~~(this.AVAILABLE_WIDTH / (this._colWidth + this.gutter * 2));
 
@@ -52,7 +52,7 @@
         var i, x, y, index, item,
             coordsX = [],
             coordsY = [],
-            items = this.getItems(),
+            items = this._getVisibleItems(),
             len = items.length,
             gutter = this.gutter,
             colWidth = this._colWidth,
@@ -83,12 +83,18 @@
         i = x = y = index = item = coordsX = coordsY = items = len = gutter = colWidth = spaceLeft = null;
     };
 
+    Waterfall.prototype._getVisibleItems = function _getVisibleItems() {
+        return this.getItems().filter(function(item) {
+            return item.offsetParent
+        });
+    };
+
     Waterfall.prototype.layout = function layout() {
         this._setup();
     }
 
     Waterfall.prototype.addItems = function addItems(items) {
-        this._items = [].slice.call(items, 0).concat(this._items)
+        this._items = this._items.concat([].slice.call(items, 0));
 
         return this;
     };
