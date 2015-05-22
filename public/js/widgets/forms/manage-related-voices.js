@@ -21,14 +21,17 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
             Widget.prototype.init.call(this, config);
             var sendElement = this.element.find('.send');
 
-			new CV.Input({
+			new CV.InputSearch({
 			    type    	: '',
 			    name  		: '',
 			    style 		: '',
 			    hasTitle 	: true,
 			    placeholder : 'Search voices...',
-			    title 		: "Add voices that are related to this voice (?)"
+			    title 		: "Add voices that are related to this voice (?)",
+                buttonLabel : "Add Voice"
 			}).render(this.element.find('.placeholder-main'));
+
+
 
 			new CV.VoicesList({
 			    type    	: '',

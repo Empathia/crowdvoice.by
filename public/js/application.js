@@ -60,7 +60,10 @@ require('./widgets/elements/image.js');
 require('./widgets/elements/button.js');
 require('./widgets/elements/check.js');
 require('./widgets/elements/input.js');
+require('./widgets/elements/input-search.js');
 require('./widgets/elements/select.js');
+require('./widgets/elements/select-account.js');
+
 
 
 require('./widgets/audio.js');
