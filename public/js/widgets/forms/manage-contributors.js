@@ -22,13 +22,14 @@ Class(CV, 'ManageContributors').inherits(Widget)({
             var sendElement = this.element.find('.send');
 
 
-			new CV.Input({
+			new CV.InputSearch({
 			    type    	: '',
 			    name  		: '',
 			    style 		: '',
 			    hasTitle 	: true,
 			    placeholder : 'Search users...',
-			    title 		: "Invite users to contribute (?)"
+			    title 		: "Invite users to contribute (?)",
+			    buttonLabel : "Invite"
 			}).render(this.element.find('.placeholder-main'));
 
 			new CV.Input({

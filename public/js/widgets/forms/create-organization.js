@@ -7,6 +7,16 @@ Class(CV, 'CreateOrganization').inherits(Widget)({
         <form>\
         <div class="-col-12 placeholder-main">\
         </div>\
+        <div class="-col-12">\
+        	<div class="-col-10 -pr1 placeholder-location">\
+	        </div>\
+	        <div class="-col-2 -pl1 placeholder-pin">\
+	        	<div class="form-field">\
+	        		<label><span></span></label>\
+	        		<div class="cv-detect-location">Detect</div>\
+	        	</div>\
+	        </div>\
+        </div>\
         <div class="-col-3 -pr1 placeholder-logo">\
         </div>\
         <div class="-col-9 -pl1 placeholder-background">\
@@ -60,7 +70,7 @@ Class(CV, 'CreateOrganization').inherits(Widget)({
 			    style 		: '',
 			    hasTitle 	: true,
 			    title 		: "Location",
-			}).render(this.element.find('.placeholder-main'));
+			}).render(this.element.find('.placeholder-location'));
 
 	        new CV.Image({
 			    type    	: '',

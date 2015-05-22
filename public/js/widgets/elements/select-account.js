@@ -1,14 +1,19 @@
-Class(CV, 'Select').inherits(Widget)({
+Class(CV, 'SelectAccount').inherits(Widget)({
 
 	ELEMENT_CLASS : '',
 
     HTML : '\
         <div class="form-field">\
             <label><span></span></label>\
-            <div class="cv-select">\
-                <div class="cv-select-head">\
-                  <span class="label"></span>\
-                  <div class=count>3</div>\
+            <div class="cv-select is-account">\
+                <div class="account-info -inline-block">\
+                    <img class="account-info-avatar -rounded" width="22" height="22" src="">\
+                    <span class="account-info-name -font-bold -color-grey-dark"></span>\
+                    <span class="actions-wrapper -inline-block">\
+                      <svg class="actions-dropdown-svg -block">\
+                        <use xlink:href="#svg-arrow-down-2"></use>\
+                      </svg>\
+                    </span>\
                 </div>\
                 <div class="cv-select-body">\
                   <ul>\
@@ -33,11 +38,14 @@ Class(CV, 'Select').inherits(Widget)({
         hasTitle        : false,
         title           : "",
         subTitle        : "",
-        actionType      : null,
+        accountImage    : null,
+        accountName     : null,
 
         init : function(config){
             Widget.prototype.init.call(this, config);
-            this.headEl = this.element.find('.cv-select-head');
+            //this.headEl = this.element.find('.cv-select-head');
+            this.headEl = this.element.find('.account-info');
+
             this.bodyEl = this.element.find('.cv-select-body');
             this.selectEl = this.element.find('.cv-select');
 
@@ -45,9 +53,8 @@ Class(CV, 'Select').inherits(Widget)({
             this.optionsEl = this.element.find('ul');
             this.countEl = this.element.find('.count');
 
-            if (this.actionType){
-                this.selectEl.addClass(this.actionType);
-            }
+            this.element.find('.account-info-avatar').attr('src', this.accountImage);
+            this.element.find('.account-info-name').text(this.accountName);
 
             if(!this.hasArrow){
                 this.selectEl.addClass('no-arrow');
@@ -61,17 +68,15 @@ Class(CV, 'Select').inherits(Widget)({
             if (this.style){ this.selectEl.addClass(this.style) };
             if (this.label){ this.labelEl.text(this.label) };
 
-            if (this.type == "check"){
-                this.selectEl.addClass('check');
-                this.countEl.css('opacity', 0);
-            }
-
             this.fillOptions();
             this.bindActions();
         },
 
         fillOptions : function(){
-
+            if (this.type == "check"){
+                this.element.addClass('check');
+                this.countEl.css('opacity', 0);
+            }
 
             for (var key in this.options) {
                 if (this.options.hasOwnProperty(key)) {
@@ -156,22 +161,22 @@ Class(CV, 'Select').inherits(Widget)({
             if(this.checkedCount){
                 this.countEl.text(this.checkedCount);
                 //this.countEl.css('opacity', 1);
-                this.selectEl.addClass('activated');
+                this.selectEl.addClass('following');
             } else {
                 //this.countEl.css('opacity', 0);
-                this.selectEl.removeClass('activated');
+                this.selectEl.removeClass('following');
             }
 
         },
 
         open : function(){
             this.bodyEl.toggle();
-            this.selectEl.toggleClass('active');
+            this.element.toggleClass('active');
         },
 
         close : function(){
             this.bodyEl.toggle();
-            this.selectEl.toggleClass('active');
+            this.element.toggleClass('active');
         }
 
     }
