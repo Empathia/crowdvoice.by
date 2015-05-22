@@ -1,9 +1,17 @@
 .cv-voice-posts-layer {
   position: relative;
-  min-height: 100px;
-  padding-left: 1px;
   // background-color: rgba(0, 244, 0, .25);
-  margin-bottom: 4rem;
+  padding: 6em 0 6em 1px;
+  margin-top: -6em;
+
+  &.first {
+    padding-top: 0;
+    margin-top: 0;
+  }
+
+  &.last {
+    margin-bottom: -4em;
+  }
 }
 
 .cv-voice-posts-layer__posts {

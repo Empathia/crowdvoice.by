@@ -30,6 +30,9 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
         _lastScrollTop : 0,
         _scrollTimer : null,
         _scrollTime : 250,
+        _resizeTimer : null,
+        _resizeTime : 250,
+
         /* layer offset left to perform hit-test on layer elements
          * sidebar = 60, main-container-padding-left = 40
          */
@@ -59,6 +62,9 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
 
             this._scrollHandlerRef = this.scrollHandler.bind(this);
             this._window.addEventListener('scroll', this._scrollHandlerRef);
+
+            this._resizeHandlerRef = this.resizeHandler.bind(this);
+            this._window.addEventListener('resize', this._resizeHandlerRef);
 
             CV.VoiceAboutBox.bind('activate', function() {
                 this._layers[0].waterfall.layout();
@@ -95,6 +101,15 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
             this._scrollTimer = this._window.setTimeout(function() {
                 this.loadImagesVisibleOnViewport();
             }.bind(this), this._scrollTime);
+        },
+
+        resizeHandler : function resizeHandler() {
+            if (this._resizeTimer) this._window.clearTimeout(this._resizeTimer);
+
+            this._resizeTimer = this._window.setTimeout(function() {
+                this._setGlobarVars();
+                this._resetLayersHeight();
+            }.bind(this), this._resizeTime);
         },
 
         _checkInitialHash : function _checkInitialHash() {
@@ -161,7 +176,17 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
 
             this.el.appendChild(frag);
 
+            this._layers[0].el.classList.add('first');
+            this._layers[this._layers.length - 1].el.classList.add('last');
+
             firstDate = lastDate = totalLayers = frag = i = null;
+        },
+
+        _resetLayersHeight : function _resizeHandlerRef() {
+            this._layers.forEach(function(layer) {
+                if (!layer.getPosts().length)
+                    layer.setHeight(this.getAverageLayerHeight());
+            }, this);
         },
 
         _appendVoiceAboutBox : function _appendVoiceAboutBox(layer) {
@@ -218,11 +243,18 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
          */
         loadLayer : function loadLayer(postsData, dateString, scrollDirection) {
             var currentLayer = this.getCurrentMonthLayer();
+            var prev = currentLayer.getPreviousSibling();
+            var next = currentLayer.getNextSibling();
+            var calcHeightDiff = false;
 
             this._listenScrollEvent = false;
 
             if (typeof this._cachedData[dateString] === 'undefined') {
                 this._cachedData[dateString] = postsData;
+            }
+
+            if (!currentLayer.isFinalHeightKnow()) {
+                calcHeightDiff = true;
             }
 
             if (currentLayer.id == 0) {
@@ -236,13 +268,16 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
                 this.loadImagesVisibleOnViewport();
             }
 
+            currentLayer.arrangeReset();
+
+            if (prev) prev.arrangeBringToFront();
+
             if (scrollDirection) {
-                var next = currentLayer.getNextSibling();
-                next = next && next.getNextSibling();
+                var next2 = next && next.getNextSibling();
 
-                if (next) next.empty();
+                if (next2) next2.empty().arrangeReset();
 
-                if (currentLayer.isFinalHeightKnow() === false) {
+                if (calcHeightDiff) {
                     // compensate the heigth difference when scrolling up
                     var diff = currentLayer.getHeight() - this.getAverageLayerHeight();
                     var y = window.scrollY + diff;
@@ -255,10 +290,9 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
                 return;
             }
 
-            var prev = currentLayer.getPreviousSibling();
-            prev = prev && prev.getPreviousSibling();
+            var prev2 = prev && prev.getPreviousSibling();
 
-            if (prev) prev.empty();
+            if (prev2) prev2.empty().arrangeReset();
 
             this._listenScrollEvent = true;
         },
