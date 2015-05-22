@@ -8,7 +8,7 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
         firstPostDate : '',
         lastPostDate : '',
         averagePostTotal : 100,
-        averagePostWidth : 350,
+        averagePostWidth : 300,
         averagePostHeight : 100,
         description : '',
 
@@ -59,6 +59,15 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
 
             this._scrollHandlerRef = this.scrollHandler.bind(this);
             this._window.addEventListener('scroll', this._scrollHandlerRef);
+
+            CV.VoiceAboutBox.bind('activate', function() {
+                this._layers[0].waterfall.layout();
+            }.bind(this));
+
+            CV.VoiceAboutBox.bind('deactivate', function() {
+                this._layers[0].waterfall.layout();
+                localStorage['cvby__voice' + this.id + '__about-read'] = true;
+            }.bind(this));
         },
 
         scrollHandler : function scrollHandler() {
@@ -135,14 +144,11 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
 
                 dateString = moment(this.lastPostDate).month(-i).format('YYYY-MM');
                 layer = new CV.VoicePostsLayer({
+                    id : i,
                     name : 'postsLayer_' + dateString,
                     dateString : dateString,
-                    columnWidth : this.columnWidth
+                    columnWidth : this.averagePostWidth
                 });
-
-                // handle special case
-                // append CV.VoiceAboutBox to the first layer
-                if (i == 0) this._appendVoiceAboutBox(layer);
 
                 layer.setHeight(this.getAverageLayerHeight());
 
@@ -164,11 +170,12 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
                 description : this.description
             });
 
+            layer.waterfall.addItems([voiceAboutBox.el]);
             layer.appendChild(voiceAboutBox).render(layer.postContainerElement);
 
-            if (localStorage['cvby__voice' + this.id + '__about-read']) {
-                voiceAboutBox.deactivate();
-            } else voiceAboutBox.activate();
+            if (!localStorage['cvby__voice' + this.id + '__about-read']) {
+                voiceAboutBox.activate();
+            }
 
             voiceAboutBox = null;
         },
@@ -216,6 +223,10 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
 
             if (typeof this._cachedData[dateString] === 'undefined') {
                 this._cachedData[dateString] = postsData;
+            }
+
+            if (currentLayer.id == 0) {
+                this._appendVoiceAboutBox(currentLayer);
             }
 
             currentLayer.addPosts(postsData);
