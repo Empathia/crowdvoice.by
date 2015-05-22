@@ -75,7 +75,7 @@ Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport)({
                     firstPostDate : this.firstPostDate,
                     lastPostDate : this.lastPostDate,
                     averagePostTotal : 120,
-                    averagePostWidth : 350,
+                    averagePostWidth : 340,
                     averagePostHeight : 500
                 })
             );
@@ -98,7 +98,6 @@ Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport)({
 
         _activateButton : function _activateButton() {
             this.aboutBoxButtonElement.style.display = '';
-            localStorage['cvby__voice' + this.id + '__about-read'] = true;
         },
 
         showAboutBoxButtonHandler : function showAboutBoxButtonHandler() {

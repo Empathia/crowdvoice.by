@@ -73,6 +73,7 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
             }
 
             this.postContainerElement.style.height = height;
+            this._finalHeightIsKnow = false;
         },
 
         getHeight : function getHeight() {
@@ -159,7 +160,18 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
             });
 
             this.waterfall.flushItems();
+
+            return this;
         },
+
+        arrangeBringToFront : function arrangeBringToFront() {
+            this.el.style.zIndex = 1;
+        },
+
+        arrangeReset : function arrangeReset() {
+            this.el.style.zIndex = "";
+        },
+
 
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
