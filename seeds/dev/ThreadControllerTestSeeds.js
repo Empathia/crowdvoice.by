@@ -197,8 +197,8 @@ exports.seed = function(knex, Promise) {
       'hidden_for_receiver'    : false,
       'last_seen_sender'       : null,
       'last_seen_receiver'     : null,
-      'message_count_sender'   : 0,
-      'message_count_receiver' : 0,
+      'message_count_sender'   : 6,
+      'message_count_receiver' : 6,
       'created_at' : new Date(),
       'updated_at' : new Date()
     }),
@@ -328,8 +328,8 @@ exports.seed = function(knex, Promise) {
       'hidden_for_receiver'    : false,
       'last_seen_sender'       : null,
       'last_seen_receiver'     : null,
-      'message_count_sender'   : 0,
-      'message_count_receiver' : 0,
+      'message_count_sender'   : 3,
+      'message_count_receiver' : 3,
       'created_at' : new Date(),
       'updated_at' : new Date()
     }),
@@ -401,8 +401,8 @@ exports.seed = function(knex, Promise) {
       'hidden_for_receiver'    : false,
       'last_seen_sender'       : null,
       'last_seen_receiver'     : null,
-      'message_count_sender'   : 0,
-      'message_count_receiver' : 0,
+      'message_count_sender'   : 3,
+      'message_count_receiver' : 3,
       'created_at' : new Date(),
       'updated_at' : new Date()
     }),
@@ -474,8 +474,8 @@ exports.seed = function(knex, Promise) {
       'hidden_for_receiver'    : false,
       'last_seen_sender'       : null,
       'last_seen_receiver'     : null,
-      'message_count_sender'   : 0,
-      'message_count_receiver' : 0,
+      'message_count_sender'   : 2,
+      'message_count_receiver' : 2,
       'created_at' : new Date(),
       'updated_at' : new Date()
     }),

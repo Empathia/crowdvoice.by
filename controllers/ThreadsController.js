@@ -16,7 +16,7 @@ var ThreadsController = Class('ThreadsController').inherits(RestfulController)({
     },
 
     index : function index(req, res) {
-      MessageThreads.find(['WHERE sender_person_id = ? OR WHERE receiver_entity_id = ?', [req.currentPerson.id, req.currentPerson.id]], function(err. threads) {
+      MessageThread.find(['sender_person_id = ? OR receiver_entity_id = ?', [req.currentPerson.id, req.currentPerson.id]], function(err, threads) {
         var results = [];
 
         threads.forEach(function(thread) {
@@ -24,16 +24,16 @@ var ThreadsController = Class('ThreadsController').inherits(RestfulController)({
 
           var result = {
             id : thread.id,
-            senderEntity : thread.senderEntity?
-            receiverEntity : thread.receiverEntity?
+            senderEntityId : thread.senderEntityId,
+            receiverEntityId : thread.receiverEntityId
           }
 
           var senderOrReceiver = thread.isPersonSender(req.currentPerson.id) ? 'Sender' : 'Receiver';
 
 
-          result.lastSeen     : thread['lastSeen' + senderOrReceiver];
-          result.messageCount : thread['messageCount' + senderOrReceiver];
-          result.hidden       : thread['hiddenFor' + senderOrReceiver];
+          result.lastSeen     = thread['lastSeen' + senderOrReceiver]
+          result.messageCount = thread['messageCount' + senderOrReceiver];
+          result.hidden       = thread['hiddenFor' + senderOrReceiver];
 
           results.push(result);
         });
@@ -48,7 +48,7 @@ var ThreadsController = Class('ThreadsController').inherits(RestfulController)({
 
             callback();
           } else {
-            Message.find(['WHERE thread_id = ? AND created_at > ?', [item.id, item.lastSeen]], function(err. messages) {
+            Message.find(["thread_id = ? AND (created_at > DATE '" + new Date(item.lastSeen).toISOString() + "')", [item.id]], function(err, messages) {
               if (err) {
                 callback(err);
               }
@@ -58,11 +58,41 @@ var ThreadsController = Class('ThreadsController').inherits(RestfulController)({
 
               item.unreadCount = messages.length;
 
-              callback();
+              async.series([
+                function(done) {
+                  Entity.findById(item.senderEntityId, function(err, result) {
+                    if (err) {
+                      done(err);
+                    }
+
+                    item.senderEntity = result[0];
+                    delete item.senderEntityId;
+                    done()
+                  })
+                },
+
+                function(done) {
+                  Entity.findById(item.receiverEntityId, function(err, result) {
+                    if (err) {
+                      done(err);
+                    }
+
+                    item.receiverEntity = result[0];
+                    delete item.receiverEntityId;
+                    done()
+                  })
+                }
+              ], function(err) {
+                if (err) {
+                  throw new Error(err)
+                }
+                callback();
+              })
             })
           }
         }, function(err) {
           if (err) {
+            console.log(err)
             throw new Error(err)
           }
 
