@@ -7,6 +7,8 @@ exports.seed = function(knex, Promise) {
     knex('Users').del(),
     knex('Entities').del(),
     knex('EntityOwner').del(),
+    knex('MessageThreads').del(),
+    knex('Messages').del(),
 
     knex('Users').insert({
       id: 1,
