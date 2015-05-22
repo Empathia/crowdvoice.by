@@ -1,12 +1,9 @@
-var OrganizationsController = Class('OrganizationsController').inherits(RestfulController)({
-
-  routesBlackList: /^\/(signup|login|logout|user|organization|entity|dist|session)($|\/)/,
-
-  isBlackListed : function isBlackListed (path) {
-    return path.match(this.routesBlackList) ? true : false;
-  },
-
+var OrganizationsController = Class('OrganizationsController')({
   prototype : {
+    init : function () {
+      this._initRouter();
+      return this;
+    },
 
     _initRouter : function () {
       application.router.route('/organizations').get(this.index);
@@ -43,8 +40,6 @@ var OrganizationsController = Class('OrganizationsController').inherits(RestfulC
     },
 
     showByProfileName : function showByProfileName (req, res, next) {
-      if (OrganizationsController.isBlackListed(req.path)) { next(); return; }
-
       Entity.find({
         type: 'organization',
         profile_name: req.params.profile_name

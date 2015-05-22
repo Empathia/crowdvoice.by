@@ -152,7 +152,7 @@ Tellurium.suite('Organizations Controller')(function () {
     // Organizations#show 404
     this.specify('get (text/html) should return error if organization does not exist')(function (spec) {
       var req = request
-        .get(urlBase + '/organization' + rid())
+        .get(urlBase + '/organization/' + rid())
         .accept('application/json');
       req.end(function (err, res) {
         spec.assert(res.status).toBe(404);
