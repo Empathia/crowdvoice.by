@@ -72,7 +72,7 @@ Tellurium.suite('Persons Controller')(function () {
         function (done) { (new Entity(spec.registry.personData)).save(done); }
       ], function (err) {
         var req = request
-          .get(urlBase + '/persons')
+          .get(urlBase + '/people')
           .accept('application/json');
         req.end(function (err, res) {
           if (err) {
