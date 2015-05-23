@@ -186,14 +186,14 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
       this.bind('afterCreateMessage', function(data) {
         thread.messageCountSender++;
         thread.messageCountReceiver++;
-        thread.save(function(){
-          logger.log(afterCreateMessage);
+        thread.save(function(err, data){
+          logger.log('afterCreateMessage');
           logger.log('Thread ' + thread.id + ' updated');
           logger.log(thread);
         });
       });
 
-      this.bind('afterDeleteMessage', function(data) {
+      this.bind('afterDestroyMessage', function(data) {
         if (thread.isPersonSender(data.personId)) {
           thread.messageCountSender--;
         } else {
@@ -201,7 +201,7 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
         }
 
         thread.save(function(){
-          logger.log('afterDeleteMessage');
+          logger.log('afterDestroyMessage');
           logger.log('Thread ' + thread.id + ' updated');
           logger.log(thread);
         });

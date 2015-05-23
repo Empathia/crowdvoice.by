@@ -398,6 +398,28 @@ var Message = Class('Message').inherits(Argon.KnexModel)({
     hiddenForSender : false,
     hiddenForReceiver : false,
 
+    init : function init(config) {
+      Argon.KnexModel.prototype.init.call(this, config);
+
+      var message = this;
+
+      this.bind('afterCreate', function() {
+        MessageThread.findById(message.threadId, function(err, result) {
+          var thread = new MessageThread(result[0]);
+
+          thread.dispatch('afterCreateMessage');
+        })
+      })
+
+      this.bind('afterDestroy', function() {
+        MessageThread.findById(message.threadId, function(err, result) {
+          var thread = new MessageThread(result[0]);
+
+          thread.dispatch('afterDestroyMessage');
+        })
+      })
+    },
+
     isPersonSender : function isPersonSender(personId) {
       return personId === this.senderPersonId ? true : false;
     }
