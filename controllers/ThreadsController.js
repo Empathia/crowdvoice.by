@@ -18,7 +18,8 @@ var ThreadsController = Class('ThreadsController').inherits(RestfulController)({
         .post(this.create);
 
       application.router.route('/:profileName/messages/:threadId')
-        .get(this.index);
+        .get(this.index)
+        .put(this.update);
 
       application.router.route('/:profileName/messages/:threadId')
         .delete(this.destroy);
@@ -300,6 +301,26 @@ var ThreadsController = Class('ThreadsController').inherits(RestfulController)({
             res.json(result);
           });
         }
+      })
+    },
+
+    update : function update(req, res) {
+      MessageThread.findById(req.params.threadId, function(err, thread) {
+        if (err) {
+          return res.status(500).json({'error' : err})
+        }
+
+        var senderOrReceiver = thread.isPersonSender(req.currentPerson.id) ? 'Sender' : 'Receiver';
+
+        thread['lastSeen' + senderOrReceiver] = new Date(Date.now());
+
+        thread.save(function(err, result) {
+          if (err) {
+            return res.status(500).json({'error' : err})
+          }
+
+          res.json({'status' : 'ok', data : result});
+        })
       })
     },
 
