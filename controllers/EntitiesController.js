@@ -1,5 +1,5 @@
 var EntitiesController = Class('EntitiesController')({
-  routesWhiteList: /^\/(person|people|signup|login|logout|user|organization|entity|dist|session)(es|s|$|\/)/,
+  routesWhiteList: /^\/(voice|person|people|signup|login|logout|user|organization|entity|dist|session)(es|s|$|\/)/,
 
   isWhiteListed : function isWhiteListed (path) {
     return path.match(this.routesWhiteList) ? true : false;
