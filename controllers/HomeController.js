@@ -7,7 +7,7 @@ var HomeController = Class('HomeController')({
 
     _initRouter : function() {
       application.router.route('/').get(this.index);
-      application.router.route('/voice').get(this.voice);
+      application.router.route('/jack_johnson/voice').get(this.voice);
       application.router.route('/profile').get(this.profile);
       application.router.route('/profile/voices').get(this.profileVoices);
       application.router.route('/profile/saved').get(this.profileSaved);
