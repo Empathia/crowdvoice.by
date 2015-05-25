@@ -27,7 +27,7 @@ var EntitiesController = Class('EntitiesController')({
         profile_name: req.params.profile_name
       }, function (err, result) {
         if (err) { next(err); return; }
-        if (result.length === 0) { next(new Error('Not found')); return; }
+        if (result.length === 0) { next(new NotFoundError('Entity Not Found')); return; }
 
         var entity = result[0];
         req.entityType = entity.type;
