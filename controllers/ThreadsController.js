@@ -171,7 +171,7 @@ var ThreadsController = Class('ThreadsController')({
             var whereClause;
 
             if (senderEntityType === 'organization') {
-              whereClause = ['sender_person_id = ? AND sender_entity_id = ? AND receiver_entity_id = ?', [payload.senderPersonId, payload.senderEntityId, payload.receiverEntityId]];
+              whereClause = ['sender_person_id = ? AND sender_entity_id = ? AND receiver_entity_id = ?', [req.currentPerson.id, payload.senderEntityId, payload.receiverEntityId]];
             } else {
               whereClause = ['(sender_entity_id = ? AND receiver_entity_id = ?) OR (sender_entity_id = ? AND receiver_entity_id = ?)', [payload.senderEntityId, payload.receiverEntityId, payload.receiverEntity, payload.senderEntityId]];
             }
@@ -182,7 +182,7 @@ var ThreadsController = Class('ThreadsController')({
 
             if (messageThread.length === 0) {
               thread = new MessageThread({
-                senderPersonId : payload.senderPersonId,
+                senderPersonId : req.currentPerson.id,
                 senderEntityId : payload.senderEntityId,
                 receiverEntityId : payload.receiverEntityId
               });
@@ -199,7 +199,7 @@ var ThreadsController = Class('ThreadsController')({
               }
 
               var message = new Message({
-                senderPersonId : payload.senderPersonId,
+                senderPersonId : req.currentPerson.id,
                 senderEntityId : payload.senderEntityId,
                 receiverEntityId : payload.receiverEntityId,
                 type : payload.type,
