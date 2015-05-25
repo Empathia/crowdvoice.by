@@ -1,6 +1,4 @@
-var async = require('async');
-
-var ThreadsController = Class('ThreadsController').inherits(RestfulController)({
+var ThreadsController = Class('ThreadsController')({
   prototype : {
     init : function (config){
       this.name = this.constructor.className.replace('Controller', '')
