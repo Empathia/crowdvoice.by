@@ -186,16 +186,7 @@ var HomeController = Class('HomeController')({
     kabinett : function(req, res) {
         res.render('test/index.html', {layout: 'application'});
     }
-
   }
 });
 
 module.exports = new HomeController();
-
-
-
-
-
-
-
-

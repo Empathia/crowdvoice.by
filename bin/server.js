@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 var application = require('neonode-core');
+
 var io = require('socket.io')(application.server)
 var posts = require('../public/demo-data/posts')
 var monthData = []
@@ -18,4 +19,4 @@ io.on('connection', function(socket) {
     socket.on('getMonth', function(dateString, up) {
         socket.emit('monthData', monthData, dateString, up);
     })
-})
+});
