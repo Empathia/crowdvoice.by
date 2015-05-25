@@ -1,5 +1,6 @@
 var EntitiesController = Class('EntitiesController')({
-  routesWhiteList: /^\/(person|people|signup|login|logout|user|organization|entity|dist|session)(es|s|$|\/)/,
+
+  routesWhiteList: /^\/(person|people|signup|login|logout|user|organization|entity|dist|session|page|root|admin|voice|dev)(es|s|$|\/)/,
 
   isWhiteListed : function isWhiteListed (path) {
     return path.match(this.routesWhiteList) ? true : false;
@@ -26,7 +27,7 @@ var EntitiesController = Class('EntitiesController')({
         profile_name: req.params.profile_name
       }, function (err, result) {
         if (err) { next(err); return; }
-        if (result.length === 0) { next(new Error('Not found')); return; }
+        if (result.length === 0) { next(new NotFoundError('Entity Not Found')); return; }
 
         var entity = result[0];
         req.entityType = entity.type;
