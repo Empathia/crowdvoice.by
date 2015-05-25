@@ -11,6 +11,7 @@ Class(CV, 'Button').inherits(Widget)({
         style           : null,
         label           : null,
         options         : null,
+        actionType      : null,
 
         init : function(config){
             Widget.prototype.init.call(this, config);
@@ -18,6 +19,10 @@ Class(CV, 'Button').inherits(Widget)({
             if (this.style){ this.element.addClass(this.style) };
             if (this.type == "single" || this.type == null){
                 this.element.text(this.label);
+            }
+
+            if (this.actionType){
+                this.element.addClass(this.actionType);
             }
 
             if(this.type == "twice"){
