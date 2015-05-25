@@ -1,0 +1,19 @@
+<% if (errors !== undefined) { %>
+    <%= errors %>
+<% } %>
+<form action="/organization/<%= organization.id %>?_method=PUT" method="POST" accept-charset="utf-8">
+    <p>
+        <span>Organization Name: </span> <input type="text" name="name" value="<%= organization.name %>">
+    </p>
+    <p>
+        <span>Profile Name: </span> <input type="text" name="profileName" value="<%= organization.profileName %>">
+    </p>
+
+    <p>
+    <span>Is it Anonymous?: </span> <input type="checkbox" name="isAnonymous" value="true" <% if (organization.isAnonymous) { %>checked<% } %>>
+    </p>
+
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+    <p><input type="submit" value="Continue &rarr;"></p>
+</form>

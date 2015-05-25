@@ -1,0 +1,17 @@
+Organization: <%= organization.name %>
+
+<% if (currentUser) { %>
+    <form action="/organization/<%= organization.id %>/follow" method="POST">
+        <input type="hidden" name="followAs" value="<%= currentEntity.id %>">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <p><input type="submit" value="Follow &rarr;"></p>
+    </form>
+<% } %>
+
+<% if (currentUser) { %>
+    <form action="/organization/<%= organization.id %>/invite" method="POST">
+        <input type="hidden" name="entityId" value="3">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <p><input type="submit" value="Invite &rarr;"></p>
+    </form>
+<% } %>

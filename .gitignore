@@ -22,10 +22,17 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+=======
+#### joe made this: https://goel.io/joe
+
 #####=== Node ===#####
 
 # Logs
 logs
+<<<<<<< HEAD
+=======
+log
+>>>>>>> development
 *.log
 
 # Runtime data
@@ -60,3 +67,10 @@ npm-debug.log
 public/dist
 /public/dist
 log/all.log
+
+tmp
+.tmp
+dist
+last_version.json
+config.js
+knexfile.js

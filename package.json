@@ -2,24 +2,7 @@
   "name": "crowdvoice-by",
   "description": "A new way to organize information and strengthen movements that matter to you",
   "version": "0.0.1",
-  "keywords": [
-    "neon",
-    "mvc",
-    "fullstack",
-    "cli",
-    "frontend",
-    "backend",
-    "stack",
-    "bootstrap",
-    "backend",
-    "orm",
-    "postgres",
-    "mysql",
-    "database",
-    "widget",
-    "full",
-    "generator"
-  ],
+  "keywords": [],
   "engines": {
     "node": ">=0.10.33"
   },
@@ -41,31 +24,27 @@
     "less-loader": "^2.2.0",
     "moment": "^2.10.2",
     "neon": "^2.0.0",
-    "neonode-core": "^2.2.0",
+    "neonode-core": "^2.2.1",
     "path": "^0.11.14",
     "redis": "^0.12.1",
     "sanitize.css": "^1.1.0",
     "socket.io": "^1.3.5",
+    "bcrypt-nodejs": "0.0.3",
+    "knex": "^0.8.3",
+    "method-override": "^2.3.3",
+    "neon": "^2.0.0",
+    "passport-local": "^1.0.0",
+    "path": "^0.11.14",
+    "pg": "^4.3.0",
+    "redis": "^0.12.1",
     "style-loader": "^0.9.0",
     "url-loader": "^0.5.5",
     "webpack": "^1.7.3"
   },
-  "_id": "neonode@2.0.2",
-  "_npmVersion": "2.7.0",
-  "_nodeVersion": "1.5.1",
-  "_npmUser": {
-    "name": "sgarza",
-    "email": "sergio@delagarza.io"
-  },
-  "maintainers": [
-    {
-      "name": "sgarza",
-      "email": "sergio@delagarza.io"
-    }
-  ],
-  "dist": {
-    "shasum": "9506a794245e84a1e15a590120635fda5eeaabbd",
-    "tarball": "http://registry.npmjs.org/neonode/-/neonode-2.0.2.tgz"
-  },
-  "directories": {}
+  "devDependencies": {
+    "assert": "^1.3.0",
+    "clone": "^1.0.2",
+    "superagent": "^1.2.0",
+    "tellurium": "git://github.com/benbeltran/tellurium.git"
+  }
 }

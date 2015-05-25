@@ -1,1 +1,1 @@
-module.exports = global.application.router
+module.exports = global.application.router;

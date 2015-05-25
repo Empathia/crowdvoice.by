@@ -1,0 +1,13 @@
+<form action="/session" method="post" accept-charset="utf-8">
+    <h1>Login</h1>
+    <p>
+        <span>Username or Email: </span> <input type="text" name="username" value="user1">
+    </p>
+    <p>
+        <span>Password: </span> <input type="text" name="password" value="mysecret">
+    </p>
+
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+    <p><input type="submit" value="Continue &rarr;"></p>
+</form>
