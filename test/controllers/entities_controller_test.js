@@ -6,7 +6,7 @@ require('tellurium');
 require('./../../lib/TelluriumConsoleReporter.js');
 
 var application = require('neonode-core');
-var async = require('async');
+
 var request = require('superagent');
 var crypto = require('crypto');
 
