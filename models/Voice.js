@@ -43,10 +43,20 @@ var Voice = Class('Voice').inherits(Argon.KnexModel)({
   },
 
   storage : (new Argon.Storage.Knex({
-    tableName : 'Voices'
+    tableName : 'Voices',
+    // queries: {
+    //   buildQuery: function (requestObj, callback) {
+    //     var query = db(requestObj.model.storage.tableName)
+    //     if (callback) {
+    //       query.exec(callback);
+    //     } else {
+    //       return query;
+    //     }
+    //   }
+    // }
   })),
 
-  findByOwnerId : function findByOwnerId(ownerId, callback) {
+  findByOwnerId : function findByOwnerId (ownerId, callback) {
     var Model, request;
 
     Model = this;
@@ -66,6 +76,26 @@ var Voice = Class('Voice').inherits(Argon.KnexModel)({
       Model.dispatch('afterFindByOwnerId');
     });
   },
+
+  // findBy : function findBy (query, callback) {
+  //   var query = db('Voices');
+  //   var i;
+
+  //   if (query.topics) {
+  //   }
+
+  //   for (i = 0; i < storage.preprocessors.length; i++) {
+  //     requestObj.data = storage.preprocessors[i](requestObj.data, requestObj);
+  //   }
+
+  //   this.queries.find(requestObj, function(err, data) {
+  //     for (i = 0; i < storage.processors.length; i++) {
+  //       data = storage.processors[i](data, requestObj);
+  //     }
+
+  //     return callback(err, data);
+  //   },
+  // },
 
   prototype : {
     id : null,
