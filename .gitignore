@@ -29,10 +29,9 @@ Temporary Items
 
 # Logs
 logs
-<<<<<<< HEAD
-=======
+
 log
->>>>>>> development
+
 *.log
 
 # Runtime data
