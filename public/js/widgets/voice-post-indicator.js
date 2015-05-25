@@ -4,7 +4,6 @@ Class(CV, 'VoicePostIndicator').inherits(Widget).includes(CV.WidgetUtils)({
     ELEMENT_CLASS : 'cv-voice-tick-indicator',
 
     prototype : {
-
         /* OPTIONS */
         label : '',
         refElement : null,
@@ -19,6 +18,8 @@ Class(CV, 'VoicePostIndicator').inherits(Widget).includes(CV.WidgetUtils)({
             Widget.prototype.init.call(this, config);
 
             this.el = this.element[0];
+
+            this.el.dataset.timestamp = moment(this.label).format('x');
 
             this.dom.updateText(this.el, moment(this.label).format('MMM DD, YYYY'));
             this.el.style.zIndex = this.zIndex;

@@ -1,4 +1,3 @@
-
 Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport)({
 
     STATUS_DRAFT : 'STATUS_DRAFT',
@@ -49,10 +48,20 @@ Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport)({
             this.dom.updateText(this.postCountElement, this.format.numberUS(this.postCount));
             this.dom.updateText(this.followersCountElement, this.format.numberUS(this.followerCount));
 
-            this._bindEvents();
-
             // children
             this._appendLayersManager();
+
+            this.appendChild(
+                new CV.VoiceFooter({
+                    name : 'voiceFooter',
+                    element : $('.voice-footer'),
+                    firstPostDate : this.firstPostDate,
+                    lastPostDate : this.lastPostDate
+                })
+            );
+
+            // listeners
+            this._bindEvents();
         },
 
         /* Checks if we have provided the information required before
