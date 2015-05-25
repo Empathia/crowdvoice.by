@@ -21,9 +21,25 @@
 
 .cv-voice-posts-layer__ticks {
   position: absolute;
-  top: 0;
+  top: 6em;
   right: 0;
   bottom: 0;
   width: 90px;
   z-index: 0;
+
+  .cv-voice-posts-layer.first & {
+    top: 0;
+  }
+}
+
+.cv-voice-tick-indicator {
+  position: inherit;
+  font-size: .8rem;
+  width: 100%;
+  opacity: 0;
+
+  &.active {
+    border-top: 1px solid;
+    opacity: 1;
+  }
 }
