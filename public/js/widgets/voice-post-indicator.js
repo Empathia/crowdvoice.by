@@ -1,6 +1,6 @@
 var moment = require('moment');
 
-Class(CV, 'VoicePostTick').inherits(Widget).includes(CV.WidgetUtils)({
+Class(CV, 'VoicePostIndicator').inherits(Widget).includes(CV.WidgetUtils)({
     ELEMENT_CLASS : 'cv-voice-tick-indicator',
 
     prototype : {
@@ -20,13 +20,22 @@ Class(CV, 'VoicePostTick').inherits(Widget).includes(CV.WidgetUtils)({
 
             this.el = this.element[0];
 
+            this.dom.updateText(this.el, moment(this.label).format('MMM DD, YYYY'));
+            this.el.style.zIndex = this.zIndex;
+        },
+
+        /* Set the indicator position and dimensions, taking as reference the
+         * element we pass (`refElement`) as prop.
+         * @public
+         */
+        updatePosition : function updatePosition() {
             this.y = this.refElement.offsetTop;
             this.height = this.refElement.offsetHeight;
 
-            this.dom.updateText(this.el, moment(this.label).format('MMM DD, YYYY'));
             this.el.style.height = this.height + 'px';
             this.el.style.top = this.y + 'px';
-            this.el.style.zIndex = this.zIndex;
+
+            return this;
         }
     }
 });
