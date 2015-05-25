@@ -73,4 +73,5 @@ tmp
 dist
 last_version.json
 config.js
+config/config.js
 knexfile.js
