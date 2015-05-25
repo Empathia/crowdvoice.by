@@ -35,15 +35,43 @@
         <% if (typeof currentUser === "undefined") { %>
           <a href="">Signup</a> or <a href="">Login</a>
         <% } else { %>
-          <div class="account-info">
-            <img class="account-info-avatar -rounded" width="22" height="22" src="/img/sample/avatars/<%= voiceInfo.author.avatar.small %>">
-            <span class="account-info-name -font-bold -color-grey-dark"><%= voiceInfo.author.name %></span>
-            <span class="actions-wrapper -inline-block">
-              <svg class="actions-dropdown-svg -block">
-                <use xlink:href="#svg-arrow-down-2"></use>
-              </svg>
-            </span>
-          </div>
+          <div class="placeholder-account -inline-block"></div>
+          <script>
+          //Multiple
+            var allMulti = {
+              "1": {name: 'Your Profile'},
+              "2": {name: 'Manage Account'},
+              "3": {
+                name: 'Organization 01',
+                sub: {
+                  "0": {name: 'Profile'},
+                  "1": {name: 'Manage'}
+                }
+              },
+              "4": {
+                name: 'Organization 02',
+                sub: {
+                  "0": {name: 'Profile'},
+                  "1": {name: 'Manage'}
+                }
+              },
+              "5": {
+                name: 'Organization 03',
+                sub: {
+                  "0": {name: 'Profile'},
+                  "1": {name: 'Manage'}
+                }
+              },
+              "6": {name: 'Logout'}
+            };
+            new CV.SelectAccount({
+              label         : 'Multiple',
+              name          : 'select',
+              accountImage  : "/img/sample/avatars/<%= voiceInfo.author.avatar.small %>",
+              accountName   : "<%= voiceInfo.author.name %>",
+              options       : allMulti
+            }).render(document.querySelector('.placeholder-account'));
+          </script>
         <% } %>
       </div>
     </div>
@@ -69,8 +97,38 @@
             </svg>
           </a>
         </form>
+        <div class="placeholder-create -inline-block"></div>
         <% if (typeof currentUser !== "undefined") { %>
-          <button class="ui-btn -primary">Create a Voice</button>
+
+          <script>
+
+            var createOptions = {
+              "1": {name: 'Voice'},
+              "2": {name: 'Organization'}
+            };
+
+            new CV.Select({
+              style: 'primary',
+              label : 'Create New',
+              name  : 'createSelect',
+              options: createOptions
+            }).render(document.querySelector('.placeholder-create'));
+
+          </script>
+
+        <% } else { %>
+
+          <script>
+
+            new CV.Button({
+                style   : 'primary',
+                type    : 'single',
+                label   : 'Edit This Voice',
+                name    : 'buttonEdit'
+            }).render(document.querySelector('.placeholder-create'));
+
+          </script>
+
         <% } %>
       </div>
     </div>
