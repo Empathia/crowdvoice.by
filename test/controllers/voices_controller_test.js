@@ -44,9 +44,10 @@ Tellurium.suite('Voices Controller')(function () {
       password: 'mysecret'
     };
     spec.registry.voiceData = {
-      title: 'title',
+      title: 'title_' + uid(16),
       status: 'active',
-      type: 'text'
+      type: 'text',
+      ownerId: rid()
     };
     spec.registry.personData = {
       type: 'person',
@@ -57,10 +58,42 @@ Tellurium.suite('Voices Controller')(function () {
   });
 
   this.describe('Actions')(function () {
+    var v1;
 
     // Voices#index
     this.specify('GET /index should return a list of ')(function (spec) {
+      async.series([
+        function (done) {
+          v1 = new Voice(spec.registry.voiceData);
+          v1.save(done);
+        },
+      ], function (err) {
+        var req = request.
+          get(urlBase + '/voices').
+          accept('application/json').
+          end(function (err, res) {
+            spec.assert(res.body.length > 0).toBeTruthy();
+            spec.completed();
+          });
+      });
+    });
 
+    // Voices#show
+    this.specify('GET /voice/:id should return a voice')(function (spec) {
+      async.series([
+        function (done) {
+          v1 = new Voice(spec.registry.voiceData);
+          v1.save(done);
+        },
+      ], function (err) {
+        var req = request.
+          get(urlBase + '/voice/' + v1.id).
+          accept('application/json').
+          end(function (err, res) {
+            spec.assert(res.body.title).toBe(v1.title);
+            spec.completed();
+          });
+      });
     });
 
   });

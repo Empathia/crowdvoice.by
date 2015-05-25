@@ -19,10 +19,12 @@ var VoicesController = Class('VoicesController').inherits(RestfulController)({
     getActiveVoice : function (req, res, next) {
       Voice.find({ id: req.params.id }, function (err, result) {
         if (err) { return next(err); }
-        if (result.length === 0) { next(new Error('Not Found')); }
+        if (result.length === 0) { next(new NotFoundError('Not Found')); }
 
         res.locals.voice = result[0];
         req.activeVoice = result[0];
+
+        next();
       });
     },
 
@@ -43,7 +45,14 @@ var VoicesController = Class('VoicesController').inherits(RestfulController)({
     },
 
     show : function show (req, res) {
-      res.render('voices/show.html', {});
+      res.format({
+        'text/html': function () {
+          res.render('voices/show.html', {});
+        },
+        'application/json': function () {
+          res.json(req.activeVoice);
+        }
+      });
     },
 
     new : function (req, res) {
