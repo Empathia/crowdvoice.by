@@ -6,8 +6,6 @@ CONFIG.database.logQueries = false;
 
 require('tellurium');
 
-var async = require('async');
-
 require(process.cwd() + '/node_modules/tellurium/reporters/pretty');
 
 Tellurium.reporter = new Tellurium.Reporter.Pretty({
