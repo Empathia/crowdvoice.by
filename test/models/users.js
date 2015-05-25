@@ -5,7 +5,6 @@ require('neonode-core');
 require('tellurium');
 require('./../../lib/TelluriumConsoleReporter.js');
 
-var async = require('async');
 var crypto = require('crypto');
 
 function uid (number) {
