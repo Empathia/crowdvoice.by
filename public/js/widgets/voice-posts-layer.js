@@ -125,7 +125,7 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
 
         /* Create, append and render the posts dates indicators shown on the
          * far right of the screen. Will also make sure to only display the
-         * first indicator per YYYY-MM.
+         * first indicator per date coincidence YYYY-MM-DD.
          * @private
          * This function is invoked by `addPosts` public method.
          * @param posts <required> [Object Array] Post instances references.
@@ -135,10 +135,10 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
             var frag = document.createDocumentFragment();
             var i = 0;
             var len = posts.length;
-            var indicator, firstYearMonthCoincidence, currentYearMonth;
+            var indicator, firstDateCoincidence, currentDate;
 
             for (i = 0; i < len; i++) {
-                currentYearMonth = posts[i].el.dataset.date.match(/\d{4}-\d{2}/)[0];
+                currentDate = posts[i].el.dataset.date.match(/\d{4}-\d{2}-\d{2}/)[0];
 
                 indicator = new CV.VoicePostIndicator({
                     label : posts[i].el.dataset.date,
@@ -146,8 +146,8 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
                     zIndex : len - i
                 });
 
-                if (firstYearMonthCoincidence !== currentYearMonth) {
-                    firstYearMonthCoincidence = currentYearMonth;
+                if (firstDateCoincidence !== currentDate) {
+                    firstDateCoincidence = currentDate;
                     indicator.activate();
                 }
 
@@ -161,7 +161,7 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
 
             this.ticksContainerElement.appendChild(frag);
 
-            frag = i = len = indicator = firstYearMonthCoincidence = currentYearMonth = null;
+            frag = i = len = indicator = firstDateCoincidence = currentDate = null;
         },
 
         /* Updates the position of each indicator.
