@@ -7,6 +7,7 @@ var HomeController = Class('HomeController')({
 
     _initRouter : function() {
       application.router.route('/').get(this.index);
+      application.router.route('/about').get(this.about);
       application.router.route('/voice').get(this.voice);
       application.router.route('/profile').get(this.profile);
       application.router.route('/profile/voices').get(this.profileVoices);
@@ -51,6 +52,12 @@ var HomeController = Class('HomeController')({
          *  MOST ACTIVE ORGANIZATIONS
          * =========================================================================== */
         mostActiveOrganizations : require('./../public/demo-data/organizations.js')
+      });
+    },
+
+    about : function(req, res) {
+      res.render('home/about.html', {
+        layout : 'application'
       });
     },
 
