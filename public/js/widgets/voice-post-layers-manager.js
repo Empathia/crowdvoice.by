@@ -68,10 +68,13 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
 
             CV.VoiceAboutBox.bind('activate', function() {
                 this._layers[0].waterfall.layout();
+                this._layers[0]._updatePostIndicatorsPostion();
             }.bind(this));
 
             CV.VoiceAboutBox.bind('deactivate', function() {
                 this._layers[0].waterfall.layout();
+                this._layers[0]._updatePostIndicatorsPostion();
+
                 localStorage['cvby__voice' + this.id + '__about-read'] = true;
             }.bind(this));
         },
@@ -182,6 +185,11 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
             firstDate = lastDate = totalLayers = frag = i = null;
         },
 
+        /* Sets the layer's postsContainer height equal to the
+         * _averageLayerHeight value.
+         * @method _resetLayersHeight <private>
+         * @return undefined
+         */
         _resetLayersHeight : function _resizeHandlerRef() {
             this._layers.forEach(function(layer) {
                 if (!layer.getPosts().length)
