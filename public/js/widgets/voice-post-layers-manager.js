@@ -68,10 +68,13 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
 
             CV.VoiceAboutBox.bind('activate', function() {
                 this._layers[0].waterfall.layout();
+                this._layers[0]._updatePostIndicatorsPostion();
             }.bind(this));
 
             CV.VoiceAboutBox.bind('deactivate', function() {
                 this._layers[0].waterfall.layout();
+                this._layers[0]._updatePostIndicatorsPostion();
+
                 localStorage['cvby__voice' + this.id + '__about-read'] = true;
             }.bind(this));
         },
@@ -182,6 +185,11 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
             firstDate = lastDate = totalLayers = frag = i = null;
         },
 
+        /* Sets the layer's postsContainer height equal to the
+         * _averageLayerHeight value.
+         * @method _resetLayersHeight <private>
+         * @return undefined
+         */
         _resetLayersHeight : function _resizeHandlerRef() {
             this._layers.forEach(function(layer) {
                 if (!layer.getPosts().length)
@@ -250,6 +258,11 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
             this._listenScrollEvent = false;
 
             if (typeof this._cachedData[dateString] === 'undefined') {
+                // @TODO: remove when backend progress gets integrated,
+                // this if for demo purpuses only
+                for (var i = 0, l = postsData.length; i < l; i++) {
+                    postsData[i].createdAt = postsData[i].createdAt.replace(/\d{4}-\d{2}/, dateString);
+                }
                 this._cachedData[dateString] = postsData;
             }
 
