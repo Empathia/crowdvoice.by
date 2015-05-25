@@ -9,7 +9,6 @@ Tellurium.reporter = new Tellurium.Reporter.Pretty({
   colorsEnabled : true
 });
 
-var async = require('async');
 var request = require('superagent');
 var crypto = require('crypto');
 
