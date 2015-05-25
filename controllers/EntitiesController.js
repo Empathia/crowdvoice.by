@@ -44,9 +44,7 @@ var EntitiesController = Class('EntitiesController')({
       }, function (err, result) {
         if (err) { next(err); return; }
         if (result.length === 0) {
-          res.status(404);
-          res.render('shared/404.html');
-          return;
+          next(new NotFoundError('Entity Not Found')); return;
         }
 
         res.locals[req.entityType] = new Entity(result[0]);
@@ -56,10 +54,14 @@ var EntitiesController = Class('EntitiesController')({
       });
     },
 
-    index : function index (req, res) {
+    index : function index (req, res, next) {
       var controller = this;
       Entity.find({type:req.entityType}, function (err, result) {
         if (err) { next(err); return; }
+
+        if (result.length === 0) {
+          next(new NotFoundError('Entity Not Found')); return;
+        }
 
         res.format({
           'text/html': function () {
@@ -85,10 +87,9 @@ var EntitiesController = Class('EntitiesController')({
         profile_name: req.params.profile_name
       }, function (err, result) {
         if (err) { next(err); return; }
+
         if (result.length === 0) {
-          res.status(404);
-          res.render('shared/404.html');
-          return;
+          next(new NotFoundError('Entity Not Found')); return;
         }
 
         res.locals[req.entityType] = new Entity(result[0]);
@@ -149,6 +150,11 @@ var EntitiesController = Class('EntitiesController')({
 
       Entity.find({ id: req.body.followAs }, function (err, result) {
         if (err) { next(err); return; }
+
+        if (result.length === 0) {
+          next(new NotFoundError('Entity Not Found')); return;
+        }
+
         follower = new Entity(result[0]);
 
         // TODO: Check if follower is authorized to do this.
