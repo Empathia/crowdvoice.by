@@ -18,7 +18,7 @@ var UsersController = Class('UsersController').inherits(RestfulController)({
         var user;
 
         if (err) { next(err); return; }
-        if (result.length === 0) { next(); return; }
+        if (result.length === 0) { next(new NotFoundError('User Not found')); return; }
 
         user = new User(result[0]);
         res.render('users/show.html', {layout : 'application', user : user.toJson()});
@@ -49,7 +49,7 @@ var UsersController = Class('UsersController').inherits(RestfulController)({
           username: req.body['username'],
           email: req.body['email'],
           password: req.body['password']
-        });  
+        });
 
         user.save(function (err) {
           if (err) {
@@ -66,7 +66,7 @@ var UsersController = Class('UsersController').inherits(RestfulController)({
     edit : function edit(req, res) {
       User.findById(req.params.id, function (err, user) {
         if (err) { next(err); return; }
-        if (user.length === 0) { next(); return; }
+        if (user.length === 0) { next(new NotFoundError('User Not found')); return; }
 
         res.render('users/edit.html', {layout : 'application', user: user[0]});
       });
@@ -77,7 +77,7 @@ var UsersController = Class('UsersController').inherits(RestfulController)({
         var user;
 
         if (err) { next(err); return; }
-        if (result.length === 0) { next(); return; }
+        if (result.length === 0) { next(new NotFoundError('User Not found')); return; }
 
         user = new User(result[0]);
         user.setProperties(req.body);
@@ -92,7 +92,7 @@ var UsersController = Class('UsersController').inherits(RestfulController)({
     destroy : function destroy(req, res) {
       User.findById(req.params.id, function (err, user) {
         if (err) { next(err); return; }
-        if (user.length === 0) { next(); return; }
+        if (user.length === 0) { next(new NotFoundError('User Not found')); return; }
 
         // Logic remove only
         user.deleted = true;
