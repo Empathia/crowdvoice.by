@@ -157,7 +157,7 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
             }
 
             // Avoid forced synchronous layout
-            this._updatePostIndicatorsPostion()
+            this._updatePostIndicatorsPostion();
 
             this.ticksContainerElement.appendChild(frag);
 
@@ -171,6 +171,8 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
         _updatePostIndicatorsPostion : function _updatePostIndicatorsPostion() {
             var i = 0;
             var len = this._indicatorWidgets.length;
+
+            CV.VoicePostIndicator.flushRegisteredYValues();
 
             for (i = 0; i < len; i++) {
                 this._indicatorWidgets[i].updatePosition();
@@ -208,6 +210,7 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
             this.waterfall.flushItems();
 
             this._postWidgets = [];
+            this._indicatorWidgets = [];
 
             return this;
         },
