@@ -98,6 +98,9 @@ Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport)({
 
             this._activateButtonRef = this._activateButton.bind(this);
             CV.VoiceAboutBox.bind('deactivate', this._activateButtonRef);
+
+            this.layerLoadedRef = this.layerLoadedHandler.bind(this);
+            this.voicePostLayersManager.bind('layerLoaded', this.layerLoadedRef);
         },
 
         _deactivateButton : function _deactivateButton() {
@@ -112,6 +115,10 @@ Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport)({
             CV.Voice.dispatch('voiceAboutBox:show');
         },
 
+        layerLoadedHandler : function layerLoadedHandler() {
+            this.voiceFooter.voiceTimelineFeedback.updateVars();
+        },
+
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
 
@@ -123,6 +130,9 @@ Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport)({
 
             CV.VoiceAboutBox.unbind('deactivate', this._activateButtonRef);
             this._activateButtonRef = null;
+
+            this.voicePostLayersManager.unbind('layerLoaded', this.layerLoadedRef);
+            this.layerLoadedRef = null;
 
             this.id = null;
             this.title = null;

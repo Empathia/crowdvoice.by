@@ -274,6 +274,8 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
 
             currentLayer.addPosts(postsData);
 
+            this.dispatch('layerLoaded');
+
             if (this._isInitialLoad) {
                 this._isInitialLoad = false;
                 this.loadImagesVisibleOnViewport();

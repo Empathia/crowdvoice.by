@@ -10,6 +10,7 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
     ',
 
     INDICATOR_CLASSNAME : 'cv-voice-tick-indicator',
+    FOOTER_HEIGHT: 56,
 
     prototype : {
         /* CONFIGURATION OPTIONS */
@@ -43,7 +44,7 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
         /* Random-ish value to alter the clock roration based on total height */
         _rotateFactor : 0,
         /* Offset left spacing for the clock available space */
-        _timelineOffsetLeft : 30,
+        _timelineOffsetLeft : 10,
         /* Offset rigth spacing for the clock available space */
         _timelineOffsetRight : 30,
         /* Holds the reference to the last date indicator detected */
@@ -61,18 +62,18 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
             this._firstDateMS = moment(this.firstPostDate).format('x') * 1000;
             this._lastDateMS = moment(this.lastPostDate).format('x') * 1000;
 
-            this._updateVars()._bindEvents();
+            this.updateVars()._bindEvents();
         },
 
         /* Cache some variable values related to the screen size.
          * This method should be called on init and on whenever the viewport
          * change its dimensions.
-         * @private
+         * @public
          */
-        _updateVars : function _updateVars() {
+        updateVars : function _pdateVars() {
             this._totalHeight = this._scrollableArea.offsetHeight;
             this._clientWidth = document.documentElement.clientWidth;
-            this._clientHeight = document.documentElement.clientHeight;
+            this._clientHeight = document.documentElement.clientHeight - this.constructor.FOOTER_HEIGHT;
             this._rotateFactor = this._totalHeight / 500;
 
             return this;
@@ -110,7 +111,7 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
 
             scrollPercentage = 100 * this._lastScrollY / (this._totalHeight - this._clientHeight);
             scrollViewportPixels = scrollPercentage * this._clientHeight / 100;
-            elem = document.elementFromPoint(this._clientWidth - 40, scrollViewportPixels);
+            elem = document.elementFromPoint(this._clientWidth - 10, scrollViewportPixels);
 
             if (elem) {
                 if (elem.classList.contains(this.constructor.INDICATOR_CLASSNAME)) {
