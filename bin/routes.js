@@ -14,7 +14,7 @@ for (var key in routes) {
         if(val.route) {
             val = val.route;
             var _o = {};
-            _o[val.stack[0].method]  = [baseUrl + val.path];
+            _o[val.stack[0].method || 'all']  = [baseUrl + val.path];
             table.push(_o);
         }
     }
