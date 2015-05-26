@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-
 'use strict';
 
 require('tellurium');
@@ -93,6 +92,109 @@ Tellurium.suite('Voices Controller')(function () {
             spec.assert(res.body.title).toBe(v1.title);
             spec.completed();
           });
+      });
+    });
+
+    // Voices#new
+    this.specify('GET /voice/new should return 200')(function (spec) {
+      var req = request.
+        get(urlBase + '/voice/new');
+
+      req.end(function (err, res) {
+        spec.assert(res.status).toBe(200);
+        spec.completed();
+      });
+    });
+
+    // Voices#edit
+    this.specify('GET /voice/:id/edit should return 200 if record exists')(function (spec) {
+      async.series([
+        function (done) {
+          var v1 = new Voice(spec.registry.voiceData);
+          v1.save(done);
+        }
+      ], function (err) {
+        var req = request.
+        get(urlBase + '/voice/' + v1.id + '/edit');
+
+        req.end(function (err, res) {
+          spec.assert(res.status).toBe(200);
+          spec.completed();
+        });
+      });
+    });
+
+    // Voices#create
+    this.specify('POST /voice should create a voice')(function (spec) {
+      var u1, cookies, csrf;
+
+      async.series([
+        function (done) {
+          u1 = new User(spec.registry.userData);
+          u1.save(done);
+        },
+        function (done) {
+          var req = request
+            .get(urlBase + '/csrf');
+
+          req.end(function (err, res) {
+            cookies = res.headers['set-cookie'];
+            csrf = res.text;
+            done();
+          });
+        },
+        function (done) {
+          var data = spec.registry.voiceData;
+          var req = request.post(urlBase + '/voice');
+
+          data._csrf = csrf;
+          req.set('cookie', cookies);
+          req.send(data);
+          req.end(function (err, res) {
+            if (err) { done(err); }
+            done();
+          });
+        }
+      ], function (err) {
+        Voice.find({title: spec.registry.voiceData.title}, function (err, result) {
+          spec.assert(result.length > 0).toBeTruthy();
+          spec.completed();
+        });
+      });
+    });
+
+    // Voices#update
+    this.specify('PUT /voice should update a voice')(function (spec) {
+      var u1, v1, e1, cookies, csrf;
+
+      async.series([
+        function (done) {
+          v1 = new Voice(spec.registry.voiceData);
+          v1.save(done);
+        },
+        function (done) {
+          var req = request
+            .get(urlBase + '/csrf');
+
+          req.end(function (err, res) {
+            cookies = res.headers['set-cookie'];
+            csrf = res.text;
+            done();
+          });
+        },
+        function (done) {
+          var req = request.put(urlBase + '/voice/' + v1.id);
+          req.set('cookie', cookies);
+          req.send({_csrf: csrf, title: 'modified'});
+          req.end(function (err, res) {
+            done();
+          });
+        }
+      ], function (err) {
+        Voice.findById(v1.id, function (err, voices) {
+          spec.assert(voices[0].title).toBe('modified');
+          spec.completed();
+        });
       });
     });
 
