@@ -279,6 +279,7 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
             if (this._isInitialLoad) {
                 this._isInitialLoad = false;
                 this.loadImagesVisibleOnViewport();
+                this.dispatch('ready', {layer: this.getCurrentMonthLayer()});
             }
 
             currentLayer.arrangeReset();

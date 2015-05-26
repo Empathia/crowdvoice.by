@@ -101,6 +101,9 @@ Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport)({
 
             this.layerLoadedRef = this.layerLoadedHandler.bind(this);
             this.voicePostLayersManager.bind('layerLoaded', this.layerLoadedRef);
+
+            this.layerManagerReadyRef = this.layerManagerReady.bind(this);
+            this.voicePostLayersManager.bind('ready', this.layerManagerReadyRef);
         },
 
         _deactivateButton : function _deactivateButton() {
@@ -115,8 +118,17 @@ Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport)({
             CV.Voice.dispatch('voiceAboutBox:show');
         },
 
+        layerManagerReady : function layerManagerReady(data) {
+            var timestamp = data.layer.getIndicators()[0].getTimestamp();
+
+            this.voiceFooter.setTimelineInitialDate(timestamp);
+
+            this.voicePostLayersManager.unbind('ready', this.layerManagerReadyRef);
+            this.layerManagerReadyRef = null;
+        },
+
         layerLoadedHandler : function layerLoadedHandler() {
-            this.voiceFooter.voiceTimelineFeedback.updateVars();
+            this.voiceFooter.updateTimelineVars();
         },
 
         destroy : function destroy() {
@@ -133,6 +145,9 @@ Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport)({
 
             this.voicePostLayersManager.unbind('layerLoaded', this.layerLoadedRef);
             this.layerLoadedRef = null;
+
+            this.voicePostLayersManager.unbind('ready', this.layerManagerReadyRef);
+            this.layerManagerReadyRef = null;
 
             this.id = null;
             this.title = null;

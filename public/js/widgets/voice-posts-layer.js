@@ -178,10 +178,19 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
         },
 
         /* Returns its children Posts instances.
+         * @public
          * @return posts
          */
         getPosts : function getPosts() {
             return this._postWidgets;
+        },
+
+        /* Returns its children PostIndicators instances.
+         * @public
+         * @return children post indicators instances
+         */
+        getIndicators : function getIndicators() {
+            return this._indicatorWidgets;
         },
 
         isFinalHeightKnow : function isFinalHeightKnow() {

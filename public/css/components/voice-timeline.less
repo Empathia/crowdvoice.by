@@ -9,6 +9,8 @@
   border: 2px solid;
   border-radius: 50%;
   background: white;
+  opacity: 0;
+  transition: opacity 400ms ease 400ms;
 
   &:after {
     content: '';
@@ -21,6 +23,10 @@
     box-shadow: 0 0 0 2px;
     border-radius: 2px;
     transform: translateZ(2px);
+  }
+
+  &.active {
+    opacity: 1;
   }
 }
 

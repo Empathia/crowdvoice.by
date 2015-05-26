@@ -37,6 +37,13 @@ Class(CV, 'VoicePostIndicator').inherits(Widget).includes(CV.WidgetUtils)({
             this.el.style.top = this.y + 'px';
 
             return this;
+        },
+
+        /* Returns its date as timestamp
+         * @public
+         */
+        getTimestamp : function getTimestamp() {
+            return this.el.dataset.timestamp;
         }
     }
 });

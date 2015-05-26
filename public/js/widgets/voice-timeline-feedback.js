@@ -16,13 +16,13 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
         /* CONFIGURATION OPTIONS */
         firstPostDate : '',
         lastPostDate : '',
+        scrollableArea : document.getElementsByClassName('cv-main-content')[0],
 
         /* PRIVATE : ELEMENT REFERENCES */
         /* Holds a reference to the main widget's HTMLElement */
         el : null,
         /* Holds a reference to window */
         _window : null,
-        _scrollableArea : null,
         hourElement : null,
         minutesElement : null,
 
@@ -48,14 +48,13 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
         /* Offset rigth spacing for the clock available space */
         _timelineOffsetRight : 30,
         /* Holds the reference to the last date indicator detected */
-        _lastScrollDate : '',
+        _lastScrollDate : null,
 
         init : function init(config) {
             Widget.prototype.init.call(this, config);
 
             this.el = this.element[0];
             this._window = window;
-            this._scrollableArea = document.getElementsByClassName('cv-main-content')[0];
             this.hourElement = this.el.querySelector('.timeline-feedback-h');
             this.minutesElement = this.el.querySelector('.timeline-feedback-m');
 
@@ -66,12 +65,14 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
         },
 
         /* Cache some variable values related to the screen size.
-         * This method should be called on init and on whenever the viewport
-         * change its dimensions.
+         * This method should be called on:
+         *  - init
+         *  - whenever the viewport changes its dimensions
+         *  - whenever the CONFIG.scrollableArea change its length
          * @public
          */
         updateVars : function _pdateVars() {
-            this._totalHeight = this._scrollableArea.offsetHeight;
+            this._totalHeight = this.scrollableArea.offsetHeight;
             this._clientWidth = document.documentElement.clientWidth;
             this._clientHeight = document.documentElement.clientHeight - this.constructor.FOOTER_HEIGHT;
             this._rotateFactor = this._totalHeight / 500;
@@ -115,7 +116,7 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
 
             if (elem) {
                 if (elem.classList.contains(this.constructor.INDICATOR_CLASSNAME)) {
-                    this._lastScrollDate = Math.round(elem.dataset.timestamp);
+                    this._lastScrollDate = elem.dataset.timestamp;
                 }
             }
 
@@ -156,6 +157,17 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
             });
 
             this._scheduledAnimationFrame = false;
+        },
+
+        /* Sets the initial value for _lastScrollDate so the clock feedabck
+         * can be started.
+         */
+        setInitialFeedbackDate : function setInitialFeedbackDate(timestamp) {
+            this._lastScrollDate = timestamp;
+
+            this.readAndUpdate();
+
+            this.activate();
         },
 
         /* Unlisten events, release any HTMLElement reference, free variables...
