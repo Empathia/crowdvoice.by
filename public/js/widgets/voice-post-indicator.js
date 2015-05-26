@@ -19,7 +19,7 @@ Class(CV, 'VoicePostIndicator').inherits(Widget).includes(CV.WidgetUtils)({
 
             this.el = this.element[0];
 
-            this.el.dataset.timestamp = moment(this.label).format('x');
+            this.el.dataset.timestamp = moment(this.label).format('x') * 1000;
 
             this.dom.updateText(this.el, moment(this.label).format('MMM DD, YYYY'));
             this.el.style.zIndex = this.zIndex;

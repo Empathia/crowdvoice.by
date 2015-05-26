@@ -1,9 +1,7 @@
-
 var moment = require('moment');
 
 Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
     prototype : {
-
         /* DEFAULT BASIC OPTIONS */
         firstPostDate : '',
         lastPostDate : '',

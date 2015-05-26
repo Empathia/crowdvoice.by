@@ -8,7 +8,6 @@ Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport)({
     TYPE_CLOSED : 'TYPE_CLOSED',
 
     prototype : {
-
         /* DEFAULT BASIC OPTIONS */
         id : null,
         title : '',

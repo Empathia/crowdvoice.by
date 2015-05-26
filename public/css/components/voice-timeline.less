@@ -1,0 +1,47 @@
+.cv-voice-timeline-feedback {
+    box-sizing: initial;
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: -12px;
+    left: 0;
+    border: 2px solid;
+    border-radius: 50%;
+    background: white;
+
+    &:after {
+      content: '';
+      position: absolute;
+      top: 9px;
+      left: 9px;
+      width: 2px;
+      height: 2px;
+      background-color: white;
+      box-shadow: 0 0 0 2px;
+      border-radius: 2px;
+      transform: translateZ(2px);
+    }
+  }
+
+
+  .timeline-feedback-h,
+  .timeline-feedback-m {
+    position: absolute;
+    top: 10px;
+    left: 9px;
+    width: 2px;
+    transform-origin: 1px 0;
+    border-radius: 2px;
+    background-color: indianred;
+  }
+
+  .timeline-feedback-h {
+    height: 7px;
+    transform: rotateZ(180deg);
+  }
+
+  .timeline-feedback-m {
+    height: 8px;
+    transform: rotateZ(-90deg);
+  }
+
