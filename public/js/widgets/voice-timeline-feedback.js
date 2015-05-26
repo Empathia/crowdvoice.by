@@ -46,7 +46,7 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
         /* Offset left spacing for the clock available space */
         _timelineOffsetLeft : 10,
         /* Offset rigth spacing for the clock available space */
-        _timelineOffsetRight : 30,
+        _timelineOffsetRight : 10, /* value updated on setTimelineInitialDate method*/
         /* Holds the reference to the last date indicator detected */
         _lastScrollDate : null,
 
@@ -164,6 +164,7 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
          */
         setInitialFeedbackDate : function setInitialFeedbackDate(timestamp) {
             this._lastScrollDate = timestamp;
+            this._timelineOffsetRight = this.el.offsetWidth + 20;
 
             this.readAndUpdate();
 
