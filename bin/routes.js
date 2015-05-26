@@ -24,3 +24,4 @@ console.log(table.toString());
 };
 
 printRoutes('', application.router.stack)
+process.exit(0)
