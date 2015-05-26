@@ -7,17 +7,17 @@ var HomeController = Class('HomeController')({
 
     _initRouter : function() {
       application.router.route('/').get(this.index);
-      application.router.route('/about').get(this.about);
       application.router.route('/jack_johnson/voice').get(this.voice);
-      application.router.route('/profile').get(this.profile);
-      application.router.route('/profile/voices').get(this.profileVoices);
-      application.router.route('/profile/saved').get(this.profileSaved);
-      application.router.route('/profile/messages').get(this.profileMessages);
-      application.router.route('/discover').get(this.discover);
-      application.router.route('/discover/recommended').get(this.discoverRecommended);
-      application.router.route('/discover/onboarding').get(this.discoverOnboarding);
-      application.router.route('/ui').get(this.ui);
-
+      application.router.route('/dev/about').get(this.about);
+      application.router.route('/dev/voice').get(this.voice);
+      application.router.route('/dev/profile').get(this.profile);
+      application.router.route('/dev/profile/voices').get(this.profileVoices);
+      application.router.route('/dev/profile/saved').get(this.profileSaved);
+      application.router.route('/dev/profile/messages').get(this.profileMessages);
+      application.router.route('/dev/discover').get(this.discover);
+      application.router.route('/dev/discover/recommended').get(this.discoverRecommended);
+      application.router.route('/dev/discover/onboarding').get(this.discoverOnboarding);
+      application.router.route('/dev/ui').get(this.ui);
       application.router.route('/kabinett').get(this.kabinett);
     },
 
