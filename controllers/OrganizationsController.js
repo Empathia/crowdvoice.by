@@ -28,7 +28,7 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
       var org = req.entity, entity;
       Entity.find({id: req.body.entityId}, function (err, result) {
         if (err) { next(err); return; }
-        if (result.length === 0) { next(new Error('Not found')); return; }
+        if (result.length === 0) { next(new NotFoundError('Entity Not found')); return; }
 
         var user = new User(req.user);
         entity = result[0];

@@ -16,16 +16,16 @@ var MessagesController = Class('MessagesController')({
         .delete(this.destroy);
     },
 
-    create : function create(req, res) {
+    create : function create(req, res, next) {
       res.format({
         json : function() {
           MessageThread.findById(req.params.threadId, function(err, thread) {
             if (err) {
-              return res.status(500).json({error : err});
+              next(err); return;
             }
 
             if (thread.length === 0 ) {
-              return res.status(404).json({error : 'Not Found'});
+              next(new NotFoundError('MessageThread Not Found')); return;
             }
 
             thread =  new MessageThread(thread[0]);
@@ -46,7 +46,7 @@ var MessagesController = Class('MessagesController')({
 
             message.save(function(err, result) {
               if (err) {
-                return res.render('shared/500.html', {error : err});
+                return next(err);
               }
 
               delete message.senderPersonId;
@@ -85,7 +85,7 @@ var MessagesController = Class('MessagesController')({
                 })
               }], function(err) {
                 if (err) {
-                  return res.status(500).json({error : err})
+                  return next(err);
                 }
 
 
@@ -98,16 +98,16 @@ var MessagesController = Class('MessagesController')({
       });
     },
 
-    destroy : function destroy(req, res) {
+    destroy : function destroy(req, res, next) {
       res.format({
         json : function() {
           Message.findById(req.params.messageId, function(err, message) {
             if (err) {
-              return res.status(500).json({error : err});
+              return next(err);
             }
 
             if (message.length === 0) {
-              return res.status(404).json({error : 'Not Found'});
+              return next(new NotFoundError('Message Not Found'));
             }
 
             message = new Message(message[0]);
@@ -118,7 +118,7 @@ var MessagesController = Class('MessagesController')({
 
             message.save(function(err, result) {
               if (err) {
-                return res.status(500).json({error : err});
+                return next(err);
               }
 
               res.json({status : 'ok'});

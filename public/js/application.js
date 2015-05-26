@@ -29,6 +29,8 @@ require('./widgets/category-cover.js');
 
 require('./views/voice');
 require('./widgets/voice-post-layers-manager');
+require('./widgets/voice-footer');
+require('./widgets/voice-timeline-feedback');
 require('./widgets/voice-posts-layer');
 require('./widgets/voice-post-indicator');
 require('./widgets/voice-about-box');

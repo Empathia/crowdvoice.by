@@ -23,7 +23,7 @@ var ThreadsController = Class('ThreadsController')({
         .delete(this.destroy);
     },
 
-    index : function index(req, res) {
+    index : function index(req, res, next) {
 
       res.format({
         html : function() {
@@ -32,7 +32,7 @@ var ThreadsController = Class('ThreadsController')({
         json : function() {
           MessageThread.find(['sender_person_id = ? OR receiver_entity_id = ?', [req.currentPerson.id, req.currentPerson.id]], function(err, threads) {
             if (err) {
-              throw new Error(err)
+              return next(err);
             }
 
             var results = [];
@@ -61,7 +61,7 @@ var ThreadsController = Class('ThreadsController')({
             async.each(results, function(item, callback) {
               Message.find(["thread_id = ? AND (created_at > DATE '" + new Date(item.lastSeen).toISOString() + "')", [item.id]], function(err, messages) {
                 if (err) {
-                  throw new Error(err)
+                  return callback(err);
                 }
 
                 delete item.lastSeen;
@@ -72,7 +72,7 @@ var ThreadsController = Class('ThreadsController')({
                   function(done) {
                     Entity.findById(item.senderEntityId, function(err, result) {
                       if (err) {
-                        throw new Error(err)
+                        return done(err)
                       }
 
                       item.senderEntity = result[0];
@@ -84,7 +84,7 @@ var ThreadsController = Class('ThreadsController')({
                   function(done) {
                     Entity.findById(item.receiverEntityId, function(err, result) {
                       if (err) {
-                        throw new Error(err)
+                        return done(err)
                       }
 
                       item.receiverEntity = result[0];
@@ -111,7 +111,7 @@ var ThreadsController = Class('ThreadsController')({
                         doneMessage();
                       }, function(err) {
                         if (err) {
-                          throw new Error(err)
+                          return done(err)
                         }
 
                         messages = messages.filter(function(item) {
@@ -129,7 +129,7 @@ var ThreadsController = Class('ThreadsController')({
                   }
                 ], function(err) {
                   if (err) {
-                    throw new Error(err)
+                    return callback(err)
                   }
 
                   callback();
@@ -137,7 +137,7 @@ var ThreadsController = Class('ThreadsController')({
               })
             }, function(err) {
               if (err) {
-                return res.status(500).json({error : err});
+                return next(err);
               }
 
               results = results.filter(function(item) {
@@ -155,7 +155,7 @@ var ThreadsController = Class('ThreadsController')({
       });
     },
 
-    create : function create(req, res) {
+    create : function create(req, res, next) {
 
       res.format({
         json : function() {
@@ -215,7 +215,7 @@ var ThreadsController = Class('ThreadsController')({
 
               Message.find({'thread_id': thread.id}, function(err, messages) {
                 if (err) {
-                  done(err);
+                  return done(err);
                 }
 
                 messages.forEach(function(message) {
@@ -292,8 +292,7 @@ var ThreadsController = Class('ThreadsController')({
             })
           }], function(err, result) {
             if (err) {
-              console.log(err)
-              return res.status(500).json({'error' : err});
+              return next(err);
             }
 
             res.json(result);
@@ -302,11 +301,17 @@ var ThreadsController = Class('ThreadsController')({
       })
     },
 
-    update : function update(req, res) {
+    update : function update(req, res, next) {
       MessageThread.findById(req.params.threadId, function(err, thread) {
         if (err) {
-          return res.status(500).json({'error' : err})
+          return next(err);
         }
+
+        if (thread.length === 0) {
+          return next(new NotFoundError('Thread Not Found'));
+        }
+
+        thread = new MessageThread(thread[0]);
 
         var senderOrReceiver = thread.isPersonSender(req.currentPerson.id) ? 'Sender' : 'Receiver';
 
@@ -314,7 +319,7 @@ var ThreadsController = Class('ThreadsController')({
 
         thread.save(function(err, result) {
           if (err) {
-            return res.status(500).json({'error' : err})
+            return next(err);
           }
 
           res.json({'status' : 'ok', data : result});
@@ -322,59 +327,58 @@ var ThreadsController = Class('ThreadsController')({
       })
     },
 
-    destroy : function destroy(req, res) {
-      MessageThread.findById(req.params.threadId, function(err, thread) {
-        if (err) {
-          return res.status(500).json({error : err});
-        }
+    destroy : function destroy(req, res, next) {
+      return res.format({
+        json : function() {
+          MessageThread.findById(req.params.threadId, function(err, thread) {
+            if (err) {
+              return next(err);
+            }
 
-        if (thread.length === 0) {
-          return res.render('shared/404.html');
-        }
+            if (thread.length === 0) {
+              return next(new NotFoundError('Thread Not Found'));
+            }
 
-        thread = thread[0];
+            thread = thread[0];
 
-        thread = new MessageThread(thread);
+            thread = new MessageThread(thread);
 
-        var senderOrReceiver = thread.isPersonSender(req.currentPerson.id) ? 'Sender' : 'Receiver';
+            var senderOrReceiver = thread.isPersonSender(req.currentPerson.id) ? 'Sender' : 'Receiver';
 
-        thread['hiddenFor' + senderOrReceiver] = true;
+            thread['hiddenFor' + senderOrReceiver] = true;
 
-        thread.save(function(err, result) {
-          if (err) {
-            throw new Error(err);
-          }
-
-          Message.find({'thread_id' : thread.id}, function(err, messages) {
-            async.each(messages, function(message, done) {
-              message = new Message(message);
-
-              var senderOrReceiver = message.isPersonSender(req.currentPerson.id) ? 'Sender' : 'Receiver';
-
-              message['hiddenFor' + senderOrReceiver] = true;
-
-              message.save(function(err, messageSaveResult) {
-                if (err) {
-                  done(err)
-                }
-
-                done()
-              })
-            }, function(err) {
+            thread.save(function(err, result) {
               if (err) {
-                res.status(500).json({error : err});
+                return next(err);
               }
 
-              return res.format({
-                json : function() {
+              Message.find({'thread_id' : thread.id}, function(err, messages) {
+                async.each(messages, function(message, done) {
+                  message = new Message(message);
+
+                  var senderOrReceiver = message.isPersonSender(req.currentPerson.id) ? 'Sender' : 'Receiver';
+
+                  message['hiddenFor' + senderOrReceiver] = true;
+
+                  message.save(function(err, messageSaveResult) {
+                    if (err) {
+                      return done(err);
+                    }
+
+                    done();
+                  });
+                }, function(err) {
+                  if (err) {
+                    return next(err);
+                  }
+
                   res.status(200).json({status : 'ok'});
-                }
+                })
               })
             })
           })
-        })
-
-      })
+        }
+      });
     }
   }
 });
