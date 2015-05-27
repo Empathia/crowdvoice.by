@@ -51,6 +51,26 @@ exports.seed = function(knex, Promise) {
       'updated_at' : new Date()
     }),
 
+    // Organization entity for user.id 1
+    knex('Entities').insert({
+      id : 9,
+      'type' : 'organization',
+      'name' : 'The Johnsons',
+      'lastname' : '',
+      'profile_name' : 'the_johnsons',
+      'is_anonymous' : false,
+      'created_at' : new Date(),
+      'updated_at' : new Date()
+    }),
+
+    knex('EntityOwner').insert({
+      id : 5,
+      'owner_id' : 1,
+      'owned_id' : 9,
+      'created_at' : new Date(),
+      'updated_at' : new Date()
+    }),
+
 
     knex('Users').insert({
       id: 2,
