@@ -157,7 +157,7 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
             }
 
             // Avoid forced synchronous layout
-            this._updatePostIndicatorsPostion()
+            this._updatePostIndicatorsPostion();
 
             this.ticksContainerElement.appendChild(frag);
 
@@ -172,16 +172,27 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
             var i = 0;
             var len = this._indicatorWidgets.length;
 
+            CV.VoicePostIndicator.flushRegisteredYValues();
+
             for (i = 0; i < len; i++) {
                 this._indicatorWidgets[i].updatePosition();
             }
         },
 
         /* Returns its children Posts instances.
+         * @public
          * @return posts
          */
         getPosts : function getPosts() {
             return this._postWidgets;
+        },
+
+        /* Returns its children PostIndicators instances.
+         * @public
+         * @return children post indicators instances
+         */
+        getIndicators : function getIndicators() {
+            return this._indicatorWidgets;
         },
 
         isFinalHeightKnow : function isFinalHeightKnow() {
@@ -199,6 +210,7 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
             this.waterfall.flushItems();
 
             this._postWidgets = [];
+            this._indicatorWidgets = [];
 
             return this;
         },
