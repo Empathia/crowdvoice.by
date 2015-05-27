@@ -16,6 +16,7 @@ var Post = Class('Post').inherits(Argon.KnexModel)({
   SOURCE_TYPE_VIDEO:      "text",
 
   validations : {
+    ownerId       : ['required'],
     voiceId       : ['required'],
     sourceType    : ['required'],
     sourceUrl     : ['required'],
@@ -50,16 +51,17 @@ var Post = Class('Post').inherits(Argon.KnexModel)({
 
   prototype : {
     id            : null,
+    ownerId       : null,
+    voiceId       : null,
     approved      : false,
     image         : null,
     imageWidth    : null,
     imageHeight   : null,
+    sourceService : null,
     sourceType    : null,
     sourceUrl     : null,
-    sourceService : null,
-    title         : '',
-    description   : '',
-    voiceId       : null,
+    title         : null,
+    description   : null,
     publishedAt   : null,
     createdAt     : null,
     updatedAt     : null,
