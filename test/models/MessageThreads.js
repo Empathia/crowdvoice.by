@@ -327,18 +327,7 @@ Tellurium.suite('MessageThread Model')(function() {
         });
       }, 1000);
     })
-  })
-
-  this.tearDown(function() {
-    var teardown = this;
-
-    db('Entities').del().exec(function(err, data) {
-      db('Users').del().exec(function(err, data) {
-        console.log('Teardown completed');
-        teardown.completed();
-      })
-    });
-  })
+  });
 })
 
 

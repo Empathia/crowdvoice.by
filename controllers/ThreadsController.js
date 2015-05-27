@@ -139,6 +139,7 @@ var ThreadsController = Class('ThreadsController')({
             })
           }], function(err, thread) {
             // Build the result
+
             ThreadsPresenter.build(req, [thread], function(err, result) {
               if (err) {
                 return next(err);
