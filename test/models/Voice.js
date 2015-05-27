@@ -4,6 +4,7 @@ require('neonode-core');
 
 CONFIG.database.logQueries = false;
 
+var crypto = require('crypto');
 require('tellurium');
 
 require(process.cwd() + '/node_modules/tellurium/reporters/pretty');
@@ -12,11 +13,13 @@ Tellurium.reporter = new Tellurium.Reporter.Pretty({
   colorsEnabled : true
 })
 
+function uid (number) {
+  return crypto.randomBytes(number).toString('hex');
+}
+
 Tellurium.suite('Voice Model')(function() {
 
-  this.describe('Validations')(function(desc) {
-
-    this.beforeEach(function(spec){
+  this.beforeEach(function(spec){
       spec.registry.data = {
         title : 'Voice Title',
         description : 'Voice Description',
@@ -33,8 +36,16 @@ Tellurium.suite('Voice Model')(function() {
         firstPostDate : null,
         lastPostDate : null,
         postCount : 0
-      }
+      };
+      spec.registry.peopleTopicData = {
+        name: 'people_' + uid(16)
+      };
+      spec.registry.animalsTopicData = {
+        name: 'animals_' + uid(16)
+      };
     });
+
+  this.describe('Validations')(function(desc) {
 
     this.specify('Fail Validation when title is not present')(function(spec) {
       var data = spec.registry.data;
@@ -319,6 +330,52 @@ Tellurium.suite('Voice Model')(function() {
 
     });
 
+    this.specify('addTopics should create a VoiceTopic relation')(function (spec) {
+      var v1, t1;
+
+      async.series([
+        function (done) {
+          v1 = new Voice(spec.registry.data);
+          v1.save(done);
+        },
+        function (done) {
+          t1 = new Topic(spec.registry.peopleTopicData);
+          t1.save(done);
+        },
+        function (done) {
+          v1.addTopics([t1.name], done);
+        }
+      ], function (err) {
+        db('VoiceTopic').where({voice_id: v1.id, topic_id: t1.id}).exec(function (err, result) {
+          spec.assert(result.length > 0).toBeTruthy();
+          spec.completed();
+        });
+      });
+    });
+
+    this.specify('Filter by topic should only return related voices')(function (spec) {
+      var v1;
+      async.series([
+        function (done) {
+          v1 = new Voice(spec.registry.data);
+          v1.save(done);
+        },
+        function (done) { (new Topic(spec.registry.peopleTopicData)).save(done); },
+        function (done) { (new Topic(spec.registry.animalsTopicData)).save(done); },
+        function (done) { v1.addTopics([spec.registry.peopleTopicData.name], done); },
+        function (done) {
+          Voice.filterBy({topics: spec.registry.animalsTopicData}, function (err, voices) {
+            spec.assert(voices.length).toBe(0);
+            done();
+          });
+        }
+      ], function (err) {
+        Voice.filterBy({topics: spec.registry.peopleTopicData.name}, function (err, voices) {
+          spec.assert(voices.length).toBe(1);
+          spec.completed();
+        });
+      });
+    });
 
   });
 });
