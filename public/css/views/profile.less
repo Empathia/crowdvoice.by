@@ -1,4 +1,19 @@
 html, body{height: 100%;}
+hr{
+	margin: 20px 0px;
+	height: 1px;
+	background: #ccc;
+	display: block;
+	width: 100%;
+}
+.-width-50{
+	width: 50%;
+}
+.-row:after{
+  	content: "";
+    display: table;
+    clear: both;
+}
 .profile-intro{
 	padding: 35px 0px;
 	.pan-separator{
@@ -70,10 +85,21 @@ html, body{height: 100%;}
 	padding: 25px;
 	background: #fff;
 }
+.profile-body:after{
+  	content: "";
+    display: table;
+    clear: both;
+}
 .profile-body .profile-list{
 	display: none;
 }
 .profile-body .profile-list.active{
+	display: block;
+}
+.-menu-tab-content{
+	display: none;
+}
+.-menu-tab-content.active{
 	display: block;
 }
 .profile-list-type {
@@ -439,7 +465,6 @@ html, body{height: 100%;}
 	}
 	.message-data{
 		margin-left: 46px;
-
 	}
 	.message-notification{
 		border-left: 3px solid #ccc;
@@ -463,6 +488,44 @@ html, body{height: 100%;}
     display: table;
     clear: both;
 }
+.-align-left{
+	float: left;
+}
+.-align-right{
+	float: right;
+}
+
+.settings-list{
+	.setting-row{
+		padding: 5px 0px;
+		border-top: 1px solid #ebebeb;
+		.setitle{
+			padding-top: 3px;
+			display: block;
+		}
+	}
+	.setting-row:last-child{
+		border-bottom: 1px solid #ebebeb;
+	}
+	.setting-row:after{
+  		content: "";
+    	display: table;
+    	clear: both;
+	}
+}
+
+.radio-group{
+	padding-top: 3px;
+	input{
+		margin: 3px 3px 0px 0px;
+	}
+	span{
+		padding-right: 10px;
+	}
+}
+
+
+
 
 
 
