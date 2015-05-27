@@ -377,6 +377,64 @@ Tellurium.suite('Voice Model')(function() {
       });
     });
 
+    this.specify('filterBy createdBefore should only return voices created before specified date')(function (spec) {
+      var v1, v2;
+      var now = new Date('Wed May 27 2010 13:08:58 GMT-0500 (CDT)');
+      var before = new Date('Wed May 26 2010 13:08:58 GMT-0500 (CDT)');
+      var after = new Date('Wed May 28 2010 13:08:58 GMT-0500 (CDT)');
+
+      async.series([
+        function (done) {
+          v1 = new Voice(spec.registry.data);
+          v1.save(function () {
+            v1.createdAt = before;
+            v1.save(done);
+          });
+        },
+        function (done) {
+          v2 = new Voice(spec.registry.data);
+          v2.save(function (err) {
+            v2.createdAt = after;
+            v2.save(done);
+          });
+        }
+      ], function (err) {
+        Voice.filterBy({createdBefore: now}, function (err, result) {
+          spec.assert(result.length).toBe(1);
+          spec.completed();
+        });
+      });
+    });
+
+    this.specify('filterBy createdAfter should only return voices created after specified date')(function (spec) {
+      var v1, v2;
+      var now = new Date('Wed May 27 2046 13:08:58 GMT-0500 (CDT)');
+      var before = new Date('Wed May 26 2046 13:08:58 GMT-0500 (CDT)');
+      var after = new Date('Wed May 28 2046 13:08:58 GMT-0500 (CDT)');
+
+      async.series([
+        function (done) {
+          v1 = new Voice(spec.registry.data);
+          v1.save(function () {
+            v1.createdAt = before;
+            v1.save(done);
+          });
+        },
+        function (done) {
+          v2 = new Voice(spec.registry.data);
+          v2.save(function (err) {
+            v2.createdAt = after;
+            v2.save(done);
+          });
+        }
+      ], function (err) {
+        Voice.filterBy({createdAfter: now}, function (err, result) {
+          spec.assert(result.length).toBe(1);
+          spec.completed();
+        });
+      });
+    });
+
   });
 });
 

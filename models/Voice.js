@@ -83,11 +83,11 @@ var Voice = Class('Voice').inherits(Argon.KnexModel)({
           kxquery.leftJoin('Topics', 'VoiceTopic.topic_id', 'Topics.id');
           kxquery.whereIn('Topics.name', query[key]);
           break;
-        case 'createdAfter':
-          kxquery.where('created_at', '>=', query[key]);
+        case 'created_after':
+          kxquery.whereRaw("created_at >= DATE '" + query[key].toISOString() + "'");
           break;
-        case 'createdBefore':
-          kxquery.where('created_at', '<=', query[key]);
+        case 'created_before':
+          kxquery.whereRaw("created_at <= DATE '" + query[key].toISOString() + "'");
           break;
         default:
           kxquery.where(key, '=', query[key]);
