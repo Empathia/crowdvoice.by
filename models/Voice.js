@@ -94,8 +94,6 @@ var Voice = Class('Voice').inherits(Argon.KnexModel)({
             kxquery.orderBy('post_count', 'desc');
           }
           break;
-        case 'recommendedFor':
-          break;
         default:
           kxquery.where(key, '=', query[key]);
       }
