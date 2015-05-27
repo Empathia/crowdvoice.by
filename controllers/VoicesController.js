@@ -29,7 +29,14 @@ var VoicesController = Class('VoicesController').inherits(RestfulController)({
     },
 
     index : function index (req, res, next) {
-      Voice.find({}, function (err, result) {
+      var query = {
+        ownerId: req.body.ownerId,
+        topics: req.body.topics,
+        createdBefore: req.body.createdBefore,
+        createdAfter: req.body.createdAfter
+      };
+
+      Voice.filterBy(query, function (err, result) {
         if (err) { return next(err); }
 
         res.format({

@@ -84,10 +84,17 @@ var Voice = Class('Voice').inherits(Argon.KnexModel)({
           kxquery.whereIn('Topics.name', query[key]);
           break;
         case 'created_after':
-          kxquery.whereRaw("created_at >= DATE '" + query[key].toISOString() + "'");
+          kxquery.whereRaw("created_at >= DATE '" + (new Date(query[key])).toISOString() + "'");
           break;
         case 'created_before':
-          kxquery.whereRaw("created_at <= DATE '" + query[key].toISOString() + "'");
+          kxquery.whereRaw("created_at <= DATE '" + (new Date(query[key])).toISOString() + "'");
+          break;
+        case 'trending':
+          if (query[key]) {
+            kxquery.orderBy('post_count', 'desc');
+          }
+          break;
+        case 'recommendedFor':
           break;
         default:
           kxquery.where(key, '=', query[key]);

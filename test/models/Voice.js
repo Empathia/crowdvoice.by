@@ -435,6 +435,38 @@ Tellurium.suite('Voice Model')(function() {
       });
     });
 
+    this.specify('filterBy trending should order the voices by post_count')(function (spec) {
+      var v1, v2, v3;
+
+      async.series([
+        function (done) {
+          v1 = new Voice(spec.registry.data);
+          v1.post_count = 1;
+          v1.save(done);
+        },
+        function (done) {
+          v2 = new Voice(spec.registry.data);
+          v2.post_count = 7;
+          v2.save(done);
+        },
+        function (done) {
+          v3 = new Voice(spec.registry.data);
+          v3.post_count = 3;
+          v3.save(done);
+        }
+      ], function (err) {
+        Voice.filterBy({trending: true}, function (err, voices) {
+          var lastCount = 999;
+          spec.assert(voices.length > 0).toBeTruthy();
+          voices.forEach(function (v) {
+            spec.assert(v.postCount <= lastCount).toBeTruthy();
+            lastCount = v.postCount;
+          });
+          spec.completed();
+        });
+      });
+    });
+
   });
 });
 
