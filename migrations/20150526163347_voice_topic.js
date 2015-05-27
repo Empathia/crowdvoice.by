@@ -1,7 +1,7 @@
 'use strict';
 
 exports.up = function(knex, Promise) {
- return Promise.all([
+  return Promise.all([
     knex.schema.createTable('VoiceTopic', function(t) {
       t.increments('id').primary();
       t.integer('voice_id').unique().defaultTo(null);
@@ -12,7 +12,7 @@ exports.up = function(knex, Promise) {
 };
 
 exports.down = function(knex, Promise) {
- return Promise.all([
+  return Promise.all([
     knex.schema.dropTable('VoiceTopic')
   ]);
 };
