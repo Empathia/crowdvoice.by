@@ -1,6 +1,6 @@
 var voices = [
   {
-    url : '/voice',
+    url : '/jack_johnson/voice',
     tags : [
       {
         name: 'Current Events',
@@ -28,7 +28,7 @@ var voices = [
   },
 
   {
-    url : '/voice',
+    url : '/jack_johnson/voice',
     tags : [
       {
         name: 'Conflict',
@@ -52,7 +52,7 @@ var voices = [
   },
 
   {
-    url : '/voice',
+    url : '/jack_johnson/voice',
     tags : [
       {
         name: 'Conflict',
@@ -75,7 +75,7 @@ var voices = [
     hasActions : false
   },
   {
-    url : '/voice',
+    url : '/jack_johnson/voice',
     tags : [
       {
         name: 'Politics',
@@ -99,7 +99,7 @@ var voices = [
   },
 
   {
-    url : '/voice',
+    url : '/jack_johnson/voice',
     tags : [
       {
         name: 'Current Events',

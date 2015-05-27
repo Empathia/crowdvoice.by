@@ -101,7 +101,7 @@ Tellurium.suite('Messages Controller')(function() {
         var message = 'Test sending message to an existing thread.';
 
         var req = request
-          .post(urlBase + '/' + jack.profileName + '/messages/1')
+          .post(urlBase + '/' + jack.profileName + '/messages/' + hashids.encode(1))
           .accept('application/json')
           .set('cookie', cookies)
           .send({
@@ -122,12 +122,67 @@ Tellurium.suite('Messages Controller')(function() {
       })
     });
 
+    desc.specify('Sanitize a created message')(function(spec) {
+      var jack = suite.registry.jack;
+
+      async.series([
+        function (done) {
+          var req = request
+            .get(urlBase + '/csrf');
+
+          req.end(function (err, res) {
+            cookies = res.headers['set-cookie'];
+            csrf = res.text;
+            done();
+          });
+        },
+        function (done) {
+          var req = request
+            .post(urlBase + '/session')
+            .set('cookie', cookies)
+            .send({_csrf: csrf, username: 'jack', password: '12345678'});
+
+          req.end(function (err, res) {
+            done();
+          });
+        }
+      ], function(err) {
+        if (err) {
+          throw new Error(err);
+        }
+
+        var message = '<h1>Test sending message to an existing thread.</h1>';
+
+        setTimeout(function() {
+          var req = request
+            .post(urlBase + '/' + jack.profileName + '/messages/' + hashids.encode(1))
+            .accept('application/json')
+            .set('cookie', cookies)
+            .send({
+              _csrf : csrf,
+              senderEntityId : jack.id,
+              message : message
+            });
+
+            req.end(function(err, res) {
+              if (err) {
+                spec.assert(true).toBe(false);
+              }
+
+              spec.assert(res.status).toBe(200);
+              spec.assert(res.body.message).toBe('Test sending message to an existing thread.');
+              spec.completed();
+            })
+        }, 1000);
+      })
+    });
+
     desc.specify('Hide a message')(function(spec) {
       var jack = suite.registry.jack;
 
       setTimeout(function() {
         var req = request
-          .del(urlBase + '/' + jack.profileName + '/messages/1')
+          .del(urlBase + '/' + jack.profileName + '/messages/' + hashids.encode(1) + '/' + hashids.encode(1))
           .accept('application/json')
           .set('cookie', cookies)
           .send({
@@ -144,7 +199,7 @@ Tellurium.suite('Messages Controller')(function() {
             spec.assert(res.body.status).toBe('ok');
             spec.completed();
           })
-      }, 1000)
+      }, 2000)
     })
   });
 

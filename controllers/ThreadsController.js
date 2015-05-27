@@ -1,3 +1,5 @@
+require('./../presenters/ThreadsPresenter');
+
 var ThreadsController = Class('ThreadsController')({
   prototype : {
     init : function (config){
@@ -35,121 +37,13 @@ var ThreadsController = Class('ThreadsController')({
               return next(err);
             }
 
-            var results = [];
-
-            threads.forEach(function(thread) {
-              thread = new MessageThread(thread);
-
-              var result = {
-                id : thread.id,
-                senderEntityId : thread.senderEntityId,
-                receiverEntityId : thread.receiverEntityId
-              }
-
-              var senderOrReceiver = thread.isPersonSender(req.currentPerson.id) ? 'Sender' : 'Receiver';
-
-
-              result.lastSeen     = thread['lastSeen' + senderOrReceiver]
-              result.messageCount = thread['messageCount' + senderOrReceiver];
-              result.hidden       = thread['hiddenFor' + senderOrReceiver];
-              result.createdAt    = thread.createdAt;
-              result.updatedAt    = thread.updatedAt;
-
-              results.push(result);
-            });
-
-            async.each(results, function(item, callback) {
-              Message.find(["thread_id = ? AND (created_at > DATE '" + new Date(item.lastSeen).toISOString() + "')", [item.id]], function(err, messages) {
-                if (err) {
-                  return callback(err);
-                }
-
-                delete item.lastSeen;
-
-                item.unreadCount = messages.length;
-
-                async.series([
-                  function(done) {
-                    Entity.findById(item.senderEntityId, function(err, result) {
-                      if (err) {
-                        return done(err)
-                      }
-
-                      item.senderEntity = result[0];
-                      delete item.senderEntityId;
-                      done()
-                    })
-                  },
-
-                  function(done) {
-                    Entity.findById(item.receiverEntityId, function(err, result) {
-                      if (err) {
-                        return done(err)
-                      }
-
-                      item.receiverEntity = result[0];
-                      delete item.receiverEntityId;
-                      done()
-                    })
-                  },
-                  function(done) {
-                    Message.find({'thread_id' : item.id}, function(err, messages) {
-
-                      async.each(messages, function(message, doneMessage) {
-
-
-                        message = new Message(message);
-
-                        var senderOrReceiver = message.isPersonSender(req.currentPerson.id) ? 'Sender' : 'Receiver';
-
-
-                        message.hidden = message['hiddenFor' + senderOrReceiver];
-                        delete message.senderPersonId;
-                        delete message.hiddenForSender;
-                        delete message.hiddenForReceiver;
-
-                        doneMessage();
-                      }, function(err) {
-                        if (err) {
-                          return done(err)
-                        }
-
-                        messages = messages.filter(function(item) {
-                          if (!item.hidden) {
-                            delete item.hidden;
-                            return item;
-                          }
-                        });
-
-                        item.messages = messages;
-
-                        done();
-                      });
-                    });
-                  }
-                ], function(err) {
-                  if (err) {
-                    return callback(err)
-                  }
-
-                  callback();
-                })
-              })
-            }, function(err) {
+            ThreadsPresenter.build(req, threads, function(err, result) {
               if (err) {
                 return next(err);
               }
 
-              results = results.filter(function(item) {
-                if (!item.hidden) {
-                  delete item.hidden;
-                  return item;
-                }
-              });
-
-             res.json(results);
+              return res.json(result);
             });
-
           });
         }
       });
@@ -163,146 +57,103 @@ var ThreadsController = Class('ThreadsController')({
 
           payload.type = payload.type || 'message';
 
+          // Decode HashIds data
+          payload.senderEntityId = hashids.decode(payload.senderEntityId)[0];
+          payload.receiverEntityId = hashids.decode(payload.receiverEntityId)[0];
+
+          if (payload.invitationRequestId) {
+            payload.invitationRequestId = hashids.decode(payload.invitationRequestId)[0];
+          }
+
+          if (payload.voiceId) {
+            payload.voiceId = hashids.decode(payload.voiceId)[0];
+          }
+
+          if (payload.organizationId) {
+            payload.organizationId = hashids.decode(payload.organizationId)[0];
+          }
+
           async.waterfall([function(done) {
+            // Get the entity to know if its a person or organization
             Entity.findById(payload.senderEntityId, function(err, senderEntity) {
               done(err, senderEntity[0].type);
             });
           }, function(senderEntityType, done) {
+            // Build a query depending if entity is person or organization
             var whereClause;
 
             if (senderEntityType === 'organization') {
-              whereClause = ['sender_person_id = ? AND sender_entity_id = ? AND receiver_entity_id = ?', [req.currentPerson.id, payload.senderEntityId, payload.receiverEntityId]];
+              whereClause = [
+                'sender_person_id = ? AND sender_entity_id = ? AND receiver_entity_id = ?',
+                [req.currentPerson.id, payload.senderEntityId, payload.receiverEntityId]
+              ];
             } else {
-              whereClause = ['(sender_entity_id = ? AND receiver_entity_id = ?) OR (sender_entity_id = ? AND receiver_entity_id = ?)', [payload.senderEntityId, payload.receiverEntityId, payload.receiverEntity, payload.senderEntityId]];
+              whereClause = [
+                '(sender_entity_id = ? AND receiver_entity_id = ?) OR (sender_entity_id = ? AND receiver_entity_id = ?)',
+                [payload.senderEntityId, payload.receiverEntityId, payload.receiverEntity, payload.senderEntityId]
+              ];
             }
 
+            // Try to get the MessageThread
             MessageThread.find(whereClause, done);
           }, function(messageThread, done) {
             var thread;
 
             if (messageThread.length === 0) {
+              // If there is no existing MessageThread create a new one
               thread = new MessageThread({
                 senderPersonId : req.currentPerson.id,
                 senderEntityId : payload.senderEntityId,
                 receiverEntityId : payload.receiverEntityId
               });
             } else {
+              // Use the existing MessageThread
               thread = new MessageThread(messageThread[0]);
             }
 
+            // Unhide the Thread for both users
             thread.hiddenForSender = false;
             thread.hiddenForReceiver = false;
 
+            // Save the thread
             thread.save(function(err, result) {
               if (err) {
                 return done(err);
               }
 
-              var message = new Message({
+              // Append the new message
+              thread.createMessage({
                 senderPersonId : req.currentPerson.id,
-                senderEntityId : payload.senderEntityId,
-                receiverEntityId : payload.receiverEntityId,
                 type : payload.type,
-                threadId : thread.id,
                 invitationRequestId : payload.invitationRequestId,
                 voiceId : payload.voiceId,
                 organizationId : payload.organizationId,
                 message : payload.message,
-              });
-
-              thread.messageCount = 0;
-              thread.unreadCount = 0;
-
-              Message.find({'thread_id': thread.id}, function(err, messages) {
+              }, function(err, result) {
                 if (err) {
                   return done(err);
                 }
 
-                messages.forEach(function(message) {
-                  message = new Message(message);
-
-                  var senderOrReceiver = message.isPersonSender(req.currentPerson.id) ? 'Sender' : 'Receiver';
-
-                  message.hidden = message['hiddenFor' + senderOrReceiver];
-
-                  delete message.hiddenForSender;
-                  delete message.hiddenForReceiver;
-                  delete message.senderPersonId;
-                });
-
-                messages = messages.filter(function(item) {
-                  if (!item.hidden) {
-                    delete item.hidden;
-                    return item;
-                  };
-                })
-
-                thread.messages = messages;
-                thread.messageCount = messages.length;
-
-                delete thread.hiddenForSender;
-                delete thread.hiddenForReceiver;
-                delete thread.lastSeenSender;
-                delete thread.lastSeenReceiver;
-
-                message.save(function(err, messageResult) {
-                  if (err) {
-                    return done(err);
-                  }
-
-                  delete messageThread.senderPersonId;
-                  delete messageThread.hiddenForSender;
-                  delete messageThread.hiddenForReceiver;
-
-                  thread.messages.push(messageResult);
-
-                  done(err, thread);
-                })
-              });
+                done(err, thread);
+              })
             })
-          }, function(thread, done) {
+          }], function(err, thread) {
+            // Build the result
 
-            async.series([
-              function(callback) {
-                Entity.findById(thread.senderEntityId, function(err, result) {
-                  if (err) {
-                    return callback(err)
-                  }
-
-                  thread.senderEntity = result[0];
-                  delete thread.senderEntityId;
-                  callback()
-                })
-              },
-
-              function(callback) {
-                Entity.findById(thread.receiverEntityId, function(err, result) {
-                  if (err) {
-                    return callback(err)
-                  }
-
-                  thread.receiverEntity = result[0];
-                  delete thread.receiverEntityId;
-                  callback()
-                })
+            ThreadsPresenter.build(req, [thread], function(err, result) {
+              if (err) {
+                return next(err);
               }
 
-            ], function(err) {
-              done(err, thread)
-            })
-          }], function(err, result) {
-            if (err) {
-              return next(err);
-            }
-
-            res.json(result);
+              res.json(result[0]);
+            });
           });
         }
       })
     },
 
     update : function update(req, res, next) {
-      MessageThread.findById(req.params.threadId, function(err, thread) {
+      MessageThread.findById(hashids.decode(req.params.threadId)[0], function(err, thread) {
         if (err) {
           return next(err);
         }
@@ -322,7 +173,7 @@ var ThreadsController = Class('ThreadsController')({
             return next(err);
           }
 
-          res.json({'status' : 'ok', data : result});
+          res.json({status : 'ok', data : result});
         })
       })
     },
@@ -330,7 +181,9 @@ var ThreadsController = Class('ThreadsController')({
     destroy : function destroy(req, res, next) {
       return res.format({
         json : function() {
-          MessageThread.findById(req.params.threadId, function(err, thread) {
+          var id = hashids.decode(req.params.threadId)[0];
+
+          MessageThread.findById(id, function(err, thread) {
             if (err) {
               return next(err);
             }

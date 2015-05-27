@@ -1,3 +1,9 @@
+var sanitizer = require('sanitize-html');
+var sanitizerOptions = {
+  allowedTags : [],
+  allowedAttributes : []
+}
+
 var Message = Class('Message').inherits(Argon.KnexModel)({
 
   validations : {
@@ -376,7 +382,24 @@ var Message = Class('Message').inherits(Argon.KnexModel)({
   },
 
   storage : (new Argon.Storage.Knex({
-    tableName : 'Messages'
+    tableName : 'Messages',
+    preprocessors : [function(data) {
+      var sanitizedData, property;
+
+      sanitizedData = {};
+
+      for (property in data) {
+        if (data.hasOwnProperty(property)) {
+          if ((property === 'message')) {
+            sanitizedData[property] = sanitizer(data[property], sanitizerOptions);
+          } else {
+            sanitizedData[property] = data[property];
+          }
+        }
+      }
+
+      return sanitizedData;
+    }]
   })),
 
   TYPE_MESSAGE                  : 'message',

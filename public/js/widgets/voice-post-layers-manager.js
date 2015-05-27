@@ -1,9 +1,7 @@
-
 var moment = require('moment');
 
 Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
     prototype : {
-
         /* DEFAULT BASIC OPTIONS */
         firstPostDate : '',
         lastPostDate : '',
@@ -276,9 +274,12 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
 
             currentLayer.addPosts(postsData);
 
+            this.dispatch('layerLoaded');
+
             if (this._isInitialLoad) {
                 this._isInitialLoad = false;
                 this.loadImagesVisibleOnViewport();
+                this.dispatch('ready', {layer: this.getCurrentMonthLayer()});
             }
 
             currentLayer.arrangeReset();

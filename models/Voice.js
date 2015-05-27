@@ -43,17 +43,7 @@ var Voice = Class('Voice').inherits(Argon.KnexModel)({
   },
 
   storage : (new Argon.Storage.Knex({
-    tableName : 'Voices',
-    // queries: {
-    //   buildQuery: function (requestObj, callback) {
-    //     var query = db(requestObj.model.storage.tableName)
-    //     if (callback) {
-    //       query.exec(callback);
-    //     } else {
-    //       return query;
-    //     }
-    //   }
-    // }
+    tableName : 'Voices'
   })),
 
   findByOwnerId : function findByOwnerId (ownerId, callback) {
@@ -77,25 +67,46 @@ var Voice = Class('Voice').inherits(Argon.KnexModel)({
     });
   },
 
-  // findBy : function findBy (query, callback) {
-  //   var query = db('Voices');
-  //   var i;
+  filterBy : function filterBy (query, done) {
+    var model = this;
+    var kxquery = db('Voices');
+    var i;
 
-  //   if (query.topics) {
-  //   }
+    for (i = 0; i < this.storage.preprocessors.length; i++) {
+      query = this.storage.preprocessors[i](query);
+    }
 
-  //   for (i = 0; i < storage.preprocessors.length; i++) {
-  //     requestObj.data = storage.preprocessors[i](requestObj.data, requestObj);
-  //   }
+    Object.keys(query).forEach(function (key) {
+      switch (key) {
+        case 'topics':
+          kxquery.leftJoin('VoiceTopic', 'VoiceTopic.voice_id', 'Voices.id');
+          kxquery.leftJoin('Topics', 'VoiceTopic.topic_id', 'Topics.id');
+          kxquery.whereIn('Topics.name', query[key]);
+          break;
+        case 'created_after':
+          kxquery.whereRaw("created_at >= DATE '" + (new Date(query[key])).toISOString() + "'");
+          break;
+        case 'created_before':
+          kxquery.whereRaw("created_at <= DATE '" + (new Date(query[key])).toISOString() + "'");
+          break;
+        case 'trending':
+          if (query[key]) {
+            kxquery.orderBy('post_count', 'desc');
+          }
+          break;
+        default:
+          kxquery.where(key, '=', query[key]);
+      }
+    });
 
-  //   this.queries.find(requestObj, function(err, data) {
-  //     for (i = 0; i < storage.processors.length; i++) {
-  //       data = storage.processors[i](data, requestObj);
-  //     }
+    kxquery.exec(function(err, data) {
+      for (i = 0; i < model.storage.processors.length; i++) {
+        data = model.storage.processors[i](data);
+      }
 
-  //     return callback(err, data);
-  //   },
-  // },
+      return done(err, data);
+    });
+  },
 
   prototype : {
     id : null,
@@ -148,7 +159,27 @@ var Voice = Class('Voice').inherits(Argon.KnexModel)({
       whereClause['voice_id'] = model.id;
 
       Post.find(whereClause, callback);
-    }
+    },
+
+    /**
+     * Relates topics to this voice
+     */
+    addTopics : function (topics, done) {
+      var voice = this;
+      topics.forEach(function (topic) {
+        Topic.find({name: topic}, function (err, result) {
+          if (err) { done(err); return; }
+          if (result.length === 0) { done(new Error('Topic (' + topic + ') not found when adding topics to voice')); return; }
+
+          db('VoiceTopic').insert({
+            voice_id: voice.id,
+            topic_id: result[0].id
+          }).exec(function (err, result) {
+            done(err);
+          });
+        });
+      });
+    },
   }
 });
 

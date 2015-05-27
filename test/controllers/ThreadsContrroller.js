@@ -146,7 +146,7 @@ Tellurium.suite('Threads Controller Suite')(function(){
 
         setTimeout(function() {
           var req = request
-            .del(urlBase + '/' + jack.profileName + '/messages/1')
+            .del(urlBase + '/' + jack.profileName + '/messages/' + hashids.encode(1))
             .accept('application/json')
             .set('cookie', cookies)
             .send({_csrf: csrf, method : '_delete'});
@@ -226,9 +226,8 @@ Tellurium.suite('Threads Controller Suite')(function(){
             .set('cookie', cookie)
             .send({
               _csrf: _csrf,
-              senderPersonId : steve.id,
-              senderEntityId : steve.id,
-              receiverEntityId : peter.id,
+              senderEntityId : hashids.encode(steve.id),
+              receiverEntityId : hashids.encode(peter.id),
               message : 'Hello Peter, this is Steve!'
             });
 

@@ -19,7 +19,7 @@ var MessagesController = Class('MessagesController')({
     create : function create(req, res, next) {
       res.format({
         json : function() {
-          MessageThread.findById(req.params.threadId, function(err, thread) {
+          MessageThread.findById(hashids.decode(req.params.threadId)[0], function(err, thread) {
             if (err) {
               next(err); return;
             }
@@ -30,67 +30,21 @@ var MessagesController = Class('MessagesController')({
 
             thread =  new MessageThread(thread[0]);
 
-            var message = new Message({
+            thread.createMessage({
               type : Message.TYPE_MESSAGE,
               senderPersonId : req.currentPerson.id,
-              senderEntityId : req.body.senderEntityId,
-              threadId : thread.id,
               message : req.body.message
-            });
-
-            if (thread.isPersonSender(req.currentPerson.id)) {
-              message.receiverEntityId = thread.receiverEntityId;
-            } else {
-              message.receiverEntityId = thread.senderEntityId;
-            }
-
-            message.save(function(err, result) {
+            }, function(err, message) {
               if (err) {
                 return next(err);
               }
 
-              delete message.senderPersonId;
-              delete message.hiddenForSender;
-              delete message.hiddenForReceiver;
-
-              async.series([function(done) {
-                Entity.find({id : message.senderEntityId}, function(err, result) {
-                  if (err) {
-                    done(err)
-                  }
-
-                  if (result.length === 0) {
-                    done('Entity not Found')
-                  }
-
-                  message.senderEntity = result[0];
-                  delete message.senderEntityId;
-
-                  done(err, result);
-                })
-              }, function(done) {
-                Entity.find({id : message.receiverEntityId}, function(err, result) {
-                  if (err) {
-                    done(err)
-                  }
-
-                  if (result.length === 0) {
-                    done('Entity not Found')
-                  }
-
-                  message.receiverEntity = result[0];
-                  delete message.receiverEntityId;
-
-                  done(err, result);
-                })
-              }], function(err) {
+              ThreadsPresenter.build(req, [thread], function(err, threads) {
                 if (err) {
                   return next(err);
                 }
 
-
-
-                return res.json(message);
+                res.json(threads[0].messages[threads[0].messages.length - 1]);
               });
             });
           });
@@ -101,7 +55,7 @@ var MessagesController = Class('MessagesController')({
     destroy : function destroy(req, res, next) {
       res.format({
         json : function() {
-          Message.findById(req.params.messageId, function(err, message) {
+          Message.findById(hashids.decode(req.params.messageId)[0], function(err, message) {
             if (err) {
               return next(err);
             }

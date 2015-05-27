@@ -21,15 +21,22 @@ var VoicesController = Class('VoicesController').inherits(RestfulController)({
         if (err) { return next(err); }
         if (result.length === 0) { next(new NotFoundError('Not Found')); }
 
-        res.locals.voice = result[0];
-        req.activeVoice = result[0];
+        res.locals.voice = new Voice(result[0]);
+        req.activeVoice = new Voice(result[0]);
 
         next();
       });
     },
 
     index : function index (req, res, next) {
-      Voice.find({}, function (err, result) {
+      var query = {
+        ownerId: req.body.ownerId,
+        topics: req.body.topics,
+        createdBefore: req.body.createdBefore,
+        createdAfter: req.body.createdAfter
+      };
+
+      Voice.filterBy(query, function (err, result) {
         if (err) { return next(err); }
 
         res.format({
@@ -62,6 +69,7 @@ var VoicesController = Class('VoicesController').inherits(RestfulController)({
     create : function create (req, res) {
       var voice = new Voice({
         title: req.body.title,
+        status: req.body.status,
         description: req.body.description,
         type: req.body.type,
         ownerId: req.body.ownerId,
@@ -72,7 +80,7 @@ var VoicesController = Class('VoicesController').inherits(RestfulController)({
       });
       voice.save(function (err) {
         if (err) {
-          res.render(req.entityType + '/new.html', {errors: err});
+          res.render('voices/new.html', {errors: err});
         } else {
           res.redirect('/voice/' + voice.id);
         }
@@ -87,6 +95,7 @@ var VoicesController = Class('VoicesController').inherits(RestfulController)({
       var voice = req.activeVoice;
       voice.setProperties({
         title: req.body.title || voice.title,
+        status: req.body.status || voice.status,
         description: req.body.description || voice.description,
         type: req.body.type || voice.type,
         ownerId: req.body.ownerId || voice.ownerId,

@@ -8,7 +8,6 @@ Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport)({
     TYPE_CLOSED : 'TYPE_CLOSED',
 
     prototype : {
-
         /* DEFAULT BASIC OPTIONS */
         id : null,
         title : '',
@@ -99,6 +98,12 @@ Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport)({
 
             this._activateButtonRef = this._activateButton.bind(this);
             CV.VoiceAboutBox.bind('deactivate', this._activateButtonRef);
+
+            this.layerLoadedRef = this.layerLoadedHandler.bind(this);
+            this.voicePostLayersManager.bind('layerLoaded', this.layerLoadedRef);
+
+            this.layerManagerReadyRef = this.layerManagerReady.bind(this);
+            this.voicePostLayersManager.bind('ready', this.layerManagerReadyRef);
         },
 
         _deactivateButton : function _deactivateButton() {
@@ -113,6 +118,19 @@ Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport)({
             CV.Voice.dispatch('voiceAboutBox:show');
         },
 
+        layerManagerReady : function layerManagerReady(data) {
+            var timestamp = data.layer.getIndicators()[0].getTimestamp();
+
+            this.voiceFooter.setTimelineInitialDate(timestamp);
+
+            this.voicePostLayersManager.unbind('ready', this.layerManagerReadyRef);
+            this.layerManagerReadyRef = null;
+        },
+
+        layerLoadedHandler : function layerLoadedHandler() {
+            this.voiceFooter.updateTimelineVars();
+        },
+
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
 
@@ -124,6 +142,12 @@ Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport)({
 
             CV.VoiceAboutBox.unbind('deactivate', this._activateButtonRef);
             this._activateButtonRef = null;
+
+            this.voicePostLayersManager.unbind('layerLoaded', this.layerLoadedRef);
+            this.layerLoadedRef = null;
+
+            this.voicePostLayersManager.unbind('ready', this.layerManagerReadyRef);
+            this.layerManagerReadyRef = null;
 
             this.id = null;
             this.title = null;

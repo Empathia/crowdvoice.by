@@ -14,115 +14,45 @@ Tellurium.reporter = new Tellurium.Reporter.Pretty({
 
 Tellurium.suite('Messages Model')(function() {
   var suite = this;
+
   this.setup(function() {
     var setup = this;
 
-    async.waterfall([
-      function(callback) {
-        var senderPerson = new Entity({
-          type : 'person',
-          name : 'Sender Person',
-          lastname : 'LastName',
-          profileName : 'sender_person_profile',
-          isAnonymous : false
-        });
+    async.series([function(done) {
+      Entity.findById(1, function(err, result) {
+        suite.registry.jack = new Entity(result[0]);
+        done();
+      });
+    }, function(done) {
+      Entity.findById(3, function(err, result) {
+        suite.registry.john = new Entity(result[0]);
+        done();
+      })
+    }, function(done){
+      Entity.findById(9, function(err, result) {
+        suite.registry.organization = new Entity(result[0]);
+        done();
+      })
+    }, function(done) {
+      MessageThread.findById(1, function(err, result) {
+        suite.registry.thread = new MessageThread(result[0]);
+        done();
+      })
+    }, function(done) {
+      var invitation = new InvitationRequest({
+        invitatorEntityId : suite.registry.jack.id,
+        invitedEntityId : suite.registry.john.id
+      });
 
-        senderPerson.save(function(err, result) {
-          suite.registry.senderPerson = senderPerson;
-
-          callback(err, senderPerson);
-        })
-      },
-      function(senderPerson, callback) {
-        var user = new User({
-          username : 'sender',
-          email : 'sender@test.com',
-          password : '12345678',
-          entityId : senderPerson.id
-        });
-
-        user.save(function(err, result) {
-          suite.registry.senderUser = user;
-
-          callback(err, senderPerson);
-        });
-      },
-      function(senderPerson, callback) {
-        var senderOrganization = new Entity({
-          type : 'organization',
-          name : 'Sender Organization',
-          lastname : 'LastName',
-          profileName : 'sender_organization_profile',
-          isAnonymous : false
-        });
-
-        senderOrganization.save(function(err, result) {
-          senderPerson.ownOrganization(senderOrganization, function(err, data) {
-            suite.registry.senderOrganization = senderOrganization;
-
-            callback(err, senderOrganization)
-          });
-        })
-      },
-      function(senderOrganization, callback) {
-        var receiverEntity = new Entity({
-          type : 'person',
-          name : 'Receiver Person',
-          lastname : 'LastName',
-          profileName : 'receiver_person_profile',
-          isAnonymous : false
-        });
-
-        receiverEntity.save(function(err, result) {
-          suite.registry.receiverEntity = receiverEntity;
-          callback(err, receiverEntity)
-        })
-      },
-      function(receiverEntity, callback) {
-        var user = new User({
-          username : 'receiver',
-          email : 'receiver@test.com',
-          password : '12345678',
-          entityId : receiverEntity.id
-        });
-
-        user.save(function(err, result) {
-          suite.registry.receiverUser = user;
-          callback(err, user);
-        });
-      },
-      function(receiverUser, callback) {
-        var thread = new MessageThread({
-          senderPersonId : suite.registry.senderPerson.id,
-          senderEntityId : suite.registry.senderPerson.id,
-          receiverEntityId : suite.registry.receiverEntity.id
-        });
-
-        thread.save(function(err, result) {
-          suite.registry.thread = thread;
-          callback(err, thread);
-        })
-      },
-      function(thread, callback) {
-        var invitation = new InvitationRequest({
-          invitatorEntityId : suite.registry.senderPerson.id,
-          invitedEntityId : suite.registry.receiverEntity.id
-        });
-
-        invitation.save(function(err, result) {
-          suite.registry.invitation = invitation;
-          callback(err, invitation);
-        })
-      }
-    ], function(err, result) {
-      if (err) {
-        throw new Error(err);
-      }
-
-      console.log('Finished setup!')
+      invitation.save(function(err, result) {
+        suite.registry.invitation = invitation;
+        done()
+      })
+    }], function(err) {
+      console.log('Finished setup');
       setup.completed();
+    });
 
-    })
   });
 
   this.describe('Validations')(function(desc) {
@@ -143,13 +73,15 @@ Tellurium.suite('Messages Model')(function() {
     });
 
     desc.specify('Pass Validation')(function(spec) {
+      var jack = suite.registry.jack;
+      var john = suite.registry.john;
       var thread = suite.registry.thread;
 
       var message = new Message({
         type : Message.TYPE_MESSAGE,
-        senderPersonId : suite.registry.senderPerson.id,
-        senderEntityId : suite.registry.senderPerson.id,
-        receiverEntityId : suite.registry.receiverEntity.id,
+        senderPersonId : jack.id,
+        senderEntityId : jack.id,
+        receiverEntityId : john.id,
         threadId : thread.id,
         message : 'hola'
       })
@@ -161,11 +93,15 @@ Tellurium.suite('Messages Model')(function() {
     })
 
     desc.specify('Fail Validation')(function(spec) {
+      var jack = suite.registry.jack;
+      var john = suite.registry.john;
+      var thread = suite.registry.thread;
+
       var message = new Message({
         type : Message.TYPE_MESSAGE,
-        senderPersonId : suite.registry.senderPerson.id,
-        senderEntityId : suite.registry.senderPerson.id,
-        receiverEntityId : suite.registry.receiverEntity.id,
+        senderPersonId : jack.id,
+        senderEntityId : jack.id,
+        receiverEntityId : john.id,
         threadId : 9876,
         message : 'hola'
       })
@@ -177,11 +113,13 @@ Tellurium.suite('Messages Model')(function() {
     });
 
     desc.specify('Pass create a message With Thread.createMessage Factory')(function(spec) {
+      var jack = suite.registry.jack;
+      var john = suite.registry.john;
       var thread = suite.registry.thread;
 
       thread.createMessage({
         type : Message.TYPE_MESSAGE,
-        senderPersonId : suite.registry.senderPerson.id,
+        senderPersonId : jack.id,
         message : 'Hola'
       }, function(err, result) {
         spec.assert(result.id).toBeGreaterThan(0);
@@ -191,6 +129,8 @@ Tellurium.suite('Messages Model')(function() {
     });
 
     desc.specify('Fail create a message With Thread.createMessage Factory')(function(spec) {
+      var jack = suite.registry.jack;
+      var john = suite.registry.john;
       var thread = suite.registry.thread;
 
       thread.createMessage({
@@ -204,27 +144,8 @@ Tellurium.suite('Messages Model')(function() {
 
     });
 
-    desc.afterEach(function(spec) {
-
-    })
   });
 
-  this.tearDown(function() {
-    var teardown = this;
-    db('Users').del().exec(function(err, data) {
-      db('MessageThreads').del().exec(function(err, data) {
-        db('Messages').del().exec(function(err, data) {
-          db('Entities').del().exec(function(err, data) {
-            db('EntityOwner').del().exec(function(err, data) {
-              console.log('teardown completed')
-              teardown.completed();
-            })
-          })
-        })
-      })
-    })
-
-  });
 });
 
 Tellurium.run();

@@ -1,3 +1,5 @@
+@import '../components/voice-timeline';
+
 .page-inner {
   background-color: @color-grey-lighter;
 
@@ -117,6 +119,7 @@
 }
 
 .voice-footer {
+  z-index: 1;
   position: fixed;
   bottom: 1px;
   left: @cv-sidebar-collapsed-width;
@@ -133,18 +136,6 @@
 
   &-right {
     padding-top: .8rem;
-  }
-
-  .cv-voice-timeline-feedback {
-    box-sizing: initial;
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    top: -12px;
-    left: 0;
-    border: 2px solid;
-    border-radius: 50%;
-    background: white;
   }
 }
 

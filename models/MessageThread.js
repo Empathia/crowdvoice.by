@@ -281,13 +281,9 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
 
       if (this.isPersonSender(params.senderPersonId)) {
         params.senderEntityId = this.senderEntityId;
-      } else {
-        params.senderEntityId = this.receiverEntityId;
-      }
-
-      if (this.isPersonSender(params.senderPersonId)) {
         params.receiverEntityId = this.receiverEntityId;
       } else {
+        params.senderEntityId = this.receiverEntityId;
         params.receiverEntityId = this.senderEntityId;
       }
 
