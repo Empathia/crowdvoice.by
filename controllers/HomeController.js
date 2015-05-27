@@ -17,6 +17,7 @@ var HomeController = Class('HomeController')({
       application.router.route('/dev/discover').get(this.discover);
       application.router.route('/dev/discover/recommended').get(this.discoverRecommended);
       application.router.route('/dev/discover/onboarding').get(this.discoverOnboarding);
+      application.router.route('/dev/account').get(this.account);
       application.router.route('/dev/ui').get(this.ui);
       application.router.route('/kabinett').get(this.kabinett);
     },
@@ -181,12 +182,28 @@ var HomeController = Class('HomeController')({
       });
     },
 
+    account : function(req, res) {
+      var demoOrganizations = require('./../public/demo-data/organizations.js');
+      var demoVoices = require('./../public/demo-data/voices.js');
+      var demoUsers = require('./../public/demo-data/users.js');
+
+
+      res.render('home/account.html', {
+        layout : 'application',
+        voices : demoVoices,
+        organizations : demoOrganizations,
+        users : demoUsers
+      });
+    },
+
     ui : function(req, res) {
       var demoVoices = require('./../public/demo-data/voices.js');
+      var demoUsers = require('./../public/demo-data/users.js');
 
       res.render('home/ui.html', {
         layout : 'application',
-        voices : demoVoices
+        voices : demoVoices,
+        users : demoUsers
       });
     },
 
