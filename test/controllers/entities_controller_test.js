@@ -50,58 +50,74 @@ Tellurium.suite('Entities Controller')(function () {
       profileName: 'john' + uid(16),
       isAnonymous: false
     };
+    spec.registry.voiceData = {
+      title : 'Voice Title',
+      description : 'Voice Description',
+      latitude : null,
+      longitude : null,
+      locationName : null,
+      ownerId : 1,
+      status : Voice.STATUS_DRAFT,
+      type : Voice.TYPE_PUBLIC,
+      twitterSearch : null,
+      tweetLastFetchAt : null,
+      rssUrl : null,
+      rssLastFetchAt : null,
+      firstPostDate : null,
+      lastPostDate : null,
+      postCount : 0
+    };
   });
 
   this.describe('Actions')(function () {
 
-    // Entities#show organization
-    this.specify('(text/html) should redirect to OrganizationsController if entity type is organization')(function (spec) {
+    // Entities#recommended
+    this.specify('recommended (application/json) should return recommended voices')(function (spec) {
+      var v1, v2, v3, v4, e1, e2;
+
       async.series([
-        function (done) { (new Entity(spec.registry.organizationData)).save(done); }
+        function (done) {
+          e1 = new Entity(spec.registry.personData);
+          e1.save(done);
+        },
+        function (done) {
+          e2 = new Entity(spec.registry.organizationData);
+          e2.save(done);
+        },
+        function (done) {
+          e1.followEntity(e2, done);
+        },
+        function (done) {
+          v1 = new Voice(spec.registry.voiceData);
+          v1.ownerId = e2.id;
+          v1.save(done);
+        },
+        function (done) {
+          v2 = new Voice(spec.registry.voiceData);
+          v2.ownerId = e2.id;
+          v2.save(done);
+        },
+        function (done) {
+          e1.followVoice(v2, done);
+        },
+        function (done) {
+          v3 = new Voice(spec.registry.voiceData);
+          v3.ownerId = e1.id;
+          v3.save(done);
+        },
       ], function (err) {
-        var prevMethod = OrganizationsController.prototype.showByProfileName;
-        OrganizationsController.prototype.showByProfileName = function (req, res, next) {
-          res.send('Organizations#showByProfileName');
-        };
-        var req = request
-          .get(urlBase + '/' + spec.registry.organizationData.profileName)
-          .accept('application/json');
+        var req = request.get(urlBase + '/person/' + e1.id + '/recommended');
+        req.accept('application/json');
         req.end(function (err, res) {
-          if (err) {
-            spec.assert(false).toBe(true);
-          } else {
-            spec.assert(res.text).toBe('Organizations#showByProfileName');
+          var voices = res.body;
+          spec.assert(voices.length).toBe(1);
+          if (voices.length > 0) {
+            spec.assert(voices[0].title).toBe(v1.title);
           }
           spec.completed();
-          OrganizationsController.prototype.showByProfileName = prevMethod;
         });
       });
     });
-
-    // Entities#show person
-    this.specify('(text/html) should redirect to PersonsController if entity type is person')(function (spec) {
-      async.series([
-        function (done) { (new Entity(spec.registry.personData)).save(done); }
-      ], function (err) {
-        var prevMethod = PersonsController.prototype.showByProfileName;
-        PersonsController.prototype.showByProfileName = function (req, res, next) {
-          res.send('Persons#showByProfileName');
-        };
-        var req = request
-          .get(urlBase + '/' + spec.registry.personData.profileName)
-          .accept('application/json');
-        req.end(function (err, res) {
-          if (err) {
-            spec.assert(false).toBe(true);
-          } else {
-            spec.assert(res.text).toBe('Persons#showByProfileName');
-          }
-          spec.completed();
-          PersonsController.prototype.showByProfileName = prevMethod;
-        });
-      });
-    });
-
   });
 
 });

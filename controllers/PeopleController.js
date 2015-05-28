@@ -21,6 +21,7 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
 
       application.router.route('/person/:id/follow').post(this.follow);
       application.router.route('/person/:id/voices').get(this.voices);
+      application.router.route('/person/:id/recommended').get(this.recommended);
     },
   }
 });
