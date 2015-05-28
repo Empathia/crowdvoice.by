@@ -13,30 +13,42 @@ var EntitiesController = Class('EntitiesController')({
     },
 
     _initRouter : function () {
-      application.router.route('/:profile_name').get(this.showRouter);
+      application.router.route('/:profile_name*').all(this.filterAction('getEntityByProfileName'));
+
+      application.router.route('/:profile_name').get(this.filterAction('show'));
+      application.router.route('/:profile_name').put(this.filterAction('update'));
+      application.router.route('/:profile_name/edit').get(this.filterAction('edit'));
+
+      application.router.route('/:profile_name/follow').get(this.filterAction('follow'));
+      application.router.route('/:profile_name/voices').get(this.filterAction('voices'));
+      application.router.route('/:profile_name/recommended').get(this.filterAction('recommended'));
     },
 
-    // This is the only method exclusive of EntitiesController
-    showRouter : function (req, res, next) {
-      if (EntitiesController.isWhiteListed(req.path)) {
-        return next();
+    filterAction : function filterAction (action) {
+      return function (req, res, next) {
+        if (EntitiesController.isWhiteListed(req.path)) {
+          next();
+        } else {
+          EntitiesController.prototype[action](req, res, next);
+        }
       }
+    },
 
+    getEntityByProfileName : function (req, res, next) {
       Entity.find({
         profile_name: req.params.profile_name
       }, function (err, result) {
         if (err) { next(err); return; }
         if (result.length === 0) { next(new NotFoundError('Entity Not Found')); return; }
 
-        var entity = result[0];
-        req.entityType = entity.type;
-        EntitiesController.prototype.showByProfileName(req, res, next);
+        req.entity = new Entity(result[0]);
+        req.entityType = req.entity.type;
+        res.locals[req.entityType] = req.entity;
+        next();
       });
     },
 
     getEntity : function getEntity (req, res, next) {
-      var controller = this;
-
       Entity.find({
         id: req.params.id,
         type: req.entityType
@@ -54,7 +66,6 @@ var EntitiesController = Class('EntitiesController')({
     },
 
     index : function index (req, res, next) {
-      var controller = this;
       Entity.find({type:req.entityType}, function (err, result) {
         if (err) { next(err); return; }
 
@@ -74,35 +85,15 @@ var EntitiesController = Class('EntitiesController')({
       });
     },
 
-    show : function show (req, res) {
-      var controller = this;
-      res.render(inflection.pluralize(req.entityType) + '/show.html', {layout : false});
+    show : function show (req, res, next) {
+      res.render(inflection.pluralize(req.entityType) + '/show.html');
     },
 
-    showByProfileName : function showByProfileName (req, res, next) {
-      var controller = this;
-      Entity.find({
-        type: req.entityType,
-        profile_name: req.params.profile_name
-      }, function (err, result) {
-        if (err) { next(err); return; }
-
-        if (result.length === 0) {
-          next(new NotFoundError('Entity Not Found')); return;
-        }
-
-        res.locals[req.entityType] = new Entity(result[0]);
-        req.entity = new Entity(result[0]);
-        res.render(inflection.pluralize(req.entityType) + '/show.html');
-      });
-    },
-
-    new : function (req, res) {
+    new : function (req, res, next) {
       res.render(inflection.pluralize(req.entityType) + '/new.html', {errors: null});
     },
 
-    create : function create (req, res) {
-      var controller = this;
+    create : function create (req, res, next) {
       var entity = new Entity({
         name: req.body['name'],
         lastname: req.body['lastname'],
@@ -119,12 +110,11 @@ var EntitiesController = Class('EntitiesController')({
       });
     },
 
-    edit : function edit (req, res) {
+    edit : function edit (req, res, next) {
       res.render(inflection.pluralize(req.entityType) + '/edit.html', {errors: null});
     },
 
-    update : function update (req, res) {
-      var controller = this;
+    update : function update (req, res, next) {
       var entity = req.entity;
       entity.setProperties({
         name: req.body['name'] || entity.name,
@@ -144,7 +134,6 @@ var EntitiesController = Class('EntitiesController')({
     },
 
     follow : function follow (req, res, next) {
-      var controller = this;
       var entity = req.entity, follower;
 
       Entity.find({ id: req.body.followAs }, function (err, result) {
@@ -165,7 +154,6 @@ var EntitiesController = Class('EntitiesController')({
     },
 
     voices : function voices (req, res, next) {
-      var controller = this;
       var entity = req.entity;
       Voice.find({owner_id: entity.id}, function (err, result) {
         if (err) { next(err); return; }
