@@ -243,6 +243,20 @@ var Entity = Class('Entity').inherits(Argon.KnexModel)({
        */
       voices: function voices (done) {
         Voice.find({owner_id: this.id}, done);
+      },
+
+      /* Returns, for a given entity, the set of voices that belong
+       * to those entities that the given entity is following and are not
+       * being followed by the given entity.
+       */
+      recommendedVoices: function (done) {
+        var query = db('Voices');
+        query.leftJoin('VoiceFollowers', 'Voices.id', 'VoiceFollowers.voice_id');
+        query.leftJoin('EntityFollower', 'Voices.owner_id', 'EntityFollower.followed_id');
+        query.whereRaw('("VoiceFollowers".entity_id <> ? or "VoiceFollowers".entity_id is null)', [this.id]);
+        query.andWhere('EntityFollower.follower_id', '=', this.id);
+
+        query.exec(done);
       }
   }
 });
