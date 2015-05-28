@@ -4,7 +4,7 @@ var users = [
     author : {
       profile_url : '/user-test',
       profile_cover : '/img/sample/covers/org-00.jpg',
-      avatar : 'img/sample/avatars/org-00.jpg',
+      avatar : '/img/sample/avatars/org-00.jpg',
       username : '@carlKrameR',
       full_name : 'Carl J. Kramer',
       description : "",
@@ -21,7 +21,7 @@ var users = [
     author : {
       profile_url : '/user-test',
       profile_cover : '/img/sample/covers/org-00.jpg',
-      avatar : 'img/sample/avatars/org-00.jpg',
+      avatar : '/img/sample/avatars/org-00.jpg',
       username : 'carlKrameR',
       full_name : 'Roosbelinda Cárdenas',
       description : "@Ross006",
@@ -38,7 +38,7 @@ var users = [
     author : {
       profile_url : '/user-test',
       profile_cover : '/img/sample/covers/org-00.jpg',
-      avatar : 'img/sample/avatars/org-00.jpg',
+      avatar : '/img/sample/avatars/org-00.jpg',
       username : '@carlKrameR',
       full_name : 'Carl J. Kramer',
       description : "",
@@ -55,7 +55,7 @@ var users = [
     author : {
       profile_url : '/user-test',
       profile_cover : '/img/sample/covers/org-00.jpg',
-      avatar : 'img/sample/avatars/org-00.jpg',
+      avatar : '/img/sample/avatars/org-00.jpg',
       username : 'carlKrameR',
       full_name : 'Roosbelinda Cárdenas',
       description : "@Ross006",

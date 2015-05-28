@@ -18,6 +18,7 @@ var HomeController = Class('HomeController')({
       application.router.route('/dev/discover/recommended').get(this.discoverRecommended);
       application.router.route('/dev/discover/onboarding').get(this.discoverOnboarding);
       application.router.route('/dev/account').get(this.account);
+      application.router.route('/dev/organization').get(this.organization);
       application.router.route('/dev/ui').get(this.ui);
       application.router.route('/kabinett').get(this.kabinett);
     },
@@ -189,6 +190,20 @@ var HomeController = Class('HomeController')({
 
 
       res.render('home/account.html', {
+        layout : 'application',
+        voices : demoVoices,
+        organizations : demoOrganizations,
+        users : demoUsers
+      });
+    },
+
+    organization : function(req, res) {
+      var demoOrganizations = require('./../public/demo-data/organizations.js');
+      var demoVoices = require('./../public/demo-data/voices.js');
+      var demoUsers = require('./../public/demo-data/users.js');
+
+
+      res.render('home/organization.html', {
         layout : 'application',
         voices : demoVoices,
         organizations : demoOrganizations,
