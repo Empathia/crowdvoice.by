@@ -13,8 +13,7 @@ var EntitiesController = Class('EntitiesController')({
     },
 
     _initRouter : function () {
-      application.router.route('/:profile_name')
-        .get(this.showRouter);
+      application.router.route('/:profile_name').get(this.showRouter);
     },
 
     // This is the only method exclusive of EntitiesController
@@ -182,6 +181,21 @@ var EntitiesController = Class('EntitiesController')({
           },
           'text/html': function () {
             next(new Error('Not found'));
+          }
+        });
+      });
+    },
+
+    recommended : function recommended (req, res, next) {
+      var entity = req.entity;
+      entity.recommendedVoices(function (err, voices) {
+        if (err) { next(err); return; }
+        res.format({
+          'application/json': function () {
+            res.json(voices);
+          },
+          'default': function () {
+            next(new NotFoundError('Unknown format for this request'));
           }
         });
       });
