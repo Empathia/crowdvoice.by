@@ -3,7 +3,11 @@
 
 require('neonode-core');
 require('tellurium');
-require('./../../lib/TelluriumConsoleReporter.js');
+require(process.cwd() + '/node_modules/tellurium/reporters/pretty');
+
+Tellurium.reporter = new Tellurium.Reporter.Pretty({
+  colorsEnabled : true
+})
 
 var crypto = require('crypto');
 
@@ -45,9 +49,21 @@ Tellurium.suite('Entity Model')(function () {
       isAnonymous: false
     };
     spec.registry.voiceData = {
-      title: 'title',
-      status: 'active',
-      type: 'text'
+      title : 'Voice Title',
+      description : 'Voice Description',
+      latitude : null,
+      longitude : null,
+      locationName : null,
+      ownerId : 1,
+      status : Voice.STATUS_DRAFT,
+      type : Voice.TYPE_PUBLIC,
+      twitterSearch : null,
+      tweetLastFetchAt : null,
+      rssUrl : null,
+      rssLastFetchAt : null,
+      firstPostDate : null,
+      lastPostDate : null,
+      postCount : 0
     };
   });
 
@@ -327,6 +343,52 @@ Tellurium.suite('Entity Model')(function () {
         e1.voices(function (err, voices) {
           spec.assert(voices[0].ownerId).toBe(e1.id);
           spec.assert(voices[0].title).toBe('MyVoice');
+          spec.completed();
+        });
+      });
+    });
+  });
+
+  this.describe('recommendedVoices')(function () {
+    this.specify('should return recommended voices (see spec to understand this)')(function (spec) {
+      var v1, v2, v3, v4, e1, e2;
+
+      async.series([
+        function (done) {
+          e1 = new Entity(spec.registry.entityData);
+          e1.save(done);
+        },
+        function (done) {
+          e2 = new Entity(spec.registry.organizationData);
+          e2.save(done);
+        },
+        function (done) {
+          e1.followEntity(e2, done);
+        },
+        function (done) {
+          v1 = new Voice(spec.registry.voiceData);
+          v1.ownerId = e2.id;
+          v1.save(done);
+        },
+        function (done) {
+          v2 = new Voice(spec.registry.voiceData);
+          v2.ownerId = e2.id;
+          v2.save(done);
+        },
+        function (done) {
+          e1.followVoice(v2, done);
+        },
+        function (done) {
+          v3 = new Voice(spec.registry.voiceData);
+          v3.ownerId = e1.id;
+          v3.save(done);
+        }
+      ], function (err) {
+        e1.recommendedVoices(function (err, voices) {
+          spec.assert(voices.length).toBe(1);
+          if (voices.length > 0) {
+            spec.assert(voices[0].title).toBe(v1.title);
+          }
           spec.completed();
         });
       });
