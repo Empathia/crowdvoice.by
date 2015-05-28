@@ -240,8 +240,6 @@ Tellurium.suite('Threads Controller Suite')(function(){
 
               var response = res.body;
 
-              console.log(JSON.stringify(response, null, 2))
-
               spec.assert(response.messages.length).toBe(1);
 
               spec.completed()

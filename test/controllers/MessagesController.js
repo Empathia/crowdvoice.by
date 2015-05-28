@@ -199,7 +199,7 @@ Tellurium.suite('Messages Controller')(function() {
             spec.assert(res.body.status).toBe('ok');
             spec.completed();
           })
-      }, 1000)
+      }, 2000)
     })
   });
 

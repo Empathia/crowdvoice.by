@@ -6,16 +6,16 @@
 
       <article role="article" class="profile-menu -row -rel">
         <div class="profile-tabs">
-          <div class="menu-item p-drafts active menu-tab -inline-block">
+          <div class="menu-item active -menu-tab -inline-block">
             <p class="-font-bold">Drafts</p>
           </div>
-          <div class="menu-item p-unlisted menu-tab -inline-block">
+          <div class="menu-item -menu-tab -inline-block">
             <p class="-font-bold">Unlisted</p>
           </div>
-          <div class="menu-item p-public menu-tab -inline-block">
+          <div class="menu-item -menu-tab -inline-block">
             <p class="-font-bold">Public</p>
           </div>
-          <div class="menu-item p-archive menu-tab -inline-block">
+          <div class="menu-item -menu-tab -inline-block">
             <p class="-font-bold">Archive</p>
           </div>
         </div>
@@ -25,7 +25,7 @@
 
   <section class="profile-body profile-menu-content -rel">
 
-    <div class="p-drafts active el-list">
+    <div class="active -menu-tab-content">
       <div class="-row">
         <div class="draft-test-1"></div>
         <div class="draft-test-2"></div>
@@ -35,21 +35,21 @@
       </div>
     </div>
 
-    <div class="p-unlisted el-list">
+    <div class="-menu-tab-content">
       <div class="unlisted-test-1"></div>
       <div class="unlisted-test-2"></div>
       <div class="unlisted-test-3"></div>
       <div class="unlisted-test-4"></div>
       <div class="unlisted-test-5"></div>
     </div>
-    <div class="p-public el-list">
+    <div class="-menu-tab-content">
       <div class="public-test-1"></div>
       <div class="public-test-2"></div>
       <div class="public-test-3"></div>
       <div class="public-test-4"></div>
       <div class="public-test-5"></div>
     </div>
-    <div class="p-archive el-list">
+    <div class="-menu-tab-content">
       <div class="archive-test-1"></div>
       <div class="archive-test-2"></div>
       <div class="archive-test-3"></div>
@@ -104,22 +104,23 @@
 
   $( document ).ready(function() {
 
-    var btnActions = ['.p-drafts', '.p-unlisted', '.p-public', '.p-archive'];
-    for (i = 0; i < btnActions.length; i++){
-      $('.profile-menu ' + btnActions[i]).on('click', createCallback(btnActions[i]));
+    createMenuActions('.profile-menu', '.profile-menu-content');
+
+    function createMenuActions(menuContainer, contentContainer){
+      $( menuContainer ).find('.-menu-tab').each(function( index ) {
+        var elContent = $( contentContainer + ' .-menu-tab-content:nth-child(' + (index + 1) + ')');
+        $(this).on('click', createCallback(this, index, elContent, menuContainer, contentContainer));
+      });
     }
 
-    function createCallback( elClass ){
+    function createCallback( tab, index, elContent, menuContainer, contentContainer ){
       return function(){
-        $('.profile-menu .menu-tab').removeClass('active');
+        $(menuContainer + ' .-menu-tab').removeClass('active');
         $(this).addClass('active');
-        $('.profile-menu-content .el-list').removeClass('active');
-        $('.profile-menu-content ' + elClass).addClass('active');
+        $(contentContainer + ' .-menu-tab-content').removeClass('active');
+        $(elContent).addClass('active');
       }
     }
-
-
-
 
   });
 
