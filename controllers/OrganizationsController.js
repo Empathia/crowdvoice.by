@@ -22,6 +22,7 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
       application.router.route('/organization/:id/follow').post(this.follow);
       application.router.route('/organization/:id/invite_entity').post(this.inviteEntity);
       application.router.route('/organization/:id/voices').get(this.voices);
+      application.router.route('/organization/:id/recommended').get(this.recommended);
     },
 
     inviteEntity : function inviteEntity (req, res, next) {
