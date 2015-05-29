@@ -193,6 +193,31 @@ var Voice = Class('Voice').inherits(Argon.KnexModel)({
       });
 
       return json;
+    },
+
+    /* Add slug for a voice.
+     * Makes sure there only exist maximum of 3 slugs per voice.
+     */
+    addSlug : function (done) {
+      var voice = this;
+      var slug = new Slug({
+        voiceId : this.id,
+        url: this.title.toLowerCase().replace(/ /g, '_')
+      });
+      slug.save(function (err) {
+        if (err) { next (err); return; }
+        var subquery = db('Slugs');
+        subquery.where({voice_id: voice.id});
+        subquery.select('id');
+        subquery.orderBy('created_at', 'desc');
+        subquery.limit(3);
+
+        var query = db('Slugs');
+        query.where({voice_id: voice.id});
+        query.where('id', 'not in', subquery);
+        query.del();
+        query.exec(done);
+      });
     }
   }
 });
