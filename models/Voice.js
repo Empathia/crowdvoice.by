@@ -180,6 +180,20 @@ var Voice = Class('Voice').inherits(Argon.KnexModel)({
         });
       });
     },
+
+    toJSON : function toJSON() {
+      var json = {};
+
+      Object.keys(this).forEach(function(property) {
+        if (property === 'id' || property === 'ownerId') {
+          json[property] = hashids.encode(this[property]);
+        } else {
+          json[property] = this[property];
+        }
+      });
+
+      return json;
+    }
   }
 });
 

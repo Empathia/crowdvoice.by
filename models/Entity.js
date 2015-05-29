@@ -257,6 +257,20 @@ var Entity = Class('Entity').inherits(Argon.KnexModel)({
         query.andWhere('EntityFollower.follower_id', '=', this.id);
 
         query.exec(done);
+      },
+
+      toJSON : function toJSON() {
+        var json = {};
+
+        Object.keys(this).forEach(function(property) {
+          if (property === 'id') {
+            json[property] = hashids.encode(this[property]);
+          } else {
+            json[property] = this[property];
+          }
+        });
+
+        return json;
       }
   }
 });
