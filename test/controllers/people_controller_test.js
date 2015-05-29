@@ -202,6 +202,26 @@ Tellurium.suite('Persons Controller')(function () {
       });
     });
 
+    // Persons#edit 200
+    this.specify('get (text/html) should return 200 if the person exists')(function (spec) {
+      var p1 = new Entity(spec.registry.personData);
+
+      p1.save(function (err) {
+        var req = request
+          .get(urlBase + '/' + p1.profileName + '/edit')
+          .accept('text/html');
+
+        req.end(function (err, res) {
+          if (err) {
+            spec.assert(true).toBe(false);
+          } else {
+            spec.assert(res.status).toBe(200);
+            spec.completed();
+          }
+        });
+      });
+    });
+
     // Persons#edit 404
     this.specify('get (text/html) should return error if person does not exist')(function (spec) {
       var req = request
