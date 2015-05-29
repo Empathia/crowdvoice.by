@@ -5,9 +5,14 @@ var Slug = Class('Slug').inherits(Argon.KnexModel)({
   storage : (new Argon.Storage.Knex({
     tableName : 'Slugs'
   })),
-  
-  prototype : {
 
+  prototype : {
+    voice : function voice (done) {
+      Voice.find({id: this.voiceId}, function (err, voices) {
+        if (voices.length === 0) { done(new Error('Orphan Slug')); }
+        done(null, voices[0]);
+      });
+    }
   }
 });
 

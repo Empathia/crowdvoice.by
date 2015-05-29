@@ -10,10 +10,10 @@ var VoicesController = Class('VoicesController').inherits(RestfulController)({
       application.router.route('/voice').post(this.create);
       application.router.route('/voice/new').get(this.new);
 
-      application.router.route('/voice/:id*').all(this.getActiveVoice);
-      application.router.route('/voice/:id').get(this.show);
-      application.router.route('/voice/:id').put(this.update);
-      application.router.route('/voice/:id/edit').get(this.edit);
+      application.router.route('/:profile_name/voice/:slug*').all(this.getActiveVoice);
+      application.router.route('/:profile_name/voice/:slug').get(this.show);
+      application.router.route('/:profile_name/voice/:slug').put(this.update);
+      application.router.route('/:profile_name/voice/:slug/edit').get(this.edit);
     },
 
     getActiveVoice : function (req, res, next) {

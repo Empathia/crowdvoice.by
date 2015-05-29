@@ -77,6 +77,7 @@ var Voice = Class('Voice').inherits(Argon.KnexModel)({
     }
 
     Object.keys(query).forEach(function (key) {
+      if (!query[key]) { return; };
       switch (key) {
         case 'topics':
           kxquery.leftJoin('VoiceTopic', 'VoiceTopic.voice_id', 'Voices.id');
@@ -205,7 +206,7 @@ var Voice = Class('Voice').inherits(Argon.KnexModel)({
         url: this.title.toLowerCase().replace(/ /g, '_')
       });
       slug.save(function (err) {
-        if (err) { next (err); return; }
+        if (err) { done (err); return; }
         var subquery = db('Slugs');
         subquery.where({voice_id: voice.id});
         subquery.select('id');
@@ -220,6 +221,12 @@ var Voice = Class('Voice').inherits(Argon.KnexModel)({
       });
     }
   }
+});
+
+Voice.bind('afterSave', function (event) {
+  var model = event.data.model;
+
+  model.addSlug();
 });
 
 module.exports = Voice;

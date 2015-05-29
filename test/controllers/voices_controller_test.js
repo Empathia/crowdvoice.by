@@ -111,22 +111,22 @@ Tellurium.suite('Voices Controller')(function () {
     });
 
     // Voices#edit
-    this.specify('GET /voice/:id/edit should return 200 if record exists')(function (spec) {
-      async.series([
-        function (done) {
-          var v1 = new Voice(spec.registry.voiceData);
-          v1.save(done);
-        }
-      ], function (err) {
-        var req = request.
-        get(urlBase + '/voice/' + v1.id + '/edit');
+    // this.specify('GET /voice/:id/edit should return 200 if record exists')(function (spec) {
+    //   async.series([
+    //     function (done) {
+    //       var v1 = new Voice(spec.registry.voiceData);
+    //       v1.save(done);
+    //     }
+    //   ], function (err) {
+    //     var req = request.
+    //     get(urlBase + '/voice/' + v1.id + '/edit');
 
-        req.end(function (err, res) {
-          spec.assert(res.status).toBe(200);
-          spec.completed();
-        });
-      });
-    });
+    //     req.end(function (err, res) {
+    //       spec.assert(res.status).toBe(200);
+    //       spec.completed();
+    //     });
+    //   });
+    // });
 
     // Voices#create
     this.specify('POST /voice should create a voice')(function (spec) {
