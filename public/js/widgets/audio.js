@@ -32,7 +32,7 @@ Class(CV, 'Audio').includes(CustomEventSupport)({
                 CV.Audio.dispatch('ready');
             },
             ontimeout : function() {
-                console.log('Uh-oh. No HTML5 support, SWF missing, Flash blocked or other issue')
+                console.log('Uh-oh. No HTML5 support, SWF missing, Flash blocked or other issue');
                 CV.Audio.dispatch('error');
             }
         });
@@ -84,7 +84,7 @@ Class(CV, 'Audio').includes(CustomEventSupport)({
                 onload : function() {audioInstance.dispatch('onload');},
                 whileplaying : function() {audioInstance.dispatch('whileplaying');},
                 onfinish : function() {audioInstance.dispatch('onfinish');}
-            }
+            };
 
             this.sound.load();
         },
@@ -130,6 +130,12 @@ Class(CV, 'Audio').includes(CustomEventSupport)({
          */
         getProgressPercentage : function() {
             return this.getCurrentTime() / this.getDuration() * 100;
+        },
+
+        destroy : function destroy() {
+            Widget.prototype.destroy.call(this);
+
+            this.sound.destruct();
         }
     }
 });

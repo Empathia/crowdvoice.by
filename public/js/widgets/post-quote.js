@@ -32,7 +32,15 @@ Class(CV, 'PostQuote').inherits(CV.Post)({
     ICON : '<svg class="post-card-meta-icon"><use xlink:href="#svg-repost"></use></svg>',
 
     prototype : {
+
+        /* PRIVATE properties, inherited from Post */
         imageLoaded : true,
+
+        /* PRIVATE properties */
+        el : null,
+        sourceElement : null,
+        dateTimeElement : null,
+
         init : function init(config) {
             Widget.prototype.init.call(this, config);
 
@@ -59,8 +67,18 @@ Class(CV, 'PostQuote').inherits(CV.Post)({
             this.dom.updateText(this.el.querySelector('.post-card-quote'), this.title);
             this.dom.updateText(this.el.querySelector('.post-card-quote-author'), this.description);
 
-            this.dom.updateText(this.el.querySelector('.post-card-activity-repost .post-card-activity-label'), this.total_reposts);
-            this.dom.updateText(this.el.querySelector('.post-card-activity-saved .post-card-activity-label'), this.total_saves);
+            this.dom.updateText(this.el.querySelector('.post-card-activity-repost .post-card-activity-label'), this.totalReposts);
+            this.dom.updateText(this.el.querySelector('.post-card-activity-saved .post-card-activity-label'), this.totalSaves);
+        },
+
+        /* Implementation for the destroy method.
+         * This is run by the destroy method on CV.Post
+         * @method __destroy <private> [Function]
+         */
+        __destroy : function __destroy() {
+            this.el = null;
+            this.sourceElement = null;
+            this.dateTimeElement = null;
         }
     }
 });

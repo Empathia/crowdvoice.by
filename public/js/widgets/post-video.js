@@ -43,6 +43,12 @@ Class(CV, 'PostVideo').inherits(CV.Post)({
     reV : new RegExp('[0-9]+'),
 
     prototype : {
+        /* PRIVATE properties */
+        el : null,
+        imageWrapperElement : null,
+        sourceElement : null,
+        dateTimeElement : null,
+
         init : function init(config) {
             Widget.prototype.init.call(this, config);
 
@@ -77,8 +83,8 @@ Class(CV, 'PostVideo').inherits(CV.Post)({
             this.dom.updateText(this.el.querySelector('.post-card-title'), this.title);
             this.dom.updateText(this.el.querySelector('.post-card-description'), this.description);
 
-            this.dom.updateText(this.el.querySelector('.post-card-activity-repost .post-card-activity-label'), this.total_reposts);
-            this.dom.updateText(this.el.querySelector('.post-card-activity-saved .post-card-activity-label'), this.total_saves);
+            this.dom.updateText(this.el.querySelector('.post-card-activity-repost .post-card-activity-label'), this.totalReposts);
+            this.dom.updateText(this.el.querySelector('.post-card-activity-saved .post-card-activity-label'), this.totalSaves);
 
             this._bindEvents();
         },
@@ -89,6 +95,8 @@ Class(CV, 'PostVideo').inherits(CV.Post)({
         },
 
         addVideo : function() {
+            var id;
+
             this.imageWrapperElement.removeEventListener('click', this.addVideoHandler);
 
             var iframe = document.createElement('iframe');
@@ -96,16 +104,30 @@ Class(CV, 'PostVideo').inherits(CV.Post)({
             this.dom.updateAttr('allowfullscreen', iframe, true);
 
             if (this.sourceService === 'youtube') {
-                var id = this.sourceUrl.match(this.constructor.reYT)[1];
+                id = this.sourceUrl.match(this.constructor.reYT)[1];
                 this.dom.updateAttr('src', iframe, 'https://www.youtube.com/embed/' + id + '?autoplay=1');
             }
 
             if (this.sourceService === 'vimeo') {
-                var id = this.sourceUrl.match(this.constructor.reV)[0];
+                id = this.sourceUrl.match(this.constructor.reV)[0];
                 this.dom.updateAttr('src', iframe, 'https://player.vimeo.com/video/' + id + '?autoplay=1');
             }
 
             this.imageWrapperElement.appendChild(iframe);
+        },
+
+        /* Implementation for the destroy method.
+         * This is run by the destroy method on CV.Post
+         * @method __destroy <private> [Function]
+         */
+        __destroy : function __destroy() {
+            this.imageWrapperElement.removeEventListener('click', this.addVideoHandler);
+            this.addVideoHandler = null;
+
+            this.el = null;
+            this.imageWrapperElement = null;
+            this.sourceElement = null;
+            this.dateTimeElement = null;
         }
     }
 });

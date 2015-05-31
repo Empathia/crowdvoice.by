@@ -9,10 +9,10 @@ window.$ = jQuery;
 window.CV = {};
 
 require('./lib/widget-utils.js');
-require('./vendor/Widget.js');
+require('./lib/Widget.js');
 
 window.validate = require('validate');
-window.soundManager = require('SoundManager2').soundManager;
+//window.soundManager = require('SoundManager2').soundManager;
 
 require('./../css/style.less');
 

@@ -56,7 +56,17 @@ Class(CV, 'PostAudio').inherits(CV.Post)({
 
     prototype : {
 
-        audio: null,
+        /* PRIVATE properties */
+        audio : null,
+        el : null,
+        imageWrapperElement : null,
+        playButton : null,
+        audioTotalTime : null,
+        audioCurrentTime : null,
+        playerProgressWrapper : null,
+        playerProgress : null,
+        sourceElement : null,
+        dateTimeElement : null,
 
         init : function init(config) {
             Widget.prototype.init.call(this, config);
@@ -98,8 +108,8 @@ Class(CV, 'PostAudio').inherits(CV.Post)({
             this.dom.updateText(this.el.querySelector('.post-card-title'), this.title);
             this.dom.updateText(this.el.querySelector('.post-card-description'), this.description);
 
-            this.dom.updateText(this.el.querySelector('.post-card-activity-repost .post-card-activity-label'), this.total_reposts);
-            this.dom.updateText(this.el.querySelector('.post-card-activity-saved .post-card-activity-label'), this.total_saves);
+            this.dom.updateText(this.el.querySelector('.post-card-activity-repost .post-card-activity-label'), this.totalReposts);
+            this.dom.updateText(this.el.querySelector('.post-card-activity-saved .post-card-activity-label'), this.totalSaves);
 
             this.dom.updateText(this.el.querySelector('.post-card-audio-player-total-time-db'), this.audio_duration);
 
@@ -169,6 +179,25 @@ Class(CV, 'PostAudio').inherits(CV.Post)({
 
             if (this.audio.paused) this.audio.play();
             else this.audio.pause();
+        },
+
+        /* Implementation for the destroy method.
+         * This is run by the destroy method on CV.Post
+         * @method __destroy <private> [Function]
+         */
+        __destroy : function __destroy() {
+            this.audio = null;
+            this.el = null;
+            this.imageWrapperElement = null;
+            this.playButton = null;
+            this.audioTotalTime = null;
+            this.audioCurrentTime = null;
+            this.playerProgressWrapper = null;
+            this.playerProgress = null;
+
+            this.sourceElement = null;
+            this.dateTimeElement = null;
         }
+
     }
 });

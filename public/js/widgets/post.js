@@ -31,6 +31,20 @@ Class(CV, 'Post').inherits(Widget).includes(CV.WidgetUtils)({
     },
 
     prototype : {
+        /* PUBLIC config */
+        sourceType: '',
+        sourceUrl: '',
+        sourceService: '',
+        title: '',
+        description: '',
+        image: '',
+        imageWidth: 0,
+        imageHeight: 0,
+        totalReposts: 0,
+        totalSaves: 0,
+        createdAt: '',
+
+        /* PRIVATE properties */
         imageLoaded : false,
         haltImage : null,
 
@@ -68,6 +82,7 @@ Class(CV, 'Post').inherits(Widget).includes(CV.WidgetUtils)({
          */
         abortImage : function abortImage() {
             if (!this.image) return this;
+            if (!this.haltImage) return this;
             if (this.imageLoaded === true) return this;
 
             this.haltImage.abort();
@@ -89,6 +104,27 @@ Class(CV, 'Post').inherits(Widget).includes(CV.WidgetUtils)({
             this.dom.updateBgImage(this.imageWrapperElement, imageObject.src);
             this.imageLoaded = true;
             this.haltImage = null;
+        },
+
+        destroy : function destroy() {
+            Widget.prototype.destroy.call(this);
+
+            this.sourceType = null;
+            this.sourceUrl = null;
+            this.sourceService = null;
+            this.title = null;
+            this.description = null;
+            this.image = null;
+            this.imageWidth = null;
+            this.imageHeight = null;
+            this.totalReposts = null;
+            this.totalSaves = null;
+            this.createdAt = null;
+
+            this.imageLoaded = null;
+            this.haltImage = null;
+
+            this.__destroy();
         }
     }
 });

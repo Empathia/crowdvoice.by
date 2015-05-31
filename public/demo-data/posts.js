@@ -8,8 +8,8 @@ var posts = [
     image: '/img/sample/posts/link-00.jpg',
     imageWidth: 350,
     imageHeight: 238,
-    total_reposts: 12,
-    total_saves: 4,
+    totalReposts: 12,
+    totalSaves: 4,
     createdAt: '2015-01-28T13:59:47Z',
   },
 
@@ -22,8 +22,8 @@ var posts = [
     image: '/img/sample/posts/link-01.jpg',
     imageWidth: 350,
     imageHeight: 195,
-    total_reposts: 12,
-    total_saves: 4,
+    totalReposts: 12,
+    totalSaves: 4,
     createdAt: '2015-01-26T13:59:47Z',
   },
 
@@ -34,8 +34,8 @@ var posts = [
     title: 'Donec Congue Lacinia Dui, A Porttitor Lectus',
     description: 'In pellentesque faucibus vestibulum. Nulla at nulla justo, eget luctus tortor. Nulla facilisi. Duis aliquet egestas purus in blandit. Curabitur vulputate, ligula lacinia scelerisque tempor, lacus lacus ornare ante, ac egestas est urna sit amet arcu. Class aptent taciti sociosqu ad litora',
     image: '',
-    total_reposts: 12,
-    total_saves: 4,
+    totalReposts: 12,
+    totalSaves: 4,
     createdAt: '2015-01-24T13:59:47Z',
   },
 
@@ -48,8 +48,8 @@ var posts = [
     image: '/img/sample/posts/video-00.jpg',
     imageWidth: 350,
     imageHeight: 197,
-    total_reposts: 2,
-    total_saves: 1,
+    totalReposts: 2,
+    totalSaves: 1,
     createdAt: '2015-01-22T13:59:47Z'
   },
 
@@ -62,8 +62,8 @@ var posts = [
     image: '/img/sample/posts/video-01.jpg',
     imageWidth: 350,
     imageHeight: 194,
-    total_reposts: 2,
-    total_saves: 1,
+    totalReposts: 2,
+    totalSaves: 1,
     createdAt: '2015-01-20T13:59:47Z'
   },
 
@@ -76,8 +76,8 @@ var posts = [
     image: '/img/sample/posts/video-02.jpg',
     imageWidth: 350,
     imageHeight: 256,
-    total_reposts: 2,
-    total_saves: 1,
+    totalReposts: 2,
+    totalSaves: 1,
     createdAt: '2015-01-18T13:59:47Z'
   },
 
@@ -90,8 +90,8 @@ var posts = [
     image: '/img/sample/posts/image-00.jpg',
     imageWidth: 350,
     imageHeight: 218,
-    total_reposts: 2,
-    total_saves: 1,
+    totalReposts: 2,
+    totalSaves: 1,
     createdAt: '2015-01-16T13:59:47Z',
   },
 
@@ -104,8 +104,8 @@ var posts = [
     title: 'Donec Congue Lacinia Dui, A Porttitor Lectus',
     description: 'Curabitur vulputate, ligula lacinia scelerisque tempor, lacus lacus ornare ante, ac egestas est urna sit amet arcu. Class aptent taciti sociosqu ad litora torquent per conubia.',
     image: '/img/sample/posts/image-01.jpg',
-    total_reposts: 12,
-    total_saves: 4,
+    totalReposts: 12,
+    totalSaves: 4,
     createdAt: '2015-03-30T13:59:47Z'
   },
 
@@ -117,8 +117,8 @@ var posts = [
     title: 'Donec Congue Lacinia Dui, A Porttitor Lectus',
     description: 'Curabitur vulputate, ligula lacinia scelerisque tempor, lacus lacus ornare ante, ac egestas est urna sit amet arcu. Class aptent taciti sociosqu ad litora torquent per conubia.',
     image: '/img/sample/posts/image-01.jpg',
-    total_reposts: 12,
-    total_saves: 4,
+    totalReposts: 12,
+    totalSaves: 4,
     createdAt: '2015-03-30T13:59:47Z'
   },
 
@@ -130,8 +130,8 @@ var posts = [
     title: 'Donec Congue Lacinia Dui, A Porttitor Lectus',
     description: '',
     image: '/img/sample/posts/image-02.jpg',
-    total_reposts: 12,
-    total_saves: 4,
+    totalReposts: 12,
+    totalSaves: 4,
     createdAt: '2015-03-30T13:59:47Z'
   },
 
@@ -143,8 +143,8 @@ var posts = [
     title: 'Donec Congue Lacinia Dui, A Porttitor Lectus',
     description: 'Curabitur vulputate, ligula lacinia scelerisque tempor, lacus lacus ornare ante, ac egestas est urna sit amet arcu. Class aptent taciti sociosqu ad litora torquent per conubia.',
     image: '',
-    total_reposts: 12,
-    total_saves: 4,
+    totalReposts: 12,
+    totalSaves: 4,
     createdAt: '2015-03-30T13:59:47Z'
   },
 
@@ -156,8 +156,8 @@ var posts = [
     title: '',
     description: '',
     image: '',
-    total_reposts: 12,
-    total_saves: 4,
+    totalReposts: 12,
+    totalSaves: 4,
     createdAt: '2015-03-30T13:59:47Z'
   },
 */
@@ -171,8 +171,8 @@ var posts = [
     image: '/img/sample/posts/image-03.jpg',
     imageWidth: 287,
     imageHeight: 318,
-    total_reposts: 62,
-    total_saves: 17,
+    totalReposts: 62,
+    totalSaves: 17,
     createdAt: '2015-01-14T13:59:47Z'
   },
 
@@ -185,8 +185,8 @@ var posts = [
     image: '/img/sample/posts/image-04.jpg',
     imageWidth: 350,
     imageHeight: 232,
-    total_reposts: 62,
-    total_saves: 17,
+    totalReposts: 62,
+    totalSaves: 17,
     createdAt: '2015-01-12T13:59:47Z'
   },
 
@@ -199,8 +199,8 @@ var posts = [
     image: '/img/sample/posts/image-05.jpg',
     imageWidth: 350,
     imageHeight: 189,
-    total_reposts: 62,
-    total_saves: 17,
+    totalReposts: 62,
+    totalSaves: 17,
     createdAt: '2015-01-10T13:59:47Z'
   },
 
@@ -211,8 +211,8 @@ var posts = [
     title: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in dui mauris. Vivamus hendrerit arcu sed erat molestie vehicula.',
     description: 'Sergio De La Garza, 1978',
     image: '',
-    total_reposts: 0,
-    total_saves: 0,
+    totalReposts: 0,
+    totalSaves: 0,
     createdAt: '2015-01-08T13:59:47Z'
   },
 
@@ -225,8 +225,8 @@ var posts = [
     image: '/img/sample/posts/video-03.jpg',
     imageWidth: 350,
     imageHeight: 193,
-    total_reposts: 2,
-    total_saves: 1,
+    totalReposts: 2,
+    totalSaves: 1,
     createdAt: '2015-01-06T13:59:47Z'
   }
 ]
