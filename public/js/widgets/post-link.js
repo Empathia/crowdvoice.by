@@ -1,3 +1,4 @@
+/* jshint multistr: true */
 var moment = require('moment');
 
 Class(CV, 'PostLink').inherits(CV.Post)({
@@ -32,8 +33,6 @@ Class(CV, 'PostLink').inherits(CV.Post)({
     ICON : '<svg class="post-card-meta-icon"><use xlink:href="#svg-repost"></use></svg>',
 
     prototype : {
-        imageLoaded : false,
-
         init : function init(config) {
             Widget.prototype.init.call(this, config);
 
@@ -71,14 +70,6 @@ Class(CV, 'PostLink').inherits(CV.Post)({
 
             this.dom.updateText(this.el.querySelector('.post-card-activity-repost .post-card-activity-label'), this.total_reposts);
             this.dom.updateText(this.el.querySelector('.post-card-activity-saved .post-card-activity-label'), this.total_saves);
-        },
-
-        loadImage : function loadImage() {
-            if (this.image) {
-                this.dom.updateBgImage(this.imageWrapperElement, this.image);
-                this.imageLoaded = true;
-            }
-        },
-
+        }
     }
 });

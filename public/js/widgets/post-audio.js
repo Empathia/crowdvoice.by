@@ -1,5 +1,6 @@
-
+/* jshint multistr: true */
 var moment = require('moment');
+
 Class(CV, 'PostAudio').inherits(CV.Post)({
     HTML : '\
     <article class="post-card audio">\
@@ -61,6 +62,7 @@ Class(CV, 'PostAudio').inherits(CV.Post)({
             Widget.prototype.init.call(this, config);
 
             this.el = this.element[0];
+            this.imageWrapperElement = this.el.querySelector('.post-card-image-wrapper');
             this.playerWrapper = this.el.querySelector('.post-card-audio-player-wrapper');
             this.playButton = this.el.querySelector('.post-card-play-button');
             this.audioTotalTime = this.el.querySelector('.post-card-audio-player-total-time');
@@ -73,8 +75,10 @@ Class(CV, 'PostAudio').inherits(CV.Post)({
             this.el.insertAdjacentHTML('beforeend', this.constructor.ACTIONS_HTML);
 
             if (this.image) {
-                this.dom.updateAttr('src', this.el.querySelector('.post-card-image'), this.image);
-                this.dom.show(this.el.querySelector('.post-card-image-wrapper'));
+                this.imageWrapperElement.style.height = this.imageHeight + 'px';
+                this.imageWrapperElement.style.display = 'block';
+            } else {
+                this.imageLoaded = true;
             }
 
             if (this.sourceUrl && this.sourceService) {
@@ -109,7 +113,7 @@ Class(CV, 'PostAudio').inherits(CV.Post)({
             this.playerProgressWrapper.addEventListener('mouseup', this.progressMouseup.bind(this), false);
 
             this.audio.bind('onload', function() {
-                console.log('onload received :)')
+                console.log('onload received :)');
                 this.playerWrapper.classList.remove('-is-downloading');
                 this.playerWrapper.classList.add('-is-loaded');
                 this.dom.updateText(this.audioTotalTime, this.format.secondsToHHMMSS(this.audio.getDuration() / 1000));
@@ -119,9 +123,10 @@ Class(CV, 'PostAudio').inherits(CV.Post)({
             }.bind(this));
 
             this.audio.bind('whileplaying', function(data) {
-                console.log('whileplaying received :)')
+                console.log('whileplaying received :)');
                 var p = this.audio.getProgressPercentage();
-                this.playerProgress.style['WebkitTransform'] = 'translate3d(' + (p - 100) + '%, 0, 0)';
+                this.playerProgress.style.webkitTransform = 'translate3d(' + (p - 100) + '%, 0, 0)';
+                this.playerProgress.style.transform = 'translate3d(' + (p - 100) + '%, 0, 0)';
                 this.audioCurrentTime.textContent = this.format.secondsToHHMMSS(this.audio.getCurrentTime() / 1000);
             }.bind(this));
 

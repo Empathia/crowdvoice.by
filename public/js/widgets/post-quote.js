@@ -1,3 +1,4 @@
+/* jshint multistr: true */
 var moment = require('moment');
 
 Class(CV, 'PostQuote').inherits(CV.Post)({
@@ -31,6 +32,7 @@ Class(CV, 'PostQuote').inherits(CV.Post)({
     ICON : '<svg class="post-card-meta-icon"><use xlink:href="#svg-repost"></use></svg>',
 
     prototype : {
+        imageLoaded : true,
         init : function init(config) {
             Widget.prototype.init.call(this, config);
 

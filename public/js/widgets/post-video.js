@@ -1,3 +1,4 @@
+/* jshint multistr: true */
 var moment = require('moment');
 
 // <iframe width="560" height="315" src="https://www.youtube.com/embed/Opktm709TJo" frameborder="0" allowfullscreen></iframe>
@@ -42,8 +43,6 @@ Class(CV, 'PostVideo').inherits(CV.Post)({
     reV : new RegExp('[0-9]+'),
 
     prototype : {
-        imageLoaded : false,
-
         init : function init(config) {
             Widget.prototype.init.call(this, config);
 
@@ -87,13 +86,6 @@ Class(CV, 'PostVideo').inherits(CV.Post)({
         _bindEvents : function _bindEvents() {
             this.addVideoHandler = this.addVideo.bind(this);
             this.imageWrapperElement.addEventListener('click', this.addVideoHandler);
-        },
-
-        loadImage : function loadImage() {
-            if (this.image) {
-                this.dom.updateBgImage(this.imageWrapperElement, this.image);
-                this.imageLoaded = true;
-            }
         },
 
         addVideo : function() {

@@ -30,6 +30,7 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
         _scrollTime : 250,
         _resizeTimer : null,
         _resizeTime : 250,
+        _lazyLoadingImageArray: null,
 
         /* layer offset left to perform hit-test on layer elements
          * sidebar = 60, main-container-padding-left = 40
@@ -46,6 +47,7 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
             this.el = this.element;
             this._window = window;
             this._socket = io();
+            this._lazyLoadingImageArray = [];
 
             this._setGlobarVars();
             this._createEmptyLayers();
@@ -268,7 +270,7 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
                 calcHeightDiff = true;
             }
 
-            if (currentLayer.id == 0) {
+            if (currentLayer.id === 0) {
                 this._appendVoiceAboutBox(currentLayer);
             }
 
@@ -330,10 +332,16 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
         },
 
         loadImagesVisibleOnViewport : function loadImagesVisibleOnViewport() {
+            this._lazyLoadingImageArray.forEach(function(image) {
+                image.abortImage();
+            });
+
+            this._lazyLoadingImageArray = [];
+
             this.getCurrentMonthLayer().getPosts().forEach(function(post) {
                 if (post.imageLoaded === false) {
                     if (this.isScrolledIntoView(post.el)) {
-                        post.loadImage();
+                        this._lazyLoadingImageArray.push( post.loadImage() );
                     }
                 }
             }, this);
