@@ -1,4 +1,6 @@
-var VoicesController = Class('VoicesController').inherits(RestfulController)({
+var BlackListFilter = require(__dirname + '/BlackListFilter');
+
+var VoicesController = Class('VoicesController').includes(BlackListFilter)({
   prototype : {
     init : function () {
       this._initRouter();
@@ -6,23 +8,27 @@ var VoicesController = Class('VoicesController').inherits(RestfulController)({
     },
 
     _initRouter : function () {
+      var controller = VoicesController;
+
       application.router.route('/voices').get(this.index);
       application.router.route('/voice').post(this.create);
       application.router.route('/voice/new').get(this.new);
 
-      application.router.route('/:profile_name/voice/:slug*').all(this.getActiveVoice);
-      application.router.route('/:profile_name/voice/:slug').get(this.show);
-      application.router.route('/:profile_name/voice/:slug').put(this.update);
-      application.router.route('/:profile_name/voice/:slug/edit').get(this.edit);
+      application.router.route('/:profile_name/:voice_slug*')
+        .all(this.filterAction(controller, 'getActiveVoice'));
+      application.router.route('/:profile_name/:voice_slug/edit')
+        .get(this.filterAction(controller, 'edit'));
+      application.router.route('/:profile_name/:voice_slug')
+        .get(this.filterAction(controller, 'show'))
+        .put(this.filterAction(controller, 'update'));
     },
 
     getActiveVoice : function (req, res, next) {
-      Voice.find({ id: req.params.id }, function (err, result) {
+      Voice.findBySlug(req.params.voice_slug, function (err, voice) {
         if (err) { return next(err); }
-        if (result.length === 0) { next(new NotFoundError('Not Found')); }
 
-        res.locals.voice = new Voice(result[0]);
-        req.activeVoice = new Voice(result[0]);
+        res.locals.voice = new Voice(voice);
+        req.activeVoice = new Voice(voice);
 
         next();
       });
