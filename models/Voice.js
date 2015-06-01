@@ -109,6 +109,17 @@ var Voice = Class('Voice').inherits(Argon.KnexModel)({
     });
   },
 
+  findBySlug : function findBySlug (slugString, done) {
+    Slug.find({url: slugString}, function (err, result) {
+      if (err) { done(err); return; }
+      if (result.length === 0) { done(new NotFoundError('Slug not found')); }
+      var slug = new Slug(result[0]);
+      slug.voice(function (err, result) {
+        done(err, new Voice(result));
+      });
+    });
+  },
+
   prototype : {
     id : null,
     title : null,
@@ -183,17 +194,22 @@ var Voice = Class('Voice').inherits(Argon.KnexModel)({
     },
 
     toJSON : function toJSON() {
+      var model = this;
       var json = {};
 
       Object.keys(this).forEach(function(property) {
         if (property === 'id' || property === 'ownerId') {
-          json[property] = hashids.encode(this[property]);
+          json[property] = hashids.encode(model[property]);
         } else {
-          json[property] = this[property];
+          json[property] = model[property];
         }
       });
 
       return json;
+    },
+
+    getSlug : function () {
+      return this.title.toLowerCase().replace(/ /g, '_');
     },
 
     /* Add slug for a voice.
@@ -202,8 +218,8 @@ var Voice = Class('Voice').inherits(Argon.KnexModel)({
     addSlug : function (done) {
       var voice = this;
       var slug = new Slug({
-        voiceId : this.id,
-        url: this.title.toLowerCase().replace(/ /g, '_')
+        voiceId : voice.id,
+        url: this.getSlug()
       });
       slug.save(function (err) {
         if (err) { done (err); return; }
@@ -225,7 +241,6 @@ var Voice = Class('Voice').inherits(Argon.KnexModel)({
 
 Voice.bind('afterSave', function (event) {
   var model = event.data.model;
-
   model.addSlug();
 });
 
