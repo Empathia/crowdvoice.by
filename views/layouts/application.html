@@ -32,7 +32,7 @@
       </a>
 
       <div class="header-login-actions -inline-block -color-grey-light">
-        <% if (typeof currentUser === "undefined") { %>
+        <% if (!currentPerson) { %>
           <div class="login-action-list">
             <a href="/signup" class="action-signup">Signup</a> or <a href="/login" class="action-login">Login</a>
           </div>
@@ -70,7 +70,7 @@
               label         : 'Multiple',
               name          : 'select',
               accountImage  : "/img/sample/avatars/org-00.jpg",
-              accountName   : "<%= currentUser.username %>",
+              accountName   : "<%= currentPerson.profileName %>",
               options       : allMulti
             }).render(document.querySelector('.placeholder-account'));
           </script>

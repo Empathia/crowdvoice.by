@@ -117,7 +117,6 @@ Class(CV, 'Login').inherits(Widget)({
                 default:
                     var formEl = 'No form';
             }
-            console.log($(formEl).find('form'));
             this.element.find('.form-container').append(formEl);
             this.element.find('form').attr('action', this.formAction);
             this.element.find('.form-token').attr('value', this.formToken);
@@ -128,7 +127,8 @@ Class(CV, 'Login').inherits(Widget)({
 
 
             closeEl.on('click', function(){
-              login.hide();
+              //login.hide();
+              window.location.href = '/';
             });
         },
 

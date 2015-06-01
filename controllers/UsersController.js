@@ -26,7 +26,7 @@ var UsersController = Class('UsersController').inherits(RestfulController)({
     },
 
     new : function(req, res) {
-      res.render('users/new.html', {errors: null});
+      res.render('users/new.html', {layout : 'login', errors: null});
     },
 
     create : function create(req, res, next) {

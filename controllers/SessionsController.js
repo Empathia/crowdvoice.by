@@ -21,7 +21,7 @@ var SessionsController = Class('SessionsController')({
      */
     login : function (req, res) {
       console.log(req.user);
-      res.render('sessions/login.html', {});
+      res.render('sessions/login.html', {layout : 'login'});
     },
 
     /* Create session if authentication is correct
