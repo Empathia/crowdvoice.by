@@ -1,10 +1,6 @@
-var EntitiesController = Class('EntitiesController')({
+var BlackListFilter = require(__dirname + '/BlackListFilter');
 
-  routesWhiteList: /^\/(person|people|signup|login|logout|user|organization|entity|dist|session|page|root|admin|voice|dev)(es|s|$|\/)/,
-
-  isWhiteListed : function isWhiteListed (path) {
-    return path.match(this.routesWhiteList) ? true : false;
-  },
+var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
   prototype : {
     init : function () {
@@ -13,25 +9,24 @@ var EntitiesController = Class('EntitiesController')({
     },
 
     _initRouter : function () {
-      application.router.route('/:profile_name*').all(this.filterAction('getEntityByProfileName'));
+      var controller = EntitiesController;
 
-      application.router.route('/:profile_name').get(this.filterAction('show'));
-      application.router.route('/:profile_name').put(this.filterAction('update'));
-      application.router.route('/:profile_name/edit').get(this.filterAction('edit'));
+      application.router.route('/:profile_name*')
+        .all(this.filterAction(controller, 'getEntityByProfileName'));
 
-      application.router.route('/:profile_name/follow').get(this.filterAction('follow'));
-      application.router.route('/:profile_name/voices').get(this.filterAction('voices'));
-      application.router.route('/:profile_name/recommended').get(this.filterAction('recommended'));
-    },
+      application.router.route('/:profile_name')
+        .get(this.filterAction(controller, 'show'));
+      application.router.route('/:profile_name')
+        .put(this.filterAction(controller, 'update'));
+      application.router.route('/:profile_name/edit')
+        .get(this.filterAction(controller, 'edit'));
 
-    filterAction : function filterAction (action) {
-      return function (req, res, next) {
-        if (EntitiesController.isWhiteListed(req.path)) {
-          next();
-        } else {
-          EntitiesController.prototype[action](req, res, next);
-        }
-      }
+      application.router.route('/:profile_name/follow')
+        .get(this.filterAction(controller, 'follow'));
+      application.router.route('/:profile_name/voices')
+        .get(this.filterAction(controller, 'voices'));
+      application.router.route('/:profile_name/recommended')
+        .get(this.filterAction(controller, 'recommended'));
     },
 
     getEntityByProfileName : function (req, res, next) {

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
+var application = require('neonode-core');
 require('tellurium');
 require(process.cwd() + '/node_modules/tellurium/reporters/pretty');
 
@@ -8,7 +9,6 @@ Tellurium.reporter = new Tellurium.Reporter.Pretty({
   colorsEnabled : true
 });
 
-var application = require('neonode-core');
 var async = require('async');
 var request = require('superagent');
 var crypto = require('crypto');
@@ -35,6 +35,7 @@ Tellurium.suite('Voices Controller')(function () {
     var setup = this;
     Promise.all([
       db('Voices').del(),
+      db('Slugs').del(),
     ]).then(function () {
       setup.completed();
     });
@@ -61,10 +62,11 @@ Tellurium.suite('Voices Controller')(function () {
   });
 
   this.describe('Actions')(function () {
-    var v1;
 
     // Voices#index
     this.specify('GET /index should return a list of ')(function (spec) {
+      var v1, e1;
+
       async.series([
         function (done) {
           v1 = new Voice(spec.registry.voiceData);
@@ -82,15 +84,21 @@ Tellurium.suite('Voices Controller')(function () {
     });
 
     // Voices#show
-    this.specify('GET /voice/:id should return a voice')(function (spec) {
+    this.specify('GET /:profile_name/:voiceSlug should return a voice')(function (spec) {
+      var v1, e1;
+
       async.series([
+        function (done) {
+          e1 = new Entity(spec.registry.personData);
+          e1.save(done);
+        },
         function (done) {
           v1 = new Voice(spec.registry.voiceData);
           v1.save(done);
         },
       ], function (err) {
         var req = request.
-          get(urlBase + '/voice/' + v1.id).
+          get(urlBase + '/' + e1.profileName + '/' + v1.getSlug()).
           accept('application/json').
           end(function (err, res) {
             spec.assert(res.body.title).toBe(v1.title);
@@ -101,6 +109,8 @@ Tellurium.suite('Voices Controller')(function () {
 
     // Voices#new
     this.specify('GET /voice/new should return 200')(function (spec) {
+      var v1, e1;
+
       var req = request.
         get(urlBase + '/voice/new');
 
@@ -111,22 +121,29 @@ Tellurium.suite('Voices Controller')(function () {
     });
 
     // Voices#edit
-    // this.specify('GET /voice/:id/edit should return 200 if record exists')(function (spec) {
-    //   async.series([
-    //     function (done) {
-    //       var v1 = new Voice(spec.registry.voiceData);
-    //       v1.save(done);
-    //     }
-    //   ], function (err) {
-    //     var req = request.
-    //     get(urlBase + '/voice/' + v1.id + '/edit');
+    this.specify('GET /voice/:id/edit should return 200 if record exists')(function (spec) {
+      var v1, e1;
 
-    //     req.end(function (err, res) {
-    //       spec.assert(res.status).toBe(200);
-    //       spec.completed();
-    //     });
-    //   });
-    // });
+      async.series([
+        function (done) {
+          e1 = new Entity(spec.registry.personData);
+          e1.save(done);
+        },
+        function (done) {
+          v1 = new Voice(spec.registry.voiceData);
+          v1.save(done);
+        }
+      ], function (err) {
+        console.log(urlBase + '/' + e1.profileName + '/' + v1.getSlug() +  '/edit');
+        var req = request.
+        get(urlBase + '/' + e1.profileName + '/' + v1.getSlug() +  '/edit');
+
+        req.end(function (err, res) {
+          spec.assert(res.status).toBe(200);
+          spec.completed();
+        });
+      });
+    });
 
     // Voices#create
     this.specify('POST /voice should create a voice')(function (spec) {
@@ -173,7 +190,12 @@ Tellurium.suite('Voices Controller')(function () {
 
       async.series([
         function (done) {
+          e1 = new Entity(spec.registry.personData);
+          e1.save(done);
+        },
+        function (done) {
           v1 = new Voice(spec.registry.voiceData);
+          v1.ownerId = e1.id;
           v1.save(done);
         },
         function (done) {
@@ -187,7 +209,7 @@ Tellurium.suite('Voices Controller')(function () {
           });
         },
         function (done) {
-          var req = request.put(urlBase + '/voice/' + v1.id);
+          var req = request.put(urlBase + '/' + e1.profileName + '/' + v1.getSlug());
           req.set('cookie', cookies);
           req.send({_csrf: csrf, title: 'modified'});
           req.end(function (err, res) {

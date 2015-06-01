@@ -1,4 +1,6 @@
-var PostsController = Class('PostsController')({
+var BlackListFilter = require(__dirname + '/BlackListFilter');
+
+var PostsController = Class('PostsController').includes(BlackListFilter)({
   prototype : {
     init : function (config){
       this.name = this.constructor.className.replace('Controller', '')
@@ -9,16 +11,19 @@ var PostsController = Class('PostsController')({
     },
 
     _initRouter : function() {
+      var controller = PostsController;
       application.router.route('/:profileName/:voiceSlug/')
-        .post(this.create);
+        .post(this.filterAction(controller, 'create'));
 
       application.router.route('/:profileName/:voiceSlug/:postId')
-        .get(this.show)
-        .put(this.update)
-        .delete(this.destroy);
+        .get(this.filterAction(controller, 'show'))
+        .put(this.filterAction(controller, 'update'))
+        .delete(this.filterAction(controller, 'destroy'));
     },
 
     show : function show(req, res, next) {
+      if (req.params.postId === 'edit') { next(); return; }
+
       var post;
       var voice;
       var entity;
