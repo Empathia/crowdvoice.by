@@ -17,6 +17,12 @@ Class(CV, 'VoiceFooter').inherits(Widget)({
                     scrollableArea : document.getElementsByClassName('cv-main-content')[0]
                 })
             ).render(this.element);
+
+            // @TODO:
+            // add condition based on the user type and or privilegies
+            this.appendChild(
+                new CV.VoiceAddContent()
+            ).render(this.element);
         },
 
         /* Sets the Timeline's inital date.

@@ -30,7 +30,7 @@
   }
 
   /** ===== MODIFIERS ===== */
-
+  /* top */
   &@{-}top::before,
   &@{-}top::after {
     top: 100%;
@@ -44,6 +44,23 @@
     margin-top: -1px;
     border-top-color: @color-white;
   }
+
+  /* left */
+  &@{-}left::before,
+  &@{-}left::after {
+    top: 50%;
+    left: 100%;
+    margin-top: unit(-@popover-arrow-size, px);
+    margin-right: unit(-@popover-arrow-size, px);
+  }
+
+  &@{-}left::before {border-left-color: inherit}
+
+  &@{-}left::after {
+    margin-left: -1px;
+    border-left-color: @color-white;
+  }
+
 }
 
 .popover-content {
@@ -59,7 +76,14 @@
     &@{-}top {
       left: 50%;
       bottom: 100%;
-      transform: translate(-50%, -10px);
+      transform: translate(-50%, -15px);
     }
+
+    &@{-}left {
+      right: 100%;
+      top: 50%;
+      transform: translate(-15px, -50%);
+    }
+
   }
 }

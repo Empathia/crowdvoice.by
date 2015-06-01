@@ -1,3 +1,4 @@
+/* jshint multistr: true */
 var HomeController = Class('HomeController')({
   prototype : {
     init : function (){
@@ -7,7 +8,6 @@ var HomeController = Class('HomeController')({
 
     _initRouter : function() {
       application.router.route('/').get(this.index);
-      application.router.route('/jack_johnson/voice').get(this.voice);
       application.router.route('/dev/about').get(this.about);
       application.router.route('/dev/voice').get(this.voice);
       application.router.route('/dev/profile').get(this.profile);
@@ -20,7 +20,7 @@ var HomeController = Class('HomeController')({
       application.router.route('/dev/account').get(this.account);
       application.router.route('/dev/organization').get(this.organization);
       application.router.route('/dev/ui').get(this.ui);
-      application.router.route('/kabinett').get(this.kabinett);
+      application.router.route('/dev/kabinett').get(this.kabinett);
     },
 
     index : function(req, res) {
