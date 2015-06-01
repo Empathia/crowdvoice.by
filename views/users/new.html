@@ -1,30 +1,17 @@
 <% if (errors) { %>
-    <%= errors %>
+    <div class="controller-errors">
+        <%= errors %>
+    </div>
 <% } %>
 
-<form action="/user" method="post" accept-charset="utf-8">
-    <p>
-        <span>Username: </span> <input type="text" name="username" value="user1">
-    </p>
-    <p>
-        <span>Name: </span> <input type="text" name="name" value="John">
-    </p>
-    <p>
-        <span>Profile Name: </span> <input type="text" name="profileName" value="John">
-    </p>
-    <p>
-        <span>Last name: </span> <input type="text" name="lastname" value="Doe">
-    </p>
-    <p>
-        <span>Is it Anonymous?: </span> <input type="checkbox" name="isAnonymous" value="true">
-    </p>
-    <p>
-        <span>Email: </span> <input type="text" name="email" value="user1@crowdvoice.by">
-    </p>
-    <p>
-        <span>Password: </span> <input type="text" name="password" value="mysecret">
-    </p>
+<div class="login-container"></div>
 
-    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-    <p><input type="submit" value="Continue &rarr;"></p>
-</form>
+<script>
+
+    new CV.Login({
+        formType : 'signup',
+        formAction  : '/user',
+        formToken   : '<%= csrfToken %>'
+    }).render($('.login-container'));
+
+</script>

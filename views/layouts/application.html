@@ -33,7 +33,9 @@
 
       <div class="header-login-actions -inline-block -color-grey-light">
         <% if (typeof currentUser === "undefined") { %>
-          <a href="" class="action-signup">Signup</a> or <a href="" class="action-login">Login</a>
+          <div class="login-action-list">
+            <a href="/signup" class="action-signup">Signup</a> or <a href="/login" class="action-login">Login</a>
+          </div>
         <% } else { %>
           <div class="placeholder-account -inline-block"></div>
           <script>
@@ -62,13 +64,13 @@
                   "1": {name: 'Manage'}
                 }
               },
-              "6": {name: 'Logout'}
+              "6": {name: 'Logout', url: '/logout'}
             };
             new CV.SelectAccount({
               label         : 'Multiple',
               name          : 'select',
-              accountImage  : "/img/sample/avatars/<%= voiceInfo.author.avatar.small %>",
-              accountName   : "<%= voiceInfo.author.name %>",
+              accountImage  : "/img/sample/avatars/org-00.jpg",
+              accountName   : "<%= currentUser.username %>",
               options       : allMulti
             }).render(document.querySelector('.placeholder-account'));
           </script>
@@ -125,7 +127,7 @@
                 type    : 'single',
                 label   : 'Edit This Voice',
                 name    : 'buttonEdit'
-            }).render(document.querySelector('.placeholder-create'));
+            })//.render(document.querySelector('.placeholder-create'));
 
           </script>
 

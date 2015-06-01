@@ -49,6 +49,7 @@ require('./widgets/bubble/share.js');
 require('./widgets/bubble/help.js');
 require('./widgets/notification.js');
 require('./widgets/modal.js');
+require('./widgets/login.js');
 require('./widgets/forms/create-voice.js');
 require('./widgets/forms/create-organization.js');
 require('./widgets/forms/invite-to-contribute.js');

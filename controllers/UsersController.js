@@ -56,7 +56,8 @@ var UsersController = Class('UsersController').inherits(RestfulController)({
             entity.destroy(function () {});
             res.render('users/new.html', {errors: err});
           } else {
-            res.redirect('/user/' + user.id);
+            //res.redirect('/user/' + user.id);
+            res.redirect('/');
           }
         });
 
