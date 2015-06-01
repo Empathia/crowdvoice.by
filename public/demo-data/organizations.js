@@ -3,8 +3,8 @@ var organizations = [
     type: 'organization',
     author : {
       profile_url : '/organization-test',
-      profile_cover : 'img/sample/covers/org-00.jpg',
-      avatar : 'img/sample/avatars/org-00.jpg',
+      profile_cover : '/img/sample/covers/org-00.jpg',
+      avatar : '/img/sample/avatars/org-00.jpg',
       username : 'OpenGovFoundation',
       full_name : 'OpenGovFoundation',
       description : "Building free technologies to support your ability to participate in gov't & hold it accountable. http://AmericaDecoded.org , MyMadison.io, #OpenGov & #OpenData",
@@ -20,8 +20,8 @@ var organizations = [
     type: 'organization',
     author : {
       profile_url : '/organization-test-1',
-      profile_cover : 'img/sample/covers/org-01.jpg',
-      avatar : 'img/sample/avatars/org-01.jpg',
+      profile_cover : '/img/sample/covers/org-01.jpg',
+      avatar : '/img/sample/avatars/org-01.jpg',
       username : 'guardian',
       full_name : 'The Guardian',
       description : "Winner of the Pulitzer prize. Top stories, special features, live blogs and more.",
@@ -37,8 +37,8 @@ var organizations = [
     type: 'organization',
     author : {
       profile_url : '/organization-test-2',
-      profile_cover : 'img/sample/covers/org-02.jpg',
-      avatar : 'img/sample/avatars/org-02.jpg',
+      profile_cover : '/img/sample/covers/org-02.jpg',
+      avatar : '/img/sample/avatars/org-02.jpg',
       username : 'SyriaDeeply',
       full_name : 'Syria Deeply',
       description : "An independent single-topic news site focusing on stories and commentary about the war in Syria. Analysis and breaking news about Syria.",
@@ -54,8 +54,8 @@ var organizations = [
     type: 'organization',
     author : {
       profile_url : '/organization-test-3',
-      profile_cover : 'img/sample/covers/org-03.jpg',
-      avatar : 'img/sample/avatars/org-03.jpg',
+      profile_cover : '/img/sample/covers/org-03.jpg',
+      avatar : '/img/sample/avatars/org-03.jpg',
       username : 'IPPF',
       full_name : 'International Planned Parenthood Federation',
       description : 'We aim to improve the quality of life of individuals by campaigning for sexual and reproductive health and rights.',
@@ -71,8 +71,8 @@ var organizations = [
     type: 'organization',
     author : {
       profile_url : '/organization-test-4',
-      profile_cover : 'img/sample/covers/org-04.jpg',
-      avatar : 'img/sample/avatars/org-04.jpg',
+      profile_cover : '/img/sample/covers/org-04.jpg',
+      avatar : '/img/sample/avatars/org-04.jpg',
       username : 'Schoolzilla',
       full_name : 'Schoolzila',
       description : 'Schoolzilla empowers schools to do more with data. Collect and organize all your data to find the insights that matter.',
@@ -88,8 +88,8 @@ var organizations = [
     type: 'organization',
     author : {
       profile_url : '/organization-test-5',
-      profile_cover : 'img/sample/covers/org-05.jpg',
-      avatar : 'img/sample/avatars/org-05.jpg',
+      profile_cover : '/img/sample/covers/org-05.jpg',
+      avatar : '/img/sample/avatars/org-05.jpg',
       username : 'OXFAM',
       full_name : 'OXFAM Internationl',
       description : 'Our vision is a just world without poverty. A world where people are valued and treated equally enjoying their rights as full citizens.',
@@ -101,5 +101,5 @@ var organizations = [
       following : 627
     }
   }
-]
+];
 module.exports = organizations;

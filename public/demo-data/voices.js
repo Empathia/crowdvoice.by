@@ -1,6 +1,6 @@
-var voices = [
+module.exports = [
   {
-    url : '/jack_johnson/voice',
+    url : '/dev/voice',
     tags : [
       {
         name: 'Current Events',
@@ -28,7 +28,7 @@ var voices = [
   },
 
   {
-    url : '/jack_johnson/voice',
+    url : '/dev/voice',
     tags : [
       {
         name: 'Conflict',
@@ -52,7 +52,7 @@ var voices = [
   },
 
   {
-    url : '/jack_johnson/voice',
+    url : '/dev/voice',
     tags : [
       {
         name: 'Conflict',
@@ -75,7 +75,7 @@ var voices = [
     hasActions : false
   },
   {
-    url : '/jack_johnson/voice',
+    url : '/dev/voice',
     tags : [
       {
         name: 'Politics',
@@ -99,7 +99,7 @@ var voices = [
   },
 
   {
-    url : '/jack_johnson/voice',
+    url : '/dev/voice',
     tags : [
       {
         name: 'Current Events',
@@ -121,5 +121,4 @@ var voices = [
     type : '',
     hasActions : false
   }
-]
-module.exports = voices;
+];
