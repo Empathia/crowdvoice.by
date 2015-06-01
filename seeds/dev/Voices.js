@@ -12,7 +12,7 @@ exports.seed = function(knex, Promise) {
       'owner_id' : 1,
       'status' : 'STATUS_PUBLISHED',
       'type' : 'TYPE_PUBLIC',
-      'twitter_search' : null,
+      'twitter_search' : 'gaza',
       'tweet_last_fetch_at' : null,
       'rss_url' : null,
       'rss_last_fetch_at' : null,
