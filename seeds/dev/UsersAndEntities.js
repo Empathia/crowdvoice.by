@@ -202,6 +202,10 @@ exports.seed = function(knex, Promise) {
       'owned_id' : 8,
       'created_at' : new Date(),
       'updated_at' : new Date()
-    })
+    }),
+
+    knex.raw('ALTER SEQUENCE "Users_id_seq" RESTART'),
+    knex.raw('ALTER SEQUENCE "Entities_id_seq" RESTART'),
+    knex.raw('ALTER SEQUENCE "EntityOwner_id_seq" RESTART')
   );
 };
