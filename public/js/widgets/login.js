@@ -87,7 +87,7 @@ Class(CV, 'Login').inherits(Widget)({
               </div>\
             </div>\
             <div class="-col-6">\
-              <a href="#">Forgot your password?</a>\
+              <a href="/session/forgot-password">Forgot your password?</a>\
             </div>\
             <br><br>\
             <input type="hidden" name="_csrf"  class="form-token" value="">\
@@ -95,6 +95,40 @@ Class(CV, 'Login').inherits(Widget)({
         </form>\
         <br>\
         <p>Don\'t have an account yet? <a href="/signup">Sign Up!</a></p>\
+    ',
+
+    FORM_FORGOT_PASSWORD : '\
+      <h1>It\'s ok. It happens.</h1>\
+      <p>Please enter the email address you used to sign up and we will send you instructions to reset your password to gain back access to CrowdVoice.by.</p>\
+      <br>\
+      <form>\
+        <div class="form-field">\
+          <div class="cv-input">\
+            <input type="text" placeholder="YOUR EMAIL">\
+          </div>\
+        </div>\
+        <button class="cv-button primary full">Submit</button>\
+      </form>\
+    ',
+
+    FORM_RESET_PASSWORD : '\
+      <h1>Type in a new password.</h1>\
+      <p>This time make sure you choose something you will remember.\
+      Actually, you might want to read <a href="#">this article</a>. It will help :)</p>\
+      <br>\
+      <form>\
+        <div class="form-field">\
+          <div class="cv-input">\
+            <input type="text" placeholder="YOUR PASSWORD">\
+          </div>\
+        </div>\
+        <div class="cv-check">\
+          <input type="checkbox">\
+          <span class="label">Show your password to make sure you typed it correctly.</span>\
+        </div>\
+        <br><br>\
+        <button class="cv-button primary full">Reset Password</button>\
+      </form>\
     ',
 
     prototype        : {
@@ -165,11 +199,9 @@ Class(CV, 'Login').inherits(Widget)({
 
             });
 
-             this.checkEl.on('click', function(){
-                this.checked(this.checkEl);
+            this.checkEl.on('click', function(){
+              this.checked(this.checkEl);
             }.bind(this));
-
-
 
         },
 
