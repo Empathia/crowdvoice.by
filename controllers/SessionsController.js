@@ -34,9 +34,9 @@ var SessionsController = Class('SessionsController')({
     forgotPassword : function forgotPassword(req, res, next) {
       res.format({
         html : function() {
-          if (req.method === 'get') {
+          if (req.method === 'GET') {
             return res.render('sessions/forgotPassword.html', {layout : 'login'})
-          } else if (req.method === 'post') {
+          } else if (req.method === 'POST') {
             User.find({email : req.body.email}, function(err, user) {
               if (err) {
                 return next(err);
