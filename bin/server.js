@@ -18,8 +18,10 @@ io.on('connection', function(socket) {
 
   socket.on('getMonthPosts', function(voiceId, dateString, up) {
     var dateData = dateString.split('-');
+    console.log(voiceId, dateString, up);
     Post.find(['"Posts".voice_id = ? AND EXTRACT(MONTH FROM "Posts".published_at) = ? AND EXTRACT(YEAR FROM "Posts".published_at) = ? ORDER BY "Posts".published_at DESC', [voiceId, dateData[1], dateData[0]]], function(err, posts) {
-      socket.emit('monthData', posts, dateString, up);
+      console.log(posts.length);
+      socket.emit('monthPosts', posts, dateString, up);
     });
   });
 });
