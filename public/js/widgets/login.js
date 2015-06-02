@@ -163,7 +163,7 @@ Class(CV, 'Login').inherits(Widget)({
                     var formEl = this.constructor.FORM_RESET_PASSWORD;
                     break;
                 default:
-                    var formEl = 'No form';
+                    //¯\_(ツ)_/¯
             }
 
             this.element.find('.form-container').append(formEl);
@@ -280,7 +280,7 @@ Class(CV, 'Login').inherits(Widget)({
                   break;
 
               default:
-                  //Meh
+                  //¯\_(ツ)_/¯
           }
 
           return checkit.validateSync(body);
