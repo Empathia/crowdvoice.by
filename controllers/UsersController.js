@@ -26,40 +26,54 @@ var UsersController = Class('UsersController').inherits(RestfulController)({
     },
 
     new : function(req, res) {
-      res.render('users/new.html', {errors: null});
+      res.render('users/new.html', {layout : 'login', errors: null});
     },
 
     create : function create(req, res, next) {
-      var entity = new Entity({
-        type: 'person',
-        name: req.body['name'],
-        lastname: req.body['lastname'],
-        profileName: req.body['profileName'],
-        isAnonymous: req.body['isAnonymous'] === "true" ? true : false
-      });
+      res.format({
+        html : function() {
+          var entity = new Entity({
+            type: 'person',
+            name: req.body['name'],
+            lastname: req.body['lastname'],
+            profileName: req.body['profileName'],
+            isAnonymous: req.body['isAnonymous'] === "true" ? true : false
+          });
 
-      entity.save(function(err, result) {
-        if (err) {
-          res.render('users/new.html', {errors: err});
-          return;
+          entity.save(function(err, result) {
+            if (err) {
+              res.render('users/new.html', {errors: err});
+              return;
+            }
+
+            var user = new User({
+              entityId: entity.id,
+              username: req.body['username'],
+              email: req.body['email'],
+              password: req.body['password']
+            });
+
+            user.save(function (err) {
+              if (err) {
+                entity.destroy(function () {});
+                req.flash('error', 'There was an error creating the user.');
+                res.render('users/new.html', {errors: err});
+              } else {
+                UserMailer.new(user, entity, function(err, mailerResult) {
+                  if (err) {
+                    req.flash('error', 'There was an error sending the activation email.');
+                    return res.redirect('/');
+                  }
+
+                  req.flash('success', 'Check your email to activate your account.');
+                  res.redirect('/');
+                })
+
+              }
+            });
+
+          });
         }
-
-        var user = new User({
-          entityId: entity.id,
-          username: req.body['username'],
-          email: req.body['email'],
-          password: req.body['password']
-        });
-
-        user.save(function (err) {
-          if (err) {
-            entity.destroy(function () {});
-            res.render('users/new.html', {errors: err});
-          } else {
-            res.redirect('/user/' + user.id);
-          }
-        });
-
       });
     },
 

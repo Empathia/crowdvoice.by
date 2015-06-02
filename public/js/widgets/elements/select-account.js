@@ -98,7 +98,11 @@ Class(CV, 'SelectAccount').inherits(Widget)({
                         }.bind(this));
 
                     } else {
-                        var optionEl = $('<li><div data-id="'+ key +'" class="option">'+this.options[key].name+'</div></li>');
+                        var url = "";
+                        if (this.options[key].url){
+                            url = 'url="'+this.options[key].url+'"';
+                        }
+                        var optionEl = $('<li ' + url + '><div data-id="'+ key +'" class="option" >'+this.options[key].name+'</div></li>');
                     }
 
                     if (this.options[key].active){
@@ -112,7 +116,11 @@ Class(CV, 'SelectAccount').inherits(Widget)({
                         var subListEl = $('<ul></ul>');
 
                         for (var subkey in subOptions) {
-                            var subOptionEl = $('<li><div data-id="'+ subkey +'" class="option">'+subOptions[subkey].name+'</div></li>');
+                            var url = "";
+                            if (subOptions[subkey].url){
+                                url = 'url="'+subOptions[subkey].url+'"';
+                            }
+                            var subOptionEl = $('<li '+url+'><div data-id="'+ subkey +'" class="option" >'+subOptions[subkey].name+'</div></li>');
                             subListEl.append(subOptionEl);
                         }
                         optionEl.append(subListEl);
@@ -139,13 +147,20 @@ Class(CV, 'SelectAccount').inherits(Widget)({
             var that = this;
             if (this.type != "check"){
                 this.element.find('li').bind('click', function(el){
-                    that.element.find('li').removeClass('selected');
-                    that.optionSelected = $(this).find('> div').attr('data-id');
-                    if(that.type != 'icon'){
-                        that.labelEl.text($(this).find('> div').text());
-                        $(this).addClass('selected');
+
+                    if (this.hasAttribute("url")){
+                        //console.log(this.getAttribute("url"));
+                        window.location.href = this.getAttribute("url");
+                    }else{
+                        that.element.find('li').removeClass('selected');
+                        that.optionSelected = $(this).find('> div').attr('data-id');
+                        if(that.type != 'icon'){
+                            that.labelEl.text($(this).find('> div').text());
+                            $(this).addClass('selected');
+                        }
+                        that.close();
                     }
-                    that.close();
+
                 });
             }
         },

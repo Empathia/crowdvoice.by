@@ -1,0 +1,58 @@
+<div style="background-color: #000; text-align: center; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; height: 100%;">
+
+  <!-- header-logo -->
+  <div style="padding: 30px 0 25px 0; text-align: center;">
+    <a href="<%= config.siteUrl[application.env] %>" style="display: inline-block;">
+      <img src="<%= config.siteUrl[application.env] %>/assets/images/mailer/base/logo.jpg" alt="CrowdVoice.by" width="200" height="80"/>
+    </a>
+  </div>
+
+  <!-- main-content -->
+  <center style="padding: 0 0 40px 0;">
+    <div style="display: inline-block; width: 550px; padding: 30px 0 60px 0; background-color: #FFFFFF; color: #4c4b49; border-radius: 5px;">
+
+      <!-- title + date -->
+      <table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 0 0 0 -3px;">
+        <tbody>
+          <tr>
+            <td width="50%" style="padding: 0 0 0 30px; text-align: left; background-color: #B6B6B6; border-radius: 2px 0 0 2px;">
+              <div style="font-size: 18px; line-height: 38px; height: 38px; color: #ffffff; text-transform: uppercase; font-weight: bold;">
+                Welcome
+              </div>
+            </td>
+            <td width="21px">
+              <img src="<%= config.siteUrl[application.env] %>/assets/images/mailer/base/bg-title.png" width="21px" height="38px" style="display: block;"/>
+            </td>
+            <td style="padding: 0 30px 0 0; text-align: right;">
+              <div style="font-size: 14px; line-height: 38px; color: #b2b2b2;">
+
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- message -->
+      <div style="font-size: 15px; line-height: 25px; padding: 50px 30px 18px; text-align: left;">
+        <p style="margin: 0 0 15px;">Welcome to CrowdVoice.by <strong><%= entity.name + ' ' entity.lastname %></strong></p>
+
+        <p style="margin: 0 0 15px;">To activate your account click on the following link:</p>
+        <p style="margin: 0 0 15px;"><a href="<%= config.siteUrl[application.env] %>/session?username=<%= user.username %>&token=<%= user.token %>"><%= config.siteUrl[application.env] %>/session?username=<%= user.username %>&token=<%= user.token %></a></p>
+      </div>
+
+      <!-- small text message -->
+      <div style="font-size: 13px; line-height: 23px; color: #a6a39d; font-style: italic; padding: 30px;">
+          Contact us at help@crowdvoice.by</b>
+      </div>
+
+      <img src="<%= config.siteUrl[application.env] %>/assets/images/mailer/base/bg-middle.png" width="550" height="92"/>
+
+    </div>
+
+    <!-- disclaimer -->
+    <div style="font-size: 13px; padding: 30px 0 0 0; color: #66635c;">
+      <a href="<%= config.siteUrl[application.env] %>" style="color: #ca2ed9;">CrowdVoice.by</a>
+    </div>
+
+  </center>
+</div>

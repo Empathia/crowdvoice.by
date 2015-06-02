@@ -14,9 +14,12 @@ for (var i = 0; i < 2; i++) {
 application._serverStart();
 
 io.on('connection', function(socket) {
-    console.log('socket connected');
+  logger.log('socket connected');
 
-    socket.on('getMonthPosts', function(voiceId, dateString, up) {
-        socket.emit('monthPosts', monthData, dateString, up);
+  socket.on('getMonthPosts', function(voiceId, dateString, up) {
+    var dateData = dateString.split('-');
+    Post.find(['"Posts".voice_id = ? AND EXTRACT(MONTH FROM "Posts".published_at) = ? AND EXTRACT(YEAR FROM "Posts".published_at) = ? ORDER BY "Posts".published_at DESC', [voiceId, dateData[1], dateData[0]]], function(err, posts) {
+      socket.emit('monthData', posts, dateString, up);
     });
+  });
 });

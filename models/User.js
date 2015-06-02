@@ -43,6 +43,17 @@ var User = Class('User').inherits(Argon.KnexModel)({
   prototype : {
     username: null,
     password: null,
+    token:    null,
+
+    init : function init(config) {
+      Argon.KnexModel.prototype.init.call(this, config);
+
+      var model = this;
+
+      this.bind('beforeCreate', function(data) {
+        model.token = bcrypt.hashSync(CONFIG.sessionSecret + Date.now(), bcrypt.genSaltSync(12), null);
+      })
+    },
 
 
     /* Returns the user's associated entity
@@ -86,5 +97,8 @@ User.bind('beforeSave', function (event) {
     delete model.password;
   }
 });
+
+
+
 
 module.exports = User;

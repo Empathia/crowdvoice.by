@@ -10,7 +10,7 @@ var Slug = Class('Slug').inherits(Argon.KnexModel)({
     voice : function voice (done) {
       Voice.find({id: this.voiceId}, function (err, voices) {
         if (voices.length === 0) { done(new Error('Orphan Slug')); }
-        done(null, voices[0]);
+        done(err, new Voice(voices[0]));
       });
     }
   }
