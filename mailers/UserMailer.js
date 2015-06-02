@@ -18,12 +18,13 @@ var UserMailer = Module('UserMailer')({
   new : function(user, entity, callback) {
     var mailer = this;
 
-    var viewFile = application.fs.readFileSync('./views/mailers/user/new.html', 'utf8');
+    var viewFile = fs.readFileSync('./views/mailers/user/new.html', 'utf8');
 
     var template = new Thulium({
       template : viewFile
     });
 
+    console.log(user, entity)
     template.parseSync().renderSync({user : user, entity : entity});
 
     var view = template.view;
@@ -56,7 +57,7 @@ var UserMailer = Module('UserMailer')({
   forgotPassword : function forgotPassword(user, callback) {
     var mailer = this;
 
-    var viewFile = application.fs.readFileSync('./views/mailers/user/forgotPassword.html', 'utf8');
+    var viewFile = fs.readFileSync('./views/mailers/user/forgotPassword.html', 'utf8');
 
     var template = new Thulium({
       template : viewFile

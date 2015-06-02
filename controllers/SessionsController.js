@@ -94,6 +94,7 @@ var SessionsController = Class('SessionsController')({
      * @method: tokenAuth
      */
     tokenAuth : function tokenAuth(req, res, next) {
+      console.log('token')
       passport.authenticate('token', function(err, user, info) {
         if (err) {
           return next(err);
@@ -106,26 +107,28 @@ var SessionsController = Class('SessionsController')({
 
         var newUser = new User(user);
 
-        user.token = null;
+        newUser.token = null;
 
-        user.save(function(err, result) {
+        newUser.save(function(err, result) {
           if (err) {
             return next(err);
           }
 
           req.logIn(user, function (err) {
+            console.log('logged in')
             if (err) { return next(err); }
 
             if (req.params.reset) {
               req.flash('success', 'Welcome to CrowdVoice.by.');
               return res.render('session/resetPassword', {layout : 'login'});
             } else {
+
               req.flash('success', 'Welcome to CrowdVoice.by.');
               return res.redirect('/');
             }
           });
         })
-      })
+      })(req, res, next);
     },
 
     /* Create session if authentication is correct
