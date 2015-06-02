@@ -69,6 +69,8 @@ var SessionsController = Class('SessionsController')({
     resetPassword : function resetPassword(req, res, next) {
       res.format({
         html : function() {
+          //res.render('sessions/resetPassword.html', {layout : 'login'});
+
           var user = new User(req.currentUser);
 
           user.password = req.body.password;

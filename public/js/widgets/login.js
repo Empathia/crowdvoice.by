@@ -101,12 +101,13 @@ Class(CV, 'Login').inherits(Widget)({
       <h1>It\'s ok. It happens.</h1>\
       <p>Please enter the email address you used to sign up and we will send you instructions to reset your password to gain back access to CrowdVoice.by.</p>\
       <br>\
-      <form>\
+      <form action="" method="post" accept-charset="utf-8">\
         <div class="form-field">\
           <div class="cv-input">\
-            <input type="text" placeholder="YOUR EMAIL">\
+            <input type="text" class="email" placeholder="YOUR EMAIL">\
           </div>\
         </div>\
+        <input type="hidden" name="_csrf" class="form-token" value="">\
         <button class="cv-button primary full">Submit</button>\
       </form>\
     ',
@@ -116,10 +117,10 @@ Class(CV, 'Login').inherits(Widget)({
       <p>This time make sure you choose something you will remember.\
       Actually, you might want to read <a href="#">this article</a>. It will help :)</p>\
       <br>\
-      <form>\
+      <form action="" method="post" accept-charset="utf-8">\
         <div class="form-field">\
           <div class="cv-input">\
-            <input type="text" placeholder="YOUR PASSWORD">\
+            <input type="text" class="password" placeholder="YOUR PASSWORD">\
           </div>\
         </div>\
         <div class="cv-check">\
@@ -127,6 +128,7 @@ Class(CV, 'Login').inherits(Widget)({
           <span class="label">Show your password to make sure you typed it correctly.</span>\
         </div>\
         <br><br>\
+        <input type="hidden" name="_csrf" class="form-token" value="">\
         <button class="cv-button primary full">Reset Password</button>\
       </form>\
     ',
@@ -153,6 +155,12 @@ Class(CV, 'Login').inherits(Widget)({
                     break;
                 case 'login':
                     var formEl = this.constructor.FORM_LOGIN;
+                    break;
+                case 'forgot-password':
+                    var formEl = this.constructor.FORM_FORGOT_PASSWORD;
+                    break;
+                case 'reset-password':
+                    var formEl = this.constructor.FORM_RESET_PASSWORD;
                     break;
                 default:
                     var formEl = 'No form';
@@ -238,6 +246,7 @@ Class(CV, 'Login').inherits(Widget)({
                   'Password'      : this.formEl.find('.password').val(),
                 };
                 break;
+
               case 'login':
                 checkit = new Checkit({
                     'Username'      : 'required',
@@ -249,6 +258,27 @@ Class(CV, 'Login').inherits(Widget)({
                     'Name'          : this.formEl.find('.password').val(),
                   };
                   break;
+
+              case 'forgot-password':
+                checkit = new Checkit({
+                    'Email'      : ['required', 'email'],
+                  });
+
+                  body = {
+                    'Email'      : this.formEl.find('.email').val(),
+                  };
+                  break;
+
+              case 'forgot-password':
+                checkit = new Checkit({
+                    'Password'      : 'required',
+                  });
+
+                  body = {
+                    'Password'      : this.formEl.find('.password').val(),
+                  };
+                  break;
+
               default:
                   //Meh
           }
