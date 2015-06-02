@@ -13,6 +13,8 @@ for (var i = 0; i < 2; i++) {
 
 application._serverStart();
 
+require('./../presenters/PostsPresenter');
+
 io.on('connection', function(socket) {
   logger.log('socket connected');
 
@@ -21,7 +23,13 @@ io.on('connection', function(socket) {
     console.log(voiceId, dateString, up);
     Post.find(['"Posts".voice_id = ? AND EXTRACT(MONTH FROM "Posts".published_at) = ? AND EXTRACT(YEAR FROM "Posts".published_at) = ? ORDER BY "Posts".published_at DESC', [voiceId, dateData[1], dateData[0]]], function(err, posts) {
       console.log(posts.length);
-      socket.emit('monthPosts', posts, dateString, up);
+      PostsPresenter.build(posts, function(err, result) {
+        if (err) {
+          return socket.emit('monthPosts', {'error': err}, dateString, up);
+        }
+
+        socket.emit('monthPosts', results, dateString, up);
+      });
     });
   });
 });
