@@ -19,7 +19,6 @@ require('./../css/style.less');
 // widgets
 require('./widgets/popover.js');
 require('./widgets/popover-blocker.js');
-require('./widgets/popover-request-to-contribute.js');
 require('./widgets/responsive-slider.js');
 
 // components
@@ -45,6 +44,8 @@ require('./widgets/voice-add-content');
 require('./widgets/voice-timeline-jump-to-date');
 require('./widgets/voice-timeline-jump-to-date-label');
 require('./widgets/voice-timeline-jump-to-date-item');
+require('./widgets/voice-request-to-contribute.js');
+require('./widgets/popover-request-to-contribute.js');
 
 require('./widgets/bubble.js');
 require('./widgets/bubble/jump-to-date.js');

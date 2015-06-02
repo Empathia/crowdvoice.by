@@ -8,6 +8,7 @@ Class(CV, 'VoiceFooter').inherits(Widget)({
             Widget.prototype.init.call(this, config);
 
             this.el = this.element[0];
+            this.actionsColumn = this.el.querySelector('.voice-footer-right');
 
             this.appendChild(
                 new CV.VoiceTimelineFeedback({
@@ -20,9 +21,8 @@ Class(CV, 'VoiceFooter').inherits(Widget)({
 
             // @TODO:
             // add condition based on the user type and or privilegies
-            this.appendChild(
-                new CV.VoiceAddContent()
-            ).render(this.element);
+            this.appendChild(new CV.VoiceAddContent()).render(this.element);
+            this.appendChild(new CV.VoiceRequestToContribute()).render(this.actionsColumn);
         },
 
         /* Sets the Timeline's inital date.
