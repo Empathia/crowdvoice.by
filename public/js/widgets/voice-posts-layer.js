@@ -1,4 +1,4 @@
-
+/* jshint multistr: true */
 var moment = require('moment');
 var Waterfall = require('../lib/waterfall');
 
@@ -52,11 +52,14 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
         },
 
         _bindEvents : function _bindEvents() {
-            this._resizeHandlerRef = this.resizeHandler.bind(this);
+            this._resizeHandlerRef = this._resizeHandler.bind(this);
             this._window.addEventListener('resize', this._resizeHandlerRef);
         },
 
-        resizeHandler : function resizeHandler() {
+        /* Handle the window.resize event.
+         * @method _resizeHandler <private> [Function]
+         */
+        _resizeHandler : function _resizeHandler() {
             var _this = this;
 
             if (this._resizeTimer) this._window.clearTimeout(this._resizeTimer);
@@ -69,10 +72,9 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
             }, this._resizeTime);
         },
 
-        /* Sets the heigth of the layer. If a number is provided it will
-         * convert it into pixel units.
+        /* Sets the heigth of the layer. If a number is provided it will convert it into pixel units.
+         * @method setHeight <public> [Function]
          * @param height <required> [Number or String]
-         * @method setHeight <public>
          */
         setHeight : function setHeight(height) {
             if (typeof height === 'number') {
@@ -83,14 +85,18 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
             this._finalHeightIsKnow = false;
         },
 
+        /* Returns the total height of the postContainerElement.
+         * @method getHeight <public> [Function]
+         * @return [this.postContainerElement]
+         */
         getHeight : function getHeight() {
             return this.postContainerElement.clientHeight;
         },
 
         /* Create, append and render its post children.
-         * @param posts <required> [Objact Array] Post Model data to create a
-         *  new instance.
-         * @return undefined
+         * @method addPosts <public> [Function]
+         * @param posts <required> [Objact Array] Post Model data to create a  new instance.
+         * @return [VoicePostsLayer]
          */
         addPosts : function addPosts(posts) {
             var frag = document.createDocumentFragment();
@@ -165,7 +171,7 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
         },
 
         /* Updates the position of each indicator.
-         * Called by `resizeHandler`
+         * Called by `_resizeHandler`
          * @private
          */
         _updatePostIndicatorsPostion : function _updatePostIndicatorsPostion() {
@@ -180,16 +186,16 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
         },
 
         /* Returns its children Posts instances.
-         * @public
-         * @return posts
+         * @method getPosts <public> [Function]
+         * @return [this._postWidgets]
          */
         getPosts : function getPosts() {
             return this._postWidgets;
         },
 
         /* Returns its children PostIndicators instances.
-         * @public
-         * @return children post indicators instances
+         * @method getIndicators <oublic> [Function]
+         * @return [this._indicatorWidgets]
          */
         getIndicators : function getIndicators() {
             return this._indicatorWidgets;
@@ -197,6 +203,18 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
 
         isFinalHeightKnow : function isFinalHeightKnow() {
             return this._finalHeightIsKnow;
+        },
+
+        arrangeBringToFront : function arrangeBringToFront() {
+            this.el.style.zIndex = 1;
+
+            return this;
+        },
+
+        arrangeReset : function arrangeReset() {
+            this.el.style.zIndex = "";
+
+            return this;
         },
 
         /* Destroy all its posts children.
@@ -214,19 +232,6 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
 
             return this;
         },
-
-        arrangeBringToFront : function arrangeBringToFront() {
-            this.el.style.zIndex = 1;
-
-            return this;
-        },
-
-        arrangeReset : function arrangeReset() {
-            this.el.style.zIndex = "";
-
-            return this;
-        },
-
 
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);

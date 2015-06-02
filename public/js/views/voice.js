@@ -71,7 +71,7 @@ Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport)({
          */
         _appendLayersManager : function _appendLayersManager() {
             if (!this.firstPostDate || !this.lastPostDate) {
-                return console.warn('VoicePostLayersManager required firstPostDate or lastPostDate properties NOT to empty strings')
+                return console.warn('VoicePostLayersManager required firstPostDate or lastPostDate properties NOT to empty strings');
             }
 
             this.appendChild(
@@ -102,7 +102,7 @@ Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport)({
             this.layerLoadedRef = this.layerLoadedHandler.bind(this);
             this.voicePostLayersManager.bind('layerLoaded', this.layerLoadedRef);
 
-            this.layerManagerReadyRef = this.layerManagerReady.bind(this);
+            this.layerManagerReadyRef = this._layerManagerReadyHandler.bind(this);
             this.voicePostLayersManager.bind('ready', this.layerManagerReadyRef);
         },
 
@@ -118,10 +118,14 @@ Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport)({
             CV.Voice.dispatch('voiceAboutBox:show');
         },
 
-        layerManagerReady : function layerManagerReady(data) {
+        /* Initialize child widgets that depends on layerManager to be loaded with content.
+         * @method _layerManagerReadyHandler <private> [Function]
+         */
+        _layerManagerReadyHandler : function _layerManagerReareldnaHdy(data) {
             var timestamp = data.layer.getIndicators()[0].getTimestamp();
 
             this.voiceFooter.setTimelineInitialDate(timestamp);
+            this.voiceFooter.createJumpToDateBubble(this.voicePostLayersManager.getTotalLayers());
 
             this.voicePostLayersManager.unbind('ready', this.layerManagerReadyRef);
             this.layerManagerReadyRef = null;

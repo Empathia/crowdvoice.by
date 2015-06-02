@@ -1,11 +1,14 @@
+/* jshint multistr: true */
 var moment = require('moment');
 var Velocity = require('velocity-animate');
 
 Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
     HTML : '\
         <div class="cv-voice-timeline-feedback">\
-            <span class="timeline-feedback-h"></span>\
-            <span class="timeline-feedback-m"></span>\
+            <div class="cv-voice-timeline-clock">\
+                <span class="timeline-clock-h"></span>\
+                <span class="timeline-clock-m"></span>\
+            </div>\
         </div>\
     ',
 
@@ -55,8 +58,9 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
 
             this.el = this.element[0];
             this._window = window;
-            this.hourElement = this.el.querySelector('.timeline-feedback-h');
-            this.minutesElement = this.el.querySelector('.timeline-feedback-m');
+            this.clockElement = this.el.querySelector('.cv-voice-timeline-clock');
+            this.hourElement = this.el.querySelector('.timeline-clock-h');
+            this.minutesElement = this.el.querySelector('.timeline-clock-m');
 
             this._firstDateMS = moment(this.firstPostDate).format('x') * 1000;
             this._lastDateMS = moment(this.lastPostDate).format('x') * 1000;
@@ -64,38 +68,33 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
             this.updateVars()._bindEvents();
         },
 
-        /* Cache some variable values related to the screen size.
-         * This method should be called on:
-         *  - init
-         *  - whenever the viewport changes its dimensions
-         *  - whenever the CONFIG.scrollableArea change its length
-         * @public
-         */
-        updateVars : function _pdateVars() {
-            this._totalHeight = this.scrollableArea.offsetHeight;
-            this._clientWidth = document.documentElement.clientWidth;
-            this._clientHeight = document.documentElement.clientHeight - this.constructor.FOOTER_HEIGHT;
-            this._rotateFactor = this._totalHeight / 500;
-
-            return this;
+        createJumpToDateBubble : function createJumpToDateBubble(totalLayers) {
+            this.appendChild(
+                new CV.VoiceTimelineJumpToDate({
+                    name : 'jumpToDate',
+                    totalLayers : totalLayers,
+                    clockElement : this.el,
+                    container : this.el
+                })
+            ).render(this.el);
         },
 
         /* Subscribe and listen to events.
-         * @private
+         * @method _bindEvents <private> [Function]
          */
         _bindEvents : function _bindEvents() {
-            this.readAndUpdateRef = this.readAndUpdate.bind(this);
+            this.readAndUpdateRef = this._readAndUpdate.bind(this);
 
-            this.scrollHandlerRef = this.scrollHandler.bind(this);
+            this.scrollHandlerRef = this._scrollHandler.bind(this);
             this._window.addEventListener('scroll', this.scrollHandlerRef, false);
 
             return this;
         },
 
         /* Handle the window.scroll event
-         * @private
+         * @method _scrollHandler <private> [Function]
          */
-        scrollHandler : function scrollHandler() {
+        _scrollHandler : function _scrollHandler() {
             this._lastScrollY = window.scrollY;
 
             if (this._scheduledAnimationFrame) return;
@@ -105,9 +104,9 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
         },
 
         /* Updates timeline feedback animation while scrolling.
-         * @private
+         * @method _readAndUpdate <private> [Function]
          */
-        readAndUpdate : function readAndUpdate() {
+        _readAndUpdate : function _readAndUpdate() {
             var scrollPercentage, scrollViewportPixels, elem, scaledPercentage, scaledPixels, degs;
 
             scrollPercentage = 100 * this._lastScrollY / (this._totalHeight - this._clientHeight);
@@ -126,7 +125,7 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
                 scaledPercentage = 0;
             }
 
-            scaledPixels = ~~((this._clientWidth - this._timelineOffsetRight) * scaledPercentage / 100)
+            scaledPixels = ~~((this._clientWidth - this._timelineOffsetRight) * scaledPercentage / 100);
 
             if (scaledPixels < this._timelineOffsetLeft) {
                 scaledPixels = this._timelineOffsetLeft;
@@ -159,20 +158,37 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
             this._scheduledAnimationFrame = false;
         },
 
+        /* Cache some variable values related to the screen size.
+         * This method should be called on:
+         *  - init
+         *  - whenever the viewport changes its dimensions
+         *  - whenever the CONFIG.scrollableArea change its length
+         * @method updateVars <public> [Function]
+         */
+        updateVars : function _pdateVars() {
+            this._totalHeight = this.scrollableArea.offsetHeight;
+            this._clientWidth = document.documentElement.clientWidth;
+            this._clientHeight = document.documentElement.clientHeight - this.constructor.FOOTER_HEIGHT;
+            this._rotateFactor = this._totalHeight / 500;
+
+            return this;
+        },
+
         /* Sets the initial value for _lastScrollDate so the clock feedabck
          * can be started.
+         * @method setInitialFeedbackDate <public> [Function]
          */
         setInitialFeedbackDate : function setInitialFeedbackDate(timestamp) {
             this._lastScrollDate = timestamp;
             this._timelineOffsetRight = this.el.offsetWidth + 20;
 
-            this.readAndUpdate();
+            this._readAndUpdate();
 
             this.activate();
         },
 
         /* Unlisten events, release any HTMLElement reference, free variables...
-         * @public
+         * @method destroy <public> [Function]
          */
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);

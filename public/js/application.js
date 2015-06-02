@@ -22,6 +22,7 @@ window.Checkit = Checkit;
 
 // widgets
 require('./widgets/popover.js');
+require('./widgets/popover-blocker.js');
 require('./widgets/popover-request-to-contribute.js');
 require('./widgets/responsive-slider.js');
 
@@ -45,6 +46,9 @@ require('./widgets/post-audio.js');
 require('./widgets/post-link.js');
 require('./widgets/post-quote.js');
 require('./widgets/voice-add-content');
+require('./widgets/voice-timeline-jump-to-date');
+require('./widgets/voice-timeline-jump-to-date-label');
+require('./widgets/voice-timeline-jump-to-date-item');
 
 require('./widgets/bubble.js');
 require('./widgets/bubble/jump-to-date.js');
