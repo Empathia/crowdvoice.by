@@ -23,7 +23,7 @@ io.on('connection', function(socket) {
     console.log(voiceId, dateString, up);
     Post.find(['"Posts".voice_id = ? AND EXTRACT(MONTH FROM "Posts".published_at) = ? AND EXTRACT(YEAR FROM "Posts".published_at) = ? ORDER BY "Posts".published_at DESC', [voiceId, dateData[1], dateData[0]]], function(err, posts) {
       console.log(posts.length);
-      PostsPresenter.build(posts, function(err, result) {
+      PostsPresenter.build(posts, function(err, results) {
         if (err) {
           return socket.emit('monthPosts', {'error': err}, dateString, up);
         }
