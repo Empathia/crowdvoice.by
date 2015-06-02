@@ -2,7 +2,9 @@
 Class(CV, 'VoiceAddContent').inherits(Widget)({
     HTML: '\
         <div class="voice-add-content">\
-            <button class="voice-add-post-button ui-btn -primary">+</button>\
+            <button class="voice-add-post-button ui-btn -primary">\
+                <span>+</span>\
+            </button>\
         </div>\
     ',
 
@@ -25,6 +27,7 @@ Class(CV, 'VoiceAddContent').inherits(Widget)({
 
             this.appendChild(
                 new CV.Popover({
+                    name : 'addPostBubble',
                     className : 'voice-add-content-bubble',
                     placement : 'left',
                     toggler : this.addPostButton,
@@ -32,6 +35,10 @@ Class(CV, 'VoiceAddContent').inherits(Widget)({
                     content : this.constructor.BUBBLE_OPTIONS
                 })
             ).render();
+
+            this.addPostButton.addEventListener('click', function() {
+                this.classList.toggle('active');
+            });
         }
     }
 });

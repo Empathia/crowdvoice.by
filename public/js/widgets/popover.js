@@ -1,3 +1,4 @@
+/* jshint multistr: true */
 /* @class CV.Popover – Add small overlays of content
  *
  * @options
@@ -44,11 +45,17 @@ Class(CV, 'Popover').inherits(Widget)({
             this.titleElement = this.el.querySelector('.popover-title');
             this.contentElement = this.el.querySelector('.popover-content');
 
+            this.titleElement.textContent = this.title;
+
             this.container.classList.add(this.constructor.CONTAINER_CLASSNAME);
-            this.el.classList.add(this.constructor.PLACEMENT_CLASSNAMES[this.placement] || this.constructor.PLACEMENT_CLASSNAMES['top']);
+            this.el.classList.add(this.constructor.PLACEMENT_CLASSNAMES[this.placement] || this.constructor.PLACEMENT_CLASSNAMES.top);
 
             this.contentElement.insertAdjacentHTML('afterbegin', this.content);
 
+            this._bindEvents();
+        },
+
+        _bindEvents : function _bindEvents() {
             this.toggler.addEventListener('click', this.toggle.bind(this), false);
         },
 
@@ -77,7 +84,8 @@ Class(CV, 'Popover').inherits(Widget)({
          * @return this [CV.Popover]
          */
         toggle : function toggle() {
-            this.active ? this.deactivate() : this.activate();
+            if (this.active) this.deactivate();
+            else this.activate();
 
             return this;
         },
