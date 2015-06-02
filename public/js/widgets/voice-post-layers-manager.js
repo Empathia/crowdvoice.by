@@ -58,7 +58,7 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
         },
 
         _bindEvents : function _bindEvents() {
-            this._socket.on('monthData', this.loadLayer.bind(this));
+            this._socket.on('monthPosts', this.loadLayer.bind(this));
 
             this._scrollHandlerRef = this.scrollHandler.bind(this);
             this._window.addEventListener('scroll', this._scrollHandlerRef);
@@ -235,18 +235,15 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
             }
 
             // request to the server
-            this._socket.emit('getMonth', dateString, scrollDirection);
+            this._socket.emit('getMonthPosts', this.id, dateString, scrollDirection);
         },
 
         /* Fills a specific layer with childs (posts).
          * Stores the server response.
          * Updates the _listenScrollEvent flag.
-         * @param postsData <required> [Objects Array] the raw data of Post
-         *  Models retrived from the server. We us this data to crate Post
-         *  Widgets.
+         * @param postsData <required> [Objects Array] the raw data of Post Models retrived from the server. We us this data to crate Post Widgets.
          * @dateString <required> [String] the data's month-year we received
-         * @scrollDirection <optional> [Boolean] {false} false for downwards
-         *  1 for upwards
+         * @scrollDirection <optional> [Boolean] {false} false for downwards  1 for upwards
          * @return undefined
          */
         loadLayer : function loadLayer(postsData, dateString, scrollDirection) {
@@ -323,6 +320,23 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
          */
         getAverageLayerHeight : function getAverageLayerHeight() {
             return this._averageLayerHeight;
+        },
+
+        /* Returns the number of total month layers.
+         * @method getTotalLayers <public> [Function]
+         */
+        getTotalLayers : function getTotalLayers() {
+            var layersLen = this._layers.length;
+
+            if (layersLen) {
+                return layersLen;
+            }
+
+            var firstDate = moment(this.firstPostDate);
+            var lastDate = moment(this.lastPostDate);
+            var totalLayers = lastDate.diff(firstDate, 'months');
+
+            return totalLayers;
         },
 
         isScrolledIntoView : function isScrolledIntoView(el) {
