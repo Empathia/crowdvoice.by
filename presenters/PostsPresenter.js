@@ -2,8 +2,8 @@ Module('PostsPresenter')({
   build : function build(posts, callback) {
     async.each(posts, function(post, next) {
 
-      post.id       = hashids(post.id);
-      post.voiceId  = hashids(post.voiceId);
+      post.id       = hashids.encode(post.id);
+      post.voiceId  = hashids.encode(post.voiceId);
 
       async.series([function(done) {
         Entity.findById(post.ownerId, function(err, result) {
