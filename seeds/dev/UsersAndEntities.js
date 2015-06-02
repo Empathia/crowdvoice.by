@@ -204,8 +204,8 @@ exports.seed = function(knex, Promise) {
       'updated_at' : new Date()
     }),
 
-    knex.raw('ALTER SEQUENCE "Users_id_seq" RESTART'),
-    knex.raw('ALTER SEQUENCE "Entities_id_seq" RESTART'),
-    knex.raw('ALTER SEQUENCE "EntityOwner_id_seq" RESTART')
+    knex.raw('SELECT setval(\'"Users_id_seq"\'::regclass, 4);'),
+    knex.raw('SELECT setval(\'"Entities_id_seq"\'::regclass, 8);'),
+    knex.raw('SELECT setval(\'"EntityOwner_id_seq"\'::regclass, 8);')
   );
 };
