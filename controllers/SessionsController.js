@@ -1,5 +1,6 @@
 require(__dirname + '/../lib/passport/LocalStrategy.js');
 require(__dirname + '/../lib/passport/TokenStrategy.js');
+require(__dirname + '/../mailers/UserMailer.js');
 
 var SessionsController = Class('SessionsController')({
   prototype : {
