@@ -16,7 +16,9 @@ exports.seed = function(knex, Promise) {
       'tweet_last_fetch_at' : null,
       'rss_url' : null,
       'rss_last_fetch_at' : null,
-      'post_count' : 0,
+      'post_count' : 96012,
+      'first_post_date' : new Date('2012-05-01'),
+      'last_post_date' : new Date('2015-04-28'),
       'created_at' : new Date(),
       'updated_at' : new Date()
     }),
