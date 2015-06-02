@@ -1,3 +1,4 @@
+/* jshint multistr: true */
 Class(CV, 'PopoverRequestToContribute').inherits(Widget)({
 
     HTML_DEFAULT_CONTENT : '\
@@ -24,16 +25,18 @@ Class(CV, 'PopoverRequestToContribute').inherits(Widget)({
         init: function init(config) {
             Widget.prototype.init.call(this, config);
 
-            this.popOver = new CV.Popover({
-                className: 'request-contribute-popover',
-                placement: 'top',
-                toggler: document.querySelector('.request-to-contribute-button'),
-                container: document.querySelector('.request-to-contribute-container'),
-                content: this.constructor.HTML_DEFAULT_CONTENT
-            }).render();
+            this.appendChild(
+                new CV.PopoverBlocker({
+                    name : 'popOver',
+                    className: 'request-contribute-popover',
+                    placement: 'top',
+                    toggler: this.toggler,
+                    content: this.constructor.HTML_DEFAULT_CONTENT
+                })
+            ).render(this.container);
 
-            this.popOver.getContent().querySelector('.submit-btn').addEventListener('click', this.submit.bind(this), false);
-            this.popOver.getContent().querySelector('.cancel-btn').addEventListener('click', this.popOver.toggle.bind(this.popOver), false);
+            //this.popOver.el.querySelector('.submit-btn').addEventListener('click', this.submit.bind(this), false);
+            //this.popOver.el.querySelector('.cancel-btn').addEventListener('click', this.popOver.toggle.bind(this.popOver), false);
         },
 
         submit : function() {
@@ -42,7 +45,6 @@ Class(CV, 'PopoverRequestToContribute').inherits(Widget)({
                 this.popOver.toggle();
                 this.popOver.toggler.setAttribute('disabled', true);
             }.bind(this), false);
-
         }
     }
 });

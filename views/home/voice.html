@@ -30,7 +30,7 @@
 
   <footer class="voice-footer">
     <div class="voice-footer-inner -clearfix">
-      <div class="voice-footer-left -float-left">
+      <div class="voice-footer-meta-wrapper -float-left">
         <div class="voice-footer-title -font-bold">
           <%= voiceInfo.title %>
         </div>
@@ -64,9 +64,6 @@
           </button>
         </div>
         <button class="ui-btn -sm -outline">moderate</button>
-        <div class="request-to-contribute-container -inline-block">
-          <button class="request-to-contribute-button ui-btn -sm -primary">Request to Contribute</button>
-        </div>
       </div
     </div>
   </footer>
@@ -86,9 +83,4 @@
   }
 
   var Voice = new CV.Voice( voiceInfo );
-
-  new CV.PopoverRequestToContribute({
-    toggler: document.querySelector('.request-to-contribute-button'),
-    container: document.querySelector('.request-to-contribute-container')
-  });
 </script>

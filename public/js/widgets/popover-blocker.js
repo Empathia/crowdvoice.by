@@ -114,6 +114,7 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
             this.el.style.position = 'absolute';
             this.el.style.left = coords[0] + 'px';
             this.el.style.top = coords[1] + 'px';
+            this.el.style.bottom = 'initial';
 
             this.backdropElement.appendChild(this.el);
 
@@ -127,6 +128,8 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
             this.el.style.position = '';
             this.el.style.left = '';
             this.el.style.top = '';
+            this.el.style.bottom = '';
+
             this.parentElement.appendChild(this.el);
         },
 
@@ -156,6 +159,8 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
             Widget.prototype.render.call(this, element, beforeElement);
 
             this.parentElement = this.el.parentElement;
+
+            this.parentElement.classList.add('ui-has-popover');
 
             return this;
         },

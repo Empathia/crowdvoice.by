@@ -135,18 +135,35 @@
   }
 
   &-right {
-    padding-top: .8rem;
+    padding-top: 1.2rem;
   }
 }
 
 .voice-footer-title {
-  padding-top: 5px;
-  line-height: 1.5;
+  pointer-events: none;
+  position: absolute;
+  transform: translateY(0);
+  opacity: 0;
+  transition: opacity 200ms, transform 200ms;
 }
 
 .voice-footer-by {
+  position: absolute;
   font-size: .8rem;
-  line-height: 1;
+  transform: translateY(20px);
+  transition: transform 200ms;
+}
+
+.voice-footer-meta-wrapper {
+  &.active {
+    .voice-footer-title {
+      opacity: 1;
+      transform: translateY(10px);
+    }
+    .voice-footer-by {
+      transform: translateY(26px);
+    }
+  }
 }
 
 .voice-footer-svg {

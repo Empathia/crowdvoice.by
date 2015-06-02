@@ -83,6 +83,9 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
             }.bind(this));
         },
 
+        /* Jump to layer handler
+         * @method _jumpToHandler <private> [Function]
+         */
         _jumpToHandler : function _jumpToHandler(data) {
             var layer = this['postsLayer_' + data.dataString];
             var _this = this;
@@ -99,7 +102,6 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
             Velocity(layer.el, 'scroll', {
                 duration : 600,
                 complete : function() {
-                    console.log('scroll complete');
                     _this._listenScrollEvent = true;
                 }
             });
@@ -274,6 +276,7 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
             }
 
             // request to the server
+            console.time('postsFetching');
             this._socket.emit('getMonthPosts', this.id, dateString, scrollDirection);
         },
 
@@ -286,6 +289,8 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
          * @return undefined
          */
         loadLayer : function loadLayer(postsData, dateString, scrollDirection) {
+            console.log('response received');
+            console.timeEnd('postsFetching');
             var currentLayer = this.getCurrentMonthLayer();
             var prev = currentLayer.getPreviousSibling();
             var next = currentLayer.getNextSibling();
@@ -310,7 +315,9 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
                 this._appendVoiceAboutBox(currentLayer);
             }
 
+            console.time('arrangePosts');
             currentLayer.addPosts(postsData);
+            console.timeEnd('arrangePosts');
 
             this.dispatch('layerLoaded');
 
