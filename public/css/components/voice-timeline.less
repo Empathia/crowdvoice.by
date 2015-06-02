@@ -1,7 +1,6 @@
 .cv-voice-timeline-feedback {
-  // pointer-events: none;
   position: absolute;
-  top: -12px;
+  top: -10px;
   left: 0;
   opacity: 0;
   transition: opacity 400ms ease 400ms;
@@ -14,44 +13,31 @@
 .cv-voice-timeline-clock {
   position: relative;
   box-sizing: initial;
-  width: 20px;
-  height: 20px;
+  width: 12px;
+  height: 12px;
   border: 2px solid;
   border-radius: 50%;
   background: white;
-
-  &:after {
-    content: '';
-    position: absolute;
-    top: 9px;
-    left: 9px;
-    width: 2px;
-    height: 2px;
-    background-color: white;
-    box-shadow: 0 0 0 2px;
-    border-radius: 2px;
-    transform: translateZ(2px);
-  }
 }
 
 .timeline-clock-h,
 .timeline-clock-m {
   position: absolute;
-  top: 10px;
-  left: 9px;
+  top: 8px;
+  left: 6px;
   width: 2px;
   transform-origin: 1px 0;
   border-radius: 2px;
-  background-color: indianred;
+  background-color: @root-text-color;
 }
 
 .timeline-clock-h {
-  height: 7px;
+  height: 4px;
   transform: rotateZ(180deg);
 }
 
 .timeline-clock-m {
-  height: 8px;
+  height: 4px;
   transform: rotateZ(-90deg);
 }
 
