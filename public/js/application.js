@@ -16,6 +16,10 @@ window.validate = require('validate');
 
 require('./../css/style.less');
 
+// vendor
+var Checkit = require('./vendor/checkit.js');
+window.Checkit = Checkit;
+
 // widgets
 require('./widgets/popover.js');
 require('./widgets/popover-blocker.js');

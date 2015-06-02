@@ -11,6 +11,8 @@ Class(CV, 'Login').inherits(Widget)({
             <img src="/img/cv-logo-login.png">\
             <h2>CrowdVoice.by</h2>\
             <br><br>\
+            <div class="form-errors">\
+            </div>\
             <div class="form-container"></div>\
           </div>\
         </div>\
@@ -23,36 +25,36 @@ Class(CV, 'Login').inherits(Widget)({
         <form action="" method="post" accept-charset="utf-8">\
             <div class="form-field">\
               <div class="cv-input">\
-                <input type="text" name="username" value="user"><br>\
+                <input type="text" class="username" name="username" value="" placeholder="USERNAME"><br>\
               </div>\
             </div>\
             <div class="form-field">\
               <div class="cv-input">\
-                <input type="text" name="name" value="John"><br>\
+                <input type="text" class="name" name="name" value="John" placeholder=""><br>\
               </div>\
             </div>\
             <div class="form-field">\
               <div class="cv-input">\
-                <input type="text" name="lastname" value="Doe"><br>\
+                <input type="text" class="lastname" name="lastname" value="Doe" placeholder=""><br>\
               </div>\
             </div>\
             <div class="form-field">\
               <div class="cv-input">\
-                <input type="text" name="profileName" value="John"><br>\
+                <input type="text" class="profileName" name="profileName" value="John" placeholder=""><br>\
               </div>\
             </div>\
             <div class="form-field">\
               <div class="cv-input">\
-                <input type="text" name="email" value="user@crowdvoice.by"><br>\
+                <input type="text" class="email" name="email" value="user@crowdvoice.by" placeholder=""><br>\
               </div>\
             </div>\
             <div class="form-field">\
               <div class="cv-input">\
-                <input type="text" name="password" value="mysecret"><br>\
+                <input type="text" class="password" name="password" value="mysecret" placeholder=""><br>\
               </div>\
             </div>\
             <div class="cv-check">\
-              <input type="checkbox" name="isAnonymous" value="true" checked>\
+              <input type="checkbox" class="input-checkbox isAnonymous" name="isAnonymous" value="true" checked>\
               <span class="label">Is Anonymous?</span>\
             </div>\
             <input type="hidden" name="_csrf" class="form-token" value="">\
@@ -69,23 +71,23 @@ Class(CV, 'Login').inherits(Widget)({
             <div class="input-pair">\
               <div class="form-field">\
                 <div class="cv-input">\
-                  <input type="text" name="username" value="" placeholder="USERNAME">\
+                  <input type="text" class="username" name="username" value="" placeholder="USERNAME">\
                 </div>\
               </div>\
               <div class="form-field">\
                 <div class="cv-input">\
-                  <input type="text" name="password" value="" placeholder="PASSWORD">\
+                  <input type="text" class="password" name="password" value="" placeholder="PASSWORD">\
                 </div>\
               </div>\
             </div>\
             <div class="-col-6">\
               <div class="cv-check">\
-                <input type="checkbox">\
+                <input type="checkbox" class="input-checkbox" value="false">\
                 <span class="label">Remember me (?)</span>\
               </div>\
             </div>\
             <div class="-col-6">\
-              <a href="#">Forgot your password?</a>\
+              <a href="/session/forgot-password">Forgot your password?</a>\
             </div>\
             <br><br>\
             <input type="hidden" name="_csrf"  class="form-token" value="">\
@@ -95,16 +97,56 @@ Class(CV, 'Login').inherits(Widget)({
         <p>Don\'t have an account yet? <a href="/signup">Sign Up!</a></p>\
     ',
 
+    FORM_FORGOT_PASSWORD : '\
+      <h1>It\'s ok. It happens.</h1>\
+      <p>Please enter the email address you used to sign up and we will send you instructions to reset your password to gain back access to CrowdVoice.by.</p>\
+      <br>\
+      <form action="" method="post" accept-charset="utf-8">\
+        <div class="form-field">\
+          <div class="cv-input">\
+            <input type="text" class="email" placeholder="YOUR EMAIL">\
+          </div>\
+        </div>\
+        <input type="hidden" name="_csrf" class="form-token" value="">\
+        <button class="cv-button primary full">Submit</button>\
+      </form>\
+    ',
+
+    FORM_RESET_PASSWORD : '\
+      <h1>Type in a new password.</h1>\
+      <p>This time make sure you choose something you will remember.\
+      Actually, you might want to read <a href="#">this article</a>. It will help :)</p>\
+      <br>\
+      <form action="" method="post" accept-charset="utf-8">\
+        <div class="form-field">\
+          <div class="cv-input">\
+            <input type="text" class="password" placeholder="YOUR PASSWORD">\
+          </div>\
+        </div>\
+        <div class="cv-check">\
+          <input type="checkbox">\
+          <span class="label">Show your password to make sure you typed it correctly.</span>\
+        </div>\
+        <br><br>\
+        <input type="hidden" name="_csrf" class="form-token" value="">\
+        <button class="cv-button primary full">Reset Password</button>\
+      </form>\
+    ',
+
     prototype        : {
 
         formType    : null,
         formAction  : null,
         formToken   : null,
+        formEl      : null,
+        errorsEl    : null,
 
         init : function(config){
             Widget.prototype.init.call(this, config);
             var login = this;
             var closeEl = this.element.find('.close-login');
+            this.errorsEl = this.element.find('.form-errors');
+
             var formEl;
 
             switch(this.formType) {
@@ -114,12 +156,23 @@ Class(CV, 'Login').inherits(Widget)({
                 case 'login':
                     var formEl = this.constructor.FORM_LOGIN;
                     break;
+                case 'forgot-password':
+                    var formEl = this.constructor.FORM_FORGOT_PASSWORD;
+                    break;
+                case 'reset-password':
+                    var formEl = this.constructor.FORM_RESET_PASSWORD;
+                    break;
                 default:
-                    var formEl = 'No form';
+                    //¯\_(ツ)_/¯
             }
+
             this.element.find('.form-container').append(formEl);
             this.element.find('form').attr('action', this.formAction);
             this.element.find('.form-token').attr('value', this.formToken);
+
+            var buttonEl = this.element.find('button');
+            this.formEl = this.element.find('form');
+            this.checkEl = this.element.find('.input-checkbox');
 
             setTimeout(function(){
                 login.show();
@@ -130,6 +183,108 @@ Class(CV, 'Login').inherits(Widget)({
               //login.hide();
               window.location.href = '/';
             });
+
+            buttonEl.on("click",function(e){
+                var formValidation = login.validate();
+                var validForm = formValidation[1];
+                var formErrors = formValidation[0];
+
+                if (!validForm){
+                  login.errorsEl.empty();
+                  login.errorsEl.show();
+
+                  for (var error in formErrors.errors) {
+                      var replaceStr = error;
+                      var errorStr = formErrors.errors[error].message.replace(replaceStr, '<b>'+replaceStr+'</b>');
+                      login.errorsEl.append('<p>' + errorStr + '</p>')
+                  }
+                  return false;
+                  e.preventDefault;
+                }else{
+                  //console.log('valid');
+                  //formEl.submit();
+                }
+
+            });
+
+            this.checkEl.on('click', function(){
+              this.checked(this.checkEl);
+            }.bind(this));
+
+        },
+
+        checked : function(check) {
+            if (check[0].checked)
+            {
+                check.attr('value', 'true');
+            }else{
+                check.attr('value', 'false');
+            }
+        },
+
+        validate: function(){
+          this.formValidated =  true;
+          var checkit, body;
+
+          switch(this.formType) {
+              case 'signup':
+                checkit = new Checkit({
+                  'Username'      : 'required',
+                  'Name'          : 'required',
+                  'Lastname'      : 'required',
+                  'Profile Name'  : 'required',
+                  'Email'         : ['required', 'email'],
+                  'Password'      : 'required'
+                });
+
+                body = {
+                  'Username'      : this.formEl.find('.username').val(),
+                  'Name'          : this.formEl.find('.name').val(),
+                  'Lastname'      : this.formEl.find('.lastname').val(),
+                  'Profile Name'  : this.formEl.find('.profileName').val(),
+                  'Email'         : this.formEl.find('.email').val(),
+                  'Password'      : this.formEl.find('.password').val(),
+                };
+                break;
+
+              case 'login':
+                checkit = new Checkit({
+                    'Username'      : 'required',
+                    'Password'      : 'required'
+                  });
+
+                  body = {
+                    'Username'      : this.formEl.find('.username').val(),
+                    'Name'          : this.formEl.find('.password').val(),
+                  };
+                  break;
+
+              case 'forgot-password':
+                checkit = new Checkit({
+                    'Email'      : ['required', 'email'],
+                  });
+
+                  body = {
+                    'Email'      : this.formEl.find('.email').val(),
+                  };
+                  break;
+
+              case 'forgot-password':
+                checkit = new Checkit({
+                    'Password'      : 'required',
+                  });
+
+                  body = {
+                    'Password'      : this.formEl.find('.password').val(),
+                  };
+                  break;
+
+              default:
+                  //¯\_(ツ)_/¯
+          }
+
+          return checkit.validateSync(body);
+
         },
 
         show : function(){

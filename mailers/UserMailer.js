@@ -15,7 +15,7 @@ var message = {
 var UserMailer = Module('UserMailer')({
 
   // Send Welcome email when creating a new user.
-  new : function new(user, entity, callback) {
+  new : function(user, entity, callback) {
     var mailer = this;
 
     var viewFile = application.fs.readFileSync('./views/mailers/user/new.html', 'utf8');

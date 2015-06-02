@@ -1,3 +1,5 @@
+require(__dirname + '/../mailers/UserMailer.js');
+
 var UsersController = Class('UsersController').inherits(RestfulController)({
   prototype : {
     _initRouter : function() {
