@@ -49,7 +49,7 @@
     };
 
     Waterfall.prototype._fit = function _fit() {
-        var i, x, y, index, item,
+        var i, x, y, index, height, item,
             coordsX = [],
             coordsY = [],
             items = this._getVisibleItems(),
@@ -63,8 +63,12 @@
             y = Math.min.apply(Math, this._blocks);
             index = this._blocks.indexOf(y);
             x = gutter + (index * (colWidth + gutter));
+            height = item.offsetHeight;
 
-            this._blocks[index] = y + item.offsetHeight + gutter;
+            item.dataset.h = height;
+            item.dataset.y = y;
+
+            this._blocks[index] = y + height + gutter;
 
             coordsX.push(x);
             coordsY.push(y);
@@ -75,7 +79,6 @@
             item.style.position = 'absolute';
             item.style.left = (coordsX[i] + spaceLeft) + 'px';
             item.style.top = coordsY[i] + 'px';
-            // item.style[prefixedTransform] = 'translate(' + (coordsX[i] + spaceLeft) + 'px, ' + coordsY[i] + 'px)';
         }
 
         this.containerElement.style.height = Math.max.apply(Math, this._blocks) + 'px';
@@ -85,13 +88,13 @@
 
     Waterfall.prototype._getVisibleItems = function _getVisibleItems() {
         return this.getItems().filter(function(item) {
-            return item.offsetParent
+            return item.offsetParent;
         });
     };
 
     Waterfall.prototype.layout = function layout() {
         this._setup();
-    }
+    };
 
     Waterfall.prototype.addItems = function addItems(items) {
         this._items = this._items.concat([].slice.call(items, 0));

@@ -1,3 +1,4 @@
+/* jshint multistr: true */
 var moment = require('moment');
 
 Class(CV, 'VoicePostIndicator').inherits(Widget).includes(CV.WidgetUtils)({
@@ -16,7 +17,7 @@ Class(CV, 'VoicePostIndicator').inherits(Widget).includes(CV.WidgetUtils)({
     ITEM_HEIGHT : 20,
 
     flushRegisteredYValues : function flushRegisteredYValues() {
-        this.registeredYValues = []
+        this.registeredYValues = [];
     },
 
     prototype : {
@@ -51,8 +52,8 @@ Class(CV, 'VoicePostIndicator').inherits(Widget).includes(CV.WidgetUtils)({
         updatePosition : function updatePosition() {
             var y, height, alreadyRegistered;
 
-            y = this.refElement.offsetTop;
-            height = this.refElement.offsetHeight;
+            y = this.refElement.dataset.y;
+            height = this.refElement.dataset.h;
 
             alreadyRegistered = function(value) {
                 return (value == y || y < (value + this.constructor.ITEM_HEIGHT));
