@@ -9,6 +9,7 @@ exports.up = function(knex, Promise) {
       t.string('username', 512).unique().defaultTo(null);
       t.string('email', 254).index().unique();
       t.string('encrypted_password', 512).defaultTo(null);
+      t.string('token', 512).defaultTo(null);
       t.boolean('deleted').defaultTo(false);
 
       t.timestamps();

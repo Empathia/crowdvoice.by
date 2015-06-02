@@ -37,7 +37,7 @@ async.times(96012, function(id, next) {
 
   var width = casual.integer(from = 200, to = 350);
   var height = casual.integer(from = 100, to = 400);
-  var url = "http://dummyimage.com/" + width + "x" + height + "/CCCCCC/fff";
+  var url = "http://dummyimage.com/" + width + "x" + height + "/000/fff";
 
 
   post.image = url;
