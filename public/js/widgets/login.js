@@ -10,9 +10,9 @@ Class(CV, 'Login').inherits(Widget)({
           <div class="login-content">\
             <img src="/img/cv-logo-login.png">\
             <h2>CrowdVoice.by</h2>\
-            <br><br>\
             <div class="form-errors">\
             </div>\
+            <br><br>\
             <div class="form-container"></div>\
           </div>\
         </div>\
@@ -179,15 +179,66 @@ Class(CV, 'Login').inherits(Widget)({
             this.formEl = this.element.find('form');
             this.checkEl = this.element.find('.input-checkbox');
 
-            if ( this.formType == "signup" ){
-                this.element.find("input.name, input.lastname").blur(function() {
-                    if ($("input.name").val() != "" && $("input.lastname").val() != ""){
-                      if ($("input.profileName").val() == ""){
-                        var profileName = $("input.name").val() +"_"+ $("input.lastname").val();
-                        $("input.profileName").val(profileName.toLowerCase());
-                      }
+            var validUsername = false;
+            var validProfileName = false;
+
+            if (this.formType === 'signup') {
+
+              this.element.find("input.name, input.lastname").blur(function() {
+                  if ($("input.name").val() != "" && $("input.lastname").val() != ""){
+                    if ($("input.profileName").val() == ""){
+                      var profileName = $("input.name").val() +"_"+ $("input.lastname").val();
+                      $("input.profileName").val(profileName.toLowerCase()).change();
                     }
+                  }
+              });
+
+              this.formEl.find('.username').on('keyup', function(e) {
+                $.ajax({
+                  type: "POST",
+                  url: '/signup/check-username',
+                  headers: { 'csrf-token': login.formToken },
+                  data: { field : 'username' , value : ($(e.target).val()).trim()},
+                  success: function(data) {
+                    if (data && data.username === 'unavailable') {
+                      login.errorsEl.empty();
+                      login.errorsEl.append('<p><b>Username</b> is already taken.</p>')
+                      login.errorsEl.show();
+                      buttonEl.attr('disabled', true);
+                    } else {
+                      login.errorsEl.empty();
+                      login.errorsEl.hide();
+                      buttonEl.attr('disabled', false);
+                    }
+                  },
+                  dataType: 'json',
                 });
+
+              });
+
+              this.formEl.find('.profileName').on('propertychange change click keyup input paste', function(e) {
+                $.ajax({
+                  type: "POST",
+                  url: '/signup/check-username',
+                  headers: { 'csrf-token': login.formToken },
+                  data: { field : 'profileName' , value : ($(e.target).val()).trim()},
+                  success: function(data) {
+                    if (data && data.profileName === 'unavailable') {
+                      login.errorsEl.empty();
+                      login.errorsEl.append('<p><b>Profilename</b> is already taken.</p>')
+                      login.errorsEl.show();
+                      buttonEl.attr('disabled', true);
+                    } else {
+                      login.errorsEl.empty();
+                      login.errorsEl.hide();
+                      buttonEl.attr('disabled', false);
+                    }
+                  },
+                  dataType: 'json',
+                });
+
+              });
+
             }
 
             setTimeout(function(){
@@ -217,8 +268,7 @@ Class(CV, 'Login').inherits(Widget)({
                   return false;
                   e.preventDefault;
                 }else{
-                  //console.log('valid');
-                  //formEl.submit();
+                  formEl.submit();
                 }
 
             });
@@ -245,7 +295,7 @@ Class(CV, 'Login').inherits(Widget)({
           switch(this.formType) {
               case 'signup':
                 checkit = new Checkit({
-                  'Username'      : 'required',
+                  'Username'      : ['required'],
                   'Name'          : 'required',
                   'Lastname'      : 'required',
                   'Profile Name'  : 'required',

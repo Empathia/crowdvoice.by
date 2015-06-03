@@ -20,7 +20,32 @@
 @cv-header-height: 74px;
 @cv-voice-footer-height: 54px;
 
+html, body {
+  height: 100%;
+}
+
+body {
+  overflow: hidden;
+}
+
 a {color: @color-primary}
+
+body > .yield {
+  position: absolute;
+  overflow-y: auto;
+  overflow-x: hidden;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding-top: @cv-header-height;
+  //transform: translateZ(0);
+  transition: transform 400ms ease-in-out;
+}
+
+body > .yield.-is-paused {
+  transform: translateX(@cv-sidebar-width - @cv-sidebar-collapsed-width) translateZ(0);
+}
 
 .cv-main-logo {
   padding: 1.15rem 0 0 .6rem;

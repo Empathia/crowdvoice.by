@@ -122,8 +122,8 @@ var UsersController = Class('UsersController').inherits(RestfulController)({
     },
 
     checkUsername : function checkUsername(req, res, next) {
-      var field = req.params.field;
-      var value = req.params.value;
+      var field = req.body.field;
+      var value = req.body.value;
 
       res.format({
         json : function() {
@@ -151,6 +151,8 @@ var UsersController = Class('UsersController').inherits(RestfulController)({
 
               return res.json({profileName : 'unavailable'});
             })
+          } else {
+            return res.json({error : 'invalid field'});
           }
         }
       });

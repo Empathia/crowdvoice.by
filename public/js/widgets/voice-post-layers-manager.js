@@ -13,6 +13,7 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
 
         /* PRIVATE PROPERTIES */
         el : null,
+        _scrollableArea : null,
         _window : null,
         /* socket io instance holder */
         _socket : null,
@@ -46,6 +47,7 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
             }, this);
 
             this.el = this.element;
+            this._scrollableArea = document.getElementsByClassName('yield')[0];
             this._window = window;
             this._socket = io();
             this._lazyLoadingImageArray = [];
@@ -62,7 +64,7 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
             this._socket.on('monthPosts', this.loadLayer.bind(this));
 
             this._scrollHandlerRef = this._scrollHandler.bind(this);
-            this._window.addEventListener('scroll', this._scrollHandlerRef);
+            this._scrollableArea.addEventListener('scroll', this._scrollHandlerRef);
 
             this._resizeHandlerRef = this._resizeHandler.bind(this);
             this._window.addEventListener('resize', this._resizeHandlerRef);
@@ -100,6 +102,7 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
             });
 
             Velocity(layer.el, 'scroll', {
+                container : this._scrollableArea,
                 duration : 600,
                 complete : function() {
                     _this._listenScrollEvent = true;
@@ -107,11 +110,11 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
             });
         },
 
-        /* Handle the window scroll event.
+        /* Handle the _scrollableArea scroll event.
          * @method _scrollHandler <private> [Function]
          */
         _scrollHandler : function _scrollHandler() {
-            var st = window.scrollY;
+            var st = this._scrollableArea.scrollTop;
             var scrollingUpwards = (st < this._lastScrollTop);
             var y = 1;
             var el;
@@ -339,9 +342,9 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
                 if (calcHeightDiff) {
                     // compensate the heigth difference when scrolling up
                     var diff = currentLayer.getHeight() - this.getAverageLayerHeight();
-                    var y = window.scrollY + diff;
+                    var y = this._scrollableArea + diff;
 
-                    window.scrollTo(0, y);
+                    this._scrollableArea.scrollTop = y;
                 }
 
                 this._listenScrollEvent = true;
