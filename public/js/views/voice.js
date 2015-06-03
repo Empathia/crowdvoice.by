@@ -143,8 +143,9 @@ Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport)({
             this.layerManagerReadyRef = null;
         },
 
-        layerLoadedHandler : function layerLoadedHandler() {
+        layerLoadedHandler : function layerLoadedHandler(data) {
             this.voiceFooter.updateTimelineVars();
+            this.voiceFooter.updateTimelineDatesMenu(data.dateString);
         },
 
         destroy : function destroy() {

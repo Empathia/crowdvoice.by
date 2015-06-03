@@ -88,7 +88,7 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
          * @method _jumpToHandler <private> [Function]
          */
         _jumpToHandler : function _jumpToHandler(data) {
-            var layer = this['postsLayer_' + data.dataString];
+            var layer = this['postsLayer_' + data.dateString];
             var _this = this;
 
             if (!layer) return;
@@ -320,13 +320,13 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
             currentLayer.addPosts(postsData);
             console.timeEnd('arrangePosts');
 
-            this.dispatch('layerLoaded');
-
             if (this._isInitialLoad) {
                 this._isInitialLoad = false;
                 this.loadImagesVisibleOnViewport();
                 this.dispatch('ready', {layer: this.getCurrentMonthLayer()});
             }
+
+            this.dispatch('layerLoaded', {dateString: dateString});
 
             currentLayer.arrangeReset();
 
