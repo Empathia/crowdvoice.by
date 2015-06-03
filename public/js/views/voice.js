@@ -47,6 +47,10 @@ Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport)({
             this.dom.updateText(this.postCountElement, this.format.numberUS(this.postCount));
             this.dom.updateText(this.followersCountElement, this.format.numberUS(this.followerCount));
 
+            new CV.Sidebar({
+                element : document.querySelector('.cv-main-sidebar')
+            });
+
             // children
             this._appendLayersManager();
 
