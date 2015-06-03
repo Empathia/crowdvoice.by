@@ -1,0 +1,34 @@
+{
+
+  apps : [
+
+    // First application
+    {
+      name      : "cv.by",
+      script    : "bin/server.js",
+      env: {
+      },
+      env_production : {
+        "NODE_ENV": "production",
+        "PORT" : "3000"
+      }
+    }
+  ],
+
+
+  /**
+   * PM2 help you to deploy apps over your servers
+   * For more help go to :
+   * https://github.com/Unitech/PM2/blob/master/ADVANCED_README.md#deployment-pm2--090
+   */
+  deploy : {
+    production : {
+      user : "deploy",
+      host : "uberthing.net",
+      ref  : "origin/development",
+      repo : "git@github.com:Empathya/crowdvoice.by.git",
+      path : "/home/deploy/cb.by",
+      "post-deploy" : "NODE_ENV=production npm install && NODE_ENV=production npm install webpack knex -g && NODE_ENV=production nice -n 40 webpack -p -c --progress && NODE_ENV=production cp ../shared/config.js ./config/config.js && cp ../shared/knexfile.js ./knexfile.js && NODE_ENV=production knex migrate:latest && NODE_ENV=production knex seed:run && NODE_ENV=production pm2 startOrRestart ecosystem.json --env production"
+    }
+  }
+}
