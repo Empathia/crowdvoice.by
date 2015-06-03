@@ -44,7 +44,7 @@ var UsersController = Class('UsersController').inherits(RestfulController)({
               name: req.body['name'],
               lastname: req.body['lastname'],
               profileName: req.body['profileName'],
-              isAnonymous: false;
+              isAnonymous: false
             });
 
             person.save(function(err, result) {
@@ -76,7 +76,7 @@ var UsersController = Class('UsersController').inherits(RestfulController)({
               name: 'Anonymous',
               lastname: 'anonymous',
               profileName: 'anonymous_' + hashids.encode(person.id),
-              isAnonymous: true;
+              isAnonymous: true
             });
 
             anonymous.save(function(err, result) {
