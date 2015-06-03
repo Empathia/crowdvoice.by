@@ -255,7 +255,7 @@ Class(CV, 'Login').inherits(Widget)({
 
                   body = {
                     'Username'      : this.formEl.find('.username').val(),
-                    'Name'          : this.formEl.find('.password').val(),
+                    'Password'      : this.formEl.find('.password').val(),
                   };
                   break;
 
