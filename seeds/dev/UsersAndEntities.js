@@ -25,7 +25,7 @@ exports.seed = function(knex, Promise) {
       'type' : 'person',
       'name' : 'Jack',
       'lastname' : 'Johnson',
-      'profile_name' : 'jack_johnson',
+      'profile_name' : 'jack-johnson',
       'is_anonymous' : false,
       'created_at' : new Date(),
       'updated_at' : new Date()
@@ -57,7 +57,7 @@ exports.seed = function(knex, Promise) {
       'type' : 'organization',
       'name' : 'The Johnsons',
       'lastname' : '',
-      'profile_name' : 'the_johnsons',
+      'profile_name' : 'the-johnsons',
       'is_anonymous' : false,
       'created_at' : new Date(),
       'updated_at' : new Date()
@@ -89,7 +89,7 @@ exports.seed = function(knex, Promise) {
       'type' : 'person',
       'name' : 'John',
       'lastname' : 'Jackson',
-      'profile_name' : 'john_jackson',
+      'profile_name' : 'john-jackson',
       'is_anonymous' : false,
       'created_at' : new Date(),
       'updated_at' : new Date()
@@ -134,7 +134,7 @@ exports.seed = function(knex, Promise) {
       'type' : 'person',
       'name' : 'Peter',
       'lastname' : 'Jackson',
-      'profile_name' : 'peter_jackson',
+      'profile_name' : 'peter-jackson',
       'is_anonymous' : false,
       'created_at' : new Date(),
       'updated_at' : new Date()
@@ -178,7 +178,7 @@ exports.seed = function(knex, Promise) {
       'type' : 'person',
       'name' : 'Steve',
       'lastname' : 'Stevenson',
-      'profile_name' : 'steve_stevenson',
+      'profile_name' : 'steve-stevenson',
       'is_anonymous' : false,
       'created_at' : new Date(),
       'updated_at' : new Date()

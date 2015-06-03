@@ -5,6 +5,7 @@ Module('PostsPresenter')({
       post.id       = hashids.encode(post.id);
       post.voiceId  = hashids.encode(post.voiceId);
       post.ownerId  = hashids.encode(post.ownerId);
+      next();
     }, function(err) {
       callback(err, posts);
     });

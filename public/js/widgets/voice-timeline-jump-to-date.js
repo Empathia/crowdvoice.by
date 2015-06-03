@@ -9,11 +9,13 @@ Class(CV, 'VoiceTimelineJumpToDate').inherits(Widget)({
 
         /* PRIVATE */
         el : null,
+        _optionChilds : null,
 
         init : function init(config) {
             Widget.prototype.init.call(this, config);
 
             this.el = this.element[0];
+            this._optionChilds = [];
 
             this._autoSetup()._bindEvents();
         },
@@ -42,7 +44,7 @@ Class(CV, 'VoiceTimelineJumpToDate').inherits(Widget)({
         __createJumpToDateOptions : function __createJumpToDateOptions(totalLayers) {
             var i = 0;
             var frag = document.createDocumentFragment();
-            var _lastYear, date, dateString, year, month;
+            var _lastYear, date, dateString, year, month, optionWidget;
 
             for (i = 0; i < totalLayers; i++) {
                 date = moment(this.lastPostDate).month(-i);
@@ -63,15 +65,16 @@ Class(CV, 'VoiceTimelineJumpToDate').inherits(Widget)({
                     frag.appendChild(this['label_' + year].el);
                 }
 
-                this.appendChild(
-                    new CV.VoiceTimelineJumpToDateItem({
-                        name : 'item_' + dateString,
-                        label : month,
-                        date : dateString
-                    })
-                );
+                optionWidget = new CV.VoiceTimelineJumpToDateItem({
+                    name : 'item_' + dateString,
+                    label : month,
+                    date : dateString
+                });
 
-                frag.appendChild(this['item_' + dateString].el);
+                this.appendChild(optionWidget);
+                this._optionChilds.push(optionWidget);
+
+                frag.appendChild(optionWidget.el);
             }
 
             this.jumpToDatePopover.setContent(frag);
@@ -100,6 +103,8 @@ Class(CV, 'VoiceTimelineJumpToDate').inherits(Widget)({
             var diff = farRight - w;
 
             if (diff > 0) {
+                this.el.style.msTransform = 'translateX(' + ((diff + 10) * -1) + 'px)';
+                this.el.style.webkitTransform = 'translateX(' + ((diff + 10) * -1) + 'px)';
                 this.el.style.transform = 'translateX(' + ((diff + 10) * -1) + 'px)';
             }
 
@@ -112,7 +117,24 @@ Class(CV, 'VoiceTimelineJumpToDate').inherits(Widget)({
          * @method _handleDeactivate <private> [Function]
          */
         _handleDeactivate : function _handleActivate() {
+            this.el.style.msTransform = '';
+            this.el.style.webkitTransform = '';
             this.el.style.transform = '';
+        },
+
+        /* Deactivate any active option and activate the one that matches the passed string by name.
+         * @method updateActivateOption <public> [Function]
+         * @argument date <required> [String] (undefined) ex. '1987-07'
+         * @return [CV.VoiceTimelineJumpToDate]
+         */
+        updateActivateOption : function updateActivateOption(date) {
+            this._optionChilds.forEach(function(child) {
+                child.deactivate();
+            });
+
+            this['item_' + date].activate();
+
+            return this;
         },
 
         destroy : function destroy() {
@@ -126,6 +148,7 @@ Class(CV, 'VoiceTimelineJumpToDate').inherits(Widget)({
             this.clockElement = null;
 
             this.el = null;
+            this._optionChilds = [];
         }
     }
 });

@@ -21,6 +21,7 @@ var Checkit = require('./vendor/checkit.js');
 window.Checkit = Checkit;
 
 // widgets
+require('./widgets/header.js');
 require('./widgets/sidebar.js');
 require('./widgets/popover.js');
 require('./widgets/popover-blocker.js');

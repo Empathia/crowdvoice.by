@@ -3,6 +3,7 @@ Class(CV, 'VoiceFooter').inherits(Widget)({
         /* OPTIONS */
         firstPostDate : '',
         lastPostDate : '',
+        scrollableArea : null,
 
         init : function init(config) {
             Widget.prototype.init.call(this, config);
@@ -15,7 +16,7 @@ Class(CV, 'VoiceFooter').inherits(Widget)({
                     name : 'voiceTimelineFeedback',
                     firstPostDate : this.firstPostDate,
                     lastPostDate : this.lastPostDate,
-                    scrollableArea : document.getElementsByClassName('cv-main-content')[0]
+                    scrollableArea : this.scrollableArea
                 })
             ).render(this.element);
 
@@ -41,6 +42,13 @@ Class(CV, 'VoiceFooter').inherits(Widget)({
             this.voiceTimelineFeedback.updateVars();
 
             return this;
+        },
+
+        /* Updates the 'jump to date' popover, activating the current option
+         * @method updateTimelineDatesMenu <public> [Function]
+         */
+        updateTimelineDatesMenu : function updateTimelineDatesMenu(dateString) {
+            this.voiceTimelineFeedback.activateJumpToDateOption(dateString);
         },
 
         /* Instantiate and append the jump to date widget on its timeline chidlren.

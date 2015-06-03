@@ -24,7 +24,6 @@ var UserMailer = Module('UserMailer')({
       template : viewFile
     });
 
-    console.log(user, entity)
     template.parseSync().renderSync({user : user, entity : entity});
 
     var view = template.view;

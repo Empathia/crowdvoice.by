@@ -30,7 +30,13 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         res.locals.voice = new Voice(voice);
         req.activeVoice = new Voice(voice);
 
-        next();
+        Entity.findById(voice.ownerId, function(err, owner) {
+          if (err) { return next(err); }
+
+          res.locals.owner = new Entity(owner[0]);
+
+          next();
+        });
       });
     },
 
@@ -59,11 +65,10 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
     show : function show (req, res) {
       res.format({
-        'text/html': function () {
-          res.render('voices/show.html', {});
-        },
-        'application/json': function () {
-          res.json(req.activeVoice);
+        html: function () {
+          res.render('voices/show.html', {
+            pageName : 'page-inner page-voice'
+          });
         }
       });
     },

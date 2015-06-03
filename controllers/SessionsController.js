@@ -25,7 +25,6 @@ var SessionsController = Class('SessionsController')({
      * @method: login
      */
     login : function (req, res) {
-      console.log(req.user);
       res.render('sessions/login.html', {layout : 'login'});
     },
 
@@ -94,7 +93,6 @@ var SessionsController = Class('SessionsController')({
      * @method: tokenAuth
      */
     tokenAuth : function tokenAuth(req, res, next) {
-      console.log('token')
       passport.authenticate('token', function(err, user, info) {
         if (err) {
           return next(err);
@@ -115,7 +113,6 @@ var SessionsController = Class('SessionsController')({
           }
 
           req.logIn(user, function (err) {
-            console.log('logged in')
             if (err) { return next(err); }
 
             if (req.params.reset) {
@@ -152,6 +149,14 @@ var SessionsController = Class('SessionsController')({
 
         req.logIn(user, function (err) {
           if (err) { return next(err); }
+
+          if (req.body.rememberme) {
+            var expires;
+
+            expires =  new Date(Date.now() + 3600000 * 24 * 365); //Add one more year
+
+            req.session.cookie.expires = expires;
+          }
 
           req.flash('success', 'Welcome to CrowdVoice.by.');
           return res.redirect('/');
