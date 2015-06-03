@@ -174,6 +174,32 @@ Class(CV, 'Login').inherits(Widget)({
             this.formEl = this.element.find('form');
             this.checkEl = this.element.find('.input-checkbox');
 
+            if (this.formType === 'signup') {
+
+              this.formEl.find('.username').on('keyup', function(e) {
+                $.ajax({
+                  type: "POST",
+                  url: '/signup/check-username',
+                  headers: { 'csrf-token': login.formToken },
+                  data: { field : 'username' , value : $(e.target).val()},
+                  success: function(data) {
+                    if (data && data.username === 'unavailable') {
+                      login.errorsEl.empty();
+                      login.errorsEl.append('<p>Username is already taken.</p>')
+                      login.errorsEl.show();
+                      buttonEl.attr('disabled', true);
+                    } else {
+                      login.errorsEl.empty();
+                      login.errorsEl.hide();
+                      buttonEl.attr('disabled', false);
+                    }
+                  },
+                  dataType: 'json',
+                });
+
+              });
+            }
+
             setTimeout(function(){
                 login.show();
             }, 0);
@@ -229,7 +255,7 @@ Class(CV, 'Login').inherits(Widget)({
           switch(this.formType) {
               case 'signup':
                 checkit = new Checkit({
-                  'Username'      : 'required',
+                  'Username'      : ['required'],
                   'Name'          : 'required',
                   'Lastname'      : 'required',
                   'Profile Name'  : 'required',

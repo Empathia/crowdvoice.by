@@ -9,7 +9,6 @@ if (CONFIG.enableRedis) {
 
     // handle CSRF token errors here
     res.status(403).send(err);
-    res.send('session has expired or form tampered with');
   };
 } else {
   module.exports = function(req, res, next) {
