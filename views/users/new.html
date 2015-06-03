@@ -1,5 +1,9 @@
 <% if (errors) { %>
     <div class="controller-errors">
+        <script>
+        var formErrors = <%= JSON.stringify(errors) %>;
+        console.log(formErrors);
+        </script>
         <%= errors %>
     </div>
 <% } %>

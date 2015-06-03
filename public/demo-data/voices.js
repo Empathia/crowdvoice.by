@@ -1,6 +1,6 @@
 module.exports = [
   {
-    url : '/dev/voice',
+    url : '/jack-johnson/fukushima-disaster',
     tags : [
       {
         name: 'Current Events',
@@ -28,7 +28,7 @@ module.exports = [
   },
 
   {
-    url : '/dev/voice',
+    url : '/jack-johnson/ferguson-unrest',
     tags : [
       {
         name: 'Conflict',
@@ -45,14 +45,14 @@ module.exports = [
     description: 'An ongoing series of protests and civil disorder began the day after the fatal shooting of Michael Brown on August 9, 2014, in Ferguson, Missouri. The unrest sparked a vigorous debate',
     followers : 288,
     updated_at: '2015-04-23T13:59:47Z',
-    gallery : ['/img/sample/covers/feat-00.jpg', '/img/sample/covers/feat-01.jpg', '/img/sample/covers/feat-02.jpg'],
+    gallery : [],
     style : '',
     type : '',
     hasActions : false
   },
 
   {
-    url : '/dev/voice',
+    url : '/jack-johnson/civil-war-syria',
     tags : [
       {
         name: 'Conflict',
@@ -69,13 +69,13 @@ module.exports = [
     description: 'With thousands of schools destroyed in the conflict, and families being displaced from their homes and communities, maintaining any meaningful form of structured education',
     followers : 763,
     updated_at: '2015-04-22T13:59:47Z',
-    gallery : ['/img/sample/covers/feat-00.jpg', '/img/sample/covers/feat-01.jpg', '/img/sample/covers/feat-02.jpg'],
+    gallery : [],
     style : '',
     type : '',
     hasActions : false
   },
   {
-    url : '/dev/voice',
+    url : '/jack-johnson/presidential-elections-2016',
     tags : [
       {
         name: 'Politics',
@@ -99,7 +99,7 @@ module.exports = [
   },
 
   {
-    url : '/dev/voice',
+    url : '/jack-johnson/detroit-unemployment',
     tags : [
       {
         name: 'Current Events',
