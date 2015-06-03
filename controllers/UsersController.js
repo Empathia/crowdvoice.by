@@ -175,7 +175,7 @@ var UsersController = Class('UsersController').inherits(RestfulController)({
       res.format({
         json : function() {
           if (field === 'username') {
-            User.find({username : value}, function(err, response) {
+            User.find(["username = lower(trim( ' ' from ?))", [value]], function(err, response) {
               if (err) {
                 return next(err)
               }
