@@ -23,7 +23,8 @@ Class(CV, 'VoiceTimelineJumpToDateItem').inherits(Widget).includes(CV.WidgetUtil
 
         clickHandler : function clickHandler() {
             console.log(this.date);
-            CV.VoiceTimelineJumpToDateItem.dispatch('itemClicked', {dataString: this.date});
+            CV.VoiceTimelineJumpToDateItem.dispatch('itemClicked', {dateString: this.date});
+            this.parent.updateActivateOption(this.date);
         },
 
         destroy : function destroy() {
