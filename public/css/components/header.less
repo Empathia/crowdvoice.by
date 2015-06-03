@@ -1,19 +1,26 @@
 /* =========================================================================== *
  *  home page
  * =========================================================================== */
-.page-home {
-  .cv-main-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1;
-  }
+body.page-home > .cv-main-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
 }
 
 /* =========================================================================== *
  *  inner pages
  * =========================================================================== */
+body.page-inner .cv-main-header {
+  position: absolute;
+  left: 0;
+  right: 0;
+
+  .cv-main-logo-type {
+    padding-left: 1.5rem;
+  }
+}
+
 /*.page-inner {*/
   .header-login-actions {
     /*padding-top: 1.45rem;*/
@@ -44,7 +51,8 @@
 /* =========================================================================== *
  *  globally shared
  * =========================================================================== */
-.cv-main-header {
+body > .cv-main-header {
+  z-index: 1;
   height: @cv-header-height;
   border-bottom: 2px solid rgba(0,0,0,.15);
 }
@@ -71,10 +79,4 @@
 
 .header-search {
   padding-right: 1.5rem;
-}
-
-.page-inner {
-  .cv-main-header .cv-main-logo-type {
-    padding-left: 1.5rem;
-  }
 }

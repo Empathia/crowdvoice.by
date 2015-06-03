@@ -58,6 +58,7 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
 
             this.el = this.element[0];
             this._window = window;
+            this._scrollableArea = document.getElementsByClassName('yield')[0];
             this.clockElement = this.el.querySelector('.cv-voice-timeline-clock');
             this.hourElement = this.el.querySelector('.timeline-clock-h');
             this.minutesElement = this.el.querySelector('.timeline-clock-m');
@@ -86,7 +87,7 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
             this.readAndUpdateRef = this._readAndUpdate.bind(this);
 
             this.scrollHandlerRef = this._scrollHandler.bind(this);
-            this._window.addEventListener('scroll', this.scrollHandlerRef, false);
+            this._scrollableArea.addEventListener('scroll', this.scrollHandlerRef, false);
 
             return this;
         },
@@ -95,7 +96,7 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
          * @method _scrollHandler <private> [Function]
          */
         _scrollHandler : function _scrollHandler() {
-            this._lastScrollY = window.scrollY;
+            this._lastScrollY = this._scrollableArea.scrollTop;
 
             if (this._scheduledAnimationFrame) return;
 
@@ -193,7 +194,7 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
 
-            this._window.removeEventListener('scroll', this.scrollHandlerRef, false);
+            this._scrollableArea.removeEventListener('scroll', this.scrollHandlerRef, false);
             this.scrollHandlerRef = null;
         }
     }
