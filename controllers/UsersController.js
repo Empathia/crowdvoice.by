@@ -187,7 +187,7 @@ var UsersController = Class('UsersController').inherits(RestfulController)({
               return res.json({username : 'unavailable'});
             })
           } else if (field === 'profileName') {
-            Entity.find({'profile_name' : value}, function(err, response) {
+            Entity.find(["profile_name = lower(trim( ' ' from ?))", [value]], function(err, response) {
               if (err) {
                 return next(err)
               }
