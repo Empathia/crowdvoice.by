@@ -300,11 +300,6 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
             this._listenScrollEvent = false;
 
             if (typeof this._cachedData[dateString] === 'undefined') {
-                // @TODO: remove when backend progress gets integrated,
-                // this if for demo purpuses only
-                for (var i = 0, l = postsData.length; i < l; i++) {
-                    postsData[i].createdAt = postsData[i].createdAt.replace(/\d{4}-\d{2}/, dateString);
-                }
                 this._cachedData[dateString] = postsData;
             }
 

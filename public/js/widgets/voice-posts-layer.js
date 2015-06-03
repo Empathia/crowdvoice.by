@@ -146,20 +146,20 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
             for (i = 0; i < len; i++) {
                 currentDate = posts[i].el.dataset.date.match(/\d{4}-\d{2}-\d{2}/)[0];
 
-                indicator = new CV.VoicePostIndicator({
-                    label : posts[i].el.dataset.date,
-                    refElement : posts[i].el,
-                    zIndex : len - i
-                });
-
                 if (firstDateCoincidence !== currentDate) {
                     firstDateCoincidence = currentDate;
+
+                    indicator = new CV.VoicePostIndicator({
+                        label : posts[i].el.dataset.date,
+                        refElement : posts[i].el,
+                        zIndex : len - i
+                    });
+
                     indicator.activate();
+
+                    this.appendChild(indicator).render(frag);
+                    this._indicatorWidgets.push(indicator);
                 }
-
-                this.appendChild(indicator).render(frag);
-
-                this._indicatorWidgets.push(indicator);
             }
 
             // Avoid forced synchronous layout

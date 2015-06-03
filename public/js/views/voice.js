@@ -93,7 +93,7 @@ Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport)({
                     description : this.description,
                     firstPostDate : this.firstPostDate,
                     lastPostDate : this.lastPostDate,
-                    averagePostTotal : 24,
+                    averagePostTotal : 150,
                     averagePostWidth : 340,
                     averagePostHeight : 500,
                     scrollableArea : this.scrollableArea

@@ -52,8 +52,8 @@ Class(CV, 'VoicePostIndicator').inherits(Widget).includes(CV.WidgetUtils)({
         updatePosition : function updatePosition() {
             var y, height, alreadyRegistered;
 
-            y = this.refElement.dataset.y;
-            height = this.refElement.dataset.h;
+            y = ~~this.refElement.dataset.y;
+            height = ~~this.refElement.dataset.h;
 
             alreadyRegistered = function(value) {
                 return (value == y || y < (value + this.constructor.ITEM_HEIGHT));

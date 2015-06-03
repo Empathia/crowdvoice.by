@@ -143,6 +143,7 @@ Class(CV, 'Login').inherits(Widget)({
         formToken   : null,
         formEl      : null,
         errorsEl    : null,
+        buttonEl    : null,
 
         init : function(config){
             Widget.prototype.init.call(this, config);
@@ -175,12 +176,11 @@ Class(CV, 'Login').inherits(Widget)({
             this.element.find('form').attr('action', this.formAction);
             this.element.find('.form-token').attr('value', this.formToken);
 
-            var buttonEl = this.element.find('button');
+            this.buttonEl = this.element.find('button');
             this.formEl = this.element.find('form');
             this.checkEl = this.element.find('.input-checkbox');
 
-            var validUsername = false;
-            var validProfileName = false;
+            this.errors = {};
 
             if (this.formType === 'signup') {
 
@@ -188,10 +188,18 @@ Class(CV, 'Login').inherits(Widget)({
                   if ($("input.name").val() != "" && $("input.lastname").val() != ""){
                     if ($("input.profileName").val() == ""){
                       var profileName = $("input.name").val() +"_"+ $("input.lastname").val();
-                      $("input.profileName").val(profileName.toLowerCase()).change();
+                      //profileName = profileName.replace(/ /g, "_");
+                      $("input.profileName").val(profileName.toLowerCase().replace(/ /g, "_")).change();
                     }
                   }
               });
+
+              this.element.find("input.profileName").blur(function() {
+                  var pValue = $(this).val().toLowerCase().replace(/ /g, "_");
+                  $(this).val(pValue).change();
+              });
+
+
 
               this.formEl.find('.username').on('keyup', function(e) {
                 $.ajax({
@@ -200,20 +208,10 @@ Class(CV, 'Login').inherits(Widget)({
                   headers: { 'csrf-token': login.formToken },
                   data: { field : 'username' , value : ($(e.target).val()).trim()},
                   success: function(data) {
-                    if (data && data.username === 'unavailable') {
-                      login.errorsEl.empty();
-                      login.errorsEl.append('<p><b>Username</b> is already taken.</p>')
-                      login.errorsEl.show();
-                      buttonEl.attr('disabled', true);
-                    } else {
-                      login.errorsEl.empty();
-                      login.errorsEl.hide();
-                      buttonEl.attr('disabled', false);
-                    }
+                    login.validateFields(data, 'username', '<p><b>Username</b> is already taken.</p>');
                   },
                   dataType: 'json',
                 });
-
               });
 
               this.formEl.find('.profileName').on('propertychange change click keyup input paste', function(e) {
@@ -223,20 +221,10 @@ Class(CV, 'Login').inherits(Widget)({
                   headers: { 'csrf-token': login.formToken },
                   data: { field : 'profileName' , value : ($(e.target).val()).trim()},
                   success: function(data) {
-                    if (data && data.profileName === 'unavailable') {
-                      login.errorsEl.empty();
-                      login.errorsEl.append('<p><b>Profilename</b> is already taken.</p>')
-                      login.errorsEl.show();
-                      buttonEl.attr('disabled', true);
-                    } else {
-                      login.errorsEl.empty();
-                      login.errorsEl.hide();
-                      buttonEl.attr('disabled', false);
-                    }
+                    login.validateFields(data, 'profileName', '<p><b>Profilename</b> is already taken.</p>');
                   },
                   dataType: 'json',
                 });
-
               });
 
             }
@@ -251,7 +239,7 @@ Class(CV, 'Login').inherits(Widget)({
               window.location.href = '/';
             });
 
-            buttonEl.on("click",function(e){
+            this.buttonEl.on("click",function(e){
                 var formValidation = login.validate();
                 var validForm = formValidation[1];
                 var formErrors = formValidation[0];
@@ -277,6 +265,38 @@ Class(CV, 'Login').inherits(Widget)({
               this.checked(this.checkEl);
             }.bind(this));
 
+        },
+
+        validateFields : function(data, fieldType, message){
+          var login = this;
+          var messages = {
+            username: "<p><b>Username</b> is already taken.</p>",
+            profileName : "<p><b>Profilename</b> is already taken.</p>"
+          }
+          if (data && data[fieldType] === 'unavailable') {
+            this.errors[fieldType] = true;
+
+            login.errorsEl.empty();
+            for (error in this.errors){
+              login.errorsEl.append(messages[error]);
+            }
+            login.errorsEl.show();
+            this.buttonEl.attr('disabled', true);
+          } else {
+            delete(this.errors[fieldType]);
+
+            if (Object.keys(this.errors).length == 0){
+              login.errorsEl.empty();
+              login.errorsEl.hide();
+              this.buttonEl.attr('disabled', false);
+            } else {
+              login.errorsEl.empty();
+              for (error in this.errors){
+                login.errorsEl.append(messages[error]);
+              }
+              login.errorsEl.show();
+            }
+          }
         },
 
         checked : function(check) {
