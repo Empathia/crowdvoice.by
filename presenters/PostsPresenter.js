@@ -4,23 +4,7 @@ Module('PostsPresenter')({
 
       post.id       = hashids.encode(post.id);
       post.voiceId  = hashids.encode(post.voiceId);
-
-      async.series([function(done) {
-        Entity.findById(post.ownerId, function(err, result) {
-          if (err) {
-            return done(err);
-          }
-
-          post.owner = new Entity(result[0]);
-          post.owner.id = hashids.encode(post.ownerId);
-
-          delete post.ownerId;
-
-          done();
-        })
-      }], function(err) {
-        next(err);
-      })
+      post.ownerId  = hashids.encode(post.ownerId);
     }, function(err) {
       callback(err, posts);
     });
