@@ -23,6 +23,7 @@
     "file-loader": "^0.8.1",
     "hashids": "^1.0.1",
     "imports-loader": "^0.6.3",
+    "jsdom": "^5.4.3",
     "knex": "^0.8.3",
     "less": "^2.4.0",
     "less-loader": "^2.2.0",
