@@ -19,13 +19,14 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
         /* CONFIGURATION OPTIONS */
         firstPostDate : '',
         lastPostDate : '',
-        scrollableArea : document.getElementsByClassName('cv-main-content')[0],
+        scrollableArea : null,
 
         /* PRIVATE : ELEMENT REFERENCES */
         /* Holds a reference to the main widget's HTMLElement */
         el : null,
         /* Holds a reference to window */
         _window : null,
+        _mainContent : null,
         hourElement : null,
         minutesElement : null,
 
@@ -58,7 +59,7 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
 
             this.el = this.element[0];
             this._window = window;
-            this._scrollableArea = document.getElementsByClassName('yield')[0];
+            this._mainContent = document.getElementsByClassName('cv-main-content')[0];
             this.clockElement = this.el.querySelector('.cv-voice-timeline-clock');
             this.hourElement = this.el.querySelector('.timeline-clock-h');
             this.minutesElement = this.el.querySelector('.timeline-clock-m');
@@ -87,7 +88,7 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
             this.readAndUpdateRef = this._readAndUpdate.bind(this);
 
             this.scrollHandlerRef = this._scrollHandler.bind(this);
-            this._scrollableArea.addEventListener('scroll', this.scrollHandlerRef, false);
+            this.scrollableArea.addEventListener('scroll', this.scrollHandlerRef, false);
 
             return this;
         },
@@ -96,7 +97,7 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
          * @method _scrollHandler <private> [Function]
          */
         _scrollHandler : function _scrollHandler() {
-            this._lastScrollY = this._scrollableArea.scrollTop;
+            this._lastScrollY = this.scrollableArea.scrollY;
 
             if (this._scheduledAnimationFrame) return;
 
@@ -163,11 +164,11 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
          * This method should be called on:
          *  - init
          *  - whenever the viewport changes its dimensions
-         *  - whenever the CONFIG.scrollableArea change its length
+         *  - whenever the CONFIG._mainContent change its length
          * @method updateVars <public> [Function]
          */
         updateVars : function _pdateVars() {
-            this._totalHeight = this.scrollableArea.offsetHeight;
+            this._totalHeight = this._mainContent.offsetHeight;
             this._clientWidth = document.documentElement.clientWidth;
             this._clientHeight = document.documentElement.clientHeight - this.constructor.FOOTER_HEIGHT;
             this._rotateFactor = this._totalHeight / 500;
@@ -194,7 +195,7 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
 
-            this._scrollableArea.removeEventListener('scroll', this.scrollHandlerRef, false);
+            this.scrollableArea.removeEventListener('scroll', this.scrollHandlerRef, false);
             this.scrollHandlerRef = null;
         }
     }

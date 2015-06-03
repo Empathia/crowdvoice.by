@@ -34,6 +34,7 @@ Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport)({
         postCountElement : null,
         followersCountElement : null,
         aboutBoxButtonElement : null,
+        scrollableArea : null,
 
         init : function init(config) {
             this.status = CV.Voice.STATUS_DRAFT;
@@ -48,7 +49,12 @@ Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport)({
             this.dom.updateText(this.followersCountElement, this.format.numberUS(this.followerCount));
 
             new CV.Sidebar({
-                element : document.querySelector('.cv-main-sidebar')
+                element : document.getElementsByClassName('cv-main-sidebar')[0]
+            });
+
+            new CV.Header({
+                element : document.getElementsByClassName('cv-main-header')[0],
+                scrollableArea : document.getElementsByClassName('yield')[0]
             });
 
             // children
@@ -59,7 +65,8 @@ Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport)({
                     name : 'voiceFooter',
                     element : $('.voice-footer'),
                     firstPostDate : this.firstPostDate,
-                    lastPostDate : this.lastPostDate
+                    lastPostDate : this.lastPostDate,
+                    scrollableArea : this.scrollableArea
                 })
             );
 
@@ -88,7 +95,8 @@ Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport)({
                     lastPostDate : this.lastPostDate,
                     averagePostTotal : 24,
                     averagePostWidth : 340,
-                    averagePostHeight : 500
+                    averagePostHeight : 500,
+                    scrollableArea : this.scrollableArea
                 })
             );
         },

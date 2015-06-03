@@ -3,6 +3,7 @@ Class(CV, 'VoiceFooter').inherits(Widget)({
         /* OPTIONS */
         firstPostDate : '',
         lastPostDate : '',
+        scrollableArea : null,
 
         init : function init(config) {
             Widget.prototype.init.call(this, config);
@@ -15,7 +16,7 @@ Class(CV, 'VoiceFooter').inherits(Widget)({
                     name : 'voiceTimelineFeedback',
                     firstPostDate : this.firstPostDate,
                     lastPostDate : this.lastPostDate,
-                    scrollableArea : document.getElementsByClassName('cv-main-content')[0]
+                    scrollableArea : this.scrollableArea
                 })
             ).render(this.element);
 
