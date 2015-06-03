@@ -1,0 +1,9 @@
+{
+  "downloaders": [
+    "image",
+    "html"
+  ],
+  "scrappers": [
+    "html"
+  ]
+}

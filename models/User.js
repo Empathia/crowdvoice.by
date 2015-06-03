@@ -4,8 +4,16 @@ var User = Class('User').inherits(Argon.KnexModel)({
     username: [
       'required',
       {
+        rule: function(val) {
+          if (val.search(/\s/) !== -1) {
+            throw new Checkit.FieldError('Username cannot contain spaces.');
+          };
+        },
+        message : 'Username cannot contain spaces.'
+      },
+      {
         rule: function (val) {
-          var query = db('Users').where('username', '=', val);
+          var query = db('Users').where(["username = lower(trim( ' ' from ?))", [val]]);
           if (this.target.id) {
             query.andWhere('id', '!=', this.target.id);
           }
