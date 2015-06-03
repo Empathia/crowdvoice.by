@@ -25,35 +25,38 @@ Class(CV, 'Login').inherits(Widget)({
         <form action="" method="post" accept-charset="utf-8">\
             <div class="form-field">\
               <div class="cv-input">\
-                <input type="text" class="username" name="username" value="" placeholder="USERNAME"><br>\
+                <input type="text" class="username" name="username" value="" placeholder="Username"><br>\
               </div>\
             </div>\
             <div class="form-field">\
               <div class="cv-input">\
-                <input type="text" class="name" name="name" value="John" placeholder=""><br>\
+                <input type="text" class="name" name="name" value="" placeholder="Name"><br>\
               </div>\
             </div>\
             <div class="form-field">\
               <div class="cv-input">\
-                <input type="text" class="lastname" name="lastname" value="Doe" placeholder=""><br>\
+                <input type="text" class="lastname" name="lastname" value="" placeholder="Lastname"><br>\
+              </div>\
+            </div>\
+            <div class="form-field -row">\
+              <div class="-col-6"><span class="-dim">http://www.crowdvoice.by/@</span></div>\
+              <div class="-col-6">\
+                <div class="cv-input">\
+                  <input type="text" class="profileName" name="profileName" value="" placeholder="Profilename"><br>\
+                </div>\
               </div>\
             </div>\
             <div class="form-field">\
               <div class="cv-input">\
-                <input type="text" class="profileName" name="profileName" value="John" placeholder=""><br>\
+                <input type="text" class="email" name="email" value="" placeholder="my@email.com"><br>\
               </div>\
             </div>\
             <div class="form-field">\
               <div class="cv-input">\
-                <input type="text" class="email" name="email" value="user@crowdvoice.by" placeholder=""><br>\
+                <input type="text" class="password" name="password" value="" placeholder="Password"><br>\
               </div>\
             </div>\
-            <div class="form-field">\
-              <div class="cv-input">\
-                <input type="text" class="password" name="password" value="mysecret" placeholder=""><br>\
-              </div>\
-            </div>\
-            <div class="cv-check">\
+            <div class="cv-check" style="display: none;">\
               <input type="checkbox" class="input-checkbox isAnonymous" name="isAnonymous" value="true" checked>\
               <span class="label">Is Anonymous?</span>\
             </div>\
@@ -166,6 +169,8 @@ Class(CV, 'Login').inherits(Widget)({
                     //¯\_(ツ)_/¯
             }
 
+
+
             this.element.find('.form-container').append(formEl);
             this.element.find('form').attr('action', this.formAction);
             this.element.find('.form-token').attr('value', this.formToken);
@@ -173,6 +178,17 @@ Class(CV, 'Login').inherits(Widget)({
             var buttonEl = this.element.find('button');
             this.formEl = this.element.find('form');
             this.checkEl = this.element.find('.input-checkbox');
+
+            if ( this.formType == "signup" ){
+                this.element.find("input.name, input.lastname").blur(function() {
+                    if ($("input.name").val() != "" && $("input.lastname").val() != ""){
+                      if ($("input.profileName").val() == ""){
+                        var profileName = $("input.name").val() +"_"+ $("input.lastname").val();
+                        $("input.profileName").val(profileName.toLowerCase());
+                      }
+                    }
+                });
+            }
 
             setTimeout(function(){
                 login.show();
