@@ -7,6 +7,7 @@ var UsersController = Class('UsersController').inherits(RestfulController)({
       RestfulController.prototype._initRouter.apply(this, arguments);
 
       application.router.route('/signup').get(this.new);
+      application.router.route('/signup/check-username').post(this.checkUsername);
     },
 
     index : function index(req, res) {
@@ -117,6 +118,41 @@ var UsersController = Class('UsersController').inherits(RestfulController)({
 
           res.redirect('/users');
         });
+      });
+    },
+
+    checkUsername : function checkUsername(req, res, next) {
+      var field = req.params.field;
+      var value = req.params.value;
+
+      res.format({
+        json : function() {
+          if (field === 'username') {
+            User.find({username : value}, function(err, response) {
+              if (err) {
+                return next(err)
+              }
+
+              if (response.length === 0) {
+                return res.json({ username : 'available' });
+              }
+
+              return res.json({username : 'unavailable'});
+            })
+          } else if (field === 'profileName') {
+            Entity.find({'profile_name' : value}, function(err, response) {
+              if (err) {
+                return next(err)
+              }
+
+              if (response.length === 0) {
+                return res.json({ profileName : 'available' });
+              }
+
+              return res.json({profileName : 'unavailable'});
+            })
+          }
+        }
       });
     }
   }
