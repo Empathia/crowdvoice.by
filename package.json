@@ -15,6 +15,7 @@
     "SoundManager2": "scottschiller/SoundManager2",
     "autoprefixer-loader": "^1.2.0",
     "bcrypt-nodejs": "0.0.3",
+    "bluebird": "^2.9.27",
     "compression-webpack-plugin": "^0.2.0",
     "connect-redis": "^2.2.0",
     "css-loader": "^0.9.1",

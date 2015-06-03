@@ -35,44 +35,91 @@ var UsersController = Class('UsersController').inherits(RestfulController)({
     create : function create(req, res, next) {
       res.format({
         html : function() {
-          var entity = new Entity({
-            type: 'person',
-            name: req.body['name'],
-            lastname: req.body['lastname'],
-            profileName: req.body['profileName'],
-            isAnonymous: req.body['isAnonymous'] === "true" ? true : false
-          });
 
-          entity.save(function(err, result) {
-            if (err) {
-              res.render('users/new.html', {errors: err});
-              return;
-            }
+          var person, user, anonymous;
 
-            var user = new User({
-              entityId: entity.id,
+          async.series([function(done) {
+            person = new Entity({
+              type: 'person',
+              name: req.body['name'],
+              lastname: req.body['lastname'],
+              profileName: req.body['profileName'],
+              isAnonymous: false;
+            });
+
+            person.save(function(err, result) {
+              if (err) {
+                return done(err)
+              }
+
+              done()
+            })
+          }, function(done) {
+            user = new User({
+              entityId: person.id,
               username: req.body['username'],
               email: req.body['email'],
               password: req.body['password']
             });
 
-            user.save(function (err) {
+            user.save(function(err, result) {
               if (err) {
-                entity.destroy(function () {});
-                req.flash('error', 'There was an error creating the user.');
-                res.render('users/new.html', {errors: err});
-              } else {
-                UserMailer.new(user, entity, function(err, mailerResult) {
-                  if (err) {
-                    req.flash('error', 'There was an error sending the activation email.');
-                    return res.redirect('/');
-                  }
-
-                  req.flash('success', 'Check your email to activate your account.');
-                  res.redirect('/');
-                })
-
+                person.destroy(function(){});
+                return done(err);
               }
+
+              done()
+            })
+          }, function(done) {
+            anonymous = new Entity({
+              type: 'person',
+              name: 'Anonymous',
+              lastname: 'anonymous',
+              profileName: 'anonymous_' + hashids.encode(person.id),
+              isAnonymous: true;
+            });
+
+            anonymous.save(function(err, result) {
+              if (err) {
+                person.destroy(function(){});
+                user.destroy(function(){});
+                return done(err);
+              }
+
+              done()
+            })
+
+          }, function(done) {
+            var ownership = new EntityOwner({
+              ownerId : person.id,
+              ownedId : anonymous.id
+            });
+
+            ownership.save(function(err, result) {
+              if (err) {
+                person.destroy(function(){});
+                user.destroy(function(){});
+                anonymous.destroy(function(){});
+                return done(err);
+              }
+
+              done()
+            })
+          }], function(err) {
+            if (err) {
+              req.flash('error', 'There was an error creating the user.');
+              res.render('users/new.html', {errors: err});
+              return;
+            }
+
+            UserMailer.new(user, person, function(err, result) {
+              if (err) {
+                req.flash('error', 'There was an error sending the activation email.');
+                return res.redirect('/');
+              }
+
+              req.flash('success', 'Check your email to activate your account.');
+              res.redirect('/');
             });
 
           });
