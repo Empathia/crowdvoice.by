@@ -90,7 +90,7 @@ exports.seed = function(knex, Promise) {
     knex('Slugs').insert({
       id : 3,
       'voice_id' : 3,
-      'url' : 'civil-war-siria',
+      'url' : 'civil-war-syria',
       'created_at' : new Date(),
       'updated_at' : new Date()
     }),

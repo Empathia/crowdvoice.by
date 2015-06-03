@@ -13,7 +13,9 @@ var User = Class('User').inherits(Argon.KnexModel)({
       },
       {
         rule: function (val) {
-          var query = db('Users').where(["username = lower(trim( ' ' from ?))", [val]]);
+          val = val.toLowerCase().trim()
+          var query = db('Users').where('username', '=', val);
+
           if (this.target.id) {
             query.andWhere('id', '!=', this.target.id);
           }
