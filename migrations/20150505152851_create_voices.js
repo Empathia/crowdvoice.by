@@ -6,12 +6,13 @@ exports.up = function(knex, Promise) {
       t.increments('id').primary();
       t.string('title', 512).defaultTo(null);
       t.text('description').defaultTo(null);
-      t.string('latitude').defaultTo(null);
-      t.string('longitude').defaultTo(null);
-      t.string('location_name').defaultTo(null);
       t.integer('owner_id').index().defaultTo(0);
       t.string('status').index().notNullable();
       t.string('type').index().notNullable();
+      t.string('cover_image').defaultTo(null);
+      t.string('latitude').defaultTo(null);
+      t.string('longitude').defaultTo(null);
+      t.string('location_name').defaultTo(null);
       t.string('twitter_search', 512).defaultTo(null);
       t.dateTime('tweet_last_fetch_at').defaultTo(null);
       t.string('rss_url', 512).defaultTo(null);

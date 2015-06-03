@@ -60,7 +60,10 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
     show : function show (req, res) {
       res.format({
         'text/html': function () {
-          res.render('voices/show.html', {});
+          res.render('voices/show.html', {
+            voice : req.activeVoice,
+            pageName : 'page-inner page-voice'
+          });
         },
         'application/json': function () {
           res.json(req.activeVoice);
