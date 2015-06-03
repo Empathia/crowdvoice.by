@@ -150,6 +150,14 @@ var SessionsController = Class('SessionsController')({
         req.logIn(user, function (err) {
           if (err) { return next(err); }
 
+          if (req.body.rememberme) {
+            var expires;
+
+            expires =  new Date(Date.now() + 3600000 * 24 * 365); //Add one more year
+
+            req.session.cookie.expires = expires;
+          }
+
           req.flash('success', 'Welcome to CrowdVoice.by.');
           return res.redirect('/');
         });

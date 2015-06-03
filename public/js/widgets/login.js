@@ -85,7 +85,7 @@ Class(CV, 'Login').inherits(Widget)({
             </div>\
             <div class="-col-6">\
               <div class="cv-check">\
-                <input type="checkbox" class="input-checkbox" value="false">\
+                <input type="checkbox" class="input-checkbox" name="rememberme" value="false">\
                 <span class="label">Remember me (?)</span>\
               </div>\
             </div>\

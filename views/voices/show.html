@@ -36,7 +36,7 @@
           <%= voice.title %>
         </div>
         <div class="voice-footer-by -color-grey">
-          by Author Name
+          by <a href="/<%= owner.profileName %>" alt="<%= owner.name %> <% if (owner.lastname) { %><%= owner.lastname %><% } %>"><%= owner.name %> <% if (owner.lastname) { %><%= owner.lastname %><% } %></a>
         </div>
       </div>
       <div class="voice-footer-right -float-right">
