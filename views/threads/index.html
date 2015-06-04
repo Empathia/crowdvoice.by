@@ -45,6 +45,9 @@
     	<div class="messages-container">
     		<div class="messages-conversation">
     			<div class="msgs">
+    				<div class="no-messages">
+    					Please select a thread from the list on the left or <a hrf="#">compose a new message</a>.
+    				</div>
     				<div class="message-text" style="display: none;">
 		      			<div class="message-info">
 						    <img class="" src="/img/sample/avatars/org-06.png" alt="">
@@ -177,22 +180,44 @@
 	var mi = 1;
 
 	btn.element.on('click', function(){
-		var mt = messageText.clone();
-		mt.find('h3').text('Chu vaca ' + mi + ' ');
-		$('.msgs').append(mt);
+		//var mt = messageText.clone();
+		//mt.find('h3').text('Chu vaca ' + mi + ' ');
+		//$('.msgs').append(mt);
+		//$('.messages-conversation').scrollTop(10000);
+		//mi++;
+
+		var messageEl = messageText.clone();
+		messageEl.find('.message-data h3').text('<%= currentPerson.name %>' + " " + '<%= currentPerson.lastname %>');
+		//var date = new Date();
+		//var dateUTC = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(),  date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
+		var prettyDate = getPrettyDate(new Date());
+		messageEl.find('.message-data span').text(prettyDate);
+
+		messageEl.find('.message-data p').text(document.querySelector('.message-create textarea').value);
+		messageListEl.append(messageEl);
 		$('.messages-conversation').scrollTop(10000);
-		mi++;
+
 	});
 
 	var threads = <%= JSON.stringify(threads) %>;
 	var threadsObj = {};
 
+	var currentPersonID = '<%= currentPerson.id %>';
+
 	threads.forEach(function(thread) {
+		console.log(thread);
+
 		var threadEl = messageSide.clone();
-		threadEl.find('h3').text(thread.id);
+		var threadPartner;
+		if (thread.receiverEntity.id != currentPersonID ){
+			threadPartner = thread.receiverEntity;
+		} else{
+			threadPartner = thread.senderEntity;
+		}
+		threadEl.attr('id', threadPartner.id);
+		threadEl.find('h3').text(threadPartner.name + " " + threadPartner.lastname);
 		threadEl.find('.actions span').text(thread.unreadCount);
 		threadListEl.append(threadEl);
-		console.log(thread);
 		threadsObj[thread.id] = thread;
 
 		threadEl.on('click', function(){
@@ -228,12 +253,8 @@
           	//console.log(messageId, threadsObj[threadId].messages[messageId]);
           	var messageObj = threadsObj[threadId].messages[messageId];
 			var messageEl = messageText.clone();
-			messageEl.find('.message-data h3').text('Undefined User');
-			var userDate = new Date(messageObj.createdAt);
-    		var prettyDate = '• ' + months[userDate.getUTCMonth()] + ' ' +
-    						 userDate.getUTCDay()+ 'th, ' +
-    						 userDate.getUTCFullYear() + ' • ' +
-    						 userDate.getUTCHours() +':'+ userDate.getUTCMinutes();
+			messageEl.find('.message-data h3').text(messageObj.senderEntity.name + " " + messageObj.senderEntity.lastname);
+    		var prettyDate = getPrettyDate(new Date(messageObj.createdAt));
 			messageEl.find('.message-data span').text(prettyDate);
 			messageEl.find('.message-data p').text(messageObj.message);
 			messageListEl.append(messageEl);
@@ -241,6 +262,18 @@
 
 		$('.messages-conversation').scrollTop(10000);
 
+	}
+
+	function getPrettyDate (date){
+		var minutes = date.getUTCMinutes();
+		if(minutes <= 9){
+			minutes = '0' + minutes.toString();
+		}
+		var prettyDate = '• ' + months[date.getUTCMonth()] + ' ' +
+		date.getUTCDay()+ 'th, ' +
+		date.getUTCFullYear() + ' • ' +
+		date.getUTCHours() +':'+ minutes;
+		return prettyDate;
 	}
 
 </script>
