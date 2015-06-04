@@ -208,7 +208,6 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
     },
 
     isPersonSender : function isPersonSender(personId) {
-      // console.log(personId, this.senderPersonId)
       return personId === this.senderPersonId ? true : false;
     },
 

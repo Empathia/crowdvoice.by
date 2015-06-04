@@ -32,7 +32,7 @@ var MessagesController = Class('MessagesController')({
 
             thread.createMessage({
               type : Message.TYPE_MESSAGE,
-              senderPersonId : req.currentPerson.id,
+              senderPersonId : hashids.decode(req.currentPerson.id)[0],
               message : req.body.message
             }, function(err, message) {
               if (err) {
@@ -66,7 +66,7 @@ var MessagesController = Class('MessagesController')({
 
             message = new Message(message[0]);
 
-            var senderOrReceiver = message.isPersonSender(req.currentPerson.id) ? 'Sender' : 'Receiver';
+            var senderOrReceiver = message.isPersonSender(hashids.decode(req.currentPerson.id)[0]) ? 'Sender' : 'Receiver';
 
             message['hiddenFor' + senderOrReceiver] = true;
 
