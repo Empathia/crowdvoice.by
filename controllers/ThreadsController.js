@@ -27,26 +27,29 @@ var ThreadsController = Class('ThreadsController')({
 
     index : function index(req, res, next) {
 
-      res.format({
-        html : function() {
-          res.render('threads/index.html', {layout : 'application'});
-        },
-        json : function() {
-          MessageThread.find(['sender_person_id = ? OR receiver_entity_id = ?', [req.currentPerson.id, req.currentPerson.id]], function(err, threads) {
-            if (err) {
-              return next(err);
-            }
-
-            ThreadsPresenter.build(req, threads, function(err, result) {
-              if (err) {
-                return next(err);
-              }
-
-              return res.json(result);
-            });
-          });
+      MessageThread.find(['sender_person_id = ? OR receiver_entity_id = ?', [req.currentPerson.id, req.currentPerson.id]], function(err, threads) {
+        if (err) {
+          return next(err);
         }
+
+        ThreadsPresenter.build(req, threads, function(err, result) {
+          if (err) {
+            return next(err);
+          }
+
+          res.format({
+
+            html : function() {
+              return res.render('threads/index.html', {layout : 'application', threads : result});
+            },
+            json : function() {
+              return res.json(result);
+            }
+          });
+
+        });
       });
+
     },
 
     create : function create(req, res, next) {
