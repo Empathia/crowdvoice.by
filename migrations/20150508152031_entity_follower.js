@@ -5,9 +5,9 @@ exports.up = function(knex, Promise) {
     knex.schema.createTable('EntityFollower', function (t) {
       t.increments('id').primary();
 
-      t.integer('follower_id').defaultTo(0);
-      t.integer('followed_id').defaultTo(0);
-
+      t.integer('follower_id').defaultTo(0).index();
+      t.integer('followed_id').defaultTo(0).index();
+      t.index(['follower_id', 'followed_id'], 'following_index');
       t.timestamps();
     })
   ]);

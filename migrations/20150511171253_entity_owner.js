@@ -5,9 +5,9 @@ exports.up = function(knex, Promise) {
     knex.schema.createTable('EntityOwner', function (t) {
       t.increments('id').primary();
 
-      t.integer('owner_id').defaultTo(0);
-      t.integer('owned_id').defaultTo(0);
-
+      t.integer('owner_id').defaultTo(0).index();
+      t.integer('owned_id').defaultTo(0).index();
+      t.index(['owner_id', 'owned_id'], 'owner_owned_id');
       t.timestamps();
     })
   ]);

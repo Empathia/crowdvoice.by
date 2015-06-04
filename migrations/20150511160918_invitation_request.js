@@ -5,9 +5,9 @@ exports.up = function(knex, Promise) {
     knex.schema.createTable('InvitationRequest', function (t) {
       t.increments('id').primary();
 
-      t.integer('invitator_entity_id').defaultTo(0);
-      t.integer('invited_entity_id').defaultTo(0);
-
+      t.integer('invitator_entity_id').defaultTo(0).index();
+      t.integer('invited_entity_id').defaultTo(0).index();
+      t.index(['invitator_entity_id', 'invited_entity_id'], 'invitator_invited_index');
       t.timestamps();
     })
   ]);
