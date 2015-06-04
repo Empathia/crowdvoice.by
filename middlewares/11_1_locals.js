@@ -42,6 +42,7 @@ module.exports = function(req, res, next) {
   } else {
     res.locals.currentPerson = null;
     req.currentPerson = null;
+
     next();
   }
 

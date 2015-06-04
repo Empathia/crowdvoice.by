@@ -27,7 +27,7 @@ var ThreadsController = Class('ThreadsController')({
 
     index : function index(req, res, next) {
 
-      MessageThread.find(['sender_person_id = ? OR receiver_entity_id = ?', [req.currentPerson.id, req.currentPerson.id]], function(err, threads) {
+      MessageThread.find(['sender_person_id = ? OR receiver_entity_id = ?', [hashids.decode(req.currentPerson.id)[0], hashids.decode(req.currentPerson.id)[0]]], function(err, threads) {
         if (err) {
           return next(err);
         }
