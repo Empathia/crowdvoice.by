@@ -4,7 +4,7 @@ var Velocity = require('velocity-animate');
 
 Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
     HTML : '\
-        <div class="cv-voice-timeline-feedback">\
+        <div class="cv-voice-timeline-feedback -clickable">\
             <div class="cv-voice-timeline-clock">\
                 <span class="timeline-clock-h"></span>\
                 <span class="timeline-clock-m"></span>\
