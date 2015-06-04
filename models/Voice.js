@@ -110,10 +110,14 @@ var Voice = Class('Voice').inherits(Argon.KnexModel)({
   },
 
   findBySlug : function findBySlug (slugString, done) {
-    Slug.find({url: slugString}, function (err, result) {
+
+    Slug.find(["url = lower(trim( ' ' from ?))", [slugString]], function (err, result) {
       if (err) { done(err); return; }
+
       if (result.length === 0) { done(new NotFoundError('Voice not found')); }
+
       var slug = new Slug(result[0]);
+
       slug.voice(function (err, result) {
         done(err, new Voice(result));
       });

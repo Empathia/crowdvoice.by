@@ -6,7 +6,7 @@ var Entity = Class('Entity').inherits(Argon.KnexModel)({
       {
         rule: function (val) {
           if (!val.match(/(person|organization)/)) {
-            throw new Checkit.FieldError('* Entity type must be person|organization.')
+            throw new Checkit.FieldError('Entity type must be person|organization.')
           }
         },
         message: 'Entity type must be person|organization'
@@ -20,9 +20,10 @@ var Entity = Class('Entity').inherits(Argon.KnexModel)({
       {
         rule: function (val) {
           if (val.match(/[^a-zA-Z0-9_-]/)) {
-            throw new Checkit.FieldError('* profileName should only contain letters, numbers and dashes.')
+            throw new Checkit.FieldError('Profilename should only contain letters, numbers and dashes.')
           }
-        }
+        },
+        message : 'Profilename should only contain letters, numbers and dashes.'
       }
     ]
   },
@@ -40,6 +41,16 @@ var Entity = Class('Entity').inherits(Argon.KnexModel)({
       isAnonymous: false,
       createdAt: null,
       updatedAt: null,
+
+      init : function init(config) {
+        Argon.KnexModel.prototype.init.call(this, config);
+
+        var model = this;
+
+        this.bind('beforeSave', function() {
+          model.profileName = model.profileName.toLowerCase().trim();
+        });
+      },
 
       /* Starts following an entity
        * @method: followEntity

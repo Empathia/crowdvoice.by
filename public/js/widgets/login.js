@@ -39,10 +39,10 @@ Class(CV, 'Login').inherits(Widget)({
               </div>\
             </div>\
             <div class="form-field -row">\
-              <div class="-col-6"><span class="-dim">http://www.crowdvoice.by/@</span></div>\
+              <div class="-col-6"><span class="-dim">http://www.crowdvoice.by/</span></div>\
               <div class="-col-6">\
                 <div class="cv-input">\
-                  <input type="text" class="profileName" name="profileName" value="" placeholder="Profilename"><br>\
+                  <input type="text" class="profileName" name="profileName" value="" placeholder="profile-name"><br>\
                 </div>\
               </div>\
             </div>\
@@ -53,7 +53,7 @@ Class(CV, 'Login').inherits(Widget)({
             </div>\
             <div class="form-field">\
               <div class="cv-input">\
-                <input type="text" class="password" name="password" value="" placeholder="Password"><br>\
+                <input type="password" class="password" name="password" value="" placeholder="Password"><br>\
               </div>\
             </div>\
             <div class="cv-check" style="display: none;">\
@@ -315,12 +315,39 @@ Class(CV, 'Login').inherits(Widget)({
           switch(this.formType) {
               case 'signup':
                 checkit = new Checkit({
-                  'Username'      : ['required'],
-                  'Name'          : 'required',
-                  'Lastname'      : 'required',
-                  'Profile Name'  : 'required',
-                  'Email'         : ['required', 'email'],
-                  'Password'      : 'required'
+                  'Username'      : [{
+                    rule: 'required',
+                    message: 'Username is required',
+                  }],
+                  'Name'          : [{
+                    rule: 'required',
+                    message: 'Name is required',
+                  }],
+                  'Lastname'      : [{
+                    rule: 'required',
+                    message: 'Lastname is required',
+                  }],
+                  'Profile Name'  : ['required',
+                    {
+                      rule: function (val) {
+                        if (val.match(/[^a-zA-Z0-9_-]/)) {
+                          throw new Checkit.FieldError('Profile Name should only contain letters, numbers and dashes.')
+                        }
+                      },
+                      message : 'Profile Name should only contain letters, numbers and dashes.'
+                    }
+                  ],
+                  'Email'         : [{
+                    rule: 'required',
+                    message: 'Email is required',
+                  }, {
+                    rule : 'email',
+                    message : 'Email is not valid'
+                  }],
+                  'Password'      : [{
+                    rule: 'required',
+                    message: 'Password is required',
+                  }]
                 });
 
                 body = {

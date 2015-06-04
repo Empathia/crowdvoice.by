@@ -108,7 +108,24 @@ var UsersController = Class('UsersController').inherits(RestfulController)({
           }], function(err) {
             if (err) {
               req.flash('error', 'There was an error creating the user.');
-              res.render('users/new.html', {errors: err});
+
+              if (err.errors) {
+
+                var errors = [];
+
+                Object.keys(err.errors).forEach(function(k) {
+                  err.errors[k].errors.forEach(function(error) {
+                    var obj = {}
+                    obj[k] = error.message
+                    errors.push(obj);
+                  })
+                })
+              } else {
+                var errors = err;
+              }
+
+              res.render('users/new.html', {errors: errors});
+
               return;
             }
 
