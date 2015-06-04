@@ -187,7 +187,7 @@
         <span class="sidebar-link-label">On the Map</span>
       </a>
 
-      <% if (typeof currentUser !== "undefined") { %>
+      <% if (currentPerson) { %>
         <h4 class="sidebar-heading -upper">My Stuff</h4>
 
         <a href="" class="sidebar-link">
@@ -205,7 +205,7 @@
           <span class="sidebar-link-label">Stats</span>
         </a>
 
-        <a href="" class="sidebar-link">
+        <a href="/<%= currentPerson.profileName %>/messages" class="sidebar-link">
           <svg class="sidebar-link-svg"><use xlink:href="#svg-messages-read"></use></svg>
           <span class="sidebar-link-label">Messages</span>
         </a>
