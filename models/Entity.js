@@ -271,15 +271,19 @@ var Entity = Class('Entity').inherits(Argon.KnexModel)({
       },
 
       toJSON : function toJSON() {
+        var model = this;
         var json = {};
 
         Object.keys(this).forEach(function(property) {
-          if (property === 'id') {
-            json[property] = hashids.encode(this[property]);
+
+          if (property === 'id' && !isNaN(model.id)) {
+            json[property] = hashids.encode(model.id);
           } else {
-            json[property] = this[property];
+            json[property] = model[property];
           }
         });
+
+        delete json.eventListeners;
 
         return json;
       }

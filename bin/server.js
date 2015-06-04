@@ -2,14 +2,10 @@
 
 var application = require('neonode-core');
 
-var io = require('socket.io')(application.server);
-var posts = require('../public/demo-data/posts');
-var monthData = [];
+// global.ACL = require('./../lib/ACL/ACL.js');
+// global.ACL = require('./../lib/ACL/visitor.js');
 
-// 12 posts * n
-for (var i = 0; i < 2; i++) {
-    monthData = monthData.concat(posts);
-}
+var io = require('socket.io')(application.server);
 
 application._serverStart();
 

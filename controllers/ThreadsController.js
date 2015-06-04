@@ -40,6 +40,7 @@ var ThreadsController = Class('ThreadsController')({
           res.format({
 
             html : function() {
+
               return res.render('threads/index.html', {layout : 'application', threads : result});
             },
             json : function() {
