@@ -1,10 +1,12 @@
 {
   "downloaders": [
     "image",
+    "vimeo",
     "html"
   ],
   "scrappers": [
     "image",
+    "vimeo",
     "html"
   ]
 }
