@@ -3,7 +3,7 @@ Module('ThreadsPresenter')({
     async.each(threads, function(thread, next) {
       var threadInstance = new MessageThread(thread);
 
-      var senderOrReceiver = threadInstance.isPersonSender(req.currentPerson.id) ? 'Sender' : 'Receiver';
+      var senderOrReceiver = threadInstance.isPersonSender(hashids.decode(req.currentPerson.id)[0]) ? 'Sender' : 'Receiver';
 
       thread.lastSeen     = thread['lastSeen' + senderOrReceiver]
       thread.messageCount = thread['messageCount' + senderOrReceiver];
@@ -68,14 +68,11 @@ Module('ThreadsPresenter')({
           messages.forEach(function(message) {
             var messageInstance = new Message(message);
 
-            var messageSenderOrReceiver = messageInstance.isPersonSender(req.currentPerson.id) ? 'Sender' : 'Receiver';
+            var messageSenderOrReceiver = messageInstance.isPersonSender(hashids.decode(req.currentPerson.id)[0]) ? 'Sender' : 'Receiver';
 
             message.hidden = message['hiddenFor' + messageSenderOrReceiver];
 
-
-            var threadInstance = new MessageThread(thread);
-
-            if (threadInstance.isPersonSender(req.currentPerson.id)) {
+            if (messageSenderOrReceiver === 'Sender') {
               message.senderEntity = thread.senderEntity;
               message.receiverEntity = thread.receiverEntity;
             } else {

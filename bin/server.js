@@ -2,8 +2,9 @@
 
 var application = require('neonode-core');
 
-// global.ACL = require('./../lib/ACL/ACL.js');
-// require('./../lib/ACL/visitor.js');
+global.ACL = require('./../lib/ACL/ACL.js');
+require('./../lib/ACL/visitor.js');
+require('./../lib/ACL/person.js');
 
 var io = require('socket.io')(application.server);
 
