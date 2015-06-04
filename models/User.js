@@ -81,7 +81,11 @@ var User = Class('User').inherits(Argon.KnexModel)({
      */
     entity : function entity (done) {
       Entity.find({id: this.entityId}, function (err, result) {
-        done(err, result[0]);
+        result = result[0];
+
+        result.id = hashids.encode(result.id);
+
+        done(err, result);
       });
     },
 
