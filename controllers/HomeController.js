@@ -23,38 +23,42 @@ var HomeController = Class('HomeController')({
       application.router.route('/dev/kabinett').get(this.kabinett);
     },
 
-    index : function(req, res) {
-      res.render('home/index.html', {
-        layout : 'application',
+    index : function(req, res, next) {
+      if (ACL.isAllowed('show', 'homepage', req.role, null)) {
+        res.render('home/index.html', {
+          layout : 'application',
 
-        pageName : 'page-home',
+          pageName : 'page-home',
 
-        /* =========================================================================== *
-         *  HEADER STATS
-         * =========================================================================== */
-        globalStats : {
-          countries: 36,
-          organizations: 148,
-          voices: 312,
-          posts: 579371,
-          people: 22665729
-        },
+          /* =========================================================================== *
+           *  HEADER STATS
+           * =========================================================================== */
+          globalStats : {
+            countries: 36,
+            organizations: 148,
+            voices: 312,
+            posts: 579371,
+            people: 22665729
+          },
 
-        /* =========================================================================== *
-         *  FEATURED VOICES
-         * =========================================================================== */
-        featuredVoices : require('./../public/demo-data/voices.js'),
+          /* =========================================================================== *
+           *  FEATURED VOICES
+           * =========================================================================== */
+          featuredVoices : require('./../public/demo-data/voices.js'),
 
-        /* =========================================================================== *
-         *  CATEGORIES
-         * =========================================================================== */
-        categories : require('./../public/demo-data/categories.js'),
+          /* =========================================================================== *
+           *  CATEGORIES
+           * =========================================================================== */
+          categories : require('./../public/demo-data/categories.js'),
 
-        /* =========================================================================== *
-         *  MOST ACTIVE ORGANIZATIONS
-         * =========================================================================== */
-        mostActiveOrganizations : require('./../public/demo-data/organizations.js')
-      });
+          /* =========================================================================== *
+           *  MOST ACTIVE ORGANIZATIONS
+           * =========================================================================== */
+          mostActiveOrganizations : require('./../public/demo-data/organizations.js')
+        });
+      } else {
+        next(new NotFoundError('Role ' + req.role + ' not found'));
+      }
     },
 
     about : function(req, res) {

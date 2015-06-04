@@ -80,7 +80,7 @@ var User = Class('User').inherits(Argon.KnexModel)({
      * @method entity
      */
     entity : function entity (done) {
-      Entity.find({id: this.entityId}, function (err, result) {
+      Entity.find({id: this.entityId, is_anonymous : false}, function (err, result) {
         result = result[0];
 
         result.id = hashids.encode(result.id);

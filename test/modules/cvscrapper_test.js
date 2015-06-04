@@ -9,6 +9,10 @@ var scrapper = require(__dirname + '/../../lib/cvscrapper');
 //   console.log(arguments);
 // });
 
-scrapper.processUrl('https://vimeo.com/channels/staffpicks/129295235', function (err, info) {
+// scrapper.processUrl('https://vimeo.com/channels/staffpicks/129295235', function (err, info) {
+//   console.log(arguments);
+// });
+
+scrapper.processUrl('https://www.youtube.com/watch?v=rEGOihjqO9w', function (err, info) {
   console.log(arguments);
 });
