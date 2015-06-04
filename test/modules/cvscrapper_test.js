@@ -13,6 +13,10 @@ var scrapper = require(__dirname + '/../../lib/cvscrapper');
 //   console.log(arguments);
 // });
 
-scrapper.processUrl('https://www.youtube.com/watch?v=rEGOihjqO9w', function (err, info) {
+// scrapper.processUrl('https://www.youtube.com/watch?v=rEGOihjqO9w', function (err, info) {
+//   console.log(arguments);
+// });
+
+scrapper.processUrl('https://www.flickr.com/photos/110186192@N04/18229589969/in/explore-2015-06-03/', function (err, info) {
   console.log(arguments);
 });
