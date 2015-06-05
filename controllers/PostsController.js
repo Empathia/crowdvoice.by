@@ -17,7 +17,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
       application.router.route('/:profileName/:voiceSlug/:postId')
         .get(this.filterAction(controller, 'show'))
-        .put(this.filterAction(controller, 'update'))
+        //.put(this.filterAction(controller, 'update'))
         .delete(this.filterAction(controller, 'destroy'));
     },
 

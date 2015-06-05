@@ -35,19 +35,18 @@
       	</div>
     </div>
     <div class="messages-body">
+	<div class="no-messages">
+		Please select a thread from the list on the left or <a hrf="#">compose a new message</a>.
+	</div>
     <div class="messages-body-container">
 
     	<div class="messages-body-header">
-    		Conversation with Pepe Pecas <a href="#">one link</a> and after a while <a href="#"><b>another bold</b></a>
+    		<span>Conversation with Pepe Pecas <a href="#">one link</a> and after a while <a href="#"><b>another bold</b></a></span>
       		<div class="action-icon"><img src="/img/sample/icons/trashcan.png" alt=""></div>
-
     	</div>
     	<div class="messages-container">
     		<div class="messages-conversation">
     			<div class="msgs">
-    				<div class="no-messages">
-    					Please select a thread from the list on the left or <a hrf="#">compose a new message</a>.
-    				</div>
     				<div class="message-text" style="display: none;">
 		      			<div class="message-info">
 						    <img class="" src="/img/sample/avatars/org-06.png" alt="">
@@ -100,25 +99,25 @@
 
 <script>
   	$( document ).ready(function() {
+  		resizeMessages();
+	});
 
+  	function resizeMessages () {
   		var chatHeight = $(window).height() - ($('.profile-messages-intro').outerHeight() + $('.cv-main-header').outerHeight());
-		$('.messages-sidebar, .messages-body-container').height(chatHeight);
-
+		$('.messages-sidebar, .messages-body, .messages-body-container').height(chatHeight);
 		var sideMessagesHeight = chatHeight - $('.messages-search').outerHeight();
-
 		$('.messages-list').css({'overflow-y':'scroll', 'height': sideMessagesHeight+'px'});
-
 		var bodyMessagesHeight = chatHeight - ($('.messages-body-header').outerHeight() + $('.message-create').outerHeight());
 		$('.messages-conversation').height(bodyMessagesHeight);
-
-
-	});
+  	}
 
   	var searchElement = document.querySelector('.messages-search');
   	var createElement = document.querySelector('.message-create');
+  	var noMessagesEl = $(document.querySelector('.no-messages'));
+  	var messagesBodyHeaderEl = $(document.querySelector('.messages-body-header'));
+  	var messagesBodyContainerEl = $(document.querySelector('.messages-body-container'));
   	var threadListEl = $(document.querySelector('.messages-list'));
   	var messageListEl = $(document.querySelector('.msgs'));
-
 
 	var messageText = $('<div class="message-text">\
 			      			<div class="message-info">\
@@ -180,29 +179,38 @@
 	var mi = 1;
 
 	btn.element.on('click', function(){
-		//var mt = messageText.clone();
-		//mt.find('h3').text('Chu vaca ' + mi + ' ');
-		//$('.msgs').append(mt);
-		//$('.messages-conversation').scrollTop(10000);
-		//mi++;
+		//var date = new Date();
+		//var dateUTC = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(),  date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
 
 		var messageEl = messageText.clone();
 		messageEl.find('.message-data h3').text('<%= currentPerson.name %>' + " " + '<%= currentPerson.lastname %>');
-		//var date = new Date();
-		//var dateUTC = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(),  date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
 		var prettyDate = getPrettyDate(new Date());
 		messageEl.find('.message-data span').text(prettyDate);
-
 		messageEl.find('.message-data p').text(document.querySelector('.message-create textarea').value);
 		messageListEl.append(messageEl);
 		$('.messages-conversation').scrollTop(10000);
+
+		var postMessageUrl = '/'+ currentPersonProfileName + '/messages/'+ currentThreadID;
+
+		$.ajax({
+          type: "POST",
+          url: postMessageUrl,
+          headers: { 'csrf-token': token },
+          data: { message : 'profileName'},
+          success: function(data) {
+            console.log('Message created');
+          }
+        });
 
 	});
 
 	var threads = <%= JSON.stringify(threads) %>;
 	var threadsObj = {};
 
+	var currentThreadID;
 	var currentPersonID = '<%= currentPerson.id %>';
+	var currentPersonProfileName = '<%= currentPerson.profileName %>';
+	var token = '<%= csrfToken %>';
 
 	threads.forEach(function(thread) {
 		console.log(thread);
@@ -215,13 +223,14 @@
 			threadPartner = thread.senderEntity;
 		}
 		threadEl.attr('id', threadPartner.id);
-		threadEl.find('h3').text(threadPartner.name + " " + threadPartner.lastname);
+		var threadPartnerName = threadPartner.name + " " + threadPartner.lastname;
+		threadEl.find('h3').text(threadPartnerName);
 		threadEl.find('.actions span').text(thread.unreadCount);
 		threadListEl.append(threadEl);
 		threadsObj[thread.id] = thread;
 
 		threadEl.on('click', function(){
-			threadAction(thread.id);
+			threadAction(thread.id, threadPartnerName);
 		});
 
 	});
@@ -230,10 +239,29 @@
 
     var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-
-	function threadAction (threadId){
+	function threadAction (threadId, threadPartnerName){
 		//console.log(threadId);
+		currentThreadID = threadId;
+		noMessagesEl.hide();
+		messagesBodyContainerEl.addClass('active');
 		messageListEl.empty();
+
+		messagesBodyHeaderEl.find('span').text('Conversation with ' + threadPartnerName);
+
+		resizeMessages();
+
+		//currentPersonProfileName
+		///currentPersonProfileName/messages/threadId
+		var updateThreadUrl = '/'+ currentPersonProfileName + '/messages/'+ threadId;
+		console.log(updateThreadUrl); //  /jack-johnson/messages/K8adgKWgZPlo
+		$.ajax({
+          type: "PUT",
+          url: updateThreadUrl,
+          headers: { 'csrf-token': token },
+          success: function(data) {
+            console.log('Thread updated');
+          }
+        });
 
 		//for (messageId in threadsObj[threadId].messages){
 		//	var messageObj = threadsObj[threadId].messages[messageId];
