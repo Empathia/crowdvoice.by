@@ -22,16 +22,7 @@
       	</article>
       	<div class="messages-search"></div>
       	<div class="messages-list">
-      		<div class="message-side" style="display: none;">
-      			<div class="message-info">
-				    <img class="" src="/img/sample/avatars/org-06.png" alt="">
-	      			<h3>Juan Solo</h3>
-	      			<span>May the taco be with you</span>
-      			</div>
-      			<div class='actions'>
-      				<span>3</span>
-      			</div>
-      		</div>
+
       	</div>
     </div>
     <div class="messages-body">
@@ -141,7 +132,23 @@
 			      			</div>\
 			      		</div>');
 
-	new CV.Input({type : 'search', placeholder : 'Search...'}).render(searchElement);
+	var searchInput = new CV.Input({type : 'search', placeholder : 'Search...'}).render(searchElement);
+
+	$(searchInput.element).find('input').on('keyup', function(){
+
+		var searchStr = $(this).val();
+		threadListEl.find('.message-side').each(function( index, value ) {
+
+			var userStr = $(this).find('h3').text().toLowerCase();
+
+			if (userStr.indexOf(searchStr) == 0){
+				$(this).show();
+			}else{
+				$(this).hide();
+			}
+
+		});
+	});
 
 	var areaText = new CV.Input({style : '', type : '', isArea : true, placeholder : 'Write a reply'}).render(createElement);
 
@@ -188,6 +195,7 @@
           data: { message : document.querySelector('.message-create textarea').value},
           success: function(data) {
             console.log(data.message);
+            document.querySelector('.message-create textarea').value = "";
             var messageEl = messageText.clone();
 			messageEl.find('.message-data h3').text('<%= currentPerson.name %>' + " " + '<%= currentPerson.lastname %>');
 			messageEl.find('.message-data span').text(moment(new Date().toISOString()).format('• MMMM Do, YYYY • h:mm a'));
@@ -207,6 +215,7 @@
 	var currentPersonProfileName = '<%= currentPerson.profileName %>';
 	var token = '<%= csrfToken %>';
 
+
 	threads.forEach(function(thread) {
 		console.log(thread);
 
@@ -220,7 +229,13 @@
 		threadEl.attr('id', threadPartner.id);
 		var threadPartnerName = threadPartner.name + " " + threadPartner.lastname;
 		threadEl.find('h3').text(threadPartnerName);
-		threadEl.find('.actions span').text(thread.unreadCount);
+
+		if (thread.unreadCount > 0) {
+			threadEl.find('.actions span').text(thread.unreadCount);
+		} else {
+			threadEl.find('.actions').hide();
+		}
+
 		threadListEl.append(threadEl);
 		threadsObj[thread.id] = thread;
 
@@ -247,6 +262,8 @@
 
 		if (!$(threadEl).hasClass('updated')){
 			$(threadEl).addClass('updated');
+			$(threadEl).find('.actions').hide();
+
 			var updateThreadUrl = '/'+ currentPersonProfileName + '/messages/'+ threadId;
 			console.log(updateThreadUrl); //  /jack-johnson/messages/K8adgKWgZPlo
 			$.ajax({
