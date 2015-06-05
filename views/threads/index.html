@@ -143,7 +143,7 @@
 
 	new CV.Input({type : 'search', placeholder : 'Search...'}).render(searchElement);
 
-	new CV.Input({style : '', type : '', isArea : true, placeholder : 'Write a reply'}).render(createElement);
+	var areaText = new CV.Input({style : '', type : '', isArea : true, placeholder : 'Write a reply'}).render(createElement);
 
 	var btn = new CV.Button({
 		style   : 'primary',
@@ -179,26 +179,22 @@
 	var mi = 1;
 
 	btn.element.on('click', function(){
-		//var date = new Date();
-		//var dateUTC = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(),  date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
-
-		var messageEl = messageText.clone();
-		messageEl.find('.message-data h3').text('<%= currentPerson.name %>' + " " + '<%= currentPerson.lastname %>');
-		var prettyDate = getPrettyDate(new Date());
-		messageEl.find('.message-data span').text(prettyDate);
-		messageEl.find('.message-data p').text(document.querySelector('.message-create textarea').value);
-		messageListEl.append(messageEl);
-		$('.messages-conversation').scrollTop(10000);
 
 		var postMessageUrl = '/'+ currentPersonProfileName + '/messages/'+ currentThreadID;
-
 		$.ajax({
           type: "POST",
           url: postMessageUrl,
           headers: { 'csrf-token': token },
-          data: { message : 'profileName'},
+          data: { message : document.querySelector('.message-create textarea').value},
           success: function(data) {
-            console.log('Message created');
+            console.log(data.message);
+            var messageEl = messageText.clone();
+			messageEl.find('.message-data h3').text('<%= currentPerson.name %>' + " " + '<%= currentPerson.lastname %>');
+			var prettyDate = getPrettyDate(new Date());
+			messageEl.find('.message-data span').text(prettyDate);
+			messageEl.find('.message-data p').text(data.message);
+			messageListEl.append(messageEl);
+			$('.messages-conversation').scrollTop(10000);
           }
         });
 
@@ -230,7 +226,7 @@
 		threadsObj[thread.id] = thread;
 
 		threadEl.on('click', function(){
-			threadAction(thread.id, threadPartnerName);
+			threadAction(thread.id, threadPartnerName, this);
 		});
 
 	});
@@ -239,7 +235,7 @@
 
     var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-	function threadAction (threadId, threadPartnerName){
+	function threadAction (threadId, threadPartnerName, threadEl){
 		//console.log(threadId);
 		currentThreadID = threadId;
 		noMessagesEl.hide();
@@ -250,18 +246,19 @@
 
 		resizeMessages();
 
-		//currentPersonProfileName
-		///currentPersonProfileName/messages/threadId
-		var updateThreadUrl = '/'+ currentPersonProfileName + '/messages/'+ threadId;
-		console.log(updateThreadUrl); //  /jack-johnson/messages/K8adgKWgZPlo
-		$.ajax({
-          type: "PUT",
-          url: updateThreadUrl,
-          headers: { 'csrf-token': token },
-          success: function(data) {
-            console.log('Thread updated');
-          }
-        });
+		if (!$(threadEl).hasClass('updated')){
+			$(threadEl).addClass('updated');
+			var updateThreadUrl = '/'+ currentPersonProfileName + '/messages/'+ threadId;
+			console.log(updateThreadUrl); //  /jack-johnson/messages/K8adgKWgZPlo
+			$.ajax({
+	          type: "PUT",
+	          url: updateThreadUrl,
+	          headers: { 'csrf-token': token },
+	          success: function(data) {
+	            console.log('Thread updated');
+	          }
+	        });
+		}
 
 		//for (messageId in threadsObj[threadId].messages){
 		//	var messageObj = threadsObj[threadId].messages[messageId];
@@ -277,31 +274,17 @@
 		//	messageListEl.append(messageEl);
 		//}
 
-		Object.keys(threadsObj[threadId].messages).sort().reverse().forEach(function(messageId, i) {
-          	//console.log(messageId, threadsObj[threadId].messages[messageId]);
+		Object.keys(threadsObj[threadId].messages).sort().forEach(function(messageId, i) {
           	var messageObj = threadsObj[threadId].messages[messageId];
 			var messageEl = messageText.clone();
 			messageEl.find('.message-data h3').text(messageObj.senderEntity.name + " " + messageObj.senderEntity.lastname);
-    		var prettyDate = getPrettyDate(new Date(messageObj.createdAt));
-			messageEl.find('.message-data span').text(prettyDate);
+			messageEl.find('.message-data span').text(moment(new Date(messageObj.createdAt).toISOString()).format('• MMMM Do, YYYY • h:mm a'));
 			messageEl.find('.message-data p').text(messageObj.message);
 			messageListEl.append(messageEl);
        	});
 
 		$('.messages-conversation').scrollTop(10000);
 
-	}
-
-	function getPrettyDate (date){
-		var minutes = date.getUTCMinutes();
-		if(minutes <= 9){
-			minutes = '0' + minutes.toString();
-		}
-		var prettyDate = '• ' + months[date.getUTCMonth()] + ' ' +
-		date.getUTCDay()+ 'th, ' +
-		date.getUTCFullYear() + ' • ' +
-		date.getUTCHours() +':'+ minutes;
-		return prettyDate;
 	}
 
 </script>

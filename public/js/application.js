@@ -20,6 +20,9 @@ require('./../css/style.less');
 var Checkit = require('./vendor/checkit.js');
 window.Checkit = Checkit;
 
+var moment = require('moment');
+window.moment = moment;
+
 // widgets
 require('./widgets/header.js');
 require('./widgets/sidebar.js');
