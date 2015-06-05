@@ -7,6 +7,7 @@ require('./../lib/ACL/visitor.js');
 require('./../lib/ACL/person.js');
 
 var io = require('socket.io')(application.server);
+global.moment = require('moment');
 
 require('./../lib/routes.js');
 

@@ -152,6 +152,8 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
 
         thread['lastSeen' + senderOrReceiver] = new Date(Date.now());
 
+        thread.updatedAt = thread.updatedAt;
+
         thread.save(function(err, result) {
           if (err) {
             return next(err);
