@@ -1,0 +1,128 @@
+.cv-post-creator {
+  z-index: 2;
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,.85);
+
+  &.active {
+    display: block;
+  }
+
+  /* error state */
+  .-on-error {
+    display: none;
+  }
+
+  &.has-error {
+    .-on-error {
+      display: block;
+    }
+  }
+}
+
+.cv-post-creator__close {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  right: 15px;
+  top: 20px;
+  fill: @color-white;
+}
+
+.cv-post-creator__header {
+  position: fixed;
+  top: 0;
+  left: 50px;
+  right: 50px;
+  height: 60px;
+  background-color: #fff;
+  border-radius: 0 0 7px 7px;
+}
+
+.header-left,
+.header-right,
+.header-flex {
+  height: 100%;
+}
+
+.header-left {
+  padding: 1.5rem 1.5rem 0;
+  border-right-width: 1px;
+  border-color: @color-grey-light;
+}
+
+.header-right {
+  padding: 1rem 1.25rem 0;
+  border-left-width: 1px;
+  border-color: @color-grey-light;
+}
+
+.header-flex {
+  overflow: hidden;
+}
+
+.cv-post-creator__content {
+  top: 100px;
+  left: 50px;
+  right: 50px;
+  bottom: 0;
+}
+
+/* ==================== From URL ===================== */
+.post-creator-from-url {
+  .input-error-icon {
+    z-index: 1;
+    font-size: 18px;
+    top: 50%;
+    right: -9px;
+    width: 1em;
+    height: 1em;
+    margin-top: -9px;
+  }
+
+  .input-error-message {
+    top: 70px;
+    left: 185px;
+  }
+
+  .from-url-type {
+    display: inline-block;
+    margin-right: 15px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .ui-tooltip {
+      width: 154px;
+      font-size: 1rem;
+      font-style: italic;
+    }
+  }
+}
+
+.cv-post-creator-from-url-error-content {
+  width: 340px;
+  height: 400px;
+  margin: 5rem auto;
+  border: 1px dashed #929292;
+  background-color: rgba(255,255,255,.2);
+
+  .error-icon {
+    font-size: 56px;
+    top: 50%;
+    left: 50%;
+    margin: -28px 0 0 -28px;
+    width: 1em;
+    height: 1em;
+  }
+}
