@@ -1,19 +1,9 @@
-var MessagesController = Class('MessagesController')({
+var MessagesController = Class('MessagesController').includes(BlackListFilter)({
   prototype : {
     init : function (config){
       this.name = this.constructor.className.replace('Controller', '')
 
-      this._initRouter();
-
       return this;
-    },
-
-    _initRouter : function() {
-      application.router.route('/:profileName/messages/:threadId')
-        .post(this.create);
-
-      application.router.route('/:profileName/messages/:threadId/:messageId')
-        .delete(this.destroy);
     },
 
     create : function create(req, res, next) {

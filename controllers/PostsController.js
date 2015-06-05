@@ -5,20 +5,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
     init : function (config){
       this.name = this.constructor.className.replace('Controller', '')
 
-      this._initRouter();
-
       return this;
-    },
-
-    _initRouter : function() {
-      var controller = PostsController;
-      application.router.route('/:profileName/:voiceSlug/')
-        .post(this.filterAction(controller, 'create'));
-
-      application.router.route('/:profileName/:voiceSlug/:postId')
-        .get(this.filterAction(controller, 'show'))
-        .put(this.filterAction(controller, 'update'))
-        .delete(this.filterAction(controller, 'destroy'));
     },
 
     show : function show(req, res, next) {

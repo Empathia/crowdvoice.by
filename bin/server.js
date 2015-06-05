@@ -8,6 +8,8 @@ require('./../lib/ACL/person.js');
 
 var io = require('socket.io')(application.server);
 
+require('./../lib/routes.js');
+
 application._serverStart();
 
 require('./../presenters/PostsPresenter');

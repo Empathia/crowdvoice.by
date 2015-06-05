@@ -2,63 +2,43 @@
 var HomeController = Class('HomeController')({
   prototype : {
     init : function (){
-      this._initRouter();
       return this;
     },
 
-    _initRouter : function() {
-      application.router.route('/').get(this.index);
-      application.router.route('/dev/about').get(this.about);
-      application.router.route('/dev/voice').get(this.voice);
-      application.router.route('/dev/profile').get(this.profile);
-      application.router.route('/dev/profile/voices').get(this.profileVoices);
-      application.router.route('/dev/profile/saved').get(this.profileSaved);
-      application.router.route('/dev/profile/messages').get(this.profileMessages);
-      application.router.route('/dev/discover').get(this.discover);
-      application.router.route('/dev/discover/recommended').get(this.discoverRecommended);
-      application.router.route('/dev/discover/onboarding').get(this.discoverOnboarding);
-      application.router.route('/dev/account').get(this.account);
-      application.router.route('/dev/organization').get(this.organization);
-      application.router.route('/dev/ui').get(this.ui);
-      application.router.route('/dev/kabinett').get(this.kabinett);
-    },
-
     index : function(req, res, next) {
-      if (ACL.isAllowed('show', 'homepage', req.role, null)) {
-        res.render('home/index.html', {
-          layout : 'application',
 
-          pageName : 'page-home',
+      res.render('home/index.html', {
+        layout : 'application',
 
-          /* =========================================================================== *
-           *  HEADER STATS
-           * =========================================================================== */
-          globalStats : {
-            countries: 36,
-            organizations: 148,
-            voices: 312,
-            posts: 579371,
-            people: 22665729
-          },
+        pageName : 'page-home',
 
-          /* =========================================================================== *
-           *  FEATURED VOICES
-           * =========================================================================== */
-          featuredVoices : require('./../public/demo-data/voices.js'),
+        /* =========================================================================== *
+         *  HEADER STATS
+         * =========================================================================== */
+        globalStats : {
+          countries: 36,
+          organizations: 148,
+          voices: 312,
+          posts: 579371,
+          people: 22665729
+        },
 
-          /* =========================================================================== *
-           *  CATEGORIES
-           * =========================================================================== */
-          categories : require('./../public/demo-data/categories.js'),
+        /* =========================================================================== *
+         *  FEATURED VOICES
+         * =========================================================================== */
+        featuredVoices : require('./../public/demo-data/voices.js'),
 
-          /* =========================================================================== *
-           *  MOST ACTIVE ORGANIZATIONS
-           * =========================================================================== */
-          mostActiveOrganizations : require('./../public/demo-data/organizations.js')
-        });
-      } else {
-        next(new NotFoundError('Role ' + req.role + ' not found'));
-      }
+        /* =========================================================================== *
+         *  CATEGORIES
+         * =========================================================================== */
+        categories : require('./../public/demo-data/categories.js'),
+
+        /* =========================================================================== *
+         *  MOST ACTIVE ORGANIZATIONS
+         * =========================================================================== */
+        mostActiveOrganizations : require('./../public/demo-data/organizations.js')
+      });
+
     },
 
     about : function(req, res) {

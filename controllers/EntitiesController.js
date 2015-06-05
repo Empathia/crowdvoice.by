@@ -4,29 +4,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
   prototype : {
     init : function () {
-      this._initRouter();
       return this;
-    },
-
-    _initRouter : function () {
-      var controller = EntitiesController;
-
-      application.router.route('/:profile_name*')
-        .all(this.filterAction(controller, 'getEntityByProfileName'));
-
-      application.router.route('/:profile_name')
-        .get(this.filterAction(controller, 'show'));
-      application.router.route('/:profile_name')
-        .put(this.filterAction(controller, 'update'));
-      application.router.route('/:profile_name/edit')
-        .get(this.filterAction(controller, 'edit'));
-
-      application.router.route('/:profile_name/follow')
-        .get(this.filterAction(controller, 'follow'));
-      application.router.route('/:profile_name/voices')
-        .get(this.filterAction(controller, 'voices'));
-      application.router.route('/:profile_name/recommended')
-        .get(this.filterAction(controller, 'recommended'));
     },
 
     getEntityByProfileName : function (req, res, next) {

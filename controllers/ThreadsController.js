@@ -1,32 +1,14 @@
 require('./../presenters/ThreadsPresenter');
 
-var ThreadsController = Class('ThreadsController')({
+var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
   prototype : {
     init : function (config){
       this.name = this.constructor.className.replace('Controller', '')
 
-      this._initRouter();
-
       return this;
     },
 
-    _initRouter : function() {
-      application.router.route('/:profileName/messages')
-        .get(this.index);
-
-      application.router.route('/:profileName/messages')
-        .post(this.create);
-
-      application.router.route('/:profileName/messages/:threadId')
-        .get(this.index)
-        .put(this.update);
-
-      application.router.route('/:profileName/messages/:threadId')
-        .delete(this.destroy);
-    },
-
     index : function index(req, res, next) {
-
       MessageThread.find(['sender_person_id = ? OR receiver_entity_id = ?', [hashids.decode(req.currentPerson.id)[0], hashids.decode(req.currentPerson.id)[0]]], function(err, threads) {
         if (err) {
           return next(err);
@@ -50,11 +32,9 @@ var ThreadsController = Class('ThreadsController')({
 
         });
       });
-
     },
 
     create : function create(req, res, next) {
-
       res.format({
         json : function() {
           var payload = req.body;
