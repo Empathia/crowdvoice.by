@@ -1,1 +1,294 @@
-Index for MessageThreads
+
+<main role="main" class="cv-main-content -rel -nopad">
+
+
+  <section class="profile-messages-intro">
+      <h1 class="profile-heading messages-heading -font-bold -m0">Messages</h1>
+      <button class="cv-button primary">New Message</button>
+  </section>
+
+  <section class="profile-body -nopad">
+
+    <div class="messages-sidebar">
+    	<article role="article" class="profile-menu top-menu -row" style="display: none;">
+	        <div class="profile-tabs">
+	          <div class="menu-item p-drafts active menu-tab -inline-block">
+	            <p class="-font-bold">Messages</p>
+	          </div>
+	          <div class="menu-item p-unlisted menu-tab -inline-block">
+	            <p class="-font-bold">Invitations</p>
+	          </div>
+	        </div>
+      	</article>
+      	<div class="messages-search"></div>
+      	<div class="messages-list">
+      		<div class="message-side" style="display: none;">
+      			<div class="message-info">
+				    <img class="" src="/img/sample/avatars/org-06.png" alt="">
+	      			<h3>Juan Solo</h3>
+	      			<span>May the taco be with you</span>
+      			</div>
+      			<div class='actions'>
+      				<span>3</span>
+      			</div>
+      		</div>
+      	</div>
+    </div>
+    <div class="messages-body">
+	<div class="no-messages">
+		Please select a thread from the list on the left or <a hrf="#">compose a new message</a>.
+	</div>
+    <div class="messages-body-container">
+
+    	<div class="messages-body-header">
+    		<span>Conversation with Pepe Pecas <a href="#">one link</a> and after a while <a href="#"><b>another bold</b></a></span>
+      		<div class="action-icon"><img src="/img/sample/icons/trashcan.png" alt=""></div>
+    	</div>
+    	<div class="messages-container">
+    		<div class="messages-conversation">
+    			<div class="msgs">
+    				<div class="message-text" style="display: none;">
+		      			<div class="message-info">
+						    <img class="" src="/img/sample/avatars/org-06.png" alt="">
+			      			<div class="message-data">
+			      				<h3>Chu Vaca </h3>
+			      				<span>• May 5th, 2015 • 7:32 PM</span>
+			      				<p>May the taco be with you lorem ipsum dolor sit ameret lorem ipsum dolor sit ameret lorem ipsum dolor sit ameret lorem ipsum dolor sit ameret.</p>
+			      				<div class="message-notification">Julia has requested to become a contributor for The Extended Effects of the Fukushima Disaster. If you grant access, Julia will be able to <a href="#">one link</a> and after a while another bold. <a href="#"><b>Go to this Voice's settings ›</b></a></div>
+			      			</div>
+		      			</div>
+		      		</div>
+		      		<div class="message-text" style="display: none;">
+		      			<div class="message-info">
+						    <img class="" src="/img/sample/avatars/org-06.png" alt="">
+			      			<div class="message-data">
+			      				<h3>Chu Vaca </h3>
+			      				<span>• May 5th, 2015 • 7:32 PM</span>
+			      				<p>May the taco be with you lorem ipsum dolor sit ameret lorem ipsum dolor sit ameret lorem ipsum dolor sit ameret lorem ipsum dolor sit ameret.</p>
+			      				<div class="message-notification">
+			      					Julia has requested to become a contributor for The Extended Effects of the Fukushima Disaster. If you grant access, Julia will be able to <a href="#">one link</a> and after a while another bold. <a href="#"><b>Go to this Voice's settings ›</b></a>
+			      					<div class="message-notification-actions"></div>
+			      				</div>
+			      			</div>
+		      			</div>
+		      		</div>
+		      		<div class="message-text" style="display: none;">
+		      			<div class="message-info">
+						    <img class="" src="/img/sample/avatars/org-06.png" alt="">
+			      			<div class="message-data">
+			      				<h3>Chu Vaca </h3>
+			      				<span>• May 5th, 2015 • 7:32 PM</span>
+			      				<p>May the taco be with you lorem ipsum dolor sit ameret lorem ipsum dolor sit ameret.</p>
+			      			</div>
+		      			</div>
+		      		</div>
+    			</div>
+    		</div>
+
+    		<div class="message-create">
+
+    		</div>
+    	</div>
+
+    </div>
+    </div>
+
+  </section>
+
+</main>
+
+<script>
+  	$( document ).ready(function() {
+  		resizeMessages();
+	});
+
+  	function resizeMessages () {
+  		var chatHeight = $(window).height() - ($('.profile-messages-intro').outerHeight() + $('.cv-main-header').outerHeight());
+		$('.messages-sidebar, .messages-body, .messages-body-container').height(chatHeight);
+		var sideMessagesHeight = chatHeight - $('.messages-search').outerHeight();
+		$('.messages-list').css({'overflow-y':'scroll', 'height': sideMessagesHeight+'px'});
+		var bodyMessagesHeight = chatHeight - ($('.messages-body-header').outerHeight() + $('.message-create').outerHeight());
+		$('.messages-conversation').height(bodyMessagesHeight);
+  	}
+
+  	var searchElement = document.querySelector('.messages-search');
+  	var createElement = document.querySelector('.message-create');
+  	var noMessagesEl = $(document.querySelector('.no-messages'));
+  	var messagesBodyHeaderEl = $(document.querySelector('.messages-body-header'));
+  	var messagesBodyContainerEl = $(document.querySelector('.messages-body-container'));
+  	var threadListEl = $(document.querySelector('.messages-list'));
+  	var messageListEl = $(document.querySelector('.msgs'));
+
+	var messageText = $('<div class="message-text">\
+			      			<div class="message-info">\
+							    <img class="" src="/img/sample/avatars/org-06.png" alt="">\
+							    <div class="message-data">\
+				      				<h3>Chu Vaca </h3>\
+				      				<span>• May 5th, 2015 • 7:32 PM</span>\
+				      				<p>May the taco be with you lorem ipsum dolor sit ameret lorem ipsum dolor sit ameret lorem ipsum dolor sit ameret lorem ipsum dolor sit ameret.</p>\
+				      			</div>\
+			      			</div>\
+			      		</div>');
+
+  	var messageSide = $('<div class="message-side">\
+			      			<div class="message-info">\
+							    <img class="" src="/img/sample/avatars/org-06.png" alt="">\
+				      			<h3></h3>\
+				      			<span></span>\
+			      			</div>\
+			      			<div class="actions">\
+			      				<span></span>\
+			      			</div>\
+			      		</div>');
+
+	new CV.Input({type : 'search', placeholder : 'Search...'}).render(searchElement);
+
+	var areaText = new CV.Input({style : '', type : '', isArea : true, placeholder : 'Write a reply'}).render(createElement);
+
+	var btn = new CV.Button({
+		style   : 'primary',
+		type    : 'single',
+		label   : 'Reply',
+		name    : 'buttonReply'
+	}).render(createElement);
+
+	//var btnTwiceOptions = {
+	//  "1": {name: 'Accept'},
+	//  "2": {name: 'Refuse'}
+	//};
+	//
+	//new Button({
+	//    style   : 'full',
+	//    type    : 'twice',
+	//    name    : 'buttonTwice',
+	//    options : btnTwiceOptions
+	//}).render(createElement);
+
+	var btnMultipleOptions = {
+		"1": {name: 'Accept'},
+		"2": {name: 'Accept as an Anonymous Member'},
+		"3": {name: 'Refuse'}
+	};
+	new CV.Button({
+		style   : '',
+		type    : 'multiple',
+		name    : 'buttonMultiple',
+		options : btnMultipleOptions
+	}).render($('.message-notification-actions'));
+
+	var mi = 1;
+
+	btn.element.on('click', function(){
+
+		var postMessageUrl = '/'+ currentPersonProfileName + '/messages/'+ currentThreadID;
+		$.ajax({
+          type: "POST",
+          url: postMessageUrl,
+          headers: { 'csrf-token': token },
+          data: { message : document.querySelector('.message-create textarea').value},
+          success: function(data) {
+            console.log(data.message);
+            var messageEl = messageText.clone();
+			messageEl.find('.message-data h3').text('<%= currentPerson.name %>' + " " + '<%= currentPerson.lastname %>');
+			messageEl.find('.message-data span').text(moment(new Date().toISOString()).format('• MMMM Do, YYYY • h:mm a'));
+			messageEl.find('.message-data p').text(data.message);
+			messageListEl.append(messageEl);
+			$('.messages-conversation').scrollTop(10000);
+          }
+        });
+
+	});
+
+	var threads = <%= JSON.stringify(threads) %>;
+	var threadsObj = {};
+
+	var currentThreadID;
+	var currentPersonID = '<%= currentPerson.id %>';
+	var currentPersonProfileName = '<%= currentPerson.profileName %>';
+	var token = '<%= csrfToken %>';
+
+	threads.forEach(function(thread) {
+		console.log(thread);
+
+		var threadEl = messageSide.clone();
+		var threadPartner;
+		if (thread.receiverEntity.id != currentPersonID ){
+			threadPartner = thread.receiverEntity;
+		} else{
+			threadPartner = thread.senderEntity;
+		}
+		threadEl.attr('id', threadPartner.id);
+		var threadPartnerName = threadPartner.name + " " + threadPartner.lastname;
+		threadEl.find('h3').text(threadPartnerName);
+		threadEl.find('.actions span').text(thread.unreadCount);
+		threadListEl.append(threadEl);
+		threadsObj[thread.id] = thread;
+
+		threadEl.on('click', function(){
+			threadAction(thread.id, threadPartnerName, this);
+		});
+
+	});
+
+	//console.log(threadsObj);
+
+    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+	function threadAction (threadId, threadPartnerName, threadEl){
+		//console.log(threadId);
+		currentThreadID = threadId;
+		noMessagesEl.hide();
+		messagesBodyContainerEl.addClass('active');
+		messageListEl.empty();
+
+		messagesBodyHeaderEl.find('span').text('Conversation with ' + threadPartnerName);
+
+		resizeMessages();
+
+		if (!$(threadEl).hasClass('updated')){
+			$(threadEl).addClass('updated');
+			var updateThreadUrl = '/'+ currentPersonProfileName + '/messages/'+ threadId;
+			console.log(updateThreadUrl); //  /jack-johnson/messages/K8adgKWgZPlo
+			$.ajax({
+	          type: "PUT",
+	          url: updateThreadUrl,
+	          headers: { 'csrf-token': token },
+	          success: function(data) {
+	            console.log('Thread updated');
+	          }
+	        });
+		}
+
+		//for (messageId in threadsObj[threadId].messages){
+		//	var messageObj = threadsObj[threadId].messages[messageId];
+		//	var messageEl = messageText.clone();
+		//	messageEl.find('.message-data h3').text('Undefined User');
+		//	var userDate = new Date(messageObj.createdAt);
+    	//	var prettyDate = '• ' + months[userDate.getUTCMonth()] + ' ' +
+    	//					 userDate.getUTCDay()+ 'th, ' +
+    	//					 userDate.getUTCFullYear() + ' • ' +
+    	//					 userDate.getUTCHours() +':'+ userDate.getUTCMinutes();
+		//	messageEl.find('.message-data span').text(prettyDate);
+		//	messageEl.find('.message-data p').text(messageObj.message);
+		//	messageListEl.append(messageEl);
+		//}
+
+		Object.keys(threadsObj[threadId].messages).sort().forEach(function(messageId, i) {
+          	var messageObj = threadsObj[threadId].messages[messageId];
+			var messageEl = messageText.clone();
+			messageEl.find('.message-data h3').text(messageObj.senderEntity.name + " " + messageObj.senderEntity.lastname);
+			messageEl.find('.message-data span').text(moment(new Date(messageObj.createdAt).toISOString()).format('• MMMM Do, YYYY • h:mm a'));
+			messageEl.find('.message-data p').text(messageObj.message);
+			messageListEl.append(messageEl);
+       	});
+
+		$('.messages-conversation').scrollTop(10000);
+
+	}
+
+</script>
+
+
+
+
+

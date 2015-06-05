@@ -1,56 +1,40 @@
 require('./../presenters/ThreadsPresenter');
 
-var ThreadsController = Class('ThreadsController')({
+var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
   prototype : {
     init : function (config){
       this.name = this.constructor.className.replace('Controller', '')
 
-      this._initRouter();
-
       return this;
     },
 
-    _initRouter : function() {
-      application.router.route('/:profileName/messages')
-        .get(this.index);
-
-      application.router.route('/:profileName/messages')
-        .post(this.create);
-
-      application.router.route('/:profileName/messages/:threadId')
-        .get(this.index)
-        .put(this.update);
-
-      application.router.route('/:profileName/messages/:threadId')
-        .delete(this.destroy);
-    },
-
     index : function index(req, res, next) {
-
-      res.format({
-        html : function() {
-          res.render('threads/index.html', {layout : 'application'});
-        },
-        json : function() {
-          MessageThread.find(['sender_person_id = ? OR receiver_entity_id = ?', [req.currentPerson.id, req.currentPerson.id]], function(err, threads) {
-            if (err) {
-              return next(err);
-            }
-
-            ThreadsPresenter.build(req, threads, function(err, result) {
-              if (err) {
-                return next(err);
-              }
-
-              return res.json(result);
-            });
-          });
+      MessageThread.find(['sender_person_id = ? OR receiver_entity_id = ?', [hashids.decode(req.currentPerson.id)[0], hashids.decode(req.currentPerson.id)[0]]], function(err, threads) {
+        if (err) {
+          return next(err);
         }
+
+        ThreadsPresenter.build(req, threads, function(err, result) {
+          if (err) {
+            return next(err);
+          }
+
+          res.format({
+
+            html : function() {
+
+              return res.render('threads/index.html', {layout : 'application', threads : result});
+            },
+            json : function() {
+              return res.json(result);
+            }
+          });
+
+        });
       });
     },
 
     create : function create(req, res, next) {
-
       res.format({
         json : function() {
           var payload = req.body;
@@ -85,7 +69,7 @@ var ThreadsController = Class('ThreadsController')({
             if (senderEntityType === 'organization') {
               whereClause = [
                 'sender_person_id = ? AND sender_entity_id = ? AND receiver_entity_id = ?',
-                [req.currentPerson.id, payload.senderEntityId, payload.receiverEntityId]
+                [hashids.decode(req.currentPerson.id)[0], payload.senderEntityId, payload.receiverEntityId]
               ];
             } else {
               whereClause = [
@@ -102,7 +86,7 @@ var ThreadsController = Class('ThreadsController')({
             if (messageThread.length === 0) {
               // If there is no existing MessageThread create a new one
               thread = new MessageThread({
-                senderPersonId : req.currentPerson.id,
+                senderPersonId : hashids.decode(req.currentPerson.id)[0],
                 senderEntityId : payload.senderEntityId,
                 receiverEntityId : payload.receiverEntityId
               });
@@ -123,7 +107,7 @@ var ThreadsController = Class('ThreadsController')({
 
               // Append the new message
               thread.createMessage({
-                senderPersonId : req.currentPerson.id,
+                senderPersonId : hashids.decode(req.currentPerson.id)[0],
                 type : payload.type,
                 invitationRequestId : payload.invitationRequestId,
                 voiceId : payload.voiceId,
@@ -164,9 +148,11 @@ var ThreadsController = Class('ThreadsController')({
 
         thread = new MessageThread(thread[0]);
 
-        var senderOrReceiver = thread.isPersonSender(req.currentPerson.id) ? 'Sender' : 'Receiver';
+        var senderOrReceiver = thread.isPersonSender(hashids.decode(req.currentPerson.id)[0]) ? 'Sender' : 'Receiver';
 
         thread['lastSeen' + senderOrReceiver] = new Date(Date.now());
+
+        thread.updatedAt = thread.updatedAt;
 
         thread.save(function(err, result) {
           if (err) {
@@ -196,7 +182,7 @@ var ThreadsController = Class('ThreadsController')({
 
             thread = new MessageThread(thread);
 
-            var senderOrReceiver = thread.isPersonSender(req.currentPerson.id) ? 'Sender' : 'Receiver';
+            var senderOrReceiver = thread.isPersonSender(hashids.decode(req.currentPerson.id)[0]) ? 'Sender' : 'Receiver';
 
             thread['hiddenFor' + senderOrReceiver] = true;
 
@@ -209,7 +195,7 @@ var ThreadsController = Class('ThreadsController')({
                 async.each(messages, function(message, done) {
                   message = new Message(message);
 
-                  var senderOrReceiver = message.isPersonSender(req.currentPerson.id) ? 'Sender' : 'Receiver';
+                  var senderOrReceiver = message.isPersonSender(hashids.decode(req.currentPerson.id)[0]) ? 'Sender' : 'Receiver';
 
                   message['hiddenFor' + senderOrReceiver] = true;
 

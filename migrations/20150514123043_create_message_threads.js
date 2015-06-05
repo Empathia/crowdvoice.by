@@ -13,7 +13,7 @@ exports.up = function(knex, Promise) {
       t.dateTime('last_seen_receiver').defaultTo(null);
       t.integer('message_count_sender').defaultTo(0);
       t.integer('message_count_receiver').defaultTo(0);
-      // t.index(['sender_user_id', 'sender_entity_id', 'receiver_entity_id'], 'participants_index');
+      t.index(['sender_person_id', 'sender_entity_id', 'receiver_entity_id'], 'participants_index');
       t.timestamps();
     })
   ])

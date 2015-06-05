@@ -3,7 +3,7 @@ Module('ThreadsPresenter')({
     async.each(threads, function(thread, next) {
       var threadInstance = new MessageThread(thread);
 
-      var senderOrReceiver = threadInstance.isPersonSender(req.currentPerson.id) ? 'Sender' : 'Receiver';
+      var senderOrReceiver = threadInstance.isPersonSender(hashids.decode(req.currentPerson.id)[0]) ? 'Sender' : 'Receiver';
 
       thread.lastSeen     = thread['lastSeen' + senderOrReceiver]
       thread.messageCount = thread['messageCount' + senderOrReceiver];
@@ -47,12 +47,14 @@ Module('ThreadsPresenter')({
       }, function(done) {
         db('Messages')
           .where('thread_id', '=', threadInstance.id)
-          .andWhereRaw("created_at > DATE '" +  new Date(thread.lastSeen).toISOString() + "'")
+          .andWhereRaw("created_at > '" +  moment(new Date(thread.lastSeen).toISOString()).format() + "'")
           .count('*')
           .exec(function(err, result) {
             if (err) {
               return done(err);
             }
+
+            console.log(thread.lastSeen)
 
             thread.unreadCount = parseInt(result[0].count, 10);
             delete thread.lastSeen;
@@ -60,7 +62,7 @@ Module('ThreadsPresenter')({
             done();
           })
       }, function(done) {
-        Message.find({'thread_id' : threadInstance.id}, function(err, messages) {
+        Message.find(['thread_id = ? ORDER BY created_at ASC', [threadInstance.id]], function(err, messages) {
           if (err) {
             return done(err);
           }
@@ -68,14 +70,11 @@ Module('ThreadsPresenter')({
           messages.forEach(function(message) {
             var messageInstance = new Message(message);
 
-            var messageSenderOrReceiver = messageInstance.isPersonSender(req.currentPerson.id) ? 'Sender' : 'Receiver';
+            var messageSenderOrReceiver = messageInstance.isPersonSender(hashids.decode(req.currentPerson.id)[0]) ? 'Sender' : 'Receiver';
 
             message.hidden = message['hiddenFor' + messageSenderOrReceiver];
 
-
-            var threadInstance = new MessageThread(thread);
-
-            if (threadInstance.isPersonSender(req.currentPerson.id)) {
+            if (messageSenderOrReceiver === 'Sender') {
               message.senderEntity = thread.senderEntity;
               message.receiverEntity = thread.receiverEntity;
             } else {
@@ -118,6 +117,11 @@ Module('ThreadsPresenter')({
           delete thread.hidden;
           return thread;
         }
+      });
+
+      // Order from newest updated to oldest
+      threads = threads.sort(function(a,b){
+        return new Date(a.updatedAt) - new Date(b.updatedAt);
       });
 
       callback(err, threads);

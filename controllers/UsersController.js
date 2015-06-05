@@ -1,15 +1,7 @@
 require(__dirname + '/../mailers/UserMailer.js');
 
-var UsersController = Class('UsersController').inherits(RestfulController)({
+var UsersController = Class('UsersController')({
   prototype : {
-    _initRouter : function() {
-      // Call constructor router
-      RestfulController.prototype._initRouter.apply(this, arguments);
-
-      application.router.route('/signup').get(this.new);
-      application.router.route('/signup/check-username').post(this.checkUsername);
-    },
-
     index : function index(req, res) {
       User.all(function(err, users) {
         res.render('users/index.html', {layout : 'application', users : users});
@@ -108,7 +100,24 @@ var UsersController = Class('UsersController').inherits(RestfulController)({
           }], function(err) {
             if (err) {
               req.flash('error', 'There was an error creating the user.');
-              res.render('users/new.html', {errors: err});
+
+              if (err.errors) {
+
+                var errors = [];
+
+                Object.keys(err.errors).forEach(function(k) {
+                  err.errors[k].errors.forEach(function(error) {
+                    var obj = {}
+                    obj[k] = error.message
+                    errors.push(obj);
+                  })
+                })
+              } else {
+                var errors = err;
+              }
+
+              res.render('users/new.html', {errors: errors});
+
               return;
             }
 

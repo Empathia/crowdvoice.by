@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta content="authenticity_token" name="csrf-param" />
+  <meta content="<%= csrfToken %>" name="csrf-token" />
   <title>Crowdvoice.by – A new way to organize information and strengthen movements that matter to you</title>
   <meta name="description" content="A new way to organize information and strengthen movements that matter to you">
   <link rel="icon" type="image/gif" href="/img/favicon.png" />
@@ -187,7 +189,7 @@
         <span class="sidebar-link-label">On the Map</span>
       </a>
 
-      <% if (typeof currentUser !== "undefined") { %>
+      <% if (currentPerson) { %>
         <h4 class="sidebar-heading -upper">My Stuff</h4>
 
         <a href="" class="sidebar-link">
@@ -205,7 +207,7 @@
           <span class="sidebar-link-label">Stats</span>
         </a>
 
-        <a href="" class="sidebar-link">
+        <a href="/<%= currentPerson.profileName %>/messages" class="sidebar-link">
           <svg class="sidebar-link-svg"><use xlink:href="#svg-messages-read"></use></svg>
           <span class="sidebar-link-label">Messages</span>
         </a>

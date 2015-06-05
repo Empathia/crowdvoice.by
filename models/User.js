@@ -62,7 +62,17 @@ var User = Class('User').inherits(Argon.KnexModel)({
 
       this.bind('beforeCreate', function(data) {
         model.token = bcrypt.hashSync(CONFIG.sessionSecret + Date.now(), bcrypt.genSaltSync(12), null);
-      })
+      });
+
+      this.bind('beforeSave', function (event) {
+        /* Here the best case scenario is to verify that the model is valid by executing isValid, but since
+         * we cannot use it because because Argon does not trigger 'beforeSave' asynchronously,
+         * then we have to replicate the validation: password.length >= 8 */
+        if (model.password && model.password.length >= 8) {
+          model.encryptedPassword = bcrypt.hashSync(model.password, bcrypt.genSaltSync(10), null);
+          delete model.password;
+        }
+      });
     },
 
 
@@ -70,8 +80,12 @@ var User = Class('User').inherits(Argon.KnexModel)({
      * @method entity
      */
     entity : function entity (done) {
-      Entity.find({id: this.entityId}, function (err, result) {
-        done(err, result[0]);
+      Entity.find({id: this.entityId, is_anonymous : false}, function (err, result) {
+        result = result[0];
+
+        result.id = hashids.encode(result.id);
+
+        done(err, result);
       });
     },
 
@@ -96,17 +110,7 @@ var User = Class('User').inherits(Argon.KnexModel)({
   }
 });
 
-User.bind('beforeSave', function (event) {
-  var model = event.data.model;
 
-  /* Here the best case scenario is to verify that the model is valid by executing isValid, but since
-   * we cannot use it because because Argon does not trigger 'beforeSave' asynchronously,
-   * then we have to replicate the validation: password.length >= 8 */
-  if (model.password && model.password.length >= 8) {
-    model.encryptedPassword = bcrypt.hashSync(model.password, bcrypt.genSaltSync(10), null);
-    delete model.password;
-  }
-});
 
 
 

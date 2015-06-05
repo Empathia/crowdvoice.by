@@ -1,19 +1,9 @@
-var MessagesController = Class('MessagesController')({
+var MessagesController = Class('MessagesController').includes(BlackListFilter)({
   prototype : {
     init : function (config){
       this.name = this.constructor.className.replace('Controller', '')
 
-      this._initRouter();
-
       return this;
-    },
-
-    _initRouter : function() {
-      application.router.route('/:profileName/messages/:threadId')
-        .post(this.create);
-
-      application.router.route('/:profileName/messages/:threadId/:messageId')
-        .delete(this.destroy);
     },
 
     create : function create(req, res, next) {
@@ -32,7 +22,7 @@ var MessagesController = Class('MessagesController')({
 
             thread.createMessage({
               type : Message.TYPE_MESSAGE,
-              senderPersonId : req.currentPerson.id,
+              senderPersonId : hashids.decode(req.currentPerson.id)[0],
               message : req.body.message
             }, function(err, message) {
               if (err) {
@@ -66,7 +56,7 @@ var MessagesController = Class('MessagesController')({
 
             message = new Message(message[0]);
 
-            var senderOrReceiver = message.isPersonSender(req.currentPerson.id) ? 'Sender' : 'Receiver';
+            var senderOrReceiver = message.isPersonSender(hashids.decode(req.currentPerson.id)[0]) ? 'Sender' : 'Receiver';
 
             message['hiddenFor' + senderOrReceiver] = true;
 

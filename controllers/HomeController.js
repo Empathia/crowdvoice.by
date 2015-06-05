@@ -2,28 +2,11 @@
 var HomeController = Class('HomeController')({
   prototype : {
     init : function (){
-      this._initRouter();
       return this;
     },
 
-    _initRouter : function() {
-      application.router.route('/').get(this.index);
-      application.router.route('/dev/about').get(this.about);
-      application.router.route('/dev/voice').get(this.voice);
-      application.router.route('/dev/profile').get(this.profile);
-      application.router.route('/dev/profile/voices').get(this.profileVoices);
-      application.router.route('/dev/profile/saved').get(this.profileSaved);
-      application.router.route('/dev/profile/messages').get(this.profileMessages);
-      application.router.route('/dev/discover').get(this.discover);
-      application.router.route('/dev/discover/recommended').get(this.discoverRecommended);
-      application.router.route('/dev/discover/onboarding').get(this.discoverOnboarding);
-      application.router.route('/dev/account').get(this.account);
-      application.router.route('/dev/organization').get(this.organization);
-      application.router.route('/dev/ui').get(this.ui);
-      application.router.route('/dev/kabinett').get(this.kabinett);
-    },
+    index : function(req, res, next) {
 
-    index : function(req, res) {
       res.render('home/index.html', {
         layout : 'application',
 
@@ -55,6 +38,7 @@ var HomeController = Class('HomeController')({
          * =========================================================================== */
         mostActiveOrganizations : require('./../public/demo-data/organizations.js')
       });
+
     },
 
     about : function(req, res) {

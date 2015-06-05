@@ -3,24 +3,7 @@ var BlackListFilter = require(__dirname + '/BlackListFilter');
 var VoicesController = Class('VoicesController').includes(BlackListFilter)({
   prototype : {
     init : function () {
-      this._initRouter();
       return this;
-    },
-
-    _initRouter : function () {
-      var controller = VoicesController;
-
-      application.router.route('/voices').get(this.index);
-      application.router.route('/voice').post(this.create);
-      application.router.route('/voice/new').get(this.new);
-
-      application.router.route('/:profile_name/:voice_slug*')
-        .all(this.filterAction(controller, 'getActiveVoice'));
-      application.router.route('/:profile_name/:voice_slug/edit')
-        .get(this.filterAction(controller, 'edit'));
-      application.router.route('/:profile_name/:voice_slug')
-        .get(this.filterAction(controller, 'show'))
-        .put(this.filterAction(controller, 'update'));
     },
 
     getActiveVoice : function (req, res, next) {

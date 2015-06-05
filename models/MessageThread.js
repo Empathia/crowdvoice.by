@@ -154,7 +154,7 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
     request = {
       action : 'findByPerson',
       model : Model,
-      params : ['WHERE sender_person_id = ? OR receiver_entity_id = ?', [person.id, person.id]],
+      params : ['WHERE sender_person_id = ? OR receiver_entity_id = ?', [hashids.decode(person.id)[0], hashids.decode(person.id)[0]]],
       clauseType : 'whereRaw'
     };
 

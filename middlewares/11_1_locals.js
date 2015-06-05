@@ -30,14 +30,20 @@ module.exports = function(req, res, next) {
   if (req.user) {
     var currentUser = new User(req.user);
     currentUser.entity(function (err, entity) {
+      if (err) {
+        return next(err)
+      }
+
       res.locals.currentPerson = entity;
       req.currentPerson = entity;
+      req.role = 'Person'
 
       next();
     });
   } else {
     res.locals.currentPerson = null;
     req.currentPerson = null;
+    req.role = 'Visitor'
     next();
   }
 
