@@ -31,8 +31,6 @@ Class(CV, 'VoiceTimelineJumpToDate').inherits(Widget)({
                 })
             ).render(this.container);
 
-            this.container.classList.add('ui-has-popover');
-
             this.__createJumpToDateOptions(this.totalLayers);
 
             return this;

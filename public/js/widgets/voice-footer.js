@@ -21,13 +21,23 @@ Class(CV, 'VoiceFooter').inherits(Widget)({
             ).render(this.element);
 
             // @TODO:
-            // add condition based on the user type and or privilegies
-            this.appendChild(new CV.VoiceAddContent()).render(this.element);
-            this.appendChild(new CV.VoiceRequestToContribute()).render(this.actionsColumn);
+            // add condition based on the user type and or privilegies (ACL)
+            // and or based on the voice type (open|close)
+            this.appendChild(
+                new CV.VoiceAddContent({
+                    name : 'voiceAddContent'
+                })
+            ).render(this.element);
+
+            this.appendChild(
+                new CV.VoiceRequestToContribute({
+                    name : 'voiceRequestToContribute'
+                })
+            ).render(this.actionsColumn);
         },
 
         /* Sets the Timeline's inital date.
-         * @public
+         * @method setTimelineInitialDate <public> [Function]
          */
         setTimelineInitialDate : function setTimelineInitialDate(timestamp) {
             this.voiceTimelineFeedback.setInitialFeedbackDate(timestamp);
@@ -36,7 +46,7 @@ Class(CV, 'VoiceFooter').inherits(Widget)({
         },
 
         /* Updates the timeline's screen size related variables values.
-         * @public
+         * @method updateTimelineVars <public> [Function]
          */
         updateTimelineVars : function updateTimelineVars() {
             this.voiceTimelineFeedback.updateVars();

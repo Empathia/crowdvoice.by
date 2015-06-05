@@ -76,6 +76,14 @@ Class(CV, 'InputClearable').inherits(Widget).includes(CV.WidgetUtils)({
             return this.inputElement.value;
         },
 
+        /* Returns the inputElement
+         * @method getElement <public> [Function]
+         * @return this.inputElement
+         */
+        getElement : function getElement() {
+            return this.inputElement;
+        },
+
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
 

@@ -42,9 +42,10 @@ Class(CV, 'VoiceAddContent').inherits(Widget)({
     prototype : {
         el: null,
         addPostButton: null,
+        createPostModal : null,
 
-        init : function init() {
-            Widget.prototype.init.call(this);
+        init : function init(config) {
+            Widget.prototype.init.call(this, config);
 
             this.el = this.element[0];
             this.addPostButton = this.el.querySelector('.voice-add-post-button');
@@ -87,12 +88,28 @@ Class(CV, 'VoiceAddContent').inherits(Widget)({
 
         _bubbleHiddenHandler : function _bubbleHiddenHandler() {
             this.addPostButton.classList.remove('active');
+
+            if (this.createPostModal) {
+                this.createPostModal.activate();
+            }
         },
 
         _optionClickHandler : function _optionClickHandler(ev) {
-            var type = ev.target.getAttribute('data-type');
+            var type = ev.currentTarget.getAttribute('data-type');
 
-            CV.PostCreator.create({type: type});
+            this.createPostModal = CV.PostCreator.create({type: type});
+
+            this.createPostModal.render(document.body);
+
+            this._createPostDeactivateHandlerRef = this._createPostDeactivateHandler.bind(this);
+            this.createPostModal.bind('deactivate', this._createPostDeactivateHandlerRef);
+        },
+
+        _createPostDeactivateHandler : function _createPostDeactivateHandlerRef() {
+            this.createPostModal.unbind('deactivate', this._createPostDeactivateHandlerRef);
+            this._createPostDeactivateHandlerRef = null;
+
+            this.createPostModal = this.createPostModal.destroy();
         },
 
         destroy : function destroy() {

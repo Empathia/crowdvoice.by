@@ -95,9 +95,9 @@ Class(CV, 'Post').inherits(Widget).includes(CV.WidgetUtils)({
          */
         _loadImageHandler : function _loadImageHandler(err, imageObject) {
             if (err) {
+                this.abortImage();
+                this.haltImage = null;
                 console.error(err);
-                console.log(imageObject);
-                console.log('*****************');
                 return;
             }
 
