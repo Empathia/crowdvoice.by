@@ -28,7 +28,7 @@ if (fetching) {
 
 fs.closeSync(fs.openSync(LOCK_FILE, 'w'));
 
-Voice.find(["twitter_search IS NOT null AND (tweet_last_fetch_at IS null OR tweet_last_fetch_at < DATE '"  + (new Date(Date.now() - (3600 * 6))).toISOString() +  "')", []], function(err, voices) {
+Voice.find(["twitter_search IS NOT null AND (tweet_last_fetch_at IS null OR tweet_last_fetch_at <  '"  + moment(new Date(Date.now() - (3600 * 6)).toISOString()).format() +  "')", []], function(err, voices) {
 
   async.each(voices, function(voice, next) {
 

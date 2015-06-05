@@ -47,12 +47,14 @@ Module('ThreadsPresenter')({
       }, function(done) {
         db('Messages')
           .where('thread_id', '=', threadInstance.id)
-          .andWhereRaw("created_at > DATE '" +  new Date(thread.lastSeen).toISOString() + "'")
+          .andWhereRaw("created_at > '" +  moment(new Date(thread.lastSeen).toISOString()).format() + "'")
           .count('*')
           .exec(function(err, result) {
             if (err) {
               return done(err);
             }
+
+            console.log(thread.lastSeen)
 
             thread.unreadCount = parseInt(result[0].count, 10);
             delete thread.lastSeen;
@@ -115,6 +117,11 @@ Module('ThreadsPresenter')({
           delete thread.hidden;
           return thread;
         }
+      });
+
+      // Order from newest updated to oldest
+      threads = threads.sort(function(a,b){
+        return new Date(a.updatedAt) - new Date(b.updatedAt);
       });
 
       callback(err, threads);

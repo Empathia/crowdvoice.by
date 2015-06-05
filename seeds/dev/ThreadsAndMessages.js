@@ -20,8 +20,8 @@ exports.seed = function(knex, Promise) {
       'last_seen_receiver'     : null,
       'message_count_sender'   : 6,
       'message_count_receiver' : 6,
-      'created_at' : new Date(),
-      'updated_at' : new Date()
+      'created_at' : new Date(Date.now()),
+      'updated_at' : new Date(Date.now())
     }),
 
     // Messages of thread 1
@@ -151,8 +151,8 @@ exports.seed = function(knex, Promise) {
       'last_seen_receiver'     : null,
       'message_count_sender'   : 3,
       'message_count_receiver' : 3,
-      'created_at' : new Date(),
-      'updated_at' : new Date()
+      'created_at' : new Date(Date.now() - 1000),
+      'updated_at' : new Date(Date.now() - 1000)
     }),
 
     // Jack
@@ -169,8 +169,8 @@ exports.seed = function(knex, Promise) {
       'message'               : "Sup Peter, I've heard Brian is dead.",
       'hidden_for_sender'     : false,
       'hidden_for_receiver'   : false,
-      'created_at'            : new Date(),
-      'updated_at'            : new Date()
+      'created_at'            : new Date(Date.now() - 1000),
+      'updated_at'            : new Date(Date.now() - 1000)
     }),
 
     // Peter
@@ -187,8 +187,8 @@ exports.seed = function(knex, Promise) {
       'message'               : "man!!! fucking car accident =/",
       'hidden_for_sender'     : false,
       'hidden_for_receiver'   : false,
-      'created_at'            : new Date(),
-      'updated_at'            : new Date()
+      'created_at'            : new Date(Date.now() - 1000),
+      'updated_at'            : new Date(Date.now() - 1000)
     }),
 
     // Peter
@@ -205,8 +205,8 @@ exports.seed = function(knex, Promise) {
       'message'               : "Poor dog.",
       'hidden_for_sender'     : false,
       'hidden_for_receiver'   : false,
-      'created_at'            : new Date(),
-      'updated_at'            : new Date()
+      'created_at'            : new Date(Date.now() - 1000),
+      'updated_at'            : new Date(Date.now() - 1000)
     }),
 
     // Message Threads
@@ -224,8 +224,8 @@ exports.seed = function(knex, Promise) {
       'last_seen_receiver'     : null,
       'message_count_sender'   : 3,
       'message_count_receiver' : 3,
-      'created_at' : new Date(),
-      'updated_at' : new Date()
+      'created_at' : new Date(Date.now() - 2000),
+      'updated_at' : new Date(Date.now() - 2000)
     }),
 
     // Jack
@@ -242,8 +242,8 @@ exports.seed = function(knex, Promise) {
       'message'               : "Hey Steve!",
       'hidden_for_sender'     : false,
       'hidden_for_receiver'   : false,
-      'created_at'            : new Date(),
-      'updated_at'            : new Date()
+      'created_at'            : new Date(Date.now() - 2000),
+      'updated_at'            : new Date(Date.now() - 2000)
     }),
 
     // Steve
@@ -260,8 +260,8 @@ exports.seed = function(knex, Promise) {
       'message'               : "Did you hear about Peter's dog?",
       'hidden_for_sender'     : false,
       'hidden_for_receiver'   : false,
-      'created_at'            : new Date(),
-      'updated_at'            : new Date()
+      'created_at'            : new Date(Date.now() - 2000),
+      'updated_at'            : new Date(Date.now() - 2000)
     }),
 
     // Steve
@@ -278,8 +278,8 @@ exports.seed = function(knex, Promise) {
       'message'               : "Jack!!!",
       'hidden_for_sender'     : false,
       'hidden_for_receiver'   : false,
-      'created_at'            : new Date(),
-      'updated_at'            : new Date()
+      'created_at'            : new Date(Date.now() - 2000),
+      'updated_at'            : new Date(Date.now() - 2000)
     }),
 
     // Message Threads
@@ -297,8 +297,8 @@ exports.seed = function(knex, Promise) {
       'last_seen_receiver'     : null,
       'message_count_sender'   : 2,
       'message_count_receiver' : 2,
-      'created_at' : new Date(),
-      'updated_at' : new Date()
+      'created_at' : new Date(Date.now() - 3000),
+      'updated_at' : new Date(Date.now() - 3000)
     }),
 
     // Jack
@@ -315,8 +315,8 @@ exports.seed = function(knex, Promise) {
       'message'               : "Sorry about your dog man!",
       'hidden_for_sender'     : false,
       'hidden_for_receiver'   : false,
-      'created_at'            : new Date(),
-      'updated_at'            : new Date()
+      'created_at'            : new Date(Date.now() - 3000),
+      'updated_at'            : new Date(Date.now() - 3000)
     }),
 
     // Steve
@@ -333,8 +333,8 @@ exports.seed = function(knex, Promise) {
       'message'               : "Don't worry, Stewie has a time machine and will fix everything :)",
       'hidden_for_sender'     : false,
       'hidden_for_receiver'   : false,
-      'created_at'            : new Date(),
-      'updated_at'            : new Date()
+      'created_at'            : new Date(Date.now() - 3000),
+      'updated_at'            : new Date(Date.now() - 3000)
     }),
 
     knex.raw('SELECT setval(\'"Messages_id_seq"\'::regclass, 15);'),
