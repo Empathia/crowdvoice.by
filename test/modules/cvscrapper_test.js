@@ -1,4 +1,4 @@
-require('argonjs');
+require('neon');
 
 var scrapper = require(__dirname + '/../../lib/cvscrapper');
 

@@ -45,32 +45,22 @@ Module('ThreadsPresenter')({
           done();
         })
       }, function(done) {
-        db('Messages')
-          .where('thread_id', '=', threadInstance.id)
-          .andWhereRaw("created_at > '" +  moment(new Date(thread.lastSeen).toISOString()).format() + "'")
-          .count('*')
-          .exec(function(err, result) {
-            if (err) {
-              return done(err);
-            }
-
-            console.log(thread.lastSeen)
-
-            thread.unreadCount = parseInt(result[0].count, 10);
-            delete thread.lastSeen;
-
-            done();
-          })
-      }, function(done) {
-        Message.find({'thread_id' : threadInstance.id}, function(err, messages) {
+        Message.find(['thread_id = ? ORDER BY created_at ASC', [threadInstance.id]], function(err, messages) {
           if (err) {
             return done(err);
           }
+          var unreadCount = 0;
 
           messages.forEach(function(message) {
             var messageInstance = new Message(message);
 
             var messageSenderOrReceiver = messageInstance.isPersonSender(hashids.decode(req.currentPerson.id)[0]) ? 'Sender' : 'Receiver';
+
+            if (messageSenderOrReceiver === 'Receiver') {
+              if ((new Date(messageInstance.createdAt)) > (new Date(thread.lastSeen))) {
+                unreadCount++;
+              };
+            }
 
             message.hidden = message['hiddenFor' + messageSenderOrReceiver];
 
@@ -96,6 +86,8 @@ Module('ThreadsPresenter')({
             delete message.eventListeners;
 
           });
+
+          thread.unreadCount = unreadCount;
 
           thread.messages = messages;
 

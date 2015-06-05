@@ -14,5 +14,8 @@
     "flickr",
     "image",
     "html"
-  ]
+  ],
+  "ImageDownloader" : {
+    "downloadPath": "{app_path}/public/posts_images"
+  }
 }
