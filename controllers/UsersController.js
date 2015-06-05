@@ -1,15 +1,7 @@
 require(__dirname + '/../mailers/UserMailer.js');
 
-var UsersController = Class('UsersController').inherits(RestfulController)({
+var UsersController = Class('UsersController')({
   prototype : {
-    _initRouter : function() {
-      // Call constructor router
-      RestfulController.prototype._initRouter.apply(this, arguments);
-
-      application.router.route('/signup').get(this.new);
-      application.router.route('/signup/check-username').post(this.checkUsername);
-    },
-
     index : function index(req, res) {
       User.all(function(err, users) {
         res.render('users/index.html', {layout : 'application', users : users});

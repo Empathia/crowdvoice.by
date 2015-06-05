@@ -5,20 +5,7 @@ require(__dirname + '/../mailers/UserMailer.js');
 var SessionsController = Class('SessionsController')({
   prototype : {
     init : function () {
-      this._initRouter();
       return this;
-    },
-
-    /* Register session routes
-     * @method _initRouter
-     */
-    _initRouter : function () {
-      application.router.route('/login').get(this.login);
-      application.router.route('/session/forgot-password').get(this.forgotPassword);
-      application.router.route('/session').post(this.create);
-      application.router.route('/session/reset-password').post(this.resetPassword);
-      application.router.route('/session').get(this.tokenAuth);
-      application.router.route('/logout').get(this.logout);
     },
 
     /* Render login form for user
