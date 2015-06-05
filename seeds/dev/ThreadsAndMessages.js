@@ -335,6 +335,9 @@ exports.seed = function(knex, Promise) {
       'hidden_for_receiver'   : false,
       'created_at'            : new Date(),
       'updated_at'            : new Date()
-    })
+    }),
+
+    knex.raw('SELECT setval(\'"Messages_id_seq"\'::regclass, 15);'),
+    knex.raw('SELECT setval(\'"MessageThreads_id_seq"\'::regclass, 5);')
   );
 };
