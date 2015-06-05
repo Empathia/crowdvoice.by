@@ -1,5 +1,6 @@
 {
   "downloaders": [
+    "imgur",
     "youtube",
     "vimeo",
     "flickr",
@@ -7,6 +8,7 @@
     "html"
   ],
   "scrappers": [
+    "imgur",
     "youtube",
     "vimeo",
     "flickr",
