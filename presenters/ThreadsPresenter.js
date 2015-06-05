@@ -62,7 +62,7 @@ Module('ThreadsPresenter')({
             done();
           })
       }, function(done) {
-        Message.find({'thread_id' : threadInstance.id}, function(err, messages) {
+        Message.find(['thread_id = ? ORDER BY created_at ASC', [threadInstance.id]], function(err, messages) {
           if (err) {
             return done(err);
           }
