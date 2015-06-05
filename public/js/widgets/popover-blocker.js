@@ -85,12 +85,17 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
 
             if ((typeof this.content).toLowerCase() === 'string') {
                 this.contentElement.insertAdjacentHTML('afterbegin', content);
+
                 return this;
             }
 
             this.contentElement.appendChild(content);
 
             return this;
+        },
+
+        getContent : function getContent() {
+            return this.contentElement;
         },
 
         /* Activate/Deactivate the popover
