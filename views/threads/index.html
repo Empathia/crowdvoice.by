@@ -190,8 +190,7 @@
             console.log(data.message);
             var messageEl = messageText.clone();
 			messageEl.find('.message-data h3').text('<%= currentPerson.name %>' + " " + '<%= currentPerson.lastname %>');
-			var prettyDate = getPrettyDate(new Date());
-			messageEl.find('.message-data span').text(prettyDate);
+			messageEl.find('.message-data span').text(moment(new Date().toISOString()).format('• MMMM Do, YYYY • h:mm a'));
 			messageEl.find('.message-data p').text(data.message);
 			messageListEl.append(messageEl);
 			$('.messages-conversation').scrollTop(10000);
