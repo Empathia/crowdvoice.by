@@ -4,7 +4,11 @@ var moment = require('moment');
 Class(CV, 'PostLink').inherits(CV.Post)({
     HTML : '\
     <article class="post-card link">\
-        <div class="post-card-image-wrapper"></div>\
+        <div class="post-card-image-wrapper">\
+            <svg class="post-card-svg-magnifier">\
+                <use xlink:href="#svg-magnifier"></use>\
+            </svg>\
+        </div>\
         <div class="post-card-info">\
             <div class="post-card-meta">\
                 <span class="post-card-meta-source"></span>\
@@ -15,13 +19,13 @@ Class(CV, 'PostLink').inherits(CV.Post)({
             <div class="post-card-activity">\
                 <div class="post-card-activity-repost -inline-block -mr1">\
                     <svg class="post-card-activity-svg">\
-                        <use xlink:href="#svg-repost"></use>\
+                        <use xlink:href="#svg-repost-outline"></use>\
                     </svg>\
                     <span class="post-card-activity-label">0</span>\
                 </div>\
                 <div class="post-card-activity-saved -inline-block">\
                     <svg class="post-card-activity-svg">\
-                        <use xlink:href="#svg-save"></use>\
+                        <use xlink:href="#svg-save-outline"></use>\
                     </svg>\
                     <span class="post-card-activity-label">0</span>\
                 </div>\

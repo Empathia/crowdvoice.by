@@ -3,18 +3,50 @@
   display: inline-block;
   width: 100%;
   background-color: #fff;
-  background-image: linear-gradient(to bottom, #fff, #f7f7f7);
   border-radius: 6px;
   border-width: 1px 1px 2px 1px;
   border-style: solid;
   border-color: tint(@color-black, 86);
+
+  &:hover {
+    box-shadow: 0 0 0 2px @color-primary;
+
+    .post-card-image-wrapper::before {
+      opacity: 1;
+    }
+
+    .post-card-svg-magnifier {
+      opacity: .4;
+      transform: scale(1);
+    }
+
+    .post-card-play-button {
+      background-color: rgba(0,0,0,0);
+    }
+
+    .post-card-svg-play {
+      transform: translateY(-50%) scale(1);
+    }
+
+    .post-card-activity-repost {
+      transform: translateX(20px);
+    }
+
+    .post-card-activity-saved {
+      transform: translateX(90px);
+    }
+
+    .post-card-actions {
+      opacity: 1;
+      visibility: visible;
+      transition-duration: 400ms;
+      transition-delay: 100ms;
+    }
+  }
 }
 
 .post-card.video {
   .post-card-image-wrapper {
-    padding: 18px 0;
-    background-color: #000;
-
     iframe {
       position: absolute;
       top: 0;
@@ -29,7 +61,6 @@
 .post-card-audio-player-wrapper {
   position: relative;
   overflow: hidden;
-  border-bottom: 4px solid #e5e5e5;
   border-radius: 5px 5px 0 0;
 }
 
@@ -38,24 +69,58 @@
   min-height: 60px;
   margin: -1px -1px 0 -1px;
   text-align: center;
-  background-color: #e5e5e5;
+  background-color: #000;
   background-position: 50%;
   background-repeat: no-repeat;
   background-size: cover;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    border-radius: 6px 6px 0 0;
+    opacity: 0;
+    transition: opacity 140ms ease;
+  }
 
   .post-card-play-button {
     position: absolute;
     top: 50%;
     left: 50%;
-    margin: -18px 0 0 -28px;
-    padding: .6rem 1.55rem;
-    background-color: fade(#000, 80%);
+    margin: -32px 0 0 -32px;
+    width: 64px;
+    height: 64px;
+    background-color: fade(#000, 20%);
+    transition: background-color 100ms ease;
   }
 
   .post-card-svg-play {
-    width: 17px;
-    height: 20px;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%) scale(.6);
+    width: 32px;
+    height: 40px;
     fill: @color-white;
+    transition: transform 300ms cubic-bezier(0.68, -0.55, 0.27, 1.55);
+  }
+
+  .post-card-svg-magnifier {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -24px 0 0 -24px;
+    width: 48px;
+    height: 48px;
+    fill: @color-white;
+    opacity: 0;
+    transform: scale(.8);
+    transition-property: transform, opacity;
+    transition-duration: 300ms, 300ms;
+    transition-timing-function: cubic-bezier(0.68, -0.55, 0.27, 1.55),  ease;
   }
 }
 
@@ -145,8 +210,8 @@
 }
 
 .post-card-meta {
-  font-size: 12px;
-  margin-bottom: .75em;
+  font-size: 11px;
+  margin-bottom: 1em;
   color: @color-grey-light;
 
   a {
@@ -167,15 +232,16 @@
 
 /* ======= INFO ======= */
 .post-card-info {
-  padding: 20px 25px 45px;
+  padding: 18px 25px 10px;
 }
 
 .post-card-title {
-  font-size: 26px;
-  line-height: 34px;
+  font-size: 18px;
+  line-height: 26px;
   margin-top: 0;
   overflow: hidden;
   text-overflow: ellipsis;
+  letter-spacing: -.1px;
 }
 
 .post-card-description {
@@ -203,42 +269,44 @@
 }
 
 .post-card-activity {
-  font-size: 12px;
-  line-height: 1;
+  font-size: 11px;
+  line-height: 16px;
   margin: 1.5rem 0;
   color: @color-grey-light;
   fill: @color-grey-light;
 }
 
-.post-card-activity-svg {margin-right: 5px}
+.post-card-activity-svg {
+  width: 16px;
+  height: 16px;
+}
+
+.post-card-activity-repost,
+.post-card-activity-saved {
+  transition: transform 300ms ease;
+}
 
 .post-card-activity-repost .post-card-activity-svg {
-  width: 14px;
-  height: 12px;
+  margin-right: 5px;
 }
 
 .post-card-activity-saved .post-card-activity-svg {
-  width: 7px;
-  height: 12px;
+  margin-right: 2px;
 }
 
 
 /* ======= ACTIONS ======= */
 .post-card-actions {
-  display: none;
+  opacity: 0;
+  visibility: hidden;
   position: absolute;
   bottom: 0;
   width: 100%;
-  height: 45px;
+  height: 58px;
   background-color: @color-white;
   text-align: center;
   border-radius: 0 0 5px 5px;
-
-  svg {
-    width: 20px;
-    height: 20px;
-    fill: @color-grey-light;
-  }
+  transition: all 200ms ease;
 }
 
 .post-card-actions-item {
@@ -246,11 +314,33 @@
   padding-top: 1rem;
   border-right: 1px solid @color-grey-lighter;
   cursor: pointer;
-  transition: background-color 140ms ease;
+  transition: background-color 140ms ease, box-shadow 140ms ease;
 
   &:last-child {border-right: 0}
 
-  &:hover {background-color: @color-grey-lighter}
+  .post-card-activity-svg {
+    fill: @color-grey-dark;
+    transition: fill 240ms ease;
+  }
+
+  &:hover {
+    .post-card-activity-svg,
+    .post-card-actions-label {
+      color: @color-primary;
+      fill: @color-primary;
+    }
+  }
+
+  &:active {
+    background-color: tint(@color-grey-lighter, 50);
+    box-shadow: inset 0 3px 0 @color-grey-lighter;
+  }
+}
+
+.post-card-actions-label {
+  font-size: 11px;
+  color: @color-grey-light;
+  transition: color 240ms ease;
 }
 
 @keyframes loading-stripes {

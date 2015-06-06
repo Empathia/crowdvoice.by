@@ -9,16 +9,19 @@ Class(CV, 'Post').inherits(Widget).includes(CV.WidgetUtils)({
                     <svg class="post-card-activity-svg">\
                         <use xlink:href="#svg-repost"></use>\
                     </svg>\
+                    <p class="post-card-actions-label">Re-post</p>\
                 </div>\
                 <div class="post-card-actions-item -col-4">\
                     <svg class="post-card-activity-svg">\
                         <use xlink:href="#svg-save"></use>\
                     </svg>\
+                    <p class="post-card-actions-label">Save</p>\
                 </div>\
                 <div class="post-card-actions-item -col-4">\
                     <svg class="post-card-activity-svg">\
                         <use xlink:href="#svg-share"></use>\
                     </svg>\
+                    <p class="post-card-actions-label">Share</p>\
                 </div>\
             </div>\
         </div>\
@@ -95,9 +98,9 @@ Class(CV, 'Post').inherits(Widget).includes(CV.WidgetUtils)({
          */
         _loadImageHandler : function _loadImageHandler(err, imageObject) {
             if (err) {
+                this.abortImage();
+                this.haltImage = null;
                 console.error(err);
-                console.log(imageObject);
-                console.log('*****************');
                 return;
             }
 

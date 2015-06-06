@@ -8,9 +8,9 @@
  * =========================================================================== */
 @root-font-size: 13px;
 @root-font-family: 'Open Sans', sans-serif;
-@root-text-color: #666;
+@root-text-color: #4d4d4d;
 
-@headings-color: #333;
+@headings-color: #4d4d4d;
 @color-primary: #ef631f;
 
 /* =========================================================================== *
@@ -32,6 +32,8 @@
 @btn-xl-font-size: 24px;
 @btn-xl-height: 60px;
 
+@tooltip-font-size: .9rem;
+
 // kabinett base
 @import '@{kabinet-path}/core/base';
 
@@ -52,10 +54,10 @@
 @import '@{kabinet-path}/components/popover';
 
 // kabinett utilities
-// @import '@{kabinet-path}/core/utilities';
+@import '@{kabinet-path}/core/utilities';
+@import '@{kabinet-path}/utilities/elements';
 @import '@{kabinet-path}/utilities/layout';
 @import '@{kabinet-path}/utilities/presentation';
-@import '@{kabinet-path}/utilities/elements';
 @import '@{kabinet-path}/utilities/typography';
 @import '@{kabinet-path}/utilities/colors/base';
 // @import '@{kabinet-path}/utilities/colors/flat-ui';
