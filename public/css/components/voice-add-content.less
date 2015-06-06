@@ -12,21 +12,17 @@
   height: 60px;
   border-radius: 50%;
 
-  span {
-    line-height: 0.4;
-    position: absolute;
-    top: 19px;
-    left: 19px;
-    width: 22px;
-    height: 22px;
-    transition: transform 400ms cubic-bezier(0.68, -0.55, 0.27, 1.55);
+  &.active .voice-add-post-button-svg {
+    transform: rotate(-45deg);
   }
+}
 
-  &.active {
-    span {
-      transform: rotate(-45deg);
-    }
-  }
+.voice-add-post-button-svg {
+  width: 28px;
+  height: 28px;
+  top: 15px;
+  left: 16px;
+  transition: transform 400ms cubic-bezier(0.68, -0.55, 0.27, 1.55);
 }
 
 .voice-add-content-bubble {

@@ -3,35 +3,45 @@ Class(CV, 'VoiceAddContent').inherits(Widget)({
     HTML: '\
         <div class="voice-add-content">\
             <button class="voice-add-post-button ui-btn -primary">\
-                <span>+</span>\
+                <svg class="voice-add-post-button-svg -abs -color-white">\
+                    <use xlink:href="#svg-plus"></use>\
+                </svg>\
             </button>\
         </div>\
     ',
 
     BUBBLE_OPTIONS : '\
         <div class="voice-add-content__option -clickable" data-type="FromUrl">\
-            <svg class="voice-add-content__option-svg"><use xlink:href="#svg-browse"></use></svg>\
+            <svg class="voice-add-content__option-svg">\
+                <use xlink:href="#svg-link"></use>\
+            </svg>\
             <span class="voice-add-content__option-label">From URL</span>\
             <span class="voice-add-content__option-tooltip ui-has-tooltip">(?)\
                 <i class="ui-tooltip -top">You can enter a URL of an image, video from Youtube or Vimeo or a web page.</i>\
             </span>\
         </div>\
-        <div class="voice-add-content__option" data-type="FromSources">\
-            <svg class="voice-add-content__option-svg"><use xlink:href="#svg-share"></use></svg>\
+        <div class="voice-add-content__option -clickable" data-type="FromSources">\
+            <svg class="voice-add-content__option-svg">\
+                <use xlink:href="#svg-sources"></use>\
+            </svg>\
             <span class="voice-add-content__option-label">From Sources</span>\
             <span class="voice-add-content__option-tooltip ui-has-tooltip">(?)\
                 <i class="ui-tooltip -top">You can enter a URL of an image, video from Youtube or Vimeo or a web page.</i>\
             </span>\
         </div>\
-        <div class="voice-add-content__option" data-type="UploadFile">\
-            <svg class="voice-add-content__option-svg"><use xlink:href="#svg-activity"></use></svg>\
+        <div class="voice-add-content__option -clickable" data-type="UploadFile">\
+            <svg class="voice-add-content__option-svg">\
+                <use xlink:href="#svg-upload"></use>\
+            </svg>\
             <span class="voice-add-content__option-label">Upload File</span>\
             <span class="voice-add-content__option-tooltip ui-has-tooltip">(?)\
                 <i class="ui-tooltip -top">You can enter a URL of an image, video from Youtube or Vimeo or a web page.</i>\
             </span>\
         </div>\
-        <div class="voice-add-content__option" data-type="WriteArticle">\
-            <svg class="voice-add-content__option-svg"><use xlink:href="#svg-pencil"></use></svg>\
+        <div class="voice-add-content__option -clickable" data-type="WriteArticle">\
+            <svg class="voice-add-content__option-svg">\
+                <use xlink:href="#svg-pencil"></use>\
+            </svg>\
             <span class="voice-add-content__option-label">Write Article</span>\
             <span class="voice-add-content__option-tooltip ui-has-tooltip">(?)\
                 <i class="ui-tooltip -top">You can enter a URL of an image, video from Youtube or Vimeo or a web page.</i>\
