@@ -221,7 +221,7 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
     },
 
     searchPeople : function searchPeople(req, res, next) {
-      var value = req.body.value;
+      var value = req.body.value.toLowerCase().trim();
 
       res.format({
         json : function() {
