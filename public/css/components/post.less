@@ -3,18 +3,33 @@
   display: inline-block;
   width: 100%;
   background-color: #fff;
-  background-image: linear-gradient(to bottom, #fff, #f7f7f7);
   border-radius: 6px;
   border-width: 1px 1px 2px 1px;
   border-style: solid;
   border-color: tint(@color-black, 86);
+
+  &:hover {
+    box-shadow: 0 0 0 2px @color-primary;
+
+    .post-card-activity-repost {
+      transform: translateX(20px);
+    }
+
+    .post-card-activity-saved {
+      transform: translateX(90px);
+    }
+
+    .post-card-actions {
+      opacity: 1;
+      visibility: visible;
+      transition-duration: 400ms;
+      transition-delay: 100ms;
+    }
+  }
 }
 
 .post-card.video {
   .post-card-image-wrapper {
-    padding: 18px 0;
-    background-color: #000;
-
     iframe {
       position: absolute;
       top: 0;
@@ -29,7 +44,6 @@
 .post-card-audio-player-wrapper {
   position: relative;
   overflow: hidden;
-  border-bottom: 4px solid #e5e5e5;
   border-radius: 5px 5px 0 0;
 }
 
@@ -38,7 +52,7 @@
   min-height: 60px;
   margin: -1px -1px 0 -1px;
   text-align: center;
-  background-color: #e5e5e5;
+  background-color: #000;
   background-position: 50%;
   background-repeat: no-repeat;
   background-size: cover;
@@ -167,7 +181,7 @@
 
 /* ======= INFO ======= */
 .post-card-info {
-  padding: 20px 25px 45px;
+  padding: 20px 25px 10px;
 }
 
 .post-card-title {
@@ -203,42 +217,44 @@
 }
 
 .post-card-activity {
-  font-size: 12px;
-  line-height: 1;
+  font-size: 11px;
+  line-height: 16px;
   margin: 1.5rem 0;
   color: @color-grey-light;
   fill: @color-grey-light;
 }
 
-.post-card-activity-svg {margin-right: 5px}
+.post-card-activity-svg {
+  width: 16px;
+  height: 16px;
+}
+
+.post-card-activity-repost,
+.post-card-activity-saved {
+  transition: transform 300ms ease;
+}
 
 .post-card-activity-repost .post-card-activity-svg {
-  width: 14px;
-  height: 12px;
+  margin-right: 5px;
 }
 
 .post-card-activity-saved .post-card-activity-svg {
-  width: 7px;
-  height: 12px;
+  margin-right: 2px;
 }
 
 
 /* ======= ACTIONS ======= */
 .post-card-actions {
-  display: none;
+  opacity: 0;
+  visibility: hidden;
   position: absolute;
   bottom: 0;
   width: 100%;
-  height: 45px;
+  height: 58px;
   background-color: @color-white;
   text-align: center;
   border-radius: 0 0 5px 5px;
-
-  svg {
-    width: 20px;
-    height: 20px;
-    fill: @color-grey-light;
-  }
+  transition: all 200ms ease;
 }
 
 .post-card-actions-item {
@@ -246,11 +262,33 @@
   padding-top: 1rem;
   border-right: 1px solid @color-grey-lighter;
   cursor: pointer;
-  transition: background-color 140ms ease;
+  transition: background-color 140ms ease, box-shadow 140ms ease;
 
   &:last-child {border-right: 0}
 
-  &:hover {background-color: @color-grey-lighter}
+  .post-card-activity-svg {
+    fill: @color-grey-dark;
+    transition: fill 240ms ease;
+  }
+
+  &:hover {
+    .post-card-activity-svg,
+    .post-card-actions-label {
+      color: @color-primary;
+      fill: @color-primary;
+    }
+  }
+
+  &:active {
+    background-color: tint(@color-grey-lighter, 50);
+    box-shadow: inset 0 3px 0 @color-grey-lighter;
+  }
+}
+
+.post-card-actions-label {
+  font-size: 11px;
+  color: @color-grey-light;
+  transition: color 240ms ease;
 }
 
 @keyframes loading-stripes {
