@@ -1,3 +1,6 @@
+/* jshint multistr: true */
+var Checkit = require('checkit');
+
 Class(CV, 'Login').inherits(Widget)({
 
 	ELEMENT_CLASS : 'cv-login',

@@ -16,6 +16,7 @@
     "autoprefixer-loader": "^1.2.0",
     "bcrypt-nodejs": "0.0.3",
     "bluebird": "^2.9.27",
+    "checkit": "^0.5.1",
     "compression-webpack-plugin": "^0.2.0",
     "connect-redis": "^2.2.0",
     "css-loader": "^0.9.1",

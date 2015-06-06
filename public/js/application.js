@@ -16,10 +16,6 @@ window.validate = require('validate');
 
 require('./../css/style.less');
 
-// vendor
-var Checkit = require('./vendor/checkit.js');
-window.Checkit = Checkit;
-
 var moment = require('moment');
 window.moment = moment;
 
