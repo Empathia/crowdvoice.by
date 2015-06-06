@@ -11,6 +11,23 @@
   &:hover {
     box-shadow: 0 0 0 2px @color-primary;
 
+    .post-card-image-wrapper::before {
+      opacity: 1;
+    }
+
+    .post-card-svg-magnifier {
+      opacity: .4;
+      transform: scale(1);
+    }
+
+    .post-card-play-button {
+      background-color: rgba(0,0,0,0);
+    }
+
+    .post-card-svg-play {
+      transform: translateY(-50%) scale(1);
+    }
+
     .post-card-activity-repost {
       transform: translateX(20px);
     }
@@ -57,19 +74,53 @@
   background-repeat: no-repeat;
   background-size: cover;
 
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    border-radius: 6px 6px 0 0;
+    opacity: 0;
+    transition: opacity 140ms ease;
+  }
+
   .post-card-play-button {
     position: absolute;
     top: 50%;
     left: 50%;
-    margin: -18px 0 0 -28px;
-    padding: .6rem 1.55rem;
-    background-color: fade(#000, 80%);
+    margin: -32px 0 0 -32px;
+    width: 64px;
+    height: 64px;
+    background-color: fade(#000, 20%);
+    transition: background-color 100ms ease;
   }
 
   .post-card-svg-play {
-    width: 17px;
-    height: 20px;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%) scale(.6);
+    width: 32px;
+    height: 40px;
     fill: @color-white;
+    transition: transform 300ms cubic-bezier(0.68, -0.55, 0.27, 1.55);
+  }
+
+  .post-card-svg-magnifier {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -24px 0 0 -24px;
+    width: 48px;
+    height: 48px;
+    fill: @color-white;
+    opacity: 0;
+    transform: scale(.8);
+    transition-property: transform, opacity;
+    transition-duration: 300ms, 300ms;
+    transition-timing-function: cubic-bezier(0.68, -0.55, 0.27, 1.55),  ease;
   }
 }
 
@@ -159,8 +210,8 @@
 }
 
 .post-card-meta {
-  font-size: 12px;
-  margin-bottom: .75em;
+  font-size: 11px;
+  margin-bottom: 1em;
   color: @color-grey-light;
 
   a {
@@ -181,15 +232,16 @@
 
 /* ======= INFO ======= */
 .post-card-info {
-  padding: 20px 25px 10px;
+  padding: 18px 25px 10px;
 }
 
 .post-card-title {
-  font-size: 26px;
-  line-height: 34px;
+  font-size: 18px;
+  line-height: 26px;
   margin-top: 0;
   overflow: hidden;
   text-overflow: ellipsis;
+  letter-spacing: -.1px;
 }
 
 .post-card-description {

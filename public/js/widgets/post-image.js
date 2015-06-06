@@ -4,7 +4,11 @@ var moment = require('moment');
 Class(CV, 'PostImage').inherits(CV.Post)({
     HTML : '\
     <article class="post-card image">\
-        <div class="post-card-image-wrapper"></div>\
+        <div class="post-card-image-wrapper">\
+            <svg class="post-card-svg-magnifier">\
+                <use xlink:href="#svg-magnifier"></use>\
+            </svg>\
+        </div>\
         <div class="post-card-info">\
             <div class="post-card-meta">\
                 <span class="post-card-meta-source"></span>\
