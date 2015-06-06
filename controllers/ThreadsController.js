@@ -218,6 +218,29 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
           })
         }
       });
+    },
+
+    searchPeople : function searchPeople(req, res, next) {
+      var value = req.body.value;
+
+      res.format({
+        json : function() {
+          Entity.find([
+            'is_anonymous = false AND type = "person" AND name LIKE "%?%" OR lastname LIKE "%?%" OR profile_name LIKE "%?%",'
+            [value, value, value]
+          ], function(err, result) {
+            if (err) {
+              return next(err);
+            }
+
+            result.forEach(function(person) {
+              person.id = hashids.encode(person.id);
+            })
+
+            res.json(result);
+          })
+        }
+      })
     }
   }
 });
