@@ -58,7 +58,7 @@ Class(CV, 'InputClearable').inherits(Widget).includes(CV.WidgetUtils)({
         },
 
         _keyDownHandler : function _keyDownHandler() {
-            var x = this.inputElement.value ? 'add' : 'remove';
+            var x = this.getValue() ? 'add' : 'remove';
 
             this.clearButton.classList[x](this.constructor.ACTIVE_CLASSNAME);
         },
@@ -66,6 +66,7 @@ Class(CV, 'InputClearable').inherits(Widget).includes(CV.WidgetUtils)({
         _clearClickHandler : function _clearClickHandler() {
             this.inputElement.value = "";
             this.clearButton.classList.remove(this.constructor.ACTIVE_CLASSNAME);
+            this.inputElement.focus();
         },
 
         /* Returns the value of the input element
