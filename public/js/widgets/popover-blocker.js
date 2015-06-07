@@ -144,9 +144,9 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
         _activate : function _activate() {
             Widget.prototype._activate.call(this);
 
+            this.container.style.overflow = 'hidden';
             this._placeElement();
             this.container.appendChild(this.backdropElement);
-            this.container.style.overflow = 'hidden';
         },
 
         /* Deactivate handler
@@ -155,9 +155,9 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
         _deactivate : function _deactivate() {
             Widget.prototype._deactivate.call(this);
 
+            this.container.style.overflow = '';
             this._unplaceElement();
             this.container.removeChild(this.backdropElement);
-            this.container.style.overflow = '';
         },
 
         render : function render(element, beforeElement) {
