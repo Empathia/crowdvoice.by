@@ -1,4 +1,4 @@
-var BlackListFilter = require(__dirname + '/BlackListFilter');
+var Scrapper = require(process.cwd() + '/lib/cvscrapper');
 
 var PostsController = Class('PostsController').includes(BlackListFilter)({
   prototype : {
@@ -92,6 +92,18 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
     destroy : function destroy(req, res) {
       res.redirect('/posts');
+    },
+
+    preview : function preview(req, res, next) {
+      var url = req.body.url;
+
+      Scrapper.processUrl(url, function (err, result) {
+        if (err) {
+          return next(err);
+        }
+
+        return res.json(result);
+      });
     }
   }
 });
