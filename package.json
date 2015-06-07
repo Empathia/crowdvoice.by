@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "SoundManager2": "scottschiller/SoundManager2",
+    "async": "^1.2.0",
     "autoprefixer-loader": "^1.2.0",
     "bcrypt-nodejs": "0.0.3",
     "bluebird": "^2.9.27",
@@ -50,7 +51,6 @@
     "webpack": "^1.7.3"
   },
   "devDependencies": {
-    "neon": "^2.0.0",
     "assert": "^1.3.0",
     "casual": "^1.4.7",
     "cli-table": "^0.3.1",

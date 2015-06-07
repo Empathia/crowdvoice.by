@@ -2,7 +2,7 @@
 
 #### Apps
 - Download and install [Postgress App](http://postgresapp.com)
-- Download [Navicat Premium](https://www.dropbox.com/s/xqzrhopznmbviwj/Navicat%20Premium%2011.1.5%20v2.dmg?dl=0) 
+- Download [Navicat Premium](https://www.dropbox.com/s/xqzrhopznmbviwj/Navicat%20Premium%2011.1.5%20v2.dmg?dl=0)
 	- To connecto use your OSX username w/out password, the default database is "postgres" otherwise it will not connect
 	- Create a database for the app: "__crowdvoice.by__"
 - Install Redis | brew install redis
@@ -47,5 +47,26 @@ development: {
 
 #### Application
 
-- npm install
-- npm start
+##### Prerequisites for OS X
+
+- XQuarts
+- libvips
+
+Required for [sharp](https://www.npmjs.com/package/sharp) module.
+
+You can install them via [homebrew](http://brew.sh/):
+
+```sh
+brew install Caskroom/cask/xquartz
+brew install homebrew/science/vips --with-webp --with-graphicsmagick
+```
+
+or check the sharp's module readme for more information.
+
+##### Run the app
+
+```sh
+npm install
+webpack -d
+npm start
+```
