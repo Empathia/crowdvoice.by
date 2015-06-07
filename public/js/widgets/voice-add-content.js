@@ -54,6 +54,10 @@ Class(CV, 'VoiceAddContent').inherits(Widget)({
         addPostButton: null,
         createPostModal : null,
 
+        _bubbleActivateHandlerRef : null,
+        _bubbleDeactivateHandlerRef : null,
+        _createPostDeactivateHandlerRef : null,
+
         init : function init(config) {
             Widget.prototype.init.call(this, config);
 
@@ -80,23 +84,31 @@ Class(CV, 'VoiceAddContent').inherits(Widget)({
         },
 
         _bindEvents : function _bindEvents() {
-            this._bubbleShownHandlerRef = this._bubbleShownHandler.bind(this);
-            this.addPostBubble.bind('activate', this._bubbleShownHandlerRef);
+            this._bubbleActivateHandlerRef = this._bubbleActivateHandler.bind(this);
+            this.addPostBubble.bind('activate', this._bubbleActivateHandlerRef);
 
-            this._bubbleHiddennHandlerRef = this._bubbleHiddenHandler.bind(this);
-            this.addPostBubble.bind('deactivate', this._bubbleHiddennHandlerRef);
+            this._bubbleDeactivateHandlerRef = this._bubbleDeactivateHandler.bind(this);
+            this.addPostBubble.bind('deactivate', this._bubbleDeactivateHandlerRef);
 
             this._optionClickHandlerRef = this._optionClickHandler.bind(this);
             this.bubbleOptions.forEach(function(option) {
                 option.addEventListener('click', this._optionClickHandlerRef);
             }, this);
+
+            return this;
         },
 
-        _bubbleShownHandler : function _bubbleShownHandler() {
+        /* Handle the actions when the bubble is activated.
+         * @method _bubbleActivateHandler
+         */
+        _bubbleActivateHandler : function _bubbleShowetavitcAner() {
             this.addPostButton.classList.add('active');
         },
 
-        _bubbleHiddenHandler : function _bubbleHiddenHandler() {
+        /* Handle the actions when the bubble is deactivated.
+         * @method _bubbleDeactivateHandler <private> [Function]
+         */
+        _bubbleDeactivateHandler : function _bubbleDeactivateHandler() {
             this.addPostButton.classList.remove('active');
 
             if (this.createPostModal) {
@@ -104,6 +116,9 @@ Class(CV, 'VoiceAddContent').inherits(Widget)({
             }
         },
 
+        /* Handles the click event on a bubble menu option.
+         * @method _optionClickHandler <private> [Function]
+         */
         _optionClickHandler : function _optionClickHandler(ev) {
             var type = ev.currentTarget.getAttribute('data-type');
 
@@ -125,11 +140,11 @@ Class(CV, 'VoiceAddContent').inherits(Widget)({
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
 
-            this.addPostBubble.unbind('activate', this._bubbleShownHandlerRef);
-            this._bubbleShownHandlerRef = null;
+            this.addPostBubble.unbind('activate', this._bubbleActivateHandlerRef);
+            this._bubbleActivateHandlerRef = null;
 
-            this.addPostBubble.unbind('deactivate', this._bubbleHiddennHandlerRef);
-            this._bubbleHiddennHandlerRef = null;
+            this.addPostBubble.unbind('deactivate', this._bubbleDeactivateHandlerRef);
+            this._bubbleDeactivateHandlerRef = null;
 
             this.bubbleOptions.forEach(function(option) {
                 option.removeEventListener('click', this._optionClickHandlerRef);

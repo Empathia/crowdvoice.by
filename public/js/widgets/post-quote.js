@@ -3,7 +3,7 @@ var moment = require('moment');
 
 Class(CV, 'PostQuote').inherits(CV.Post)({
     HTML : '\
-    <article class="post-card">\
+    <article class="post-card quote">\
         <div class="post-card-info">\
             <div class="post-card-meta">\
                 <span class="post-card-meta-source"></span>\
