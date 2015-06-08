@@ -225,10 +225,7 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
 
       res.format({
         json : function() {
-          Entity.find([
-            'is_anonymous = false AND type = "person" AND name LIKE "%?%" OR lastname LIKE "%?%" OR profile_name LIKE "%?%",'
-            [value, value, value]
-          ], function(err, result) {
+          Entity.searchPeople({value : value}, function(err, result) {
             if (err) {
               return next(err);
             }
@@ -238,7 +235,7 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
             })
 
             res.json(result);
-          })
+          });
         }
       })
     }
