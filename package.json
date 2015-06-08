@@ -34,7 +34,7 @@
     "method-override": "^2.3.3",
     "moment": "^2.10.2",
     "neon": "^2.0.0",
-    "neonode-core": "^2.2.4",
+    "neonode-core": "^2.2.5",
     "passport-local": "^1.0.0",
     "passport-token": "^0.1.3",
     "path": "^0.11.14",
