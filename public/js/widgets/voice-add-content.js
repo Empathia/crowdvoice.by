@@ -11,39 +11,39 @@ Class(CV, 'VoiceAddContent').inherits(Widget)({
     ',
 
     BUBBLE_OPTIONS : '\
-        <div class="voice-add-content__option -clickable" data-type="FromUrl">\
-            <svg class="voice-add-content__option-svg">\
+        <div class="voice-add-content__option ui-vertical-list-item" data-type="FromUrl">\
+            <svg class="voice-add-content__option-svg -color-grey-light">\
                 <use xlink:href="#svg-link"></use>\
             </svg>\
-            <span class="voice-add-content__option-label">From URL</span>\
-            <span class="voice-add-content__option-tooltip ui-has-tooltip">(?)\
+            <span class="voice-add-content__option-label -font-semi-bold">From URL</span>\
+            <span class="voice-add-content__option-tooltip ui-has-tooltip -color-grey-light">(?)\
                 <i class="ui-tooltip -top">You can enter a URL of an image, video from Youtube or Vimeo or a web page.</i>\
             </span>\
         </div>\
-        <div class="voice-add-content__option -clickable" data-type="FromSources">\
-            <svg class="voice-add-content__option-svg">\
+        <div class="voice-add-content__option ui-vertical-list-item" data-type="FromSources">\
+            <svg class="voice-add-content__option-svg -color-grey-light">\
                 <use xlink:href="#svg-sources"></use>\
             </svg>\
-            <span class="voice-add-content__option-label">From Sources</span>\
-            <span class="voice-add-content__option-tooltip ui-has-tooltip">(?)\
+            <span class="voice-add-content__option-label -font-semi-bold">From Sources</span>\
+            <span class="voice-add-content__option-tooltip ui-has-tooltip -color-grey-light">(?)\
                 <i class="ui-tooltip -top">You can enter a URL of an image, video from Youtube or Vimeo or a web page.</i>\
             </span>\
         </div>\
-        <div class="voice-add-content__option -clickable" data-type="UploadFile">\
-            <svg class="voice-add-content__option-svg">\
+        <div class="voice-add-content__option ui-vertical-list-item" data-type="UploadFile">\
+            <svg class="voice-add-content__option-svg -color-grey-light">\
                 <use xlink:href="#svg-upload"></use>\
             </svg>\
-            <span class="voice-add-content__option-label">Upload File</span>\
-            <span class="voice-add-content__option-tooltip ui-has-tooltip">(?)\
+            <span class="voice-add-content__option-label -font-semi-bold">Upload File</span>\
+            <span class="voice-add-content__option-tooltip ui-has-tooltip -color-grey-light">(?)\
                 <i class="ui-tooltip -top">You can enter a URL of an image, video from Youtube or Vimeo or a web page.</i>\
             </span>\
         </div>\
-        <div class="voice-add-content__option -clickable" data-type="WriteArticle">\
-            <svg class="voice-add-content__option-svg">\
+        <div class="voice-add-content__option ui-vertical-list-item" data-type="WriteArticle">\
+            <svg class="voice-add-content__option-svg -color-grey-light">\
                 <use xlink:href="#svg-pencil"></use>\
             </svg>\
-            <span class="voice-add-content__option-label">Write Article</span>\
-            <span class="voice-add-content__option-tooltip ui-has-tooltip">(?)\
+            <span class="voice-add-content__option-label -font-semi-bold">Write Article</span>\
+            <span class="voice-add-content__option-tooltip ui-has-tooltip -color-grey-light">(?)\
                 <i class="ui-tooltip -top">You can enter a URL of an image, video from Youtube or Vimeo or a web page.</i>\
             </span>\
         </div>\
@@ -71,12 +71,14 @@ Class(CV, 'VoiceAddContent').inherits(Widget)({
             this.appendChild(
                 new CV.PopoverBlocker({
                     name : 'addPostBubble',
-                    className : 'voice-add-content-bubble',
+                    className : 'voice-add-content-bubble -color-border-grey-light',
                     placement : 'left',
                     toggler : this.addPostButton,
                     content : this.constructor.BUBBLE_OPTIONS
                 })
             ).render(this.el);
+
+            this.addPostBubble.getContent().className += ' ui-vertical-list hoverable';
 
             this.bubbleOptions = [].slice.call(this.addPostBubble.getContent().getElementsByClassName('voice-add-content__option'), 0);
 
@@ -124,7 +126,9 @@ Class(CV, 'VoiceAddContent').inherits(Widget)({
 
             this.createPostModal = CV.PostCreator.create({type: type});
 
-            this.createPostModal.render(document.body);
+            this.createPostModal.render(document.body).activate();
+
+            this.addPostBubble.deactivate();
 
             this._createPostDeactivateHandlerRef = this._createPostDeactivateHandler.bind(this);
             this.createPostModal.bind('deactivate', this._createPostDeactivateHandlerRef);

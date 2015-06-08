@@ -43,44 +43,36 @@
 .voice-timeline-popover {
   width: 330px;
 
-  .popover-title {
-    font-size: 1.25rem;
-    padding: 1em;
-    border-bottom: 1px solid @color-grey-light;
-    font-weight: bold;
-  }
-
-  .popover-content {
-    padding: 0;
+  .ui-popover-body {
     height: 330px;
     overflow: auto;
-    border-radius: 0 0 6px 6px;
   }
 
   &_label {
-    font-size: .9rem;
-    line-height: 1;
-    padding: .5em 1em;
-    font-weight: bold;
-    background-color: @color-grey-lighter;
+    font-size: 10px;
+    padding: .5em 1em .5em 2em;
   }
 
   &_option {
     position: relative;
-    line-height: 1;
-    padding: .75em .75em .75em 2.5em;
-    border-bottom: 1px solid @color-grey-light;
+    padding-left: 3.5em;
 
     &.active {
       font-weight: bold;
+      color: @color-primary;
 
-      &:before {
-        content: '✔';
-        position: absolute;
-        left: 12px;
-        color: green;
+      .option-svg {
+        display: block;
       }
     }
+  }
+
+  .option-svg {
+    display: none;
+    width: 11px;
+    height: 11px;
+    left: 27px;
+    top: 13px;
   }
 }
 
