@@ -9,27 +9,37 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
     },
 
     index : function index(req, res, next) {
-      MessageThread.find(['sender_person_id = ? OR receiver_entity_id = ?', [hashids.decode(req.currentPerson.id)[0], hashids.decode(req.currentPerson.id)[0]]], function(err, threads) {
+      ACL.isAllowed('show', 'threads', req.role, {currentPerson : req.currentPerson},  function(err, isAllowed) {
         if (err) {
           return next(err);
         }
 
-        ThreadsPresenter.build(req, threads, function(err, result) {
+        if (!isAllowed) {
+          return next(new ForbiddenError());
+        }
+
+        MessageThread.find(['sender_person_id = ? OR receiver_entity_id = ?', [hashids.decode(req.currentPerson.id)[0], hashids.decode(req.currentPerson.id)[0]]], function(err, threads) {
           if (err) {
             return next(err);
           }
 
-          res.format({
-
-            html : function() {
-
-              return res.render('threads/index.html', {layout : 'application', threads : result});
-            },
-            json : function() {
-              return res.json(result);
+          ThreadsPresenter.build(req, threads, function(err, result) {
+            if (err) {
+              return next(err);
             }
-          });
 
+            res.format({
+
+              html : function() {
+
+                return res.render('threads/index.html', {layout : 'application', threads : result});
+              },
+              json : function() {
+                return res.json(result);
+              }
+            });
+
+          });
         });
       });
     },

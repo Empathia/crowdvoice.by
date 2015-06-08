@@ -6,37 +6,47 @@ var HomeController = Class('HomeController')({
     },
 
     index : function(req, res, next) {
+      ACL.isAllowed('show', 'homepage', req.role, {}, function(err, isAllowed) {
+        if (err) {
+          return next(err)
+        }
 
-      res.render('home/index.html', {
-        layout : 'application',
+        if (!isAllowed) {
+          return next(new ForbiddenError())
+        }
 
-        pageName : 'page-home',
+        res.render('home/index.html', {
+          layout : 'application',
 
-        /* =========================================================================== *
-         *  HEADER STATS
-         * =========================================================================== */
-        globalStats : {
-          countries: 36,
-          organizations: 148,
-          voices: 312,
-          posts: 579371,
-          people: 22665729
-        },
+          pageName : 'page-home',
 
-        /* =========================================================================== *
-         *  FEATURED VOICES
-         * =========================================================================== */
-        featuredVoices : require('./../public/demo-data/voices.js'),
+          /* =========================================================================== *
+           *  HEADER STATS
+           * =========================================================================== */
+          globalStats : {
+            countries: 36,
+            organizations: 148,
+            voices: 312,
+            posts: 579371,
+            people: 22665729
+          },
 
-        /* =========================================================================== *
-         *  CATEGORIES
-         * =========================================================================== */
-        categories : require('./../public/demo-data/categories.js'),
+          /* =========================================================================== *
+           *  FEATURED VOICES
+           * =========================================================================== */
+          featuredVoices : require('./../public/demo-data/voices.js'),
 
-        /* =========================================================================== *
-         *  MOST ACTIVE ORGANIZATIONS
-         * =========================================================================== */
-        mostActiveOrganizations : require('./../public/demo-data/organizations.js')
+          /* =========================================================================== *
+           *  CATEGORIES
+           * =========================================================================== */
+          categories : require('./../public/demo-data/categories.js'),
+
+          /* =========================================================================== *
+           *  MOST ACTIVE ORGANIZATIONS
+           * =========================================================================== */
+          mostActiveOrganizations : require('./../public/demo-data/organizations.js')
+        });
+
       });
 
     },
