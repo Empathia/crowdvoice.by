@@ -158,6 +158,26 @@ var SessionsController = Class('SessionsController')({
       req.logout();
       return res.redirect('/');
     },
+
+    /* Switch between person and anonymous and viceversa
+     * @method switchPerson
+     */
+
+    switchPerson : function switchPerson(req, res, next) {
+      if (!req.currentPerson) {
+        req.flash('info', 'You must be logged in to perform the previous action');
+        return res.redirect('/');
+      }
+
+      if (!req.currentPerson.isAnonymous) {
+        console.log('is not anonymous')
+        req.session.isAnonymous = true;
+      } else {
+        req.session.isAnonymous = false;
+      }
+
+      res.redirect(req.session.backURL);
+    }
   }
 });
 

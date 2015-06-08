@@ -26,20 +26,54 @@ module.exports = function(req, res, next) {
     res.locals.hashids = global.hashids;
   }
 
+  req.session.backURL = req.header('Referer') || '/';
+
   // Add currentPerson
   if (req.user) {
     var currentUser = new User(req.user);
-    currentUser.entity(function (err, entity) {
-      if (err) {
-        return next(err)
-      }
 
-      res.locals.currentPerson = entity;
-      req.currentPerson = entity;
-      req.role = 'Person'
+    if (req.session.isAnonymous) {
+      db('Entities')
+        .where({id : db('EntityOwner').where('id', '=', currentUser.entityId).select('owned_id')})
+        .andWhere('is_anonymous', '=', true)
+        .andWhere('type', '=', 'person')
+        .exec(function(err, result) {
+          if (err) {
+            return next(err);
+          }
 
-      next();
-    });
+          var result = result[0]
+
+          var shadowEntity = new Entity({
+            id : result.id,
+            name : result.name,
+            lastname : result.lastname,
+            profileName : result.profile_name,
+            isAnonymous : result.is_anonymous,
+            createdAt : result.created_at,
+            updatedAt : result.updated_at
+          });
+
+          res.locals.currentPerson = shadowEntity;
+          req.currentPerson = shadowEntity;
+          req.role = 'Anonymous'
+
+          return next();
+        })
+    } else {
+      currentUser.entity(function (err, entity) {
+        if (err) {
+          return next(err)
+        }
+
+        res.locals.currentPerson = entity;
+        req.currentPerson = entity;
+        req.role = 'Person'
+
+        return next();
+      });
+    }
+
   } else {
     res.locals.currentPerson = null;
     req.currentPerson = null;
