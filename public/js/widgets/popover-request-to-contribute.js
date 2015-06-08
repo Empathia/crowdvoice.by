@@ -35,8 +35,8 @@ Class(CV, 'PopoverRequestToContribute').inherits(Widget)({
                 })
             ).render(this.container);
 
-            //this.popOver.el.querySelector('.submit-btn').addEventListener('click', this.submit.bind(this), false);
-            //this.popOver.el.querySelector('.cancel-btn').addEventListener('click', this.popOver.toggle.bind(this.popOver), false);
+            this.popOver.el.querySelector('.submit-btn').addEventListener('click', this.submit.bind(this), false);
+            this.popOver.el.querySelector('.cancel-btn').addEventListener('click', this.popOver.toggle.bind(this.popOver), false);
         },
 
         submit : function() {

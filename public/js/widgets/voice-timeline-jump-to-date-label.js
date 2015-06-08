@@ -1,5 +1,11 @@
+/* jshint multistr: true */
 Class(CV, 'VoiceTimelineJumpToDateLabel').inherits(Widget).includes(CV.WidgetUtils)({
-    ELEMENT_CLASS : 'voice-timeline-popover_label',
+    ELEMENT_CLASS : 'voice-timeline-popover_label -line-through',
+
+    HTML : '\
+        <div>\
+            <span class="-line-through-label -font-semi-bold -color-grey-light"></span>\
+        </div>',
 
     prototype : {
         label : '',
@@ -9,8 +15,9 @@ Class(CV, 'VoiceTimelineJumpToDateLabel').inherits(Widget).includes(CV.WidgetUti
             Widget.prototype.init.call(this, config);
 
             this.el = this.element[0];
+            this.labelElement = this.el.getElementsByTagName('span')[0];
 
-            this.dom.updateText(this.el, this.label);
+            this.dom.updateText(this.labelElement, this.label);
         }
     }
 });

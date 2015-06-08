@@ -25,6 +25,27 @@
 .-br4px {border-radius: 4px}
 .-br5px {border-radius: 5px}
 
+.-line-through {
+  position: relative;
+  background-color: @color-white;
+
+  &:before {
+    content: '';
+    height: 1px;
+    right: 0;
+    position: absolute;
+    background-color: @color-grey-lighter;
+    top: 50%;
+    left: 0;
+  }
+}
+
+.-line-through-label {
+  position: relative;
+  background-color: inherit;
+  padding: 0 .5em;
+}
+
 // images
 .-img-cover {
   background-size: cover;

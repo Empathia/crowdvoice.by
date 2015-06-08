@@ -8,23 +8,39 @@
  * container <optional> [HTMLElement] (document.body) The element to disable when activated
  * title <optional> [String] (null) popover's title
  * content <optional> [HTMLElement, HTMLString] (null) Popover's content
+ * showCloseButton <optional> [Boolean] (false) Add the close button on the header
  *
  * @usage
  *  new CV.Popover({
         toggler: document.querySelector('.button'),
         container: document.querySelector('.container'),
-        content: '<h1>Hello</h1>'
+        title : 'Title',
+        content: '<h1>Hello</h1>',
+        showCloseButton : true
     }).render();
  */
 Class(CV, 'PopoverBlocker').inherits(Widget)({
     HTML : '\
         <div class="ui-popover">\
-            <div class="popover-title"></div>\
-            <div class="popover-content"></div>\
-        </div>\
-    ',
+            <div class="ui-popover__body-wrapper -rel">\
+                <div class="ui-popover-body"></div>\
+            </div>\
+            <div class="ui-popover__arrow"></div>\
+        </div>',
 
-   PLACEMENT_CLASSNAMES : {
+    HTML_HEADER : '\
+        <div class="ui-popover__header -rel">\
+            <div class="ui-popover-title-wrapper -ellipsis">\
+                <span class="ui-popover-title -font-light -rel -color-bg-white"></span>\
+            </div>\
+        </div>',
+
+    HTML_CLOSE : '\
+        <svg class="ui-popover-close -abs -clickable -color-bg-white">\
+            <use xlink:href="#svg-close"></use>\
+        </svg>',
+
+    PLACEMENT_CLASSNAMES : {
         top     : '-top',
         right   : '-right',
         bottom  : '-bottom',
@@ -34,34 +50,55 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
     prototype : {
         toggler : null,
         container : null,
-        placement : null,
+        placement : 'top',
         title : null,
         content : null,
+        showCloseButton : false,
+        hasScrollbar : false,
 
         el : null,
+        headerElement : null,
         titleElement : null,
+        closeButton : null,
         contentElement : null,
+        arrowElement : null,
         backdropElement : null,
         parentElement : null,
 
         init : function init(config) {
-            this.placement = 'top';
             this.container = document.body;
 
             Widget.prototype.init.call(this, config);
 
             this.el = this.element[0];
-            this.titleElement = this.el.querySelector('.popover-title');
-            this.contentElement = this.el.querySelector('.popover-content');
+            this.contentElement = this.el.querySelector('.ui-popover-body');
+            this.arrowElement = this.el.querySelector('.ui-popover__arrow');
             this.backdropElement = document.createElement('div');
 
             this._autoSetup()._bindEvents();
         },
 
         _autoSetup : function _autoSetup() {
+            if (this.hasScrollbar) this.el.classList.add('has-scrollbar');
+
             this.backdropElement.classList.add('ui-popover-backdrop');
             this.el.classList.add(this.constructor.PLACEMENT_CLASSNAMES[this.placement]);
-            if (this.title) this.titleElement.textContent = this.title;
+
+            if (this.title || this.showCloseButton) {
+                this.el.insertAdjacentHTML('afterbegin', this.constructor.HTML_HEADER);
+                this.headerElement = this.el.querySelector('.ui-popover__header');
+
+                if (this.title) {
+                    this.titleElement = this.headerElement.querySelector('.ui-popover-title');
+                    this.titleElement.textContent = this.title;
+                }
+
+                if (this.showCloseButton) {
+                    this.headerElement.insertAdjacentHTML('beforeend', this.constructor.HTML_CLOSE);
+                    this.closeButton = this.headerElement.querySelector('.ui-popover-close');
+                }
+            }
+
             if (this.content) this.setContent(this.content);
 
             return this;
@@ -71,8 +108,19 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
             this._toggleHandlerRef = this.toggle.bind(this);
             this.toggler.addEventListener('click', this._toggleHandlerRef, false);
 
-            this._closeHandlerRef = this.deactivate.bind(this);
-            this.backdropElement.addEventListener('click', this._closeHandlerRef);
+            this._backdropClickHandlerRef = this._backdropClickHandler.bind(this);
+            this.backdropElement.addEventListener('click', this._backdropClickHandlerRef);
+
+            if (this.closeButton) {
+                this._closeHandlerRef = this.deactivate.bind(this);
+                this.closeButton.addEventListener('click', this._closeHandlerRef);
+            }
+        },
+
+        _backdropClickHandler : function _backdropClickHandlerRef(ev) {
+            if (ev.target !== this.backdropElement) return;
+
+            this.deactivate();
         },
 
         /* Replaces the HTML of `popover-content` element
@@ -178,9 +226,24 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
             this.placement = null;
             this.title = null;
             this.content = null;
+            this.showCloseButton = null;
+            this.hasScrollbar = null;
+
+            if (this.closeButton) {
+                this.closeButton.removeEventListener('click', this._closeHandlerRef);
+                this._closeHandlerRef = null;
+            }
+
+            this.toggler.removeEventListener('click', this._toggleHandlerRef, false);
+            this._toggleHandlerRef = null;
+
+            this.backdropElement.removeEventListener('click', this._backdropClickHandlerRef);
+            this._backdropClickHandlerRef = null;
 
             this.el = null;
+            this.headerElement = null;
             this.titleElement = null;
+            this.closeButton = null;
             this.contentElement = null;
             this.backdropElement = null;
             this.parentElement = null;

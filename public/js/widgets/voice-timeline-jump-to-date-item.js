@@ -1,17 +1,33 @@
+/* jshint multistr: true */
 Class(CV, 'VoiceTimelineJumpToDateItem').inherits(Widget).includes(CV.WidgetUtils)({
-    ELEMENT_CLASS :'voice-timeline-popover_option',
+    ELEMENT_CLASS :'voice-timeline-popover_option ui-vertical-list-item',
+
+    HTML : '\
+        <div>\
+            <svg class="option-svg -color-primary -abs">\
+                <use xlink:href="#svg-checkmark"></use>\
+            </svg>\
+            <span class="option-label"></span>\
+            <span class="option-counter"></span>\
+        </div>\
+    ',
 
     prototype : {
         label : '',
         date : '',
 
-        el: null,
+        el : null,
+        labelElement : null,
+        counterElement : null,
+
         init : function init(config) {
             Widget.prototype.init.call(this, config);
 
             this.el = this.element[0];
+            this.labelElement = this.el.querySelector('.option-label');
+            this.counterElement = this.el.querySelector('.option-counter');
 
-            this.dom.updateText(this.el, this.label);
+            this.dom.updateText(this.labelElement, this.label);
 
             this._bindEvents();
         },
@@ -22,9 +38,9 @@ Class(CV, 'VoiceTimelineJumpToDateItem').inherits(Widget).includes(CV.WidgetUtil
         },
 
         clickHandler : function clickHandler() {
-            console.log(this.date);
-            CV.VoiceTimelineJumpToDateItem.dispatch('itemClicked', {dateString: this.date});
             this.parent.updateActivateOption(this.date);
+            this.parent.jumpToDatePopover.deactivate();
+            CV.VoiceTimelineJumpToDateItem.dispatch('itemClicked', {dateString: this.date});
         },
 
         destroy : function destroy() {
@@ -32,6 +48,13 @@ Class(CV, 'VoiceTimelineJumpToDateItem').inherits(Widget).includes(CV.WidgetUtil
 
             this.el.removeEventListener('click', this.clickHandlerRef);
             this.clickHandlerRef = null;
+
+            this.label = null;
+            this.date = null;
+
+            this.el = null;
+            this.labelElement = null;
+            this.counterElement = null;
         }
     }
 });
