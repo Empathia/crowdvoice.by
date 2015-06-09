@@ -18,6 +18,10 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
           return next(new ForbiddenError());
         }
 
+        if (req.role === 'Anonymous') {
+          return res.render('threads/anonymous.html')
+        };
+
         MessageThread.find(['sender_person_id = ? OR receiver_entity_id = ?', [hashids.decode(req.currentPerson.id)[0], hashids.decode(req.currentPerson.id)[0]]], function(err, threads) {
           if (err) {
             return next(err);
@@ -45,104 +49,123 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
     },
 
     create : function create(req, res, next) {
-      res.format({
-        json : function() {
-          var payload = req.body;
+      var payload = req.body;
 
-          payload.type = payload.type || 'message';
+      payload.type = payload.type || 'message';
 
-          // Decode HashIds data
-          payload.senderEntityId = hashids.decode(payload.senderEntityId)[0];
-          payload.receiverEntityId = hashids.decode(payload.receiverEntityId)[0];
+      // Decode HashIds data
+      payload.senderEntityId = hashids.decode(payload.senderEntityId)[0];
+      payload.receiverEntityId = hashids.decode(payload.receiverEntityId)[0];
 
-          if (payload.invitationRequestId) {
-            payload.invitationRequestId = hashids.decode(payload.invitationRequestId)[0];
-          }
+      if (payload.invitationRequestId) {
+        payload.invitationRequestId = hashids.decode(payload.invitationRequestId)[0];
+      }
 
-          if (payload.voiceId) {
-            payload.voiceId = hashids.decode(payload.voiceId)[0];
-          }
+      if (payload.voiceId) {
+        payload.voiceId = hashids.decode(payload.voiceId)[0];
+      }
 
-          if (payload.organizationId) {
-            payload.organizationId = hashids.decode(payload.organizationId)[0];
-          }
+      if (payload.organizationId) {
+        payload.organizationId = hashids.decode(payload.organizationId)[0];
+      }
 
-          async.waterfall([function(done) {
-            // Get the entity to know if its a person or organization
-            Entity.findById(payload.senderEntityId, function(err, senderEntity) {
-              done(err, senderEntity[0].type);
-            });
-          }, function(senderEntityType, done) {
-            // Build a query depending if entity is person or organization
-            var whereClause;
+      ACL.isAllowed('create', 'threads', req.role, {
+        senderPersonId : hashids.decode(req.currentPerson.id)[0],
+        senderEntityId : payload.senderEntityId,
+        receiverEntityId : payload.receiverEntityId,
+        invitationRequestId : payload.invitationRequestId || null,
+        voiceId : payload.voiceId || null,
+        organizationId : payload.organizationId || null
+      }, function(err, isAllowed) {
+        if (err) {
+          return next(err);
+        }
 
-            if (senderEntityType === 'organization') {
-              whereClause = [
-                'sender_person_id = ? AND sender_entity_id = ? AND receiver_entity_id = ?',
-                [hashids.decode(req.currentPerson.id)[0], payload.senderEntityId, payload.receiverEntityId]
-              ];
-            } else {
-              whereClause = [
-                '(sender_entity_id = ? AND receiver_entity_id = ?) OR (sender_entity_id = ? AND receiver_entity_id = ?)',
-                [payload.senderEntityId, payload.receiverEntityId, payload.receiverEntity, payload.senderEntityId]
-              ];
-            }
+        if (!isAllowed) {
+          return next(new ForbiddenError());
+        }
 
-            // Try to get the MessageThread
-            MessageThread.find(whereClause, done);
-          }, function(messageThread, done) {
-            var thread;
+        res.format({
+          json : function() {
 
-            if (messageThread.length === 0) {
-              // If there is no existing MessageThread create a new one
-              thread = new MessageThread({
-                senderPersonId : hashids.decode(req.currentPerson.id)[0],
-                senderEntityId : payload.senderEntityId,
-                receiverEntityId : payload.receiverEntityId
+
+            async.waterfall([function(done) {
+              // Get the entity to know if its a person or organization
+              Entity.findById(payload.senderEntityId, function(err, senderEntity) {
+                done(err, senderEntity[0].type);
               });
-            } else {
-              // Use the existing MessageThread
-              thread = new MessageThread(messageThread[0]);
-            }
+            }, function(senderEntityType, done) {
+              // Build a query depending if entity is person or organization
+              var whereClause;
 
-            // Unhide the Thread for both users
-            thread.hiddenForSender = false;
-            thread.hiddenForReceiver = false;
-
-            // Save the thread
-            thread.save(function(err, result) {
-              if (err) {
-                return done(err);
+              if (senderEntityType === 'organization') {
+                whereClause = [
+                  'sender_person_id = ? AND sender_entity_id = ? AND receiver_entity_id = ?',
+                  [hashids.decode(req.currentPerson.id)[0], payload.senderEntityId, payload.receiverEntityId]
+                ];
+              } else {
+                whereClause = [
+                  '(sender_entity_id = ? AND receiver_entity_id = ?) OR (sender_entity_id = ? AND receiver_entity_id = ?)',
+                  [payload.senderEntityId, payload.receiverEntityId, payload.receiverEntity, payload.senderEntityId]
+                ];
               }
 
-              // Append the new message
-              thread.createMessage({
-                senderPersonId : hashids.decode(req.currentPerson.id)[0],
-                type : payload.type,
-                invitationRequestId : payload.invitationRequestId,
-                voiceId : payload.voiceId,
-                organizationId : payload.organizationId,
-                message : payload.message,
-              }, function(err, result) {
+              // Try to get the MessageThread
+              MessageThread.find(whereClause, done);
+            }, function(messageThread, done) {
+              var thread;
+
+              if (messageThread.length === 0) {
+                // If there is no existing MessageThread create a new one
+                thread = new MessageThread({
+                  senderPersonId : hashids.decode(req.currentPerson.id)[0],
+                  senderEntityId : payload.senderEntityId,
+                  receiverEntityId : payload.receiverEntityId
+                });
+              } else {
+                // Use the existing MessageThread
+                thread = new MessageThread(messageThread[0]);
+              }
+
+              // Unhide the Thread for both users
+              thread.hiddenForSender = false;
+              thread.hiddenForReceiver = false;
+
+              // Save the thread
+              thread.save(function(err, result) {
                 if (err) {
                   return done(err);
                 }
 
-                done(err, thread);
+                // Append the new message
+                thread.createMessage({
+                  senderPersonId : hashids.decode(req.currentPerson.id)[0],
+                  type : payload.type,
+                  invitationRequestId : payload.invitationRequestId,
+                  voiceId : payload.voiceId,
+                  organizationId : payload.organizationId,
+                  message : payload.message,
+                }, function(err, result) {
+                  if (err) {
+                    return done(err);
+                  }
+
+                  done(err, thread);
+                })
               })
-            })
-          }], function(err, thread) {
-            // Build the result
+            }], function(err, thread) {
+              // Build the result
 
-            ThreadsPresenter.build(req, [thread], function(err, result) {
-              if (err) {
-                return next(err);
-              }
+              ThreadsPresenter.build(req, [thread], function(err, result) {
+                if (err) {
+                  return next(err);
+                }
 
-              res.json(result[0]);
+                res.json(result[0]);
+              });
             });
-          });
-        }
+          }
+        })
       })
     },
 
