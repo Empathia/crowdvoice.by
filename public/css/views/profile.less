@@ -331,7 +331,14 @@ hr{
 }
 
 
-
+.message-side.updated{
+	h3{
+		font-weight: normal;
+	}
+	.actions{
+		display: none;
+	}
+}
 .message-side{
 	border-bottom: 1px solid #999;
 	padding: 20px 18px 20px 25px;
@@ -405,15 +412,44 @@ hr{
 		width: 100%;
 	}
 	.messages-body-header{
-		  padding: 10px 20px;
-		  position: relative;
-		  font-weight: bold;
-		  border-bottom: 1px solid #999;
-		    height: 44px;
+		padding: 10px 20px;
+		position: relative;
+		font-weight: bold;
+		border-bottom: 1px solid #999;
+		height: 44px;
+		z-index:1;
 		.action-icon{
 			position: absolute;
 			top: 15px;
 		  	right: 30px;
+		}
+		.m-action{
+			display: none;
+		}
+		.m-new{
+			display: none;
+			span{
+				text-align: right;
+				width: 100%;
+				display: inline-block;
+			}
+			ul{
+				display: none;
+				list-style: none;
+				border: 1px solid #ccc;
+				li{
+					background: #eee;
+					border-bottom: 1px solid #ccc;
+					padding: 5px 2px 5px 10px;
+					cursor: pointer;
+				}
+				li:last-child{
+					border-bottom: 0;
+				}
+				li:hover{
+					background: #ddd;
+				}
+			}
 		}
 	}
 	.message-create{
