@@ -152,7 +152,7 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
             API.postPreview(args, function(err, response) {
                 if (err) {
                     console.log(response);
-                    var msg = response.status + ' - ' + response.statusText;
+                    var msg = response.responseJSON.status;
                     return this._setErrorState({message: msg}).enable();
                 }
 
