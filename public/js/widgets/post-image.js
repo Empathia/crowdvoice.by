@@ -12,7 +12,7 @@ Class(CV, 'PostImage').inherits(CV.Post)({
         <div class="post-card-info">\
             <div class="post-card-meta">\
                 <span class="post-card-meta-source"></span>\
-                <time class="post-card-meta-date" datetime=""></time>\
+                on <time class="post-card-meta-date" datetime=""></time>\
             </div>\
             <h2 class="post-card-title"></h2>\
             <p class="post-card-description"></p>\
@@ -39,6 +39,8 @@ Class(CV, 'PostImage').inherits(CV.Post)({
     prototype : {
         /* PRIVATE properties */
         el : null,
+        titleElement : null,
+        descriptionElement : null,
         imageWrapperElement : null,
         sourceElement : null,
         dateTimeElement : null,
@@ -47,35 +49,36 @@ Class(CV, 'PostImage').inherits(CV.Post)({
             Widget.prototype.init.call(this, config);
 
             this.el = this.element[0];
+            this.titleElement = this.el.querySelector('.post-card-title');
+            this.descriptionElement = this.el.querySelector('.post-card-description');
             this.imageWrapperElement = this.el.querySelector('.post-card-image-wrapper');
             this.sourceElement = this.el.querySelector('.post-card-meta-source');
             this.dateTimeElement = this.el.querySelector('.post-card-meta-date');
 
-            this.el.insertAdjacentHTML('beforeend', this.constructor.ACTIONS_HTML);
-
             if (this.image) {
-                this.imageWrapperElement.style.height = this.imageHeight + 'px';
+                this.setImageHeight(this.imageHeight);
                 this.imageWrapperElement.style.display = 'block';
             } else {
                 this.imageLoaded = true;
             }
 
-            if (this.sourceUrl && this.sourceService) {
-                var a = this.dom.create('a');
-                this.dom.updateAttr('href', a, this.sourceUrl);
-                this.dom.updateText(a, this.sourceService + " ");
-                this.dom.updateText(this.sourceElement, 'from ');
-                this.sourceElement.appendChild(a);
-            } else {
+            // if (this.sourceUrl && this.sourceService) {
+            //     var a = this.dom.create('a');
+            //     this.dom.updateAttr('href', a, this.sourceUrl);
+            //     this.dom.updateText(a, this.sourceService + " ");
+            //     this.dom.updateText(this.sourceElement, 'from ');
+            //     this.sourceElement.appendChild(a);
+
+            // } else {
                 this.el.querySelector('.post-card-meta').insertAdjacentHTML('afterbegin', this.constructor.ICON);
                 this.dom.updateText(this.sourceElement, 'posted ');
-            }
+            // }
 
-            this.dom.updateText(this.dateTimeElement, "on " + moment(this.createdAt).format('MMM DD, YYYY'));
-            this.dom.updateAttr('datetime', this.dateTimeElement, this.createdAt);
+            this.dom.updateText(this.dateTimeElement, moment(this.publishedAt).format('MMM DD, YYYY'));
+            this.dom.updateAttr('datetime', this.dateTimeElement, this.publishedAt);
 
-            this.dom.updateText(this.el.querySelector('.post-card-title'), this.title);
-            this.dom.updateText(this.el.querySelector('.post-card-description'), this.description);
+            this.dom.updateText(this.titleElement, this.title);
+            this.dom.updateText(this.descriptionElement, this.description);
 
             this.dom.updateText(this.el.querySelector('.post-card-activity-repost .post-card-activity-label'), this.totalReposts);
             this.dom.updateText(this.el.querySelector('.post-card-activity-saved .post-card-activity-label'), this.totalSaves);
