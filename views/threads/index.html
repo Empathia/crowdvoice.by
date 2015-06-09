@@ -27,7 +27,7 @@
     </div>
     <div class="messages-body">
 	<div class="no-messages">
-		Please select a thread from the list on the left or <a hrf="#">compose a new message</a>.
+		Please select a thread from the list on the left or <a href="#" class="new-message">compose a new message</a>.
 	</div>
     <div class="messages-body-container">
 
@@ -123,7 +123,6 @@
 
   	var searchUsersResultEl = $(document.querySelector('.search-users-result'));
 
-
   	var threads = <%= JSON.stringify(threads) %>;
 	var threadsObj = {};
 
@@ -134,17 +133,6 @@
 	var token = '<%= csrfToken %>';
 	var relatedPersons;
 	var isNewThread = false;
-
-	$.ajax({
-		type: "POST",
-		url:'/jack-johnson/messages/searchPeople',
-		headers: { 'csrf-token': token },
-		data : {value : 'ja'},
-		success: function(data) {
-			console.log('people: ', data);
-			relatedPersons = data;
-		}
-	});
 
 	var messageText = $('<div class="message-text">\
 			      			<div class="message-info">\
@@ -218,6 +206,10 @@
 		newMessage();
 	});
 
+	$('a.new-message').on('click', function(){
+		newMessage();
+	});
+
 	threads.forEach(function(thread) {
 		addThread(thread);
 	});
@@ -240,21 +232,40 @@
 
 	$('.search-users').on('keyup', function(){
 
+
 		var searchStr = $(this).val().toLowerCase();
+
 		if (searchStr == ""){
 			searchUsersResultEl.hide();
 			return false;
 		}
 
+		$.ajax({
+			type: "POST",
+			url:'/' + currentPersonProfileName + '/messages/searchPeople',
+			headers: { 'csrf-token': token },
+			data : {value : searchStr},
+			success: function(data) {
+				console.log('people: ', data);
+				relatedPersons = data;
+				showPersons(data);
+			}
+		});
+
+
+
+	});
+
+	function showPersons(persons){
 		searchUsersResultEl.show();
 		searchUsersResultEl.empty();
 
-		for (person in relatedPersons){
-			if (relatedPersons[person].isAnonymous == false){
-				var userStr = relatedPersons[person].name + ' ' +
-				relatedPersons[person].lastname;
-				if (userStr.toLowerCase().indexOf(searchStr) >= 0){
-					var liStr = $('<li data-id="' + relatedPersons[person].id + '" data-name="' + userStr + '">' + userStr + '</li>');
+		for (person in persons){
+			if (persons[person].isAnonymous == false){
+				var userStr = persons[person].name + ' ' +
+				persons[person].lastname;
+				//if (userStr.toLowerCase().indexOf(searchStr) >= 0){
+					var liStr = $('<li data-id="' + persons[person].id + '" data-name="' + userStr + '">' + userStr + '</li>');
 					liStr.on('click', function(){
 
 						otherPersonID = $(this).attr('data-id');
@@ -269,11 +280,10 @@
 						searchUsersResultEl.hide();
 					})
 					searchUsersResultEl.append(liStr);
-				}
+				//}
 			}
 		}
-
-	});
+	}
 
 	function isOnThreadList (selectedPersonID){
 		var foundIt = false;
@@ -346,6 +356,9 @@
           	receiverEntityId : otherPersonID
           },
           success: function(data) {
+          	currentThreadID = data.id;
+          	addThread(data);
+          	postMessage();
             console.log(data);
           }
         });
@@ -372,7 +385,12 @@
 			threadEl.addClass('updated');
 		}
 
-		threadListEl.append(threadEl);
+		if (isNewThread){
+			threadListEl.prepend(threadEl);
+		} else {
+			threadListEl.append(threadEl);
+		}
+
 		threadsObj[thread.id] = thread;
 
 		threadEl.on('click', function(){
@@ -424,7 +442,7 @@
 		//	messageListEl.append(messageEl);
 		//}
 
-		Object.keys(threadsObj[threadId].messages).sort().forEach(function(messageId, i) {
+		Object.keys(threadsObj[threadId].messages).sort().reverse().forEach(function(messageId, i) {
           	var messageObj = threadsObj[threadId].messages[messageId];
 			var messageEl = messageText.clone();
 			messageEl.find('.message-data h3').text(messageObj.senderEntity.name + " " + messageObj.senderEntity.lastname);
