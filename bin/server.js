@@ -15,6 +15,7 @@ global.ACL = require('./../lib/ACL/ACL.js');
 require('./../lib/ACL/visitor.js');
 require('./../lib/ACL/anonymous.js');
 require('./../lib/ACL/person.js');
+require('./../lib/ACL/admin.js');
 
 var io = require('socket.io')(application.server);
 global.moment = require('moment');
