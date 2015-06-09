@@ -2,216 +2,315 @@ require(__dirname + '/../mailers/UserMailer.js');
 
 var UsersController = Class('UsersController')({
   prototype : {
-    index : function index(req, res) {
-      User.all(function(err, users) {
-        res.render('users/index.html', {layout : 'application', users : users});
+    index : function index(req, res, next) {
+      ACL.isAllowed('index', 'users', req.role, {}, function(err, isAllowed) {
+        if (err) {
+          return next(err)
+        }
+
+        if (!isAllowed) {
+          return next(new ForbiddenError());
+        }
+
+        User.all(function(err, users) {
+          res.render('users/index.html', {layout : 'application', users : users});
+        });
       });
     },
 
     show : function show(req, res, next) {
-      User.findById(req.params.id, function(err, result) {
-        var user;
+      ACL.isAllowed('show', 'users', req.role, {}, function(err, isAllowed) {
+        if (err) {
+          return next(err);
+        }
 
-        if (err) { next(err); return; }
-        if (result.length === 0) { next(new NotFoundError('User Not found')); return; }
+        if (!isAllowed) {
+          return next(new ForbiddenError());
+        }
 
-        user = new User(result[0]);
-        res.render('users/show.html', {layout : 'application', user : user.toJson()});
+        User.findById(req.params.id, function(err, result) {
+          var user;
+
+          if (err) { next(err); return; }
+          if (result.length === 0) { next(new NotFoundError('User Not found')); return; }
+
+          user = new User(result[0]);
+          res.render('users/show.html', {layout : 'application', user : user.toJson()});
+        })
+
       })
     },
 
-    new : function(req, res) {
-      res.render('users/new.html', {layout : 'login', errors: null});
+    new : function(req, res, next) {
+      ACL.isAllowed('new', 'users', req.role, {
+        currentPerson : req.currentPerson
+      }, function(err, isAllowed) {
+        if (err) {
+          return next(err);
+        }
+
+        if (!isAllowed) {
+          return next(new ForbiddenError('You need to logout first.'));
+        }
+
+        res.render('users/new.html', {layout : 'login', errors: null});
+      });
     },
 
     create : function create(req, res, next) {
-      res.format({
-        html : function() {
-
-          var person, user, anonymous;
-
-          async.series([function(done) {
-            person = new Entity({
-              type: 'person',
-              name: req.body['name'],
-              lastname: req.body['lastname'],
-              profileName: req.body['profileName'],
-              isAnonymous: false
-            });
-
-            person.save(function(err, result) {
-              if (err) {
-                return done(err)
-              }
-
-              done()
-            })
-          }, function(done) {
-            user = new User({
-              entityId: person.id,
-              username: req.body['username'],
-              email: req.body['email'],
-              password: req.body['password']
-            });
-
-            user.save(function(err, result) {
-              if (err) {
-                person.destroy(function(){});
-                return done(err);
-              }
-
-              done()
-            })
-          }, function(done) {
-            anonymous = new Entity({
-              type: 'person',
-              name: 'Anonymous',
-              lastname: 'anonymous',
-              profileName: 'anonymous_' + hashids.encode(person.id),
-              isAnonymous: true
-            });
-
-            anonymous.save(function(err, result) {
-              if (err) {
-                person.destroy(function(){});
-                user.destroy(function(){});
-                return done(err);
-              }
-
-              done()
-            })
-
-          }, function(done) {
-            var ownership = new EntityOwner({
-              ownerId : person.id,
-              ownedId : anonymous.id
-            });
-
-            ownership.save(function(err, result) {
-              if (err) {
-                person.destroy(function(){});
-                user.destroy(function(){});
-                anonymous.destroy(function(){});
-                return done(err);
-              }
-
-              done()
-            })
-          }], function(err) {
-            if (err) {
-              req.flash('error', 'There was an error creating the user.');
-
-              if (err.errors) {
-
-                var errors = [];
-
-                Object.keys(err.errors).forEach(function(k) {
-                  err.errors[k].errors.forEach(function(error) {
-                    var obj = {}
-                    obj[k] = error.message
-                    errors.push(obj);
-                  })
-                })
-              } else {
-                var errors = err;
-              }
-
-              res.render('users/new.html', {errors: errors});
-
-              return;
-            }
-
-            UserMailer.new(user, person, function(err, result) {
-              if (err) {
-                req.flash('error', 'There was an error sending the activation email.');
-                return res.redirect('/');
-              }
-
-              req.flash('success', 'Check your email to activate your account.');
-              res.redirect('/');
-            });
-
-          });
+      ACL.isAllowed('create', 'users', req.role, {
+        currentPerson : req.currentPerson
+      }, function(err, isAllowed) {
+        if (err) {
+          return next(err);
         }
+
+        if (!isAllowed) {
+          return next(new ForbiddenError('You need to logout first'));
+        }
+
+        res.format({
+          html : function() {
+
+            var person, user, anonymous;
+
+            async.series([function(done) {
+              person = new Entity({
+                type: 'person',
+                name: req.body['name'],
+                lastname: req.body['lastname'],
+                profileName: req.body['profileName'],
+                isAnonymous: false
+              });
+
+              person.save(function(err, result) {
+                if (err) {
+                  return done(err)
+                }
+
+                done()
+              })
+            }, function(done) {
+              user = new User({
+                entityId: person.id,
+                username: req.body['username'],
+                email: req.body['email'],
+                password: req.body['password']
+              });
+
+              user.save(function(err, result) {
+                if (err) {
+                  person.destroy(function(){});
+                  return done(err);
+                }
+
+                done()
+              })
+            }, function(done) {
+              anonymous = new Entity({
+                type: 'person',
+                name: 'Anonymous',
+                lastname: 'anonymous',
+                profileName: 'anonymous_' + hashids.encode(person.id),
+                isAnonymous: true
+              });
+
+              anonymous.save(function(err, result) {
+                if (err) {
+                  person.destroy(function(){});
+                  user.destroy(function(){});
+                  return done(err);
+                }
+
+                done()
+              })
+
+            }, function(done) {
+              var ownership = new EntityOwner({
+                ownerId : person.id,
+                ownedId : anonymous.id
+              });
+
+              ownership.save(function(err, result) {
+                if (err) {
+                  person.destroy(function(){});
+                  user.destroy(function(){});
+                  anonymous.destroy(function(){});
+                  return done(err);
+                }
+
+                done()
+              })
+            }], function(err) {
+              if (err) {
+                req.flash('error', 'There was an error creating the user.');
+
+                if (err.errors) {
+
+                  var errors = [];
+
+                  Object.keys(err.errors).forEach(function(k) {
+                    err.errors[k].errors.forEach(function(error) {
+                      var obj = {}
+                      obj[k] = error.message
+                      errors.push(obj);
+                    })
+                  })
+                } else {
+                  var errors = err;
+                }
+
+                res.render('users/new.html', {errors: errors});
+
+                return;
+              }
+
+              UserMailer.new(user, person, function(err, result) {
+                if (err) {
+                  req.flash('error', 'There was an error sending the activation email.');
+                  return res.redirect('/');
+                }
+
+                req.flash('success', 'Check your email to activate your account.');
+                res.redirect('/');
+              });
+
+            });
+          }
+        });
       });
     },
 
-    edit : function edit(req, res) {
-      User.findById(req.params.id, function (err, user) {
-        if (err) { next(err); return; }
-        if (user.length === 0) { next(new NotFoundError('User Not found')); return; }
+    edit : function edit(req, res, next) {
+      var userId = hashids.decode(req.params.id)[0];
 
-        res.render('users/edit.html', {layout : 'application', user: user[0]});
-      });
+      ACL.isAllowed('edit', 'users', req.role, {
+        userId : userId
+      }, function(err, isAllowed) {
+        if (err) {
+          return next(err);
+        }
+
+        if (!isAllowed) {
+          return next(new ForbiddenError())
+        }
+
+        User.findById(userId, function (err, user) {
+          if (err) { next(err); return; }
+          if (user.length === 0) { next(new NotFoundError('User Not found')); return; }
+
+          res.render('users/edit.html', {layout : 'application', user: user[0]});
+        });
+      })
     },
 
     update : function update(req, res, next) {
-      User.findById(req.params.id, function (err, result) {
-        var user;
+      var userId = hashids.decode(req.params.id)[0];
 
-        if (err) { next(err); return; }
-        if (result.length === 0) { next(new NotFoundError('User Not found')); return; }
+      ACL.isAllowed('update', 'users', req.role, {
+        userId : userId
+      }, function(err, isAllowed) {
+        if (err) {
+          return next(err)
+        }
 
-        user = new User(result[0]);
-        user.setProperties(req.body);
+        if (!isAllowed) {
+          return next(new ForbiddenError())
+        }
 
-        user.save(function (err, result) {
+        User.findById(userId, function (err, result) {
+          var user;
+
           if (err) { next(err); return; }
-          res.redirect('/user/' + req.params.id);
+          if (result.length === 0) { next(new NotFoundError('User Not found')); return; }
+
+          user = new User(result[0]);
+          user.setProperties(req.body);
+
+          user.save(function (err, result) {
+            if (err) { next(err); return; }
+            res.redirect('/user/' + req.params.id);
+          });
         });
-      });
+      })
     },
 
-    destroy : function destroy(req, res) {
-      User.findById(req.params.id, function (err, user) {
-        if (err) { next(err); return; }
-        if (user.length === 0) { next(new NotFoundError('User Not found')); return; }
+    destroy : function destroy(req, res, next) {
+      var userId = hashids.decode(req.params.id)[0];
 
-        // Logic remove only
-        user.deleted = true;
-        user.save(function (err, result) {
+      ACL.isAllowed('destroy', 'users', req.role, {
+        userId : userId
+      }, function(err, isAllowed) {
+        if (err) {
+          return next(err);
+        }
+
+        if (!isAllowed) {
+          return next(new ForbiddenError());
+        }
+
+        User.findById(userId, function (err, user) {
           if (err) { next(err); return; }
+          if (user.length === 0) { next(new NotFoundError('User Not found')); return; }
 
-          res.redirect('/users');
+          // Logic remove only
+          user.deleted = true;
+          user.save(function (err, result) {
+            if (err) { next(err); return; }
+
+            res.redirect('/users');
+          });
         });
-      });
+      })
     },
 
     checkUsername : function checkUsername(req, res, next) {
       var field = req.body.field;
       var value = req.body.value;
 
-      res.format({
-        json : function() {
-          if (field === 'username') {
-            User.find(["username = lower(trim( ' ' from ?))", [value]], function(err, response) {
-              if (err) {
-                return next(err)
-              }
-
-              if (response.length === 0) {
-                return res.json({ username : 'available' });
-              }
-
-              return res.json({username : 'unavailable'});
-            })
-          } else if (field === 'profileName') {
-            Entity.find(["profile_name = lower(trim( ' ' from ?))", [value]], function(err, response) {
-              if (err) {
-                return next(err)
-              }
-
-              if (response.length === 0) {
-                return res.json({ profileName : 'available' });
-              }
-
-              return res.json({profileName : 'unavailable'});
-            })
-          } else {
-            return res.json({error : 'invalid field'});
-          }
+      ACL.isAllowed('checkUsername', 'users', req.role, {
+        currentPerson : req.currentPerson
+      }, function(err, isAllowed) {
+        if (err) {
+          return next(err);
         }
-      });
+
+        if (!isAllowed) {
+          return next(new ForbiddenError())
+        }
+
+        res.format({
+          json : function() {
+            if (field === 'username') {
+              User.find(["username = lower(trim( ' ' from ?))", [value]], function(err, response) {
+                if (err) {
+                  return next(err)
+                }
+
+                if (response.length === 0) {
+                  return res.json({ username : 'available' });
+                }
+
+                return res.json({username : 'unavailable'});
+              })
+            } else if (field === 'profileName') {
+              Entity.find(["profile_name = lower(trim( ' ' from ?))", [value]], function(err, response) {
+                if (err) {
+                  return next(err)
+                }
+
+                if (response.length === 0) {
+                  return res.json({ profileName : 'available' });
+                }
+
+                return res.json({profileName : 'unavailable'});
+              })
+            } else {
+              return res.json({error : 'invalid field'});
+            }
+          }
+        });
+      })
     }
   }
 });

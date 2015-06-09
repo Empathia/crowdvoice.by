@@ -4,7 +4,7 @@
 
   <section class="profile-messages-intro">
       <h1 class="profile-heading messages-heading -font-bold -m0">Messages</h1>
-      <button class="cv-button primary">New Message</button>
+      <!-- New Message Button -->
   </section>
 
   <section class="profile-body -nopad">
@@ -27,13 +27,29 @@
     </div>
     <div class="messages-body">
 	<div class="no-messages">
-		Please select a thread from the list on the left or <a hrf="#">compose a new message</a>.
+		Please select a thread from the list on the left or <a href="#" class="new-message">compose a new message</a>.
 	</div>
     <div class="messages-body-container">
 
     	<div class="messages-body-header">
-    		<span>Conversation with Pepe Pecas <a href="#">one link</a> and after a while <a href="#"><b>another bold</b></a></span>
-      		<div class="action-icon"><img src="/img/sample/icons/trashcan.png" alt=""></div>
+    		<div class="m-action">
+    			<span class="conversation-title">Conversation with Pepe Pecas <a href="#">one link</a> and after a while <a href="#"><b>another bold</b></a></span>
+      			<div class="action-icon"><img src="/img/sample/icons/trashcan.png" alt=""></div>
+      		</div>
+      		<div class="m-new">
+      			<div class="-col-3">
+      				<span>new message to:</span>
+      			</div>
+      			<div class="-col-9">
+	    			<div class="form-field">
+	    				<div class="cv-input">
+	    					<input class="search-users" type="text" placeholder="Type name">
+	    				</div>
+	    			</div>
+	    			<ul class="search-users-result">
+	    			</ul>
+    			</div>
+      		</div>
     	</div>
     	<div class="messages-container">
     		<div class="messages-conversation">
@@ -93,22 +109,30 @@
   		resizeMessages();
 	});
 
-  	function resizeMessages () {
-  		var chatHeight = $(window).height() - ($('.profile-messages-intro').outerHeight() + $('.cv-main-header').outerHeight());
-		$('.messages-sidebar, .messages-body, .messages-body-container').height(chatHeight);
-		var sideMessagesHeight = chatHeight - $('.messages-search').outerHeight();
-		$('.messages-list').css({'overflow-y':'scroll', 'height': sideMessagesHeight+'px'});
-		var bodyMessagesHeight = chatHeight - ($('.messages-body-header').outerHeight() + $('.message-create').outerHeight());
-		$('.messages-conversation').height(bodyMessagesHeight);
-  	}
+
 
   	var searchElement = document.querySelector('.messages-search');
-  	var createElement = document.querySelector('.message-create');
+  	var createElement = $(document.querySelector('.message-create'));
+
+  	var messagesContainerEl = $(document.querySelector('.messages-container'));
   	var noMessagesEl = $(document.querySelector('.no-messages'));
   	var messagesBodyHeaderEl = $(document.querySelector('.messages-body-header'));
   	var messagesBodyContainerEl = $(document.querySelector('.messages-body-container'));
   	var threadListEl = $(document.querySelector('.messages-list'));
   	var messageListEl = $(document.querySelector('.msgs'));
+
+  	var searchUsersResultEl = $(document.querySelector('.search-users-result'));
+
+  	var threads = <%= JSON.stringify(threads) %>;
+	var threadsObj = {};
+
+	var currentThreadID;
+	var currentPersonID = '<%= currentPerson.id %>';
+	var otherPersonID;
+	var currentPersonProfileName = '<%= currentPerson.profileName %>';
+	var token = '<%= csrfToken %>';
+	var relatedPersons;
+	var isNewThread = false;
 
 	var messageText = $('<div class="message-text">\
 			      			<div class="message-info">\
@@ -134,42 +158,27 @@
 
 	var searchInput = new CV.Input({type : 'search', placeholder : 'Search...'}).render(searchElement);
 
-	$(searchInput.element).find('input').on('keyup', function(){
+	var areaText = new CV.Input({
+		style : '',
+		type : '',
+		isArea : true,
+		placeholder : 'Write a reply'
+	}).render(createElement);
 
-		var searchStr = $(this).val();
-		threadListEl.find('.message-side').each(function( index, value ) {
 
-			var userStr = $(this).find('h3').text().toLowerCase();
+	var buttonNew = new CV.Button({
+		style   : 'primary',
+		type    : 'single',
+		label   : 'New Message',
+		name    : 'buttonNew'
+	}).render($('.profile-messages-intro'));
 
-			if (userStr.indexOf(searchStr) == 0){
-				$(this).show();
-			}else{
-				$(this).hide();
-			}
-
-		});
-	});
-
-	var areaText = new CV.Input({style : '', type : '', isArea : true, placeholder : 'Write a reply'}).render(createElement);
-
-	var btn = new CV.Button({
+	var buttonReply = new CV.Button({
 		style   : 'primary',
 		type    : 'single',
 		label   : 'Reply',
 		name    : 'buttonReply'
 	}).render(createElement);
-
-	//var btnTwiceOptions = {
-	//  "1": {name: 'Accept'},
-	//  "2": {name: 'Refuse'}
-	//};
-	//
-	//new Button({
-	//    style   : 'full',
-	//    type    : 'twice',
-	//    name    : 'buttonTwice',
-	//    options : btnTwiceOptions
-	//}).render(createElement);
 
 	var btnMultipleOptions = {
 		"1": {name: 'Accept'},
@@ -185,39 +194,179 @@
 
 	var mi = 1;
 
-	btn.element.on('click', function(){
+	buttonReply.element.on('click', function(){
+		if (isNewThread){
+			createThread();
+		} else {
+			postMessage();
+		}
+	});
 
+	buttonNew.element.on('click', function(){
+		newMessage();
+	});
+
+	$('a.new-message').on('click', function(){
+		newMessage();
+	});
+
+	threads.forEach(function(thread) {
+		addThread(thread);
+	});
+
+	$(searchInput.element).find('input').on('keyup', function(){
+
+		var searchStr = $(this).val();
+		threadListEl.find('.message-side').each(function( index, value ) {
+
+			var userStr = $(this).find('h3').text().toLowerCase();
+
+			if (userStr.indexOf(searchStr) >= 0){
+				$(this).show();
+			}else{
+				$(this).hide();
+			}
+
+		});
+	});
+
+	$('.search-users').on('keyup', function(){
+
+
+		var searchStr = $(this).val().toLowerCase();
+
+		if (searchStr == ""){
+			searchUsersResultEl.hide();
+			return false;
+		}
+
+		$.ajax({
+			type: "POST",
+			url:'/' + currentPersonProfileName + '/messages/searchPeople',
+			headers: { 'csrf-token': token },
+			data : {value : searchStr},
+			success: function(data) {
+				//console.log('people: ', data);
+				relatedPersons = data;
+				showPersons(data);
+			}
+		});
+
+
+
+	});
+
+	function showPersons(persons){
+		searchUsersResultEl.show();
+		searchUsersResultEl.empty();
+
+		for (person in persons){
+			if (persons[person].isAnonymous == false){
+				var userStr = persons[person].name + ' ' +
+				persons[person].lastname;
+				//if (userStr.toLowerCase().indexOf(searchStr) >= 0){
+					var liStr = $('<li data-id="' + persons[person].id + '" data-name="' + userStr + '">' + userStr + '</li>');
+					liStr.on('click', function(){
+
+						otherPersonID = $(this).attr('data-id');
+						if (isOnThreadList(otherPersonID)){
+							threadListEl.find('#'+ otherPersonID).click();
+						} else {
+							isNewThread = true;
+
+							showNewThreadScreen($(this).attr('data-id'), $(this).attr('data-name'));
+						}
+						$('.search-users').val("");
+						searchUsersResultEl.hide();
+					})
+					searchUsersResultEl.append(liStr);
+				//}
+			}
+		}
+	}
+
+	function isOnThreadList (selectedPersonID){
+		var foundIt = false;
+		threadListEl.find('.message-side').each(function( index, value ) {
+			if ($(this).attr('id') == selectedPersonID){
+				//console.log('bingo');
+				foundIt = true;
+			}
+
+		});
+		return foundIt;
+	}
+
+	function newMessage (){
+		//console.log(threadId);
+		//currentThreadID = threadId;
+		noMessagesEl.hide();
+		messagesContainerEl.hide();
+		messagesBodyContainerEl.addClass('active');
+		messagesBodyHeaderEl.find('.m-action').hide();
+		messagesBodyHeaderEl.find('.m-new').show();
+		messageListEl.empty();
+		resizeMessages();
+
+
+	}
+
+	function postMessage(){
 		var postMessageUrl = '/'+ currentPersonProfileName + '/messages/'+ currentThreadID;
+
 		$.ajax({
           type: "POST",
           url: postMessageUrl,
           headers: { 'csrf-token': token },
           data: { message : document.querySelector('.message-create textarea').value},
           success: function(data) {
-            console.log(data.message);
             document.querySelector('.message-create textarea').value = "";
             var messageEl = messageText.clone();
-			messageEl.find('.message-data h3').text('<%= currentPerson.name %>' + " " + '<%= currentPerson.lastname %>');
-			messageEl.find('.message-data span').text(moment(new Date().toISOString()).format('• MMMM Do, YYYY • h:mm a'));
+			messageEl.find('.message-data h3').text('<%= currentPerson.name %>' + " " +
+				'<%= currentPerson.lastname %>');
+			messageEl.find('.message-data span').text(moment(new Date().toISOString()).
+				format('• MMMM Do, YYYY • h:mm a'));
 			messageEl.find('.message-data p').text(data.message);
 			messageListEl.append(messageEl);
 			$('.messages-conversation').scrollTop(10000);
           }
         });
+	}
 
-	});
+	function showNewThreadScreen (otherPersonID, otherPersonName){
+		//console.log(otherPersonID);
+		messagesBodyHeaderEl.find('.m-action').show();
+		messagesBodyHeaderEl.find('.m-new').hide();
+		messagesBodyHeaderEl.find('span.conversation-title').text('Conversation with ' + otherPersonName);
+		messagesContainerEl.show();
+		resizeMessages();
+	}
 
-	var threads = <%= JSON.stringify(threads) %>;
-	var threadsObj = {};
+	function createThread () {
+		var postMessageUrl = '/'+ currentPersonProfileName + '/messages';
+		console.log(currentPersonID);
+		console.log(otherPersonID);
+		$.ajax({
+          type: "POST",
+          url: postMessageUrl,
+          headers: { 'csrf-token': token },
+          data: {
+          	message : document.querySelector('.message-create textarea').value,
+          	senderEntityId : currentPersonID,
+          	receiverEntityId : otherPersonID
+          },
+          success: function(data) {
+          	currentThreadID = data.id;
+          	addThread(data, true);
+          	//postMessage();
+            console.log(data);
+          }
+        });
 
-	var currentThreadID;
-	var currentPersonID = '<%= currentPerson.id %>';
-	var currentPersonProfileName = '<%= currentPerson.profileName %>';
-	var token = '<%= csrfToken %>';
+	}
 
-
-	threads.forEach(function(thread) {
-		console.log(thread);
+    function addThread (thread, showMessages){
+    	console.log(thread);
 
 		var threadEl = messageSide.clone();
 		var threadPartner;
@@ -233,37 +382,44 @@
 		if (thread.unreadCount > 0) {
 			threadEl.find('.actions span').text(thread.unreadCount);
 		} else {
-			threadEl.find('.actions').hide();
+			threadEl.addClass('updated');
 		}
 
-		threadListEl.append(threadEl);
+		if (isNewThread){
+			threadListEl.prepend(threadEl);
+		} else {
+			threadListEl.append(threadEl);
+		}
+
 		threadsObj[thread.id] = thread;
 
 		threadEl.on('click', function(){
-			threadAction(thread.id, threadPartnerName, this);
+
+			showThread(thread.id, threadPartnerName, this);
 		});
 
-	});
+		if(showMessages){
+			threadEl.click();
+		}
+    }
 
-	//console.log(threadsObj);
-
-    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-	function threadAction (threadId, threadPartnerName, threadEl){
+	function showThread (threadId, threadPartnerName, threadEl){
+		isNewThread = false;
 		//console.log(threadId);
 		currentThreadID = threadId;
 		noMessagesEl.hide();
 		messagesBodyContainerEl.addClass('active');
+		messagesContainerEl.show();
 		messageListEl.empty();
 
-		messagesBodyHeaderEl.find('span').text('Conversation with ' + threadPartnerName);
+		messagesBodyHeaderEl.find('.m-action').show();
+		messagesBodyHeaderEl.find('.m-new').hide();
+		messagesBodyHeaderEl.find('span.conversation-title').text('Conversation with ' + threadPartnerName);
 
 		resizeMessages();
 
 		if (!$(threadEl).hasClass('updated')){
 			$(threadEl).addClass('updated');
-			$(threadEl).find('.actions').hide();
-
 			var updateThreadUrl = '/'+ currentPersonProfileName + '/messages/'+ threadId;
 			console.log(updateThreadUrl); //  /jack-johnson/messages/K8adgKWgZPlo
 			$.ajax({
@@ -290,7 +446,7 @@
 		//	messageListEl.append(messageEl);
 		//}
 
-		Object.keys(threadsObj[threadId].messages).sort().forEach(function(messageId, i) {
+		Object.keys(threadsObj[threadId].messages).sort().reverse().forEach(function(messageId, i) {
           	var messageObj = threadsObj[threadId].messages[messageId];
 			var messageEl = messageText.clone();
 			messageEl.find('.message-data h3').text(messageObj.senderEntity.name + " " + messageObj.senderEntity.lastname);
@@ -302,6 +458,15 @@
 		$('.messages-conversation').scrollTop(10000);
 
 	}
+
+	function resizeMessages () {
+  		var chatHeight = $(window).height() - ($('.profile-messages-intro').outerHeight() + $('.cv-main-header').outerHeight());
+		$('.messages-sidebar, .messages-body, .messages-body-container').height(chatHeight);
+		var sideMessagesHeight = chatHeight - $('.messages-search').outerHeight();
+		$('.messages-list').css({'overflow-y':'scroll', 'height': sideMessagesHeight+'px'});
+		var bodyMessagesHeight = chatHeight - ($('.messages-body-header').outerHeight() + $('.message-create').outerHeight());
+		$('.messages-conversation').height(bodyMessagesHeight);
+  	}
 
 </script>
 
