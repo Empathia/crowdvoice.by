@@ -32,6 +32,7 @@ require('./widgets/voice-cover.js');
 require('./widgets/voice-cover-mini.js');
 require('./widgets/category-cover.js');
 require('./widgets/input-clearable.js');
+require('./widgets/input-counter.js');
 
 require('./views/voice');
 require('./widgets/voice-post-layers-manager');
@@ -52,6 +53,8 @@ require('./widgets/post-creators/post-creator-from-url.js');
 require('./widgets/post-creators/post-creator-from-sources.js');
 require('./widgets/post-creators/post-creator-upload-file.js');
 require('./widgets/post-creators/post-creator-write-article.js');
+require('./widgets/post-edit.js');
+require('./widgets/post-edit-image-controls.js');
 require('./widgets/voice-timeline-jump-to-date');
 require('./widgets/voice-timeline-jump-to-date-label');
 require('./widgets/voice-timeline-jump-to-date-item');

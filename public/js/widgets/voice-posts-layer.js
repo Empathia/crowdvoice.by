@@ -109,6 +109,7 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
                 posts[i].name = 'post_' + i;
 
                 post = CV.Post.create(posts[i]);
+                post.addActions();
                 post.el.dataset.date = moment(posts[i].createdAt).format('YYYY-MM-DD');
 
                 this.appendChild(post).render(frag);

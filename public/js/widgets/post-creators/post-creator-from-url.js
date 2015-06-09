@@ -1,4 +1,5 @@
 /* jshint multistr: true */
+var API = require('../../lib/api');
 var Checkit = require('checkit');
 
 Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
@@ -7,7 +8,7 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
 
     HTML : '\
     <div>\
-        <div class="input-error-message -on-error -abs -color-danger">You entered an invalid URL. Please double check it.</div>\
+        <div class="input-error-message -on-error -abs -color-danger"></div>\
         <header class="cv-post-creator__header -clearfix">\
             <div class="header-left -rel -float-left">\
                 <svg class="input-error-icon -on-error -abs -color-danger">\
@@ -44,6 +45,7 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
             </svg>\
         </div>\
     ',
+    DEFAULT_ERROR_MESSAGE : 'You entered an invalid URL. Please double check it.',
 
     prototype : {
         el : null,
@@ -51,6 +53,7 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
         contentElement : null,
         postButton : null,
         iconTypes : null,
+        errorMessage : null,
 
         _inputKeyPressHandlerRef : null,
         _inputLastValue : null,
@@ -67,6 +70,7 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
             this.contentElement = this.el.querySelector('.cv-post-creator__content');
             this.postButton = this.el.querySelector('.post-btn');
             this.iconTypes = [].slice.call(this.el.getElementsByClassName('from-url-type'), 0);
+            this.errorMessage = this.el.querySelector('.input-error-message');
 
             this.addCloseButton()._disablePostButton()._setup()._bindEvents();
         },
@@ -134,25 +138,60 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
                 return this._setErrorState();
             }
 
-            this.disable()._removeErrorState()._scrapTest(checkitResponse[1].url);
+            this.disable()._removeErrorState()._requestPreview(checkitResponse[1].url);
         },
 
-        _scrapTest : function _scrapTest(url) {
-            // @TODO : use preview route
-            // handle the error and success
+        _requestPreview : function _requestPreview(url) {
+            var args = {
+                path : location.pathname,
+                data : {
+                    url: url
+                }
+            };
 
+            API.postPreview(args, function(err, response) {
+                if (err) {
+                    console.log(response);
+                    var msg = response.status + ' - ' + response.statusText;
+                    return this._setErrorState({message: msg}).enable();
+                }
+
+                var post = {
+                    name : '_previewPostWidget'
+                };
+
+                console.log(response);
+
+                Object.keys(response).forEach(function(propertyName) {
+                    post[propertyName] = response[propertyName];
+                });
+
+                if (this._previewPostWidget) {
+                    this._previewPostWidget.destroy();
+                }
+
+                this.appendChild(new CV.PostEdit(post)).render(this.contentElement);
+
+                this._activateIconType(post.sourceType);
+                this._enabledPostButton().enable();
+
+            }.bind(this));
+
+            return;
+            /*
             if (this._previewPostWidget) {
                 this._previewPostWidget.destroy();
             }
 
-            var posts = require('./../../../demo-data/posts.js');
+            var posts = require('./../../../demo-data/posts-preview.js');
             var post = posts[Math.floor(Math.random() * posts.length)];
-            var postType = post.sourceType;
             post.name = '_previewPostWidget';
-            this.appendChild(CV.Post.create(post)).render(this.contentElement).loadImage();
 
-            this._activateIconType(postType);
+            this.appendChild(new CV.PostEdit(post)).render(this.contentElement);
+
+            this._activateIconType(post.sourceType);
             this._enabledPostButton().enable();
+            */
         },
 
         /* Enables the Post Button.
@@ -181,7 +220,13 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
          * @method _setErrorState <private> [Function]
          * @return [PostCreatorFromUrl]
          */
-        _setErrorState : function _setErrorState() {
+        _setErrorState : function _setErrorState(config) {
+            if (config && config.message) {
+                this.errorMessage.textContent = config.message;
+            } else {
+                this.errorMessage.textContent = this.constructor.DEFAULT_ERROR_MESSAGE;
+            }
+
             if (this.el.classList.contains('has-error')) {
                 return this;
             }
@@ -235,7 +280,7 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
             return this;
         },
 
-       _activate : function _activate() {
+        _activate : function _activate() {
             CV.PostCreator.prototype._activate.call(this);
 
             this.input.getElement().focus();
