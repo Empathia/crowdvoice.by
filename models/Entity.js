@@ -38,7 +38,25 @@ var Entity = Class('Entity').inherits(Argon.KnexModel)({
           .andWhereRaw("(name like ? OR lastname like ? OR profile_name like ?)",['%' + reqObj.params.value + '%', '%' + reqObj.params.value + '%', '%' + reqObj.params.value + '%'])
           .exec(callback)
       }
-    }
+    },
+
+    searchPeople : function searchPeople(requestObj, callback) {
+      // var data;
+      var storage = this;
+
+      for (i = 0; i < storage.preprocessors.length; i++) {
+        requestObj.data = storage.preprocessors[i](requestObj.data, requestObj);
+      }
+
+
+      this.queries.searchPeople(requestObj, function(err, data) {
+        for (i = 0; i < storage.processors.length; i++) {
+          data = storage.processors[i](data, requestObj);
+        }
+
+        return callback(err, data);
+      });
+    },
   })),
 
   searchPeople : function searchPeople(params, callback) {
@@ -55,7 +73,7 @@ var Entity = Class('Entity').inherits(Argon.KnexModel)({
 
     this.dispatch('beforeSearchPeople');
 
-    this.storage.queries.searchPeople(request, function(err, data) {
+    this.storage.searchPeople(request, function(err, data) {
       callback(err, data);
       Model.dispatch('afterSearchPeople');
     });
