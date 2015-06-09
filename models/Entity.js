@@ -36,6 +36,7 @@ var Entity = Class('Entity').inherits(Argon.KnexModel)({
           where('is_anonymous', '=', false)
           .andWhere('type', '=', 'person')
           .andWhereRaw("(name like ? OR lastname like ? OR profile_name like ?)",['%' + reqObj.params.value + '%', '%' + reqObj.params.value + '%', '%' + reqObj.params.value + '%'])
+          .andWhere('id', '!=', reqObj.params.currentPersonId)
           .exec(callback)
       }
     },

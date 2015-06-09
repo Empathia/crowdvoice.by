@@ -232,10 +232,13 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
 
     searchPeople : function searchPeople(req, res, next) {
       var value = req.body.value.toLowerCase().trim();
-
+      var currentPersonId = hashids.decode(req.currentPerson.id)[0];
       res.format({
         json : function() {
-          Entity.searchPeople({value : value}, function(err, result) {
+          Entity.searchPeople({
+            value : value,
+            currentPersonId : currentPersonId
+          }, function(err, result) {
             if (err) {
               return next(err);
             }
