@@ -15,6 +15,7 @@
     "SoundManager2": "scottschiller/SoundManager2",
     "async": "^1.2.0",
     "autoprefixer-loader": "^1.2.0",
+    "autosize": "^3.0.6",
     "bcrypt-nodejs": "0.0.3",
     "bluebird": "^2.9.27",
     "checkit": "^0.5.1",
