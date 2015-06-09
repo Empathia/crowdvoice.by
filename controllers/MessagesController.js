@@ -7,68 +7,100 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
     },
 
     create : function create(req, res, next) {
-      res.format({
-        json : function() {
-          MessageThread.findById(hashids.decode(req.params.threadId)[0], function(err, thread) {
-            if (err) {
-              next(err); return;
-            }
+      var threadId = hashids.decode(req.params.threadId)[0];
+      var currentPersonId = hashids.decode(req.currentPerson.id)[0];
 
-            if (thread.length === 0 ) {
-              next(new NotFoundError('MessageThread Not Found')); return;
-            }
+      ACL.isAllowed('create', 'messages', req.role, {
+        threadId : threadId,
+        currentPersonId : currentPersonId
+      }, function(err, isAllowed) {
+        if (err) {
+          return next(err);
+        }
 
-            thread =  new MessageThread(thread[0]);
+        if (!isAllowed) {
+          return next(new ForbiddenError());
+        }
 
-            thread.createMessage({
-              type : Message.TYPE_MESSAGE,
-              senderPersonId : hashids.decode(req.currentPerson.id)[0],
-              message : req.body.message
-            }, function(err, message) {
+        res.format({
+          json : function() {
+            MessageThread.findById(threadId, function(err, thread) {
               if (err) {
-                return next(err);
+                next(err); return;
               }
 
-              ThreadsPresenter.build(req, [thread], function(err, threads) {
+              if (thread.length === 0 ) {
+                next(new NotFoundError('MessageThread Not Found')); return;
+              }
+
+              thread =  new MessageThread(thread[0]);
+
+              thread.createMessage({
+                type : Message.TYPE_MESSAGE,
+                senderPersonId : currentPersonId,
+                message : req.body.message
+              }, function(err, message) {
                 if (err) {
                   return next(err);
                 }
 
-                res.json(threads[0].messages[threads[0].messages.length - 1]);
+                ThreadsPresenter.build(req, [thread], function(err, threads) {
+                  if (err) {
+                    return next(err);
+                  }
+
+                  res.json(threads[0].messages[threads[0].messages.length - 1]);
+                });
               });
             });
-          });
-        }
-      });
+          }
+        });
+      })
     },
 
     destroy : function destroy(req, res, next) {
-      res.format({
-        json : function() {
-          Message.findById(hashids.decode(req.params.messageId)[0], function(err, message) {
-            if (err) {
-              return next(err);
-            }
+      var messageId = hashids.decode(req.params.messageId)[0];
+      var currentPersonId = hashids.decode(req.currentPerson.id)[0];
 
-            if (message.length === 0) {
-              return next(new NotFoundError('Message Not Found'));
-            }
+      ACL.isAllowed('destroy', 'messages', req.role, {
+        messageId : messageId,
+        currentPersonId : currentPersonId
+      }, function(err, isAllowed) {
+        if (err) {
+          return next(err);
+        }
 
-            message = new Message(message[0]);
+        if (!isAllowed) {
+          return next(new ForbiddenError());
+        }
 
-            var senderOrReceiver = message.isPersonSender(hashids.decode(req.currentPerson.id)[0]) ? 'Sender' : 'Receiver';
-
-            message['hiddenFor' + senderOrReceiver] = true;
-
-            message.save(function(err, result) {
+        res.format({
+          json : function() {
+            Message.findById(messageId, function(err, message) {
               if (err) {
                 return next(err);
               }
 
-              res.json({status : 'ok'});
-            });
-          })
-        }
+              if (message.length === 0) {
+                return next(new NotFoundError('Message Not Found'));
+              }
+
+              message = new Message(message[0]);
+
+              var senderOrReceiver = message.isPersonSender(currentPersonId) ? 'Sender' : 'Receiver';
+
+              message['hiddenFor' + senderOrReceiver] = true;
+
+              message.save(function(err, result) {
+                if (err) {
+                  return next(err);
+                }
+
+                res.json({status : 'ok'});
+              });
+            })
+          }
+        })
       })
     }
   }
