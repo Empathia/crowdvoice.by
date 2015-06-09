@@ -29,8 +29,39 @@ var Entity = Class('Entity').inherits(Argon.KnexModel)({
   },
 
   storage : (new Argon.Storage.Knex({
-    tableName : 'Entities'
+    tableName : 'Entities',
+    queries : {
+      searchPeople : function(reqObj, callback) {
+        db(reqObj.model.storage.tableName).
+          where('is_anonymous', '=', false)
+          .andWhere('type', '=', 'person')
+          .andWhereRaw("(name like ? OR lastname like ? OR profile_name like ?)",['%' + reqObj.params.value + '%', '%' + reqObj.params.value + '%', '%' + reqObj.params.value + '%'])
+          .exec(callback)
+      }
+    }
   })),
+
+  searchPeople : function searchPeople(params, callback) {
+    var Model, request;
+
+    Model = this;
+
+    request = {
+      action : 'searchPeople',
+      model : Model,
+      params : params
+    }
+
+
+    this.dispatch('beforeSearchPeople');
+
+    this.storage.queries.searchPeople(request, function(err, data) {
+      callback(err, data);
+      Model.dispatch('afterSearchPeople');
+    });
+
+    return this;
+  },
 
   prototype : {
       id: null,

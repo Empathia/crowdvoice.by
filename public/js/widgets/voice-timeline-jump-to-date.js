@@ -24,10 +24,12 @@ Class(CV, 'VoiceTimelineJumpToDate').inherits(Widget)({
             this.appendChild(
                 new CV.PopoverBlocker({
                     name : 'jumpToDatePopover',
-                    className : 'voice-timeline-popover',
+                    className : 'voice-timeline-popover -color-border-grey-light',
                     title : 'Jump to',
                     placement : 'top',
-                    toggler : this.clockElement
+                    toggler : this.clockElement,
+                    showCloseButton : true,
+                    hasScrollbar : true
                 })
             ).render(this.container);
 
@@ -75,6 +77,7 @@ Class(CV, 'VoiceTimelineJumpToDate').inherits(Widget)({
                 frag.appendChild(optionWidget.el);
             }
 
+            this.jumpToDatePopover.getContent().className += ' ui-vertical-list hoverable';
             this.jumpToDatePopover.setContent(frag);
 
             i = frag = _lastYear = null;
@@ -99,6 +102,7 @@ Class(CV, 'VoiceTimelineJumpToDate').inherits(Widget)({
             var farRight = left + width;
             var w = window.innerWidth;
             var diff = farRight - w;
+            var togglerLeft = this.toggler.getBoundingClientRect().left;
 
             if (diff > 0) {
                 this.el.style.msTransform = 'translateX(' + ((diff + 10) * -1) + 'px)';
@@ -109,6 +113,11 @@ Class(CV, 'VoiceTimelineJumpToDate').inherits(Widget)({
             if (left < 0) {
                 this.el.style.left = '10px';
             }
+
+            var arrowLeft = this.arrowElement.getBoundingClientRect().left;
+            this.arrowElement.style.transform = 'translateX(' + (togglerLeft - arrowLeft - 2) + 'px)';
+
+            left = width = farRight = w = diff = togglerLeft = arrowLeft = null;
         },
 
         /* Popover deactivate handler
@@ -118,6 +127,7 @@ Class(CV, 'VoiceTimelineJumpToDate').inherits(Widget)({
             this.el.style.msTransform = '';
             this.el.style.webkitTransform = '';
             this.el.style.transform = '';
+            this.arrowElement.style.transform = '';
         },
 
         /* Deactivate any active option and activate the one that matches the passed string by name.

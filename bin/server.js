@@ -1,10 +1,20 @@
 #!/usr/bin/env node
 
+global.ForbiddenError = function ForbiddenError(message) {
+  this.name = 'ForbiddenError';
+  this.message = message || 'Not Authorized';
+}
+
+ForbiddenError.prototype = Object.create(Error.prototype);
+ForbiddenError.prototype.constructor = ForbiddenError;
+
+
 var application = require('neonode-core');
 
 global.ACL = require('./../lib/ACL/ACL.js');
 require('./../lib/ACL/visitor.js');
 require('./../lib/ACL/person.js');
+require('./../lib/ACL/anonymous.js');
 
 var io = require('socket.io')(application.server);
 global.moment = require('moment');

@@ -80,7 +80,7 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
                 new CV.InputClearable({
                     name : 'input',
                     placeholder : 'Paste the URL of an image, video or web page here',
-                    inputClass : '-block -lg -br0 -b0 -full-height',
+                    inputClass : '-block -lg -br0 -bw0 -full-height',
                     className : '-full-height'
                 })
             ).render(this.inputWrapper);
