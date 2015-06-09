@@ -99,7 +99,8 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
       Scrapper.processUrl(url, function (err, result) {
         if (err) {
-          return next(err);
+          logger.error(err);
+          return res.status(400).json({status : "There was an error in the request", error : err});
         }
 
         return res.json(result);
