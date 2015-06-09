@@ -16,6 +16,7 @@ Class(CV, 'InputClearable').inherits(Widget).includes(CV.WidgetUtils)({
 
     prototype : {
 
+        value : '',
         placeholder : '',
         inputClass : '',
 
@@ -34,6 +35,10 @@ Class(CV, 'InputClearable').inherits(Widget).includes(CV.WidgetUtils)({
         },
 
         _autoSetup : function _autoSetup() {
+            if (this.value) {
+                this.setValue(this.value);
+            }
+
             if (this.placeholder) {
                 this.dom.updateAttr('placeholder', this.inputElement, this.placeholder);
             }
@@ -67,6 +72,14 @@ Class(CV, 'InputClearable').inherits(Widget).includes(CV.WidgetUtils)({
             this.inputElement.value = "";
             this.clearButton.classList.remove(this.constructor.ACTIVE_CLASSNAME);
             this.inputElement.focus();
+        },
+
+        /* Updates the input value with the passed string
+         * @method setValue <public> [Function]
+         * @return [InputClearable]
+         */
+        setValue : function setValue(value) {
+            this.inputElement.value = value;
         },
 
         /* Returns the value of the input element
