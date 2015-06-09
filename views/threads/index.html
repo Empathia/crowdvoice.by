@@ -246,7 +246,7 @@
 			headers: { 'csrf-token': token },
 			data : {value : searchStr},
 			success: function(data) {
-				console.log('people: ', data);
+				//console.log('people: ', data);
 				relatedPersons = data;
 				showPersons(data);
 			}
@@ -357,15 +357,15 @@
           },
           success: function(data) {
           	currentThreadID = data.id;
-          	addThread(data);
-          	postMessage();
+          	addThread(data, true);
+          	//postMessage();
             console.log(data);
           }
         });
 
 	}
 
-    function addThread (thread){
+    function addThread (thread, showMessages){
     	console.log(thread);
 
 		var threadEl = messageSide.clone();
@@ -397,6 +397,10 @@
 
 			showThread(thread.id, threadPartnerName, this);
 		});
+
+		if(showMessages){
+			threadEl.click();
+		}
     }
 
 	function showThread (threadId, threadPartnerName, threadEl){
