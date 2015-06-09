@@ -57,7 +57,6 @@ Class(CV, 'PostLink').inherits(CV.Post)({
 
             if (this.image) {
                 this.setImageHeight(this.imageHeight);
-                this.imageWrapperElement.style.display = 'block';
             } else {
                 this.imageLoaded = true;
             }

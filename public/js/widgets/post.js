@@ -80,6 +80,21 @@ Class(CV, 'Post').inherits(Widget).includes(CV.WidgetUtils)({
          */
         setImageHeight : function setImageHeight(height) {
             this.imageWrapperElement.style.height = height + 'px';
+            this.imageWrapperElement.classList.add('active');
+        },
+
+        /* Display the image wrapper element which contains the image cover.
+         * @method showImageWrapper <public> [Function]
+         */
+        showImageWrapper : function showImageWrapper() {
+            this.imageWrapperElement.classList.add('active');
+        },
+
+        /* Hides the image wrapper element which contains the image cover.
+         * @method hideImageWrapper <public> [Function]
+         */
+        hideImageWrapper : function hideImageWrapper() {
+            this.imageWrapperElement.classList.remove('active');
         },
 
         /* Preload Post Image Cover
