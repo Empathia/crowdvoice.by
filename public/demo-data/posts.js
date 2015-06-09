@@ -11,6 +11,8 @@ var posts = [
     totalReposts: 12,
     totalSaves: 4,
     createdAt: '2015-01-28T13:59:47Z',
+    updatedAt: '2015-01-28T13:59:47Z',
+    publishedAt: '2015-01-28T13:59:47Z'
   },
 
   {
@@ -25,6 +27,8 @@ var posts = [
     totalReposts: 12,
     totalSaves: 4,
     createdAt: '2015-01-26T13:59:47Z',
+    updatedAt: '2015-01-26T13:59:47Z',
+    publishedAt: '2015-01-26T13:59:47Z',
   },
 
   {
@@ -37,6 +41,8 @@ var posts = [
     totalReposts: 12,
     totalSaves: 4,
     createdAt: '2015-01-24T13:59:47Z',
+    updatedAt: '2015-01-24T13:59:47Z',
+    publishedAt: '2015-01-24T13:59:47Z',
   },
 
   {
@@ -50,7 +56,9 @@ var posts = [
     imageHeight: 197,
     totalReposts: 2,
     totalSaves: 1,
-    createdAt: '2015-01-22T13:59:47Z'
+    createdAt: '2015-01-22T13:59:47Z',
+    updatedAt: '2015-01-22T13:59:47Z',
+    publishedAt: '2015-01-22T13:59:47Z'
   },
 
   {
@@ -64,7 +72,9 @@ var posts = [
     imageHeight: 194,
     totalReposts: 2,
     totalSaves: 1,
-    createdAt: '2015-01-20T13:59:47Z'
+    createdAt: '2015-01-20T13:59:47Z',
+    updatedAt: '2015-01-20T13:59:47Z',
+    publishedAt: '2015-01-20T13:59:47Z'
   },
 
   {
@@ -78,7 +88,9 @@ var posts = [
     imageHeight: 256,
     totalReposts: 2,
     totalSaves: 1,
-    createdAt: '2015-01-18T13:59:47Z'
+    createdAt: '2015-01-18T13:59:47Z',
+    updatedAt: '2015-01-18T13:59:47Z',
+    publishedAt: '2015-01-18T13:59:47Z'
   },
 
   {
@@ -93,6 +105,8 @@ var posts = [
     totalReposts: 2,
     totalSaves: 1,
     createdAt: '2015-01-16T13:59:47Z',
+    updatedAt: '2015-01-16T13:59:47Z',
+    publishedAt: '2015-01-16T13:59:47Z',
   },
 
 /*
@@ -173,7 +187,9 @@ var posts = [
     imageHeight: 318,
     totalReposts: 62,
     totalSaves: 17,
-    createdAt: '2015-01-14T13:59:47Z'
+    createdAt: '2015-01-14T13:59:47Z',
+    updatedAt: '2015-01-14T13:59:47Z',
+    publishedAt: '2015-01-14T13:59:47Z'
   },
 
   {
@@ -187,7 +203,9 @@ var posts = [
     imageHeight: 232,
     totalReposts: 62,
     totalSaves: 17,
-    createdAt: '2015-01-12T13:59:47Z'
+    createdAt: '2015-01-12T13:59:47Z',
+    updatedAt: '2015-01-12T13:59:47Z',
+    publishedAt: '2015-01-12T13:59:47Z'
   },
 
   {
@@ -201,9 +219,12 @@ var posts = [
     imageHeight: 189,
     totalReposts: 62,
     totalSaves: 17,
-    createdAt: '2015-01-10T13:59:47Z'
+    createdAt: '2015-01-10T13:59:47Z',
+    updatedAt: '2015-01-10T13:59:47Z',
+    publishedAt: '2015-01-10T13:59:47Z'
   },
 
+/*
   {
     sourceType: 'quote',
     sourceUrl: '',
@@ -213,8 +234,11 @@ var posts = [
     image: '',
     totalReposts: 0,
     totalSaves: 0,
-    createdAt: '2015-01-08T13:59:47Z'
+    createdAt: '2015-01-08T13:59:47Z',
+    uploadedAt: '2015-01-08T13:59:47Z',
+    publishedAt: '2015-01-08T13:59:47Z'
   },
+*/
 
   {
     sourceType: 'video',
@@ -227,7 +251,9 @@ var posts = [
     imageHeight: 193,
     totalReposts: 2,
     totalSaves: 1,
-    createdAt: '2015-01-06T13:59:47Z'
+    createdAt: '2015-01-06T13:59:47Z',
+    updatedAt: '2015-01-06T13:59:47Z',
+    publishedAt: '2015-01-06T13:59:47Z'
   }
-]
+];
 module.exports = posts;
