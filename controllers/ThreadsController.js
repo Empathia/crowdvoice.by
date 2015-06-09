@@ -170,109 +170,154 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
     },
 
     update : function update(req, res, next) {
-      MessageThread.findById(hashids.decode(req.params.threadId)[0], function(err, thread) {
+      var threadId = hashids.decode(req.params.threadId)[0];
+      var currentPersonId = hashids.decode(req.currentPerson.id)[0];
+
+      ACL.isAllowed('update', 'threads', req.role, {
+        threadId : threadId,
+        currentPersonId : currentPersonId
+      }, function(err, isAllowed) {
+
         if (err) {
           return next(err);
         }
 
-        if (thread.length === 0) {
-          return next(new NotFoundError('Thread Not Found'));
+        if (!isAllowed) {
+          return next(new ForbiddenError());
         }
 
-        thread = new MessageThread(thread[0]);
-
-        var senderOrReceiver = thread.isPersonSender(hashids.decode(req.currentPerson.id)[0]) ? 'Sender' : 'Receiver';
-
-        thread['lastSeen' + senderOrReceiver] = new Date(Date.now());
-
-        thread.updatedAt = thread.updatedAt;
-
-        thread.save(function(err, result) {
+        MessageThread.findById(threadId, function(err, thread) {
           if (err) {
             return next(err);
           }
 
-          res.json({status : 'ok', data : result});
+          if (thread.length === 0) {
+            return next(new NotFoundError('Thread Not Found'));
+          }
+
+          thread = new MessageThread(thread[0]);
+
+          var senderOrReceiver = thread.isPersonSender(currentPersonId) ? 'Sender' : 'Receiver';
+
+          thread['lastSeen' + senderOrReceiver] = new Date(Date.now());
+
+          thread.updatedAt = thread.updatedAt;
+
+          thread.save(function(err, result) {
+            if (err) {
+              return next(err);
+            }
+
+            res.json({status : 'ok', data : result});
+          })
         })
       })
     },
 
     destroy : function destroy(req, res, next) {
-      return res.format({
-        json : function() {
-          var id = hashids.decode(req.params.threadId)[0];
+      var threadId = hashids.decode(req.params.threadId)[0];
+      var currentPersonId = hashids.decode(req.currentPerson.id)[0];
 
-          MessageThread.findById(id, function(err, thread) {
-            if (err) {
-              return next(err);
-            }
+      ACL.isAllowed('destroy', 'threads', req.role, {
+        threadId : threadId,
+        currentPersonId : currentPersonId
+      }, function(err, isAllowed) {
+        if (err) {
+          return next(err);
+        }
 
-            if (thread.length === 0) {
-              return next(new NotFoundError('Thread Not Found'));
-            }
+        if (!isAllowed) {
+          return next(new ForbiddenError());
+        }
 
-            thread = thread[0];
+        res.format({
+          json : function() {
 
-            thread = new MessageThread(thread);
 
-            var senderOrReceiver = thread.isPersonSender(hashids.decode(req.currentPerson.id)[0]) ? 'Sender' : 'Receiver';
-
-            thread['hiddenFor' + senderOrReceiver] = true;
-
-            thread.save(function(err, result) {
+            MessageThread.findById(threadId, function(err, thread) {
               if (err) {
                 return next(err);
               }
 
-              Message.find({'thread_id' : thread.id}, function(err, messages) {
-                async.each(messages, function(message, done) {
-                  message = new Message(message);
+              if (thread.length === 0) {
+                return next(new NotFoundError('Thread Not Found'));
+              }
 
-                  var senderOrReceiver = message.isPersonSender(hashids.decode(req.currentPerson.id)[0]) ? 'Sender' : 'Receiver';
+              thread = thread[0];
 
-                  message['hiddenFor' + senderOrReceiver] = true;
+              thread = new MessageThread(thread);
 
-                  message.save(function(err, messageSaveResult) {
+              var senderOrReceiver = thread.isPersonSender(currentPersonId) ? 'Sender' : 'Receiver';
+
+              thread['hiddenFor' + senderOrReceiver] = true;
+
+              thread.save(function(err, result) {
+                if (err) {
+                  return next(err);
+                }
+
+                Message.find({'thread_id' : thread.id}, function(err, messages) {
+                  async.each(messages, function(message, done) {
+                    message = new Message(message);
+
+                    var senderOrReceiver = message.isPersonSender(currentPersonId) ? 'Sender' : 'Receiver';
+
+                    message['hiddenFor' + senderOrReceiver] = true;
+
+                    message.save(function(err, messageSaveResult) {
+                      if (err) {
+                        return done(err);
+                      }
+
+                      done();
+                    });
+                  }, function(err) {
                     if (err) {
-                      return done(err);
+                      return next(err);
                     }
 
-                    done();
-                  });
-                }, function(err) {
-                  if (err) {
-                    return next(err);
-                  }
-
-                  res.status(200).json({status : 'ok'});
+                    res.json({status : 'ok'});
+                  })
                 })
               })
             })
-          })
-        }
+          }
+        });
       });
     },
 
     searchPeople : function searchPeople(req, res, next) {
-      var value = req.body.value.toLowerCase().trim();
-      var currentPersonId = hashids.decode(req.currentPerson.id)[0];
-      res.format({
-        json : function() {
-          Entity.searchPeople({
-            value : value,
-            currentPersonId : currentPersonId
-          }, function(err, result) {
-            if (err) {
-              return next(err);
-            }
-
-            result.forEach(function(person) {
-              person.id = hashids.encode(person.id);
-            })
-
-            res.json(result);
-          });
+      ACL.isAllowed('searchPeople', 'threads', req.role, {
+        currentPerson : req.currentPerson
+      }, function(err, isAllowed) {
+        if (err) {
+          return next(err);
         }
+
+        if (!isAllowed) {
+          return next(new ForbiddenError());
+        }
+
+        var value = req.body.value.toLowerCase().trim();
+        var currentPersonId = hashids.decode(req.currentPerson.id)[0];
+        res.format({
+          json : function() {
+            Entity.searchPeople({
+              value : value,
+              currentPersonId : currentPersonId
+            }, function(err, result) {
+              if (err) {
+                return next(err);
+              }
+
+              result.forEach(function(person) {
+                person.id = hashids.encode(person.id);
+              })
+
+              res.json(result);
+            });
+          }
+        })
       })
     }
   }
