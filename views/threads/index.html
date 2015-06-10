@@ -7,7 +7,7 @@
       <!-- New Message Button -->
   </section>
 
-  <section class="profile-body -nopad">
+  <section class="profile-body messages-main -nopad">
 
     <div class="messages-sidebar">
     	<article role="article" class="profile-menu top-menu -row" style="display: none;">
@@ -27,14 +27,14 @@
     </div>
     <div class="messages-body">
 	<div class="no-messages">
-		Please select a thread from the list on the left or <a href="#" class="new-message">compose a new message</a>.
+		<p>Please select a thread from the list on the left or <a href="#" class="new-message">compose a new message</a>.</p>
 	</div>
     <div class="messages-body-container">
 
     	<div class="messages-body-header">
     		<div class="m-action">
     			<span class="conversation-title">Conversation with Pepe Pecas <a href="#">one link</a> and after a while <a href="#"><b>another bold</b></a></span>
-      			<div class="action-icon"><img src="/img/sample/icons/trashcan.png" alt=""></div>
+      			<div class="action-icon delete-thread"><img src="/img/sample/icons/trashcan.png" alt=""></div>
       		</div>
       		<div class="m-new">
       			<div class="-col-3">
@@ -114,6 +114,7 @@
   	var searchElement = document.querySelector('.messages-search');
   	var createElement = $(document.querySelector('.message-create'));
 
+  	var messagesMainEl = $(document.querySelector('.messages-main'));
   	var messagesContainerEl = $(document.querySelector('.messages-container'));
   	var noMessagesEl = $(document.querySelector('.no-messages'));
   	var messagesBodyHeaderEl = $(document.querySelector('.messages-body-header'));
@@ -195,6 +196,7 @@
 	var mi = 1;
 
 	buttonReply.element.on('click', function(){
+
 		if (isNewThread){
 			createThread();
 		} else {
@@ -210,12 +212,16 @@
 		newMessage();
 	});
 
-	threads.forEach(function(thread) {
-		addThread(thread);
-	});
+	if (threads.length > 0 ){
+		threads.forEach(function(thread) {
+			addThread(thread);
+		});
+	} else {
+		hideSidebar();
+	}
+
 
 	$(searchInput.element).find('input').on('keyup', function(){
-
 		var searchStr = $(this).val();
 		threadListEl.find('.message-side').each(function( index, value ) {
 
@@ -234,17 +240,18 @@
 
 
 		var searchStr = $(this).val().toLowerCase();
+		var inputSearch = $(this);
 
 		if (searchStr == ""){
 			searchUsersResultEl.hide();
 			return false;
 		}
 
-		$.ajax({
+        $.ajax({
 			type: "POST",
 			url:'/' + currentPersonProfileName + '/messages/searchPeople',
 			headers: { 'csrf-token': token },
-			data : {value : searchStr},
+			data : {value : inputSearch.val()},
 			success: function(data) {
 				//console.log('people: ', data);
 				relatedPersons = data;
@@ -252,9 +259,31 @@
 			}
 		});
 
-
-
 	});
+
+	messagesBodyHeaderEl.find('.delete-thread').on('click', function(){
+		deleteThread($(this).attr('data-id'));
+	});
+
+	function hideSidebar(){
+		messagesMainEl.addClass('no-sidebar');
+		var messageText = 'To contact a user, message them on their profile card when rolling over their avatar or message them from their profile page. You can also <a href="#" class="new-message">compose a new message here</a> and search for the user you wish to contact.'
+		noMessagesEl.prepend('<h1>No messages</h1>');
+		noMessagesEl.find('p').html(messageText);
+		$('a.new-message').on('click', function(){
+			newMessage();
+		});
+	}
+
+	function showSidebar(){
+		var messageText = 'Please select a thread from the list on the left or <a href="#" class="new-message">compose a new message</a>.'
+		noMessagesEl.find('h1').remove();
+		noMessagesEl.find('p').html(messageText);
+		$('a.new-message').on('click', function(){
+			newMessage();
+		});
+		messagesMainEl.removeClass('no-sidebar');
+	}
 
 	function showPersons(persons){
 		searchUsersResultEl.show();
@@ -265,16 +294,16 @@
 				var userStr = persons[person].name + ' ' +
 				persons[person].lastname;
 				//if (userStr.toLowerCase().indexOf(searchStr) >= 0){
-					var liStr = $('<li data-id="' + persons[person].id + '" data-name="' + userStr + '">' + userStr + '</li>');
+					var liStr = $('<li data-partner-id="' + persons[person].id + '" data-partner-name="' + userStr + '">' + userStr + '</li>');
 					liStr.on('click', function(){
 
-						otherPersonID = $(this).attr('data-id');
+						otherPersonID = $(this).attr('data-partner-id');
 						if (isOnThreadList(otherPersonID)){
-							threadListEl.find('#'+ otherPersonID).click();
+							threadListEl.find("[data-partner-id='" + otherPersonID + "']").click();
 						} else {
 							isNewThread = true;
 
-							showNewThreadScreen($(this).attr('data-id'), $(this).attr('data-name'));
+							showNewThreadScreen($(this).attr('data-partner-id'), $(this).attr('data-partner-name'));
 						}
 						$('.search-users').val("");
 						searchUsersResultEl.hide();
@@ -288,7 +317,7 @@
 	function isOnThreadList (selectedPersonID){
 		var foundIt = false;
 		threadListEl.find('.message-side').each(function( index, value ) {
-			if ($(this).attr('id') == selectedPersonID){
+			if ($(this).attr('data-partner-id') == selectedPersonID){
 				//console.log('bingo');
 				foundIt = true;
 			}
@@ -300,6 +329,11 @@
 	function newMessage (){
 		//console.log(threadId);
 		//currentThreadID = threadId;
+
+		showSelectedScreen();
+	}
+
+	function showSelectedScreen (){
 		noMessagesEl.hide();
 		messagesContainerEl.hide();
 		messagesBodyContainerEl.addClass('active');
@@ -307,8 +341,16 @@
 		messagesBodyHeaderEl.find('.m-new').show();
 		messageListEl.empty();
 		resizeMessages();
+	}
 
-
+	function showUnselectedScreen (){
+		noMessagesEl.show();
+		messagesContainerEl.show();
+		messagesBodyContainerEl.removeClass('active');
+		messagesBodyHeaderEl.find('.m-action').show();
+		messagesBodyHeaderEl.find('.m-new').hide();
+		//messageListEl.empty();
+		resizeMessages();
 	}
 
 	function postMessage(){
@@ -338,6 +380,7 @@
 		messagesBodyHeaderEl.find('.m-action').show();
 		messagesBodyHeaderEl.find('.m-new').hide();
 		messagesBodyHeaderEl.find('span.conversation-title').text('Conversation with ' + otherPersonName);
+		messagesBodyHeaderEl.find('.delete-thread').hide();
 		messagesContainerEl.show();
 		resizeMessages();
 	}
@@ -356,8 +399,10 @@
           	receiverEntityId : otherPersonID
           },
           success: function(data) {
+          	document.querySelector('.message-create textarea').value = "";
           	currentThreadID = data.id;
           	addThread(data, true);
+          	showSidebar();
           	//postMessage();
             console.log(data);
           }
@@ -375,7 +420,9 @@
 		} else{
 			threadPartner = thread.senderEntity;
 		}
-		threadEl.attr('id', threadPartner.id);
+		threadEl.attr('id', thread.id);
+		threadEl.attr('data-partner-id', threadPartner.id);
+
 		var threadPartnerName = threadPartner.name + " " + threadPartner.lastname;
 		threadEl.find('h3').text(threadPartnerName);
 
@@ -403,10 +450,38 @@
 		}
     }
 
+    function deleteThread (threadId){
+    	console.log('deleted thread: ' + threadId);
+		console.log(threadListEl);
+
+		var deleteThreadUrl = '/'+ currentPersonProfileName + '/messages/'+ threadId;
+		$.ajax({
+          type: "DELETE",
+          url: deleteThreadUrl,
+          headers: { 'csrf-token': token },
+          success: function(data) {
+            console.log('Thread deleted');
+          }
+        });
+
+		threadListEl.find('#'+threadId).remove();
+		if (threadListEl.find('.message-side').length == 0){
+			hideSidebar();
+			showUnselectedScreen();
+
+		}else{
+			showSidebar();
+			showUnselectedScreen();
+		}
+
+
+    }
+
 	function showThread (threadId, threadPartnerName, threadEl){
 		isNewThread = false;
 		//console.log(threadId);
 		currentThreadID = threadId;
+		console.log(threadId);
 		noMessagesEl.hide();
 		messagesBodyContainerEl.addClass('active');
 		messagesContainerEl.show();
@@ -415,6 +490,7 @@
 		messagesBodyHeaderEl.find('.m-action').show();
 		messagesBodyHeaderEl.find('.m-new').hide();
 		messagesBodyHeaderEl.find('span.conversation-title').text('Conversation with ' + threadPartnerName);
+		messagesBodyHeaderEl.find('.delete-thread').show().attr('data-id', threadId);
 
 		resizeMessages();
 
