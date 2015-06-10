@@ -27,6 +27,7 @@
 }
 
 .cv-post-creator__close {
+  z-index: 1;
   position: absolute;
   width: 18px;
   height: 18px;
@@ -36,12 +37,19 @@
 }
 
 .cv-post-creator__disable {
+  z-index: 1;
   display: none;
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
+
+  .cv-loader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+  }
 }
 
 .cv-post-creator__header {

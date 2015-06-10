@@ -34,7 +34,13 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
             </div>\
         </header>\
         <div class="cv-post-creator__content -abs"></div>\
-        <div class="cv-post-creator__disable"></div>\
+        <div class="cv-post-creator__disable">\
+            <div class="cv-loader">\
+                <div class="ball-spin-fade-loader">\
+                    <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>\
+                </div>\
+            </div>\
+        </div>\
     </div>\
     ',
 
@@ -289,6 +295,18 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
             CV.PostCreator.prototype._activate.call(this);
 
             this.input.getElement().focus();
+        },
+
+        _enable : function _enable() {
+            Widget.prototype._enable.call(this);
+
+            this.input.getElement().focus();
+        },
+
+        _disable  : function _disable() {
+            Widget.prototype._disable.call(this);
+
+            this.input.getElement().blur();
         },
 
         destroy : function destroy() {
