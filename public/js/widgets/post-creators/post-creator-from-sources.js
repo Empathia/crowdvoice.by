@@ -1,46 +1,12 @@
 /* jshint multistr: true */
-var Checkit = require('checkit');
-
 Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
 
     ELEMENT_CLASS : 'cv-post-creator post-creator-from-sources',
 
     HTML : '\
     <div>\
-        <header class="cv-post-creator__header -clearfix">\
-            <div class="header-left -rel -float-left">\
-                <div class="from-sources-dropdown -full-height">\
-                    <svg class="-s18">\
-                        <use xlink:href="#svg-twitter-bird"></use>\
-                    </svg>\
-                    <svg class="arrow -s8 -color-grey">\
-                        <use xlink:href="#svg-arrow-down-1"></use>\
-                    </svg>\
-                </div>\
-            </div>\
-            <div class="header-right -rel -float-right">\
-                <button class="post-btn ui-btn -primary -pl2 -pr2">Post</button>\
-            </div>\
-            <div class="header-flex -rel">\
-            </div>\
-        </header>\
-        <div class="cv-post-creator__content -abs">\
-            <div class="from-sources-content-left -rel -color-bg-white -full-height -float-left">\
-                <div class="from-sources-no-results -color-grey-light -text-center">\
-                    <p>We found no results for ‘{{TERM}}’.<br/>Please refine your search and try again.</p>\
-                </div>\
-                <div class="cv-loader -abs">\
-                    <div class="ball-spin-fade-loader">\
-                        <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>\
-                    </div>\
-                </div>\
-            </div>\
-            <div class="from-sources-content-right -color-bg-grey-lighter -color-border-grey-light -full-height -float-left">\
-                <div class="from-sources-queue-onboarding -color-grey-light -text-center">\
-                    <p>Add here the posts you want to include in this voice.<br/>You’ll be able to edit their title and description.</p>\
-                </div>\
-            </div>\
-        </div>\
+        <header class="cv-post-creator__header -clearfix"></header>\
+        <div class="cv-post-creator__content -abs"></div>\
         <div class="cv-post-creator__disable"></div>\
     </div>\
     ',
@@ -48,12 +14,12 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
     prototype : {
 
         el : null,
+        header : null,
+        content : null,
         inputWrapper : null,
-        postButton : null,
 
         _inputKeyPressHandlerRef : null,
         _inputLastValue : null,
-        _checkitUrl : null,
 
         init : function init(config) {
             CV.PostCreator.prototype.init.call(this, config);
@@ -61,17 +27,34 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
             console.log('new PostCreatorFromSources');
 
             this.el = this.element[0];
-            this.inputWrapper = this.el.querySelector('.header-flex');
-            this.postButton = this.el.querySelector('.post-btn');
+            this.header = this.el.querySelector('.cv-post-creator__header');
+            this.content = this.el.querySelector('.cv-post-creator__content');
+            this.inputWrapper = document.createElement('div');
 
-            this.addCloseButton()._disablePostButton()._setup()._bindEvents();
+            this.addCloseButton()._setup()._bindEvents()._disablePostButton();
         },
 
-        /* Appends the InputClearable widget.
+        /* Appends any required children.
          * @method _setup <private> [Function]
          * @return [PostCreatorFromUrl]
          */
         _setup : function _setup() {
+            this.inputWrapper.className = '-overflow-hidden -full-height';
+
+            this.appendChild(
+                new CV.PostCreatorFromSourcesDropdown({
+                    name : 'sourcesDropdown',
+                    className : '-float-left -full-height -color-border-grey-light'
+                })
+            ).render(this.header);
+
+            this.appendChild(
+                new CV.PostCreatorFromSourcesPostButton({
+                    name : 'postButton',
+                    className : '-float-right -full-height -color-border-grey-light'
+                })
+            ).render(this.header);
+
             this.appendChild(
                 new CV.InputClearable({
                     name : 'input',
@@ -80,6 +63,22 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
                     className : '-full-height'
                 })
             ).render(this.inputWrapper);
+
+            this.header.appendChild(this.inputWrapper);
+
+            this.appendChild(
+                new CV.PostCreatorFromSourcesResults({
+                    name : 'results',
+                    className : '-color-bg-white -full-height -float-left'
+                })
+            ).render(this.content);
+
+            this.appendChild(
+                new CV.PostCreatorFromSourcesQueue({
+                    name : 'queue',
+                    className : '-color-bg-grey-lighter -color-border-grey-light -full-height -float-left'
+                })
+            ).render(this.content);
 
             return this;
         },
@@ -90,11 +89,6 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
          */
         _bindEvents : function _bindEvents() {
             CV.PostCreator.prototype._bindEvents.call(this);
-
-            if (typeof this.input === 'undefined') {
-                console.warn('PostCreatorFromUrl::Missing Input Widget');
-                return;
-            }
 
             this._inputKeyPressHandlerRef = this._inputKeyPressHandler.bind(this);
             this.input.getElement().addEventListener('keypress', this._inputKeyPressHandlerRef);
@@ -108,15 +102,11 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
         _inputKeyPressHandler : function _inputKeyPressHandler(ev) {
             var inputValue;
 
-            if (ev.keyCode !== 13) {
-                return;
-            }
+            if (ev.keyCode !== 13) return;
 
             inputValue = this.input.getValue();
 
-            if (inputValue === this._inputLastValue) {
-                return;
-            }
+            if (inputValue === this._inputLastValue) return;
 
             this._inputLastValue = inputValue;
 
@@ -128,10 +118,23 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
          * @return [PostCreatorFromUrl]
          */
         _disablePostButton : function _disablePostButton() {
-            this.postButton.classList.add('-muted');
-            this.postButton.setAttribute('disabled', true);
+            this.postButton.disable();
 
             return this;
+        },
+
+        destroy : function destroy() {
+            this.input.getElement().removeEventListener('keypress', this._inputKeyPressHandlerRef);
+            this._inputKeyPressHandlerRef = null;
+
+            Widget.prototype.destroy.call(this);
+
+            this.el = null;
+            this.header = null;
+            this.content = null;
+            this.inputWrapper = null;
+
+            return null;
         }
     }
 });

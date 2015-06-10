@@ -1,7 +1,7 @@
 /* jshint multistr: true */
 Class(CV, 'InputClearable').inherits(Widget).includes(CV.WidgetUtils)({
 
-    ELEMENT_CLASS : 'cv-input-clearable',
+    ELEMENT_CLASS : 'cv-input-clearable -rel',
 
     HTML : '\
     <div>\
@@ -29,7 +29,7 @@ Class(CV, 'InputClearable').inherits(Widget).includes(CV.WidgetUtils)({
             this.el = this.element[0];
 
             this.inputElement = this.el.getElementsByTagName('input')[0];
-            this.clearButton = this.el.querySelector('.' + this.constructor.ELEMENT_CLASS + '__clear');
+            this.clearButton = this.el.querySelector('.cv-input-clearable__clear');
 
             this._autoSetup()._bindEvents();
         },
