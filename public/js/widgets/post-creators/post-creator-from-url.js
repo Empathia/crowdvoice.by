@@ -101,6 +101,8 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
          * @return [PostCreatorFromUrl]
          */
         _bindEvents : function _bindEvents() {
+            CV.PostCreator.prototype._bindEvents.call(this);
+
             if (typeof this.input === 'undefined') {
                 console.warn('PostCreatorFromUrl::Missing Input Widget');
                 return;

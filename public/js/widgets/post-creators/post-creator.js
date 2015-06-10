@@ -16,13 +16,27 @@ Class(CV, 'PostCreator').inherits(Widget).includes(CV.WidgetUtils)({
     },
 
     prototype : {
+        _window : null,
         _body : null,
         closeButton : null,
 
         init : function init(config) {
             Widget.prototype.init.call(this, config);
 
+            this._window = window;
             this._body = document.body;
+        },
+
+        /* Subscribe general events shared by any PostCreator.
+         * To run this function you need to called from inside any PostCreator.
+         * If the other PostCreator has a _bindEvents method too, call CV.PostCreator.prototype._bindEvents.call(this) instead.
+         * @method _bindEvents <private> [Function]
+         */
+        _bindEvents : function _bindEvents() {
+            this._windowKeydownHandlerRef = this._windowKeydownHandler.bind(this);
+            this._window.addEventListener('keydown', this._windowKeydownHandlerRef);
+
+            return this;
         },
 
         /* Adds the close icon and binds its events
@@ -37,6 +51,14 @@ Class(CV, 'PostCreator').inherits(Widget).includes(CV.WidgetUtils)({
             this.closeButton.addEventListener('click', this._closeButtonClickHanderRef);
 
             return this;
+        },
+
+        _windowKeydownHandler : function _windowKeydownHandler(ev) {
+            var charCode = (typeof ev.which == 'number') ? ev.which : ev.keyCode;
+
+            if (charCode === 27) { // ESC
+                this.deactivate();
+            }
         },
 
         /* Handles the click event on the close button
@@ -67,11 +89,15 @@ Class(CV, 'PostCreator').inherits(Widget).includes(CV.WidgetUtils)({
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
 
+            this._window.removeEventListener('keydown', this._windowKeydownHandlerRef);
+            this._windowKeydownHandlerRef = null;
+
             if (this.closeButton) {
                 this.closeButton.removeEventListener('click', this._closeButtonClickHanderRef);
                 this._closeButtonClickHanderRef = null;
             }
 
+            this._window = null;
             this._body = null;
             this.closeButton = null;
 

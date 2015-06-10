@@ -119,7 +119,7 @@ Class(CV, 'PostEdit').inherits(Widget)({
         _titleKeyPressHandler : function _titleKeyPressHandler(ev) {
             var charCode = (typeof ev.which == 'number') ? ev.which : ev.keyCode;
 
-            if (charCode === 13) {
+            if (charCode === 13) { // ENTER
                 ev.preventDefault();
             }
         },
