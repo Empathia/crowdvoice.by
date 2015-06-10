@@ -1,4 +1,6 @@
 /* jshint multistr: true */
+var rome = require('rome');
+var moment = require('moment');
 var autosize = require('autosize');
 
 Class(CV, 'PostEdit').inherits(Widget)({
@@ -12,6 +14,18 @@ Class(CV, 'PostEdit').inherits(Widget)({
             </button>\
         </div>\
     ',
+
+    HTML_DATE_PICKER : '\
+        <div class="post-edit-date-picker ui-input-group -inline-block">\
+            <button class="post-date-picker-button ui-btn -primary -color-white -sm -float-right">\
+                <svg class="post-edit-date-picker-calendar">\
+                    <use xlink:href="#svg-calendar"></use>\
+                <svg>\
+            </button>\
+            <div class="ui-input-auto">\
+                <input class="ui-input -sm"/>\
+            </div>\
+        </div>',
 
     MAX_LENGTH_TITLE : 65,
     MAX_LENGTH_DESCRIPTION : 140,
@@ -177,7 +191,27 @@ Class(CV, 'PostEdit').inherits(Widget)({
                 })
             ).render(this.el.querySelector('.post-card-info'));
 
+            // add the date picker
+            this.post.dateTimeElement.style.display = 'none';
+            this.post.dateTimeElement.parentNode.insertAdjacentHTML('beforeend', this.constructor.HTML_DATE_PICKER);
+            this.timePickerInput = this.post.dateTimeElement.parentNode.querySelector('.ui-input');
+            this.timePickerButton = this.post.dateTimeElement.parentNode.querySelector('.post-date-picker-button');
+
+            this.romeTime = rome(this.timePickerInput, {
+                appendTo : this.el,
+                inputFormat : 'DD MMM, YYYY HH:mm',
+                initialValue : moment(this.post.updatedAt)
+            });
+
+            this._showDatePickerRef = this._showDatePicker.bind(this);
+            this.timePickerButton.addEventListener('click', this._showDatePickerRef);
+
             return this;
+        },
+
+        _showDatePicker : function _showDatePicker(ev) {
+            ev.stopPropagation();
+            this.romeTime.show();
         },
 
         /* Updates the _currentImageIndex and run _updatePostImage.
@@ -245,6 +279,11 @@ Class(CV, 'PostEdit').inherits(Widget)({
             this.titleElement.removeEventListener('keypress', this._titleKeyPressHandler);
             this.titleElement.removeEventListener('paste', this._pasteHandler);
             this.descriptionElement.removeEventListener('paste', this._pasteHandler);
+
+            this.timePickerButton.removeEventListener('click', this._showImageRef);
+            this._showDatePickerRef = null;
+
+            this.romeTime.destroy();
 
             if (this.imageControls) {
                 this.imageControls.unbind('prevImage', this._prevImageRef);

@@ -143,6 +143,9 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
             this.disable()._removeErrorState()._requestPreview(checkitResponse[1].url);
         },
 
+        /* Make a call to the API for getting the preview data for creating a Post.
+         * @method _requestPreview <private> [Function]
+         */
         _requestPreview : function _requestPreview(url) {
             var args = {
                 path : location.pathname,

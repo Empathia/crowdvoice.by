@@ -50,27 +50,7 @@
 /** ===== GROUP ====== **/
 
 @{ns}-input-group {
-  display: table;
-  width: 100%;
-
-  @{ns}-input,
-  @{ns}-input-group-btn {
-    display: table-cell;
-  }
-
-  @{ns}-input {
-    width: 100%;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-  }
-
-  @{ns}-input-group-btn {
-    width: 1%;
-    white-space: nowrap;
-
-    @{ns}-btn {
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
-    }
+  @{ns}-input-auto {
+    overflow: hidden;
   }
 }
