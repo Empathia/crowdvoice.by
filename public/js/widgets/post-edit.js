@@ -59,17 +59,18 @@ Class(CV, 'PostEdit').inherits(Widget)({
                 CV.Post.create(this._postConfig)
             ).render(this.el).loadImage();
 
-            if (this.images.length) {
+            if (this._imagesLen) {
                 this._currentImageIndex = 0;
-
-                this.appendChild(
-                    new CV.PostEditImageControls({
-                        name : 'imageControls',
-                        images : this.images
-                    })
-                ).render(this.post.imageWrapperElement);
-
                 this._updatePostImage();
+
+                if (this.sourceType === 'link') {
+                    this.appendChild(
+                        new CV.PostEditImageControls({
+                            name : 'imageControls',
+                            images : this.images
+                        })
+                    ).render(this.post.imageWrapperElement);
+                }
             }
 
             this._makeItEditable()._bindEvents();
