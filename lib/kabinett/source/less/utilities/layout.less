@@ -23,6 +23,17 @@
 @{-}fit {max-width: 100%}
 @{-}full-height {height: 100%}
 
+@icon-sizes: 12, 14, 16, 18, 20, 22, 24, 26;
+.createiconsizes(@i:1) when(@i <= length(@icon-sizes)) {
+    @value: extract(@icon-sizes, @i);
+    &@{value} {
+        width: unit(@value, px);
+        height: unit(@value, px);
+    }
+    .createiconsizes((@i + 1));
+}
+@{-}s {.createiconsizes();}
+
 @{-}bw0 {border-width: 0}
 
 @{-}ellipsis {
