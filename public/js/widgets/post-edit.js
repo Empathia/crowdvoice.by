@@ -27,8 +27,8 @@ Class(CV, 'PostEdit').inherits(Widget)({
             </div>\
         </div>',
 
-    MAX_LENGTH_TITLE : 65,
-    MAX_LENGTH_DESCRIPTION : 140,
+    MAX_LENGTH_TITLE : 80,
+    MAX_LENGTH_DESCRIPTION : 180,
 
     prototype : {
         sourceType : null,

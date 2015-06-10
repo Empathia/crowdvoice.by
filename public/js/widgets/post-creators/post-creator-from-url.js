@@ -35,7 +35,7 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
         </header>\
         <div class="cv-post-creator__content -abs"></div>\
         <div class="cv-post-creator__disable">\
-            <div class="cv-loader">\
+            <div class="cv-loader -abs">\
                 <div class="ball-spin-fade-loader">\
                     <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>\
                 </div>\
