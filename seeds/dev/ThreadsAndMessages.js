@@ -22,7 +22,7 @@ exports.seed = function(knex, Promise) {
       'message_count_receiver' : 6,
       'created_at' : new Date(Date.now()),
       'updated_at' : new Date(Date.now())
-    })
+    }),
     // Messages of thread 1
     //
     // Between Jack and John
@@ -133,7 +133,7 @@ exports.seed = function(knex, Promise) {
       'hidden_for_receiver'   : false,
       'created_at'            : new Date(),
       'updated_at'            : new Date()
-    })
+    }),
     // Message Threads
     //
     // Between Jack and Peter
@@ -205,7 +205,7 @@ exports.seed = function(knex, Promise) {
       'hidden_for_receiver'   : false,
       'created_at'            : new Date(Date.now() - 1000),
       'updated_at'            : new Date(Date.now() - 1000)
-    })
+    }),
     // Message Threads
     //
     // Between Jack and Steve
@@ -277,7 +277,7 @@ exports.seed = function(knex, Promise) {
       'hidden_for_receiver'   : false,
       'created_at'            : new Date(Date.now() - 2000),
       'updated_at'            : new Date(Date.now() - 2000)
-    })
+    }),
     // Message Threads
     //
     // Between John and Peter
