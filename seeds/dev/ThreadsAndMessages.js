@@ -23,7 +23,6 @@ exports.seed = function(knex, Promise) {
       'created_at' : new Date(Date.now()),
       'updated_at' : new Date(Date.now())
     }),
-
     // Messages of thread 1
     //
     // Between Jack and John
@@ -135,80 +134,78 @@ exports.seed = function(knex, Promise) {
       'created_at'            : new Date(),
       'updated_at'            : new Date()
     }),
+    // Message Threads
+    //
+    // Between Jack and Peter
+    //
+    knex('MessageThreads').insert({
+      'id' : 2,
+      'sender_person_id'       : 1,
+      'sender_entity_id'       : 1,
+      'receiver_entity_id'     : 5,
+      'hidden_for_sender'      : false,
+      'hidden_for_receiver'    : false,
+      'last_seen_sender'       : null,
+      'last_seen_receiver'     : null,
+      'message_count_sender'   : 3,
+      'message_count_receiver' : 3,
+      'created_at' : new Date(Date.now() - 1000),
+      'updated_at' : new Date(Date.now() - 1000)
+    }),
 
-    //// Message Threads
-    ////
-    //// Between Jack and Peter
-    ////
-    //knex('MessageThreads').insert({
-    //  'id' : 2,
-    //  'sender_person_id'       : 1,
-    //  'sender_entity_id'       : 1,
-    //  'receiver_entity_id'     : 5,
-    //  'hidden_for_sender'      : false,
-    //  'hidden_for_receiver'    : false,
-    //  'last_seen_sender'       : null,
-    //  'last_seen_receiver'     : null,
-    //  'message_count_sender'   : 3,
-    //  'message_count_receiver' : 3,
-    //  'created_at' : new Date(Date.now() - 1000),
-    //  'updated_at' : new Date(Date.now() - 1000)
-    //}),
-//
-    //// Jack
-    //knex('Messages').insert({
-    //  'id'                    : 7,
-    //  'type'                  : 'message',
-    //  'sender_person_id'      : 1,
-    //  'sender_entity_id'      : 1,
-    //  'receiver_entity_id'    : 5,
-    //  'thread_id'             : 2,
-    //  'invitation_request_id' : null,
-    //  'voice_id'              : null,
-    //  'organization_id'       : null,
-    //  'message'               : "Sup Peter, I've heard Brian is dead.",
-    //  'hidden_for_sender'     : false,
-    //  'hidden_for_receiver'   : false,
-    //  'created_at'            : new Date(Date.now() - 1000),
-    //  'updated_at'            : new Date(Date.now() - 1000)
-    //}),
-//
-    //// Peter
-    //knex('Messages').insert({
-    //  'id'                    : 8,
-    //  'type'                  : 'message',
-    //  'sender_person_id'      : 5,
-    //  'sender_entity_id'      : 5,
-    //  'receiver_entity_id'    : 1,
-    //  'thread_id'             : 2,
-    //  'invitation_request_id' : null,
-    //  'voice_id'              : null,
-    //  'organization_id'       : null,
-    //  'message'               : "man!!! fucking car accident =/",
-    //  'hidden_for_sender'     : false,
-    //  'hidden_for_receiver'   : false,
-    //  'created_at'            : new Date(Date.now() - 1000),
-    //  'updated_at'            : new Date(Date.now() - 1000)
-    //}),
-//
-    //// Peter
-    //knex('Messages').insert({
-    //  'id'                    : 9,
-    //  'type'                  : 'message',
-    //  'sender_person_id'      : 1,
-    //  'sender_entity_id'      : 1,
-    //  'receiver_entity_id'    : 5,
-    //  'thread_id'             : 2,
-    //  'invitation_request_id' : null,
-    //  'voice_id'              : null,
-    //  'organization_id'       : null,
-    //  'message'               : "Poor dog.",
-    //  'hidden_for_sender'     : false,
-    //  'hidden_for_receiver'   : false,
-    //  'created_at'            : new Date(Date.now() - 1000),
-    //  'updated_at'            : new Date(Date.now() - 1000)
-    //}),
+    // Jack
+    knex('Messages').insert({
+      'id'                    : 7,
+      'type'                  : 'message',
+      'sender_person_id'      : 1,
+      'sender_entity_id'      : 1,
+      'receiver_entity_id'    : 5,
+      'thread_id'             : 2,
+      'invitation_request_id' : null,
+      'voice_id'              : null,
+      'organization_id'       : null,
+      'message'               : "Sup Peter, I've heard Brian is dead.",
+      'hidden_for_sender'     : false,
+      'hidden_for_receiver'   : false,
+      'created_at'            : new Date(Date.now() - 1000),
+      'updated_at'            : new Date(Date.now() - 1000)
+    }),
 
+    // Peter
+    knex('Messages').insert({
+      'id'                    : 8,
+      'type'                  : 'message',
+      'sender_person_id'      : 5,
+      'sender_entity_id'      : 5,
+      'receiver_entity_id'    : 1,
+      'thread_id'             : 2,
+      'invitation_request_id' : null,
+      'voice_id'              : null,
+      'organization_id'       : null,
+      'message'               : "man!!! fucking car accident =/",
+      'hidden_for_sender'     : false,
+      'hidden_for_receiver'   : false,
+      'created_at'            : new Date(Date.now() - 1000),
+      'updated_at'            : new Date(Date.now() - 1000)
+    }),
+
+    // Peter
+    knex('Messages').insert({
+      'id'                    : 9,
+      'type'                  : 'message',
+      'sender_person_id'      : 1,
+      'sender_entity_id'      : 1,
+      'receiver_entity_id'    : 5,
+      'thread_id'             : 2,
+      'invitation_request_id' : null,
+      'voice_id'              : null,
+      'organization_id'       : null,
+      'message'               : "Poor dog.",
+      'hidden_for_sender'     : false,
+      'hidden_for_receiver'   : false,
+      'created_at'            : new Date(Date.now() - 1000),
+      'updated_at'            : new Date(Date.now() - 1000)
+    }),
     // Message Threads
     //
     // Between Jack and Steve
@@ -281,7 +278,6 @@ exports.seed = function(knex, Promise) {
       'created_at'            : new Date(Date.now() - 2000),
       'updated_at'            : new Date(Date.now() - 2000)
     }),
-
     // Message Threads
     //
     // Between John and Peter

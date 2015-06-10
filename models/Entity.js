@@ -1,4 +1,5 @@
-var Entity = Class('Entity').inherits(Argon.KnexModel)({
+var ImageUploader = require(__dirname + '/../lib/image_uploader.js');
+var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
 
   validations : {
     type: [
@@ -99,6 +100,17 @@ var Entity = Class('Entity').inherits(Argon.KnexModel)({
 
         this.bind('beforeSave', function() {
           model.profileName = model.profileName.toLowerCase().trim();
+        });
+
+        // Add image attachment
+        this.hasImage({
+          propertyName: 'image',
+          versions: {
+            thumb: {w:340},
+            medium: {w:640}
+          },
+          bucket: 'crowdvoice.by',
+          basePath: '{env}/{modelName}_{id}/{id}_{versionName}.{extension}'
         });
       },
 

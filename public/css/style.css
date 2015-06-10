@@ -1,6 +1,10 @@
+html{
+  height: 100%;
+}
 body {
   font-family: 'Source Sans Pro', 'Lucida Grande', sans-serif;
   color : #333;
+  height: 100%;
 }
 
 h1 {
