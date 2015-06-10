@@ -57,15 +57,18 @@ Class(CV, 'PostEditImageControls').inherits(Widget)({
             }
         },
 
-        _prevClickHandler : function _prevClickHandler() {
+        _prevClickHandler : function _prevClickHandler(ev) {
+            ev.stopPropagation();
             this.dispatch('prevImage');
         },
 
-        _nextClickHandler : function _nextClickHandler() {
+        _nextClickHandler : function _nextClickHandler(ev) {
+            ev.stopPropagation();
             this.dispatch('nextImage');
         },
 
-        _removeImageClickHandler : function _removeImageClickHandler() {
+        _removeImageClickHandler : function _removeImageClickHandler(ev) {
+            ev.stopPropagation();
             this.dispatch('removeImages');
         }
     }
