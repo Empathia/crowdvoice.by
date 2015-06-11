@@ -112,18 +112,18 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           }
 
           if (posts.length > 0) {
-           return res.status(200).json({status : "The URL already exists"});
+           return res.status(200).json({status : "The URL already exists", error : "The URL already exists"});
           }
+
+          Scrapper.processUrl(url, function (err, result) {
+            if (err) {
+              logger.error(err);
+              return res.status(400).json({status : "There was an error in the request", error : err});
+            }
+
+            return res.json(result);
+          });
         })
-      })
-
-      Scrapper.processUrl(url, function (err, result) {
-        if (err) {
-          logger.error(err);
-          return res.status(400).json({status : "There was an error in the request", error : err});
-        }
-
-        return res.json(result);
       });
     }
   }
