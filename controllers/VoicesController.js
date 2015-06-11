@@ -33,7 +33,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
             counts[post.year][post.month] = post.count
           });
 
-          res.locals.postsCount = count;
+          res.locals.postsCount = counts;
 
           Entity.findById(voice.ownerId, function(err, owner) {
             if (err) { return next(err); }
