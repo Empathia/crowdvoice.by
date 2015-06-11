@@ -139,7 +139,6 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
          * @method _requestPreview <private> [Function]
          */
         _requestPreview : function _requestPreview(url) {
-            /*
             var args = {
                 path : location.pathname,
                 data : {
@@ -176,8 +175,8 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
             }.bind(this));
 
             return;
-            */
 
+            /*
             if (this._previewPostWidget) {
                 this._previewPostWidget.destroy();
             }
@@ -190,6 +189,7 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
 
             this._activateIconType(post.sourceType);
             this._enabledPostButton().enable();
+            */
         },
 
         /* Enables the Post Button.
