@@ -39,7 +39,7 @@ Class(CV, 'Bubble').inherits(Widget)({
 
             var closeButton = this.appendChild(
                 new CV.Button({
-                    style   : 'clean',
+                    style   : '',
                     type    : 'single',
                     label   : 'X',
                     name    : 'closeButton'
