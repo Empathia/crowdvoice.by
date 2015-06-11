@@ -135,7 +135,7 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
             this.input.getElement().removeEventListener('keypress', this._inputKeyPressHandlerRef);
             this._inputKeyPressHandlerRef = null;
 
-            Widget.prototype.destroy.call(this);
+            CV.PostCreator.prototype.destroy.call(this);
 
             this.el = null;
             this.header = null;

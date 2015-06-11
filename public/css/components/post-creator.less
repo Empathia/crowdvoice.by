@@ -70,6 +70,34 @@
   padding: 100px 50px 0;
 }
 
+.cv-post-creator__uploading-template,
+.cv-post-creator__error-template {
+  display: none;
+  width: 340px;
+  height: 400px;
+  margin: 5rem auto;
+  border: 1px dashed #929292;
+  background-color: rgba(255,255,255,.2);
+
+  &.active {
+    display: block;
+  }
+
+  .cv-loader {
+    top: 50%;
+    left: 50%;
+  }
+
+  .error-icon {
+    font-size: 56px;
+    top: 50%;
+    left: 50%;
+    margin: -28px 0 0 -28px;
+    width: 1em;
+    height: 1em;
+  }
+}
+
 /* ============================================================================
  * From URL
  * ========================================================================= */
@@ -130,23 +158,6 @@
   border-left-width: 1px;
 }
 
-.cv-post-creator-from-url-error-content {
-  width: 340px;
-  height: 400px;
-  margin: 5rem auto;
-  border: 1px dashed #929292;
-  background-color: rgba(255,255,255,.2);
-
-  .error-icon {
-    font-size: 56px;
-    top: 50%;
-    left: 50%;
-    margin: -28px 0 0 -28px;
-    width: 1em;
-    height: 1em;
-  }
-}
-
 /* ============================================================================
  * From Sources
  * ========================================================================= */
@@ -189,3 +200,30 @@
   border-left-width: 1px;
 }
 
+/* ============================================================================
+ * Upload File
+ * ========================================================================= */
+.post-creator-upload-file {
+}
+
+.upload-file-msg-uploading,
+.upload-file-msg-error,
+.upload-file-msg-uploaded-image {
+  display: none;
+  font-size: 18px;
+  padding: .9em 0 0 1em;
+
+  &.active {
+    display: block;
+  }
+}
+
+.upload-file-msg-error svg,
+.upload-file-msg-uploaded-image svg {
+  margin: 4px 10px 0 0;
+}
+
+.upload-file-post-button {
+  padding: 1rem 1.25rem 0;
+  border-left-width: 1px;
+}

@@ -50,17 +50,24 @@ require('./widgets/post-quote.js');
 require('./widgets/voice-add-content');
 
 require('./widgets/post-creators/post-creator.js');
-require('./widgets/post-creators/post-creator-from-url.js');
+require('./widgets/post-creators/uploading.js');
+require('./widgets/post-creators/error.js');
+
+require('./widgets/post-creators/from-url/post-creator-from-url.js');
 require('./widgets/post-creators/from-url/source-icons.js');
 require('./widgets/post-creators/from-url/post-button.js');
 
-require('./widgets/post-creators/post-creator-from-sources.js');
+require('./widgets/post-creators/from-sources/post-creator-from-sources.js');
 require('./widgets/post-creators/from-sources/sources-dropdown.js');
 require('./widgets/post-creators/from-sources/sources-post-button.js');
 require('./widgets/post-creators/from-sources/sources-results.js');
 require('./widgets/post-creators/from-sources/sources-queue.js');
-require('./widgets/post-creators/post-creator-upload-file.js');
-require('./widgets/post-creators/post-creator-write-article.js');
+
+require('./widgets/post-creators/upload-file/post-creator-upload-file.js');
+require('./widgets/post-creators/upload-file/header-messages.js');
+require('./widgets/post-creators/upload-file/post-button.js');
+
+require('./widgets/post-creators/write-article/post-creator-write-article.js');
 
 require('./widgets/post-edit.js');
 require('./widgets/post-edit-image-controls.js');

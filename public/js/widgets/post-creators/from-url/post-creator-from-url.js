@@ -1,5 +1,5 @@
 /* jshint multistr: true */
-var API = require('../../lib/api');
+var API = require('../../../lib/api');
 var Checkit = require('checkit');
 
 Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
@@ -21,13 +21,6 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
     </div>\
     ',
 
-    HTML_ERROR : '\
-    <div class="cv-post-creator-from-url-error-content -rel -br1">\
-        <svg class="error-icon -abs -color-grey-light">\
-            <use xlink:href="#svg-circle-x"></use>\
-        </svg>\
-    </div>\
-    ',
     DEFAULT_ERROR_MESSAGE : 'You entered an invalid URL. Please double check it.',
 
     prototype : {
@@ -63,6 +56,12 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
          * @return [PostCreatorFromUrl]
          */
         _setup : function _setup() {
+            this.appendChild(
+                new CV.PostCreatorErrorTemplate({
+                    name : 'errorTemplate'
+                })
+            ).render(this.content);
+
             this.appendChild(
                 new CV.PostCreatorFromUrlSourceIcons({
                 name : 'sourceIcons',
@@ -181,7 +180,7 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
                 this._previewPostWidget.destroy();
             }
 
-            var posts = require('./../../../demo-data/posts-preview.js');
+            var posts = require('./../../../../demo-data/posts-preview.js');
             var post = posts[Math.floor(Math.random() * posts.length)];
             post.name = '_previewPostWidget';
 
@@ -216,9 +215,9 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
          */
         _setErrorState : function _setErrorState(config) {
             if (config && config.message) {
-                this.errorMessage.textContent = config.message;
+                this.dom.updateText(this.errorMessage, config.message);
             } else {
-                this.errorMessage.textContent = this.constructor.DEFAULT_ERROR_MESSAGE;
+                this.dom.updateText(this.errorMessage, this.constructor.DEFAULT_ERROR_MESSAGE);
             }
 
             if (this.el.classList.contains('has-error')) {
@@ -230,7 +229,7 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
             }
 
             this.el.classList.add('has-error');
-            this.content.insertAdjacentHTML('afterbegin', this.constructor.HTML_ERROR);
+            this.errorTemplate.activate();
 
             return this;
         },
@@ -240,13 +239,8 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
          * @return [CV.PostCreatorFromUrl]
          */
         _removeErrorState : function _removeErrorState() {
-            var errorContent = this.content.querySelector('.cv-post-creator-from-url-error-content');
-
-            if (errorContent) {
-                this.content.removeChild(errorContent);
-            }
-
             this.el.classList.remove('has-error');
+            this.errorTemplate.deactivate();
 
             return this;
         },
