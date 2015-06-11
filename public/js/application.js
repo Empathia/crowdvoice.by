@@ -27,6 +27,7 @@ require('./widgets/popover-blocker.js');
 require('./widgets/responsive-slider.js');
 require('./widgets/input-clearable.js');
 require('./widgets/input-counter.js');
+require('./widgets/dropdown.js');
 
 // components
 require('./widgets/card.js');
@@ -70,6 +71,7 @@ require('./widgets/post-creators/from-url/post-button.js');
 
 require('./widgets/post-creators/from-sources/post-creator-from-sources.js');
 require('./widgets/post-creators/from-sources/sources-dropdown.js');
+require('./widgets/post-creators/from-sources/sources-dropdown-option.js');
 require('./widgets/post-creators/from-sources/sources-post-button.js');
 require('./widgets/post-creators/from-sources/sources-results.js');
 require('./widgets/post-creators/from-sources/sources-queue.js');
