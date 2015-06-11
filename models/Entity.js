@@ -106,8 +106,18 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
         this.hasImage({
           propertyName: 'image',
           versions: {
-            thumb: {w:340},
-            medium: {w:640}
+            icon: function (readStream) {
+              return readStream.pipe(sharp().resize(16,16));
+            },
+            small: function (readStream) {
+              return readStream.pipe(sharp().resize(36,36));
+            },
+            card: function (readStream) {
+              return readStream.pipe(sharp().resize(88,88));
+            },
+            medium: function (readStream) {
+              return readStream.pipe(sharp().resize(160,160));
+            }
           },
           bucket: 'crowdvoice.by',
           basePath: '{env}/{modelName}_{id}/{id}_{versionName}.{extension}'

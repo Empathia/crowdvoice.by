@@ -19,8 +19,9 @@ db('Entities').del().then(function (done) {
 
   e.uploadImage('image', process.argv[2], function () {
     console.log(e);
-    console.log(e.image.url('medium'));
-    console.log(e.image.url('thumb'));
+    Object.keys(e.image.versions).forEach(function (version) {
+      console.log(e.image.url(version));
+    });
   });
 });
 

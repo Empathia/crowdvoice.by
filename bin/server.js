@@ -14,6 +14,10 @@ var application = require('neonode-core');
 var AWS = require('aws-sdk');
 global.amazonS3 = new AWS.S3(CONFIG.s3);
 
+// Load image processors
+global.gm = require('gm').subClass({imageMagick: true});
+global.sharp = require('sharp');
+
 global.ACL = require('./../lib/ACL/ACL.js');
 require('./../lib/ACL/visitor.js');
 require('./../lib/ACL/anonymous.js');
