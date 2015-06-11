@@ -1,4 +1,5 @@
-var Post = Class('Post').inherits(Argon.KnexModel)({
+var ImageUploader = require(__dirname + '/../lib/image_uploader.js');
+var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
 
   // Source services:
   SOURCE_SERVICE_RAW:     "raw",
@@ -136,6 +137,18 @@ var Post = Class('Post').inherits(Argon.KnexModel)({
           });
         });
       })
+
+      // Add image attachment
+      this.hasImage({
+        propertyName: 'image',
+        versions: {
+          medium: function (readStream) {
+            return readStream.pipe(sharp().resize(340));
+          }
+        },
+        bucket: 'crowdvoice.by',
+        basePath: '{env}/{modelName}_{id}/{id}_{versionName}.{extension}'
+      });
     },
 
     toJSON : function toJSON() {
