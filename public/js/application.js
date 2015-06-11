@@ -19,20 +19,20 @@ require('./../css/style.less');
 var moment = require('moment');
 window.moment = moment;
 
-// widgets
+// generic widgets
 require('./widgets/header.js');
 require('./widgets/sidebar.js');
 require('./widgets/popover.js');
 require('./widgets/popover-blocker.js');
 require('./widgets/responsive-slider.js');
+require('./widgets/input-clearable.js');
+require('./widgets/input-counter.js');
 
 // components
 require('./widgets/card.js');
 require('./widgets/voice-cover.js');
 require('./widgets/voice-cover-mini.js');
 require('./widgets/category-cover.js');
-require('./widgets/input-clearable.js');
-require('./widgets/input-counter.js');
 
 require('./views/voice');
 require('./widgets/voice-post-layers-manager');
@@ -41,14 +41,25 @@ require('./widgets/voice-timeline-feedback');
 require('./widgets/voice-posts-layer');
 require('./widgets/voice-post-indicator');
 require('./widgets/voice-about-box');
-require('./widgets/post.js');
-require('./widgets/post-image.js');
-require('./widgets/post-video.js');
-require('./widgets/post-audio.js');
-require('./widgets/post-link.js');
-require('./widgets/post-quote.js');
-require('./widgets/voice-add-content');
 
+// posts
+require('./widgets/posts/post.js');
+require('./widgets/posts/post-image.js');
+require('./widgets/posts/post-video.js');
+require('./widgets/posts/post-audio.js');
+require('./widgets/posts/post-link.js');
+require('./widgets/posts/post-quote.js');
+require('./widgets/posts/edit/post-edit.js');
+require('./widgets/posts/edit/post-edit-image-controls.js');
+
+require('./widgets/voice-add-content');
+require('./widgets/voice-timeline-jump-to-date');
+require('./widgets/voice-timeline-jump-to-date-label');
+require('./widgets/voice-timeline-jump-to-date-item');
+require('./widgets/voice-request-to-contribute.js');
+require('./widgets/popover-request-to-contribute.js');
+
+// post creators
 require('./widgets/post-creators/post-creator.js');
 require('./widgets/post-creators/uploading.js');
 require('./widgets/post-creators/error.js');
@@ -69,14 +80,7 @@ require('./widgets/post-creators/upload-file/post-button.js');
 
 require('./widgets/post-creators/write-article/post-creator-write-article.js');
 
-require('./widgets/post-edit.js');
-require('./widgets/post-edit-image-controls.js');
-require('./widgets/voice-timeline-jump-to-date');
-require('./widgets/voice-timeline-jump-to-date-label');
-require('./widgets/voice-timeline-jump-to-date-item');
-require('./widgets/voice-request-to-contribute.js');
-require('./widgets/popover-request-to-contribute.js');
-
+// bubbles
 require('./widgets/bubble.js');
 require('./widgets/bubble/jump-to-date.js');
 require('./widgets/bubble/voices-list.js');
