@@ -62,28 +62,6 @@
   border-radius: 0 0 7px 7px;
 }
 
-.header-left,
-.header-right,
-.header-flex {
-  height: 100%;
-}
-
-.header-left {
-  padding: 1.6rem 1.5rem 0;
-  border-right-width: 1px;
-  border-color: @color-grey-light;
-}
-
-.header-right {
-  padding: 1rem 1.25rem 0;
-  border-left-width: 1px;
-  border-color: @color-grey-light;
-}
-
-.header-flex {
-  overflow: hidden;
-}
-
 .cv-post-creator__content {
   top: 0;
   left: 0;
@@ -92,10 +70,48 @@
   padding: 100px 50px 0;
 }
 
+.cv-post-creator__uploading-template,
+.cv-post-creator__error-template {
+  display: none;
+  width: 340px;
+  height: 400px;
+  margin: 5rem auto;
+  border: 1px dashed #929292;
+  background-color: rgba(255,255,255,.2);
+
+  &.active {
+    display: block;
+  }
+
+  .cv-loader {
+    top: 50%;
+    left: 50%;
+  }
+
+  .error-icon {
+    font-size: 56px;
+    top: 50%;
+    left: 50%;
+    margin: -28px 0 0 -28px;
+    width: 1em;
+    height: 1em;
+  }
+}
+
 /* ============================================================================
  * From URL
  * ========================================================================= */
 .post-creator-from-url {
+  .input-error-message {
+    top: 70px;
+    left: 185px;
+  }
+}
+
+.from-url-source-icons {
+  padding: 1.6rem 1.5rem 0;
+  border-right-width: 1px;
+
   .input-error-icon {
     z-index: 1;
     font-size: 18px;
@@ -104,11 +120,6 @@
     width: 1em;
     height: 1em;
     margin-top: -9px;
-  }
-
-  .input-error-message {
-    top: 70px;
-    left: 185px;
   }
 
   .from-url-type {
@@ -140,66 +151,79 @@
     fill: @color-grey-light;
     transition: fill 240ms ease;
   }
-
-  .post-card {
-    display: block;
-    width: 340px;
-    margin: 0 auto;
-  }
 }
 
-.cv-post-creator-from-url-error-content {
-  width: 340px;
-  height: 400px;
-  margin: 5rem auto;
-  border: 1px dashed #929292;
-  background-color: rgba(255,255,255,.2);
-
-  .error-icon {
-    font-size: 56px;
-    top: 50%;
-    left: 50%;
-    margin: -28px 0 0 -28px;
-    width: 1em;
-    height: 1em;
-  }
+.from-url-post-button {
+  padding: 1rem 1.25rem 0;
+  border-left-width: 1px;
 }
 
 /* ============================================================================
  * From Sources
  * ========================================================================= */
-.post-creator-from-sources {
-  .header-left {padding: 0}
+.post-creator-from-sources {}
 
-  .from-sources-dropdown {
-    padding: 1.6rem 1.5rem 0;
+.from-sources-dropdown {
+  padding: 1.6rem 1.5rem 0;
+  border-right-width: 1px;
+  .arrow {margin: 5px 0 0 6px}
+}
 
-    .arrow {margin: 5px 0 0 6px}
-  }
-
-  .from-sources-content-left {
-    width: 60%;
-    border-top-left-radius: 6px;
-
-    .cv-loader {
-      top: 50%;
-      left: 50%;
-
-      .ball-spin-fade-loader > div {
-        background-color: @color-grey;
-      }
-    }
-  }
-
-  .from-sources-content-right {
-    width: 40%;
-    border-top-right-radius: 6px;
-    border-left-width: 1px;
-  }
+.from-sources-post-button {
+  padding: 1rem 1.25rem 0;
+  border-left-width: 1px;
 }
 
 .from-sources-no-results,
 .from-sources-queue-onboarding {
   padding-top: 12em;
   font-style: italic;
+}
+
+.from-sources-content-left {
+  width: 60%;
+  border-top-left-radius: 6px;
+
+  .cv-loader {
+    top: 50%;
+    left: 50%;
+
+    .ball-spin-fade-loader > div {
+      background-color: @color-grey;
+    }
+  }
+}
+
+.from-sources-content-right {
+  width: 40%;
+  border-top-right-radius: 6px;
+  border-left-width: 1px;
+}
+
+/* ============================================================================
+ * Upload File
+ * ========================================================================= */
+.post-creator-upload-file {
+}
+
+.upload-file-msg-uploading,
+.upload-file-msg-error,
+.upload-file-msg-uploaded-image {
+  display: none;
+  font-size: 18px;
+  padding: .9em 0 0 1em;
+
+  &.active {
+    display: block;
+  }
+}
+
+.upload-file-msg-error svg,
+.upload-file-msg-uploaded-image svg {
+  margin: 4px 10px 0 0;
+}
+
+.upload-file-post-button {
+  padding: 1rem 1.25rem 0;
+  border-left-width: 1px;
 }

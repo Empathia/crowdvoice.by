@@ -1,5 +1,7 @@
 var Scrapper = require(process.cwd() + '/lib/cvscrapper');
 
+var expander = require('expand-url');
+
 var PostsController = Class('PostsController').includes(BlackListFilter)({
   prototype : {
     init : function (config){
@@ -97,13 +99,31 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
     preview : function preview(req, res, next) {
       var url = req.body.url;
 
-      Scrapper.processUrl(url, function (err, result) {
+      expander.expand(url, function(err, longUrl) {
         if (err) {
           logger.error(err);
           return res.status(400).json({status : "There was an error in the request", error : err});
         }
 
-        return res.json(result);
+        Post.find(["source_url = ?", [longUrl]], function(err, posts) {
+          if (err) {
+            logger.error(err);
+            return res.status(400).json({status : "There was an error in the request", error : err});
+          }
+
+          if (posts.length > 0) {
+           return res.status(200).json({status : "The URL already exists", error : "The URL already exists"});
+          }
+
+          Scrapper.processUrl(url, function (err, result) {
+            if (err) {
+              logger.error(err);
+              return res.status(400).json({status : "There was an error in the request", error : err});
+            }
+
+            return res.json(result);
+          });
+        })
       });
     }
   }

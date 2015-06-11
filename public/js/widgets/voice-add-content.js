@@ -112,6 +112,10 @@ Class(CV, 'VoiceAddContent').inherits(Widget)({
          */
         _bubbleDeactivateHandler : function _bubbleDeactivateHandler() {
             this.addPostButton.classList.remove('active');
+
+            if (this.createPostModal) {
+                this.createPostModal.activate();
+            }
         },
 
         /* Handles the click event on a bubble menu option.

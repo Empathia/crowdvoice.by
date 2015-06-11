@@ -23,7 +23,7 @@ They might well be outsourced to an external stylesheet of course.
 	..svg-svg-arrow-down-1-dims { width: 8px; height: 5px; }
 	..svg-svg-arrow-down-2-dims { width: 9px; height: 6px; }
 	..svg-svg-arrow-left-dims { width: 16px; height: 25px; }
-	..svg-svg-arrow-right-dims { width: 12px; height: 9px; }
+	..svg-svg-arrow-right-dims { width: 16px; height: 25px; }
 	..svg-svg-arrow-up-dims { width: 10px; height: 6px; }
 	..svg-svg-arrow-up-down-1-dims { width: 8px; height: 14px; }
 	..svg-svg-article-dims { width: 13px; height: 16px; }
@@ -98,7 +98,7 @@ further details on how to create this embeddable sprite variant.
 		<symbol viewBox="0 0 8 5" id="svg-arrow-down-1"><path fill-rule="evenodd" d="M0 0h8L4 5 0 0z"/></symbol>
 		<symbol viewBox="0 0 9 6" id="svg-arrow-down-2"><path fill-rule="evenodd" d="M0 1.49L4.5 6 9 1.49 7.53 0 4.5 3.03 1.47 0 0 1.49z"/></symbol>
 		<symbol viewBox="0 0 16 25" id="svg-arrow-left"><path fill-rule="evenodd" d="M12.56 25.01L16 21.57 6.89 12.5 16 3.43 12.56-.01 0 12.51l12.56 12.5z"/></symbol>
-		<symbol viewBox="0 0 12 9" id="svg-arrow-right"><title>icon (arrow right)</title><path d="M11.5 4.5c0-.008-.002-.014-.006-.018l-.006-.007c0-.04-.01-.078-.025-.11-.016-.033-.033-.062-.05-.086-.007-.01-.01-.02-.01-.032 0-.013-.006-.023-.014-.03-.01 0-.017-.003-.025-.007-.01-.003-.017-.005-.025-.005l-.006-.006-.006-.008-4.282-3.9c-.074-.074-.164-.11-.27-.11-.107 0-.198.036-.272.11-.073.074-.11.164-.11.27 0 .107.037.198.11.27l3.606 3.274H.894c-.107 0-.2.04-.277.117C.54 4.3.5 4.393.5 4.5c0 .107.04.2.117.277.078.078.17.117.277.117h9.216L6.504 8.167c-.073.073-.11.164-.11.27 0 .107.037.197.11.27.074.075.165.112.27.112.108 0 .198-.038.272-.112l4.306-3.913h.007c.003 0 .005-.004.005-.012h.024V4.76c.032-.032.057-.07.073-.11.016-.04.03-.082.037-.123V4.5z" fill-rule="evenodd"/></symbol>
+		<symbol viewBox="0 0 16 25" id="svg-arrow-right"><path d="M3.44 25.01L0 21.57l9.11-9.07L0 3.43 3.44-.01 16 12.51 3.44 25.01z"/></symbol>
 		<symbol viewBox="0 0 10 6" id="svg-arrow-up"><title>icon (arrow)</title><path d="M.117 5.716c.078.078.172.117.28.117.11 0 .202-.04.28-.117L5 1.003l4.323 4.713c.078.078.17.117.28.117.108 0 .202-.04.28-.117.078-.078.117-.17.117-.28 0-.108-.04-.202-.117-.28 0 0-.24-.262-.716-.788-.478-.525-1-1.102-1.57-1.73C7.03 2.007 6.505 1.43 6.023.91 5.54.39 5.3.127 5.3.118c-.044-.043-.092-.074-.144-.09C5.104.008 5.052 0 5 0c-.052 0-.104.01-.156.026-.052.017-.1.048-.143.09 0 .01-.238.275-.716.795-.477.522-1.002 1.097-1.575 1.727L.832 4.367l-.716.79c-.078.077-.117.17-.117.28 0 .108.04.2.117.28z" fill-rule="evenodd"/></symbol>
 		<symbol viewBox="0 0 8 14" id="svg-arrow-up-down-1"><path fill-rule="evenodd" d="M4 0l4 5H0l4-5zm0 14L0 9h8l-4 5z"/></symbol>
 		<symbol viewBox="0 0 13 16" id="svg-article"><title>icon-article</title><path d="M9.5 11h-6c-.135 0-.253.05-.352.148-.1.1-.148.217-.148.352 0 .135.05.253.148.352.1.1.217.148.352.148h6c.135 0 .253-.05.352-.148.1-.1.148-.217.148-.352 0-.135-.05-.253-.148-.352-.1-.1-.217-.148-.352-.148zM3 8.5c0 .135.05.253.148.352.1.1.217.148.352.148h6c.135 0 .253-.05.352-.148.1-.1.148-.217.148-.352 0-.135-.05-.253-.148-.352-.1-.1-.217-.148-.352-.148h-6c-.135 0-.253.05-.352.148-.1.1-.148.217-.148.352zM9 0H.5C.365 0 .247.05.148.148.048.248 0 .365 0 .5v15c0 .135.05.253.148.352.1.1.217.148.352.148h12c.135 0 .253-.05.352-.148.1-.1.148-.217.148-.352V4L9 0zm0 1.813L11.187 4H9V1.813zM12 14.5c0 .135-.05.253-.148.352-.1.1-.217.148-.352.148h-10c-.135 0-.253-.05-.352-.148-.1-.1-.148-.217-.148-.352v-13c0-.135.05-.253.148-.352.1-.1.217-.148.352-.148H8v4h4v9.5z" fill-rule="evenodd"/></symbol>
@@ -821,7 +821,7 @@ SVG sprite. They may be styled via CSS. (IE 9-11 with polyfill only)
 
 		</section>
 		<footer>
-			<p>Generated at Sat, 06 Jun 2015 06:00:00 GMT by <a href="https://github.com/jkphl/svg-sprite" target="_blank">svg-sprite</a>.</p>
+			<p>Generated at Thu, 11 Jun 2015 17:06:44 GMT by <a href="https://github.com/jkphl/svg-sprite" target="_blank">svg-sprite</a>.</p>
 		</footer>
 	</body>
 </html>

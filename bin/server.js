@@ -8,8 +8,15 @@ global.ForbiddenError = function ForbiddenError(message) {
 ForbiddenError.prototype = Object.create(Error.prototype);
 ForbiddenError.prototype.constructor = ForbiddenError;
 
-
 var application = require('neonode-core');
+
+// Load aws-sdk and S3
+var AWS = require('aws-sdk');
+global.amazonS3 = new AWS.S3(CONFIG.s3);
+
+// Load image processors
+global.gm = require('gm').subClass({imageMagick: true});
+global.sharp = require('sharp');
 
 global.ACL = require('./../lib/ACL/ACL.js');
 require('./../lib/ACL/visitor.js');

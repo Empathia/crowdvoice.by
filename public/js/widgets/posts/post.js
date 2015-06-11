@@ -1,5 +1,5 @@
 /* jshint multistr: true */
-require('../lib/image-halt');
+require('../../lib/image-halt');
 
 Class(CV, 'Post').inherits(Widget).includes(CV.WidgetUtils)({
     ACTIONS_HTML : '\
