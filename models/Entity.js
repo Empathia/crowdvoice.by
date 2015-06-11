@@ -122,6 +122,24 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
           bucket: 'crowdvoice.by',
           basePath: '{env}/{modelName}_{id}/{id}_{versionName}.{extension}'
         });
+
+        // Add image attachment
+        this.hasImage({
+          propertyName: 'background',
+          versions: {
+            card: function (readStream) {
+              return readStream.pipe(sharp().resize(340));
+            },
+            bluredCard: function (readStream) {
+              return gm(readStream.pipe(sharp().resize(340))).gaussian(5, 5).stream();
+            },
+            big: function (readStream) {
+              return gm(readStream.pipe(sharp().resize(2560,1113))).gaussian(10, 10).stream();
+            }
+          },
+          bucket: 'crowdvoice.by',
+          basePath: '{env}/{modelName}_{id}/{id}_{versionName}.{extension}'
+        });
       },
 
       /* Starts following an entity

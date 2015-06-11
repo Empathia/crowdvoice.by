@@ -12,7 +12,7 @@ Class(CV, 'VoiceAddContent').inherits(Widget)({
 
     BUBBLE_OPTIONS : '\
         <div class="voice-add-content__option ui-vertical-list-item" data-type="FromUrl">\
-            <svg class="voice-add-content__option-svg -color-grey-light">\
+            <svg class="voice-add-content__option-svg -s16 -color-grey-light">\
                 <use xlink:href="#svg-link"></use>\
             </svg>\
             <span class="voice-add-content__option-label -font-semi-bold">From URL</span>\
@@ -21,7 +21,7 @@ Class(CV, 'VoiceAddContent').inherits(Widget)({
             </span>\
         </div>\
         <div class="voice-add-content__option ui-vertical-list-item" data-type="FromSources">\
-            <svg class="voice-add-content__option-svg -color-grey-light">\
+            <svg class="voice-add-content__option-svg -s16 -color-grey-light">\
                 <use xlink:href="#svg-sources"></use>\
             </svg>\
             <span class="voice-add-content__option-label -font-semi-bold">From Sources</span>\
@@ -30,7 +30,7 @@ Class(CV, 'VoiceAddContent').inherits(Widget)({
             </span>\
         </div>\
         <div class="voice-add-content__option ui-vertical-list-item" data-type="UploadFile">\
-            <svg class="voice-add-content__option-svg -color-grey-light">\
+            <svg class="voice-add-content__option-svg -s16 -color-grey-light">\
                 <use xlink:href="#svg-upload"></use>\
             </svg>\
             <span class="voice-add-content__option-label -font-semi-bold">Upload File</span>\
@@ -39,7 +39,7 @@ Class(CV, 'VoiceAddContent').inherits(Widget)({
             </span>\
         </div>\
         <div class="voice-add-content__option ui-vertical-list-item" data-type="WriteArticle">\
-            <svg class="voice-add-content__option-svg -color-grey-light">\
+            <svg class="voice-add-content__option-svg -s16 -color-grey-light">\
                 <use xlink:href="#svg-pencil"></use>\
             </svg>\
             <span class="voice-add-content__option-label -font-semi-bold">Write Article</span>\
