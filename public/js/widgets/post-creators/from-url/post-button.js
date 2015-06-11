@@ -1,7 +1,7 @@
 /* jshint multistr: true */
-Class(CV, 'PostCreatorFromSourcesPostButton').inherits(Widget)({
+Class(CV, 'PostCreatorFromUrlPostButton').inherits(Widget)({
 
-    ELEMENT_CLASS : 'from-sources-post-button',
+    ELEMENT_CLASS : 'from-url-post-button',
 
     HTML : '\
         <div>\
@@ -30,3 +30,4 @@ Class(CV, 'PostCreatorFromSourcesPostButton').inherits(Widget)({
         }
     }
 });
+

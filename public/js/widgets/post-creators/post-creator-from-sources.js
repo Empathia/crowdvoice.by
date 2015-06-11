@@ -39,8 +39,6 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
          * @return [PostCreatorFromUrl]
          */
         _setup : function _setup() {
-            this.inputWrapper.className = '-overflow-hidden -full-height';
-
             this.appendChild(
                 new CV.PostCreatorFromSourcesDropdown({
                     name : 'sourcesDropdown',
@@ -54,6 +52,8 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
                     className : '-float-right -full-height -color-border-grey-light'
                 })
             ).render(this.header);
+
+            this.inputWrapper.className = '-overflow-hidden -full-height';
 
             this.appendChild(
                 new CV.InputClearable({
@@ -113,13 +113,21 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
             this._disablePostButton();
         },
 
+        /* Enables the Post Button.
+         * @method _enabledPostButton <private> [Function]
+         * @return [PostCreatorFromUrl]
+         */
+        _enabledPostButton : function _enabledPostButton() {
+            this.postButton.enable();
+            return this;
+        },
+
         /* Disables the Post Button.
          * @method _disablePostButton <private> [Function]
          * @return [PostCreatorFromUrl]
          */
         _disablePostButton : function _disablePostButton() {
             this.postButton.disable();
-
             return this;
         },
 
