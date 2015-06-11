@@ -14,7 +14,7 @@ exports.up = function(knex, Promise) {
       t.integer('image_width').defaultTo(0);
       t.string('source_service').notNullable();
       t.string('source_type').notNullable();
-      t.string('source_url', 1024).defaultTo(null);
+      t.string('source_url', 1024).defaultTo(null).unique();
       t.dateTime('published_at').index();
       t.timestamps();
     })
