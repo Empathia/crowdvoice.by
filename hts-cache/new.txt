@@ -1,4 +1,0 @@
-date	size'/'remotesize	flags(request:Update,Range state:File response:Modified,Chunked,gZipped)	statuscode	status ('servermsg')	MIME	Etag|Date	URL	localfile	(from URL)
-13:53:07	52/52	---M-Z	-1	error ('Open%20error%20when%20decompressing%20(can%20not%20create%20temporary%20file%20/tmp0.z)')	text/plain	date:Thu,%2021%20May%202015%2014:33:02%20GMT	http://www.giampierobodino.com/robots.txt		(from )
-13:53:07	7023/7023	---M-Z	200	added ('OK')	text/html	date:Thu,%2021%20May%202015%2014:33:02%20GMT	http://www.giampierobodino.com/	www.giampierobodino.com/index.html	(from )
-13:53:08	36056/36056	---M-Z	200	added ('OK')	text/css	date:Thu,%2021%20May%202015%2014:33:10%20GMT	http://www.giampierobodino.com/styles/4f959582.main.css	www.giampierobodino.com/styles/4f959582.main.css	(from http://www.giampierobodino.com/)

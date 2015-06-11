@@ -1,7 +1,0 @@
-Mirror in progress since Thu, 11 Jun 2015 13:53:06 .. please wait!
-httrack http://www.giampierobodino.com/ 
-To pause the engine: create an empty file named 'hts-stop.lock'
-PID=617
-UID=501
-GID=501
-START=1434048786
