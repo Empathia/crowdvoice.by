@@ -17,10 +17,10 @@ db('Entities').del().then(function (done) {
     isAnonymous: false,
   });
 
-  e.uploadImage('image', process.argv[2], function () {
+  e.uploadImage('background', process.argv[2], function () {
     console.log(e);
-    Object.keys(e.image.versions).forEach(function (version) {
-      console.log(e.image.url(version));
+    Object.keys(e.background.versions).forEach(function (version) {
+      console.log(e.background.url(version));
     });
   });
 });
