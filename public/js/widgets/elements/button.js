@@ -12,6 +12,7 @@ Class(CV, 'Button').inherits(Widget)({
         label           : null,
         options         : null,
         actionType      : null,
+        enabled         : true,
 
         init : function(config){
             Widget.prototype.init.call(this, config);
@@ -68,6 +69,16 @@ Class(CV, 'Button').inherits(Widget)({
             });
 
             this.element.append(optionsEl);
+        },
+        enable : function(){
+            this.enabled = true;
+            this.element.removeClass('disabled');
+            this.element.attr('disabled', false);
+        },
+        disable : function(){
+            this.enabled = false;
+            this.element.addClass('disabled');
+            this.element.attr('disabled', true);
         }
 
     }

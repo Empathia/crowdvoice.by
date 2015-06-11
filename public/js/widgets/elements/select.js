@@ -8,7 +8,6 @@ Class(CV, 'Select').inherits(Widget)({
             <div class="cv-select">\
                 <div class="cv-select-head">\
                   <span class="label"></span>\
-                  <div class=count>3</div>\
                 </div>\
                 <div class="cv-select-body">\
                   <ul>\
@@ -43,7 +42,6 @@ Class(CV, 'Select').inherits(Widget)({
 
             this.labelEl = this.element.find('.label');
             this.optionsEl = this.element.find('ul');
-            this.countEl = this.element.find('.count');
 
             if (this.actionType){
                 this.selectEl.addClass(this.actionType);
@@ -63,7 +61,6 @@ Class(CV, 'Select').inherits(Widget)({
 
             if (this.type == "check"){
                 this.selectEl.addClass('check');
-                this.countEl.css('opacity', 0);
             }
 
             this.fillOptions();
@@ -136,10 +133,8 @@ Class(CV, 'Select').inherits(Widget)({
                 this.element.find('li').bind('click', function(el){
                     that.element.find('li').removeClass('selected');
                     that.optionSelected = $(this).find('> div').attr('data-id');
-                    if(that.type != 'icon'){
-                        that.labelEl.text($(this).find('> div').text());
-                        $(this).addClass('selected');
-                    }
+                    that.labelEl.text($(this).find('> div').text());
+                    $(this).addClass('selected');
                     that.close();
                 });
             }
@@ -154,7 +149,7 @@ Class(CV, 'Select').inherits(Widget)({
             }
 
             if(this.checkedCount){
-                this.countEl.text(this.checkedCount);
+                //this.countEl.text(this.checkedCount);
                 //this.countEl.css('opacity', 1);
                 this.selectEl.addClass('activated');
             } else {
