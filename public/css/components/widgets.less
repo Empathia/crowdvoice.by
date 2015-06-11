@@ -1,53 +1,109 @@
 
+/*******************************************
+                @button
+*******************************************/
+
+@color-white: #ffffff;
+@color-neutral-light: #d8d8d8;
+@color-neutral-xx-light: #F7F9FA;
+
+@color-black: #000000;
+@color-neutral-dark: #808080;
+@color-neutral-x-dark: #4d4d4d;
+
+@color-primary: #ff9400;
+@color-primary-light: #FFAF40;
+@color-primary-dark: #E68600;
+
+@color-inner-shadow: rgba(0,0,0, .05);
+@color-inner-shadow-primary: rgba(0,0,0, .08);
+
+@color-shadow-select-body: rgba(0,0,0, .1);
+@color-transparent-border-dark: rgba(0,0,0, .2);
+
 .cv-button{
-  border: 1px solid #cccccc;
-  background: #ffffff;
-  color: #808080;
-  box-shadow: inset 0px -2px 0px #f2f2f2;
+  border: 1px solid @color-neutral-light;
+  background-color: @color-white;
+  color: @color-neutral-dark;
+  box-shadow: inset 0px -3px 0px @color-inner-shadow;
   border-radius: 4px;
-  height: 25px;
-  /*text-transform: uppercase;*/
-  line-height: 20px;
-  font-size: 12px;
-  padding: 0px 13px;
+  height: 46px;
+  line-height: 19px;
+  font-size: 14px;
+  padding: 0px 25px;
   display: inline-block;
   vertical-align: top;
   cursor: pointer;
   outline: none;
   margin: 0px 3px;
-}
-.cv-button span{
-  display: inline-block;
+  span{
+    display: inline-block;
+  }
+  &:hover:enabled{
+    color: @color-neutral-x-dark;
+    border: 1px solid @color-primary-dark;
+  }
+  &.micro {
+    font-size: 9px;
+    line-height: 13px;
+    height: 20px;
+    padding: 0px 13px;
+  }
+  &.tiny {
+    line-height: 15px;
+    font-size: 11px;
+    height: 26px;
+    padding: 0px 15px;
+  }
+  &.small {
+    line-height: 17px;
+    font-size: 12px;
+    height: 34px;
+    padding: 0px 20px;
+  }
+  &.normal {
+  }
+  &.large {
+    font-size: 16px;
+    line-height: 22px;
+    height: 58px;
+    padding: 0px 40px;
+  }
+  &.huge {
+    font-size: 20px;
+    line-height: 27px;
+    height: 74px;
+    padding: 0px 74px;
+  }
 
 }
+
 .cv-button.activated{
   padding-left: 27px;
+  &.follow{
+    background-image: url('/img/dropdown-i-arrow.png');
+    background-position: 10px 50%;
+    background-repeat: no-repeat;
+  }
+  &.block{
+    background-image: url('/img/dropdown-i-block.png');
+    background-position: 10px 50%;
+    background-repeat: no-repeat;
+  }
 }
-.cv-button.activated.follow{
-  background-image: url('/img/dropdown-i-arrow.png');
-  background-position: 10px 50%;
-  background-repeat: no-repeat;
-}
-.cv-button.activated.block{
-  background-image: url('/img/dropdown-i-block.png');
-  background-position: 10px 50%;
-  background-repeat: no-repeat;
-}
+
 .cv-button.primary{
-  background-color: #ef631f;
-  border: none;
-  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.15);
-  color: #ffffff;
-  line-height: 19px;
+  background-color: @color-primary;
+  border: 1px solid @color-primary-dark;
+  box-shadow: @color-inner-shadow-primary;
+  color: @color-white;
+  &:hover:enabled{
+    color: @color-white;
+    background-color: @color-primary-light;
+    box-shadow: inset 0 -3px 0 @color-inner-shadow-primary;
+  }
 }
-.cv-button.clean{
-  background-color: #fff;
-  border: none;
-  box-shadow: none;
-  color: #333;
-  font-weight: bold;
-  line-height: 19px;
-}
+
 
 .cv-button.full{
   width: 100%;
@@ -62,6 +118,7 @@
 
 .cv-button.disabled{
   opacity: .3;
+  cursor: default;
 }
 
 .cv-button.multiple,
@@ -87,6 +144,12 @@
   padding-top: 1px;
 }
 
+
+
+/*******************************************
+                @image
+*******************************************/
+
 .cv-image{
   width: 100%;
   height: 100%;
@@ -110,6 +173,10 @@
   }
 }
 
+/*******************************************
+                @check
+*******************************************/
+
 .cv-check{
   color: #6f6f6f;
   font-size: 11px;
@@ -121,6 +188,10 @@
     margin-right: 6px;
   }
 }
+
+/*******************************************
+                @input
+*******************************************/
 
 .cv-input{
   border: 1px solid #b2b2b2;
@@ -192,15 +263,19 @@
   }
 }
 
+/*******************************************
+                @select
+*******************************************/
+
 .cv-select{
-  height: 26px;
-  max-width: 169px;
-  font-size: 12px;
+  max-width: 200px;
+  min-width: 160px;
+  font-size: 13px;
+  line-height: 18px;
   /*font-weight: bold;*/
-  color: #6f6f6f;
+  color: @color-neutral-dark;
   display: inline-block;
   position:relative;
-  min-width: 100px;
   vertical-align: top;
   text-align: left;
   height: 100%;
@@ -220,35 +295,46 @@
   color: #999999;
   font-size: 12px;
   height: 21px;
+  span{
+    color: #b3b3b3;
+    padding-left: 5px;
+    font-size: 11px;
+  }
 }
-.cv-select span.label span{
-  color: #b3b3b3;
-  padding-left: 5px;
-  font-size: 11px;
-}
+
 .cv-select .cv-select-head{
+  height: 46px;
   cursor: pointer;
-  height: 100%;
-  box-shadow: inset 0px -2px 0px #f2f2f2;
-  border: 1px solid #ccc;
+  border: 1px solid @color-neutral-light;
+  background-color: @color-white;
+  box-shadow: inset 0px -3px 0px @color-inner-shadow;
   border-radius: 4px;
-  background-color: #ffffff;
+  padding: 0px 5px;
+  span.label{
+    display: inline-block;
+    padding: 13px 10px 2px 10px;
+    white-space: nowrap;
+    max-width: 115px;
+  }
+  &:after{
+    content: "";
+    background: url('/img/dropdown-arrow.png') center no-repeat;
+    width: 12px;
+    height: 100%;
+    display: inline-block;
+    float: right;
+    margin-right: 8px;
+  }
+  &:hover{
+    color: @color-neutral-x-dark;
+    border: 1px solid @color-primary-dark;
+  }
 }
 .cv-select.primary .cv-select-head{
   background-color: #ef631f;
   border: none;
   box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.15);
   color: #ffffff;
-  /*line-height: 19px;*/
-}
-.cv-select .cv-select-head:after{
-  content: "";
-  background: url('/img/dropdown-i-arrow.svg') center no-repeat;
-  width: 12px;
-  height: 22px;
-  display: inline-block;
-  float: right;
-  margin-right: 8px;
 }
 .cv-select.no-arrow .cv-select-head:after{
   display: none;
@@ -274,8 +360,10 @@
   display: none;
 }
 .cv-select.active .cv-select-head{
-  background-color: #f2f2f2;
-  box-shadow: inset 0px 2px 0px #e6e6e6;
+  background-color: @color-neutral-xx-light;
+  border: 1px solid @color-neutral-light;
+  box-shadow: inset 0px 3px 0px @color-inner-shadow;
+  color: @color-neutral-x-dark;
 }
 .cv-select.active .cv-select-head span.label:hover{
   cursor: pointer;
@@ -283,91 +371,94 @@
 .cv-select.active .cv-select-head:after{
   transform: rotate(180deg);
 }
-.cv-select .cv-select-head span.label{
-  display: inline-block;
-  padding: 2px 10px 2px 10px;
-  white-space: nowrap;
-  max-width: 115px;
-}
-.cv-select .count{
-  width: 16px;
-  height: 22px;
-  display: inline-block;
-  float: right;
-  margin-right: 8px;
-  display: none;
-  padding-top: 2px;
-  font-size: 11px;
-}
-.cv-select .count:before{
-  content: "(";
-}
-.cv-select .count:after{
-  content: ")";
-}
+
 .cv-select .cv-select-body{
   display: none;
-  background: #ffffff;
-  border: 1px solid rgba(0,0,0,.2);
+  background: @color-white;
+  border: 1px solid @color-transparent-border-dark;
   border-radius: 3px;
   margin-top: 1px;
-  box-shadow: 0px 3px 6px rgba(0,0,0, .18);
-  border-bottom: 1px solid transparent;
-  padding: 9px;
+  box-shadow: 0px 3px 6px @color-shadow-select-body;
+  padding: 7px 0px;
   padding-top: 10px;
   position: absolute;/* fix */
   z-index: 1;
   min-width: 140px;
+  width: 120%;
+  font-size: 13px;
+  ul{
+    list-style: none;
+
+    li{
+      padding: 7px 0px;
+      position: relative;
+      padding-left: 15px;
+      ul{
+        position: absolute;
+        top: -5px;
+        left: 100%;
+        width: 150px;
+        background: @color-white;
+        display: none;
+        border: 1px solid @color-transparent-border-dark;
+        box-shadow: 0px 3px 6px @color-shadow-select-body;
+        border-radius: 3px;
+        padding: 4px 0px;
+        margin-left: 0px;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+      }
+      &.selected .option{
+        color: @color-primary;
+        font-weight: bold;
+      }
+      .option{
+        font-size: 13px;
+      }
+      .check{
+        margin: 7px auto;
+        padding-left: 6px;
+      }
+    }
+    li:hover ul{
+      display: block;
+    }
+    li:hover{
+      cursor: pointer;
+      background-color: #fffaf1;
+      color: @color-neutral-x-dark;
+    }
+    li.has-children{
+      background-image: url('/img/dropdown-i-arrow-right.png');
+      background-position: 95% center;
+      background-repeat: no-repeat;
+    }
+  }
+
 }
-.cv-select .cv-select-body ul,
-.cv-select .cv-select-body li{
-  list-style: none;
-}
-.cv-select .cv-select-body li{
-  margin: 5px auto;
-  position: relative;
-}
-.cv-select .cv-select-body li.has-children{
-  background-image: url('/img/dropdown-i-arrow-right.png');
-  background-position: 100% center;
-  background-repeat: no-repeat;
-}
-.cv-select .cv-select-body li:hover ul{
-  display: block;
-}
-.cv-select .cv-select-body li ul{
-  position: absolute;
-  top: -5px;
-  left: 100%;
-  width: 150px;
-  background: #fff;
-  /*margin-left: 9px;*/
-  box-shadow: 9px 8px 9px -7px rgba(0, 0, 0, 0.18);
-  display: none;
-}
-.cv-select .cv-select-body li:hover{
-  cursor: pointer;
-  background-color: #eee;
-}
-.cv-select.check .cv-select-body li:hover{
-  background: none;
-}
-.cv-select.check.full .cv-select-body li {
+
+.cv-select.check{
+  .cv-select-body{
+    li{
+      .cv-check{
+        margin: 0;
+        font-size: 13px;
+      }
+    }
+    li:hover{
+      .cv-check{
+        color: @color-neutral-x-dark;
+      }
+    }
+  }
+  &.full .cv-select-body li {
     width: 50%;
     display: inline-block;
+  }
 }
-.cv-select .cv-select-body li.selected .option{
-  /*background: url('/img/dropdown-i-arrow.png') left 50% no-repeat;*/
-  font-weight: bold;
-}
-.cv-select .cv-select-body li .option{
-  padding-left: 7px;
-  /*padding-left: 17px;*/
-}
-.cv-select .cv-select-body li .check{
-  margin: 7px auto;
-  padding-left: 6px;
-}
+
+
+
 
 .cv-select.over{
   font-weight: bold;
@@ -397,24 +488,6 @@
   height: 25px;
 }
 
-.cv-select.icon{
-  max-width: 49px;
-  min-width: 49px;
-}
-.cv-select.icon .cv-select-head label{
-  height: 100%;
-  background: url('/img/ico-gear.svg');
-  width: 24px;
-  background-repeat: no-repeat;
-  background-position: 10px 50%;
-}
-
-.cv-select.icon .cv-select-body{
-  min-width: 106px;
-}
-.cv-select.icon .cv-select-body li .option{
-  padding-left: 5px;
-}
 
 .cv-select.is-account{
   max-width: 100%;
@@ -425,6 +498,10 @@
     width: 100%;
   }
 }
+
+/*******************************************
+                @form
+*******************************************/
 
 form{
   .send{
@@ -453,6 +530,10 @@ form{
     }
   }
 }
+
+/*******************************************
+                @bubble & modal
+*******************************************/
 
 .cv-bubble.full{
   width: 600px;
@@ -491,12 +572,21 @@ form{
       background: #fff;
       padding: 0px 5px;
     }
-    button{
+    button.cv-button{
       float: right;
       margin: 14px 15px 0px 0px;
       position: relative;
       z-index: 1;
+      background-color: #fff;
+      border: none;
+      box-shadow: none;
+      color: #333;
+      font-weight: bold;
+      line-height: 19px;
+      padding: 3px 5px;
+      height: auto;
     }
+
   }
   .body-wrapper{
     border-bottom-right-radius: 10px;
