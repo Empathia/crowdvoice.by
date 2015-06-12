@@ -219,51 +219,9 @@
 </footer>
 
 <script>
-  $( document ).ready(function() {
-    //$('.action-signup, .action-login').on('click', function(){
-    //  $('.login').addClass('active');
-    //  $('body').css('overflow', 'hidden');
-    //  return false;
-    //});
-    //$('.close-login').on('click', function(){
-    //  $('.login').removeClass('active');
-    //  $('body').css('overflow', 'auto');
-    //});
-
-  });
-
-  var featuredVoicesData = <%= JSON.stringify(featuredVoices) %>;
-  var orgsData = <%= JSON.stringify(mostActiveOrganizations) %>;
-  var categoriesData = <%= JSON.stringify(categories) %>;
-
-  var featuredVoiceTest = document.querySelector('.voice-cover-test');
-  var categoriesHolder = document.querySelector('.homepage-category-list-row');
-  var orgsHolder = document.querySelector('.homepage-organization-cards-holder');
-  var orgsList = orgsHolder.querySelector('.slider-list');
-
-  new VoiceCover( featuredVoicesData[0] ).render(featuredVoiceTest);
-  new VoiceCover( featuredVoicesData[1] ).render( document.querySelector('.voice-cover-test-2') );
-  new VoiceCover( featuredVoicesData[2] ).render( document.querySelector('.voice-cover-test-3') );
-  new VoiceCover( featuredVoicesData[3] ).render( document.querySelector('.voice-cover-test-4') );
-  new VoiceCover( featuredVoicesData[4] ).render( document.querySelector('.voice-cover-test-5') );
-  // featuredVoicesData.forEach(function(voice) {
-  //   new VoiceCover(voice).render(featuredVoiceTest);
-  // });
-
-  categoriesData.forEach(function(category) {
-    new CategoryCover({data: category}).render(categoriesHolder);
-  });
-
-  var orgs = orgsData.map(function(org) {
-    var card = new CV.Card(org);
-    card.element[0].classList.add('slider-item');
-
-    return card.render(orgsList);
-  });
-
-  new CV.ResponsiveSlider({
-    element : orgsHolder,
-    dots : true,
-    minSlideWidth : 300
+  new CV.HomeView({
+    featuredVoicesData : <%= JSON.stringify(featuredVoices) %>,
+    orgsData : <%= JSON.stringify(mostActiveOrganizations) %>,
+    categoriesData : <%= JSON.stringify(categories) %>
   });
 </script>

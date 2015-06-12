@@ -7,21 +7,12 @@ CONFIG.database.logQueries = false;
 console.log('');
 console.log('...');
 
-db('Entities').del().then(function (done) {
-  var e = new Entity({
-    id: 3,
-    type: 'person',
-    name: 'John Doe',
-    profileName: 'john_doe',
-    lastname: 'Doe',
-    isAnonymous: false,
-  });
+var m = new Voice({id:3});
+var propertyName = 'background';
 
-  e.uploadImage('image', process.argv[2], function () {
-    console.log(e);
-    Object.keys(e.image.versions).forEach(function (version) {
-      console.log(e.image.url(version));
-    });
+m.uploadImage(propertyName, process.argv[2], function () {
+  console.log(m);
+  Object.keys(m[propertyName].versions).forEach(function (version) {
+    console.log(m[propertyName].url(version));
   });
 });
-

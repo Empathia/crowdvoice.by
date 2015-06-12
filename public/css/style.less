@@ -1,4 +1,3 @@
-
 /* =========================================================================== *
  *  vendor :: sanitize.css - render elements consistently across browsers
  * =========================================================================== */
@@ -15,8 +14,6 @@
 @import "kabinett-config";
 
 
-
-
 /* =========================================================================== *
  * cv globals / general styles
  * =========================================================================== */
@@ -25,35 +22,7 @@
                 @color palette
 *******************************************/
 
-/* In palette */
-
-@color-white: #ffffff;
-@color-neutral-light: #CED7D9;
-@color-neutral-xx-light: #F7F9FA;
-
-@color-black: #000000;
-@color-neutral-dark: #808080;
-@color-neutral-x-dark: #454B4D;
-
-@color-primary: #ff9400;
-@color-primary-light: #FFAF40;
-@color-primary-dark: #E68600;
-
-/* Not in palette */
-
-@color-inner-shadow: rgba(0,0,0, .05);
-@color-inner-shadow-primary: rgba(0,0,0, .08);
-
-@color-shadow-select-body: rgba(0,0,0, .1);
-@color-transparent-border-dark: rgba(0,0,0, .2);
-
-/****** @color palette end *******/
-
-
-@cv-sidebar-width: 214px;
-@cv-sidebar-collapsed-width: 60px;
-@cv-header-height: 74px;
-@cv-voice-footer-height: 54px;
+@import 'variables';
 
 html {
   height: 100%;
@@ -113,6 +82,7 @@ body > .yield.-is-paused {
 @import './components/responsive-slider';
 @import './components/post';
 @import './components/date-picker';
+@import './components/dropdown';
 @import './components/widgets';
 
 @import './components/voice-posts-layer';

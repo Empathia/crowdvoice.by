@@ -1,4 +1,4 @@
-var Voice = Class('Voice').inherits(Argon.KnexModel)({
+var Voice = Class('Voice').inherits(Argon.KnexModel).includes(ImageUploader)({
 
   STATUS_DRAFT:     'STATUS_DRAFT',
   STATUS_UNLISTED:  'STATUS_UNLISTED',
@@ -144,6 +144,28 @@ var Voice = Class('Voice').inherits(Argon.KnexModel)({
     createdAt : null,
     updatedAt : null,
 
+    init : function (config) {
+      var model = this;
+      Argon.KnexModel.prototype.init.call(this, config);
+
+      // Add image attachment
+      this.hasImage({
+        propertyName: 'background',
+        versions: {
+          card: function (readStream) {
+            return readStream.pipe(sharp().resize(340));
+          },
+          bluredCard: function (readStream) {
+            return gm(readStream.pipe(sharp().resize(340))).gaussian(5, 5).stream();
+          },
+          big: function (readStream) {
+            return gm(readStream.pipe(sharp().resize(2560,1113))).gaussian(10, 10).stream();
+          }
+        },
+        bucket: 'crowdvoice.by',
+        basePath: '{env}/{modelName}_{id}/{id}_{versionName}.{extension}'
+      });
+    },
 
     updatePostCount : function updatePostCount(param, callback) {
       if (param) {

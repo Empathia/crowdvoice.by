@@ -13,13 +13,36 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         res.locals.voice = new Voice(voice);
         req.activeVoice = new Voice(voice);
 
-        Entity.findById(voice.ownerId, function(err, owner) {
+        db.raw("SELECT COUNT (*), \
+          to_char(\"Posts\".published_at, 'MM') AS MONTH, \
+          to_char(\"Posts\".published_at, 'YYYY') AS YEAR \
+          FROM \"Posts\" \
+          WHERE \"Posts\".voice_id = ? \
+          GROUP BY MONTH, YEAR \
+          ORDER BY YEAR DESC, MONTH DESC", [voice.id])
+        .exec(function(err, postsCount) {
           if (err) { return next(err); }
 
-          res.locals.owner = new Entity(owner[0]);
+          var counts = {}
 
-          next();
-        });
+          postsCount.rows.forEach(function(post) {
+            if (!counts[post.year]) {
+              counts[post.year] = {}
+            }
+
+            counts[post.year][post.month] = post.count
+          });
+
+          res.locals.postsCount = counts;
+
+          Entity.findById(voice.ownerId, function(err, owner) {
+            if (err) { return next(err); }
+
+            res.locals.owner = new Entity(owner[0]);
+
+            next();
+          });
+        })
       });
     },
 
