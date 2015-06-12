@@ -24,7 +24,7 @@
   deploy : {
     production : {
       user : "deploy",
-      host : "uberthing.net",
+      host : "cvby.uberthing.net",
       ref  : "origin/development",
       repo : "git@github.com:Empathya/crowdvoice.by.git",
       path : "/home/deploy/cb.by",
