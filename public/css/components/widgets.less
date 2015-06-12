@@ -176,68 +176,70 @@
 *******************************************/
 
 .cv-input{
-  border: 1px solid #b2b2b2;
-  background: #fff;
-  border-radius: 3px;
-  box-shadow: inset 0px -2px 5px rgba(0,0,0, .1);
   min-width: 150px;
   outline: none;
-  padding-left: 5px;
+  padding-left: 15px;
+  border: 1px solid @color-neutral-light;
+  background-color: @color-white;
+  color: @color-neutral-x-dark;
+  box-shadow: inset 0px 3px 0px @color-inner-shadow;
+  border-radius: 4px;
+  height: 46px;
+  line-height: 18px;
+  font-size: 13px;
+  input{
+    outline: none;
+    width: 100%;
+    height: 100%;
+  }
+  textarea{
+    width: 100%;
+    height: 48px;
+    outline: none;
+    padding: 5px 8px;
+    line-height: 18px;
+    padding-left: 0px;
+  }
+  .search-svg{
+    display: none;
+    width: 14px;
+    height: 14px;
+    margin: 0.2rem .5rem 0;
+    fill: #b8b8c1;
+    display: none;
+  }
+  &.search{
+    position: relative;
+    .search-svg{
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    input{
+      padding-left: 20px;
+    }
+  }
 }
+
 .cv-input.full{
   min-width: 100%;
 }
 .cv-input.full input{
   width: 100%;
   padding-left: 5px;
-
-}
-.cv-input textarea{
-  width: 100%;
-  height: 48px;
-  outline: none;
-  padding: 5px 8px;
-  line-height: 18px;
-  padding-left: 0px;
 }
 .cv-input.is-area{
   /*margin-bottom: 10px;*/
 }
 
-.cv-input input{
-  outline: none;
-  width: 100%;
-}
-.cv-input .search-svg{
-  display: none;
-  width: 14px;
-  height: 14px;
-  margin: 0.2rem .5rem 0;
-  fill: #b8b8c1;
-  display: none;
-}
-.cv-input.search{
-  position: relative;
-  .search-svg{
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-  input{
-    padding-left: 20px;
-  }
-}
-
 .cv-input-search{
   .cv-input{
-    height: 25px;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
     border-right: 0;
   }
   button{
-    height: 25px;
     margin: 0;
     width: 100%;
     border-top-left-radius: 0;
@@ -496,12 +498,12 @@ form{
     display: block;
     font-size: 11px;
     text-transform: uppercase;
-    font-weight: bold;
-    color: #666;
+    color: @color-black;
+    padding-bottom: 5px;
     span{
-      padding-left: 10px;
+      padding-left: 5px;
       text-transform: none;
-      color: #aaa;
+      color: @color-neutral-light;
       font-weight: normal;
     }
   }
@@ -510,6 +512,15 @@ form{
     .dim{
       opacity: .5;
     }
+  }
+  ::-webkit-input-placeholder{
+     color: @color-neutral-light;
+  }
+  ::-moz-placeholder{
+     color: @color-neutral-light;
+  }
+  :-ms-input-placeholder {
+     color: @color-neutral-light;
   }
 }
 

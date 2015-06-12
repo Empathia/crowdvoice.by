@@ -54,23 +54,17 @@
 
     </div>
 
-    <div class="-col-12 placeholder-input">
-      <div class="-col-2 c1">
+    <div class="-col-12 placeholder-ui2">
+      <div class="-col-3 c1">
 
       </div>
-      <div class="-col-2 c2">
+      <div class="-col-3 c2">
 
       </div>
-      <div class="-col-2 c3">
+      <div class="-col-3 c3">
 
       </div>
-      <div class="-col-2 c4">
-
-      </div>
-      <div class="-col-2 c5">
-
-      </div>
-      <div class="-col-2 c6">
+      <div class="-col-3 c4">
 
       </div>
     </div>
@@ -412,7 +406,7 @@ $('.placeholder-ui .c3').append('<br><br>');
 
 
 /*******************************************
-                @dropdowns
+                @selects
 *******************************************/
 //Normal
 var allZones = {
@@ -465,6 +459,39 @@ new CV.Select({
   name  : 'select',
   options: allMulti
 }).render(document.querySelector('.placeholder-ui .c5'));
+
+/*******************************************
+                @inputs
+        type            : null,
+        style           : null,
+        placeholder     : null,
+        isArea          : null,
+        hasTitle        : false,
+        title           : "",
+        subTitle        : "",
+*******************************************/
+
+new CV.Input({
+    style       : '',
+    type        : '',
+    name        : 'input',
+    placeholder : 'Enter your name',
+    hasTitle    : true,
+    title       : 'Field label',
+    subTitle    : 'External hint'
+}).render(document.querySelector('.placeholder-ui2 .c1'));
+$('.placeholder-ui2 .c1').append('<br><br>');
+
+new CV.InputSearch({
+    style       : '',
+    type        : '',
+    name        : 'input',
+    placeholder : 'Search',
+    hasTitle    : true,
+    title       : 'Field label',
+    subTitle    : 'External hint'
+}).render(document.querySelector('.placeholder-ui2 .c1'));
+$('.placeholder-ui2 .c1').append('<br><br>');
 
 $( document ).ready(function() {
 

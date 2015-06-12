@@ -45,8 +45,8 @@ Class(CV, 'Input').inherits(Widget)({
                 this.inputEl.addClass('is-area');
                 this.inputEl.append(this.constructor.AREA_ELEMENT);
             }
-
             if (this.hasTitle){
+
                 this.element.find('label').text(this.title).append('<span>' + this.subTitle + '</span>');
             } else {
                 this.element.find('label').remove();
