@@ -1,4 +1,4 @@
-Class(CV, 'HomeView')({
+Class(CV, 'HomeView').includes(CV.WidgetUtils)({
     prototype : {
 
         featuredVoicesData : null,
@@ -13,6 +13,10 @@ Class(CV, 'HomeView')({
             var categoriesHolder = document.querySelector('.homepage-category-list-row');
             var orgsHolder = document.querySelector('.homepage-organization-cards-holder');
             var orgsList = orgsHolder.querySelector('.slider-list');
+
+            [].slice.call(document.querySelectorAll('.stats .stats-number'), 0).forEach(function(number) {
+                this.dom.updateText(number, this.format.numberUS(number.textContent));
+            }, this);
 
             new VoiceCover( this.featuredVoicesData[0] ).render( document.querySelector('.voice-cover-test') );
             new VoiceCover( this.featuredVoicesData[1] ).render( document.querySelector('.voice-cover-test-2') );
