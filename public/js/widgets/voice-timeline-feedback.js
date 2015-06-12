@@ -70,11 +70,11 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
             this.updateVars()._bindEvents();
         },
 
-        createJumpToDateBubble : function createJumpToDateBubble(totalLayers) {
+        createJumpToDateBubble : function createJumpToDateBubble(postsCount) {
             this.appendChild(
                 new CV.VoiceTimelineJumpToDate({
                     name : 'jumpToDate',
-                    totalLayers : totalLayers,
+                    postsCount : postsCount,
                     clockElement : this.el,
                     container : this.el
                 })
@@ -167,7 +167,7 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
          *  - whenever the CONFIG._mainContent change its length
          * @method updateVars <public> [Function]
          */
-        updateVars : function _pdateVars() {
+        updateVars : function updateVars() {
             this._totalHeight = this._mainContent.offsetHeight;
             this._clientWidth = document.documentElement.clientWidth;
             this._clientHeight = document.documentElement.clientHeight - this.constructor.FOOTER_HEIGHT;

@@ -11,8 +11,12 @@ exports.up = function(knex, Promise) {
       t.string('profile_name', 512).unique().defaultTo(null);
       t.boolean('is_anonymous').defaultTo(false);
 
+      t.text('description').defaultTo('');
+      t.string('location', 512).defaultTo('');
+
       // Image attachment
-      t.string('photo_base_url', 512).defaultTo('');
+      t.string('image_base_url', 512).defaultTo('');
+      t.string('background_base_url', 512).defaultTo('');
 
       t.index(['name', 'lastname', 'profile_name'], 'search_index');
       t.timestamps();

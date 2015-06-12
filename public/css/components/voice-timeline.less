@@ -47,24 +47,19 @@
     height: 330px;
     overflow: auto;
   }
+}
 
-  &_label {
-    font-size: 10px;
-    padding: .5em 1em .5em 2em;
-  }
+.voice-timeline-popover_label {
+  font-size: 10px;
+  padding: .5em 1em .5em 2em;
+}
 
-  &_option {
-    position: relative;
-    padding-left: 3.5em;
+.voice-timeline-popover_option {
+  position: relative;
+  padding-left: 3.5em;
 
-    &.active {
-      font-weight: bold;
-      color: @color-primary;
-
-      .option-svg {
-        display: block;
-      }
-    }
+  &.active .option-svg {
+    display: block;
   }
 
   .option-svg {
@@ -73,6 +68,10 @@
     height: 11px;
     left: 27px;
     top: 13px;
+  }
+
+  .cv-caption {
+    margin-left: 6px;
   }
 }
 
