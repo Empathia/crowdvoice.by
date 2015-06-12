@@ -35,7 +35,10 @@ require('./widgets/voice-cover.js');
 require('./widgets/voice-cover-mini.js');
 require('./widgets/category-cover.js');
 
+// views
+require('./views/home');
 require('./views/voice');
+
 require('./widgets/voice-post-layers-manager');
 require('./widgets/voice-footer');
 require('./widgets/voice-timeline-feedback');
