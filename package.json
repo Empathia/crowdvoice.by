@@ -38,6 +38,7 @@
     "mandrill-api": "^1.0.45",
     "method-override": "^2.3.3",
     "moment": "^2.10.2",
+    "multer": "^0.1.8",
     "neon": "^2.0.0",
     "neonode-core": "^2.2.5",
     "passport-local": "^1.0.0",
