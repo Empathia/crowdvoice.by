@@ -64,15 +64,28 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           return next(err);
         }
 
-        res.format({
-          json : function() {
-            res.json(post.toJSON());
-          },
-          html : function() {
-            res.render('posts/show', {layout : 'application', entity : entity.toJSON(), voice : voice.toJSON(), post : post.toJSON()});
+        ACL.isAllowed('show', 'posts', req.role, {
+          post : post,
+          voice : voice,
+          entity : entity
+        }, function(err, isAllowed) {
+          if (err) {
+            return next(err);
           }
-        })
 
+          if (!isAllowed) {
+            return next(new ForbiddenError())
+          }
+
+          res.format({
+            json : function() {
+              res.json(post.toJSON());
+            },
+            html : function() {
+              res.render('posts/show', {layout : 'application', entity : entity.toJSON(), voice : voice.toJSON(), post : post.toJSON()});
+            }
+          })
+        });
       });
     },
 

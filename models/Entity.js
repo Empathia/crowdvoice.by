@@ -120,7 +120,7 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
             }
           },
           bucket: 'crowdvoice.by',
-          basePath: '{env}/{modelName}_{id}/{id}_{versionName}.{extension}'
+          basePath: '{env}/{modelName}_{id}/{property}_{versionName}.{extension}'
         });
 
         // Add image attachment
@@ -138,7 +138,7 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
             }
           },
           bucket: 'crowdvoice.by',
-          basePath: '{env}/{modelName}_{id}/{id}_{versionName}.{extension}'
+          basePath: '{env}/{modelName}_{id}/{property}_{versionName}.{extension}'
         });
       },
 

@@ -1,3 +1,4 @@
+var path = require('path');
 var BlackListFilter = require(__dirname + '/BlackListFilter');
 
 var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
@@ -89,19 +90,43 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
     update : function update (req, res, next) {
       var entity = req.entity;
+      var pathToPublic = path.join(__dirname, '../public');
+
       entity.setProperties({
         name: req.body['name'] || entity.name,
         lastname: req.body['lastname'] || entity.lastname,
         profileName: req.body['profileName'] || entity.profileName,
+        description: req.body['description'] || entity.description,
+        location: req.body['location'] || entity.location
       });
       if (typeof(req.body['isAnonymous']) !== 'undefined') {
         entity.isAnonymous = (req.body['isAnonymous'] === "true") ? true : false
       }
-      entity.save(function (err) {
+
+      async.series([
+        function (done) {
+          if (!req.files['image']) { return done(); }
+          entity.uploadImage('image', req.files['image'].path, function (err) {
+            done(err);
+          });
+        },
+        function (done) {
+          if (!req.files['background']) { return done(); }
+          entity.uploadImage('background', req.files['background'].path, function (err) {
+            done(err);
+          });
+        },
+        function (done) {
+          console.log(entity);
+          entity.save(function (err) {
+            done(err);
+          });
+        }
+      ], function (err) {
         if (err) {
           res.render(req.entityType + '/edit.html', {errors: err});
         } else {
-          res.redirect('/' + req.entityType + '/' + entity.id + '/edit');
+          res.redirect('/' + entity.profileName);
         }
       });
     },
