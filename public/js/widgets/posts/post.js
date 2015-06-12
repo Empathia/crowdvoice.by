@@ -72,7 +72,10 @@ Class(CV, 'Post').inherits(Widget).includes(CV.WidgetUtils)({
          * @method setCoverImage <public> [Function]
          */
         setCoverImage : function setCoverImage(src) {
+            var cover = (this.imageWidth >= 300) ? 'add' : 'remove';
+            this.imageWrapperElement.classList[cover]('-img-cover');
             this.dom.updateBgImage(this.imageWrapperElement, src);
+            return this;
         },
 
         /* Sets the image height equal to the number passed in pixel units.
