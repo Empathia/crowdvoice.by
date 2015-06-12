@@ -4,7 +4,7 @@ Class(CV, 'VoiceTimelineJumpToDateLabel').inherits(Widget).includes(CV.WidgetUti
 
     HTML : '\
         <div>\
-            <span class="-line-through-label -font-semi-bold -color-grey-light"></span>\
+            <span class="-line-through-label -color-neutral-mid"></span>\
         </div>',
 
     prototype : {
