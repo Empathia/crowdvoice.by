@@ -117,6 +117,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
           });
         },
         function (done) {
+          console.log(entity);
           entity.save(function (err) {
             done(err);
           });
