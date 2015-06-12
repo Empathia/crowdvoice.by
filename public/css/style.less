@@ -24,6 +24,13 @@
 
 @import 'variables';
 
+// Color Utilities : .mixin-color : creates the following class selectors.
+// + .-color-{name} [color, fill]
+// + .-color-bg-{name} [background-color]
+// + .-color-border-{name} [border-color]
+.mixin-color(@color-neutral-mid, neutral-mid);
+
+
 html {
   height: 100%;
 }
@@ -83,6 +90,7 @@ body > .yield.-is-paused {
 @import './components/post';
 @import './components/date-picker';
 @import './components/dropdown';
+@import './components/captions';
 @import './components/widgets';
 
 @import './components/voice-posts-layer';

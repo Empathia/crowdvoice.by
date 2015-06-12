@@ -15,8 +15,8 @@ Class(CV, 'VoiceAddContent').inherits(Widget)({
             <svg class="voice-add-content__option-svg -s16 -color-grey-light">\
                 <use xlink:href="#svg-link"></use>\
             </svg>\
-            <span class="voice-add-content__option-label -font-semi-bold">From URL</span>\
-            <span class="voice-add-content__option-tooltip ui-has-tooltip -color-grey-light">(?)\
+            <span class="voice-add-content__option-label">From URL</span>\
+            <span class="voice-add-content__option-tooltip ui-has-tooltip cv-caption -font-normal -color-neutral-mid">(?)\
                 <i class="ui-tooltip -top">You can enter a URL of an image, video from Youtube or Vimeo or a web page.</i>\
             </span>\
         </div>\
@@ -24,8 +24,8 @@ Class(CV, 'VoiceAddContent').inherits(Widget)({
             <svg class="voice-add-content__option-svg -s16 -color-grey-light">\
                 <use xlink:href="#svg-sources"></use>\
             </svg>\
-            <span class="voice-add-content__option-label -font-semi-bold">From Sources</span>\
-            <span class="voice-add-content__option-tooltip ui-has-tooltip -color-grey-light">(?)\
+            <span class="voice-add-content__option-label">From Sources</span>\
+            <span class="voice-add-content__option-tooltip ui-has-tooltip cv-caption -font-normal -color-neutral-mid">(?)\
                 <i class="ui-tooltip -top">You can enter a URL of an image, video from Youtube or Vimeo or a web page.</i>\
             </span>\
         </div>\
@@ -33,8 +33,8 @@ Class(CV, 'VoiceAddContent').inherits(Widget)({
             <svg class="voice-add-content__option-svg -s16 -color-grey-light">\
                 <use xlink:href="#svg-upload"></use>\
             </svg>\
-            <span class="voice-add-content__option-label -font-semi-bold">Upload File</span>\
-            <span class="voice-add-content__option-tooltip ui-has-tooltip -color-grey-light">(?)\
+            <span class="voice-add-content__option-label">Upload File</span>\
+            <span class="voice-add-content__option-tooltip ui-has-tooltip cv-caption -font-normal -color-neutral-mid">(?)\
                 <i class="ui-tooltip -top">You can enter a URL of an image, video from Youtube or Vimeo or a web page.</i>\
             </span>\
         </div>\
@@ -42,8 +42,8 @@ Class(CV, 'VoiceAddContent').inherits(Widget)({
             <svg class="voice-add-content__option-svg -s16 -color-grey-light">\
                 <use xlink:href="#svg-pencil"></use>\
             </svg>\
-            <span class="voice-add-content__option-label -font-semi-bold">Write Article</span>\
-            <span class="voice-add-content__option-tooltip ui-has-tooltip -color-grey-light">(?)\
+            <span class="voice-add-content__option-label">Write Article</span>\
+            <span class="voice-add-content__option-tooltip ui-has-tooltip cv-caption -font-normal -color-neutral-mid">(?)\
                 <i class="ui-tooltip -top">You can enter a URL of an image, video from Youtube or Vimeo or a web page.</i>\
             </span>\
         </div>\

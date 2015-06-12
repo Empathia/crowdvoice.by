@@ -8,13 +8,14 @@ Class(CV, 'VoiceTimelineJumpToDateItem').inherits(Widget).includes(CV.WidgetUtil
                 <use xlink:href="#svg-checkmark"></use>\
             </svg>\
             <span class="option-label"></span>\
-            <span class="option-counter"></span>\
+            <span class="cv-caption -font-normal -color-neutral-mid"></span>\
         </div>\
     ',
 
     prototype : {
         label : '',
         date : '',
+        totalPosts : 0,
 
         el : null,
         labelElement : null,
@@ -25,9 +26,10 @@ Class(CV, 'VoiceTimelineJumpToDateItem').inherits(Widget).includes(CV.WidgetUtil
 
             this.el = this.element[0];
             this.labelElement = this.el.querySelector('.option-label');
-            this.counterElement = this.el.querySelector('.option-counter');
+            this.counterElement = this.el.querySelector('.cv-caption');
 
             this.dom.updateText(this.labelElement, this.label);
+            this.dom.updateText(this.counterElement, '(' + this.totalPosts + ')');
 
             this._bindEvents();
         },

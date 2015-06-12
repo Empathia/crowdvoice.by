@@ -11,6 +11,8 @@ Class(CV, 'VoiceTimelineJumpToDateLabel').inherits(Widget).includes(CV.WidgetUti
         label : '',
 
         el : null,
+        labelElement : null,
+
         init : function init(config) {
             Widget.prototype.init.call(this, config);
 
@@ -18,6 +20,15 @@ Class(CV, 'VoiceTimelineJumpToDateLabel').inherits(Widget).includes(CV.WidgetUti
             this.labelElement = this.el.getElementsByTagName('span')[0];
 
             this.dom.updateText(this.labelElement, this.label);
+        },
+
+        destroy : function destroy() {
+            Widget.prototype.destroy.call(this);
+
+            this.el = null;
+            this.labelElement = null;
+
+            return null;
         }
     }
 });
