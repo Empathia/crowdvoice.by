@@ -5,6 +5,7 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
     prototype : {
         /* DEFAULT BASIC OPTIONS */
         description : '',
+        postsCount : null,
         firstPostDate : '',
         lastPostDate : '',
         averagePostTotal : 100,
@@ -191,36 +192,37 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
          * @return undefined
          */
         _createEmptyLayers : function _createEmptyLayers() {
-            var totalLayers = this.getTotalLayers();
             var frag = document.createDocumentFragment();
-            var i = 0;
 
-            for (i = 0; i < totalLayers; i++) {
-                var dateString, layer;
+            this.postsCount.forEach(function(yearItem) {
+                var year = yearItem.year;
 
-                dateString = moment(this.lastPostDate).month(-i).format('YYYY-MM');
-                layer = new CV.VoicePostsLayer({
-                    id : i,
-                    name : 'postsLayer_' + dateString,
-                    dateString : dateString,
-                    columnWidth : this.averagePostWidth
-                });
+                yearItem.months.forEach(function(monthItem) {
+                    var dateString = moment(year + '-' + monthItem.month + '-1').format('YYYY-MM');
+                    var layer = new CV.VoicePostsLayer({
+                        name : 'postsLayer_' + dateString,
+                        dateString : dateString,
+                        columnWidth : this.averagePostWidth
+                    });
 
-                layer.setHeight(this.getAverageLayerHeight());
+                    layer.setHeight(this.getAverageLayerHeight());
 
-                this._layers.push(layer);
-                this.appendChild(layer);
-                frag.appendChild(layer.el);
+                    this._layers.push(layer);
+                    this.appendChild(layer);
+                    frag.appendChild(layer.el);
 
-                dateString = layer = null;
-            }
+                    dateString = layer = null;
+                }, this);
+
+                year = null;
+            }, this);
 
             this.el.appendChild(frag);
 
             this._layers[0].el.classList.add('first');
             this._layers[this._layers.length - 1].el.classList.add('last');
 
-            firstDate = lastDate = totalLayers = frag = i = null;
+            frag = null;
         },
 
         /* Sets the layer's postsContainer height equal to the
@@ -362,23 +364,6 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
          */
         getAverageLayerHeight : function getAverageLayerHeight() {
             return this._averageLayerHeight;
-        },
-
-        /* Returns the number of total month layers.
-         * @method getTotalLayers <public> [Function]
-         */
-        getTotalLayers : function getTotalLayers() {
-            var layersLen = this._layers.length;
-
-            if (layersLen) {
-                return layersLen;
-            }
-
-            var firstDate = moment(this.firstPostDate);
-            var lastDate = moment(this.lastPostDate);
-            var totalLayers = lastDate.diff(firstDate, 'months');
-
-            return totalLayers;
         },
 
         isScrolledIntoView : function isScrolledIntoView(el) {
