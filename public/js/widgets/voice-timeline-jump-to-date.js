@@ -38,7 +38,7 @@ Class(CV, 'VoiceTimelineJumpToDate').inherits(Widget)({
             return this;
         },
 
-        /* Creates the menu options for all years and months dynamically
+        /* Creates the menu options for all years and months including the total post counters.
          * @method __createJumpToDateOptions <private> [Function]
          */
         __createJumpToDateOptions : function __createJumpToDateOptions(postsCount) {
@@ -69,7 +69,8 @@ Class(CV, 'VoiceTimelineJumpToDate').inherits(Widget)({
                     optionWidget = new CV.VoiceTimelineJumpToDateItem({
                         name : 'item_' + dateString,
                         label : month,
-                        date : dateString
+                        date : dateString,
+                        totalPosts : monthItem.total
                     });
 
                     this.appendChild(optionWidget);
