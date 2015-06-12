@@ -198,7 +198,7 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
                 var year = yearItem.year;
 
                 yearItem.months.forEach(function(monthItem) {
-                    var dateString = moment(year + '-' + monthItem.month + '-1').format('YYYY-MM');
+                    var dateString = moment(year + '-' + monthItem.month + '-01', 'YYYY-MM-DD').format('YYYY-MM');
                     var layer = new CV.VoicePostsLayer({
                         name : 'postsLayer_' + dateString,
                         dateString : dateString,
@@ -320,7 +320,7 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
             if (this._isInitialLoad) {
                 this._isInitialLoad = false;
                 this.loadImagesVisibleOnViewport();
-                this.dispatch('ready', {layer: this.getCurrentMonthLayer()});
+                this.dispatch('ready', {layer: currentLayer});
             }
 
             this.dispatch('layerLoaded', {dateString: dateString});

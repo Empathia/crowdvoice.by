@@ -49,7 +49,7 @@ Class(CV, 'VoiceTimelineJumpToDate').inherits(Widget)({
                 var year = yearItem.year;
 
                 yearItem.months.forEach(function(monthItem) {
-                    var date = moment(year + '-' + monthItem.month + '-1');
+                    var date = moment(year + '-' + monthItem.month + '-01', 'YYYY-MM-DD');
                     var dateString = date.format('YYYY-MM');
                     var month = date.format('MMMM');
 
