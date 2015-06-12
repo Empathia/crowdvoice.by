@@ -1,93 +1,3 @@
-<div class="cv-login">
-  <div class="close-login">
-    <img src="/img/icons/icon-close.png">
-  </div>
-  <div class="login-container">
-    <img src="/img/cv-logo-login.png">
-    <h2>CrowdVoice.by</h2>
-    <br><br>
-
-    <div class="tmp-form">
-      <h1>It's time to raise your voice!</h1>
-      <p>Sign up to CrowdVoice.by and create Voices, post content, follow users, organizations and more!</p>
-      <br>
-      <form>
-        <div class="form-field">
-          <div class="cv-input">
-            <input type="text" placeholder="YOUR EMAIL">
-          </div>
-        </div>
-        <button class="cv-button primary full">Create Organization</button>
-      </form>
-    </div> <!-- tmp form -->
-    <div class="tmp-form" style="display: none;">
-      <h1>Welcome back! :)</h1>
-      <br>
-      <form>
-        <div class="input-pair">
-          <div class="form-field">
-            <div class="cv-input">
-              <input type="text" placeholder="YOUR EMAIL">
-            </div>
-          </div>
-          <div class="form-field">
-            <div class="cv-input">
-              <input type="text" placeholder="YOUR PASSWORD">
-            </div>
-          </div>
-        </div>
-        <div class="-col-6">
-          <div class="cv-check">
-            <input type="checkbox">
-            <span class="label">Create Anonymously (?)</span>
-          </div>
-        </div>
-        <div class="-col-6">
-          <a href="#">Forgot your password?</a>
-        </div>
-        <br><br>
-        <button class="cv-button primary full">Sign In</button>
-      </form>
-    </div> <!-- tmp form -->
-    <div class="tmp-form" style="display: none;">
-      <h1>It's ok. It happens.</h1>
-      <p>Please enter the email address you used to sign up and we will send you instructions to reset your password to gain back access to CrowdVoice.by.</p>
-      <br>
-      <form>
-        <div class="form-field">
-          <div class="cv-input">
-            <input type="text" placeholder="YOUR EMAIL">
-          </div>
-        </div>
-        <button class="cv-button primary full">Submit</button>
-      </form>
-    </div> <!-- tmp form -->
-    <div class="tmp-form" style="display: none;">
-      <h1>Type in a new password.</h1>
-      <p>This time make sure you choose something you will remember.
-      Actually, you might want to read <a href="#">this article</a>. It will help :)</p>
-      <br>
-      <form>
-        <div class="form-field">
-          <div class="cv-input">
-            <input type="text" placeholder="YOUR PASSWORD">
-          </div>
-        </div>
-        <div class="cv-check">
-          <input type="checkbox">
-          <span class="label">Show your password to make sure you typed it correctly.</span>
-        </div>
-        <br><br>
-        <button class="cv-button primary full">Reset Password</button>
-      </form>
-    </div> <!-- tmp form -->
-
-    <br>
-    <p>Want to create a new account? <a href="">Sign up!</a></p>
-
-  </div>
-</div><!-- LOGIN END -->
-
 <main role="main" class="cv-main-content">
   <section class="homepage-intro">
     <header class="homepage-intro-banner" role="banner">
@@ -126,11 +36,18 @@
       </div>
     </article>
 
-    <div class="-inline-block -mr1">
-      <a href="/signup" class="action-signup ui-btn -primary -lg -pr3 -pl3 -font-bold">Sign Up Now!</a>
-      <p class="-text-center">or <a href="/login" class="action-login">Log in</a></p>
+    <div class="action-buttons">
+      <div class="-inline-block signup-button">
+        <a href="/signup" class="cv-button primary">Sign Up Now!</a>
+        <p class="-text-center">or <a href="/login" class="action-login">Log in</a></p>
+      </div>
+      <div class="-inline-block learnmore-button">
+        <button class="cv-button">Learn More</button>
+      </div>
+
+
     </div>
-    <button class="ui-btn -lg -color-primary -outline -pr3 -pl3">Learn More</button>
+
   </section><!-- @homepageintro -->
 
   <section class="homepage-featured-voices">

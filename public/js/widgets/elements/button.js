@@ -6,6 +6,10 @@ Class(CV, 'Button').inherits(Widget)({
         <button></button>\
     ',
 
+    BUTTON_GROUP : '\
+        <div class="cv-button-group"></div>\
+    ',
+
     prototype        : {
         type            : null,
         style           : null,
@@ -17,8 +21,11 @@ Class(CV, 'Button').inherits(Widget)({
         init : function(config){
             Widget.prototype.init.call(this, config);
             var button = this;
-            if (this.style){ this.element.addClass(this.style) };
+
             if (this.type == "single" || this.type == null){
+                if (this.style){
+                    this.element.addClass(this.style)
+                };
                 this.element.text(this.label);
             }
 
@@ -39,36 +46,55 @@ Class(CV, 'Button').inherits(Widget)({
         },
 
         createTwice : function(){
+            this.element = $(this.constructor.BUTTON_GROUP);
             this.element.addClass(this.type);
-            var optionsEl = $('<div class="columns"><span class="col-1-2"></span><span class="col-1-2"></span></div>');
+            var buttons = this;
+
             for (var key in this.options) {
                 if (this.options.hasOwnProperty(key)) {
-                    optionsEl.find('span:nth-child('+ key +')').text(this.options[key].name);
+                    var buttonEl = $('<button class="cv-button"></button>');
+                    buttonEl.text(this.options[key].name);
+                    buttonEl.addClass(buttons.style);
+                     this.element.append(buttonEl);
                 }
             }
-            this.element.append(optionsEl);
+
         },
 
         createMultiple : function(){
+
+            this.element = $(this.constructor.BUTTON_GROUP);
             this.element.addClass(this.type);
-            var optionsEl = $('<div class="columns"></div>');
+            var buttons = this;
 
             for (var key in this.options) {
                 if (this.options.hasOwnProperty(key)) {
-                    var activeClass = "";
-                    if (this.options[key].active){
-                        activeClass = "active";
-                    }
-                    optionsEl.append('<span class="col-1-3 '+ activeClass +'">' + this.options[key].name + '</div>');
+                    var buttonEl = $('<button class="cv-button"></button>');
+                    buttonEl.text(this.options[key].name);
+                    buttonEl.addClass(buttons.style);
+                     this.element.append(buttonEl);
                 }
             }
 
-            optionsEl.find('span').on('click', function(){
-                $(this).parent().find('span').removeClass('active');
-                $(this).addClass('active');
-            });
+            //this.element.addClass(this.type);
+            //var optionsEl = $('<div class="columns"></div>');
+//
+            //for (var key in this.options) {
+            //    if (this.options.hasOwnProperty(key)) {
+            //        var activeClass = "";
+            //        if (this.options[key].active){
+            //            activeClass = "active";
+            //        }
+            //        optionsEl.append('<span class="col-1-3 '+ activeClass +'">' + this.options[key].name + '</div>');
+            //    }
+            //}
+//
+            //optionsEl.find('span').on('click', function(){
+            //    $(this).parent().find('span').removeClass('active');
+            //    $(this).addClass('active');
+            //});
 
-            this.element.append(optionsEl);
+            //this.element.append(optionsEl);
         },
         enable : function(){
             this.enabled = true;

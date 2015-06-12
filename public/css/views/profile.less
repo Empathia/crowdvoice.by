@@ -53,10 +53,11 @@ hr{
 	color: #b8b8c1;
 }
 .profile-stats{
-	background: #fff;
+	background: @color-white;
 	padding-left: 25px;
 	border-top-left-radius: 10px;
 	border-top-right-radius: 10px;
+	color: @color-neutral-dark;
 
 	.stats-col{
 		text-align: center;
@@ -64,11 +65,17 @@ hr{
 		padding: 8px 0px 15px 0px;
 		border-top: 4px solid transparent;
 		cursor: pointer;
+		&:hover{
+			color: @color-neutral-x-dark;
+		}
+		&.active{
+			color: @color-primary;
+			border-top: 5px solid @color-primary;
+			font-weight: bold;
+		}
 
 	}
-	.stats-col.active{
-		border-top: 4px solid #666;
-	}
+
 	.profile-tabs{
 		float: left;
 	}
@@ -79,6 +86,16 @@ hr{
 
 }
 
+.stats-number {
+  font-size: 13px;
+  text-align: center;
+}
+.stats-label {
+  font-size: 11px;
+  font-weight: normal;
+  line-height: 1;
+  text-align: center;
+}
 
 .profile-body{
 	padding: 25px;
@@ -209,7 +226,9 @@ hr{
 }
 
 .profile-menu{
-	border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+	border-bottom: 1px solid @color-menu-border;
+	color: @color-neutral-dark;
+	margin-bottom: -1px;
 	.menu-item{
 		text-align: center;
 		margin-right: 25px;
@@ -217,14 +236,19 @@ hr{
 		border-top: 4px solid transparent;
 		cursor: pointer;
 		p{
-			font-size: 16px;
+			font-size: 13px;
 		  	text-align: center;
+		  	font-weight: normal;
+		}
+		&:hover{
+			color: @color-neutral-x-dark;
 		}
 	}
 	.menu-item.active{
-		border-bottom: 4px solid #666;
+		color: @color-primary;
+		border-bottom: 5px solid @color-primary;
+		font-weight: bold;
 	}
-
 	.profile-tabs{
 		float: left;
 	}
@@ -232,19 +256,20 @@ hr{
 		float: right;
 		padding: 20px 25px 0px 0px;
 	}
+	&.top-menu{
+		border: none;
+		margin-top: -1px;
+		.menu-item{
+			border-bottom: none;
+			border-top: 4px solid transparent;
+		}
+		.menu-item.active{
+			border-bottom: none;
+			border-top: 4px solid 5px solid @color-primary;
+		}
+	}
+}
 
-}
-.profile-menu.top-menu{
-	border: none;
-	.menu-item{
-		border-bottom: none;
-		border-top: 4px solid transparent;
-	}
-	.menu-item.active{
-		border-bottom: none;
-		border-top: 4px solid #666;
-	}
-}
 .-nobg{
 	background: none;
 }
@@ -465,19 +490,14 @@ hr{
 	}
 	.message-create{
 		padding: 15px 25px;
-		/*.is-area{
-	  		display: inline-block;
-  			width: 90%;
-		}*/
 		.form-field{
 			display: inline-block;
-  			width: 90%;
+  			width: 85%;
   		}
 		button{
   			display: inline-block;
-  			width: 10%;
+  			width: 15%;
     		margin-left: -4px;
-    		height: 50px;
     		border-top-left-radius: 0px;
     		border-bottom-left-radius: 0px;
 		}

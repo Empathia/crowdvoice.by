@@ -84,6 +84,7 @@
 
     <div class="-float-right -text-right">
       <div class="header-actions">
+        <div class="placeholder-create -inline-block"></div>
         <% if (typeof currentUser !== "undefined") { %>
           <a class="ui-btn -transparent" href="#">
             <svg class="header-actions-svg">
@@ -103,7 +104,7 @@
             </svg>
           </a>
         </form>
-        <div class="placeholder-create -inline-block"></div>
+
         <% if (typeof currentUser !== "undefined") { %>
 
           <script>
@@ -114,7 +115,7 @@
             };
 
             new CV.Select({
-              style: 'primary',
+              style: 'primary small',
               label : 'Create New',
               name  : 'createSelect',
               options: createOptions

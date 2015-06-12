@@ -41,7 +41,11 @@
   new CV.Check({ label : 'Text', name : '' }).render(menuLeftContainer);
   new CV.Check({ label : 'Tweets', name : '' }).render(menuLeftContainer);
 
-  new CV.Input({type : 'search', placeholder : 'Search posts...'}).render(menuRightContainer);
+  new CV.Input({
+    type : 'search',
+    style: 'tiny',
+    placeholder : 'Search posts...'
+  }).render(menuRightContainer);
 
   <%= JSON.stringify(posts) %>.forEach(function(post) {
     var postContainer = $('<div class="-col-6 -pr1 -pl1"></div>')

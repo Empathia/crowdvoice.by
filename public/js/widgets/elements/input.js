@@ -28,6 +28,7 @@ Class(CV, 'Input').inherits(Widget)({
 
         init : function(config){
             Widget.prototype.init.call(this, config);
+            var input = this;
             this.inputEl = this.element.find('.cv-input');
 
             if (this.style){ this.inputEl.addClass(this.style) };
@@ -51,6 +52,13 @@ Class(CV, 'Input').inherits(Widget)({
             } else {
                 this.element.find('label').remove();
             }
+
+            this.inputEl.find('input').on('focus', function(){
+                input.inputEl.addClass('focused');
+            });
+            this.inputEl.find('input').on('blur', function(){
+                input.inputEl.removeClass('focused');
+            });
 
         }
 
