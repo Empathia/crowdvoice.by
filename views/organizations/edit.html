@@ -1,7 +1,7 @@
 <% if (errors !== undefined) { %>
     <%= errors %>
 <% } %>
-<form action="/organization/<%= organization.id %>?_method=PUT" method="POST" accept-charset="utf-8">
+<form action="/<%= organization.profileName %>?_method=PUT" method="POST" enctype="multipart/form-data">
     <p>
         <span>Organization Name: </span> <input type="text" name="name" value="<%= organization.name %>">
     </p>
@@ -11,6 +11,19 @@
 
     <p>
     <span>Is it Anonymous?: </span> <input type="checkbox" name="isAnonymous" value="true" <% if (organization.isAnonymous) { %>checked<% } %>>
+    </p>
+
+    <p>
+        <span>Bio: </span> <input type="text" name="description" value="<%= organization.description %>">
+    </p>
+
+    <p>
+        <span>Location: </span> <input type="text" name="location" value="<%= organization.location %>">
+    </p>
+
+    <p>
+        <input type="file" name="image" \>
+        <input type="file" name="background" \>
     </p>
 
     <input type="hidden" name="_csrf" value="<%= csrfToken %>">

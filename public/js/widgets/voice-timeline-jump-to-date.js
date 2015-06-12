@@ -3,7 +3,7 @@ var moment = require('moment');
 Class(CV, 'VoiceTimelineJumpToDate').inherits(Widget)({
     prototype : {
         /* OPTIONS */
-        totalLayers : 0,
+        postsCount : 0,
         container : null,
         clockElement : null,
 
@@ -33,7 +33,7 @@ Class(CV, 'VoiceTimelineJumpToDate').inherits(Widget)({
                 })
             ).render(this.container);
 
-            this.__createJumpToDateOptions(this.totalLayers);
+            this.__createJumpToDateOptions(this.postsCount);
 
             return this;
         },
@@ -41,46 +41,52 @@ Class(CV, 'VoiceTimelineJumpToDate').inherits(Widget)({
         /* Creates the menu options for all years and months dynamically
          * @method __createJumpToDateOptions <private> [Function]
          */
-        __createJumpToDateOptions : function __createJumpToDateOptions(totalLayers) {
-            var i = 0;
+        __createJumpToDateOptions : function __createJumpToDateOptions(postsCount) {
             var frag = document.createDocumentFragment();
-            var _lastYear, date, dateString, year, month, optionWidget;
+            var _lastYear, optionWidget;
 
-            for (i = 0; i < totalLayers; i++) {
-                date = moment(this.lastPostDate).month(-i);
-                dateString = date.format('YYYY-MM');
-                year = date.format('YYYY');
-                month = date.format('MMMM');
+            this.postsCount.forEach(function(yearItem) {
+                var year = yearItem.year;
 
-                if (_lastYear !== year) {
-                    _lastYear = year;
+                yearItem.months.forEach(function(monthItem) {
+                    var date = moment(year + '-' + monthItem.month + '-01', 'YYYY-MM-DD');
+                    var dateString = date.format('YYYY-MM');
+                    var month = date.format('MMMM');
 
-                    this.appendChild(
-                        new CV.VoiceTimelineJumpToDateLabel({
-                            name : 'label_' + year,
-                            label : year
-                        })
-                    );
+                    if (_lastYear !== year) {
+                        _lastYear = year;
 
-                    frag.appendChild(this['label_' + year].el);
-                }
+                        this.appendChild(
+                            new CV.VoiceTimelineJumpToDateLabel({
+                                name : 'label_' + year,
+                                label : year
+                            })
+                        );
 
-                optionWidget = new CV.VoiceTimelineJumpToDateItem({
-                    name : 'item_' + dateString,
-                    label : month,
-                    date : dateString
-                });
+                        frag.appendChild(this['label_' + year].el);
+                    }
 
-                this.appendChild(optionWidget);
-                this._optionChilds.push(optionWidget);
+                    optionWidget = new CV.VoiceTimelineJumpToDateItem({
+                        name : 'item_' + dateString,
+                        label : month,
+                        date : dateString
+                    });
 
-                frag.appendChild(optionWidget.el);
-            }
+                    this.appendChild(optionWidget);
+                    this._optionChilds.push(optionWidget);
+
+                    frag.appendChild(optionWidget.el);
+
+                    dateString = month = null;
+                }, this);
+
+                year = null;
+            }, this);
 
             this.jumpToDatePopover.getContent().className += ' ui-vertical-list hoverable';
             this.jumpToDatePopover.setContent(frag);
 
-            i = frag = _lastYear = null;
+            frag = _lastYear = optionWidget = null;
         },
 
         /* Attach event handlers
@@ -151,7 +157,7 @@ Class(CV, 'VoiceTimelineJumpToDate').inherits(Widget)({
             this.jumpToDatePopover.unbind(this._handleActivate);
             this.jumpToDatePopover.unbind(this._handleDeactivate);
 
-            this.totalLayers = null;
+            this.postsCount = null;
             this.container = null;
             this.clockElement = null;
 

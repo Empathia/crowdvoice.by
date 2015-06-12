@@ -151,6 +151,7 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
                     firstDateCoincidence = currentDate;
 
                     indicator = new CV.VoicePostIndicator({
+                        name : 'indicator_' + i,
                         label : posts[i].el.dataset.date,
                         refElement : posts[i].el,
                         zIndex : len - i
