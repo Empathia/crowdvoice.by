@@ -152,7 +152,7 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
       };
 
       new CV.Button({
-          style   : '',
+          style   : 'tiny',
           type    : 'multiple',
           name    : 'buttonActions',
           options : btnActions

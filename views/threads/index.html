@@ -157,29 +157,32 @@
 			      			</div>\
 			      		</div>');
 
-	var searchInput = new CV.Input({type : 'search', placeholder : 'Search...'}).render(searchElement);
+	var searchInput = new CV.Input({
+		type 		: 'search',
+		style 		: 'tiny',
+		placeholder : 'Search...'
+	}).render(searchElement);
 
 	var areaText = new CV.Input({
-		style : '',
+		style : 'large',
 		type : '',
 		isArea : true,
 		placeholder : 'Write a reply'
 	}).render(createElement);
 
-
-	var buttonNew = new CV.Button({
-		style   : 'primary',
-		type    : 'single',
-		label   : 'New Message',
-		name    : 'buttonNew'
-	}).render($('.profile-messages-intro'));
-
 	var buttonReply = new CV.Button({
-		style   : 'primary',
+		style   : 'primary large',
 		type    : 'single',
 		label   : 'Reply',
 		name    : 'buttonReply'
 	}).render(createElement);
+
+	var buttonNew = new CV.Button({
+		style   : 'primary small',
+		type    : 'single',
+		label   : 'New Message',
+		name    : 'buttonNew'
+	}).render($('.profile-messages-intro'));
 
 	var btnMultipleOptions = {
 		"1": {name: 'Accept'},

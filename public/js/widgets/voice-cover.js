@@ -189,14 +189,14 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
       };
 
       new CV.Button({
-          style   : '',
+          style   : 'tiny',
           type    : 'twice',
           name    : 'buttonTwice',
           options : btnTwiceOptions
       }).render(this.actionsElement);
 
       new CV.Button({
-          style   : 'primary',
+          style   : 'primary tiny',
           type    : 'single',
           label   : 'Delete',
           name    : 'buttonFollow'
