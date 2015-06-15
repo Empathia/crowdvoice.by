@@ -12,12 +12,6 @@ Class(CV, 'PostQuote').inherits(CV.Post)({
             <p class="post-card-quote"></p>\
             <p class="post-card-quote-author"></p>\
             <div class="post-card-activity">\
-                <div class="post-card-activity-repost -inline-block -mr1">\
-                    <svg class="post-card-activity-svg">\
-                        <use xlink:href="#svg-repost-outline"></use>\
-                    </svg>\
-                    <span class="post-card-activity-label">0</span>\
-                </div>\
                 <div class="post-card-activity-saved -inline-block">\
                     <svg class="post-card-activity-svg">\
                         <use xlink:href="#svg-save-outline"></use>\
@@ -67,7 +61,6 @@ Class(CV, 'PostQuote').inherits(CV.Post)({
             this.dom.updateText(this.el.querySelector('.post-card-quote'), this.title);
             this.dom.updateText(this.el.querySelector('.post-card-quote-author'), this.description);
 
-            this.dom.updateText(this.el.querySelector('.post-card-activity-repost .post-card-activity-label'), this.totalReposts);
             this.dom.updateText(this.el.querySelector('.post-card-activity-saved .post-card-activity-label'), this.totalSaves);
         },
 

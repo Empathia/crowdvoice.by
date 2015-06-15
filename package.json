@@ -36,6 +36,7 @@
     "less-loader": "^2.2.0",
     "loaders.css": "^0.1.1",
     "mandrill-api": "^1.0.45",
+    "medium-editor": "^4.12.3",
     "method-override": "^2.3.3",
     "moment": "^2.10.2",
     "multer": "^0.1.8",

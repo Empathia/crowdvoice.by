@@ -9,9 +9,11 @@ exports.up = function(knex, Promise) {
       t.integer('owner_id').index().notNullable();
       t.integer('voice_id').index().notNullable();
       t.boolean('approved').index();
-      t.string('image', 1024);
-      t.integer('image_height').defaultTo(0);
-      t.integer('image_width').defaultTo(0);
+
+      // Image attachment
+      t.string('image_base_url', 1024).defaultTo('');
+      t.text('image_meta').defaultTo('{}');
+
       t.string('source_service').notNullable();
       t.string('source_type').notNullable();
       t.string('source_url', 1024).defaultTo(null).unique();

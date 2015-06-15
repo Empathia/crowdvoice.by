@@ -70,10 +70,10 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
             ).render(this.header);
 
             this.appendChild(
-                new CV.PostCreatorFromUrlPostButton({
-                name : 'postButton',
-                className : '-rel -float-right -full-height -color-border-grey-light'
-            })
+                new CV.PostCreatorPostButton({
+                    name : 'postButton',
+                    className : '-rel -float-right -full-height -color-border-grey-light'
+                })
             ).render(this.header);
 
             this.inputWrapper.className = '-overflow-hidden -full-height';

@@ -42,12 +42,12 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
             this.appendChild(
                 new CV.PostCreatorFromSourcesDropdown({
                     name : 'sourcesDropdown',
-                    className : '-float-left -full-height -color-border-grey-light'
+                    className : '-float-left -full-height'
                 })
             ).render(this.header);
 
             this.appendChild(
-                new CV.PostCreatorFromSourcesPostButton({
+                new CV.PostCreatorPostButton({
                     name : 'postButton',
                     className : '-float-right -full-height -color-border-grey-light'
                 })

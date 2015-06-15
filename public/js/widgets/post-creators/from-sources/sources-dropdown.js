@@ -20,7 +20,7 @@ Class(CV, 'PostCreatorFromSourcesDropdown').inherits(Widget)({
                 new CV.Dropdown({
                     name : 'dropdown',
                     showArrow : true,
-                    className : 'from-sources-dropdown -full-height',
+                    className : 'from-sources-dropdown -full-height -color-border-grey-light',
                     arrowClassName : '-s8 -color-grey',
                     bodyClassName : 'ui-vertical-list hoverable'
                 })

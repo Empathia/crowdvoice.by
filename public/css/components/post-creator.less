@@ -1,3 +1,6 @@
+@import (inline) "../../../node_modules/medium-editor/dist/css/medium-editor.css";
+@import (inline) "../../../node_modules/medium-editor/dist/css/themes/default.css";
+
 .cv-post-creator {
   z-index: 2;
   display: none;
@@ -244,4 +247,67 @@
 .upload-file-post-button {
   padding: 1rem 1.25rem 0;
   border-left-width: 1px;
+}
+
+/* ============================================================================
+ * Write Article
+ * ========================================================================= */
+.write-article-title-wrapper {
+  padding: .9em 0 0 1em;
+}
+
+.write-article-title {
+  font-size: 18px;
+}
+
+.write-article-post-date-wrapper {
+  padding: .9em 1em 0 0;
+}
+
+.write-article-post-date-wrapper .ui-input-auto .ui-input {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.write-article-post-date-wrapper .post-date-picker-button {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+/* Editor */
+.write-article-editor {
+  overflow: auto;
+  background-color: @color-white;
+  border-radius: 6px 6px 0 0;
+}
+
+.write-article-editor-header {
+  padding: 120px 0 45px;
+  border-bottom: 1px solid @color-grey-light;
+  border-radius: inherit;
+
+  .editor-title {
+    font-size: 48px;
+    width: 606px;
+    margin: 0 auto;
+    outline: none;
+    color: @color-neutral-xx-dark;
+  }
+
+  .editor-add-cover {
+    top: 1.6rem;
+    left: 1.3rem;
+  }
+}
+
+.write-article-editor-body {
+  font-size: 14px;
+  padding: 50px 0;
+  color: @color-neutral-xx-dark;
+
+  .write-article-body-editable {
+    width: 606px;
+    margin: 0 auto;
+    outline: none;
+  }
 }

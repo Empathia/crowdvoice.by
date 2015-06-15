@@ -43,7 +43,7 @@ Class(CV, 'PostCreatorUploadFile').inherits(CV.PostCreator)({
             ).render(this.content);
 
             this.appendChild(
-                new CV.PostCreatorUploadFilePostButton({
+                new CV.PostCreatorPostButton({
                     name : 'postButton',
                     className : '-float-right -full-height -color-border-grey-light'
                 })

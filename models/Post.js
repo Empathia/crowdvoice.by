@@ -139,7 +139,7 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
       })
 
       // Add image attachment
-      this.hasImage({
+      this.constructor.prototype.hasImage({
         propertyName: 'image',
         versions: {
           medium: function (readStream) {
@@ -147,7 +147,7 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
           }
         },
         bucket: 'crowdvoice.by',
-        basePath: '{env}/{modelName}_{id}/{id}_{versionName}.{extension}'
+        basePath: '{env}/{modelName}_{id}/{property}_{versionName}.{extension}'
       });
     },
 
