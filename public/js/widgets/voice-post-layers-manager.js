@@ -197,9 +197,10 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
             this.postsCount.forEach(function(yearItem) {
                 var year = yearItem.year;
 
-                yearItem.months.forEach(function(monthItem) {
+                yearItem.months.forEach(function(monthItem, index) {
                     var dateString = moment(year + '-' + monthItem.month + '-01', 'YYYY-MM-DD').format('YYYY-MM');
                     var layer = new CV.VoicePostsLayer({
+                        id : index,
                         name : 'postsLayer_' + dateString,
                         dateString : dateString,
                         columnWidth : this.averagePostWidth

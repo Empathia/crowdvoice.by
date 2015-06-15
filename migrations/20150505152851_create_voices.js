@@ -9,7 +9,11 @@ exports.up = function(knex, Promise) {
       t.integer('owner_id').index().defaultTo(0);
       t.string('status').index().notNullable();
       t.string('type').index().notNullable();
-      t.string('cover_image').defaultTo(null);
+
+      // Image attachment
+      t.string('image_base_url', 1024).defaultTo('');
+      t.text('image_meta').defaultTo('{}');
+
       t.string('latitude').defaultTo(null);
       t.string('longitude').defaultTo(null);
       t.string('location_name').defaultTo(null);
