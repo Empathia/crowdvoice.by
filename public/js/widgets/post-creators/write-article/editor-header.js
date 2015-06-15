@@ -7,7 +7,6 @@ Class(CV, 'PostCreatorWriteArticleEditorHeader').inherits(Widget)({
 
     HTML : '\
         <div class="-rel">\
-            <button class="editor-add-cover cv-button tiny primary -abs">Add Cover</button>\
             <textarea class="editor-title -block -font-bold" placeholder="Title">Suspendisse Dictum Feugiat Nisl Ut (H1)</textarea>\
         </div>\
     ',
@@ -23,7 +22,17 @@ Class(CV, 'PostCreatorWriteArticleEditorHeader').inherits(Widget)({
             this.el = this.element[0];
             this.titleElement = this.el.querySelector('.editor-title');
 
-            this._bindEvents();
+            this._setup()._bindEvents();
+        },
+
+        _setup : function _setup() {
+            this.appendChild(
+                new CV.PostCreatorWriteArticleEditorCoverButton({
+                    name : 'coverButton'
+                })
+            ).render(this.el);
+
+            return this;
         },
 
         _bindEvents : function _bindEvents() {

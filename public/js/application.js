@@ -86,6 +86,7 @@ require('./widgets/post-creators/write-article/post-date');
 require('./widgets/post-creators/write-article/editor');
 require('./widgets/post-creators/write-article/editor-header');
 require('./widgets/post-creators/write-article/editor-body');
+require('./widgets/post-creators/write-article/cover-button');
 
 // bubbles
 require('./widgets/bubble.js');
