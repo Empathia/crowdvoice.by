@@ -15,8 +15,12 @@ exports.up = function(knex, Promise) {
       t.string('location', 512).defaultTo('');
 
       // Image attachment
-      t.string('image_base_url', 512).defaultTo('');
-      t.string('background_base_url', 512).defaultTo('');
+      t.string('image_base_url', 1024).defaultTo('');
+      t.text('image_meta').defaultTo('{}');
+
+      // Background attachment
+      t.string('background_base_url', 1024).defaultTo('');
+      t.text('background_meta').defaultTo('{}');
 
       t.index(['name', 'lastname', 'profile_name'], 'search_index');
       t.timestamps();
