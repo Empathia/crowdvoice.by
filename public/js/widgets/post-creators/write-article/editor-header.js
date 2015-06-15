@@ -1,4 +1,6 @@
 /* jshint multistr: true */
+var autosize = require('autosize');
+
 Class(CV, 'PostCreatorWriteArticleEditorHeader').inherits(Widget)({
 
     ELEMENT_CLASS : 'write-article-editor-header',
@@ -11,8 +13,47 @@ Class(CV, 'PostCreatorWriteArticleEditorHeader').inherits(Widget)({
     ',
 
     prototype : {
+
+        el : null,
+        titleElement : null,
+
         init : function init(config) {
             Widget.prototype.init.call(this, config);
+
+            this.el = this.element[0];
+            this.titleElement = this.el.querySelector('.editor-title');
+
+            this._bindEvents();
+        },
+
+        _bindEvents : function _bindEvents() {
+            this._renderHandlerRef = this._renderHandler.bind(this);
+            this.bind('render', this._renderHandlerRef);
+
+            return this;
+        },
+
+       /* Render event listener handler
+        * Instantiate the editable textareas, they need to be on the DOMTree in order to work
+        * @method _renderHandler <private> [Function]
+        */
+        _renderHandler : function _renderHandler() {
+            setTimeout(function() {
+                autosize(this.titleElement);
+            }.bind(this), 0);
+        },
+
+        destroy : function destroy() {
+            Widget.prototype.destroy.call(this);
+
+            this.unbind('activate', this._renderHandlerRef);
+            this._renderHandlerRef = null;
+
+            autosize.destroy(this.titleElement);
+
+            this.el = null;
+
+            return null;
         }
     }
 });
