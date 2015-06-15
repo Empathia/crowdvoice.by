@@ -42,7 +42,7 @@
       			</div>
       			<div class="-col-9">
 	    			<div class="form-field">
-	    				<div class="cv-input">
+	    				<div class="cv-input tiny">
 	    					<input class="search-users" type="text" placeholder="Type name">
 	    				</div>
 	    			</div>
@@ -163,18 +163,13 @@
 		placeholder : 'Search...'
 	}).render(searchElement);
 
-	var areaText = new CV.Input({
-		style : 'large',
-		type : '',
-		isArea : true,
-		placeholder : 'Write a reply'
-	}).render(createElement);
 
-	var buttonReply = new CV.Button({
-		style   : 'primary large',
-		type    : 'single',
-		label   : 'Reply',
-		name    : 'buttonReply'
+	var reply = new CV.InputButton({
+	    style       : 'primary large',
+	    type        : '',
+	    isArea      : true,
+	    name        : 'reply',
+	    buttonLabel : 'Reply'
 	}).render(createElement);
 
 	var buttonNew = new CV.Button({
@@ -198,7 +193,7 @@
 
 	var mi = 1;
 
-	buttonReply.element.on('click', function(){
+	reply.buttonEl.on('click', function(){
 
 		if (isNewThread){
 			createThread();
@@ -286,6 +281,8 @@
 			newMessage();
 		});
 		messagesMainEl.removeClass('no-sidebar');
+		resizeMessages();
+
 	}
 
 	function showPersons(persons){
@@ -334,6 +331,7 @@
 		//currentThreadID = threadId;
 
 		showSelectedScreen();
+
 	}
 
 	function showSelectedScreen (){
@@ -386,6 +384,7 @@
 		messagesBodyHeaderEl.find('.delete-thread').hide();
 		messagesContainerEl.show();
 		resizeMessages();
+
 	}
 
 	function createThread () {
@@ -539,6 +538,8 @@
 	}
 
 	function resizeMessages () {
+		reply.recalculate();
+
   		var chatHeight = $(window).height() - ($('.profile-messages-intro').outerHeight() + $('.cv-main-header').outerHeight());
 		$('.messages-sidebar, .messages-body, .messages-body-container').height(chatHeight);
 		var sideMessagesHeight = chatHeight - $('.messages-search').outerHeight();

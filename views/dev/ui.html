@@ -55,22 +55,18 @@
     </div>
 
     <div class="-col-12 placeholder-ui2">
-      <div class="-col-3 c1">
+      <div class="-col-5 c1">
 
       </div>
       <div class="-col-1">
 
       </div>
-      <div class="-col-3 c2">
+      <div class="-col-5 c2">
 
       </div>
       <div class="-col-1">
 
       </div>
-      <div class="-col-3 c3">
-
-      </div>
-      <div class="-col-1">
 
       </div>
     </div>
@@ -411,6 +407,9 @@ $('.placeholder-ui .c3').append('<br><br>');
 
 
 
+
+
+
 /*******************************************
                 @selects
 *******************************************/
@@ -490,6 +489,41 @@ new CV.Select({
         subTitle        : "",
 *******************************************/
 
+var btnActions = {
+  "1": {label: 'Join', name: 'join'},
+  "2": {label: 'Message', name: 'message'},
+  "3": {label: 'Follow', name: 'follow'}
+};
+
+var actionButtons = new CV.Button({
+    style   : 'tiny',
+    type    : 'multiple',
+    name    : 'buttonActions',
+    options : btnActions
+}).render('.placeholder-ui2 .c1');
+$('.placeholder-ui2 .c1').append('<br><br>');
+
+actionButtons.join.on('click', function(){
+  console.log('join btn clicked');
+});
+
+var btnActions = {
+  "1": {label: 'Yes', name: 'yes'},
+  "2": {label: 'No', name: 'no'}
+};
+
+var yesnoButtons = new CV.Button({
+    style   : 'tiny',
+    type    : 'multiple',
+    name    : 'buttonActions',
+    options : btnActions
+}).render('.placeholder-ui2 .c1');
+$('.placeholder-ui2 .c1').append('<br><br>');
+
+yesnoButtons.no.on('click', function(){
+  console.log('no btn clicked');
+});
+
 new CV.Input({
     style       : '',
     type        : '',
@@ -501,14 +535,24 @@ new CV.Input({
 }).render(document.querySelector('.placeholder-ui2 .c1'));
 $('.placeholder-ui2 .c1').append('<br><br>');
 
-new CV.InputSearch({
-    style       : '',
+new CV.InputButton({
+    style       : 'primary',
     type        : '',
     name        : 'input',
     placeholder : 'Search',
+    buttonLabel : 'Search',
     hasTitle    : true,
     title       : 'Field label',
     subTitle    : 'External hint'
+}).render(document.querySelector('.placeholder-ui2 .c1'));
+$('.placeholder-ui2 .c1').append('<br><br>');
+
+new CV.InputButton({
+    style       : 'primary large',
+    type        : '',
+    isArea      : true,
+    name        : 'input',
+    buttonLabel : 'Reply'
 }).render(document.querySelector('.placeholder-ui2 .c1'));
 $('.placeholder-ui2 .c1').append('<br><br>');
 

@@ -21,7 +21,7 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
             Widget.prototype.init.call(this, config);
             var sendElement = this.element.find('.send');
 
-			new CV.InputSearch({
+			new CV.InputButton({
 			    type    	: '',
 			    name  		: '',
 			    style 		: '',
