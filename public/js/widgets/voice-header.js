@@ -5,7 +5,8 @@ Class(CV, 'VoiceHeader').inherits(Widget)({
         footerVoiceTitle : null,
         scrollableArea : window,
 
-        HEADER_HEIGHT : 74,
+        HEADER_HEIGHT : 0,
+        TITLE_OFF_PAGE : 0,
         DELTA : 5,
         _lastScrollTop : 0,
 
@@ -13,7 +14,8 @@ Class(CV, 'VoiceHeader').inherits(Widget)({
             Widget.prototype.init.call(this, config);
 
             this.el = this.element;
-
+            this.HEADER_HEIGHT = this.el.offsetHeight;
+            this.TITLE_OFF_PAGE = this.HEADER_HEIGHT + document.querySelector('.voice-heading').offsetHeight;
             this._bindEvents();
         },
 
@@ -41,14 +43,22 @@ Class(CV, 'VoiceHeader').inherits(Widget)({
 
             if (scrollingDown && y > this.HEADER_HEIGHT) {
                 this.el.classList.add('hide');
-                this.footerVoiceTitle.classList.add('active');
+
+                if (y > this.TITLE_OFF_PAGE) {
+                    this.footerVoiceTitle.classList.add('active');
+                }
+
                 this._lastScrollTop = y;
                 return;
             }
 
             if (y + this.scrollableArea.innerHeight < document.height || document.body.clientHeight) {
                 this.el.classList.remove('hide');
-                this.footerVoiceTitle.classList.remove('active');
+
+                if (y < this.HEADER_HEIGHT) {
+                    this.footerVoiceTitle.classList.remove('active');
+                }
+
                 this._lastScrollTop = y;
             }
         },
