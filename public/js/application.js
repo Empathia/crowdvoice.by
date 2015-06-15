@@ -20,7 +20,6 @@ var moment = require('moment');
 window.moment = moment;
 
 // generic widgets
-require('./widgets/header.js');
 require('./widgets/sidebar.js');
 require('./widgets/popover.js');
 require('./widgets/popover-blocker.js');
@@ -39,6 +38,7 @@ require('./widgets/category-cover.js');
 require('./views/home');
 require('./views/voice');
 
+require('./widgets/voice-header.js');
 require('./widgets/voice-post-layers-manager');
 require('./widgets/voice-footer');
 require('./widgets/voice-timeline-feedback');

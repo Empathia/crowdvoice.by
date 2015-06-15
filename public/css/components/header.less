@@ -15,19 +15,9 @@ body.page-inner .cv-main-header {
   position: absolute;
   left: 0;
   right: 0;
-  transition: transform 440ms ease-in-out;
 
   .cv-main-logo-type {
     padding-left: 1.5rem;
-  }
-
-  &.show {
-    transform: translateY(0) !important;
-    transition-delay: 1000ms;
-  }
-
-  &.hide {
-    transform: translateY(-@cv-header-height) !important;
   }
 }
 
@@ -58,6 +48,20 @@ body.page-inner .cv-main-header {
     height: 6px;
   }
 /*}*/
+
+/* =========================================================================== *
+ *  voice page
+ * =========================================================================== */
+body.page-voice .cv-main-header {
+  position: fixed;
+  top: 0;
+  transform: translateY(1px);
+  transition: transform 200ms ease-in-out;
+
+  &.hide {
+    transform: translateY(-@cv-header-height) !important;
+  }
+}
 
 /* =========================================================================== *
  *  globally shared

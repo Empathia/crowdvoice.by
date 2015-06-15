@@ -136,14 +136,16 @@
   position: absolute;
   transform: translateY(0);
   opacity: 0;
-  transition: opacity 200ms, transform 200ms;
+  transition-property: opacity, transform;
+  transition-duration: 200ms;
+  transition-timing-function: ease-in-out;
 }
 
 .voice-footer-by {
   position: absolute;
   font-size: .8rem;
   transform: translateY(20px);
-  transition: transform 200ms;
+  transition: transform 200ms ease-in-out;
 }
 
 .voice-footer-meta-wrapper {

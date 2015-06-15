@@ -279,7 +279,6 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
             }
 
             // request to the server
-            console.time('postsFetching');
             this._socket.emit('getMonthPosts', this.id, dateString, scrollDirection);
         },
 
@@ -292,8 +291,6 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
          * @return undefined
          */
         loadLayer : function loadLayer(postsData, dateString, scrollDirection) {
-            console.log('response received');
-            console.timeEnd('postsFetching');
             var currentLayer = this.getCurrentMonthLayer();
             var prev = currentLayer.getPreviousSibling();
             var next = currentLayer.getNextSibling();
@@ -313,9 +310,7 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
                 this._appendVoiceAboutBox(currentLayer);
             }
 
-            console.time('arrangePosts');
             currentLayer.addPosts(postsData);
-            console.timeEnd('arrangePosts');
 
             if (this._isInitialLoad) {
                 this._isInitialLoad = false;

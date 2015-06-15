@@ -53,9 +53,9 @@ Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport)({
                 element : document.getElementsByClassName('cv-main-sidebar')[0]
             });
 
-            new CV.Header({
+            new CV.VoiceHeader({
                 element : document.getElementsByClassName('cv-main-header')[0],
-                scrollableArea : document.getElementsByClassName('yield')[0]
+                footerVoiceTitle : document.getElementsByClassName('voice-footer-meta-wrapper')[0]
             });
 
             this.postsCount = this._formatPostsCountObject(this.postsCount);
