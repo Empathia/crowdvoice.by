@@ -33,68 +33,39 @@ Class(CV, 'Button').inherits(Widget)({
                 this.element.addClass(this.actionType);
             }
 
-            if(this.type == "twice"){
-                this.createTwice();
-            }
             if(this.type == "multiple"){
                 this.createMultiple();
             }
-            this.element.on('click', function(){
-                button.dispatch('click');
-            })
-
-        },
-
-        createTwice : function(){
-            this.element = $(this.constructor.BUTTON_GROUP);
-            this.element.addClass(this.type);
-            var buttons = this;
-
-            for (var key in this.options) {
-                if (this.options.hasOwnProperty(key)) {
-                    var buttonEl = $('<button class="cv-button"></button>');
-                    buttonEl.text(this.options[key].name);
-                    buttonEl.addClass(buttons.style);
-                     this.element.append(buttonEl);
-                }
-            }
+            //this.element.on('click', function(){
+            //    button.dispatch('click');
+            //});
 
         },
 
         createMultiple : function(){
 
             this.element = $(this.constructor.BUTTON_GROUP);
-            this.element.addClass(this.type);
+
+            if(Object.keys(this.options).lenght == 2){
+                this.element.addClass('twice');
+            } else {
+                this.element.addClass('multiple');
+            }
+
             var buttons = this;
 
             for (var key in this.options) {
                 if (this.options.hasOwnProperty(key)) {
                     var buttonEl = $('<button class="cv-button"></button>');
-                    buttonEl.text(this.options[key].name);
+
+                    this[this.options[key].label.toLowerCase()] = buttonEl;
+
+                    buttonEl.text(this.options[key].label);
                     buttonEl.addClass(buttons.style);
                      this.element.append(buttonEl);
                 }
             }
 
-            //this.element.addClass(this.type);
-            //var optionsEl = $('<div class="columns"></div>');
-//
-            //for (var key in this.options) {
-            //    if (this.options.hasOwnProperty(key)) {
-            //        var activeClass = "";
-            //        if (this.options[key].active){
-            //            activeClass = "active";
-            //        }
-            //        optionsEl.append('<span class="col-1-3 '+ activeClass +'">' + this.options[key].name + '</div>');
-            //    }
-            //}
-//
-            //optionsEl.find('span').on('click', function(){
-            //    $(this).parent().find('span').removeClass('active');
-            //    $(this).addClass('active');
-            //});
-
-            //this.element.append(optionsEl);
         },
         enable : function(){
             this.enabled = true;

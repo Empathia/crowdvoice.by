@@ -52,13 +52,13 @@ var HomeController = Class('HomeController')({
     },
 
     about : function(req, res) {
-      res.render('home/about.html', {
+      res.render('dev/about.html', {
         layout : 'application'
       });
     },
 
     voice : function(req, res) {
-      res.render('home/voice.html', {
+      res.render('dev/voice.html', {
         layout : 'application',
 
         pageName : 'page-inner page-voice',
@@ -103,7 +103,7 @@ var HomeController = Class('HomeController')({
       var demoOrganizations = require('./../public/demo-data/organizations.js');
       var demoVoices = require('./../public/demo-data/voices.js');
 
-      res.render('home/profile.html', {
+      res.render('dev/profile.html', {
         layout : 'application',
         voices : demoVoices,
         organizations : demoOrganizations
@@ -114,7 +114,7 @@ var HomeController = Class('HomeController')({
       var demoOrganizations = require('./../public/demo-data/organizations.js');
       var demoVoices = require('./../public/demo-data/voices.js');
 
-      res.render('home/profile-voices.html', {
+      res.render('dev/profile-voices.html', {
         layout : 'application',
         voices : demoVoices,
         organizations : demoOrganizations
@@ -127,7 +127,7 @@ var HomeController = Class('HomeController')({
       var demoPosts = require('./../public/demo-data/posts.js');
 
 
-      res.render('home/profile-saved.html', {
+      res.render('dev/profile-saved.html', {
         layout : 'application',
         voices : demoVoices,
         organizations : demoOrganizations,
@@ -141,7 +141,7 @@ var HomeController = Class('HomeController')({
       var demoPosts = require('./../public/demo-data/posts.js');
 
 
-      res.render('home/profile-messages.html', {
+      res.render('dev/profile-messages.html', {
         layout : 'application',
         voices : demoVoices,
         organizations : demoOrganizations,
@@ -153,7 +153,7 @@ var HomeController = Class('HomeController')({
       var demoOrganizations = require('./../public/demo-data/organizations.js');
       var demoVoices = require('./../public/demo-data/voices.js');
 
-      res.render('home/discover.html', {
+      res.render('dev/discover.html', {
         layout : 'application',
         voices : demoVoices,
         organizations : demoOrganizations
@@ -164,7 +164,7 @@ var HomeController = Class('HomeController')({
       var demoOrganizations = require('./../public/demo-data/organizations.js');
       var demoVoices = require('./../public/demo-data/voices.js');
 
-      res.render('home/discover-recommended.html', {
+      res.render('dev/discover-recommended.html', {
         layout : 'application',
         voices : demoVoices,
         organizations : demoOrganizations
@@ -172,7 +172,7 @@ var HomeController = Class('HomeController')({
     },
 
     discoverOnboarding : function(req, res) {
-      res.render('home/discover-onboarding.html', {
+      res.render('dev/discover-onboarding.html', {
         layout : 'application'
       });
     },
@@ -183,7 +183,7 @@ var HomeController = Class('HomeController')({
       var demoUsers = require('./../public/demo-data/users.js');
 
 
-      res.render('home/account.html', {
+      res.render('dev/account.html', {
         layout : 'application',
         voices : demoVoices,
         organizations : demoOrganizations,
@@ -197,7 +197,7 @@ var HomeController = Class('HomeController')({
       var demoUsers = require('./../public/demo-data/users.js');
 
 
-      res.render('home/organization.html', {
+      res.render('dev/organization.html', {
         layout : 'application',
         voices : demoVoices,
         organizations : demoOrganizations,
@@ -209,7 +209,7 @@ var HomeController = Class('HomeController')({
       var demoVoices = require('./../public/demo-data/voices.js');
       var demoUsers = require('./../public/demo-data/users.js');
 
-      res.render('home/ui.html', {
+      res.render('dev/ui.html', {
         layout : 'application',
         voices : demoVoices,
         users : demoUsers
