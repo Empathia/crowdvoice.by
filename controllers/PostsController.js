@@ -89,12 +89,19 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
       });
     },
 
-    new : function(req, res) {
-      res.render('posts/new.html');
-    },
+    create : function create(req, res, next) {
+      ACL.isAllowed('create', 'posts', req.role, {
+        currentPerson : req.currentPerson,
+        voiceSlug : req.params.voiceSlug,
+        profileName : req.params.profileName
+      }, function(err, isAllowed) {
 
-    create : function create(req, res) {
-      res.redirect('/post/id');
+        if (err) {return next(err)}
+
+        if (!isAllowed) {return next(new ForbiddenError())}
+
+        res.redirect('/post/id');
+      });
     },
 
     edit : function edit(req, res) {
