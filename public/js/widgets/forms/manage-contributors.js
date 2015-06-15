@@ -22,7 +22,7 @@ Class(CV, 'ManageContributors').inherits(Widget)({
             var sendElement = this.element.find('.send');
 
 
-			new CV.InputSearch({
+			new CV.InputButton({
 			    type    	: '',
 			    name  		: '',
 			    style 		: '',
