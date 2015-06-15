@@ -10,7 +10,7 @@ global.sharp = require('sharp');
 
 var casual = require('casual');
 
-CONFIG.database.logQueries = true;
+CONFIG.database.logQueries = false;
 
 Voice.all(function(err, voices) {
 
@@ -27,7 +27,7 @@ Voice.all(function(err, voices) {
       'https://www.youtube.com/watch?v=f4RGU2jXQiE'
     ]
 
-    async.times(7200, function(id, next) {
+    async.timesLimit(7200, 5, function(id, next) {
       var post =  new Post();
 
 
@@ -73,17 +73,27 @@ Voice.all(function(err, voices) {
 
       console.log(date)
 
-      post.save(function(err, result) {
-        var width = casual.integer(from = 200, to = 350);
-        var height = casual.integer(from = 100, to = 400);
+      var width = casual.integer(from = 200, to = 350);
+      var height = casual.integer(from = 100, to = 400);
 
-        var url = "http://lorempixel.com/" + width + "/" + height + "/";
+      var url = "http://lorempixel.com/" + width + "/" + height + "/";
+      // var url = "http://placehold.it/" + width + "x" + height
 
-        post.uploadImage('image', url, function () {
+      post.uploadImage('image', url, function () {
+
+        // post.imageWidth = post.image.meta('image').width;
+        // post.imageHeight = post.image.meta('image').height;
+
+        console.log('upload', post.image.meta('medium'))
+
+        post.save(function(err, result) {
+          console.log('save', err, result)
           next(null, post)
-        });
+        })
 
-      })
+      });
+
+
     }, function(err, posts) {
       if (err) {
         logger.error(err)
