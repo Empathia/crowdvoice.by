@@ -18,7 +18,16 @@ Class(CV, 'PostCreatorWriteArticleEditorBody').inherits(Widget)({
             Widget.prototype.init.call(this, config);
 
             this.el = this.element[0];
-            this.content = new MediumEditor(this.el.querySelector('.write-article-body-editable'));
+            this.editor = new MediumEditor(this.el.querySelector('.write-article-body-editable'));
+        },
+
+        destroy : function destroy() {
+            Widget.prototype.destroy.call(this);
+
+            this.el = null;
+            this.editor.destroy();
+
+            return null;
         }
     }
 });

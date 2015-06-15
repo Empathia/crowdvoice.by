@@ -70,7 +70,9 @@ Class(CV, 'PostCreatorWriteArticlePostDate').inherits(Widget)({
         },
 
         destroy : function destroy() {
-            CV.PostCreator.prototype.destroy.call(this);
+            Widget.prototype.destroy.call(this);
+
+            return null;
         }
     }
 });
