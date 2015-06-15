@@ -139,7 +139,7 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
       })
 
       // Add image attachment
-      this.hasImage({
+      this.constructor.prototype.hasImage({
         propertyName: 'image',
         versions: {
           medium: function (readStream) {

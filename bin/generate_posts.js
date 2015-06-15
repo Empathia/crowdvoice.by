@@ -1,5 +1,13 @@
 var application = require('neonode-core');
 
+// Load aws-sdk and S3
+var AWS = require('aws-sdk');
+global.amazonS3 = new AWS.S3(CONFIG.s3);
+
+// Load image processors
+global.gm = require('gm').subClass({imageMagick: true});
+global.sharp = require('sharp');
+
 var casual = require('casual');
 
 CONFIG.database.logQueries = true;
@@ -38,21 +46,16 @@ Voice.all(function(err, voices) {
         post.sourceUrl = casual.url;
       }
 
-      var width = casual.integer(from = 200, to = 350);
-      var height = casual.integer(from = 100, to = 400);
-
-      var url = "http://lorempixel.com/" + width + "/" + height + "/";
-
-
-      post.image = url;
+      // post.image = url;
       post.approved = casual.random_element([true, false]);
 
       var date =  new Date(year + '-' + month + '-' + casual.integer(from = 1, to = 28));
       post.createdAt = date;
       post.updatedAt = date;
       post.publishedAt = date;
-      post.imageWidth = width;
-      post.imageHeight = height;
+
+      // post.imageWidth = width;
+      // post.imageHeight = height;
 
       post.voiceId = voice.id;
       post.ownerId = 1;
@@ -69,8 +72,17 @@ Voice.all(function(err, voices) {
       }
 
       console.log(date)
+
       post.save(function(err, result) {
-        next(null, post)
+        var width = casual.integer(from = 200, to = 350);
+        var height = casual.integer(from = 100, to = 400);
+
+        var url = "http://lorempixel.com/" + width + "/" + height + "/";
+
+        post.uploadImage('image', url, function () {
+          next(null, post)
+        });
+
       })
     }, function(err, posts) {
       if (err) {
