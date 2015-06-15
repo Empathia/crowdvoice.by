@@ -1,7 +1,7 @@
 /* jshint multistr: true */
-Class(CV, 'PostCreatorUploadFilePostButton').inherits(Widget)({
+Class(CV, 'PostCreatorPostButton').inherits(Widget)({
 
-    ELEMENT_CLASS : 'upload-file-post-button',
+    ELEMENT_CLASS : 'from-sources-post-button',
 
     HTML : '\
         <div>\
@@ -30,4 +30,3 @@ Class(CV, 'PostCreatorUploadFilePostButton').inherits(Widget)({
         }
     }
 });
-
