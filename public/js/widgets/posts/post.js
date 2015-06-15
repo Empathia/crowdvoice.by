@@ -5,19 +5,13 @@ Class(CV, 'Post').inherits(Widget).includes(CV.WidgetUtils)({
     ACTIONS_HTML : '\
         <div class="post-card-actions">\
             <div class="-row -full-height">\
-                <div class="post-card-actions-item -col-4">\
-                    <svg class="post-card-activity-svg">\
-                        <use xlink:href="#svg-repost"></use>\
-                    </svg>\
-                    <p class="post-card-actions-label">Re-post</p>\
-                </div>\
-                <div class="post-card-actions-item -col-4">\
+                <div class="post-card-actions-item -col-6">\
                     <svg class="post-card-activity-svg">\
                         <use xlink:href="#svg-save"></use>\
                     </svg>\
                     <p class="post-card-actions-label">Save</p>\
                 </div>\
-                <div class="post-card-actions-item -col-4">\
+                <div class="post-card-actions-item -col-6">\
                     <svg class="post-card-activity-svg">\
                         <use xlink:href="#svg-share"></use>\
                     </svg>\
