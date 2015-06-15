@@ -145,6 +145,39 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           });
         })
       });
+    },
+
+    // Create reference for SavedPosts
+    // NOTE: This is not the same as saving a post.
+    savePost : function savePost (req, res, next) {
+      var person = req.currentPerson;
+
+      var createSavedPost = function (personId) {
+        var sp = new SavedPost({
+          entityId: personId,
+          postId: req.params.postId
+        });
+        sp.save(function (err) {
+          if (err) { next(err); return; }
+
+          res.format({
+            'text/html': function () {
+              res.redirect(req.currentPerson.profileName + '/saved_posts');
+            },
+            'application/json': function () {
+              res.json({result: 'Ok'});
+            }
+          });
+        });
+      };
+
+      if (req.currentPerson.isAnonymous) {
+        req.currentPerson.owner(function (err, result) {
+          createSavedPost(result.id);
+        });
+      } else {
+        createSavedPost(hashids.decode(req.currentPerson.id)[0]);
+      }
     }
   }
 });

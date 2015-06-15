@@ -38,13 +38,16 @@ require('./widgets/category-cover.js');
 require('./views/home');
 require('./views/voice');
 
-require('./widgets/voice-header.js');
-require('./widgets/voice-post-layers-manager');
-require('./widgets/voice-footer');
-require('./widgets/voice-timeline-feedback');
-require('./widgets/voice-posts-layer');
-require('./widgets/voice-post-indicator');
-require('./widgets/voice-about-box');
+require('./widgets/voice/voice-header.js');
+require('./widgets/voice/voice-post-layers-manager');
+require('./widgets/voice/voice-footer');
+require('./widgets/voice/voice-follow-button.js');
+require('./widgets/voice/voice-related-voices.js');
+require('./widgets/voice/moderate-button.js');
+require('./widgets/voice/voice-timeline-feedback');
+require('./widgets/voice/voice-posts-layer');
+require('./widgets/voice/voice-post-indicator');
+require('./widgets/voice/voice-about-box');
 
 // posts
 require('./widgets/posts/post.js');
@@ -56,11 +59,11 @@ require('./widgets/posts/post-quote.js');
 require('./widgets/posts/edit/post-edit.js');
 require('./widgets/posts/edit/post-edit-image-controls.js');
 
-require('./widgets/voice-add-content');
-require('./widgets/voice-timeline-jump-to-date');
-require('./widgets/voice-timeline-jump-to-date-label');
-require('./widgets/voice-timeline-jump-to-date-item');
-require('./widgets/voice-request-to-contribute.js');
+require('./widgets/voice/voice-add-content');
+require('./widgets/voice/voice-timeline-jump-to-date');
+require('./widgets/voice/voice-timeline-jump-to-date-label');
+require('./widgets/voice/voice-timeline-jump-to-date-item');
+require('./widgets/voice/voice-request-to-contribute.js');
 require('./widgets/popover-request-to-contribute.js');
 
 // post creators

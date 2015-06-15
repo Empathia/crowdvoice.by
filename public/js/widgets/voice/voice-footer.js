@@ -30,10 +30,29 @@ Class(CV, 'VoiceFooter').inherits(Widget)({
             ).render(this.element);
 
             this.appendChild(
+                new CV.VoiceFollowButton({
+                    name : 'followButton'
+                })
+            ).render(this.actionsColumn);
+
+            this.appendChild(
+                new CV.VoiceRelatedVoices({
+                    name : 'relatedVoicesButton'
+                })
+            ).render(this.actionsColumn);
+
+            this.appendChild(
                 new CV.VoiceRequestToContribute({
                     name : 'voiceRequestToContribute'
                 })
             ).render(this.actionsColumn);
+
+            this.appendChild(
+                new CV.VoiceModerate({
+                    name : 'voiceModerate'
+                })
+            ).render(this.actionsColumn);
+
         },
 
         /* Sets the Timeline's inital date.
