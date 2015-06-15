@@ -2,7 +2,7 @@
 Class(CV, 'VoiceRequestToContribute').inherits(Widget)({
     HTML : '\
         <div class="request-to-contribute-container -inline-block">\
-          <button class="request-to-contribute-button ui-btn -sm -primary">Request to Contribute</button>\
+          <button class="request-to-contribute-button cv-button tiny primary">Request to Contribute</button>\
         </div>\
     ',
 
