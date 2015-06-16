@@ -67,6 +67,8 @@ Class(CV, 'InputButton').inherits(Widget)({
 
             setTimeout(function(){
                 this.element.find('.cv-input').outerWidth( this.element.width() - this.element.find('button').outerWidth() );
+                //this.element.find('.cv-input').css( 'padding-right', (this.element.width() - this.element.find('button').outerWidth() ) );
+
             }.bind(this), 0);
 
 
@@ -74,6 +76,7 @@ Class(CV, 'InputButton').inherits(Widget)({
 
         recalculate : function(){
             this.element.find('.cv-input').outerWidth( this.element.width() - this.element.find('button').outerWidth() );
+            //this.element.find('.cv-input').css( 'padding-right', (this.element.width() - this.element.find('button').outerWidth() ) );
         }
     }
 

@@ -172,10 +172,10 @@
 
   //******* members ************
 
-  new CV.InputSearch({
+  var searchInput = new CV.InputButton({
       type      : '',
       name      : '',
-      style     : '',
+      style     : 'primary',
       hasTitle  : true,
       placeholder : 'Search users...',
       title     : "Invite users to join Mideast Youth (?)",
@@ -234,6 +234,7 @@
         $(this).addClass('active');
         $(contentContainer + ' .-menu-tab-content').removeClass('active');
         $(elContent).addClass('active');
+        searchInput.recalculate();
       }
     }
 
