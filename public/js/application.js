@@ -36,11 +36,12 @@ require('./widgets/category-cover.js');
 
 // views
 require('./views/home');
+require('./widgets/voice/voice-helper.js');
 require('./views/voice');
 
 require('./widgets/voice/voice-header.js');
-require('./widgets/voice/voice-post-layers-manager');
 require('./widgets/voice/voice-footer');
+require('./widgets/voice/voice-post-layers-manager');
 require('./widgets/voice/voice-follow-button.js');
 require('./widgets/voice/voice-related-voices.js');
 require('./widgets/voice/moderate-button.js');

@@ -1,4 +1,4 @@
-Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport)({
+Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, CustomEventSupport)({
 
     STATUS_DRAFT : 'STATUS_DRAFT',
     STATUS_UNLISTED : 'STATUS_UNLISTED',
@@ -38,25 +38,24 @@ Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport)({
         scrollableArea : null,
 
         init : function init(config) {
-            this.status = CV.Voice.STATUS_DRAFT;
-            this.type = CV.Voice.TYPE_PUBLIC;
+            this.status = CV.VoiceView.STATUS_DRAFT;
+            this.type = CV.VoiceView.TYPE_PUBLIC;
 
             Object.keys(config || {}).forEach(function(propertyName) {
                 this[propertyName] = config[propertyName];
             }, this);
 
-            // update standalone ui elements
-            if (this.coverImage) {
-                var image = document.createElement('img');
-                image.className = "voice-background-cover-image";
-                image.src = "<%= voice.coverImage %>";
-                this.backgroundElement.appendChild(image);
-            } else this.backgroundElement.className += ' -colored-background';
+            this.postsCount = this._formatPostsCountObject(this.postsCount);
 
-            this.dom.updateText(this.postCountElement, this.format.numberUS(this.postCount));
-            this.dom.updateText(this.followersCountElement, this.format.numberUS(this.followerCount));
+            this._appendLayersManager();
+            this._bindEvents();
+        },
 
-            // special behaviours
+        /* Instantiate Widgets that give special behaviour to VoiceView, such as the AutoHide Header, Expandable Sidebar, etc.
+         * @method setupVoiceWidgets <public> [Function]
+         * @return [CV.VoiceView]
+         */
+        setupVoiceWidgets : function setupVoiceWidgets() {
             new CV.Sidebar({
                 element : document.getElementsByClassName('cv-main-sidebar')[0]
             });
@@ -66,11 +65,14 @@ Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport)({
                 footerVoiceTitle : document.getElementsByClassName('voice-footer-meta-wrapper')[0]
             });
 
-            this.postsCount = this._formatPostsCountObject(this.postsCount);
+            return this;
+        },
 
-            // children
-            this._appendLayersManager();
-
+        /* Instantiate the voice footer.
+         * @method addFooter <public> [Function]
+         * @return [CV.VoiceView]
+         */
+        addFooter : function addFooter() {
             this.appendChild(
                 new CV.VoiceFooter({
                     name : 'voiceFooter',
@@ -81,47 +83,25 @@ Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport)({
                 })
             );
 
-            this._bindEvents();
+            return this;
         },
 
-        /* Give DESC format to the postsCount Object and filter empty months.
-         * It turns something like this:
-         * {2015: {01: "100", 02: "0", 05: "200"}, ...}, {2010: {06: "0", 07: "150"}, ...}
-         * into:
-         * [
-         *  {year: 2015, months: [{month: 05, total: 200}, {month: 01, total: 100}]},
-         *  {year: 2010, months: [{month: 07: total: 150}]},
-         *  ...
-         * ]
-         * @method _formatPostsCountObject <private> [Function]
+        /* Updates DOM Elements that are not widgets such as the backgroundCover and stats.
+         * @method updateVoiceInfo <public> [Function]
+         * @return [CV.Voice]
          */
-        _formatPostsCountObject : function _formatPostsCountObject(data) {
-            var desc, i, j, total, years, yearsLen, year, months, monthLen, month, _tempMonths,
-                result = [];
+        updateVoiceInfo : function updateVoiceInfo() {
+            if (this.coverImage) {
+                var image = document.createElement('img');
+                image.className = "voice-background-cover-image";
+                image.src = "<%= voice.coverImage %>";
+                this.backgroundElement.appendChild(image);
+            } else this.backgroundElement.className += ' -colored-background';
 
-            desc = function desc(a, b) {return b - a;};
+            this.dom.updateText(this.postCountElement, this.format.numberUS(this.postCount));
+            this.dom.updateText(this.followersCountElement, this.format.numberUS(this.followerCount));
 
-            years = Object.keys(data);
-            yearsLen = years.length;
-            years.sort(desc);
-
-            for (i = 0; i < yearsLen; i++) {
-                year = years[i];
-                _tempMonths = [];
-                months = Object.keys(data[year]);
-                monthsLen = months.length;
-                months.sort(desc);
-
-                for (j = 0; j < monthsLen; j++) {
-                    month = months[j];
-                    total = data[year][month];
-                    if (total > 0) _tempMonths.push({month: ~~month, total: ~~total});
-                }
-
-                if (_tempMonths.length > 0) result.push({year: ~~year, months: _tempMonths});
-            }
-
-            return result;
+            return this;
         },
 
         /* Checks if we have provided the information required before
@@ -178,7 +158,7 @@ Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport)({
         },
 
         showAboutBoxButtonHandler : function showAboutBoxButtonHandler() {
-            CV.Voice.dispatch('voiceAboutBox:show');
+            CV.VoiceView.dispatch('voiceAboutBox:show');
         },
 
         /* Initialize child widgets that depends on layerManager to be loaded with content.

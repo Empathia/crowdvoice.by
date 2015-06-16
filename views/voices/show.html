@@ -83,5 +83,9 @@
     voiceInfo[propertyName] = otherOptions[propertyName];
   }
 
-  var Voice = new CV.Voice( voiceInfo );
+  var Voice = new CV.VoiceView( voiceInfo );
+
+  Voice.updateVoiceInfo();
+  Voice.setupVoiceWidgets();
+  Voice.addFooter();
 </script>
