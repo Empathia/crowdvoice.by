@@ -11,19 +11,22 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         if (err) { return next(err); }
 
         res.locals.voice = new Voice(voice);
-        req.activeVoice = new Voice(voice);
+        req.activeVoice = res.locals.voice;
 
         db.raw("SELECT COUNT (*), \
           to_char(\"Posts\".published_at, 'MM') AS MONTH, \
           to_char(\"Posts\".published_at, 'YYYY') AS YEAR \
           FROM \"Posts\" \
           WHERE \"Posts\".voice_id = ? \
+          AND \"Posts\".approved = true \
           GROUP BY MONTH, YEAR \
           ORDER BY YEAR DESC, MONTH DESC", [voice.id])
         .exec(function(err, postsCount) {
           if (err) { return next(err); }
 
           var counts = {}
+
+          var dates = { firstPostDate : null, lastPostDate : null};
 
           postsCount.rows.forEach(function(post) {
             if (!counts[post.year]) {
@@ -35,13 +38,38 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
           res.locals.postsCount = counts;
 
-          Entity.findById(voice.ownerId, function(err, owner) {
-            if (err) { return next(err); }
+          db('Posts').where({voice_id : voice.id, approved: true}).orderBy('published_at', 'ASC').limit(1)
+          .exec(function(err, firstPost) {
+            if (err) {
+              return next(err);
+            }
 
-            res.locals.owner = new Entity(owner[0]);
+            if (firstPost.length !== 0) {
+              dates.firstPostDate = firstPost[0].published_at;
+            }
 
-            next();
-          });
+            db('Posts').where({voice_id : voice.id, approved: true}).orderBy('published_at', 'DESC').limit(1)
+            .exec(function(err, lastPost) {
+              if (err) {
+                return next(err);
+              }
+
+              if (lastPost.length !== 0) {
+                dates.lastPostDate = lastPost[0].published_at;
+              }
+
+              res.locals.voice.firstPostDate = dates.firstPostDate;
+              res.locals.voice.lastPostDate = dates.lastPostDate;
+
+              Entity.findById(voice.ownerId, function(err, owner) {
+                if (err) { return next(err); }
+
+                res.locals.owner = new Entity(owner[0]);
+
+                next();
+              });
+            })
+          })
         })
       });
     },

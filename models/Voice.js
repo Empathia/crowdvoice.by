@@ -138,9 +138,6 @@ var Voice = Class('Voice').inherits(Argon.KnexModel).includes(ImageUploader)({
     tweetLastFetchAt : null,
     rssUrl : null,
     rssLastFetchAt : null,
-    firstPostDate : null,
-    lastPostDate : null,
-    postCount : 0,
     createdAt : null,
     updatedAt : null,
 
@@ -165,16 +162,6 @@ var Voice = Class('Voice').inherits(Argon.KnexModel).includes(ImageUploader)({
         bucket: 'crowdvoice.by',
         basePath: '{env}/{modelName}_{id}/{property}_{versionName}.{extension}'
       });
-    },
-
-    updatePostCount : function updatePostCount(param, callback) {
-      if (param) {
-        this.postCount++;
-      } else {
-        this.postCount--;
-      }
-
-      this.save(callback);
     },
 
     /**

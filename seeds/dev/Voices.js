@@ -17,9 +17,6 @@ exports.seed = function(knex, Promise) {
       'tweet_last_fetch_at' : null,
       'rss_url' : null,
       'rss_last_fetch_at' : null,
-      'post_count' : 7200,
-      'first_post_date' : new Date('2012-05-01'),
-      'last_post_date' : new Date('2015-04-28'),
       'created_at' : new Date('2015-03-30T13:59:47Z'),
       'updated_at' : new Date('2015-03-30T13:59:47Z')
     }),
@@ -47,9 +44,6 @@ exports.seed = function(knex, Promise) {
       'tweet_last_fetch_at' : null,
       'rss_url' : null,
       'rss_last_fetch_at' : null,
-      'post_count' : 7200,
-      'first_post_date' : new Date('2012-05-01'),
-      'last_post_date' : new Date('2015-04-28'),
       'created_at' : new Date('2015-04-23T13:59:47Z'),
       'updated_at' : new Date('2015-04-23T13:59:47Z')
     }),
@@ -77,9 +71,6 @@ exports.seed = function(knex, Promise) {
       'tweet_last_fetch_at' : null,
       'rss_url' : null,
       'rss_last_fetch_at' : null,
-      'post_count' : 7200,
-      'first_post_date' : new Date('2012-05-01'),
-      'last_post_date' : new Date('2015-04-28'),
       'created_at' : new Date('2015-04-23T13:59:47Z'),
       'updated_at' : new Date('2015-04-23T13:59:47Z')
     }),
@@ -107,9 +98,6 @@ exports.seed = function(knex, Promise) {
       'tweet_last_fetch_at' : null,
       'rss_url' : null,
       'rss_last_fetch_at' : null,
-      'post_count' : 7200,
-      'first_post_date' : new Date('2012-05-01'),
-      'last_post_date' : new Date('2015-04-28'),
       'created_at' : new Date('2015-04-23T13:59:47Z'),
       'updated_at' : new Date('2015-04-23T13:59:47Z')
     }),
@@ -136,9 +124,6 @@ exports.seed = function(knex, Promise) {
       'tweet_last_fetch_at' : null,
       'rss_url' : null,
       'rss_last_fetch_at' : null,
-      'post_count' : 7200,
-      'first_post_date' : new Date('2012-05-01'),
-      'last_post_date' : new Date('2015-04-28'),
       'created_at' : new Date('2015-04-23T13:59:47Z'),
       'updated_at' : new Date('2015-04-23T13:59:47Z')
     }),
