@@ -45,6 +45,7 @@ require('./widgets/voice/voice-post-layers-manager');
 require('./widgets/voice/voice-follow-button.js');
 require('./widgets/voice/voice-related-voices.js');
 require('./widgets/voice/moderate-button.js');
+require('./widgets/voice/moderate-manager.js');
 require('./widgets/voice/voice-timeline-feedback');
 require('./widgets/voice/voice-posts-layer');
 require('./widgets/voice/voice-post-indicator');
