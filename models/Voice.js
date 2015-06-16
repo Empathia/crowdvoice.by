@@ -265,9 +265,9 @@ var Voice = Class('Voice').inherits(Argon.KnexModel).includes(ImageUploader)({
   }
 });
 
-Voice.bind('afterSave', function (event) {
-  var model = event.data.model;
-  model.addSlug(function () {});
-});
+// Voice.bind('afterSave', function (event) {
+//   var model = event.data.model;
+//   model.addSlug(function () {});
+// });
 
 module.exports = Voice;

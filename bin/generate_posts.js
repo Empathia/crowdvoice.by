@@ -72,6 +72,11 @@ Voice.all(function(err, voices) {
       var width = casual.integer(from = 200, to = 350);
       var height = casual.integer(from = 100, to = 400);
 
+      if (type === 'video') {
+        width = 350;
+        hegith = 197;
+      };
+
       var url = "http://lorempixel.com/" + width + "/" + height + "/";
       // var url = "http://placehold.it/" + width + "x" + height
 
