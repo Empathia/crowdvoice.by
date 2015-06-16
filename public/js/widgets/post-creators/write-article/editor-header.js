@@ -53,14 +53,13 @@ Class(CV, 'PostCreatorWriteArticleEditorHeader').inherits(Widget)({
         },
 
         destroy : function destroy() {
-            Widget.prototype.destroy.call(this);
-
-            this.unbind('activate', this._renderHandlerRef);
+            this.unbind('render', this._renderHandlerRef);
             this._renderHandlerRef = null;
 
             autosize.destroy(this.titleElement);
-
             this.el = null;
+
+            Widget.prototype.destroy.call(this);
 
             return null;
         }
