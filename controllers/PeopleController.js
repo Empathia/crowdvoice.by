@@ -6,17 +6,27 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
 
     savedPosts : function savedPosts (req, res, next) {
       var entity = req.entity;
-      SavedPosts.find({entityId: entity.id}, function (err, result) {
+      SavedPost.find({entity_id: entity.id}, function (err, result) {
         if (err) { next(err); return; }
 
-        res.format({
-          'application/json': function () {
-            res.json(result);
-          },
-          'text/html': function () {
-            res.locals.savedPosts = result;
-            res.render('people/saved_posts.html', {});
-          }
+        var posts = [];
+        async.each(result, function (sp, done) {
+          var sp = new SavedPost(sp);
+          sp.post(function (err, post) {
+            posts.push(post);
+            done();
+          });
+        }, function (err) {
+          if (err) { next(err); return; }
+          res.format({
+            'application/json': function () {
+              res.json(posts);
+            },
+            'text/html': function () {
+              res.locals.savedPosts = posts;
+              res.render('people/saved_posts.html', {});
+            }
+          });
         });
       });
     },
