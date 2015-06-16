@@ -8,9 +8,9 @@ body.page-home > .cv-main-sidebar {
 
   .cv-main-logo {display: none}
 
-  .sidebar-link {
-    color: @color-grey;
-  }
+  .sidebar-link {color: @color-neutral-dark}
+  .sidebar-link-svg {fill: @color-neutral-xx-mid}
+  .sidebar-heading {color: @color-neutral-mid}
 
   .sidebar-link:before {
     content: '';
@@ -22,9 +22,7 @@ body.page-home > .cv-main-sidebar {
     border-radius: 0 2px 2px;
   }
 
-  .sidebar-link.-is-active:before {
-    background-color: @color-primary;
-  }
+  .sidebar-link.-is-active:before {background-color: @color-primary}
 }
 
 /* =========================================================================== *
@@ -35,7 +33,7 @@ body.page-inner > .cv-main-sidebar {
   bottom: 0;
   left: -(@cv-sidebar-width - @cv-sidebar-collapsed-width);
   overflow: hidden;
-  background-color: darken(@color-grey-dark, 10%);
+  background-color: @color-neutral-xxx-dark;
   transition: transform 400ms ease-in-out;
 
   .sidebar-nav {
@@ -50,28 +48,25 @@ body.page-inner > .cv-main-sidebar {
     transition: opacity 240ms ease;
   }
 
-  .sidebar-link {color: @color-grey-light}
-  .sidebar-link-svg {fill: @color-grey-light}
+  .sidebar-link {color: @color-neutral-light}
+  .sidebar-link-svg {fill: @color-neutral-x-mid}
+  .sidebar-heading {color: @color-neutral-dark}
 }
 
 body.page-inner > .cv-main-sidebar .cv-main-logo {
   margin-bottom: 55px;
-  background-color: #000;
+  background-color: @color-black;
 
   .logo-type-cv {color: @color-white}
   .logo-type-by {color: @color-grey}
 }
 
 body.page-inner > .cv-main-sidebar.-is-expanded {
-  .sidebar-nav {
-    transform: translateX(0);
-  }
+  .sidebar-nav {transform: translateX(0)}
 
   .cv-main-logo-type,
   .sidebar-heading,
-  .sidebar-link-label {
-    opacity: 1;
-  }
+  .sidebar-link-label {opacity: 1}
 }
 
 /* =========================================================================== *
@@ -79,13 +74,11 @@ body.page-inner > .cv-main-sidebar.-is-expanded {
  * =========================================================================== */
 body > .cv-main-sidebar {
   position: fixed;
+  z-index: 2;
   width: @cv-sidebar-width;
   transform: translateZ(0);
-  z-index: 2;
 
-  .cv-main-logo {
-    height: @cv-header-height;
-  }
+  .cv-main-logo {height: @cv-header-height}
 }
 
 body > .cv-main-sidebar.-is-expanded {
@@ -93,18 +86,17 @@ body > .cv-main-sidebar.-is-expanded {
 }
 
 .sidebar-link,
-.sidebar-heading {
-  padding-left: 1.5em;
-}
+.sidebar-heading {padding-left: 1.5em}
 
 .sidebar-link {
+  position: relative;
   font-size: 14px;
   display: block;
   height: 28px;
   margin-bottom: .5em;
   padding-top: .4em;
   white-space: nowrap;
-  transition: color 240ms ease, transform 100ms ease-out;
+  transition: color 240ms ease;
 
   &:hover,
   &.-is-active {
@@ -112,29 +104,22 @@ body > .cv-main-sidebar.-is-expanded {
 
     .sidebar-link-svg {fill: @color-primary}
   }
+}
 
-  &:hover {transform: translateX(4px)}
+.sidebar-link-svg {
+  width: 16px;
+  height: 16px;
+  transition: fill 240ms ease;
+}
 
-  &.-is-active {
-    transform: translateX(0);
-  }
-
-  &-svg {
-    width: 16px;
-    height: 16px;
-    fill: @color-grey;
-    transition: fill 240ms ease;
-  }
-
-  &-label {
-    padding-left: .5em;
-    line-height: 1.25em;
-  }
+.sidebar-link-label {
+  padding-left: .5em;
+  line-height: 1.25em;
 }
 
 .sidebar-heading {
-  font-size: 1rem;
+  font-size: 10px;
   margin-top: 2em;
-  font-weight: 200;
-  color: @color-grey-light;
+
+  .-font-semi-bold;
 }
