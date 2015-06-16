@@ -12,7 +12,7 @@ Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport)({
         id : null,
         title : '',
         description : '',
-        backgroundImage : '',
+        coverImage : '',
         latitude : '',
         longitude : '',
         locationName : '',
@@ -46,9 +46,17 @@ Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport)({
             }, this);
 
             // update standalone ui elements
+            if (this.coverImage) {
+                var image = document.createElement('img');
+                image.className = "voice-background-cover-image";
+                image.src = "<%= voice.coverImage %>";
+                this.backgroundElement.appendChild(image);
+            } else this.backgroundElement.className += ' -fallback';
+
             this.dom.updateText(this.postCountElement, this.format.numberUS(this.postCount));
             this.dom.updateText(this.followersCountElement, this.format.numberUS(this.followerCount));
 
+            // special behaviours
             new CV.Sidebar({
                 element : document.getElementsByClassName('cv-main-sidebar')[0]
             });
@@ -73,7 +81,6 @@ Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport)({
                 })
             );
 
-            // listeners
             this._bindEvents();
         },
 
@@ -213,7 +220,7 @@ Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport)({
             this.id = null;
             this.title = null;
             this.description = null;
-            this.backgroundImage = null;
+            this.coverImage = null;
             this.latitude = null;
             this.longitude = null;
             this.locationName = null;
