@@ -142,7 +142,7 @@ Tellurium.suite('Post Controller')(function () {
         },
       ], function (err) {
         var req = request
-          .post(urlBase + '/' + e1.profileName + '/' + v1.getSlug() + '/' + p1.id + '/save_post')
+          .post(urlBase + '/post/' + p1.id + '/save_post')
           .set('cookie', cookies)
           .send({
             _csrf: csrf,

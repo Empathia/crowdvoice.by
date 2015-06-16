@@ -127,7 +127,9 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         if (err) {
           res.render('voices/new.html', {errors: err});
         } else {
-          res.redirect('/voice/' + voice.id);
+          voice.addSlug(function (err) {
+            res.redirect('/voice/' + voice.id);
+          });
         }
       });
     },

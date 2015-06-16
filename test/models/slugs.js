@@ -15,7 +15,7 @@ function uid (number) {
   return crypto.randomBytes(number).toString('hex');
 }
 
-CONFIG.database.logQueries = false;
+// CONFIG.database.logQueries = false;
 
 /* Slug Model Tests
  *
@@ -47,7 +47,7 @@ Tellurium.suite('Slug Model')(function () {
     //   isAnonymous: false
     // };
     spec.registry.voiceData = {
-      title : 'Voice Title',
+      title : 'Voice Title' + uid(8),
       description : 'Voice Description',
       latitude : null,
       longitude : null,
@@ -75,12 +75,61 @@ Tellurium.suite('Slug Model')(function () {
           v1.save(done);
         },
         function (done) {
-          v1.addSlug(done);
+          v1.addSlug('test', done);
         }
       ], function (err) {
         db('Slugs').where({voice_id: v1.id}).exec(function (err, slugs) {
           spec.assert(slugs.length).toBe(1);
+          spec.assert(slugs[0].url).toBe('test');
           spec.completed();
+        });
+      });
+    });
+
+    this.specify('Should find a voice by slug')(function (spec) {
+      var v1;
+      async.series([
+        function (done) {
+          v1 = new Voice(spec.registry.voiceData);
+          v1.save(done);
+        },
+        function (done) {
+          v1.addSlug(v1.getSlug(), done);
+        }
+      ], function (err) {
+        Voice.findBySlug(v1.getSlug(), function (err, voice) {
+          spec.assert(voice).toBeTruthy();
+          spec.assert(voice.title).toBe(spec.registry.voiceData.title);
+          spec.completed();
+        });
+      });
+    });
+
+    this.specify('Should find a voice by old slugs')(function (spec) {
+      var v1;
+      async.series([
+        function (done) {
+          v1 = new Voice(spec.registry.voiceData);
+          v1.save(done);
+        },
+        function (done) {
+          v1.addSlug('oldslug1', done);
+        },
+        function (done) {
+          v1.addSlug('oldslug2', done);
+        },
+        function (done) {
+          v1.addSlug(v1.getSlug(), done);
+        },
+      ], function (err) {
+        Voice.findBySlug('oldslug1', function (err, voice) {
+          spec.assert(voice).toBeTruthy();
+          spec.assert(voice.title).toBe(spec.registry.voiceData.title);
+          Voice.findBySlug('oldslug2', function (err, voice) {
+            spec.assert(voice).toBeTruthy();
+            spec.assert(voice.title).toBe(spec.registry.voiceData.title);
+            spec.completed();
+          });
         });
       });
     });

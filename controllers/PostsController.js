@@ -10,6 +10,12 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
       return this;
     },
 
+    index : function index (req, res, next) {
+      Post.all(function (err, posts) {
+        res.render('posts/index.html', {posts: posts});
+      });
+    },
+
     show : function show(req, res, next) {
       if (req.params.postId === 'edit') { next(); return; }
 
@@ -162,7 +168,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
           res.format({
             'text/html': function () {
-              res.redirect(req.currentPerson.profileName + '/saved_posts');
+              res.redirect('/posts');
             },
             'application/json': function () {
               res.json({result: 'Ok'});
@@ -177,6 +183,41 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         });
       } else {
         createSavedPost(hashids.decode(req.currentPerson.id)[0]);
+      }
+    },
+
+    unsavePost : function unsavePost (req, res, next) {
+      var person = req.currentPerson;
+
+      var unsavePost = function (personId) {
+        SavedPost.find({
+          entity_id: personId,
+          post_id: req.params.postId
+        }, function (err, result) {
+          if (err) { next(err); return; }
+          if (result.length === 0) { next(new Error('Not found')); }
+
+          var sp = new SavedPost(result[0]);
+          sp.destroy(function (err) {
+            if (err) { next(err); return; }
+            res.format({
+              'text/html': function () {
+                res.redirect('/' + req.currentPerson.profileName + '/saved_posts');
+              },
+              'application/json': function () {
+                res.json({result: 'Ok'});
+              }
+            });
+          });
+        });
+      };
+
+      if (req.currentPerson.isAnonymous) {
+        req.currentPerson.owner(function (err, result) {
+          unsavePost(result.id);
+        });
+      } else {
+        unsavePost(hashids.decode(req.currentPerson.id)[0]);
       }
     }
   }

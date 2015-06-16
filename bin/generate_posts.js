@@ -27,7 +27,7 @@ Voice.all(function(err, voices) {
       'https://www.youtube.com/watch?v=f4RGU2jXQiE'
     ]
 
-    async.timesLimit(1000, 5, function(id, next) {
+    async.timesLimit(process.argv[2] || 1000, 5, function(id, next) {
       var post =  new Post();
 
 

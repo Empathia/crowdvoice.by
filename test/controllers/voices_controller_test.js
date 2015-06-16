@@ -1,9 +1,19 @@
 #!/usr/bin/env node
 'use strict';
 
-var application = require('neonode-core');
 require('tellurium');
 require(process.cwd() + '/node_modules/tellurium/reporters/pretty');
+
+var basePath = __dirname + '/../../';
+var application = require('neonode-core');
+
+require(basePath + '/lib/routes.js');
+
+global.ACL = require(basePath + 'lib/ACL/ACL.js');
+require(basePath + 'lib/ACL/visitor.js');
+require(basePath + 'lib/ACL/anonymous.js');
+require(basePath + 'lib/ACL/person.js');
+require(basePath + 'lib/ACL/admin.js');
 
 Tellurium.reporter = new Tellurium.Reporter.Pretty({
   colorsEnabled : true
