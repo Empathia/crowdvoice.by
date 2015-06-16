@@ -150,7 +150,7 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
       });
     },
 
-    toJSON : function toJSON() {
+    toJSON : function toJSON () {
       var json = {};
 
       Object.keys(this).forEach(function(property) {
