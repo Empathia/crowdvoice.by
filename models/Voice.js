@@ -110,7 +110,6 @@ var Voice = Class('Voice').inherits(Argon.KnexModel).includes(ImageUploader)({
   },
 
   findBySlug : function findBySlug (slugString, done) {
-
     Slug.find(["url = lower(trim( ' ' from ?))", [slugString]], function (err, result) {
       if (err) { done(err); return; }
 
@@ -228,11 +227,16 @@ var Voice = Class('Voice').inherits(Argon.KnexModel).includes(ImageUploader)({
     /* Add slug for a voice.
      * Makes sure there only exist maximum of 3 slugs per voice.
      */
-    addSlug : function (done) {
+    addSlug : function (slugString, done) {
+      if (typeof(slugString) === 'function') {
+        done = slugString;
+        slugString = this.getSlug();
+      }
+
       var voice = this;
       var slug = new Slug({
         voiceId : voice.id,
-        url: this.getSlug()
+        url: slugString
       });
       slug.save(function (err) {
         if (err) { done (err); return; }
@@ -251,10 +255,5 @@ var Voice = Class('Voice').inherits(Argon.KnexModel).includes(ImageUploader)({
     }
   }
 });
-
-// Voice.bind('afterSave', function (event) {
-//   var model = event.data.model;
-//   model.addSlug(function () {});
-// });
 
 module.exports = Voice;

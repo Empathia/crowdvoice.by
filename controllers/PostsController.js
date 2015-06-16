@@ -10,6 +10,13 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
       return this;
     },
 
+    index : function index (req, res, next) {
+      Post.all(function (err, posts) {
+        console.log(posts);
+        res.render('posts/index.html', {posts: posts});
+      });
+    },
+
     show : function show(req, res, next) {
       if (req.params.postId === 'edit') { next(); return; }
 
