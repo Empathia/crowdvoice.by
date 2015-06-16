@@ -51,7 +51,7 @@ Class(CV, 'Voice').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport)({
                 image.className = "voice-background-cover-image";
                 image.src = "<%= voice.coverImage %>";
                 this.backgroundElement.appendChild(image);
-            } else this.backgroundElement.className += ' -fallback';
+            } else this.backgroundElement.className += ' -colored-background';
 
             this.dom.updateText(this.postCountElement, this.format.numberUS(this.postCount));
             this.dom.updateText(this.followersCountElement, this.format.numberUS(this.followerCount));
