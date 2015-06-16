@@ -27,7 +27,7 @@ Voice.all(function(err, voices) {
       'https://www.youtube.com/watch?v=f4RGU2jXQiE'
     ]
 
-    async.timesLimit(7200, 5, function(id, next) {
+    async.timesLimit(1000, 5, function(id, next) {
       var post =  new Post();
 
 
@@ -40,13 +40,12 @@ Voice.all(function(err, voices) {
 
       if (type === 'video') {
         post.sourceService = 'youtube';
-        post.sourceUrl = casual.random_element(youtubes);
+        post.sourceUrl = casual.random_element(youtubes) + '?' + casual.random;
       } else {
         post.sourceService = 'link';
-        post.sourceUrl = casual.url;
+        post.sourceUrl = casual.url  + '?' + casual.random;
       }
 
-      // post.image = url;
       post.approved = casual.random_element([true, false]);
 
       var date =  new Date(year + '-' + month + '-' + casual.integer(from = 1, to = 28));
@@ -54,14 +53,11 @@ Voice.all(function(err, voices) {
       post.updatedAt = date;
       post.publishedAt = date;
 
-      // post.imageWidth = width;
-      // post.imageHeight = height;
-
       post.voiceId = voice.id;
       post.ownerId = 1;
       count++;
 
-      if (count === 200) {
+      if (count === 50) {
         month--;
         count = 0;
       }
@@ -76,22 +72,28 @@ Voice.all(function(err, voices) {
       var width = casual.integer(from = 200, to = 350);
       var height = casual.integer(from = 100, to = 400);
 
+      if (type === 'video') {
+        width = 350;
+        hegith = 197;
+      };
+
       var url = "http://lorempixel.com/" + width + "/" + height + "/";
       // var url = "http://placehold.it/" + width + "x" + height
 
-      post.uploadImage('image', url, function () {
+      post.save(function(err, postRes) {
+        if (err) {
+          return next(err);
+        }
 
-        // post.imageWidth = post.image.meta('image').width;
-        // post.imageHeight = post.image.meta('image').height;
+        post.uploadImage('image', url, function () {
 
-        console.log('upload', post.image.meta('medium'))
+          post.save(function(err, result) {
+            next(err, post)
+          })
 
-        post.save(function(err, result) {
-          console.log('save', err, result)
-          next(null, post)
-        })
+        });
+      })
 
-      });
 
 
     }, function(err, posts) {
@@ -109,6 +111,8 @@ Voice.all(function(err, voices) {
     };
 
     logger.log('Finisihed')
+
+    process.exit(0)
   })
 
 });
