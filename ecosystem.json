@@ -7,8 +7,6 @@
       name      : "cv.by 0",
       script    : "bin/server.js",
       env: {
-      },
-      env_production : {
         "NODE_ENV": "staging",
         "PORT" : "3000"
       }
@@ -18,8 +16,6 @@
       name      : "cv.by 1",
       script    : "bin/server.js",
       env: {
-      },
-      env_production : {
         "NODE_ENV": "staging",
         "PORT" : "3001"
       }
@@ -29,8 +25,6 @@
       name      : "cv.by 2",
       script    : "bin/server.js",
       env: {
-      },
-      env_production : {
         "NODE_ENV": "staging",
         "PORT" : "3002"
       }
@@ -40,8 +34,6 @@
       name      : "cv.by 3",
       script    : "bin/server.js",
       env: {
-      },
-      env_production : {
         "NODE_ENV": "staging",
         "PORT" : "3003"
       }
@@ -51,8 +43,6 @@
       name      : "cv.by 4",
       script    : "bin/server.js",
       env: {
-      },
-      env_production : {
         "NODE_ENV": "staging",
         "PORT" : "3004"
       }
@@ -62,8 +52,6 @@
       name      : "cv.by 5",
       script    : "bin/server.js",
       env: {
-      },
-      env_production : {
         "NODE_ENV": "staging",
         "PORT" : "3005"
       }
@@ -73,8 +61,6 @@
       name      : "cv.by 6",
       script    : "bin/server.js",
       env: {
-      },
-      env_production : {
         "NODE_ENV": "staging",
         "PORT" : "3006"
       }
@@ -84,8 +70,6 @@
       name      : "cv.by 7",
       script    : "bin/server.js",
       env: {
-      },
-      env_production : {
         "NODE_ENV": "staging",
         "PORT" : "3007"
       }
