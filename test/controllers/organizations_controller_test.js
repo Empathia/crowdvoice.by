@@ -5,7 +5,16 @@
 require('tellurium');
 require('./../../lib/TelluriumConsoleReporter.js');
 
+var basePath = __dirname + '/../../';
 var application = require('neonode-core');
+
+require(basePath + '/lib/routes.js');
+
+global.ACL = require(basePath + 'lib/ACL/ACL.js');
+require(basePath + 'lib/ACL/visitor.js');
+require(basePath + 'lib/ACL/anonymous.js');
+require(basePath + 'lib/ACL/person.js');
+require(basePath + 'lib/ACL/admin.js');
 
 var request = require('superagent');
 var crypto = require('crypto');
@@ -41,7 +50,7 @@ Tellurium.suite('Organizations Controller')(function () {
 
   this.beforeEach(function (spec) {
     spec.registry.userData = {
-      username: 'juan ' + uid(16),
+      username: 'juan_' + uid(16),
       email: 'person_' + uid(16) + '@test.com',
       password: 'mysecret'
     };
