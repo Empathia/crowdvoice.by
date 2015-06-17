@@ -90,11 +90,6 @@ var Voice = Class('Voice').inherits(Argon.KnexModel).includes(ImageUploader)({
         case 'created_before':
           kxquery.whereRaw("created_at <= '" + moment(new Date(query[key]).toISOString()).format() + "'");
           break;
-        case 'trending':
-          if (query[key]) {
-            kxquery.orderBy('post_count', 'desc');
-          }
-          break;
         default:
           kxquery.where(key, '=', query[key]);
       }
