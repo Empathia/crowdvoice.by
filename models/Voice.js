@@ -241,6 +241,10 @@ var Voice = Class('Voice').inherits(Argon.KnexModel).includes(ImageUploader)({
         subquery.orderBy('created_at', 'desc');
         subquery.limit(3);
 
+        subquery.exec(function () {
+          console.log(arguments);
+        });
+
         var query = db('Slugs');
         query.where({voice_id: voice.id});
         query.where('id', 'not in', subquery);

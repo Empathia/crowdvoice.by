@@ -31,7 +31,7 @@ Tellurium.suite('User Model')(function () {
   this.beforeEach(function (spec) {
     spec.registry.userData = function () {
       return {
-        username: 'juan ' + uid(16),
+        username: 'juan_' + uid(16),
         email: 'person_' + uid(16) + '@test.com',
         password: 'mysecret'
       };
