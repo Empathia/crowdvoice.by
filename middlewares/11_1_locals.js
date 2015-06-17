@@ -70,8 +70,6 @@ module.exports = function(req, res, next) {
         req.currentPerson = entity;
         req.role = 'Person'
 
-        console.log(res.locals.currentPerson);
-
         return next();
       });
     }
