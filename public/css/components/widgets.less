@@ -631,7 +631,8 @@ form{
     display: block;
     font-size: 11px;
     text-transform: uppercase;
-    color: @color-black;
+    color: @color-neutral-dark;
+    font-weight: bold;
     padding-bottom: 5px;
     span{
       padding-left: 5px;
@@ -642,8 +643,16 @@ form{
   }
   .text{
     padding: 5px 0px;
+    .fade{
+      color: @color-neutral-x-mid;
+    }
     .dim{
+      font-size: 11px;
       opacity: .5;
+    }
+    a.no-style{
+      color: @color-neutral-x-mid;
+      text-decoration: underline;
     }
   }
   ::-webkit-input-placeholder{
