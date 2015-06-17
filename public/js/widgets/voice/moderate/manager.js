@@ -10,11 +10,15 @@ Class(CV, 'VoiceModerateManager').inherits(Widget)({
 
         el : null,
         layersManager : null,
+        _window : null,
+        _body : null,
 
         init : function init(config) {
             Widget.prototype.init.call(this, config);
 
             this.el = this.element[0];
+            this._window = window;
+            this._body = document.body;
 
             var data = {
                 name : 'layersManager',
@@ -47,20 +51,37 @@ Class(CV, 'VoiceModerateManager').inherits(Widget)({
             this._destroyRef = this.destroy.bind(this);
             this.footer.bind('done', this._destroyRef);
 
+            this._windowKeydownHandlerRef = this._windowKeydownHandler.bind(this);
+            this._window.addEventListener('keydown', this._windowKeydownHandlerRef);
+
             return this;
         },
 
         _renderHandler : function _renderHandler() {
-            document.body.style.overflow = 'hidden';
+            this._body.style.overflow = 'hidden';
+        },
+
+        _windowKeydownHandler : function _windowKeydownHandler(ev) {
+            var charCode = (typeof ev.which == 'number') ? ev.which : ev.keyCode;
+
+            if (charCode === 27) { // ESC
+                this.destroy();
+            }
         },
 
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
 
-            document.body.style.overflow = '';
+            this._body.style.overflow = '';
+
+            this._window.addEventListener('keydown', this._windowKeydownHandlerRef);
+            this._windowKeydownHandlerRef = null;
 
             this._renderHandlerRef = null;
             this._destroyRef = null;
+            this.el = null;
+            this._window = null;
+            this._body = null;
 
             return null;
         }
