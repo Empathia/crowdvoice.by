@@ -1,28 +1,42 @@
 <main role="main" class="cv-main-content page-about -rel">
 
-    <div class="-col-12 page-container dark">
+    <div class="-col-12 page-container main">
       <div class="page-content">
         <h6>Who we are</h6>
-        <p class="huge">We're a group of human rights activists frustrated with the inadequate and often overpriced tools needed to make our causes accessible and engaging. Knowing that thousands of stories were going unheard, we were determined to give them a voice.</p>
+        <h5>We're a group of human rights activists frustrated with the inadequate and often overpriced tools needed to make our causes accessible and engaging. Knowing that thousands of stories were going unheard, we were determined to give them a voice.</h5>
         <div class="arrow"></div>
+      </div>
+      <div class="arrow-bg -clear-after">
+        <div class="-col-4 side">
+        </div>
+        <div class="-col-4 center">
+          <img src="/img/page-about-arrow.png">
+        </div>
+        <div class="-col-4 side">
+        </div>
       </div>
     </div>
     <div class="-col-12 page-container grey">
       <div class="page-content">
         <h2>The result is CrowdVoice.by</h2>
-        <p class="big">An interactive platform where anyone can broadcast and visualize a message, raise awareness, and invite change.</p>
+        <h5>An interactive platform where anyone can broadcast and visualize a message, raise awareness, and invite change.</h5>
       </div>
     </div>
     <div class="-col-12 page-container light">
       <div class="page-content">
         <h6>Why we're needed</h6>
         <p>Today’s digital media is cluttered and volatile, so we’re here to make sorting and preserving information easy. CrowdVoice.by gives you the tools to organize, share, and galvanize your cause, or simply archive content for future research and education. It's never been easier to connect to what matters.</p>
-        <br><br><br>
+        <br><br><br><br><br>
         <h6>Community Oriented</h6>
-        <p>CrowdVoice.by is built to streamline the crowdsourcing of information, while allowing you to moderate content to best reflect your cause. We believe information advocacy works best with the involvement of networked communities. In other words, you, the people you know, the people they know, and so on. This core ethos carries over into our software. <a href="#">CrowdVoice.by is an open source project.</a></p>
+        <p>CrowdVoice.by is built to streamline the crowdsourcing of information, while allowing you to moderate content to best reflect your cause. We believe information advocacy works best with the involvement of networked communities. In other words, you, the people you know, the people they know, and so on. This core ethos carries over into our software.
+          <br>
+          <a href="#">CrowdVoice.by is an open source project.</a>
+        </p>
         <br><br>
-        <button class="cv-button primary medium">Donate!</button>
+        <button class="cv-button">Donate!</button>
       </div>
+      <img class="voice-left" src="/img/page-about-voice-left.png">
+      <img class="voice-right" src="/img/page-about-voice-right.png">
     </div>
 
     <div class="-col-12 page-container grey">
@@ -30,334 +44,39 @@
         <h6>Our partners</h6>
         <p>CrowdVoice.by is honored to have partnered with the following organizations.</p>
         <br>
-        <img class="partner" src="/img/sample/partners/partner-01.png">
+        <img class="partner" src="/img/sample/partners/shuttleworth.png">
       </div>
     </div>
 
-    <div class="-col-12 page-container light">
+    <div class="-col-12 page-container light bg-images">
       <div class="page-content">
         <h3>Create, curate, amplify and...</h3>
         <h1>CrowdVoice</h1>
-        <br>
-        <button class="cv-button primary big">Sign Up Here!</button>
+        <br><br><br>
+        <button class="cv-button primary large">Sign Up Here!</button>
         <br><br><br><br>
-        <img src="/img/cv-logo-hollow.png">
       </div>
     </div>
+
     <div class="-col-12 page-container no-pad dark footer">
-      <div class="-col-6">
+      <div class="-col-4"></div>
+      <div class="-col-4">
         <div class="footer-menu">
-          <a href="#">Home</a> • <a href="#">About</a> • <a href="#">Browse</a> • <a href="#">Contact Us</a>
           <span>
-            <img src="/img/icons/icon-footer-twitter.png">
-            <img src="/img/icons/icon-footer-facebook.png">
+            <a href="#" class="side"><img src="/img/icons/icon-circle-twitter.png"></a>
+            <a href="#"><img src="/img/icons/icon-logo-cv.png"></a>
+            <a href="#" class="side"><img src="/img/icons/icon-circle-facebook.png"></a>
           </span>
+          <br><br>
+          © Mideast Youth, 2015. All Rights Reserved
         </div>
       </div>
-      <div class="-col-6">
-        <div class="subscribe">
-
-          <div class="form-field cv-input-search">
-            <div class="-clear-after">
-              <div class="-col-9">
-                <div class="cv-input">
-                  <input type="text" placeholder="Enter your email to subscribe to our newsletter">
-                </div>
-              </div>
-              <div class="-col-3">
-                <button class="cv-button primary">Subscribe Me</button>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
+      <div class="-col-4"></div>
     </div>
 
 </main>
 
 <script>
-
-$( document ).ready(function() {
-
-  $('.create-voice').on('click', function(){
-    createVoice.show();
-  });
-  $('.create-organization').on('click', function(){
-    createOrganization.show();
-  });
-  $('.invite-contribute').on('click', function(){
-    inviteToContribute.show();
-  });
-  $('.manage-contributors').on('click', function(){
-    manageContributors.show();
-  });
-  $('.request-membership').on('click', function(){
-    requestMembership.show();
-  });
-  $('.manage-related-voices').on('click', function(){
-    manageRelatedVoices.show();
-  });
-  $('.modal-report').on('click', function(){
-    report.show();
-  });
-  $('.modal-block').on('click', function(){
-    block.show();
-  });
-
-});
-
-
-var years= {
-    "2014" : [
-        {name: 'November', count: '431'},
-        {name: 'October', count: '32'},
-        {name: 'April', count: '958', selected: true},
-        {name: 'February',count: '283'}
-    ],
-    "2015" : [
-        {name: 'December', count: '32'},
-        {name: 'November', count: '423'},
-        {name: 'October', count: '623'},
-        {name: 'September', count: '263'},
-        {name: 'August', count: '292'},
-        {name: 'July', count: '391'},
-        {name: 'June', count: '23'},
-        {name: 'May', count: '94'},
-        {name: 'April', count: '238'},
-        {name: 'March', count: '193'},
-        {name: 'February', count: '482'},
-        {name: 'January', count: '39'},
-    ]
-}
-
-var createVoice = new CV.Modal({
-    style       : '',
-    type        : '',
-    title       : 'Create a Voice',
-    name        : 'createAVoiceModal',
-    action      : CV.CreateVoice,
-    width       : 960,
-});//.render(document.querySelector('body'));
-
-var createOrganization = new CV.Modal({
-    style       : '',
-    type        : '',
-    title       : 'Create an Organization',
-    name        : 'createAnOrganizationModal',
-    action      : CV.CreateOrganization,
-    width       : 540,
-});//.render(document.querySelector('body'));
-
-var inviteToContribute = new CV.Modal({
-    style       : '',
-    type        : '',
-    title       : 'Invite to Contribute',
-    name        : 'inviteToContributeModal',
-    action      : CV.InviteToContribute,
-    width       : 650,
-});
-
-var manageContributors = new CV.Modal({
-    style       : '',
-    type        : '',
-    title       : 'Manage Contributors',
-    name        : 'manageContributorsModal',
-    action      : CV.ManageContributors,
-    width       : 900,
-});
-
-var requestMembership = new CV.Modal({
-    style       : '',
-    type        : '',
-    title       : 'Request Membership',
-    name        : 'requestmembershipModal',
-    action      : CV.RequestMembership,
-    width       : 650,
-});
-
-var manageRelatedVoices = new CV.Modal({
-    style       : '',
-    type        : '',
-    title       : 'Manage Related Voices',
-    name        : 'manageRelatedVoicesModal',
-    action      : CV.ManageRelatedVoices,
-    width       : 900,
-});
-
-var report = new CV.Modal({
-    style       : '',
-    type        : '',
-    title       : 'Report / Claim',
-    name        : 'reportModal',
-    action      : CV.Report,
-    width       : 650,
-});
-
-
-var block = new CV.Modal({
-    style       : '',
-    type        : '',
-    title       : 'Block',
-    name        : 'blockModal',
-    action      : CV.Block,
-    width       : 700,
-});
-
-new CV.Notification({
-    style       : '',
-    type        : '',
-    title       : '',
-    name        : 'notification',
-    //action      : Share,
-    //actionData  : years,
-}).render(document.querySelector('.placeholder-bubble'));
-$('.placeholder-bubble').append('<br>');
-
-new CV.Bubble({
-    style       : '',
-    type        : '',
-    title       : 'Want to help out?',
-    name        : 'help',
-    action      : CV.Help,
-    //actionData  : years,
-    width       : 600,
-    anchorEl    : document.querySelector('.bubble-help')
-});//.render(document.querySelector('.placeholder-bubble'));
-
-$('.placeholder-bubble').append('<br>');
-
-new CV.Bubble({
-    style       : '',
-    type        : '',
-    title       : 'Share',
-    name        : 'share',
-    action      : CV.Share,
-    //actionData  : years,
-    width       : 420,
-    anchorEl    : document.querySelector('.bubble-share')
-}).render(document.querySelector('.placeholder-share'));
-
-$('.placeholder-bubble').append('<br>');
-
-new CV.Bubble({
-    style       : '',
-    type        : '',
-    title       : 'Jump to...',
-    name        : 'JTD',
-    action      : CV.JumpToDate,
-    actionData  : years,
-    anchorEl    : document.querySelector('.bubble-jump')
-}).render(document.querySelector('.placeholder-jump'));
-$('.placeholder-bubble').append('<br>');
-
-new CV.Bubble({
-    style       : '',
-    type        : '',
-    title       : 'Related Voices',
-    name        : 'relatedBubble',
-    action      : CV.VoicesList,
-    actionData  : voices,
-    width       : 480,
-    anchorEl    : document.querySelector('.bubble-related')
-}).render(document.querySelector('.placeholder-related'));
-
-new CV.Button({
-    style       : 'primary',
-    type        : 'single',
-    label       : 'Follow',
-    actionType  : 'follow',
-    name        : 'buttonFoll'
-}).render(document.querySelector('.placeholder-ui'));
-
-new CV.Button({
-    style       : 'primary activated',
-    type        : 'single',
-    actionType  : 'follow',
-    label       : 'Following',
-    name        : 'buttonFoll'
-}).render(document.querySelector('.placeholder-ui'));
-
-new CV.Button({
-    style       : 'primary',
-    type        : 'single',
-    label       : 'Block',
-    actionType  : 'block',
-    name        : 'buttonFoll'
-}).render(document.querySelector('.placeholder-ui'));
-new CV.Button({
-    style       : 'primary activated',
-    type        : 'single',
-    actionType  : 'block',
-    label       : 'Blocked',
-    name        : 'buttonFoll'
-}).render(document.querySelector('.placeholder-ui'));
-
-
-//Normal
-var allZones = {
-  "1": {name: 'This Week', active: true},
-  "2": {name: 'This Month'},
-  "3": {name: 'All Time'}
-};
-new CV.Select({
-  label : 'Choose Zone',
-  name  : 'select',
-  options: allZones
-}).render(document.querySelector('.placeholder-ui'));
-
-//Checkbox
-var allGrades = {
-  "1": {name: 'Myself'},
-  "2": {name: 'Organization 01'},
-  "3": {name: 'Organization 02'},
-  "4": {name: 'Organization 03'}
-};
-
-new CV.Select({
-    type      : 'check',
-    label     : 'Follow as...',
-    name      : 'selectFollow',
-    style     : '',
-    options   : allGrades,
-    hasArrow  : false,
-    hasTitle  : true,
-    title     : "Follow Select Example",
-    subTitle  : "Subtitle example",
-    actionType  : 'follow'
-}).render(document.querySelector('.placeholder-ui'));
-
-new CV.Select({
-    type      : 'check',
-    label     : 'Block as...',
-    name      : 'selectFollow',
-    style     : '',
-    options   : allGrades,
-    hasArrow  : false,
-    hasTitle  : true,
-    title     : "Block Select Example",
-    subTitle  : "Subtitle example",
-    actionType  : 'block'
-}).render(document.querySelector('.placeholder-ui'));
-
-//Multiple
-var allMulti = {
-  "1": {name: 'Myself'},
-  "2": {
-    name: 'Organization 01',
-    sub: {
-      "0": {name: 'Public'},
-      "1": {name: 'Anonimously'}
-    }
-  },
-  "3": {name: 'Organization 02'},
-  "4": {name: 'Organization 03'}
-};
-new CV.Select({
-  label : 'Multiple',
-  name  : 'select',
-  options: allMulti
-}).render(document.querySelector('.placeholder-ui'));
 
 $( document ).ready(function() {
 

@@ -20,9 +20,6 @@ var v = new Voice({
   tweetLastFetchAt : null,
   rssUrl : null,
   rssLastFetchAt : null,
-  firstPostDate : null,
-  lastPostDate : null,
-  postCount : 0,
 });
 
 var p = new Post({
@@ -56,6 +53,9 @@ Promise.all([
             console.log(p[propertyName].url(version));
             console.log(p[propertyName].meta(version));
           });
+
+          console.log(p[propertyName].exists('algo'));
+          console.log(p[propertyName].exists('medium'));
         });
       });
     });

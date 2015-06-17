@@ -98,8 +98,7 @@ hr{
 }
 
 .profile-body{
-	padding: 25px;
-	background: #fff;
+	padding: 25px 0px;
 }
 .profile-body:after{
   	content: "";
@@ -213,7 +212,7 @@ hr{
 	padding: 35px 0px;
 	padding-bottom: 0px;
 	.profile-heading{
-		color: #666;
+		color: @color-neutral-xx-dark;
 	}
 	.profile-select-options{
 		padding: 12px 0px 0px 10px;
@@ -228,7 +227,6 @@ hr{
 .profile-menu{
 	border-bottom: 1px solid @color-menu-border;
 	color: @color-neutral-dark;
-	margin-bottom: -1px;
 	.menu-item{
 		text-align: center;
 		margin-right: 25px;
@@ -251,6 +249,8 @@ hr{
 	}
 	.profile-tabs{
 		float: left;
+		margin-bottom: -1px;
+
 	}
 	.profile-actions{
 		float: right;
@@ -588,6 +588,77 @@ hr{
 	}
 	span{
 		padding-right: 10px;
+	}
+}
+
+form{
+	.form-profile-image{
+		width: 90px;
+		height: 90px;
+		border-radius: 50px;
+		margin-right: 10px;
+		overflow: hidden;
+		/*box-shadow: 0px 2px 3px rgba(0,0,0, .5);
+		border: 2px solid #fff;*/
+		display: inline-block;
+		img{
+			width: 100%;
+		}
+	}
+	.form-profile-background{
+		  width: 225px;
+		  height: 90px;
+		  border-radius: 5px;
+		  margin-right: 10px;
+		  overflow: hidden;
+		  display: inline-block;
+		img{
+			width: 100%;
+		}
+	}
+	.form-field-image{
+		margin-top: 57px;
+		margin-right: 50px;
+	}
+	.image-input{
+		width: 100px;
+		padding-top: 24px !important;
+		overflow: hidden;
+
+padding: 0 !important;
+border: none;
+background: none;
+box-shadow: none;
+width: 200px;
+	}
+	.image-input-label{
+		  position: absolute;
+		  top: 0;
+		  left: 0;
+		  width: 100px;
+		  text-align: center;
+		  height: 24px;
+		  line-height: 24px;
+		  color: @color-neutral-xx-mid;
+		  pointer-events: none;
+		  display: inline-block;
+		  font-size: 11px;
+display: none;
+	}
+	.icon-text{
+		color: @color-neutral-mid;
+		font-size: 11px;
+	  	padding-left: 15px;
+	  	margin-top: 8px;
+	  	height: 20px;
+	  	cursor: pointer;
+	  	text-decoration: underline;
+	  	&.location{
+	  		background: transparent url('/img/ico-location-pin.png') center left no-repeat;
+	  	}
+	  	&.edit{
+	  		background: transparent url('/img/ico-edit.png') center left no-repeat;
+	  	}
 	}
 }
 

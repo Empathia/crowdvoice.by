@@ -61,9 +61,6 @@ Tellurium.suite('Entity Model')(function () {
       tweetLastFetchAt : null,
       rssUrl : null,
       rssLastFetchAt : null,
-      firstPostDate : null,
-      lastPostDate : null,
-      postCount : 0
     };
   });
 

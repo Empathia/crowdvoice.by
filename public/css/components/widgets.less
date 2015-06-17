@@ -253,6 +253,17 @@ a.cv-button{
     height: 58px;
   }
 
+  &.-w-25{
+    width: 25%;
+  }
+  &.-w-50{
+    width: 50%;
+  }
+  &.-w-75{
+    width: 75%;
+  }
+
+
 
   input{
     outline: none;
@@ -333,6 +344,7 @@ a.cv-button{
     border-bottom-right-radius: 0;
     border-right: 0;
     min-width: 50px;
+    width: 100%;
   }
   button{
     margin: 0;
@@ -375,6 +387,9 @@ a.cv-button{
       background-color: @color-primary-light;
       box-shadow: inset 0 -3px 0 @color-inner-shadow-primary;
       border: 1px solid @color-primary-dark;
+    }
+    &:after{
+      background: url('/img/dropdown-arrow-active.png') center no-repeat;
     }
   }
   &.primary.active .cv-select-head{
@@ -616,7 +631,8 @@ form{
     display: block;
     font-size: 11px;
     text-transform: uppercase;
-    color: @color-black;
+    color: @color-neutral-dark;
+    font-weight: bold;
     padding-bottom: 5px;
     span{
       padding-left: 5px;
@@ -627,8 +643,16 @@ form{
   }
   .text{
     padding: 5px 0px;
+    .fade{
+      color: @color-neutral-x-mid;
+    }
     .dim{
+      font-size: 11px;
       opacity: .5;
+    }
+    a.no-style{
+      color: @color-neutral-x-mid;
+      text-decoration: underline;
     }
   }
   ::-webkit-input-placeholder{
@@ -983,12 +1007,7 @@ form{
 }
 
 
-.cv-detect-location{
-  padding-left: 15px;
-  background: #ffffff url('/img/ico-location-pin.png') center left no-repeat;
-  height: 20px;
-  cursor: pointer;
-}
+
 
 
 

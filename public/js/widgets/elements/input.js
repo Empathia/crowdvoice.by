@@ -20,11 +20,13 @@ Class(CV, 'Input').inherits(Widget)({
     prototype        : {
         type            : null,
         style           : null,
+        name            : null,
         placeholder     : null,
         isArea          : null,
         hasTitle        : false,
         title           : "",
         subTitle        : "",
+        value           : "",
 
         init : function(config){
             Widget.prototype.init.call(this, config);
@@ -42,9 +44,19 @@ Class(CV, 'Input').inherits(Widget)({
                 if (this.placeholder){
                     this.inputEl.find('input').attr('placeholder', this.placeholder);
                 }
+                if (this.value){
+                    this.inputEl.find('input').val(this.value);
+                }
+                this.inputEl.find('input').attr('name', this.name);
+
             } else {
                 this.inputEl.addClass('is-area');
                 this.inputEl.append(this.constructor.AREA_ELEMENT);
+                if (this.value){
+                    console.log(this.value);
+                    this.inputEl.find('textarea').text(this.value);
+                }
+                this.inputEl.find('textarea').attr('name', this.name);
             }
             if (this.hasTitle){
 

@@ -59,9 +59,6 @@ Tellurium.suite('Slug Model')(function () {
       tweetLastFetchAt : null,
       rssUrl : null,
       rssLastFetchAt : null,
-      firstPostDate : null,
-      lastPostDate : null,
-      postCount : 0
     };
   });
 
@@ -141,11 +138,12 @@ Tellurium.suite('Slug Model')(function () {
           v1 = new Voice(spec.registry.voiceData);
           v1.save(done);
         },
-        function (done) { v1.addSlug(done); },
-        function (done) { v1.addSlug(done); },
-        function (done) { v1.addSlug(done); }
+        function (done) { v1.addSlug('slug1', done); },
+        function (done) { v1.addSlug('slug2', done); },
+        function (done) { v1.addSlug('slug3', done); }
       ], function (err) {
         db('Slugs').where({voice_id: v1.id}).exec(function (err, slugs) {
+          console.log(slugs);
           spec.assert(slugs.length).toBe(3);
           spec.completed();
         });
@@ -160,11 +158,13 @@ Tellurium.suite('Slug Model')(function () {
           v1.save(done);
         },
         function (done) { v1.addSlug(done); },
-        function (done) { v1.addSlug(done); },
-        function (done) { v1.addSlug(done); },
-        function (done) { v1.addSlug(done); }
+        function (done) { v1.addSlug('slug21', done); },
+        function (done) { v1.addSlug('slug22', done); },
+        function (done) { v1.addSlug('slug23', done); }
       ], function (err) {
         db('Slugs').where({voice_id: v1.id}).exec(function (err, slugs) {
+          console.log(v1.id);
+          console.log(slugs);
           spec.assert(slugs.length).toBe(3);
           spec.completed();
         });
