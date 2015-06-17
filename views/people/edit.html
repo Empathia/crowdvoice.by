@@ -44,8 +44,8 @@
           <div class="form-field -inline-block">
               <label>Picture</label>
               <div class="form-profile-image">
-                <% if (currentPerson.image_base_url){ %>
-                  <img src="<% currentPerson.image.url('card') %>">
+                <% if (currentPerson.image.exists('card')){ %>
+                  <img src="<%= currentPerson.image.url('card') %>">
                 <% }else{ %>
                   <img src="/img/placeholder-image.png">
                 <% } %>
@@ -63,8 +63,8 @@
           <div class="form-field -inline-block">
               <label>Background</label>
               <div class="form-profile-background">
-                <% if (currentPerson.background_base_url){ %>
-                  <img src="<% currentPerson.background.url('card') %>">
+                <% if (currentPerson.background.exists('card')){ %>
+                  <img src="<%= currentPerson.background.url('card') %>">
                 <% }else{ %>
                   <img src="/img/placeholder-background.png">
                 <% } %>

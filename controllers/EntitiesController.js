@@ -130,7 +130,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
         if (err) {
           res.render(req.entityType + '/edit.html', {errors: err});
         } else {
-          res.redirect('/' + entity.profileName);
+          res.redirect('/' + entity.profileName + '/edit');
         }
       });
     },
