@@ -1,6 +1,6 @@
 /* jshint multistr: true */
 var moment = require('moment');
-var Waterfall = require('../../lib/waterfall');
+var Waterfall = require('../../../lib/waterfall');
 
 Class(CV, 'VoicePostsLayer').inherits(Widget)({
     HTML : '\
