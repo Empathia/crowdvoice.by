@@ -5,7 +5,7 @@ exports.up = function(knex, Promise) {
     knex.schema.createTable('Slugs', function (t) {
       t.increments('id').primary();
       t.integer('voice_id').defaultTo(0).index();
-      t.string('url', 512).defaultTo(null).index();
+      t.string('url', 512).unique().defaultTo(null).index();
       t.timestamps();
     })
   ]);

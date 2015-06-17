@@ -105,6 +105,11 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
       async.series([
         function (done) {
+          entity.save(function (err) {
+            done(err);
+          });
+        },
+        function (done) {
           if (!req.files['image']) { return done(); }
           entity.uploadImage('image', req.files['image'].path, function (err) {
             done(err);
@@ -117,7 +122,6 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
           });
         },
         function (done) {
-          console.log(entity);
           entity.save(function (err) {
             done(err);
           });

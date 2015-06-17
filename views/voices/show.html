@@ -2,9 +2,7 @@
 <script src="/socket.io/socket.io.js"></script>
 
 <main role="main" class="cv-main-content -rel">
-  <div class="voice-background-cover">
-    <img class="voice-background-cover-image" src="<%= voice.coverImage %>" alt="">
-  </div>
+  <div class="voice-background-cover"></div>
 
   <section class="voice-intro -rel">
     <h1 class="voice-heading -font-bold -m0"><%= voice.title %></h1>
@@ -51,7 +49,6 @@
             <option value="">Option III</option>
           </select>
         </div>
-        <button class="ui-btn -sm -outline">Follow Voice</button>
         <div class="ui-btn-group">
           <button class="ui-btn -sm -outline">
             <svg class="voice-footer-svg">
@@ -64,7 +61,6 @@
             </svg>
           </button>
         </div>
-        <button class="ui-btn -sm -outline">moderate</button>
       </div
     </div>
   </footer>
@@ -74,6 +70,7 @@
   var voiceInfo = <%= JSON.stringify(voice) %>;
 
   var otherOptions = {
+    backgroundElement     : document.querySelector('.voice-background-cover'),
     postsCount            : <%= JSON.stringify(postsCount) %>,
     followerCount         : 1260,
     postCountElement      : document.querySelector('.voice-stats__post-count'),
@@ -86,5 +83,9 @@
     voiceInfo[propertyName] = otherOptions[propertyName];
   }
 
-  var Voice = new CV.Voice( voiceInfo );
+  var Voice = new CV.VoiceView( voiceInfo );
+
+  Voice.updateVoiceInfo();
+  Voice.setupVoiceWidgets();
+  Voice.addFooter();
 </script>

@@ -7,13 +7,66 @@ CONFIG.database.logQueries = false;
 console.log('');
 console.log('...');
 
-var m = new Post({id:3});
+var v = new Voice({
+  title : 'Voice Title',
+  description : 'Voice Description',
+  latitude : null,
+  longitude : null,
+  locationName : null,
+  ownerId : 1,
+  status : Voice.STATUS_DRAFT,
+  type : Voice.TYPE_PUBLIC,
+  twitterSearch : null,
+  tweetLastFetchAt : null,
+  rssUrl : null,
+  rssLastFetchAt : null,
+  firstPostDate : null,
+  lastPostDate : null,
+  postCount : 0,
+});
+
+var p = new Post({
+  sourceType: 'image',
+  sourceUrl: 'url',
+  sourceService: 'imgur'
+});
+
 var propertyName = 'image';
 
-m.uploadImage(propertyName, process.argv[2], function () {
-  console.log(m);
-  Object.keys(m[propertyName].versions).forEach(function (version) {
-    console.log(m[propertyName].url(version));
-    console.log(m[propertyName].meta(version));
+Promise.all([
+  db('Posts').del(),
+  db('Voices').del(),
+]).then(function () {
+  v.save(function (err) {
+    if (err) { console.log(err); return; }
+
+    p.ownerId = 1;
+    p.voiceId = v.id;
+    p.save(function (err) {
+      if (err) { console.log(err); return; }
+
+      p.uploadImage(propertyName, process.argv[2], function () {
+        if (err) { console.log(err); return; }
+
+        p.save(function (err) {
+          if (err) { console.log(err); return; }
+
+          console.log(p);
+          Object.keys(p[propertyName].versions).forEach(function (version) {
+            console.log(p[propertyName].url(version));
+            console.log(p[propertyName].meta(version));
+          });
+        });
+      });
+    });
   });
 });
+
+// p.imageBaseUrl = "development/post_3/image_{versionName}.jpeg"
+// p.image.processVersions(function () {
+//   console.log(arguments);
+//   Object.keys(p[propertyName].versions).forEach(function (version) {
+//     console.log(p[propertyName].url(version));
+//     console.log(p[propertyName].meta(version));
+//   });
+// });

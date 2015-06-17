@@ -10,7 +10,7 @@ global.sharp = require('sharp');
 
 var casual = require('casual');
 
-CONFIG.database.logQueries = true;
+CONFIG.database.logQueries = false;
 
 Voice.all(function(err, voices) {
 
@@ -27,7 +27,7 @@ Voice.all(function(err, voices) {
       'https://www.youtube.com/watch?v=f4RGU2jXQiE'
     ]
 
-    async.times(7200, function(id, next) {
+    async.timesLimit(process.argv[2] || 1000, 5, function(id, next) {
       var post =  new Post();
 
 
@@ -40,13 +40,12 @@ Voice.all(function(err, voices) {
 
       if (type === 'video') {
         post.sourceService = 'youtube';
-        post.sourceUrl = casual.random_element(youtubes);
+        post.sourceUrl = casual.random_element(youtubes) + '?' + casual.random;
       } else {
         post.sourceService = 'link';
-        post.sourceUrl = casual.url;
+        post.sourceUrl = casual.url  + '?' + casual.random;
       }
 
-      // post.image = url;
       post.approved = casual.random_element([true, false]);
 
       var date =  new Date(year + '-' + month + '-' + casual.integer(from = 1, to = 28));
@@ -54,14 +53,11 @@ Voice.all(function(err, voices) {
       post.updatedAt = date;
       post.publishedAt = date;
 
-      // post.imageWidth = width;
-      // post.imageHeight = height;
-
       post.voiceId = voice.id;
       post.ownerId = 1;
       count++;
 
-      if (count === 200) {
+      if (count === 50) {
         month--;
         count = 0;
       }
@@ -73,17 +69,33 @@ Voice.all(function(err, voices) {
 
       console.log(date)
 
-      post.save(function(err, result) {
-        var width = casual.integer(from = 200, to = 350);
-        var height = casual.integer(from = 100, to = 400);
+      var width = casual.integer(from = 200, to = 350);
+      var height = casual.integer(from = 100, to = 400);
 
-        var url = "http://lorempixel.com/" + width + "/" + height + "/";
+      if (type === 'video') {
+        width = 350;
+        hegith = 197;
+      };
+
+      var url = "http://lorempixel.com/" + width + "/" + height + "/";
+      // var url = "http://placehold.it/" + width + "x" + height
+
+      post.save(function(err, postRes) {
+        if (err) {
+          return next(err);
+        }
 
         post.uploadImage('image', url, function () {
-          next(null, post)
-        });
 
+          post.save(function(err, result) {
+            next(err, post)
+          })
+
+        });
       })
+
+
+
     }, function(err, posts) {
       if (err) {
         logger.error(err)
@@ -99,6 +111,8 @@ Voice.all(function(err, voices) {
     };
 
     logger.log('Finisihed')
+
+    process.exit(0)
   })
 
 });

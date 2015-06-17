@@ -55,9 +55,8 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
     ownerId       : null,
     voiceId       : null,
     approved      : false,
-    image         : null,
-    imageWidth    : null,
-    imageHeight   : null,
+    imageBaseUrl  : null,
+    imageMeta     : {},
     sourceService : null,
     sourceType    : null,
     sourceUrl     : null,
@@ -84,62 +83,8 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
         model.publishedAt =  model.createdAt;
       });
 
-
-      // Update the voice.postCount on create
-      this.bind('afterCreate', function(data) {
-        Voice.findById(model.voiceId, function(err, result) {
-          var voice = new Voice(result[0]);
-
-          if (!voice.firstPostDate) {
-            voice.firstPostDate = model.publishedAt;
-          }
-
-          if (!voice.lastPostDate || voice.lastPostDate < model.publishedAt) {
-            voice.lastPostDate = model.publishedAt;
-          }
-
-          voice.updatePostCount(true, function(err, saveResult) {
-            if (err) {
-              throw new Error(err);
-            } else {
-              logger.log('Voice ' + voice.id + ' postCount updated ' + voice.postCount);
-            }
-          });
-        });
-      });
-
-      // Update the voice.postCount on destroy
-      this.bind('afterDestroy', function(data) {
-        Voice.findById(model.voiceId, function(err, result) {
-          var voice = new Voice(result[0]);
-
-          Post.find(['ORDER BY published_at ASC LIMIT ?', [1]], function(postErr, postResult){
-            if (postResult.length === 0) {
-              voice.firstPostDate = null;
-              voice.lastPostDate  = null;
-            } else {
-              voice.firstPostDate = postResult[0].publishedAt;
-            }
-
-            Post.find(['ORDER BY published_at DESC LIMIT ?', [1]], function(lastPostErr, lastPostResult) {
-              if (lastPostResult.length > 0) {
-                voice.lastPostDate = lastPostResult[0].publishedAt;
-              }
-
-              voice.updatePostCount(false, function(voiceErr, saveResult) {
-                if (voiceErr) {
-                  throw new Error(voiceErr);
-                } else {
-                  logger.log('Voice ' + voice.id + ' postCount updated ' + voice.postCount);
-                }
-              });
-            });
-          });
-        });
-      })
-
       // Add image attachment
-      this.constructor.prototype.hasImage({
+      this.hasImage({
         propertyName: 'image',
         versions: {
           medium: function (readStream) {
@@ -151,7 +96,7 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
       });
     },
 
-    toJSON : function toJSON() {
+    toJSON : function toJSON () {
       var json = {};
 
       Object.keys(this).forEach(function(property) {

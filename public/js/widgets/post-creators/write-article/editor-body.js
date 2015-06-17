@@ -31,7 +31,11 @@ Class(CV, 'PostCreatorWriteArticleEditorBody').inherits(Widget)({
         },
 
         _setup : function _setup() {
-            this.editor = new MediumEditor(this.body);
+            this.editor = new MediumEditor(this.body, {
+                anchor : {
+                    linkValidation : true
+                }
+            });
 
             return this;
         },

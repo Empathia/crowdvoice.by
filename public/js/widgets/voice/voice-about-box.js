@@ -1,4 +1,4 @@
-
+/* jshint multistr: true */
 Class(CV, 'VoiceAboutBox').inherits(Widget).includes(CV.WidgetUtils)({
     HTML : '\
         <article class="voice-card-about post-card">\
@@ -39,7 +39,7 @@ Class(CV, 'VoiceAboutBox').inherits(Widget).includes(CV.WidgetUtils)({
             this.closeButtonElement.addEventListener('click', this.hideClickHandlerRef);
 
             this.showBoxHandlerRef = this.activate.bind(this);
-            CV.Voice.bind('voiceAboutBox:show', this.showBoxHandlerRef);
+            CV.VoiceView.bind('voiceAboutBox:show', this.showBoxHandlerRef);
         },
 
         activate : function activate() {
@@ -58,7 +58,7 @@ Class(CV, 'VoiceAboutBox').inherits(Widget).includes(CV.WidgetUtils)({
             this.closeButtonElement.removeEventListener('click', this.hideClickHandlerRef);
             this.hideClickHandlerRef = null;
 
-            CV.Voice.unbind('voiceAboutBox:show', this.showBoxHandlerRef);
+            CV.VoiceView.unbind('voiceAboutBox:show', this.showBoxHandlerRef);
 
             this.el = null;
             this.closeButtonElement = null;

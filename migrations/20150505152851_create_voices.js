@@ -21,9 +21,6 @@ exports.up = function(knex, Promise) {
       t.dateTime('tweet_last_fetch_at').defaultTo(null);
       t.string('rss_url', 512).defaultTo(null);
       t.dateTime('rss_last_fetch_at').defaultTo(null);
-      t.dateTime('first_post_date').defaultTo(null);
-      t.dateTime('last_post_date').defaultTo(null);
-      t.integer('post_count').defaultTo(0);
       t.timestamps();
     })
   ]);

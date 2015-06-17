@@ -45,6 +45,12 @@
     border-top-color: inherit;
   }
 
+  &@{-}top-right:after {
+    top: 100%;
+    margin-left: unit(-@tooltip-arrow-size, px);
+    border-top-color: inherit;
+  }
+
   &@{-}right:after {
     right: 100%;
     top: 50%;
@@ -85,6 +91,12 @@
       left: 50%;
       bottom: 100%;
       transform: translate(-50%, -10px);
+    }
+
+    &@{-}top-right {
+      right: 0;
+      bottom: 100%;
+      transform: translate(0, -10px);
     }
 
     &@{-}right {

@@ -90,11 +90,6 @@ var Voice = Class('Voice').inherits(Argon.KnexModel).includes(ImageUploader)({
         case 'created_before':
           kxquery.whereRaw("created_at <= '" + moment(new Date(query[key]).toISOString()).format() + "'");
           break;
-        case 'trending':
-          if (query[key]) {
-            kxquery.orderBy('post_count', 'desc');
-          }
-          break;
         default:
           kxquery.where(key, '=', query[key]);
       }
@@ -110,7 +105,6 @@ var Voice = Class('Voice').inherits(Argon.KnexModel).includes(ImageUploader)({
   },
 
   findBySlug : function findBySlug (slugString, done) {
-
     Slug.find(["url = lower(trim( ' ' from ?))", [slugString]], function (err, result) {
       if (err) { done(err); return; }
 
@@ -138,9 +132,6 @@ var Voice = Class('Voice').inherits(Argon.KnexModel).includes(ImageUploader)({
     tweetLastFetchAt : null,
     rssUrl : null,
     rssLastFetchAt : null,
-    firstPostDate : null,
-    lastPostDate : null,
-    postCount : 0,
     createdAt : null,
     updatedAt : null,
 
@@ -165,16 +156,6 @@ var Voice = Class('Voice').inherits(Argon.KnexModel).includes(ImageUploader)({
         bucket: 'crowdvoice.by',
         basePath: '{env}/{modelName}_{id}/{property}_{versionName}.{extension}'
       });
-    },
-
-    updatePostCount : function updatePostCount(param, callback) {
-      if (param) {
-        this.postCount++;
-      } else {
-        this.postCount--;
-      }
-
-      this.save(callback);
     },
 
     /**
@@ -241,11 +222,16 @@ var Voice = Class('Voice').inherits(Argon.KnexModel).includes(ImageUploader)({
     /* Add slug for a voice.
      * Makes sure there only exist maximum of 3 slugs per voice.
      */
-    addSlug : function (done) {
+    addSlug : function (slugString, done) {
+      if (typeof(slugString) === 'function') {
+        done = slugString;
+        slugString = this.getSlug();
+      }
+
       var voice = this;
       var slug = new Slug({
         voiceId : voice.id,
-        url: this.getSlug()
+        url: slugString
       });
       slug.save(function (err) {
         if (err) { done (err); return; }
@@ -263,11 +249,6 @@ var Voice = Class('Voice').inherits(Argon.KnexModel).includes(ImageUploader)({
       });
     }
   }
-});
-
-Voice.bind('afterSave', function (event) {
-  var model = event.data.model;
-  model.addSlug();
 });
 
 module.exports = Voice;

@@ -6,6 +6,7 @@ CONFIG.database.logQueries = false;
 
 var crypto = require('crypto');
 require('tellurium');
+global.moment = require('moment');
 
 require(process.cwd() + '/node_modules/tellurium/reporters/pretty');
 
@@ -33,9 +34,6 @@ Tellurium.suite('Voice Model')(function() {
         tweetLastFetchAt : null,
         rssUrl : null,
         rssLastFetchAt : null,
-        firstPostDate : null,
-        lastPostDate : null,
-        postCount : 0
       };
       spec.registry.peopleTopicData = {
         name: 'people_' + uid(16)
@@ -173,9 +171,6 @@ Tellurium.suite('Voice Model')(function() {
         tweetLastFetchAt : null,
         rssUrl : null,
         rssLastFetchAt : null,
-        firstPostDate : null,
-        lastPostDate : null,
-        postCount : 0
       }
 
       spec.registry.postData = {
@@ -275,42 +270,42 @@ Tellurium.suite('Voice Model')(function() {
       })
     });
 
-    desc.specify('Pass Create and Delete a Post Record related to a Voice')(function(spec){
-      var data      = spec.registry.data;
-      var postData  = spec.registry.postData;
+    // desc.specify('Pass Create and Delete a Post Record related to a Voice')(function(spec){
+    //   var data      = spec.registry.data;
+    //   var postData  = spec.registry.postData;
 
-      var voice     = new Voice(data);
+    //   var voice     = new Voice(data);
 
-      voice.save(function(voiceErr, voiceResult) {
-        postData.voiceId = voice.id;
-        var post = new Post(postData);
+    //   voice.save(function(voiceErr, voiceResult) {
+    //     postData.voiceId = voice.id;
+    //     var post = new Post(postData);
 
-        post.save(function(postErr, postResult) {
-          setTimeout(function(){
-            Voice.findById(voice.id, function(voiceErr, voiceResult) {
-              spec.assert(voiceErr).toBe(null);
-              spec.assert(postErr).toBe(null);
-              spec.assert(post.publishedAt.getTime()).toBe(voiceResult[0].firstPostDate.getTime());
-              spec.assert(post.publishedAt.getTime()).toBe(voiceResult[0].lastPostDate.getTime());
+    //     post.save(function(postErr, postResult) {
+    //       setTimeout(function(){
+    //         Voice.findById(voice.id, function(voiceErr, voiceResult) {
+    //           spec.assert(voiceErr).toBe(null);
+    //           spec.assert(postErr).toBe(null);
+    //           spec.assert(post.publishedAt.getTime()).toBe(voiceResult[0].firstPostDate.getTime());
+    //           spec.assert(post.publishedAt.getTime()).toBe(voiceResult[0].lastPostDate.getTime());
 
-              setTimeout(function(){
-                post.destroy(function(destErr, destResult) {
-                  setTimeout(function() {
-                    Voice.find(voice.id, function(secondRunVoiceErr, secondRunVoiceResult) {
-                      spec.assert(secondRunVoiceResult[0].firstPostDate).toBe(null);
-                      spec.assert(secondRunVoiceResult[0].lastPostDate).toBe(null);
-                      spec.assert(post.id).toBe(null);
-                      spec.completed();
-                    });
-                  }, 1000);
-                });
-              }, 1000);
-            });
-          }, 1000);
-        });
-      });
+    //           setTimeout(function(){
+    //             post.destroy(function(destErr, destResult) {
+    //               setTimeout(function() {
+    //                 Voice.find(voice.id, function(secondRunVoiceErr, secondRunVoiceResult) {
+    //                   spec.assert(secondRunVoiceResult[0].firstPostDate).toBe(null);
+    //                   spec.assert(secondRunVoiceResult[0].lastPostDate).toBe(null);
+    //                   spec.assert(post.id).toBe(null);
+    //                   spec.completed();
+    //                 });
+    //               }, 1000);
+    //             });
+    //           }, 1000);
+    //         });
+    //       }, 1000);
+    //     });
+    //   });
 
-    });
+    // });
 
     desc.specify('Fail Create a Post Record related to a Voice')(function(spec) {
       var data      = spec.registry.data;
@@ -430,38 +425,6 @@ Tellurium.suite('Voice Model')(function() {
       ], function (err) {
         Voice.filterBy({createdAfter: now}, function (err, result) {
           spec.assert(result.length).toBe(1);
-          spec.completed();
-        });
-      });
-    });
-
-    this.specify('filterBy trending should order the voices by post_count')(function (spec) {
-      var v1, v2, v3;
-
-      async.series([
-        function (done) {
-          v1 = new Voice(spec.registry.data);
-          v1.post_count = 1;
-          v1.save(done);
-        },
-        function (done) {
-          v2 = new Voice(spec.registry.data);
-          v2.post_count = 7;
-          v2.save(done);
-        },
-        function (done) {
-          v3 = new Voice(spec.registry.data);
-          v3.post_count = 3;
-          v3.save(done);
-        }
-      ], function (err) {
-        Voice.filterBy({trending: true}, function (err, voices) {
-          var lastCount = 999;
-          spec.assert(voices.length > 0).toBeTruthy();
-          voices.forEach(function (v) {
-            spec.assert(v.postCount <= lastCount).toBeTruthy();
-            lastCount = v.postCount;
-          });
           spec.completed();
         });
       });
