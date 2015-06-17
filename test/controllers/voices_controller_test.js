@@ -53,15 +53,23 @@ Tellurium.suite('Voices Controller')(function () {
 
   this.beforeEach(function (spec) {
     spec.registry.userData = {
-      username: 'juan ' + uid(16),
+      username: 'juan_' + uid(16),
       email: 'person_' + uid(16) + '@test.com',
       password: 'mysecret'
     };
     spec.registry.voiceData = {
-      title: 'title_' + uid(16),
-      status: 'active',
-      type: 'text',
-      ownerId: rid()
+      title : 'Voice Title ' + uid(16),
+      description : 'Voice Description',
+      latitude : null,
+      longitude : null,
+      locationName : null,
+      ownerId : 1,
+      status : Voice.STATUS_DRAFT,
+      type : Voice.TYPE_PUBLIC,
+      twitterSearch : null,
+      tweetLastFetchAt : null,
+      rssUrl : null,
+      rssLastFetchAt : null,
     };
     spec.registry.personData = {
       type: 'person',
@@ -104,14 +112,18 @@ Tellurium.suite('Voices Controller')(function () {
         },
         function (done) {
           v1 = new Voice(spec.registry.voiceData);
+          v1.ownerId = e1.id;
           v1.save(done);
         },
+        function (done) {
+          v1.addSlug(done);
+        }
       ], function (err) {
         var req = request.
           get(urlBase + '/' + e1.profileName + '/' + v1.getSlug()).
-          accept('application/json').
+          accept('text/html').
           end(function (err, res) {
-            spec.assert(res.body.title).toBe(v1.title);
+            spec.assert(res.status).toBe(200);
             spec.completed();
           });
       });
@@ -131,7 +143,7 @@ Tellurium.suite('Voices Controller')(function () {
     });
 
     // Voices#edit
-    this.specify('GET /voice/:id/edit should return 200 if record exists')(function (spec) {
+    this.specify('GET /:profileName/:voice_slug/edit should return 200 if record exists')(function (spec) {
       var v1, e1;
 
       async.series([
@@ -142,9 +154,11 @@ Tellurium.suite('Voices Controller')(function () {
         function (done) {
           v1 = new Voice(spec.registry.voiceData);
           v1.save(done);
+        },
+        function (done) {
+          v1.addSlug(done);
         }
       ], function (err) {
-        console.log(urlBase + '/' + e1.profileName + '/' + v1.getSlug() +  '/edit');
         var req = request.
         get(urlBase + '/' + e1.profileName + '/' + v1.getSlug() +  '/edit');
 
@@ -157,11 +171,16 @@ Tellurium.suite('Voices Controller')(function () {
 
     // Voices#create
     this.specify('POST /voice should create a voice')(function (spec) {
-      var u1, cookies, csrf;
+      var e1, u1, cookies, csrf;
 
       async.series([
         function (done) {
+          e1 = new Entity(spec.registry.personData);
+          e1.save(done);
+        },
+        function (done) {
           u1 = new User(spec.registry.userData);
+          u1.entityId = e1.id;
           u1.save(done);
         },
         function (done) {
@@ -175,6 +194,16 @@ Tellurium.suite('Voices Controller')(function () {
           });
         },
         function (done) {
+          var req = request
+            .post(urlBase + '/session')
+            .set('cookie', cookies)
+            .send({_csrf: csrf, username: u1.username, password: spec.registry.userData.password});
+
+          req.end(function (err, res) {
+            done();
+          });
+        },
+        function (done) {
           var data = spec.registry.voiceData;
           var req = request.post(urlBase + '/voice');
 
@@ -182,10 +211,10 @@ Tellurium.suite('Voices Controller')(function () {
           req.set('cookie', cookies);
           req.send(data);
           req.end(function (err, res) {
-            if (err) { done(err); }
+            if (err) { return done(err); }
             done();
           });
-        }
+        },
       ], function (err) {
         Voice.find({title: spec.registry.voiceData.title}, function (err, result) {
           spec.assert(result.length > 0).toBeTruthy();
@@ -207,6 +236,9 @@ Tellurium.suite('Voices Controller')(function () {
           v1 = new Voice(spec.registry.voiceData);
           v1.ownerId = e1.id;
           v1.save(done);
+        },
+        function (done) {
+          v1.addSlug(done);
         },
         function (done) {
           var req = request

@@ -11,7 +11,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         if (err) { return next(err); }
 
         res.locals.voice = new Voice(voice);
-        req.activeVoice = res.locals.voice;
+        req.activeVoice = new Voice(voice);
 
         db.raw("SELECT COUNT (*), \
           to_char(\"Posts\".published_at, 'MM') AS MONTH, \
@@ -99,7 +99,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
     show : function show (req, res) {
       res.format({
-        html: function () {
+        'text/html': function () {
           res.render('voices/show.html', {
             pageName : 'page-inner page-voice'
           });
@@ -117,7 +117,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         status: req.body.status,
         description: req.body.description,
         type: req.body.type,
-        ownerId: req.body.ownerId,
+        ownerId: hashids.decode(req.currentPerson.id)[0],
         twitterSearch: req.body.twitterSearch,
         rssUrl: req.body.rssUrl,
         latitude: req.body.latitude,
@@ -128,7 +128,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           res.render('voices/new.html', {errors: err});
         } else {
           voice.addSlug(function (err) {
-            res.redirect('/voice/' + voice.id);
+            res.redirect(req.currentPerson.profileName + '/' + voice.getSlug());
           });
         }
       });

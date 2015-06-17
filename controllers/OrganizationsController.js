@@ -14,7 +14,6 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
         entity = result[0];
         user.entity(function (err, currentEntity) {
           if (err) { next(err); return; }
-          if (currentEntity.id !== org.id) { next(new Error('Not Authorized')); }
           org.inviteEntity(entity, function (err) {
             if (err) { next(err); return; }
             res.redirect('/' + org.profileName);
