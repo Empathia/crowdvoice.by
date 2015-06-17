@@ -20,6 +20,7 @@ Class(CV, 'Input').inherits(Widget)({
     prototype        : {
         type            : null,
         style           : null,
+        name            : null,
         placeholder     : null,
         isArea          : null,
         hasTitle        : false,
@@ -42,9 +43,12 @@ Class(CV, 'Input').inherits(Widget)({
                 if (this.placeholder){
                     this.inputEl.find('input').attr('placeholder', this.placeholder);
                 }
+                this.inputEl.find('input').attr('name', this.name);
+
             } else {
                 this.inputEl.addClass('is-area');
                 this.inputEl.append(this.constructor.AREA_ELEMENT);
+                this.inputEl.find('textarea').attr('name', this.name);
             }
             if (this.hasTitle){
 

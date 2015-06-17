@@ -27,41 +27,69 @@
 
   <section class="profile-body profile-menu-content -rel">
     <div class="active -menu-tab-content">
-        <% if (currentPerson) { %>
-            <form class="form-profile" action="/<%= currentPerson.profileName %>?_method=PUT" method="POST" enctype="multipart/form-data">
-        <% } else { %>
-            <form class="form-profile">
-        <% } %>
+  <% if (currentPerson) { %>
+      <form class="form-profile" action="/<%= currentPerson.profileName %>?_method=PUT" method="POST" enctype="multipart/form-data">
+  <% } else { %>
+      <form class="form-profile">
+  <% } %>
         <div class="-width-50">
           <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-          <input type="file" name="image" \>
-          <input type="file" name="background" \>
-          <input type="text" name="name" \>
+          <div class="placeholder-images">
 
-          <input type="submit" value="Send" \>
+            <div class="form-field -inline-block">
+                <label>Picture</label>
+                <div class="form-profile-image">
+                  <img src="/img/sample/user-image.jpg">
+                </div>
+            </div>
 
-          <div class="-col-3 -pr1 placeholder-logo">
+            <div class="form-field -inline-block -rel form-field-image">
+                <p class="image-input-label">Replace</p>
+                <input type="file" name="image" class="image-input cv-button tiny"\>
+                <label><span>JPG, GIF or PNG</span></label>
+            </div>
+
+            <br>
+            <br>
+
+            <div class="form-field -inline-block">
+                <label>Background</label>
+                <div class="form-profile-image">
+                  <img src="/img/sample/covers/cat-00.jpg">
+                </div>
+            </div>
+
+            <div class="form-field -inline-block -rel form-field-image">
+                <p class="image-input-label">Replace</p>
+                <input type="file" name="background" class="image-input cv-button tiny"\>
+                <label><span>JPG, GIF or PNG</span></label>
+            </div>
+
           </div>
-          <div class="-col-9 -pl1 placeholder-background">
-          </div>
+
+          <!-- <div class="-col-3 -pr1 placeholder-logo"></div>
+          <div class="-col-9 -pl1 placeholder-background"></div> -->
+          <br><br>
+
           <div class="-col-12 placeholder-main">
           </div>
           <div class="-row">
             <div class="-col-10 -pr1 placeholder-location">
             </div>
-            <div class="-col-2 -pl1 placeholder-pin">
+            <div class="-col-2 placeholder-pin">
               <div class="form-field">
                 <label><span></span></label>
-                <div class="cv-detect-location">Detect</div>
+                <div class="detect-location">Detect</div>
               </div>
             </div>
           </div>
         </div>
-        <hr>
+        <br>
         <div class="-col-12 placeholder-send"></div>
       </form>
     </div>
+
     <div class="-menu-tab-content">
       <form class="form-account">
         <div class="-width-50">
@@ -281,42 +309,50 @@
   //******* profile ************
 
 
-  new CV.Image({
-      hasTitle  : true,
-      title     : "Logo / badge"
-  }).render($('.form-profile .placeholder-logo'));
-
-  new CV.Image({
-      hasTitle  : true,
-      title     : "Background"
-  }).render($('.form-profile .placeholder-background'));
+  //new CV.Image({
+  //    hasTitle  : true,
+  //    title     : "Logo / badge"
+  //}).render($('.form-profile .placeholder-logo'));
+//
+  //new CV.Image({
+  //    hasTitle  : true,
+  //    title     : "Background"
+  //}).render($('.form-profile .placeholder-background'));
 
   new CV.Input({
-      type      : '', name: '', style : '',
+      type      : '',
+      name      : 'name',
+      style     : 'small',
       hasTitle  : true,
       title     : "Your Name",
   }).render($('.form-profile .placeholder-main'));
 
   new CV.Input({
+      style       : 'small',
+      name        : 'username',
       placeholder : 'http://www.crowdvoice.by/@',
-      hasTitle  : true,
-      title     : "Username / Handler",
+      hasTitle    : true,
+      title       : "Username",
   }).render($('.form-profile .placeholder-main'));
 
   new CV.Input({
+      style     : '',
       isArea    : true,
       hasTitle  : true,
+      name      : 'description',
       title     : "Short Bio",
       subTitle  : "140 characters max"
   }).render($('.form-profile .placeholder-main'));
 
   new CV.Input({
+      style     : 'small',
+      name      : 'location',
       hasTitle  : true,
       title     : "Location",
   }).render($('.form-profile .placeholder-location'));
 
   new CV.Button({
-      style   : 'primary',
+      style   : 'primary small',
       type    : 'single',
       label   : 'Save Changes',
       name    : 'buttonSend'
