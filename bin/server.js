@@ -24,9 +24,21 @@ require('./../lib/ACL/anonymous.js');
 require('./../lib/ACL/person.js');
 require('./../lib/ACL/admin.js');
 
+// Load socket.io
 var io = require('socket.io')(application.server);
+
+// Load moment
 global.moment = require('moment');
 
+// Load request
+var r = require('request');
+global.request = r.defaults({
+  followRedirect : true,
+  followAllRedirects : true,
+  maxRedirects : 10
+});
+
+// Load routes
 require('./../lib/routes.js');
 
 application._serverStart();

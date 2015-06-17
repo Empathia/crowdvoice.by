@@ -33,9 +33,9 @@ Class(CV, 'PostEditImageControls').inherits(Widget)({
             this.el = this.element[0];
             this.imagesNav = this.el.querySelector('.post-edit-images-nav');
             this.imageRemove = this.el.querySelector('.image-remove');
-            this._imagesLen = this.images.length - 1;
+            this._imagesLen = this.images.length;
 
-            if (this._imagesLen > 1) {
+            if (this._imagesLen) {
                 this.imagesNav.classList.add('active');
                 this.prevButton = this.el.querySelector('.images-nav-prev');
                 this.nextButton = this.el.querySelector('.images-nav-next');
@@ -48,7 +48,7 @@ Class(CV, 'PostEditImageControls').inherits(Widget)({
             this._removeImageClickHandlerRef = this._removeImageClickHandler.bind(this);
             this.imageRemove.addEventListener('click', this._removeImageClickHandlerRef);
 
-            if (this._imagesLen > 1) {
+            if (this._imagesLen) {
                 this._prevClickHandlerRef = this._prevClickHandler.bind(this);
                 this.prevButton.addEventListener('click', this._prevClickHandlerRef);
 

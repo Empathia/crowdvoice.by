@@ -1,7 +1,5 @@
 var Scrapper = require(process.cwd() + '/lib/cvscrapper');
 
-var expander = require('expand-url');
-
 var PostsController = Class('PostsController').includes(BlackListFilter)({
   prototype : {
     init : function (config){
@@ -100,13 +98,59 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         currentPerson : req.currentPerson,
         voiceSlug : req.params.voiceSlug,
         profileName : req.params.profileName
-      }, function(err, isAllowed) {
+      }, function(err, response) {
 
         if (err) {return next(err)}
 
-        if (!isAllowed) {return next(new ForbiddenError())}
+        if (!response.isAllowed) {return next(new ForbiddenError())}
 
-        res.redirect('/post/id');
+        var approved = false;
+
+        if (req.role === 'Admin' ||
+          (response.currentPerson.id === response.voice.ownerId) ||
+          response.isVoiceCollaborator ||
+          response.isOrganizationMember) {
+
+          approved = true;
+        }
+
+        var postData = {};
+        var body = req.body;
+
+        postData.title = body.title;
+        postData.description = body.description;
+        postData.sourceUrl = body.sourceUrl;
+        postData.sourceService = body.sourceService;
+        postData.sourceType = body.sourceType;
+        postData.approved = approved;
+        postData.ownerId = req.currentPerson.id;
+        postData.voiceId = response.voice.id;
+
+        var post = new Post(postData);
+
+        post.save(function(err, result) {
+          if (err) {
+            return next(err);
+          }
+
+          post.uploadImage('image', process.cwd() + '/public' + body.imagePath, function() {
+            post.save(function(err, resave) {
+              if (err) {
+                return next(err);
+              }
+
+              PostsPresenter.build([post], function(err, posts) {
+                if (err) {
+                  return next(err);
+                }
+
+                console.log(posts[0])
+
+                return res.json(posts[0]);
+              })
+            })
+          })
+        });
       });
     },
 
@@ -125,7 +169,9 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
     preview : function preview(req, res, next) {
       var url = req.body.url;
 
-      expander.expand(url, function(err, longUrl) {
+      request(url, function(err, response, body) {
+        var longUrl = response.request.uri.href;
+
         if (err) {
           logger.error(err);
           return res.status(400).json({status : "There was an error in the request", error : err});
@@ -150,7 +196,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
             return res.json(result);
           });
         })
-      });
+      })
     },
 
     // Create reference for SavedPosts
