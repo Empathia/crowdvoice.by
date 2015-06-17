@@ -139,13 +139,13 @@
   //}).render(document.querySelector('.profile-actions'));
 
   var btnTwiceOptions = {
-    "1": {name: 'Request Membership'},
-    "2": {name: 'Message'}
+    "1": {label: 'Request Membership', name: 'request'},
+    "2": {label: 'Message', name: 'message'}
   };
 
   new CV.Button({
       style   : 'small',
-      type    : 'twice',
+      type    : 'multiple',
       name    : 'buttonTwice',
       options : btnTwiceOptions
   }).render(document.querySelector('.profile-actions'));

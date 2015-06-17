@@ -6,12 +6,15 @@
 .page-about{
 	text-align: center;
 	p{
+		max-width: 700px;
+		margin: 0 auto;
 		font-size: 18px;
 		a{
 			font-weight: bold;
 			text-decoration: underline;
 		}
 	}
+
 	p.big{
 		font-size: 22px;
 	}
@@ -29,52 +32,96 @@
 		letter-spacing: -2px;
 	}
 	h2{
-		font-size: 64px;
-		letter-spacing: -2px;
+		font-size: 48px;
+		line-height: 65px;
+		letter-spacing: -1.5px;
 	}
 	h3{
 		font-size: 36px;
 		font-weight: normal;
 		letter-spacing: -1px;
 	}
+	h5{
+
+		font-size: 30px;
+		line-height: 40px;
+		font-weight: normal;
+		a{
+			font-weight: bold;
+			text-decoration: underline;
+		}
+	}
 	h6{
-		color: #929292;
-		font-size: 13px;
+		color: @color-neutral-xx-dark;
+		font-size: 18px;
+		line-height: 27px;
+		font-weight: bold;
 		text-transform: uppercase;
 	}
 	h6:after{
 		content: "";
-		background: #d6d6d6;
-		width: 52px;
-		height: 2px;
+		background: @color-neutral-x-mid;
+		width: 224px;
+		height: 1px;
 		display: block;
-		margin: 15px auto;
+		margin: 15px auto 35px auto;
+		opacity: .3;
 	}
 	img.partner{
-		border: 1px solid #ebebeb;
+		/*border: 1px solid #ebebeb;*/
 		border-radius: 2px;
+	}
+	.arrow-bg{
+		div{height: 65px;}
+		.center{
+    		background: transparent url('/img/page-about-arrow-bg.png') bottom center no-repeat;
+		}
+		.side{
+    		background: transparent url('/img/page-about-arrow-bg-side.png') bottom left repeat-x;
+		}
 	}
 
 }
+
+.page-container.grey{
+	background: @color-neutral-xx-light;
+}
+.page-container.light{
+	background: @color-white;
+}
+
 .page-container{
-	padding: 100px 0px;
+	position: relative;
 	.page-content{
 		width: 830px;
 		margin: 0 auto;
+		padding: 80px 0px;
 	}
-	.footer-menu{
-		padding-left: 45px;
-		img{
-			padding: 0px 10px;
-		}
-		span{
-			padding-left: 30px;
-		}
-	}
+
 	.subscribe{
 		padding-right: 40px;
 		width: 460px;
   		float: right;
+	}
+	.voice-left{
+		position: absolute;
+		top: 0;
+		left: 0;
+		margin-top: -88px;
+	}
+	.voice-right{
+		position: absolute;
+		bottom: 0;
+		right: 0;
+		margin-right: 25px;
+		margin-bottom: 20px;
+
+	}
+	&.bg-images{
+    	background-color: transparent;
+    	background-image: url('/img/page-about-voices-left.png'), url('/img/page-about-voices-right.png');
+		background-position: left center, right center;
+		background-repeat: no-repeat, no-repeat;
 	}
 }
 .page-container.no-pad{
@@ -84,24 +131,46 @@
 .page-container.footer{
 	text-align: left;
 	padding: 25px 0px;
+	background: @color-neutral-xx-light;
+	color: @color-neutral-mid;
+	.footer-menu{
+		text-align: center;
+		-webkit-font-smoothing: antialiased;
+		a{
+			padding: 0px 10px;
+			&.side{
+				margin-top: 8px;
+				display: inline-block;
+			}
+		}
+		span{
+			padding-left: 30px;
+		}
+	}
 }
 
-.page-container.dark{
-	background: #444;
-	color: #ffffff;
+.page-container.main{
+	.page-content{
+		padding: 200px 0px 80px 0px;
+	}
+    background: transparent url('/img/page-about-img-bg.jpg') top left no-repeat;
+    background-size: cover;
+	color: @color-white;
+	h5{
+		color: @color-white;
+		font-weight: bold;
+		  -webkit-font-smoothing: antialiased;
+		  text-shadow: 0px 1px 1px rgba(0,0,0, .25);
+	}
 	h6{
-		color: #929292;
+		color: @color-white;
 	}
 	h6:after{
-		background: #606060;
+		background-color: @color-white;
+		margin-bottom: 25px;
 	}
 }
-.page-container.grey{
-	background: #f7f6f6;
-}
-.page-container.light{
-	background: #fff;
-}
+
 
 /*****  button *****/
 

@@ -50,7 +50,7 @@ Class(CV, 'UsersList').inherits(Widget)({
 
                 if(this.hasButton){
                     new CV.Button({
-                        style   : '',
+                        style   : 'tiny',
                         type    : 'single',
                         label   : 'Remove',
                         name    : 'buttonRemove'

@@ -146,9 +146,9 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
       }
 
       var btnActions = {
-        "1": {name: 'Join'},
-        "2": {name: 'Message'},
-        "3": {name: 'Follow'}
+        "1": {label: 'Join', name: 'join'},
+        "2": {label: 'Message', name: 'message'},
+        "3": {label: 'Follow', name: 'follow'}
       };
 
       new CV.Button({
