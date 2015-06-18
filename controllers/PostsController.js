@@ -81,12 +81,16 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
             return next(new ForbiddenError())
           }
 
+          res.locals.entity = entity.toJSON();
+          res.locals.voice  = voice.toJSON();
+          res.locals.post   = post.toJSON();
+
           res.format({
             json : function() {
               res.json(post.toJSON());
             },
             html : function() {
-              res.render('posts/show', {layout : 'application', entity : entity.toJSON(), voice : voice.toJSON(), post : post.toJSON()});
+              res.render('posts/show', {layout : 'application'});
             }
           })
         });
@@ -123,7 +127,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         postData.sourceService = body.sourceService;
         postData.sourceType = body.sourceType;
         postData.approved = approved;
-        postData.ownerId = req.currentPerson.id;
+        postData.ownerId = req.currentPerson ? req.currentPerson.id : 0;
         postData.voiceId = response.voice.id;
 
         var post = new Post(postData);
