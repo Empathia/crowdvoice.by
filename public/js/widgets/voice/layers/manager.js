@@ -26,19 +26,8 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
         _windowInnerHeight : 0,
         _windowInnerWidth : 0,
         _averageLayerHeight : 0,
-        _listenScrollEvent : true,
         _isInitialLoad : true,
-        _lastScrollTop : 0,
-        _scrollTimer : null,
-        _scrollTime : 250,
         _lazyLoadingImageArray: null,
-
-        /* layer offset left to perform hit-test on layer elements
-         * sidebar = 60, main-container-padding-left = 40
-         */
-        _layersOffsetLeft : 100,
-
-        LAYER_CLASSNAME : 'cv-voice-posts-layer',
 
         init : function init(config) {
             Object.keys(config || {}).forEach(function(propertyName) {
@@ -47,22 +36,17 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
 
             this.el = this.element;
             this._window = window;
-            this._socket = io();
+            this._socket = this._socket || this.parent._socket;
             this._lazyLoadingImageArray = [];
 
             this._setGlobarVars();
             this._createEmptyLayers();
 
             this._bindEvents();
-
-            this._checkInitialHash();
         },
 
         _bindEvents : function _bindEvents() {
             this._socket.on('monthPosts', this.loadLayer.bind(this));
-
-            this._scrollHandlerRef = this._scrollHandler.bind(this);
-            this.scrollableArea.addEventListener('scroll', this._scrollHandlerRef);
 
             this._jumpToHandlerRef = this._jumpToHandler.bind(this);
             CV.VoiceTimelineJumpToDateItem.bind('itemClicked', this._jumpToHandlerRef);
@@ -86,10 +70,13 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
          */
         update : function update() {
             this._setGlobarVars()._updateLayers();
-
             return this;
         },
 
+        loadDefaultLayer : function loadDefaultLayer() {
+            this._beforeRequest(this._layers[0].dateString);
+            return this;
+        },
 
         /* Jump to layer handler
          * @method _jumpToHandler <private> [Function]
@@ -101,7 +88,7 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
             if (!layer) return;
             if (layer === this.getCurrentMonthLayer()) return;
 
-            this._listenScrollEvent = false;
+            // this._listenScrollEvent = false;
 
             this._layers.forEach(function(l) {
                 if (l.getPosts().length) l.empty();
@@ -110,55 +97,9 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
             Velocity(layer.el, 'scroll', {
                 duration : 600,
                 complete : function() {
-                    _this._listenScrollEvent = true;
+                    // _this._listenScrollEvent = true;
                 }
             });
-        },
-
-        /* Handle the scrollableArea scroll event.
-         * @method _scrollHandler <private> [Function]
-         */
-        _scrollHandler : function _scrollHandler() {
-            var st = this.scrollableArea.scrollY;
-            var scrollingUpwards = (st < this._lastScrollTop);
-            var y = 0;
-            var el;
-
-            if (!this._listenScrollEvent) return;
-
-            if (!scrollingUpwards) y = this._windowInnerHeight - 1;
-
-            el = document.elementFromPoint(this._layersOffsetLeft, y);
-
-            if (el.classList.contains(this.LAYER_CLASSNAME)) {
-                if (el.dataset.date !== this._currentMonthString) {
-                    this._beforeRequest(el.dataset.date, scrollingUpwards);
-                }
-            }
-
-            this._lastScrollTop = st;
-
-            if (this._scrollTimer) this._window.clearTimeout(this._scrollTimer);
-
-            this._scrollTimer = this._window.setTimeout(function() {
-                this.loadImagesVisibleOnViewport();
-            }.bind(this), this._scrollTime);
-        },
-
-        /* Checks the window hash to determinate which posts to requests for initial rendering.
-         * If the hash does not match the format 'YYYY-MM' it will default to newest month, requesting the latest posts.
-         * If necessary, it should scroll to the specific month to load, disabling the scroll-sniffing during the scrollTo animation.
-         * This method should be run only once from init.
-         * @method _checkInitialHash <private> [Function]
-         */
-        _checkInitialHash : function _checkInitialHash() {
-            var hash = window.location.hash;
-
-            if (hash !== "" && /^\d{4}-\d{2}$/.test(hash)) {
-                return this._beforeRequest(hash);
-            }
-
-            this._beforeRequest( this._layers[0].dateString );
         },
 
         /* Cache variables values that depend on window’s size. This method is called on the init method and on the window.resize event.
@@ -250,24 +191,16 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
          * @method _beforeRequest <private> [Function]
          */
         _beforeRequest : function _beforeRequest(dateString, scrollDirection) {
-            if (dateString == this._currentMonthString) {
-                return;
-            }
+            if (dateString == this._currentMonthString) return false;
 
             this._currentMonthString = dateString;
 
             // prevent to append childs if the layer is already filled
-            if (this['postsLayer_' + dateString].getPosts().length > 1) {
-                return;
-            }
+            if (this['postsLayer_' + dateString].getPosts().length > 1) return false;
 
             // load from cache
             if (typeof this._cachedData[dateString] !== 'undefined') {
-                return this.loadLayer(
-                    this._cachedData[dateString],
-                    dateString,
-                    scrollDirection
-                );
+                return this.loadLayer(this._cachedData[dateString], dateString, scrollDirection);
             }
 
             // request to the server
@@ -276,7 +209,6 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
 
         /* Fills a specific layer with childs (posts).
          * Stores the server response.
-         * Updates the _listenScrollEvent flag.
          * @param postsData <required> [Objects Array] the raw data of Post Models retrived from the server. We us this data to crate Post Widgets.
          * @dateString <required> [String] the data's month-year we received
          * @scrollDirection <optional> [Boolean] {false} false for downwards  1 for upwards
@@ -287,8 +219,6 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
             var prev = currentLayer.getPreviousSibling();
             var next = currentLayer.getNextSibling();
             var calcHeightDiff = false;
-
-            this._listenScrollEvent = false;
 
             if (typeof this._cachedData[dateString] === 'undefined') {
                 this._cachedData[dateString] = postsData;
@@ -329,16 +259,12 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
                     this.scrollableArea.scrollTo(0, y);
                 }
 
-                this._listenScrollEvent = true;
-
                 return;
             }
 
             var prev2 = prev && prev.getPreviousSibling();
 
             if (prev2) prev2.empty().arrangeReset();
-
-            this._listenScrollEvent = true;
         },
 
         getCurrentMonthLayer : function getCurrentMonthLayer() {
