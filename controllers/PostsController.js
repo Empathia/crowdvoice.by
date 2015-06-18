@@ -148,7 +148,10 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
                   return next(err);
                 }
 
-                console.log(posts[0])
+                req.body.images.forEach(function(image) {
+                  fs.unlinkSync(process.cwd() + '/public' + image);
+                  logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image);
+                })
 
                 return res.json(posts[0]);
               })
