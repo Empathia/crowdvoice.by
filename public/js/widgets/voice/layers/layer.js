@@ -44,6 +44,10 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
             });
         },
 
+        /* Updates the layer's height, relayout posts and update indicators. Should be called when the window dimensions are changed.
+         * @method reLayout <public> [Function]
+         * @return this
+         */
         reLayout : function reLayout(args) {
             if (this.waterfall.getItems().length) {
                 this.waterfall.layout();
@@ -156,7 +160,6 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
         },
 
         /* Updates the position of each indicator.
-         * Called by `_resizeHandler`
          * @private
          */
         _updatePostIndicatorsPostion : function _updatePostIndicatorsPostion() {

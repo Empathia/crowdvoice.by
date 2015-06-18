@@ -31,8 +31,6 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
         _lastScrollTop : 0,
         _scrollTimer : null,
         _scrollTime : 250,
-        _resizeTimer : null,
-        _resizeTime : 250,
         _lazyLoadingImageArray: null,
 
         /* layer offset left to perform hit-test on layer elements
@@ -66,9 +64,6 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
             this._scrollHandlerRef = this._scrollHandler.bind(this);
             this.scrollableArea.addEventListener('scroll', this._scrollHandlerRef);
 
-            this._resizeHandlerRef = this._resizeHandler.bind(this);
-            this._window.addEventListener('resize', this._resizeHandlerRef);
-
             this._jumpToHandlerRef = this._jumpToHandler.bind(this);
             CV.VoiceTimelineJumpToDateItem.bind('itemClicked', this._jumpToHandlerRef);
 
@@ -84,6 +79,17 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
                 localStorage['cvby__voice' + this.id + '__about-read'] = true;
             }.bind(this));
         },
+
+        /* Updates variables that are dependant to window size and update all layers.
+         * @method update <public> [Function]
+         * @return this;
+         */
+        update : function update() {
+            this._setGlobarVars()._updateLayers();
+
+            return this;
+        },
+
 
         /* Jump to layer handler
          * @method _jumpToHandler <private> [Function]
@@ -139,18 +145,6 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
             }.bind(this), this._scrollTime);
         },
 
-        /* Handle the window resize event.
-         * @method _resizeHandler <private> [Function]
-         */
-        _resizeHandler : function _resizeHandler() {
-            if (this._resizeTimer) this._window.clearTimeout(this._resizeTimer);
-
-            this._resizeTimer = this._window.setTimeout(function() {
-                this._setGlobarVars();
-                this._updateLayers();
-            }.bind(this), this._resizeTime);
-        },
-
         /* Checks the window hash to determinate which posts to requests for initial rendering.
          * If the hash does not match the format 'YYYY-MM' it will default to newest month, requesting the latest posts.
          * If necessary, it should scroll to the specific month to load, disabling the scroll-sniffing during the scrollTo animation.
@@ -176,6 +170,7 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
             this._windowInnerWidth = this._window.innerWidth;
             this._availableWidth = this.element.clientWidth;
             this._updateAverageLayerHeight();
+            return this;
         },
 
         /* Sets the value to the _averageLayerHeight property.

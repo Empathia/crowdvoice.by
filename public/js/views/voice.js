@@ -39,6 +39,10 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
         postsCount : 0,
         allowPosting : false,
 
+        _window : null,
+        _resizeTimer : null,
+        _resizeTime : 250,
+
         init : function init(config) {
             this.status = CV.VoiceView.STATUS_DRAFT;
             this.type = CV.VoiceView.TYPE_PUBLIC;
@@ -47,13 +51,14 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
                 this[propertyName] = config[propertyName];
             }, this);
 
+            this._window = window;
             this.postsCount = this._formatPostsCountObject(this.postsCount);
 
             this._appendLayersManager();
             this._bindEvents();
         },
 
-        /* Instantiate Widgets that give special behaviour to VoiceView, such as the AutoHide Header, Expandable Sidebar, etc.
+        /* Instantiate Widgets that give special behaviour to VoiceView, such as the AutoHide Header, Expandable Sidebar, Voice Footer, etc.
          * @method setupVoiceWidgets <public> [Function]
          * @return [CV.VoiceView]
          */
@@ -67,14 +72,6 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
                 footerVoiceTitle : document.getElementsByClassName('voice-footer-meta-wrapper')[0]
             });
 
-            return this;
-        },
-
-        /* Instantiate the voice footer.
-         * @method addFooter <public> [Function]
-         * @return [CV.VoiceView]
-         */
-        addFooter : function addFooter() {
             this.appendChild(
                 new CV.VoiceFooter({
                     name : 'voiceFooter',
@@ -136,6 +133,9 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
         },
 
         _bindEvents : function _bindEvents() {
+            this._resizeHandlerRef = this._resizeHandler.bind(this);
+            this._window.addEventListener('resize', this._resizeHandlerRef);
+
             this.showAboutBoxRef = this.showAboutBoxButtonHandler.bind(this);
             this.aboutBoxButtonElement.addEventListener('click', this.showAboutBoxRef);
 
@@ -150,6 +150,19 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
 
             this.layerManagerReadyRef = this._layerManagerReadyHandler.bind(this);
             this.voicePostLayersManager.bind('ready', this.layerManagerReadyRef);
+        },
+
+        /* Handle the window resize event.
+         * @method _resizeHandler <private> [Function]
+         */
+        _resizeHandler : function _resizeHandler() {
+            var _this = this;
+
+            if (this._resizeTimer) this._window.clearTimeout(this._resizeTimer);
+
+            this._resizeTimer = this._window.setTimeout(function() {
+                _this.voicePostLayersManager.update();
+            }, this._resizeTime);
         },
 
         _deactivateButton : function _deactivateButton() {
@@ -188,6 +201,9 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
             this.aboutBoxButtonElement.removeEventListener('click', this.showAboutBoxRef);
             this.showAboutBoxRef = null;
 
+            this._window.removeEventListener('resize', this._resizeHandlerRef);
+            this._resizeHandlerRef = null;
+
             CV.VoiceAboutBox.unbind('activate', this._deactivateButtonRef);
             this._deactivateButtonRef = null;
 
@@ -224,6 +240,11 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
             this.postCountElement = null;
             this.followersCountElement = null;
             this.aboutBoxButtonElement = null;
+
+            if (this._resizeTimer) this._window.clearTimeout(this._resizeTimer);
+            this._resizeTimer = null;
+            this._resizeTime = 250;
+            this._window = null;
         }
     }
 });
