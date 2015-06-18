@@ -9,7 +9,7 @@ exports.seed = function(knex, Promise) {
       description : 'On March 11, 2011, a tsunami and earthquake damaged the Fukushima Daiichi power plant in Fukushima, Japan. Subsequent equipment failures led to the release of nuclear material into the surrounding ground and ocean. It is regarded as the biggest nuclear disaster since Chernobyl. Initially, studies conducted by TEPCO, the company operating the plant, concluded that the risks',
       'owner_id' : 1,
       'status' : 'STATUS_PUBLISHED',
-      'type' : 'TYPE_PUBLIC',
+      'type' : 'TYPE_CLOSED',
       latitude : '4.815',
       longitude : '162.342',
       'location_name' : 'Jin Jang Island',

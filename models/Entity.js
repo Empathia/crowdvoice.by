@@ -291,14 +291,22 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
       owner: function owner (done) {
         if (!done) { return; }
 
+        var entity = this;
+
         EntityOwner.find({
-          ownedId: this.id
+          owned_id: entity.id
         }, function (err, result) {
           if (err) { done(err); return; }
-          Entity.find({id: result[0].owner_id}, function (err, result) {
-            if (err) { done(err); return; }
-            done(null, result[0]);
-          });
+
+          if (result.length === 0) {
+            done(null, [])
+          } else {
+            Entity.find({id: result[0].ownerId}, function (err, result) {
+
+              if (err) { done(err); return; }
+              done(null, result[0]);
+            });
+          }
         });
       },
 
