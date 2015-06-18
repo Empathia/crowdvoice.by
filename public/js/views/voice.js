@@ -30,12 +30,14 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
         updatedAt : '',
 
         /* OTHER OPTIONS */
-        postsCount : 0,
         followerCount : 0,
         postCountElement : null,
         followersCountElement : null,
         aboutBoxButtonElement : null,
         scrollableArea : null,
+
+        postsCount : 0,
+        allowPosting : false,
 
         init : function init(config) {
             this.status = CV.VoiceView.STATUS_DRAFT;
@@ -79,7 +81,8 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
                     element : $('.voice-footer'),
                     firstPostDate : this.firstPostDate,
                     lastPostDate : this.lastPostDate,
-                    scrollableArea : this.scrollableArea
+                    scrollableArea : this.scrollableArea,
+                    allowPosting : this.allowPosting
                 })
             );
 

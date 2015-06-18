@@ -4,6 +4,7 @@ Class(CV, 'VoiceFooter').inherits(Widget)({
         firstPostDate : '',
         lastPostDate : '',
         scrollableArea : null,
+        allowPosting : false,
 
         init : function init(config) {
             Widget.prototype.init.call(this, config);
@@ -23,11 +24,14 @@ Class(CV, 'VoiceFooter').inherits(Widget)({
             // @TODO:
             // add condition based on the user type and or privilegies (ACL)
             // and or based on the voice type (open|close)
-            this.appendChild(
-                new CV.VoiceAddContent({
-                    name : 'voiceAddContent'
-                })
-            ).render(this.element);
+
+            if (this.allowPosting) {
+                this.appendChild(
+                    new CV.VoiceAddContent({
+                        name : 'voiceAddContent'
+                    })
+                ).render(this.element);
+            }
 
             this.appendChild(
                 new CV.VoiceFollowButton({

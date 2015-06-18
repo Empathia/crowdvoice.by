@@ -71,12 +71,14 @@
 
   var otherOptions = {
     backgroundElement     : document.querySelector('.voice-background-cover'),
-    postsCount            : <%= JSON.stringify(postsCount) %>,
     followerCount         : 1260,
     postCountElement      : document.querySelector('.voice-stats__post-count'),
     followersCountElement : document.querySelector('.voice-stats__followers'),
     aboutBoxButtonElement : document.querySelector('.voice-about-show-btn'),
-    scrollableArea        : window
+    scrollableArea        : window,
+
+    postsCount            : <%= JSON.stringify(postsCount) %>,
+    allowPosting          : <%= allowPosting %>
   };
 
   for (var propertyName in otherOptions) {
