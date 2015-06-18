@@ -147,7 +147,7 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
 
             this._resizeTimer = this._window.setTimeout(function() {
                 this._setGlobarVars();
-                this._resetLayersHeight();
+                this._updateLayers();
             }.bind(this), this._resizeTime);
         },
 
@@ -226,15 +226,11 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
             frag = null;
         },
 
-        /* Sets the layer's postsContainer height equal to the
-         * _averageLayerHeight value.
-         * @method _resetLayersHeight <private>
-         * @return undefined
-         */
-        _resetLayersHeight : function _resizeHandlerRef() {
+        _updateLayers : function _updateLayers() {
             this._layers.forEach(function(layer) {
-                if (!layer.getPosts().length)
-                    layer.setHeight(this.getAverageLayerHeight());
+                layer.reLayout({
+                    averageHeight: this.getAverageLayerHeight()
+                });
             }, this);
         },
 
