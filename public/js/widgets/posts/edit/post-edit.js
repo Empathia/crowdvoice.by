@@ -51,10 +51,22 @@ Class(CV, 'PostEdit').inherits(Widget)({
 
             this.el = this.element[0];
             this.addCoverButton = this.el.querySelector('.add-cover-button');
-            this.images = this.images.filter(function(image) {
-                return image.width >= 300;
-            });
-            this._imagesLen = this.images.length;
+
+            this._setup()._makeItEditable()._bindEvents();
+
+            window.setTimeout(function() {
+                this._afterSetup();
+            }.bind(this), 0);
+        },
+
+        _setup : function _setup() {
+            if (this.images) {
+                this.images = this.images.filter(function(image) {
+                    return image.width >= 300;
+                });
+
+                this._imagesLen = this.images.length;
+            }
 
             this._postConfig = {
                 name : 'post',
@@ -63,9 +75,9 @@ Class(CV, 'PostEdit').inherits(Widget)({
                 sourceService : this.sourceService,
                 title : this.title,
                 description : this.description,
-                image : '',
-                imageWidth : 0,
-                imageHeight : 0,
+                image : this.image || '',
+                imageWidth : this.imageWidth || 0,
+                imageHeight : this.imageHeight || 0,
                 publishedAt : new Date()
             };
 
@@ -74,9 +86,6 @@ Class(CV, 'PostEdit').inherits(Widget)({
             ).render(this.el).loadImage();
 
             if (this._imagesLen) {
-                this._currentImageIndex = 0;
-                this._updatePostImage();
-
                 if (this.sourceType === 'link') {
                     this.appendChild(
                         new CV.PostEditImageControls({
@@ -87,7 +96,14 @@ Class(CV, 'PostEdit').inherits(Widget)({
                 }
             }
 
-            this._makeItEditable()._bindEvents();
+            return this;
+        },
+
+        _afterSetup : function _afterSetup() {
+            if (this._imagesLen) {
+                this._currentImageIndex = 0;
+                this._updatePostImage();
+            }
         },
 
         /* Subscribe the event listener
@@ -246,6 +262,11 @@ Class(CV, 'PostEdit').inherits(Widget)({
         _updatePostImage : function _updatePostImage() {
             this.post.setImageHeight(this.images[this._currentImageIndex].height);
             this.post.setCoverImage(this.images[this._currentImageIndex].path);
+            this.dispatch('imageCoverUpdated');
+        },
+
+        getCurrentImage  : function getCurrentImage() {
+            return this.images[this._currentImageIndex];
         },
 
         /* Hides the post.imageContainer, updates _image to '' and shows addCoverButton

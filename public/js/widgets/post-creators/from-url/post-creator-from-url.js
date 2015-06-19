@@ -113,15 +113,15 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
                 headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
                 data: this.postData,
                 success: function(response) {
-                  console.log('success', response)
+                  console.log('success', response);
                 },
                 error : function(data) {
-                  console.error('error', data)
+                  console.error('error', data);
                 },
                 dataType: 'json'
               });
 
-            }.bind(this))
+            }.bind(this));
 
             return this;
         },
@@ -180,10 +180,15 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
                 });
 
                 if (this._previewPostWidget) {
+                    this._previewPostWidget.unbind('imageCoverUpdated', this._updateImagePathRef);
+                    this._updateImagePathRef = null;
                     this._previewPostWidget.destroy();
                 }
 
-                this.appendChild(new CV.PostEdit(post)).render(this.content);
+                this.appendChild(new CV.PostEdit(post));
+                this._updateImagePathRef = this._updatePostDataImagePath.bind(this);
+                this._previewPostWidget.bind('imageCoverUpdated', this._updateImagePathRef);
+                this._previewPostWidget.render(this.content);
 
                 this.postData = {
                   title : response.title,
@@ -191,10 +196,10 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
                   sourceType : response.sourceType,
                   sourceService : response.sourceService,
                   sourceUrl : response.sourceUrl,
-                  imagePath : response.images[this._previewPostWidget._currentImageIndex].path,
-                  images : response.images.map(function(item) {return item.path}),
+                  imagePath : '',
+                  images : response.images.map(function(item) {return item.path;}),
                   publishedAt : new Date(this._previewPostWidget.romeTime.getDate())
-                }
+                };
 
                 console.log(response, this.postData);
 
@@ -219,6 +224,10 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
             this._activateIconType(post.sourceType);
             this._enabledPostButton().enable();
             */
+        },
+
+        _updatePostDataImagePath : function _updatePostDataImagePath() {
+            this.postData.imagePath = this._previewPostWidget.getCurrentImage().path;
         },
 
         /* Enables the Post Button.

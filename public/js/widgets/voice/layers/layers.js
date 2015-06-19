@@ -80,6 +80,14 @@ Class(CV, 'VoicePostLayers').inherits(Widget)({
             throw new Error('VoicePostLayers.prototype.request not implemented');
         },
 
+        /* Implementation of addPosts
+         * All implementations should include this method.
+         * @method addPosts <private, abstract> [Function]
+         */
+        addPosts : function addPosts(layer, postsData) {
+            throw new Error('VoicePostLayers.prototype.addPosts not implemented');
+        },
+
         /* Implementation to request data event listeners.
          * All implementations should include this method.
          * @method __bindEvents <private, abstract> [Function]
@@ -264,7 +272,7 @@ Class(CV, 'VoicePostLayers').inherits(Widget)({
                 this._appendVoiceAboutBox(currentLayer);
             }
 
-            currentLayer.addPosts(postsData);
+            this.addPosts(currentLayer, postsData);
 
             if (this._isInitialLoad) {
                 this._isInitialLoad = false;
