@@ -51,12 +51,6 @@ var HomeController = Class('HomeController')({
 
     },
 
-    about : function(req, res) {
-      res.render('dev/about.html', {
-        layout : 'application'
-      });
-    },
-
     voice : function(req, res) {
       res.render('dev/voice.html', {
         layout : 'application',
@@ -135,20 +129,6 @@ var HomeController = Class('HomeController')({
       });
     },
 
-    profileMessages : function(req, res) {
-      var demoOrganizations = require('./../public/demo-data/organizations.js');
-      var demoVoices = require('./../public/demo-data/voices.js');
-      var demoPosts = require('./../public/demo-data/posts.js');
-
-
-      res.render('dev/profile-messages.html', {
-        layout : 'application',
-        voices : demoVoices,
-        organizations : demoOrganizations,
-        posts : demoPosts
-      });
-    },
-
     discover : function(req, res) {
       var demoOrganizations = require('./../public/demo-data/organizations.js');
       var demoVoices = require('./../public/demo-data/voices.js');
@@ -177,33 +157,7 @@ var HomeController = Class('HomeController')({
       });
     },
 
-    account : function(req, res) {
-      var demoOrganizations = require('./../public/demo-data/organizations.js');
-      var demoVoices = require('./../public/demo-data/voices.js');
-      var demoUsers = require('./../public/demo-data/users.js');
 
-
-      res.render('dev/account.html', {
-        layout : 'application',
-        voices : demoVoices,
-        organizations : demoOrganizations,
-        users : demoUsers
-      });
-    },
-
-    organization : function(req, res) {
-      var demoOrganizations = require('./../public/demo-data/organizations.js');
-      var demoVoices = require('./../public/demo-data/voices.js');
-      var demoUsers = require('./../public/demo-data/users.js');
-
-
-      res.render('dev/organization.html', {
-        layout : 'application',
-        voices : demoVoices,
-        organizations : demoOrganizations,
-        users : demoUsers
-      });
-    },
 
     ui : function(req, res) {
       var demoVoices = require('./../public/demo-data/voices.js');
