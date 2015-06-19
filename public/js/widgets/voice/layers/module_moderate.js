@@ -4,6 +4,10 @@ Class(CV, 'VoicePostLayersModerateManager').inherits(CV.VoicePostLayers)({
             this._socket.emit('getMonthPostsModerate', id, dateString, scrollDirection);
         },
 
+        addPosts : function addPosts(layer, postsData) {
+            layer.addEditablePosts(postsData);
+        },
+
         __bindEvents : function __bindEvents() {
             this._socket.on('monthPostsModerate', this._loadLayerRef);
             return this;
