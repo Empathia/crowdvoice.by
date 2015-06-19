@@ -4,7 +4,7 @@
 var moment = require('moment');
 var Velocity = require('velocity-animate');
 
-Class(CV, 'VoicePostLayersManager').inherits(Widget)({
+Class(CV, 'VoicePostLayers').inherits(Widget)({
     HTML : '<section class="voice-posts -rel"></section>',
 
     prototype : {
@@ -48,12 +48,11 @@ Class(CV, 'VoicePostLayersManager').inherits(Widget)({
         setup : function setup() {
             this._setGlobarVars();
             this._createEmptyLayers();
-            return this._bindEvents();
+            return this._bindEvents().__bindEvents();
         },
 
         _bindEvents : function _bindEvents() {
             this._loadLayerRef = this.loadLayer.bind(this);
-            this._socket.on('monthPosts', this._loadLayerRef);
 
             this._jumpToHandlerRef = this._jumpToHandler.bind(this);
             CV.VoiceTimelineJumpToDateItem.bind('itemClicked', this._jumpToHandlerRef);
@@ -71,6 +70,30 @@ Class(CV, 'VoicePostLayersManager').inherits(Widget)({
             }.bind(this));
 
             return this;
+        },
+
+        /* Implementation of the data request.
+         * All implementations should include this method.
+         * @method request <private, abstract> [Function]
+         */
+        request : function request() {
+            throw new Error('VoicePostLayers.prototype.request not implemented');
+        },
+
+        /* Implementation to request data event listeners.
+         * All implementations should include this method.
+         * @method __bindEvents <private, abstract> [Function]
+         */
+        __bindEvents : function __bindEvents() {
+            throw new Error('VoicePostLayers.prototype.__bindEvents not implemented');
+        },
+
+        /* Implementation of __destroy method per implementation.
+         * All implementations should include this method.
+         * @method __destroy <private, abstract> [Function]
+         */
+        __destroy : function __destroy() {
+            throw new Error('VoicePostLayers.prototype.__destroy not implemented');
         },
 
         /* Updates variables that are dependant to window size and update all layers.
@@ -213,7 +236,7 @@ Class(CV, 'VoicePostLayersManager').inherits(Widget)({
             }
 
             // request to the server
-            this._socket.emit('getMonthPosts', this.id, dateString, scrollDirection);
+            this.request(this.id, dateString, scrollDirection);
         },
 
         /* Fills a specific layer with childs (posts).
@@ -312,8 +335,7 @@ Class(CV, 'VoicePostLayersManager').inherits(Widget)({
 
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
-
-            this._socket.removeListener('monthPosts', this._loadLayerRef);
+            this.__destroy();
 
             CV.VoiceTimelineJumpToDateItem.unbind('itemClicked', this._jumpToHandlerRef);
             this._jumpToHandlerRef = null;

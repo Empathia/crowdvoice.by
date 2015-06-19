@@ -14,6 +14,12 @@ Class(CV, 'VoiceModerateManager').inherits(Widget)({
         /* socket io instance holder */
         _socket : null,
 
+        _listenScrollEvent : true,
+        _lastScrollTop : 0,
+        _scrollTimer : null,
+        _scrollTime : 250,
+        LAYER_CLASSNAME : 'cv-voice-posts-layer',
+
         init : function init(config) {
             Widget.prototype.init.call(this, config);
 
@@ -36,7 +42,7 @@ Class(CV, 'VoiceModerateManager').inherits(Widget)({
             data.postsCount = Voice.postsCount;
 
             this.appendChild(
-                new CV.VoicePostLayersManager(data)
+                new CV.VoicePostLayersModerateManager(data)
             ).render(this.el).setup().loadDefaultLayer();
 
             this.appendChild(
@@ -55,10 +61,43 @@ Class(CV, 'VoiceModerateManager').inherits(Widget)({
         _bindEvents : function _bindEvents() {
             this.footer.bind('done', this.destroy.bind(this));
 
+            this._scrollHandlerRef = this._scrollHandler.bind(this);
+            this.el.addEventListener('scroll', this._scrollHandlerRef);
+
             this._windowKeydownHandlerRef = this._windowKeydownHandler.bind(this);
             this._window.addEventListener('keydown', this._windowKeydownHandlerRef);
 
             return this;
+        },
+
+        /* Handle the scrollableArea scroll event.
+         * @method _scrollHandler <private> [Function]
+         */
+        _scrollHandler : function _scrollHandler() {
+            var st = this.el.scrollTop;
+            var scrollingUpwards = (st < this._lastScrollTop);
+            var y = 1;
+            var el;
+
+            if (!this._listenScrollEvent) return;
+
+            if (!scrollingUpwards) y = this.layersManager._windowInnerHeight - 1;
+
+            el = document.elementFromPoint(0, y);
+
+            if (el.classList.contains(this.LAYER_CLASSNAME)) {
+                if (el.dataset.date !== this.layersManager._currentMonthString) {
+                    this.loadLayer(el.dataset.date, scrollingUpwards);
+                }
+            }
+
+            this._lastScrollTop = st;
+
+            if (this._scrollTimer) this._window.clearTimeout(this._scrollTimer);
+
+            this._scrollTimer = this._window.setTimeout(function() {
+                this.layersManager.loadImagesVisibleOnViewport();
+            }.bind(this), this._scrollTime);
         },
 
         /* Keydown handler, checks if the ESC key has been pressed to destroy the widget.
@@ -67,6 +106,12 @@ Class(CV, 'VoiceModerateManager').inherits(Widget)({
         _windowKeydownHandler : function _windowKeydownHandler(ev) {
             var charCode = (typeof ev.which == 'number') ? ev.which : ev.keyCode;
             if (charCode === 27) this.destroy();
+        },
+
+        loadLayer : function loadLayer(dateString, scrollDirection) {
+            this._listenScrollEvent = false;
+            this.layersManager._beforeRequest(dateString, scrollDirection);
+            this._listenScrollEvent = true;
         },
 
         /* Render method to remove scrollbars from body. It does not override Widget's render method.
