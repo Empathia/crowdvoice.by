@@ -137,7 +137,12 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
             return next(err);
           }
 
-          post.uploadImage('image', process.cwd() + '/public' + body.imagePath, function() {
+          var imagePath = '';
+          if (body.imagePath !== '') {
+            imagePath = process.cwd() + '/public' + body.imagePath;
+          }
+
+          post.uploadImage('image', imagePath, function() {
             post.save(function(err, resave) {
               if (err) {
                 return next(err);
