@@ -138,9 +138,6 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
                     postsCount : this.postsCount,
                     firstPostDate : this.firstPostDate,
                     lastPostDate : this.lastPostDate,
-                    averagePostTotal : 150,
-                    averagePostWidth : 340,
-                    averagePostHeight : 500,
                     scrollableArea : this.scrollableArea,
                     _socket : this._socket
                 })

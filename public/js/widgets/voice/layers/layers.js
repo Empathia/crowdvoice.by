@@ -14,8 +14,8 @@ Class(CV, 'VoicePostLayers').inherits(Widget)({
         firstPostDate : '',
         lastPostDate : '',
         averagePostTotal : 100,
-        averagePostWidth : 340,
-        averagePostHeight : 500,
+        averagePostWidth : 300,
+        averagePostHeight : 600,
         scrollableArea : null,
 
         /* PRIVATE PROPERTIES */

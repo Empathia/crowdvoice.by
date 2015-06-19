@@ -157,6 +157,21 @@
 			      			</div>\
 			      		</div>');
 
+  	var messageTextFull = $('<div class="message-text">\
+				      			<div class="message-info">\
+								    <img class="" src="/img/sample/avatars/org-06.png" alt="">\
+					      			<div class="message-data">\
+					      				<h3>Chu Vaca </h3>\
+					      				<span>• May 5th, 2015 • 7:32 PM</span>\
+					      				<p>May the taco be with you lorem ipsum dolor sit ameret lorem ipsum dolor sit ameret lorem ipsum dolor sit ameret lorem ipsum dolor sit ameret.</p>\
+					      				<div class="message-notification">\
+					      					<p>Julia has requested to become a contributor for The Extended Effects of the Fukushima Disaster. If you grant access, Julia will be able to <a href="#">one link</a> and after a while another bold. <a href="#"><b>Go to this Voice\'s settings ›</b></a></p>\
+					      					<div class="message-notification-actions"></div>\
+					      				</div>\
+					      			</div>\
+				      			</div>\
+				      		</div>');
+
 	var searchInput = new CV.Input({
 		type 		: 'search',
 		style 		: 'tiny',
@@ -526,11 +541,36 @@
 
 		Object.keys(threadsObj[threadId].messages).sort().reverse().forEach(function(messageId, i) {
           	var messageObj = threadsObj[threadId].messages[messageId];
-			var messageEl = messageText.clone();
+          	var messageEl;
+
+          	if (messageObj.type == 'message'){
+				messageEl = messageText.clone();
+			} else {
+				messageEl = messageTextFull.clone();
+
+				var messageNotificationText = 'Julia has requested to become a contributor for The Extended Effects of the Fukushima Disaster. If you grant access, Julia will be able to <a href="#">one link</a> and after a while another bold. <a href="#"><b>Go to this Voice\'s settings ›</b></a>';
+
+				messageEl.find('.message-notification p').html(messageNotificationText);
+
+				var btnMultipleOptions = {
+					"1": {label: 'Accept', name: 'accept'},
+					"2": {label: 'Accept as an Anonymous Member', name: 'anonymous'},
+					"3": {label: 'Refuse', name: 'refuse'}
+				};
+
+				new CV.Button({
+					style   : 'tiny',
+					type    : 'multiple',
+					name    : 'buttonMultiple',
+					options : btnMultipleOptions
+				}).render(messageEl.find('.message-notification-actions'));
+			}
+
 			messageEl.find('.message-data h3').text(messageObj.senderEntity.name + " " + messageObj.senderEntity.lastname);
 			messageEl.find('.message-data span').text(moment(new Date(messageObj.createdAt).toISOString()).format('• MMMM Do, YYYY • h:mm a'));
-			messageEl.find('.message-data p').text(messageObj.message);
+			messageEl.find('.message-data > p').text(messageObj.message);
 			messageListEl.append(messageEl);
+
        	});
 
 		$('.messages-conversation').scrollTop(10000);
