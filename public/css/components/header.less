@@ -55,11 +55,11 @@ body.page-inner .cv-main-header {
 body.page-voice .cv-main-header {
   position: fixed;
   top: 0;
-  transform: translateY(1px);
+  transform: translateY(1px) translateZ(0);
   transition: transform 200ms ease-in-out;
 
   &.hide {
-    transform: translateY(-@cv-header-height) !important;
+    transform: translateY(-@cv-header-height) translateZ(0) !important;
   }
 }
 

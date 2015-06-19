@@ -49,7 +49,9 @@ require('./widgets/voice/timeline/jump-to-date');
 require('./widgets/voice/timeline/jump-to-date-label');
 require('./widgets/voice/timeline/jump-to-date-item');
 
-require('./widgets/voice/layers/manager');
+require('./widgets/voice/layers/layers');
+require('./widgets/voice/layers/module_voice');
+require('./widgets/voice/layers/module_moderate');
 require('./widgets/voice/layers/layer');
 require('./widgets/voice/layers/indicator');
 require('./widgets/voice/voice-about-box');

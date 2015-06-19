@@ -16,10 +16,6 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
 
         /* PRIVATE PROPERTIES */
         _finalHeightIsKnow : false,
-        _resizeTimer : null,
-        _resizeTime : 250,
-        _resizeHandlerRef : null,
-        _window : null,
 
         _postWidgets : null,
         _indicatorWidgets : null,
@@ -32,7 +28,6 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
             Widget.prototype.init.call(this, config);
 
             this.el = this.element[0];
-            this._window = window;
             this.postContainerElement = this.el.querySelector('.cv-voice-posts-layer__posts');
             this.ticksContainerElement = this.el.querySelector('.cv-voice-posts-layer__ticks');
 
@@ -47,29 +42,21 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
                 gutter : 20,
                 centerItems : true
             });
-
-            this._bindEvents();
         },
 
-        _bindEvents : function _bindEvents() {
-            this._resizeHandlerRef = this._resizeHandler.bind(this);
-            this._window.addEventListener('resize', this._resizeHandlerRef);
-        },
-
-        /* Handle the window.resize event.
-         * @method _resizeHandler <private> [Function]
+        /* Updates the layer's height, relayout posts and update indicators. Should be called when the window dimensions are changed.
+         * @method reLayout <public> [Function]
+         * @return this
          */
-        _resizeHandler : function _resizeHandler() {
-            var _this = this;
+        reLayout : function reLayout(args) {
+            if (this.waterfall.getItems().length) {
+                this.waterfall.layout();
+                this._updatePostIndicatorsPostion();
+            }
 
-            if (this._resizeTimer) this._window.clearTimeout(this._resizeTimer);
+            if (!this.getPosts().length) this.setHeight(args.averageHeigth);
 
-            this._resizeTimer = this._window.setTimeout(function() {
-                if (_this.waterfall.getItems().length) {
-                    _this.waterfall.layout();
-                    _this._updatePostIndicatorsPostion();
-                }
-            }, this._resizeTime);
+            return this;
         },
 
         /* Sets the heigth of the layer. If a number is provided it will convert it into pixel units.
@@ -173,7 +160,6 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
         },
 
         /* Updates the position of each indicator.
-         * Called by `_resizeHandler`
          * @private
          */
         _updatePostIndicatorsPostion : function _updatePostIndicatorsPostion() {
@@ -238,19 +224,12 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
 
-            this._window.removeEventListener('resize', this._resizeHandlerRef);
-            this._resizeHandlerRef = null;
-
             this.waterfall.destroy();
 
             this.dateString = null;
             this.columnWidth = null;
 
             this._finalHeightIsKnow = false;
-            this._resizeTimer = null;
-            this._resizeTime = 250;
-            this._resizeHandlerRef = null;
-            this._window = null;
             this._postWidgets = null;
 
             this.waterfall = null;
