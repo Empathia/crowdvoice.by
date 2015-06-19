@@ -1,7 +1,7 @@
 /* jshint multistr: true */
 Class(CV, 'VoiceModerateDoneButton').inherits(Widget)({
 
-    HTML : '<button class="request-to-contribute-button cv-button tiny">Done</button>',
+    HTML : '<button class="request-to-contribute-button cv-button primary tiny">Done</button>',
 
     prototype : {
 
