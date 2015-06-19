@@ -569,6 +569,16 @@ hr{
 		.setitle{
 			padding-top: 3px;
 			display: block;
+			color: @color-neutral-xx-mid;
+			font-size: 13px;
+			.label{
+				color: @color-neutral-xx-mid;
+				font-size: 13px;
+			}
+		}
+		.seoption{
+			color: @color-neutral-x-dark;
+			font-size: 13px;
 		}
 	}
 	.setting-row:last-child{
@@ -578,6 +588,10 @@ hr{
   		content: "";
     	display: table;
     	clear: both;
+	}
+	.radio-group{
+		color: @color-neutral-x-dark;
+		font-size: 13px;
 	}
 }
 
@@ -624,12 +638,13 @@ form{
 		width: 100px;
 		padding-top: 24px !important;
 		overflow: hidden;
-
+/*
 padding: 0 !important;
 border: none;
 background: none;
 box-shadow: none;
 width: 200px;
+*/
 	}
 	.image-input-label{
 		  position: absolute;
@@ -643,7 +658,9 @@ width: 200px;
 		  pointer-events: none;
 		  display: inline-block;
 		  font-size: 11px;
+/*
 display: none;
+*/
 	}
 	.icon-text{
 		color: @color-neutral-mid;
@@ -662,7 +679,11 @@ display: none;
 	}
 }
 
-
+.profile-notifications,
+.profile-organizations,
+.profile-users{
+	padding-right: 40px;
+}
 
 
 

@@ -53,7 +53,6 @@ Class(CV, 'Input').inherits(Widget)({
                 this.inputEl.addClass('is-area');
                 this.inputEl.append(this.constructor.AREA_ELEMENT);
                 if (this.value){
-                    console.log(this.value);
                     this.inputEl.find('textarea').text(this.value);
                 }
                 this.inputEl.find('textarea').attr('name', this.name);

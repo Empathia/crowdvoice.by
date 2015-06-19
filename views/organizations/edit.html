@@ -1,32 +1,196 @@
-<% if (errors !== undefined) { %>
-    <%= errors %>
-<% } %>
-<form action="/<%= organization.profileName %>?_method=PUT" method="POST" enctype="multipart/form-data">
-    <p>
-        <span>Organization Name: </span> <input type="text" name="name" value="<%= organization.name %>">
-    </p>
-    <p>
-        <span>Profile Name: </span> <input type="text" name="profileName" value="<%= organization.profileName %>">
-    </p>
+<main role="main" class="cv-main-profile -rel">
 
-    <p>
-    <span>Is it Anonymous?: </span> <input type="checkbox" name="isAnonymous" value="true" <% if (organization.isAnonymous) { %>checked<% } %>>
-    </p>
+  <section class="profile-voices-intro">
+      <h1 class="profile-heading -font-bold -m0">Manage Organization</h1>
 
-    <p>
-        <span>Bio: </span> <input type="text" name="description" value="<%= organization.description %>">
-    </p>
+      <article role="article" class="profile-menu -row -rel">
+        <div class="profile-tabs">
+          <div class="menu-item active -menu-tab -inline-block">
+            <p class="-font-bold">Profile</p>
+          </div>
 
-    <p>
-        <span>Location: </span> <input type="text" name="location" value="<%= organization.location %>">
-    </p>
+        </div>
+      </article>
 
-    <p>
-        <input type="file" name="image" \>
-        <input type="file" name="background" \>
-    </p>
+  </section>
 
-    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <section class="profile-body profile-menu-content -rel">
 
-    <p><input type="submit" value="Continue &rarr;"></p>
-</form>
+    <!-- ||||||||||||||||||||||||||||||||
+                Profile
+     |||||||||||||||||||||||||||||||| -->
+
+    <div class="active -menu-tab-content">
+      <% if (errors !== undefined && errors !== null) { %>
+          <%= errors %>
+          x
+      <% } %>
+      <form action="/<%= organization.profileName %>?_method=PUT" method="POST" enctype="multipart/form-data" class="form-profile">
+
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+        <div class="placeholder-images">
+
+          <div class="form-field -inline-block">
+              <label>Picture</label>
+              <div class="form-profile-image">
+                <% if (organization.image.exists('card')){ %>
+                  <img src="<%= organization.image.url('card') %>">
+                <% }else{ %>
+                  <img src="/img/placeholder-image.png">
+                <% } %>
+              </div>
+          </div>
+
+          <div class="form-field -inline-block -rel form-field-image">
+              <p class="image-input-label">Replace</p>
+              <input type="file" name="image" class="image-input cv-button tiny"\>
+              <label><span>JPG, GIF or PNG</span></label>
+          </div>
+
+
+
+          <div class="form-field -inline-block">
+              <label>Background</label>
+              <div class="form-profile-background">
+                <% if (organization.background.exists('card')){ %>
+                  <img src="<%= organization.background.url('card') %>">
+                <% }else{ %>
+                  <img src="/img/placeholder-background.png">
+                <% } %>
+              </div>
+          </div>
+
+          <div class="form-field -inline-block -rel form-field-image">
+              <p class="image-input-label">Replace</p>
+              <input type="file" name="background" class="image-input cv-button tiny"\>
+              <label><span>JPG, GIF or PNG</span></label>
+          </div>
+
+        </div>
+
+        <br><br>
+
+        <div class="-width-50">
+
+          <div class="-col-12 placeholder-main">
+
+            <div class="cv-check">
+              <input type="checkbox" name="isAnonymous" value="true" <% if (organization.isAnonymous) { %>checked<% } %>>
+              <span class="label">Is it Anonymous?</span>
+            </div>
+            <br>
+            <br>
+
+          </div>
+
+          <div class="-row">
+            <div class="-col-8 -pr1 placeholder-location">
+            </div>
+            <div class="-col-4 placeholder-pin">
+              <div class="form-field">
+                <label><span></span></label>
+                <div class="icon-text location">Detect</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="-col-12 placeholder-send"></div>
+      </form>
+    </div>
+
+
+
+  </section>
+
+</main>
+
+<script>
+  var users = [];
+  var organizations = [];
+
+
+  //******* profile ************
+
+
+  //new CV.Image({
+  //    hasTitle  : true,
+  //    title     : "Logo / badge"
+  //}).render($('.form-profile .placeholder-logo'));
+//
+  //new CV.Image({
+  //    hasTitle  : true,
+  //    title     : "Background"
+  //}).render($('.form-profile .placeholder-background'));
+
+  new CV.Input({
+      type      : '',
+      name      : 'name',
+      style     : 'small -w-50',
+      hasTitle  : true,
+      title     : "Your Name",
+      value     : "<%= organization.name %>"
+  }).render($('.form-profile .placeholder-main'));
+
+  new CV.Input({
+      style       : 'small -w-50',
+      name        : 'username',
+      placeholder : 'http://www.crowdvoice.by/@',
+      hasTitle    : true,
+      title       : "Username",
+      value     : "<%= organization.profileName %>"
+  }).render($('.form-profile .placeholder-main'));
+
+  new CV.Input({
+      style     : '',
+      isArea    : true,
+      hasTitle  : true,
+      name      : 'description',
+      title     : "Short Bio",
+      subTitle  : "140 characters max",
+      value     : "<%= organization.description %>"
+  }).render($('.form-profile .placeholder-main'));
+
+  new CV.Input({
+      style     : 'small',
+      name      : 'location',
+      hasTitle  : true,
+      title     : "Location",
+      value     : "<%= organization.location %>"
+  }).render($('.form-profile .placeholder-location'));
+
+  new CV.Button({
+      style   : 'primary small',
+      type    : 'single',
+      label   : 'Save Changes',
+      name    : 'buttonSend'
+  }).render($('.form-profile .placeholder-send'));
+
+
+  $( document ).ready(function() {
+
+    createMenuActions('.profile-menu', '.profile-menu-content');
+
+    function createMenuActions(menuContainer, contentContainer){
+      $( menuContainer ).find('.-menu-tab').each(function( index ) {
+        var elContent = $( contentContainer + ' .-menu-tab-content:nth-child(' + (index + 1) + ')');
+        $(this).on('click', createCallback(this, index, elContent, menuContainer, contentContainer));
+      });
+    }
+
+    function createCallback( tab, index, elContent, menuContainer, contentContainer ){
+      return function(){
+        $(menuContainer + ' .-menu-tab').removeClass('active');
+        $(this).addClass('active');
+        $(contentContainer + ' .-menu-tab-content').removeClass('active');
+        $(elContent).addClass('active');
+        searchInput.recalculate();
+
+      }
+    }
+
+  });
+
+</script>
+

@@ -1,13 +1,17 @@
 var InvitationRequest = Class('InvitationRequest').inherits(Argon.KnexModel)({
 
-  validations : {},
+  validations : {
+    invitatorEntityId : ['required'],
+    invitedEntityId : ['required']
+  },
 
   storage : (new Argon.Storage.Knex({
     tableName : 'InvitationRequest'
   })),
-  
-  prototype : {
 
+  prototype : {
+    invitatorEntityId : null,
+    invitedEntityId : null,
   }
 });
 

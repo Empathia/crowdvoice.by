@@ -4,7 +4,7 @@ Class(CV, 'UsersList').inherits(Widget)({
 
     HTML : '\
         <div>\
-            <div class="voice-title"></div>\
+            <div class="form-field"><label class="voice-title"></label></div>\
         </div>\
     ',
 
@@ -36,6 +36,20 @@ Class(CV, 'UsersList').inherits(Widget)({
                             <img src="' + user.author.avatar + '">\
                         </div>\
                         <div class="info">\
+                            <span class="name">' + user.author.full_name + '</span><br>\
+                            <span class="username">' + user.author.username + '</span>\
+                        </div>\
+                        <div class="action">\
+                        </div>\
+                    </div>\
+                ';
+
+                var oldUserDOM = '\
+                    <div class="cv-user">\
+                        <div class="img">\
+                            <img src="' + user.author.avatar + '">\
+                        </div>\
+                        <div class="info">\
                             <span class="name">' + user.author.full_name + '</span> • \
                             <span class="username">' + user.author.username + '</span><br>\
                             <span class="location">' + user.author.location + '</span> • \
@@ -52,7 +66,7 @@ Class(CV, 'UsersList').inherits(Widget)({
                     new CV.Button({
                         style   : 'tiny',
                         type    : 'single',
-                        label   : 'Remove',
+                        label   : 'Unblock',
                         name    : 'buttonRemove'
                     }).render(userEl.find('.action'));
                 }

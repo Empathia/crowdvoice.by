@@ -1,1 +1,352 @@
+<% if (errors !== undefined) { %>
+    <%= errors %>
+<% } %>
+<form action="/<%= organization.profileName %>?_method=PUT" method="POST" enctype="multipart/form-data">
+
+        <input type="file" name="image" \>
+        <input type="file" name="background" \>
+
+
+        <span>Organization Name: </span> <input type="text" name="name" value="<%= organization.name %>">
+
+        <span>Profile Name: </span> <input type="text" name="profileName" value="<%= organization.profileName %>">
+
+    	<span>Is it Anonymous?: </span> <input type="checkbox" name="isAnonymous" value="true" <% if (organization.isAnonymous) { %>checked<% } %>>
+
+        <span>Bio: </span> <input type="text" name="description" value="<%= organization.description %>">
+
+        <span>Location: </span> <input type="text" name="location" value="<%= organization.location %>">
+
+
+
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+    <p><input type="submit" value="Continue &rarr;"></p>
+</form>
+
+
+
+
+
+
+
+
+
+<main role="main" class="cv-main-profile -rel">
+
+  <section class="profile-voices-intro">
+      <h1 class="profile-heading -font-bold -m0">Manage Organization</h1>
+
+      <article role="article" class="profile-menu -row -rel">
+        <div class="profile-tabs">
+          <div class="menu-item active -menu-tab -inline-block">
+            <p class="-font-bold">Profile</p>
+          </div>
+          <div class="menu-item -menu-tab -inline-block">
+            <p class="-font-bold">Account</p>
+          </div>
+          <div class="menu-item -menu-tab -inline-block">
+            <p class="-font-bold">Members</p>
+          </div>
+          <div class="menu-item -menu-tab -inline-block">
+            <p class="-font-bold">Blocked Users</p>
+          </div>
+
+        </div>
+      </article>
+
+  </section>
+
+  <section class="profile-body profile-menu-content -rel">
+
+    <!-- ||||||||||||||||||||||||||||||||
+                Profile
+     |||||||||||||||||||||||||||||||| -->
+
+    <div class="active -menu-tab-content">
+  <% if (currentPerson) { %>
+      <form class="form-profile" action="/<%= currentPerson.profileName %>?_method=PUT" method="POST" enctype="multipart/form-data">
+  <% } else { %>
+      <form class="form-profile">
+  <% } %>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+        <div class="placeholder-images">
+
+          <div class="form-field -inline-block">
+              <label>Picture</label>
+              <div class="form-profile-image">
+                <% if (currentPerson.image.exists('card')){ %>
+                  <img src="<%= currentPerson.image.url('card') %>">
+                <% }else{ %>
+                  <img src="/img/placeholder-image.png">
+                <% } %>
+              </div>
+          </div>
+
+          <div class="form-field -inline-block -rel form-field-image">
+              <p class="image-input-label">Replace</p>
+              <input type="file" name="image" class="image-input cv-button tiny"\>
+              <label><span>JPG, GIF or PNG</span></label>
+          </div>
+
+
+
+          <div class="form-field -inline-block">
+              <label>Background</label>
+              <div class="form-profile-background">
+                <% if (currentPerson.background.exists('card')){ %>
+                  <img src="<%= currentPerson.background.url('card') %>">
+                <% }else{ %>
+                  <img src="/img/placeholder-background.png">
+                <% } %>
+              </div>
+          </div>
+
+          <div class="form-field -inline-block -rel form-field-image">
+              <p class="image-input-label">Replace</p>
+              <input type="file" name="background" class="image-input cv-button tiny"\>
+              <label><span>JPG, GIF or PNG</span></label>
+          </div>
+
+        </div>
+
+        <br><br>
+
+        <div class="-width-50">
+
+          <div class="-col-12 placeholder-main">
+          </div>
+          <div class="-row">
+            <div class="-col-8 -pr1 placeholder-location">
+            </div>
+            <div class="-col-4 placeholder-pin">
+              <div class="form-field">
+                <label><span></span></label>
+                <div class="icon-text location">Detect</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="-col-12 placeholder-send"></div>
+      </form>
+    </div>
+
+    <!-- ||||||||||||||||||||||||||||||||
+                Account
+     |||||||||||||||||||||||||||||||| -->
+
+    <div class="-menu-tab-content">
+      <form class="form-account">
+        <div class="-width-50">
+
+          <div class="-row">
+            <div class="-col-12 placeholder-main">
+              <div class="form-field">
+                <label>Privacy<span></span></label>
+                <div class="text">
+                  <p>Your organization profile is public.</p>
+                  <span class="dim">Protect your organization if you'd like to approve new followers before they can see your organization's activity.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+
+        <br>
+        <br>
+
+        <hr>
+
+        <br>
+
+        <div class="-width-50">
+
+          <div class="form-field">
+            <label>Deactivate Account<span></span></label>
+            <div class="text">
+              <p class="fade">Deactivating your account will remove it from CrowdVoice.by within a few minutes. You can sign back in whenever to reactivate your account and restore its content.</p>
+              <br>
+              <a href="#" class="no-style">Deactivate Account</a>
+              <br><br>
+              <span class="dim">If you want to permanently delete your account and remove your content, please send us a request. It will take a few days to process a full deletion.</span>
+
+            </div>
+          </div>
+
+        </div>
+
+      </form>
+    </div>
+
+
+    <!-- ||||||||||||||||||||||||||||||||
+                members
+     |||||||||||||||||||||||||||||||| -->
+
+    <div class="-menu-tab-content">
+      <div class="placeholder-organizations profile-organizations">
+
+      </div>
+    </div>
+
+    <!-- ||||||||||||||||||||||||||||||||
+                blocked users
+     |||||||||||||||||||||||||||||||| -->
+
+    <div class="-menu-tab-content">
+      <div class="placeholder-users profile-users">
+
+      </div>
+    </div>
+
+  </section>
+
+</main>
+
+<script>
+  var users = [];
+  var organizations = [];
+
+
+  //******* profile ************
+
+
+  //new CV.Image({
+  //    hasTitle  : true,
+  //    title     : "Logo / badge"
+  //}).render($('.form-profile .placeholder-logo'));
+//
+  //new CV.Image({
+  //    hasTitle  : true,
+  //    title     : "Background"
+  //}).render($('.form-profile .placeholder-background'));
+
+  new CV.Input({
+      type      : '',
+      name      : 'name',
+      style     : 'small -w-50',
+      hasTitle  : true,
+      title     : "Your Name",
+      value     : "<%= currentPerson.name %>"
+  }).render($('.form-profile .placeholder-main'));
+
+  new CV.Input({
+      style       : 'small -w-50',
+      name        : 'username',
+      placeholder : 'http://www.crowdvoice.by/@',
+      hasTitle    : true,
+      title       : "Username",
+      value     : "<%= currentPerson.profileName %>"
+  }).render($('.form-profile .placeholder-main'));
+
+  new CV.Input({
+      style     : '',
+      isArea    : true,
+      hasTitle  : true,
+      name      : 'description',
+      title     : "Short Bio",
+      subTitle  : "140 characters max",
+      value     : "<%= currentPerson.description %>"
+  }).render($('.form-profile .placeholder-main'));
+
+  new CV.Input({
+      style     : 'small',
+      name      : 'location',
+      hasTitle  : true,
+      title     : "Location",
+      value     : "<%= currentPerson.location %>"
+  }).render($('.form-profile .placeholder-location'));
+
+  new CV.Button({
+      style   : 'primary small',
+      type    : 'single',
+      label   : 'Save Changes',
+      name    : 'buttonSend'
+  }).render($('.form-profile .placeholder-send'));
+
+
+  //******* account ************
+
+
+  new CV.Button({
+      style   : 'tiny',
+      type    : 'single',
+      label   : 'Set Account to be protected',
+      name    : 'buttonSend'
+  }).render($('.form-account .placeholder-main'));
+
+
+  //******* blocked ************
+
+  new CV.UsersList({
+      type          : '',
+      name          : '',
+      style         : '',
+      hasButton     : true,
+      users         : users,
+      listTitle     : "{count} Blocked users",
+      dateTitle     : "Blocked on"
+  }).render($('.placeholder-users'));
+
+  //******* organizations ************
+
+  var searchInput = new CV.InputButton({
+      type      : '',
+      name      : '',
+      style     : 'primary',
+      hasTitle  : true,
+      placeholder : 'Search users...',
+      title     : "Invite users to join Mideast Youth (?)",
+      buttonLabel : "Invite"
+  }).render($('.placeholder-organizations'));
+
+  new CV.Input({
+      type      : '',
+      name      : '',
+      style     : '',
+      isArea    : true,
+      hasTitle  : true,
+      title     : "Write a message"
+  }).render($('.placeholder-organizations'));
+
+  new CV.UsersList({
+      type          : '',
+      name          : '',
+      style         : '',
+      hasButton     : true,
+      users         : users,
+      listTitle     : "{count} members of Mideast Youth",
+      dateTitle     : "Member since"
+  }).render($('.placeholder-organizations'));
+
+
+  $( document ).ready(function() {
+
+    createMenuActions('.profile-menu', '.profile-menu-content');
+
+    function createMenuActions(menuContainer, contentContainer){
+      $( menuContainer ).find('.-menu-tab').each(function( index ) {
+        var elContent = $( contentContainer + ' .-menu-tab-content:nth-child(' + (index + 1) + ')');
+        $(this).on('click', createCallback(this, index, elContent, menuContainer, contentContainer));
+      });
+    }
+
+    function createCallback( tab, index, elContent, menuContainer, contentContainer ){
+      return function(){
+        $(menuContainer + ' .-menu-tab').removeClass('active');
+        $(this).addClass('active');
+        $(contentContainer + ' .-menu-tab-content').removeClass('active');
+        $(elContent).addClass('active');
+        searchInput.recalculate();
+
+      }
+    }
+
+  });
+
+</script>
 
