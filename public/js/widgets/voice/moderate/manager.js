@@ -49,7 +49,8 @@ Class(CV, 'VoiceModerateManager').inherits(Widget)({
 
             this.appendChild(
                 new CV.VoiceModerateFooter({
-                    name : 'footer'
+                    name : 'footer',
+                    totalPosts : 322
                 })
             ).render(this.el);
 
@@ -149,7 +150,7 @@ Class(CV, 'VoiceModerateManager').inherits(Widget)({
 
             this._body.style.overflow = '';
 
-            this.scrollableArea.removeEventListener('scroll', this._scrollHandlerRef);
+            this.el.removeEventListener('scroll', this._scrollHandlerRef);
             this._scrollHandlerRef = null;
 
             this._window.removeEventListener('resize', this._resizeHandlerRef);
