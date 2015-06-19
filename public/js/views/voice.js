@@ -144,7 +144,9 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
                     scrollableArea : this.scrollableArea,
                     _socket : this._socket
                 })
-            );
+            ).render(document.querySelector('.cv-main-content'), document.querySelector('.voice-footer'));
+
+            this.voicePostLayersManager.setup();
 
             return this;
         },

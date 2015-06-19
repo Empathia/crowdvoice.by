@@ -1,7 +1,12 @@
+
+/* Creates the layers, handle the data requests and fill them with posts.
+ */
 var moment = require('moment');
 var Velocity = require('velocity-animate');
 
-Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
+Class(CV, 'VoicePostLayersManager').inherits(Widget)({
+    HTML : '<section class="voice-posts -rel"></section>',
+
     prototype : {
         /* DEFAULT BASIC OPTIONS */
         description : '',
@@ -9,8 +14,8 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
         firstPostDate : '',
         lastPostDate : '',
         averagePostTotal : 100,
-        averagePostWidth : 300,
-        averagePostHeight : 100,
+        averagePostWidth : 340,
+        averagePostHeight : 500,
         scrollableArea : null,
 
         /* PRIVATE PROPERTIES */
@@ -19,8 +24,8 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
         /* socket io instance holder */
         _socket : null,
         /* holds the references of the VoicePostsLayer children instances */
-        _layers : [],
-        _cachedData : {},
+        _layers : null,
+        _cachedData : null,
         _currentMonthString : '',
         _availableWidth : 0,
         _windowInnerHeight : 0,
@@ -30,23 +35,25 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
         _lazyLoadingImageArray: null,
 
         init : function init(config) {
-            Object.keys(config || {}).forEach(function(propertyName) {
-                this[propertyName] = config[propertyName];
-            }, this);
+            Widget.prototype.init.call(this, config);
 
-            this.el = this.element;
+            this.el = this.element[0];
             this._window = window;
             this._socket = this._socket || this.parent._socket;
+            this._layers = [];
+            this._cachedData = {};
             this._lazyLoadingImageArray = [];
+        },
 
+        setup : function setup() {
             this._setGlobarVars();
             this._createEmptyLayers();
-
-            this._bindEvents();
+            return this._bindEvents();
         },
 
         _bindEvents : function _bindEvents() {
-            this._socket.on('monthPosts', this.loadLayer.bind(this));
+            this._loadLayerRef = this.loadLayer.bind(this);
+            this._socket.on('monthPosts', this._loadLayerRef);
 
             this._jumpToHandlerRef = this._jumpToHandler.bind(this);
             CV.VoiceTimelineJumpToDateItem.bind('itemClicked', this._jumpToHandlerRef);
@@ -62,6 +69,8 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
 
                 localStorage['cvby__voice' + this.id + '__about-read'] = true;
             }.bind(this));
+
+            return this;
         },
 
         /* Updates variables that are dependant to window size and update all layers.
@@ -109,7 +118,7 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
         _setGlobarVars : function _setGlobarVars() {
             this._windowInnerHeight = this._window.innerHeight;
             this._windowInnerWidth = this._window.innerWidth;
-            this._availableWidth = this.element.clientWidth;
+            this._availableWidth = this.el.clientWidth;
             this._updateAverageLayerHeight();
             return this;
         },
@@ -299,6 +308,39 @@ Class(CV, 'VoicePostLayersManager').includes(NodeSupport, CustomEventSupport)({
                     }
                 }
             }, this);
+        },
+
+        destroy : function destroy() {
+            Widget.prototype.destroy.call(this);
+
+            this._socket.removeListener('monthPosts', this._loadLayerRef);
+
+            CV.VoiceTimelineJumpToDateItem.unbind('itemClicked', this._jumpToHandlerRef);
+            this._jumpToHandlerRef = null;
+
+            this.description = null;
+            this.postsCount = null;
+            this.firstPostDate = null;
+            this.lastPostDate = null;
+            this.averagePostTotal = null;
+            this.averagePostWidth = null;
+            this.averagePostHeight = null;
+            this.scrollableArea = null;
+
+            this.el = null;
+            this._window = null;
+            this._socket = null;
+            this._layers = null;
+            this._cachedData = null;
+            this._currentMonthString = null;
+            this._availableWidth = null;
+            this._windowInnerHeight = null;
+            this._windowInnerWidth = null;
+            this._averageLayerHeight = null;
+            this._isInitialLoad = null;
+            this._lazyLoadingImageArray = null;
+
+            return null;
         }
     }
 });
