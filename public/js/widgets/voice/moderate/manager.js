@@ -14,6 +14,8 @@ Class(CV, 'VoiceModerateManager').inherits(Widget)({
         /* socket io instance holder */
         _socket : null,
 
+        _resizeTimer : null,
+        _resizeTime : 250,
         _listenScrollEvent : true,
         _lastScrollTop : 0,
         _scrollTimer : null,
@@ -64,6 +66,9 @@ Class(CV, 'VoiceModerateManager').inherits(Widget)({
             this._scrollHandlerRef = this._scrollHandler.bind(this);
             this.el.addEventListener('scroll', this._scrollHandlerRef);
 
+            this._resizeHandlerRef = this._resizeHandler.bind(this);
+            this._window.addEventListener('resize', this._resizeHandlerRef);
+
             this._windowKeydownHandlerRef = this._windowKeydownHandler.bind(this);
             this._window.addEventListener('keydown', this._windowKeydownHandlerRef);
 
@@ -100,6 +105,19 @@ Class(CV, 'VoiceModerateManager').inherits(Widget)({
             }.bind(this), this._scrollTime);
         },
 
+        /* Handle the window resize event.
+         * @method _resizeHandler <private> [Function]
+         */
+        _resizeHandler : function _resizeHandler() {
+            var _this = this;
+
+            if (this._resizeTimer) this._window.clearTimeout(this._resizeTimer);
+
+            this._resizeTimer = this._window.setTimeout(function() {
+                _this.layersManager.update();
+            }, this._resizeTime);
+        },
+
         /* Keydown handler, checks if the ESC key has been pressed to destroy the widget.
          * @method _windowKeydownHandler <private> [Function]
          */
@@ -130,6 +148,12 @@ Class(CV, 'VoiceModerateManager').inherits(Widget)({
             Widget.prototype.destroy.call(this);
 
             this._body.style.overflow = '';
+
+            this.scrollableArea.removeEventListener('scroll', this._scrollHandlerRef);
+            this._scrollHandlerRef = null;
+
+            this._window.removeEventListener('resize', this._resizeHandlerRef);
+            this._resizeHandlerRef = null;
 
             this._window.addEventListener('keydown', this._windowKeydownHandlerRef);
             this._windowKeydownHandlerRef = null;
