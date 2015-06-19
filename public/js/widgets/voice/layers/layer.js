@@ -92,15 +92,41 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
             var post;
 
             for (i = 0; i < len; i++) {
-                // extend instance's data
                 posts[i].name = 'post_' + i;
 
                 post = CV.Post.create(posts[i]);
                 post.addActions();
-                post.el.dataset.date = moment(posts[i].createdAt).format('YYYY-MM-DD');
+                post.el.dataset.date = moment(posts[i].publishedAt).format('YYYY-MM-DD');
 
                 this.appendChild(post).render(frag);
+                this._postWidgets.push(post);
+            }
 
+            this.waterfall.addItems([].slice.call(frag.childNodes, 0));
+            this.postContainerElement.appendChild(frag);
+            this.waterfall.layout();
+
+            this._addPostIndicators(this._postWidgets);
+
+            this._finalHeightIsKnow = true;
+
+            frag = i = len = post = null;
+
+            return this;
+        },
+
+        addEditablePosts : function addEditablePosts(posts) {
+            var frag = document.createDocumentFragment();
+            var i = 0;
+            var len = posts.length;
+            var post;
+
+            for (i = 0; i < len; i++) {
+                posts[i].name = 'post_' + i;
+                post = new CV.PostEdit(posts[i]);
+                post.el.dataset.date = moment(posts[i].publishedAt).format('YYYY-MM-DD');
+
+                this.appendChild(post).render(frag);
                 this._postWidgets.push(post);
             }
 

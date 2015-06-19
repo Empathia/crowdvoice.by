@@ -543,14 +543,66 @@
           	var messageObj = threadsObj[threadId].messages[messageId];
           	var messageEl;
 
-          	if (messageObj.type == 'message'){
-				messageEl = messageText.clone();
-			} else {
-				messageEl = messageTextFull.clone();
+          	switch(messageObj.type) {
+			    case 'message':
 
-				var messageNotificationText = 'Julia has requested to become a contributor for The Extended Effects of the Fukushima Disaster. If you grant access, Julia will be able to <a href="#">one link</a> and after a while another bold. <a href="#"><b>Go to this Voice\'s settings ›</b></a>';
+					messageEl = messageText.clone();
+			        break;
 
-				messageEl.find('.message-notification p').html(messageNotificationText);
+			    case 'invitation_organization':
+
+				    messageEl = messageTextFull.clone();
+					var messageNotificationText = messageObj.senderEntity.name + " " + messageObj.senderEntity.lastname + ' has requested you to become a contributor for <b>'
+							+ messageObj.organization.name +
+							'</b> organization. For more information you can <a href="/'
+							+ messageObj.organization.profileName +
+							'"><b>Go to this Organization ›</b></a>';
+
+					messageEl.find('.message-notification p').html(messageNotificationText);
+			        break;
+
+			    case 'invitation_voice':
+
+				    messageEl = messageTextFull.clone();
+					var messageNotificationText = messageObj.senderEntity.name + " " + messageObj.senderEntity.lastname + ' has requested you to become a contributor for the voice <b>'
+							+ messageObj.voice.title +
+							'</b>. For more information you can <a href="'
+							+ messageObj.voice.title +
+							'"><b>Go to this Voice ›</b></a>';
+
+					messageEl.find('.message-notification p').html(messageNotificationText);
+			        break;
+
+			    case 'request_organization':
+
+				    messageEl = messageTextFull.clone();
+					var messageNotificationText = messageObj.senderEntity.name + " " + messageObj.senderEntity.lastname + ' has requested you to become a contributor for <b>'
+							+ messageObj.organization.name +
+							'</b> organization. For more information you can <a href="/'
+							+ messageObj.senderEntity.profileName +
+							'"><b>Go to his/her profile ›</b></a>';
+
+					messageEl.find('.message-notification p').html(messageNotificationText);
+			        break;
+
+			    case 'request_voice':
+
+				    messageEl = messageTextFull.clone();
+					var messageNotificationText = messageObj.senderEntity.name + " " + messageObj.senderEntity.lastname + ' has requested you to become a contributor for the voice <b>'
+							+ messageObj.voice.title +
+							'</b>. For more information you can <a href="'
+							+ messageObj.senderEntity.profileName +
+							'"><b>Go to his/her profile ›</b></a>';
+
+					messageEl.find('.message-notification p').html(messageNotificationText);
+			        break;
+
+			    default:
+			        //default code block
+			}
+
+          	if (messageObj.type != 'message'){
+
 
 				var btnMultipleOptions = {
 					"1": {label: 'Accept', name: 'accept'},
