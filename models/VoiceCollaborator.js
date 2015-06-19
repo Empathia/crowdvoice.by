@@ -10,7 +10,9 @@ var VoiceCollaborator = Class('VoiceCollaborator').inherits(Argon.KnexModel)({
   })),
 
   prototype : {
-
+    voiceId : null,
+    collaboratorId : null,
+    isAnonymous : false
   }
 });
 
