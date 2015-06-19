@@ -21,20 +21,28 @@ Class(CV, 'VoiceModerate').inherits(Widget)({
             this._bindEvents();
         },
 
+        /* Subscribes to the button click event
+         * @method _bindEvents <private>
+         */
         _bindEvents : function _bindEvents() {
             this._clickHandlerRef = this._clickHandler.bind(this);
             this.el.addEventListener('click', this._clickHandlerRef);
             return this;
         },
 
+        /* Button click handler. It creates a new instance of VoiceModerateManager
+         * @method _clickHandler <private> [Function]
+         */
         _clickHandler : function _clickHandler() {
-            if (this.moderateManager) this.moderateManager.destroy();
+            if (this.moderateManager) {
+                this.moderateManager.destroy();
+            }
 
             this.appendChild(
                 new CV.VoiceModerateManager({
                     name : 'moderateManager'
                 })
-            ).render(document.body);
+            ).render(document.body).setup();
         },
 
         destroy : function destroy() {
@@ -44,6 +52,8 @@ Class(CV, 'VoiceModerate').inherits(Widget)({
             this._clickHandlerRef = null;
 
             this.el = null;
+
+            return null;
         }
     }
 });

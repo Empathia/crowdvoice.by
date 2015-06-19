@@ -24,9 +24,6 @@
     </div>
   </section>
 
-  <section class="voice-posts -rel">
-  </section>
-
   <footer class="voice-footer">
     <div class="voice-footer-inner -clearfix">
       <div class="voice-footer-meta-wrapper -float-left">
@@ -71,12 +68,14 @@
 
   var otherOptions = {
     backgroundElement     : document.querySelector('.voice-background-cover'),
-    postsCount            : <%= JSON.stringify(postsCount) %>,
     followerCount         : 1260,
     postCountElement      : document.querySelector('.voice-stats__post-count'),
     followersCountElement : document.querySelector('.voice-stats__followers'),
     aboutBoxButtonElement : document.querySelector('.voice-about-show-btn'),
-    scrollableArea        : window
+    scrollableArea        : window,
+
+    postsCount            : <%= JSON.stringify(postsCount) %>,
+    allowPosting          : <%= allowPosting %>
   };
 
   for (var propertyName in otherOptions) {
@@ -87,5 +86,4 @@
 
   Voice.updateVoiceInfo();
   Voice.setupVoiceWidgets();
-  Voice.addFooter();
 </script>

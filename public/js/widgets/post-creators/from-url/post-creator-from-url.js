@@ -106,6 +106,23 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
             this._inputKeyPressHandlerRef = this._inputKeyPressHandler.bind(this);
             this.input.getElement().addEventListener('keypress', this._inputKeyPressHandlerRef);
 
+            this.postButton.element.bind('click', function() {
+              $.ajax({
+                type: "POST",
+                url: window.location.pathname,
+                headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
+                data: this.postData,
+                success: function(response) {
+                  console.log('success', response)
+                },
+                error : function(data) {
+                  console.error('error', data)
+                },
+                dataType: 'json'
+              });
+
+            }.bind(this))
+
             return this;
         },
 
@@ -145,6 +162,8 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
                 }
             };
 
+            this.postData = null,
+
             API.postPreview(args, function(err, response) {
                 if (err) {
                     console.log(response);
@@ -156,8 +175,6 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
                     name : '_previewPostWidget'
                 };
 
-                console.log(response);
-
                 Object.keys(response).forEach(function(propertyName) {
                     post[propertyName] = response[propertyName];
                 });
@@ -167,6 +184,19 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
                 }
 
                 this.appendChild(new CV.PostEdit(post)).render(this.content);
+
+                this.postData = {
+                  title : response.title,
+                  description : response.description,
+                  sourceType : response.sourceType,
+                  sourceService : response.sourceService,
+                  sourceUrl : response.sourceUrl,
+                  imagePath : response.images[this._previewPostWidget._currentImageIndex].path,
+                  images : response.images.map(function(item) {return item.path}),
+                  publishedAt : new Date(this._previewPostWidget.romeTime.getDate())
+                }
+
+                console.log(response, this.postData);
 
                 this._activateIconType(post.sourceType);
                 this._enabledPostButton().enable();

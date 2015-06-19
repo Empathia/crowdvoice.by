@@ -97,11 +97,25 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
       });
     },
 
-    show : function show (req, res) {
-      res.format({
-        'text/html': function () {
-          res.render('voices/show.html', {
-            pageName : 'page-inner page-voice'
+    show : function show (req, res, next) {
+      ACL.isAllowed('show', 'voices', req.role, {
+        currentPerson : req.currentPerson,
+        voice : res.locals.voice,
+        profileName : req.params.profileName
+      }, function(err, response) {
+        if (err) {
+          return next(err);
+        }
+
+        if (response.isAllowed) {
+          res.locals.allowPosting = response.allowPosting;
+
+          res.format({
+            html : function () {
+              res.render('voices/show.html', {
+                pageName : 'page-inner page-voice'
+              });
+            }
           });
         }
       });

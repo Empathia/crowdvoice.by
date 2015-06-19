@@ -4,6 +4,7 @@ exports.seed = function(knex, Promise) {
 
     knex('MessageThreads').del(),
     knex('Messages').del(),
+    knex('InvitationRequest').del(),
 
     // Message Threads
     //
@@ -134,6 +135,58 @@ exports.seed = function(knex, Promise) {
       'created_at'            : new Date(),
       'updated_at'            : new Date()
     }),
+
+    knex('InvitationRequest').insert({
+      'id'                  : 1,
+      'invitator_entity_id' : 1,
+      'invited_entity_id'   : 3,
+      'created_at'          : new Date(),
+      'updated_at'          : new Date()
+    }),
+
+    // Jack
+    knex('Messages').insert({
+      'id'                    : 15,
+      'type'                  : 'invitation_voice',
+      'sender_person_id'      : 1,
+      'sender_entity_id'      : 1,
+      'receiver_entity_id'    : 3,
+      'thread_id'             : 1,
+      'invitation_request_id' : 1,
+      'voice_id'              : 1,
+      'organization_id'       : null,
+      'message'               : 'Oye John, te invito a contribuir a mi voice',
+      'hidden_for_sender'     : false,
+      'hidden_for_receiver'   : false,
+      'created_at'            : new Date(),
+      'updated_at'            : new Date()
+    }),
+
+    knex('InvitationRequest').insert({
+      'id'                  : 2,
+      'invitator_entity_id' : 1,
+      'invited_entity_id'   : 3,
+      'created_at'          : new Date(),
+      'updated_at'          : new Date()
+    }),
+
+    // Jack
+    knex('Messages').insert({
+      'id'                    : 16,
+      'type'                  : 'invitation_organization',
+      'sender_person_id'      : 1,
+      'sender_entity_id'      : 1,
+      'receiver_entity_id'    : 3,
+      'thread_id'             : 1,
+      'invitation_request_id' : 2,
+      'voice_id'              : null,
+      'organization_id'       : 9,
+      'message'               : 'Tambien te invito a ser miembro de mi organizacion',
+      'hidden_for_sender'     : false,
+      'hidden_for_receiver'   : false,
+      'created_at'            : new Date(),
+      'updated_at'            : new Date()
+    }),
     // Message Threads
     //
     // Between Jack and Peter
@@ -206,6 +259,44 @@ exports.seed = function(knex, Promise) {
       'created_at'            : new Date(Date.now() - 1000),
       'updated_at'            : new Date(Date.now() - 1000)
     }),
+
+    // Peter
+    knex('Messages').insert({
+      'id'                    : 17,
+      'type'                  : 'request_voice',
+      'sender_person_id'      : 1,
+      'sender_entity_id'      : 1,
+      'receiver_entity_id'    : 5,
+      'thread_id'             : 2,
+      'invitation_request_id' : null,
+      'voice_id'              : 1,
+      'organization_id'       : null,
+      'message'               : "I want to become contributor of your voice because...",
+      'hidden_for_sender'     : false,
+      'hidden_for_receiver'   : false,
+      'created_at'            : new Date(Date.now() - 1000),
+      'updated_at'            : new Date(Date.now() - 1000)
+    }),
+
+    // Peter
+    knex('Messages').insert({
+      'id'                    : 18,
+      'type'                  : 'request_organization',
+      'sender_person_id'      : 1,
+      'sender_entity_id'      : 1,
+      'receiver_entity_id'    : 5,
+      'thread_id'             : 2,
+      'invitation_request_id' : null,
+      'voice_id'              : null,
+      'organization_id'       : 9,
+      'message'               : "And also I wish to becombe member of your organization, because...",
+      'hidden_for_sender'     : false,
+      'hidden_for_receiver'   : false,
+      'created_at'            : new Date(Date.now() - 1000),
+      'updated_at'            : new Date(Date.now() - 1000)
+    }),
+
+
     // Message Threads
     //
     // Between Jack and Steve
