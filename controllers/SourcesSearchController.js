@@ -20,7 +20,7 @@ var SourcesSearchController = Class('SourcesSearchController')({
             results.forEach(function(result) {
               var article = {
                 title : result.title,
-                summary : result.summary,
+                description : result.summary,
                 date : result.date,
                 link : result.link
               }
@@ -33,6 +33,8 @@ var SourcesSearchController = Class('SourcesSearchController')({
         }
       })
     },
+
+
   }
 });
 
