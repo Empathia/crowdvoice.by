@@ -51,7 +51,7 @@ Module('ThreadsPresenter')({
           }
           var unreadCount = 0;
 
-          messages.forEach(function(message) {
+          async.eachLimit(messages, 1, function(message, nextMessage) {
             var messageInstance = new Message(message);
 
             var messageSenderOrReceiver = messageInstance.isPersonSender(hashids.decode(req.currentPerson.id)[0]) ? 'Sender' : 'Receiver';
@@ -72,33 +72,76 @@ Module('ThreadsPresenter')({
               message.receiverEntity = thread.senderEntity;
             }
 
-            message.threadId = hashids.encode(message.threadId);
-            message.invitationRequestId = hashids.encode(message.invitationRequestId);
-            message.voiceId = hashids.encode(message.voiceId);
-            message.organizationId = hashids.encode(message.organizationId);
+            async.series([function(doneMessageInfo) {
+              if (!message.voiceId) {
+                return doneMessageInfo();
+              }
 
+              Voice.find({id : message.voiceId}, function(err, result) {
+                if (err) {
+                  return doneMessageInfo(err);
+                }
 
-            delete message.senderPersonId;
-            delete message.senderEntityId;
-            delete message.receiverEntityId;
-            delete message.hiddenForSender;
-            delete message.hiddenForReceiver;
-            delete message.eventListeners;
+                result = result[0];
 
-          });
+                result.id = hashids.encode(result.id);
+                result.ownerId = hashids.encode(result.ownerId);
 
-          thread.unreadCount = unreadCount;
+                message.voice = result;
+                delete message.voiceId;
+                doneMessageInfo();
+              })
+            }, function(doneMessageInfo) {
+              if (!message.organizationId) {
+                return doneMessageInfo();
+              }
 
-          thread.messages = messages;
+              Entity.find({id : message.organizationId}, function(err, result) {
+                if (err) {
+                  return doneMessageInfo(err);
+                }
 
-          messages = messages.filter(function(message) {
-            if (!message.hidden) {
-              delete message.hidden;
-              return message;
-            }
-          });
+                result = result[0];
 
-          done();
+                result.id = hashids.encode(result.id);
+                message.organization = result;
+
+                delete message.organizationId;
+
+                doneMessageInfo();
+              })
+            }], function(err) {
+              if (err) {
+                return nextMessage(err)
+              }
+
+              message.threadId = hashids.encode(message.threadId);
+              message.invitationRequestId = hashids.encode(message.invitationRequestId);
+
+              delete message.senderPersonId;
+              delete message.senderEntityId;
+              delete message.receiverEntityId;
+              delete message.hiddenForSender;
+              delete message.hiddenForReceiver;
+              delete message.eventListeners;
+
+              nextMessage();
+            })
+
+          }, function(err) {
+            thread.unreadCount = unreadCount;
+
+            messages = messages.filter(function(message) {
+              if (!message.hidden) {
+                delete message.hidden;
+                return message;
+              }
+            });
+
+            thread.messages = messages;
+
+            done();
+          })
         });
       }], function(err) {
         next(err);
