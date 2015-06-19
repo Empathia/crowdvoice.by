@@ -967,32 +967,34 @@ form{
   }
 }
 .cv-user{
-  border: 1px solid #ddd;
+  border-top: 1px solid @color-neutral-x-light;
   border-radius: 1px;
-  padding: 16px;
-  margin-bottom: 10px;
-
+  padding: 10px 0px;
+  &:last-child{
+    border-bottom: 1px solid @color-neutral-x-light;
+  }
   .img{
     display: inline-block;
     margin-right: 10px;
+
     img{
-      width: 40px;
-      height: 40px;
+      border-radius: 20px;
+      width: 36px;
+      height: 36px;
     }
   }
   .info{
-    color: #999;
+    color: @color-neutral-x-dark;
     display: inline-block;
-    line-height: 18px;
-    padding-top: 5px;
+    line-height: 20px;
+    padding-top: 0px;
     .name{
-      font-size: 14px;
-      color: #333;
-      font-weight: bold;
+      font-size: 13px;
+      color: @color-neutral-x-dark;
     }
     .username{
-      font-size: 12px;
-      color: #999;
+      font-size: 11px;
+      color: @color-neutral-mid;
     }
     .location,
     .date{
