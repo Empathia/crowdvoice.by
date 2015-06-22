@@ -58,7 +58,7 @@ Class(CV, 'Button').inherits(Widget)({
                 if (this.options.hasOwnProperty(key)) {
                     var buttonEl = $('<button class="cv-button"></button>');
 
-                    this[this.options[key].label.toLowerCase()] = buttonEl;
+                    this[this.options[key].name.toLowerCase()] = buttonEl;
 
                     buttonEl.text(this.options[key].label);
                     buttonEl.addClass(buttons.style);

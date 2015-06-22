@@ -6,6 +6,15 @@ Class(CV, 'VoicePostLayersModerateManager').inherits(CV.VoicePostLayers)({
 
         addPosts : function addPosts(layer, postsData) {
             layer.addEditablePosts(postsData);
+
+            layer.getPosts().forEach(function(post) {
+                post.addRemoveButton();
+                post.addPublishButton();
+            });
+
+            layer.reLayout();
+
+            return this;
         },
 
         __bindEvents : function __bindEvents() {

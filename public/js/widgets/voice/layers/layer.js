@@ -126,9 +126,6 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
                 post = new CV.PostEdit(posts[i]);
                 post.el.dataset.date = moment(posts[i].publishedAt).format('YYYY-MM-DD');
 
-                post.addRemoveButton();
-                post.addPublishButton();
-
                 this.appendChild(post).render(frag);
                 this._postWidgets.push(post);
             }
