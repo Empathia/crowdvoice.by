@@ -32,10 +32,6 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
               return next(err);
             }
 
-            result.forEach(function(thread) {
-              console.log(thread.messages.length)
-            })
-
             res.format({
 
               html : function() {

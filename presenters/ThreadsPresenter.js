@@ -84,12 +84,25 @@ Module('ThreadsPresenter')({
 
                 result = result[0];
 
-                result.id = hashids.encode(result.id);
                 result.ownerId = hashids.encode(result.ownerId);
 
                 message.voice = result;
-                delete message.voiceId;
-                doneMessageInfo();
+
+                Slug.find(["voice_id = ? ORDER BY created_at DESC", [result.id]], function(err, slug) {
+                  if (err) {
+                    return doneMessageInfo(err);
+                  }
+
+                  if (slug.length === 0) {
+                    return doneMessageInfo(new NotFoundError('Voice Slug not found'));
+                  }
+
+                  delete message.voiceId;
+                  message.voice.id = hashids.encode(message.voice.id);
+
+                  message.voice.slug = slug[0].url;
+                  doneMessageInfo();
+                })
               })
             }, function(doneMessageInfo) {
               if (!message.organizationId) {
@@ -129,6 +142,9 @@ Module('ThreadsPresenter')({
             })
 
           }, function(err) {
+            if (err) {
+              return done(err)
+            };
             thread.unreadCount = unreadCount;
 
             messages = messages.filter(function(message) {
