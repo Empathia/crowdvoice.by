@@ -8,8 +8,14 @@ Class(CV, 'VoicePostLayersModerateManager').inherits(CV.VoicePostLayers)({
             layer.addEditablePosts(postsData);
 
             layer.getPosts().forEach(function(post) {
-                post.addRemoveButton();
-                post.addPublishButton();
+                // @TODO: add conditionals
+
+                // Voice Owner / Org Member / Contributor
+                // post.addRemoveButton();
+                // post.addPublishButton();
+
+                // Visitor (posts list)
+                post.addVoteButtons();
             });
 
             layer.reLayout();

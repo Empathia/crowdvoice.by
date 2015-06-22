@@ -74,6 +74,7 @@ require('./widgets/posts/edit/post-edit.js');
 require('./widgets/posts/edit/remove-button.js');
 require('./widgets/posts/edit/post-edit-image-controls.js');
 require('./widgets/posts/moderate/publish-button.js');
+require('./widgets/posts/moderate/vote-buttons.js');
 
 require('./widgets/voice/voice-request-to-contribute.js');
 require('./widgets/popover-request-to-contribute.js');
