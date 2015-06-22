@@ -156,7 +156,7 @@ Class(CV, 'VoiceModerateManager').inherits(Widget)({
             this._window.removeEventListener('resize', this._resizeHandlerRef);
             this._resizeHandlerRef = null;
 
-            this._window.addEventListener('keydown', this._windowKeydownHandlerRef);
+            this._window.removeEventListener('keydown', this._windowKeydownHandlerRef);
             this._windowKeydownHandlerRef = null;
 
             this.el = null;
