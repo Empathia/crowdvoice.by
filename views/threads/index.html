@@ -566,8 +566,8 @@
 				    messageEl = messageTextFull.clone();
 					var messageNotificationText = messageObj.senderEntity.name + " " + messageObj.senderEntity.lastname + ' has requested you to become a contributor for the voice <b>'
 							+ messageObj.voice.title +
-							'</b>. For more information you can <a href="'
-							+ messageObj.voice.title +
+							'</b>. For more information you can <a href="/'
+							+ messageObj.senderEntity.profileName + '/' + messageObj.voice.slug +
 							'"><b>Go to this Voice ›</b></a>';
 
 					messageEl.find('.message-notification p').html(messageNotificationText);
@@ -576,9 +576,9 @@
 			    case 'request_organization':
 
 				    messageEl = messageTextFull.clone();
-					var messageNotificationText = messageObj.senderEntity.name + " " + messageObj.senderEntity.lastname + ' has requested you to become a contributor for <b>'
+					var messageNotificationText = messageObj.senderEntity.name + " " + messageObj.senderEntity.lastname + ' has requested you to become a contributor for <b><a href="/'+ messageObj.organization.profileName +'">'
 							+ messageObj.organization.name +
-							'</b> organization. For more information you can <a href="/'
+							'</a></b> organization. For more information you can <a href="/'
 							+ messageObj.senderEntity.profileName +
 							'"><b>Go to his/her profile ›</b></a>';
 
@@ -588,9 +588,9 @@
 			    case 'request_voice':
 
 				    messageEl = messageTextFull.clone();
-					var messageNotificationText = messageObj.senderEntity.name + " " + messageObj.senderEntity.lastname + ' has requested you to become a contributor for the voice <b>'
+					var messageNotificationText = messageObj.senderEntity.name + " " + messageObj.senderEntity.lastname + ' has requested you to become a contributor for the voice <b><a href="/' + messageObj.senderEntity.profileName + '/' + messageObj.voice.slug + '">'
 							+ messageObj.voice.title +
-							'</b>. For more information you can <a href="'
+							'</a></b>. For more information you can <a href="/'
 							+ messageObj.senderEntity.profileName +
 							'"><b>Go to his/her profile ›</b></a>';
 
@@ -603,19 +603,42 @@
 
           	if (messageObj.type != 'message'){
 
-
 				var btnMultipleOptions = {
 					"1": {label: 'Accept', name: 'accept'},
 					"2": {label: 'Accept as an Anonymous Member', name: 'anonymous'},
 					"3": {label: 'Refuse', name: 'refuse'}
 				};
 
-				new CV.Button({
+				var messageActions = new CV.Button({
 					style   : 'tiny',
 					type    : 'multiple',
 					name    : 'buttonMultiple',
 					options : btnMultipleOptions
 				}).render(messageEl.find('.message-notification-actions'));
+
+				// ************   Message button actions *******************
+
+				messageActions.accept.on('click', function(){
+					console.log('-- Accept --');
+					console.log('message Id: ' + messageObj.id);
+					console.log('thread Id: ' + messageObj.threadId);
+					console.log('message Type: ' + messageObj.type);
+				});
+
+				messageActions.anonymous.on('click', function(){
+					console.log('-- Accept as an Anonymous Member --');
+					console.log('message Id: ' + messageObj.id);
+					console.log('thread Id: ' + messageObj.threadId);
+					console.log('message Type: ' + messageObj.type);
+				});
+
+				messageActions.refuse.on('click', function(){
+					console.log('-- Refuse --');
+					console.log('message Id: ' + messageObj.id);
+					console.log('thread Id: ' + messageObj.threadId);
+					console.log('message Type: ' + messageObj.type);
+				});
+
 			}
 
 			messageEl.find('.message-data h3').text(messageObj.senderEntity.name + " " + messageObj.senderEntity.lastname);
