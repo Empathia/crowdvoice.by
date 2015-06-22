@@ -64,12 +64,13 @@ require('./widgets/voice/moderate/footer.js');
 require('./widgets/voice/add-content/');
 
 // posts
-require('./widgets/posts/post.js');
-require('./widgets/posts/post-image.js');
-require('./widgets/posts/post-video.js');
-require('./widgets/posts/post-audio.js');
-require('./widgets/posts/post-link.js');
-require('./widgets/posts/post-quote.js');
+require('./widgets/posts/modules/images');
+require('./widgets/posts/post');
+require('./widgets/posts/post-image');
+require('./widgets/posts/post-video');
+require('./widgets/posts/post-link');
+// require('./widgets/posts/post-audio');
+// require('./widgets/posts/post-quote');
 require('./widgets/posts/edit/post-edit.js');
 require('./widgets/posts/edit/remove-button.js');
 require('./widgets/posts/edit/post-edit-image-controls.js');
