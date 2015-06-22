@@ -265,10 +265,6 @@ Class(CV, 'PostEdit').inherits(Widget)({
             this.dispatch('imageCoverUpdated');
         },
 
-        getCurrentImage  : function getCurrentImage() {
-            return this.images[this._currentImageIndex];
-        },
-
         /* Hides the post.imageContainer, updates _image to '' and shows addCoverButton
          * @method _removeImage <private> [Function]
          */
@@ -283,6 +279,32 @@ Class(CV, 'PostEdit').inherits(Widget)({
         _showImage : function _showImage() {
             this.post.showImageWrapper();
             this.addCoverButton.style.display = 'none';
+        },
+
+        getCurrentImage  : function getCurrentImage() {
+            return this.images[this._currentImageIndex];
+        },
+
+        addRemoveButton : function addRemoveButton() {
+            this.appendChild(
+                new CV.PostEditRemoveButton({
+                    name : 'removeButton'
+                })
+            ).render(this.el);
+
+            return this;
+        },
+
+        addPublishButton : function addPublishButton() {
+            this.appendChild(
+                new CV.PostModeratePublishButton({
+                    name : 'publishButton'
+                })
+            ).render(this.el);
+
+            this.el.classList.add('has-bottom-actions');
+
+            return this;
         },
 
         destroy : function destroy() {
