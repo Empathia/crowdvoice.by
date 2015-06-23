@@ -377,6 +377,11 @@ a.cv-button{
   height: 100%;
   margin-bottom: 10px;
   margin-right: 5px;
+
+  svg{
+    fill: @color-neutral-dark;
+  }
+
   &.primary .cv-select-head{
     background-color: @color-primary;
     border: 1px solid @color-primary-dark;
@@ -414,6 +419,43 @@ a.cv-button{
       padding: 7px 10px 2px 10px;
     }
   }
+  &.check{
+    .cv-select-body{
+      li{
+        .cv-check{
+          margin: 0;
+          font-size: 13px;
+        }
+      }
+      li:hover{
+        .cv-check{
+          color: @color-neutral-x-dark;
+        }
+      }
+    }
+    &.full .cv-select-body li {
+      width: 50%;
+      display: inline-block;
+    }
+  }
+
+  &.icon{
+    min-width: inherit;
+    .cv-select-body{
+      li{
+        svg{
+          width: 14px;
+          height: 18px;
+          margin-right: 10px;
+        }
+        .option{
+          display: inline-block;
+        }
+
+      }
+    }
+  }
+
 }
 .cv-select.full{
   max-width: 100%;
@@ -449,6 +491,12 @@ a.cv-button{
     white-space: nowrap;
     max-width: 115px;
   }
+
+  svg{
+    width: 14px;
+    height: 18px;
+  }
+
   &:after{
     content: "";
     background: url('/img/dropdown-arrow.png') center no-repeat;
@@ -510,7 +558,7 @@ a.cv-button{
   padding: 7px 0px;
   padding-top: 10px;
   position: absolute;/* fix */
-  z-index: 1;
+  z-index: 5;
   min-width: 140px;
   width: 120%;
   font-size: 13px;
@@ -555,6 +603,9 @@ a.cv-button{
       cursor: pointer;
       background-color: #fffaf1;
       color: @color-neutral-x-dark;
+      svg{
+        fill: @color-neutral-x-dark;
+      }
     }
     li.has-children{
       background-image: url('/img/dropdown-i-arrow-right.png');
@@ -565,25 +616,7 @@ a.cv-button{
 
 }
 
-.cv-select.check{
-  .cv-select-body{
-    li{
-      .cv-check{
-        margin: 0;
-        font-size: 13px;
-      }
-    }
-    li:hover{
-      .cv-check{
-        color: @color-neutral-x-dark;
-      }
-    }
-  }
-  &.full .cv-select-body li {
-    width: 50%;
-    display: inline-block;
-  }
-}
+
 
 
 

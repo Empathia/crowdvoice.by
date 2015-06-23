@@ -413,12 +413,14 @@ $('.placeholder-ui .c3').append('<br><br>');
 /*******************************************
                 @selects
 *******************************************/
+
 //Normal
 var allZones = {
-  "1": {name: 'This Week', active: true},
-  "2": {name: 'This Month'},
-  "3": {name: 'All Time'}
+  "1": {label: 'This Week', name: 'week', active: true},
+  "2": {label: 'This Month', name: 'month'},
+  "3": {label: 'All Time', name: 'all'}
 };
+
 new CV.Select({
   label : 'Choose Zone',
   name  : 'select',
@@ -427,37 +429,38 @@ new CV.Select({
 
 //Checkbox
 var allGrades = {
-  "1": {name: 'Myself'},
-  "2": {name: 'Organization 01'},
-  "3": {name: 'Organization 02'},
-  "4": {name: 'Organization 03'}
+  "1": {label: 'Myself', name: 'myself'},
+  "2": {label: 'Organization 01', name: 'org1'},
+  "3": {label: 'Organization 02', name: 'org2'},
+  "4": {label: 'Organization 03', name: 'org3'}
 };
 
 new CV.Select({
-    type      : 'check',
-    label     : 'Follow as...',
-    name      : 'selectFollow',
-    style     : '',
-    options   : allGrades,
-    hasArrow  : false,
-    hasTitle  : true,
-    title     : "Label",
-    subTitle  : "Sublabel",
+    type        : 'check',
+    label       : 'Follow as...',
+    name        : 'selectFollow',
+    style       : '',
+    options     : allGrades,
+    hasArrow    : false,
+    hasTitle    : true,
+    title       : "Label",
+    subTitle    : "Sublabel",
     actionType  : 'follow'
 }).render(document.querySelector('.placeholder-ui .c5'));
 
 //Multiple
 var allMulti = {
-  "1": {name: 'Myself'},
+  "1": {label: 'Myself', name: 'myself'},
   "2": {
-    name: 'Organization 01',
+    label: 'Organization 01',
+    name: 'org1',
     sub: {
-      "0": {name: 'Public'},
-      "1": {name: 'Anonimously'}
+      "0": {label: 'Public', name: 'public'},
+      "1": {label: 'Anonimously', name: 'anon'}
     }
   },
-  "3": {name: 'Organization 02'},
-  "4": {name: 'Organization 03'}
+  "3": {label: 'Organization 02', name: 'org2'},
+  "4": {label: 'Organization 03', name: 'org3'}
 };
 new CV.Select({
   label : 'Multiple',
@@ -467,9 +470,9 @@ new CV.Select({
 
 //Normal
 var allZones = {
-  "1": {name: 'This Week', active: true},
-  "2": {name: 'This Month'},
-  "3": {name: 'All Time'}
+  "1": {label: 'This Week', name: 'week', active: true},
+  "2": {label: 'This Month', name: 'month'},
+  "3": {label: 'All Time', name: 'all'}
 };
 new CV.Select({
   label : 'Choose Zone',

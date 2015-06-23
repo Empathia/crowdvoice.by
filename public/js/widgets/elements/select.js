@@ -57,10 +57,18 @@ Class(CV, 'Select').inherits(Widget)({
             }
 
             if (this.style){ this.selectEl.addClass(this.style) };
+
+
             if (this.label){ this.labelEl.text(this.label) };
 
-            if (this.type == "check"){
-                this.selectEl.addClass('check');
+            if(this.type == 'icon'){
+                this.labelEl.html('<svg>\
+                                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-' + this.icon + '"></use>\
+                                    </svg>');
+            }
+
+            if (this.type){
+                this.selectEl.addClass(this.type);
             }
 
             this.fillOptions();
@@ -73,29 +81,44 @@ Class(CV, 'Select').inherits(Widget)({
             for (var key in this.options) {
                 if (this.options.hasOwnProperty(key)) {
 
-                    if (this.type == "check"){
+                    switch(this.type) {
+                        case 'check':
 
-                        var optionEl = $('<li></li>');
-                        var check = this.appendChild(new CV.Check({
-                            id          : key,
-                            label       : this.options[key].name,
-                            name        : this.name + '-' + key,
-                        })).render(optionEl);
 
-                        check.bind('checked', function(){
-                            this.updateCount(true);
-                        }.bind(this));
-                        check.bind('unchecked', function(){
-                            this.updateCount(false);
-                        }.bind(this));
+                            var optionEl = $('<li></li>');
+                            var check = this.appendChild(new CV.Check({
+                                id          : key,
+                                label       : this.options[key].label,
+                                name        : this.name + '-' + key,
+                            })).render(optionEl);
 
-                    } else {
-                        var optionEl = $('<li><div data-id="'+ key +'" class="option">'+this.options[key].name+'</div></li>');
+                            check.bind('checked', function(){
+                                this.updateCount(true);
+                            }.bind(this));
+                            check.bind('unchecked', function(){
+                                this.updateCount(false);
+                            }.bind(this));
+                            break;
+
+                        case 'icon':
+
+                            var optionEl = $('<li>\
+                                                <svg>\
+                                                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-' + this.options[key].icon + '"></use>\
+                                                </svg>\
+                                                <div data-id="'+ key +'" class="option">'+this.options[key].label+'</div>\
+                                            </li>');
+                            this[this.options[key].name] = optionEl;
+
+                            break;
+                        default:
+                        console.log(this.options[key].label);
+                            var optionEl = $('<li><div data-id="'+ key +'" class="option">'+this.options[key].label+'</div></li>');
                     }
 
                     if (this.options[key].active){
                         optionEl.addClass('selected');
-                        this.labelEl.text(this.options[key].name);
+                        this.labelEl.text(this.options[key].label);
                     }
 
                     if(this.options[key].sub){
@@ -104,7 +127,8 @@ Class(CV, 'Select').inherits(Widget)({
                         var subListEl = $('<ul></ul>');
 
                         for (var subkey in subOptions) {
-                            var subOptionEl = $('<li><div data-id="'+ subkey +'" class="option">'+subOptions[subkey].name+'</div></li>');
+                            var subOptionEl = $('<li><div data-id="'+ subkey +'" class="option">'+subOptions[subkey].label+'</div></li>');
+                            this[subOptions[subkey].name] = subOptionEl;
                             subListEl.append(subOptionEl);
                         }
                         optionEl.append(subListEl);
@@ -129,15 +153,26 @@ Class(CV, 'Select').inherits(Widget)({
             }.bind(this));
 
             var that = this;
-            if (this.type != "check"){
-                this.element.find('li').bind('click', function(el){
-                    that.element.find('li').removeClass('selected');
-                    that.optionSelected = $(this).find('> div').attr('data-id');
-                    that.labelEl.text($(this).find('> div').text());
-                    $(this).addClass('selected');
-                    that.close();
-                });
+
+            switch(this.type) {
+                case 'icon':
+                    this.element.find('li').bind('click', function(el){
+                        that.optionSelected = $(this).find('> div').attr('data-id');
+                        that.close();
+                    });
+                break;
+
+                default:
+                    this.element.find('li').bind('click', function(el){
+                        that.element.find('li').removeClass('selected');
+                        that.optionSelected = $(this).find('> div').attr('data-id');
+                        that.labelEl.text($(this).find('> div').text());
+                        $(this).addClass('selected');
+                        that.close();
+                    });
             }
+
+
         },
 
         updateCount : function(added){
