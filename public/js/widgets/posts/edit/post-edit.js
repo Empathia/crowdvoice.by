@@ -307,6 +307,18 @@ Class(CV, 'PostEdit').inherits(Widget)({
             return this;
         },
 
+        addVoteButtons : function addVoteButtons() {
+            this.appendChild(
+                new CV.PostModerateVoteButtons({
+                    name : 'voteButtons'
+                })
+            ).render(this.el);
+
+            this.el.classList.add('has-bottom-actions');
+
+            return this;
+        },
+
         destroy : function destroy() {
             this.unbind('render', this._renderHandlerRef);
             this._renderHandlerRef = null;

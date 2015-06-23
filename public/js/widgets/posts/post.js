@@ -1,7 +1,14 @@
 /* jshint multistr: true */
-require('../../lib/image-halt');
 
-Class(CV, 'Post').inherits(Widget).includes(CV.WidgetUtils)({
+/* Class CV.Post Main Class.
+ * Creates a new Post Widget of the type passed on the params.
+ * @usage CV.Post.create({type: 'someKnownPostType', ...}).render(...);
+ * @return new CV.Post[type]
+ */
+Class(CV, 'Post').inherits(Widget).includes(
+    CV.WidgetUtils,
+    CV.PostModuleImages
+)({
     ACTIONS_HTML : '\
         <div class="post-card-actions">\
             <div class="-row -full-height">\
@@ -21,9 +28,14 @@ Class(CV, 'Post').inherits(Widget).includes(CV.WidgetUtils)({
         </div>\
     ',
 
+    /* Creates a specific Post by type using the Strategy Pattern.
+     * The Post type should be one of the knows post types available.
+     * @method create <public, static> [Function]
+     * @arguments config <required> [Object] The Post Model Data.
+     * @return new CV.Post[type]
+     */
     create : function create(config) {
         var type = this.prototype.format.capitalizeFirstLetter(config.sourceType);
-
         return new window.CV['Post' + type](config);
     },
 
@@ -40,10 +52,6 @@ Class(CV, 'Post').inherits(Widget).includes(CV.WidgetUtils)({
         totalReposts: 0,
         totalSaves: 0,
         createdAt: '',
-
-        /* PRIVATE properties */
-        imageLoaded : false,
-        haltImage : null,
 
         _repostIntent : function _repostIntent() {},
         _repost : function _repost() {},
@@ -62,88 +70,6 @@ Class(CV, 'Post').inherits(Widget).includes(CV.WidgetUtils)({
             return this;
         },
 
-        /* Updates the cover image with the passed sourceString.
-         * @method setCoverImage <public> [Function]
-         */
-        setCoverImage : function setCoverImage(src) {
-            var cover = (this.imageWidth >= 300) ? 'add' : 'remove';
-            this.imageWrapperElement.classList[cover]('-img-cover');
-            this.dom.updateBgImage(this.imageWrapperElement, src);
-            return this;
-        },
-
-        /* Sets the image height equal to the number passed in pixel units.
-         * @method setImageHeight <public> [Function[]
-         */
-        setImageHeight : function setImageHeight(height) {
-            this.imageWrapperElement.style.height = height + 'px';
-            this.imageWrapperElement.classList.add('active');
-        },
-
-        /* Display the image wrapper element which contains the image cover.
-         * @method showImageWrapper <public> [Function]
-         */
-        showImageWrapper : function showImageWrapper() {
-            this.imageWrapperElement.classList.add('active');
-        },
-
-        /* Hides the image wrapper element which contains the image cover.
-         * @method hideImageWrapper <public> [Function]
-         */
-        hideImageWrapper : function hideImageWrapper() {
-            this.imageWrapperElement.classList.remove('active');
-        },
-
-        /* Preload Post Image Cover
-         * @method loadImage <public> [Function]
-         * @return [CV.Post]
-         */
-        loadImage : function loadImage() {
-            if (!this.image) return this;
-            if (this.imageLoaded === true) return this;
-
-            if (this.haltImage) {
-                this.haltImage.load();
-                return this;
-            }
-
-            this._loadImageHandlerRef = this._loadImageHandler.bind(this);
-            this.haltImage = new ImageHalt(this.image, this._loadImageHandlerRef);
-            this.haltImage.load();
-
-            return this;
-        },
-
-        /* Cancel the post's cover image transfer.
-         * @method abortImage <public> [Function]
-         * @return [CV.Post]
-         */
-        abortImage : function abortImage() {
-            if (!this.image) return this;
-            if (!this.haltImage) return this;
-            if (this.imageLoaded === true) return this;
-
-            this.haltImage.abort();
-
-            return this;
-        },
-
-        /* Handler the image error, load events.
-         * @method _loadImageHandler <private> [Function]
-         */
-        _loadImageHandler : function _loadImageHandler(err, imageObject) {
-            if (err) {
-                this.abortImage();
-                this.haltImage = null;
-                console.error(err);
-                return;
-            }
-
-            this.setCoverImage(imageObject.src);
-            this.imageLoaded = true;
-            this.haltImage = null;
-        },
-
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
 
@@ -159,9 +85,11 @@ Class(CV, 'Post').inherits(Widget).includes(CV.WidgetUtils)({
             this.totalSaves = null;
             this.createdAt = null;
 
+            /* module image */
             this.imageLoaded = null;
             this.haltImage = null;
 
+            /* destroy current post type */
             this.__destroy();
         }
     }

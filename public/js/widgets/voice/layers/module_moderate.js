@@ -6,6 +6,21 @@ Class(CV, 'VoicePostLayersModerateManager').inherits(CV.VoicePostLayers)({
 
         addPosts : function addPosts(layer, postsData) {
             layer.addEditablePosts(postsData);
+
+            layer.getPosts().forEach(function(post) {
+                // @TODO: add conditionals
+
+                // Voice Owner / Org Member / Contributor
+                // post.addRemoveButton();
+                // post.addPublishButton();
+
+                // Visitor (posts list)
+                post.addVoteButtons();
+            });
+
+            layer.reLayout();
+
+            return this;
         },
 
         __bindEvents : function __bindEvents() {
