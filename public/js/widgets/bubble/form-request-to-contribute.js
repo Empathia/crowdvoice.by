@@ -11,7 +11,7 @@ Class(CV, 'FormRequestToContribute').inherits(Widget)({
         <form>\
         <p>Briefly state why would you be a valuable content contributor to this Voice.<p>\
         <br><div class="cv-input is-area">\
-            <textarea rows="4"></textarea>\
+            <textarea rows="4" placeholder="140 characters max."></textarea>\
         </div>\
         <br><button type="button" class="submit cv-button full primary">Submit Request</button>\
         </form>\
@@ -22,7 +22,7 @@ Class(CV, 'FormRequestToContribute').inherits(Widget)({
         <img src="../img/icon-happy-face.png">\
         <h1>Thanks for the interest to help out!</h1>\
         <p>We will review your request as soon as possible and may contact you to get some more information or directly with a response.</p>\
-        <button class="cv-button">Ok</button>\
+        <button class="cv-button ok">Ok</button>\
         </div>\
     ',
 
@@ -38,11 +38,17 @@ Class(CV, 'FormRequestToContribute').inherits(Widget)({
             var that = this;
             this.element.find('button.submit').on('click', function(){
                 that.element.find('form').remove();
+
                 that.element.append(that.constructor.THANKS);
+
+                that.element.find('button.ok').on('click', function(){
+                    that.dispatch('close');
+
+                    //console.log('close');
+                });
+
             });
-            //voices.forEach(function(voice){
-            //    new VoiceCoverMini( voice ).render( this.element );
-            //}.bind(this));
+
         }
 
     }

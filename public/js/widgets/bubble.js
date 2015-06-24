@@ -46,10 +46,17 @@ Class(CV, 'Bubble').inherits(Widget)({
                 }).render(this.element.find('.header'))
             );
 
-            new this.action({
-                years   : this.actionData,
-                name    : 'bubbleAction',
-            }).render(this.bodyElement);
+            //new this.action({
+            //    years   : this.actionData,
+            //    name    : 'bubbleAction',
+            //}).render(this.bodyElement);\
+
+            var bubbleAction = this.appendChild(
+                new this.action({
+                    years   : this.actionData,
+                    name    : 'bubbleAction',
+                })
+            ).render(this.bodyElement);
 
             $(this.anchorEl).on('click', function(){
                 bubble.show();
@@ -70,6 +77,12 @@ Class(CV, 'Bubble').inherits(Widget)({
             $(document).on( 'scroll', function(){
                 bubble.hide();
             });
+
+
+
+            bubbleAction.bind('close', function(){
+                this.hide();
+            }.bind(this));
 
         },
 
