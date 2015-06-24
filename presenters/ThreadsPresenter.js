@@ -10,7 +10,6 @@ Module('ThreadsPresenter')({
       thread.hidden       = thread['hiddenFor' + senderOrReceiver];
       thread.id           = hashids.encode(thread.id);
 
-      delete thread.senderPersonId;
       delete thread.lastSeenSender;
       delete thread.lastSeenReceiver;
       delete thread.messageCountSender;
@@ -19,7 +18,24 @@ Module('ThreadsPresenter')({
       delete thread.hiddenForReceiver;
       delete thread.eventListeners;
 
-      async.series([function(done) {
+      async.series([function(done){
+        if (hashids.decode(req.currentPerson.id)[0] !== thread.senderPersonId) {
+          thread.senderPerson = null;
+          delete thread.senderPersonId;
+          return done();
+        }
+
+        Entity.find({id : thread.senderPersonId}, function(err, result) {
+          if (err) {
+            return done(err);
+          }
+
+          thread.senderPerson = new Entity(result[0]);
+          thread.senderPerson.id = hashids.encode(thread.senderPerson.id);
+
+          done()
+        })
+      }, function(done) {
         Entity.findById(thread.senderEntityId, function(err, result) {
           if (err) {
             return done(err);
@@ -54,7 +70,13 @@ Module('ThreadsPresenter')({
           async.eachLimit(messages, 1, function(message, nextMessage) {
             var messageInstance = new Message(message);
 
-            var messageSenderOrReceiver = messageInstance.isPersonSender(hashids.decode(req.currentPerson.id)[0]) ? 'Sender' : 'Receiver';
+            var messageSenderOrReceiver;
+
+            if (message.senderEntityId === hashids.decode(thread.senderEntity.id)[0]) {
+              messageSenderOrReceiver = 'Sender'
+            } else {
+              messageSenderOrReceiver = 'Receiver'
+            }
 
             if (messageSenderOrReceiver === 'Receiver') {
               if ((new Date(messageInstance.createdAt)) > (new Date(thread.lastSeen))) {
@@ -66,13 +88,33 @@ Module('ThreadsPresenter')({
 
             if (messageSenderOrReceiver === 'Sender') {
               message.senderEntity = thread.senderEntity;
-              message.receiverEntity = thread.receiverEntity;
             } else {
               message.senderEntity = thread.receiverEntity;
-              message.receiverEntity = thread.senderEntity;
             }
 
-            async.series([function(doneMessageInfo) {
+            async.series([function(doneMessageInfo){
+              if (!message.invitationRequestId) {
+                return doneMessageInfo();
+              }
+
+              InvitationRequest.find({id : message.invitationRequestId}, function(err, result) {
+                if (err) {
+                  return doneMessageInfo();
+                }
+
+                if (result.length === 0) {
+                  return doneMessageInfo();
+                }
+
+                message.invitationRequest = result[0];
+
+                message.invitationRequest.id = hashids.encode(message.invitationRequest.id);
+                message.invitationRequest.invitatorEntityId = hashids.encode(message.invitationRequest.invitatorEntityId)
+                message.invitationRequest.invitedEntityId = hashids.encode(message.invitationRequest.invitedEntityId);
+
+                doneMessageInfo();
+              })
+            }, function(doneMessageInfo) {
               if (!message.voiceId) {
                 return doneMessageInfo();
               }
@@ -137,6 +179,8 @@ Module('ThreadsPresenter')({
               delete message.hiddenForSender;
               delete message.hiddenForReceiver;
               delete message.eventListeners;
+
+              message.id = hashids.encode(message.id);
 
               nextMessage();
             })

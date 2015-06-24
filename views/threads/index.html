@@ -107,7 +107,16 @@
 <script>
   	$( document ).ready(function() {
   		resizeMessages();
+
+        var threadsContainer = new CV.ThreadsContainer({
+            name : 'threadContainer',
+            element : $(document.querySelector('.messages-main')),
+            threads : <%= JSON.stringify(threads) %>,
+            currentPerson : <%= JSON.stringify(currentPerson) %>
+        })
 	});
+
+
 
 
 
@@ -172,202 +181,202 @@
 				      			</div>\
 				      		</div>');
 
-	var searchInput = new CV.Input({
-		type 		: 'search',
-		style 		: 'tiny',
-		placeholder : 'Search...'
-	}).render(searchElement);
+	// var searchInput = new CV.Input({
+	// 	type 		: 'search',
+	// 	style 		: 'tiny',
+	// 	placeholder : 'Search...'
+	// }).render(searchElement);
 
 
-	var reply = new CV.InputButton({
-	    style       : 'primary large',
-	    type        : '',
-	    isArea      : true,
-	    name        : 'reply',
-	    buttonLabel : 'Reply'
-	}).render(createElement);
+	// var reply = new CV.InputButton({
+	//     style       : 'primary large',
+	//     type        : '',
+	//     isArea      : true,
+	//     name        : 'reply',
+	//     buttonLabel : 'Reply'
+	// }).render(createElement);
 
-	var buttonNew = new CV.Button({
-		style   : 'primary small',
-		type    : 'single',
-		label   : 'New Message',
-		name    : 'buttonNew'
-	}).render($('.profile-messages-intro'));
+	// var buttonNew = new CV.Button({
+	// 	style   : 'primary small',
+	// 	type    : 'single',
+	// 	label   : 'New Message',
+	// 	name    : 'buttonNew'
+	// }).render($('.profile-messages-intro'));
 
-	var btnMultipleOptions = {
-		"1": {label: 'Accept', name : 'accept'},
-		"2": {label: 'Accept as an Anonymous Member', name : 'anon'},
-		"3": {label: 'Refuse', name : 'refuse'}
-	};
-	new CV.Button({
-		style   : '',
-		type    : 'multiple',
-		name    : 'buttonMultiple',
-		options : btnMultipleOptions
-	}).render($('.message-notification-actions'));
+	// var btnMultipleOptions = {
+	// 	"1": {label: 'Accept', name : 'accept'},
+	// 	"2": {label: 'Accept as an Anonymous Member', name : 'anon'},
+	// 	"3": {label: 'Refuse', name : 'refuse'}
+	// };
+	// new CV.Button({
+	// 	style   : '',
+	// 	type    : 'multiple',
+	// 	name    : 'buttonMultiple',
+	// 	options : btnMultipleOptions
+	// }).render($('.message-notification-actions'));
 
 	var mi = 1;
 
-	reply.buttonEl.on('click', function(){
+	// reply.buttonEl.on('click', function(){
 
-		if (isNewThread){
-			createThread();
-		} else {
-			postMessage();
-		}
-	});
+	// 	if (isNewThread){
+	// 		createThread();
+	// 	} else {
+	// 		postMessage();
+	// 	}
+	// });
 
-	buttonNew.element.on('click', function(){
-		newMessage();
-	});
+	// buttonNew.element.on('click', function(){
+	// 	newMessage();
+	// });
 
-	$('a.new-message').on('click', function(){
-		newMessage();
-	});
+	// $('a.new-message').on('click', function(){
+	// 	newMessage();
+	// });
 
-	if (threads.length > 0 ){
-		threads.forEach(function(thread) {
-			addThread(thread);
-		});
-	} else {
-		hideSidebar();
-	}
-
-
-	$(searchInput.element).find('input').on('keyup', function(){
-		var searchStr = $(this).val();
-		threadListEl.find('.message-side').each(function( index, value ) {
-
-			var userStr = $(this).find('h3').text().toLowerCase();
-
-			if (userStr.indexOf(searchStr) >= 0){
-				$(this).show();
-			}else{
-				$(this).hide();
-			}
-
-		});
-	});
-
-	$('.search-users').on('keyup', function(){
+	// if (threads.length > 0 ){
+	// 	threads.forEach(function(thread) {
+	// 		addThread(thread);
+	// 	});
+	// } else {
+	// 	hideSidebar();
+	// }
 
 
-		var searchStr = $(this).val().toLowerCase();
-		var inputSearch = $(this);
+	// $(searchInput.element).find('input').on('keyup', function(){
+	// 	var searchStr = $(this).val();
+	// 	threadListEl.find('.message-side').each(function( index, value ) {
 
-		if (searchStr == ""){
-			searchUsersResultEl.hide();
-			return false;
-		}
+	// 		var userStr = $(this).find('h3').text().toLowerCase();
 
-        $.ajax({
-			type: "POST",
-			url:'/' + currentPersonProfileName + '/messages/searchPeople',
-			headers: { 'csrf-token': token },
-			data : {value : inputSearch.val()},
-			success: function(data) {
-				//console.log('people: ', data);
-				relatedPersons = data;
-				showPersons(data);
-			}
-		});
+	// 		if (userStr.indexOf(searchStr) >= 0){
+	// 			$(this).show();
+	// 		}else{
+	// 			$(this).hide();
+	// 		}
 
-	});
+	// 	});
+	// });
 
-	messagesBodyHeaderEl.find('.delete-thread').on('click', function(){
-		deleteThread($(this).attr('data-id'));
-	});
+	// $('.search-users').on('keyup', function(){
 
-	function hideSidebar(){
-		messagesMainEl.addClass('no-sidebar');
-		var messageText = 'To contact a user, message them on their profile card when rolling over their avatar or message them from their profile page. You can also <a href="#" class="new-message">compose a new message here</a> and search for the user you wish to contact.'
-		noMessagesEl.prepend('<h1>No messages</h1>');
-		noMessagesEl.find('p').html(messageText);
-		$('a.new-message').on('click', function(){
-			newMessage();
-		});
-	}
 
-	function showSidebar(){
-		var messageText = 'Please select a thread from the list on the left or <a href="#" class="new-message">compose a new message</a>.'
-		noMessagesEl.find('h1').remove();
-		noMessagesEl.find('p').html(messageText);
-		$('a.new-message').on('click', function(){
-			newMessage();
-		});
-		messagesMainEl.removeClass('no-sidebar');
-		resizeMessages();
+	// 	var searchStr = $(this).val().toLowerCase();
+	// 	var inputSearch = $(this);
 
-	}
+	// 	if (searchStr == ""){
+	// 		searchUsersResultEl.hide();
+	// 		return false;
+	// 	}
 
-	function showPersons(persons){
-		searchUsersResultEl.show();
-		searchUsersResultEl.empty();
+ //        $.ajax({
+	// 		type: "POST",
+	// 		url:'/' + currentPersonProfileName + '/messages/searchPeople',
+	// 		headers: { 'csrf-token': token },
+	// 		data : {value : inputSearch.val()},
+	// 		success: function(data) {
+	// 			//console.log('people: ', data);
+	// 			relatedPersons = data;
+	// 			showPersons(data);
+	// 		}
+	// 	});
 
-		for (person in persons){
-			if (persons[person].isAnonymous == false){
-				var userStr = persons[person].name + ' ' +
-				persons[person].lastname;
-				//if (userStr.toLowerCase().indexOf(searchStr) >= 0){
-					var liStr = $('<li data-partner-id="' + persons[person].id + '" data-partner-name="' + userStr + '">' + userStr + '</li>');
-					liStr.on('click', function(){
+	// });
 
-						otherPersonID = $(this).attr('data-partner-id');
-						if (isOnThreadList(otherPersonID)){
-							threadListEl.find("[data-partner-id='" + otherPersonID + "']").click();
-						} else {
-							isNewThread = true;
+	// messagesBodyHeaderEl.find('.delete-thread').on('click', function(){
+	// 	deleteThread($(this).attr('data-id'));
+	// });
 
-							showNewThreadScreen($(this).attr('data-partner-id'), $(this).attr('data-partner-name'));
-						}
-						$('.search-users').val("");
-						searchUsersResultEl.hide();
-					})
-					searchUsersResultEl.append(liStr);
-				//}
-			}
-		}
-	}
+	// function hideSidebar(){
+	// 	messagesMainEl.addClass('no-sidebar');
+	// 	var messageText = 'To contact a user, message them on their profile card when rolling over their avatar or message them from their profile page. You can also <a href="#" class="new-message">compose a new message here</a> and search for the user you wish to contact.'
+	// 	noMessagesEl.prepend('<h1>No messages</h1>');
+	// 	noMessagesEl.find('p').html(messageText);
+	// 	$('a.new-message').on('click', function(){
+	// 		newMessage();
+	// 	});
+	// }
 
-	function isOnThreadList (selectedPersonID){
-		var foundIt = false;
-		threadListEl.find('.message-side').each(function( index, value ) {
-			if ($(this).attr('data-partner-id') == selectedPersonID){
-				//console.log('bingo');
-				foundIt = true;
-			}
+	// function showSidebar(){
+	// 	var messageText = 'Please select a thread from the list on the left or <a href="#" class="new-message">compose a new message</a>.'
+	// 	noMessagesEl.find('h1').remove();
+	// 	noMessagesEl.find('p').html(messageText);
+	// 	$('a.new-message').on('click', function(){
+	// 		newMessage();
+	// 	});
+	// 	messagesMainEl.removeClass('no-sidebar');
+	// 	resizeMessages();
 
-		});
-		return foundIt;
-	}
+	// }
 
-	function newMessage (){
-		//console.log(threadId);
-		//currentThreadID = threadId;
+	// function showPersons(persons){
+	// 	searchUsersResultEl.show();
+	// 	searchUsersResultEl.empty();
 
-		showSelectedScreen();
+	// 	for (person in persons){
+	// 		if (persons[person].isAnonymous == false){
+	// 			var userStr = persons[person].name + ' ' +
+	// 			persons[person].lastname;
+	// 			//if (userStr.toLowerCase().indexOf(searchStr) >= 0){
+	// 				var liStr = $('<li data-partner-id="' + persons[person].id + '" data-partner-name="' + userStr + '">' + userStr + '</li>');
+	// 				liStr.on('click', function(){
 
-	}
+	// 					otherPersonID = $(this).attr('data-partner-id');
+	// 					if (isOnThreadList(otherPersonID)){
+	// 						threadListEl.find("[data-partner-id='" + otherPersonID + "']").click();
+	// 					} else {
+	// 						isNewThread = true;
 
-	function showSelectedScreen (){
-		noMessagesEl.hide();
-		messagesContainerEl.hide();
-		messagesBodyContainerEl.addClass('active');
-		messagesBodyHeaderEl.find('.m-action').hide();
-		messagesBodyHeaderEl.find('.m-new').show();
-		messageListEl.empty();
-		resizeMessages();
-	}
+	// 						showNewThreadScreen($(this).attr('data-partner-id'), $(this).attr('data-partner-name'));
+	// 					}
+	// 					$('.search-users').val("");
+	// 					searchUsersResultEl.hide();
+	// 				})
+	// 				searchUsersResultEl.append(liStr);
+	// 			//}
+	// 		}
+	// 	}
+	// }
 
-	function showUnselectedScreen (){
-		noMessagesEl.show();
-		messagesContainerEl.show();
-		messagesBodyContainerEl.removeClass('active');
-		messagesBodyHeaderEl.find('.m-action').show();
-		messagesBodyHeaderEl.find('.m-new').hide();
-		//messageListEl.empty();
-		resizeMessages();
-	}
+	// function isOnThreadList (selectedPersonID){
+	// 	var foundIt = false;
+	// 	threadListEl.find('.message-side').each(function( index, value ) {
+	// 		if ($(this).attr('data-partner-id') == selectedPersonID){
+	// 			//console.log('bingo');
+	// 			foundIt = true;
+	// 		}
+
+	// 	});
+	// 	return foundIt;
+	// }
+
+	// function newMessage (){
+	// 	//console.log(threadId);
+	// 	//currentThreadID = threadId;
+
+	// 	showSelectedScreen();
+
+	// }
+
+	// function showSelectedScreen (){
+	// 	noMessagesEl.hide();
+	// 	messagesContainerEl.hide();
+	// 	messagesBodyContainerEl.addClass('active');
+	// 	messagesBodyHeaderEl.find('.m-action').hide();
+	// 	messagesBodyHeaderEl.find('.m-new').show();
+	// 	messageListEl.empty();
+	// 	resizeMessages();
+	// }
+
+	// function showUnselectedScreen (){
+	// 	noMessagesEl.show();
+	// 	messagesContainerEl.show();
+	// 	messagesBodyContainerEl.removeClass('active');
+	// 	messagesBodyHeaderEl.find('.m-action').show();
+	// 	messagesBodyHeaderEl.find('.m-new').hide();
+	// 	//messageListEl.empty();
+	// 	resizeMessages();
+	// }
 
 	function postMessage(){
 		var postMessageUrl = '/'+ currentPersonProfileName + '/messages/'+ currentThreadID;
@@ -391,16 +400,16 @@
         });
 	}
 
-	function showNewThreadScreen (otherPersonID, otherPersonName){
-		//console.log(otherPersonID);
-		messagesBodyHeaderEl.find('.m-action').show();
-		messagesBodyHeaderEl.find('.m-new').hide();
-		messagesBodyHeaderEl.find('span.conversation-title').text('Conversation with ' + otherPersonName);
-		messagesBodyHeaderEl.find('.delete-thread').hide();
-		messagesContainerEl.show();
-		resizeMessages();
+	// function showNewThreadScreen (otherPersonID, otherPersonName){
+	// 	//console.log(otherPersonID);
+	// 	messagesBodyHeaderEl.find('.m-action').show();
+	// 	messagesBodyHeaderEl.find('.m-new').hide();
+	// 	messagesBodyHeaderEl.find('span.conversation-title').text('Conversation with ' + otherPersonName);
+	// 	messagesBodyHeaderEl.find('.delete-thread').hide();
+	// 	messagesContainerEl.show();
+	// 	resizeMessages();
 
-	}
+	// }
 
 	function createThread () {
 		var postMessageUrl = '/'+ currentPersonProfileName + '/messages';
@@ -427,72 +436,72 @@
 
 	}
 
-    function addThread (thread, showMessages){
-    	console.log(thread);
+  //   function addThread (thread, showMessages){
+  //   	console.log(thread);
+  //       return;
+		// var threadEl = messageSide.clone();
+		// var threadPartner;
+		// if (thread.receiverEntity.id != currentPersonID ){
+		// 	threadPartner = thread.receiverEntity;
+		// } else{
+		// 	threadPartner = thread.senderEntity;
+		// }
+		// threadEl.attr('id', thread.id);
+		// threadEl.attr('data-partner-id', threadPartner.id);
 
-		var threadEl = messageSide.clone();
-		var threadPartner;
-		if (thread.receiverEntity.id != currentPersonID ){
-			threadPartner = thread.receiverEntity;
-		} else{
-			threadPartner = thread.senderEntity;
-		}
-		threadEl.attr('id', thread.id);
-		threadEl.attr('data-partner-id', threadPartner.id);
+		// var threadPartnerName = threadPartner.name + " " + threadPartner.lastname;
+		// threadEl.find('h3').text(threadPartnerName);
 
-		var threadPartnerName = threadPartner.name + " " + threadPartner.lastname;
-		threadEl.find('h3').text(threadPartnerName);
+		// if (thread.unreadCount > 0) {
+		// 	threadEl.find('.actions span').text(thread.unreadCount);
+		// } else {
+		// 	threadEl.addClass('updated');
+		// }
 
-		if (thread.unreadCount > 0) {
-			threadEl.find('.actions span').text(thread.unreadCount);
-		} else {
-			threadEl.addClass('updated');
-		}
+		// if (isNewThread){
+		// 	threadListEl.prepend(threadEl);
+		// } else {
+		// 	threadListEl.append(threadEl);
+		// }
 
-		if (isNewThread){
-			threadListEl.prepend(threadEl);
-		} else {
-			threadListEl.append(threadEl);
-		}
+		// threadsObj[thread.id] = thread;
 
-		threadsObj[thread.id] = thread;
+		// threadEl.on('click', function(){
 
-		threadEl.on('click', function(){
+		// 	showThread(thread.id, threadPartnerName, this);
+		// });
 
-			showThread(thread.id, threadPartnerName, this);
-		});
+		// if(showMessages){
+		// 	threadEl.click();
+		// }
+  //   }
 
-		if(showMessages){
-			threadEl.click();
-		}
-    }
+  //   function deleteThread (threadId){
+  //   	console.log('deleted thread: ' + threadId);
+		// console.log(threadListEl);
 
-    function deleteThread (threadId){
-    	console.log('deleted thread: ' + threadId);
-		console.log(threadListEl);
+		// var deleteThreadUrl = '/'+ currentPersonProfileName + '/messages/'+ threadId;
+		// $.ajax({
+  //         type: "DELETE",
+  //         url: deleteThreadUrl,
+  //         headers: { 'csrf-token': token },
+  //         success: function(data) {
+  //           console.log('Thread deleted');
+  //         }
+  //       });
 
-		var deleteThreadUrl = '/'+ currentPersonProfileName + '/messages/'+ threadId;
-		$.ajax({
-          type: "DELETE",
-          url: deleteThreadUrl,
-          headers: { 'csrf-token': token },
-          success: function(data) {
-            console.log('Thread deleted');
-          }
-        });
+		// threadListEl.find('#'+threadId).remove();
+		// if (threadListEl.find('.message-side').length == 0){
+		// 	hideSidebar();
+		// 	showUnselectedScreen();
 
-		threadListEl.find('#'+threadId).remove();
-		if (threadListEl.find('.message-side').length == 0){
-			hideSidebar();
-			showUnselectedScreen();
-
-		}else{
-			showSidebar();
-			showUnselectedScreen();
-		}
+		// }else{
+		// 	showSidebar();
+		// 	showUnselectedScreen();
+		// }
 
 
-    }
+  //   }
 
 	function showThread (threadId, threadPartnerName, threadEl){
 		isNewThread = false;
@@ -601,7 +610,7 @@
 			        //default code block
 			}
 
-          	if (messageObj.type != 'message'){
+          	if (messageObj.type.search('invitation') !== -1){
 
 				var btnMultipleOptions = {
 					"1": {label: 'Accept', name: 'accept'},
@@ -619,6 +628,19 @@
 				// ************   Message button actions *******************
 
 				messageActions.accept.on('click', function(){
+                    var url = '/' + currentPersonProfileName + '/messages/' + messageObj.threadId + '/' + messageObj.id  +'/acceptInvite';
+
+                    $.ajax({
+                        method : 'GET',
+                        url : url,
+                        contentType : 'json',
+                        succes : function(data) {
+                            console.log(data)
+                        },
+                        error : function(err) {
+                            console.error(err);
+                        }
+                    })
 					console.log('-- Accept --');
 					console.log('message Id: ' + messageObj.id);
 					console.log('thread Id: ' + messageObj.threadId);
@@ -648,12 +670,10 @@
 
        	});
 
-		$('.messages-conversation').scrollTop(10000);
-
 	}
 
 	function resizeMessages () {
-		reply.recalculate();
+		// reply.recalculate();
 
   		var chatHeight = $(window).height() - ($('.profile-messages-intro').outerHeight() + $('.cv-main-header').outerHeight());
 		$('.messages-sidebar, .messages-body, .messages-body-container').height(chatHeight);
@@ -661,6 +681,8 @@
 		$('.messages-list').css({'overflow-y':'scroll', 'height': sideMessagesHeight+'px'});
 		var bodyMessagesHeight = chatHeight - ($('.messages-body-header').outerHeight() + $('.message-create').outerHeight());
 		$('.messages-conversation').height(bodyMessagesHeight);
+
+
   	}
 
 </script>

@@ -424,7 +424,62 @@ exports.seed = function(knex, Promise) {
       'updated_at'            : new Date(Date.now() - 3000)
     }),
 
-    knex.raw('SELECT setval(\'"Messages_id_seq"\'::regclass, 15);'),
+    // Message Threads
+    //
+    // Between The Johnsons and John
+    //
+    knex('MessageThreads').insert({
+      'id' : 5,
+      'sender_person_id'       : 1,
+      'sender_entity_id'       : 9,
+      'receiver_entity_id'     : 3,
+      'hidden_for_sender'      : false,
+      'hidden_for_receiver'    : false,
+      'last_seen_sender'       : null,
+      'last_seen_receiver'     : null,
+      'message_count_sender'   : 2,
+      'message_count_receiver' : 2,
+      'created_at' : new Date(Date.now() - 2000),
+      'updated_at' : new Date(Date.now() - 2000)
+    }),
+
+    // Jack
+    knex('Messages').insert({
+      'id'                    : 19,
+      'type'                  : 'message',
+      'sender_person_id'      : 1,
+      'sender_entity_id'      : 9,
+      'receiver_entity_id'    : 3,
+      'thread_id'             : 5,
+      'invitation_request_id' : null,
+      'voice_id'              : null,
+      'organization_id'       : null,
+      'message'               : "Hey John!",
+      'hidden_for_sender'     : false,
+      'hidden_for_receiver'   : false,
+      'created_at'            : new Date(Date.now() - 2000),
+      'updated_at'            : new Date(Date.now() - 2000)
+    }),
+
+    // Steve
+    knex('Messages').insert({
+      'id'                    : 20,
+      'type'                  : 'message',
+      'sender_person_id'      : 3,
+      'sender_entity_id'      : 3,
+      'receiver_entity_id'    : 1,
+      'thread_id'             : 5,
+      'invitation_request_id' : null,
+      'voice_id'              : null,
+      'organization_id'       : null,
+      'message'               : "Hi The Johnsons!!!",
+      'hidden_for_sender'     : false,
+      'hidden_for_receiver'   : false,
+      'created_at'            : new Date(Date.now() - 2000),
+      'updated_at'            : new Date(Date.now() - 2000)
+    }),
+
+    knex.raw('SELECT setval(\'"Messages_id_seq"\'::regclass, 20);'),
     knex.raw('SELECT setval(\'"MessageThreads_id_seq"\'::regclass, 5);')
   );
 };
