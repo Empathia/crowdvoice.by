@@ -5,10 +5,11 @@ Class(CV, 'VoicePostLayersModerateManager').inherits(CV.VoicePostLayers)({
         },
 
         addPosts : function addPosts(layer, postsData) {
-            layer.addEditablePosts(postsData);
-
-            layer.getPosts().forEach(function(post) {
+            layer.addEditablePosts(postsData).getPosts().forEach(function(post) {
                 // @TODO: add conditionals
+
+                post.loadImage();
+                post.edit();
 
                 // Voice Owner / Org Member / Contributor
                 // post.addRemoveButton();

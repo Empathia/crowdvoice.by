@@ -9,7 +9,7 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
     acceptInvite : function acceptInvite(req, res, next) {
       var thread;
       var message;
-      var invitationRequest;
+      var invitationRequest = null;
       var voice = null;
       var organization = null;
 
@@ -46,7 +46,7 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
           done();
         })
       }, function(done) {
-        InvitationRequest.find({id: hashids.decode(message.invitationRequestId)[0]}, function(err, result) {
+        InvitationRequest.find({id: message.invitationRequestId}, function(err, result) {
           if (err) {
             return done(err);
           }
@@ -55,7 +55,7 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
             return done(new NotFoundError('Thread Not Found.'))
           }
 
-          invitation = result[0];
+          invitationRequest = result[0];
 
           done();
         })
@@ -94,7 +94,7 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
           organization = result[0];
         })
       }], function(err) {
-        ACL.isAllowed('acceptInvitation', 'messages', req.role,  {
+        ACL.isAllowed('acceptInvite', 'messages', req.role,  {
           currentPerson : req.currentPerson,
           thread : thread,
           message : message,
@@ -102,6 +102,7 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
           voice : voice,
           organization : organization
         }, function(err, isAllowed) {
+          console.log('isallowed', isAllowed, err)
           if (err) {
             return next(err);
           }
@@ -110,7 +111,7 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
             return next(new ForbiddenError('Unauthorized.'))
           }
 
-          res.send('isAllowed')
+          res.json({status : 'accepted'})
         })
       })
     },

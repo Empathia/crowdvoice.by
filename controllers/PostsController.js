@@ -121,6 +121,8 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         var postData = {};
         var body = req.body;
 
+        console.log('published', body.publishedAt)
+
         postData.title = body.title;
         postData.description = body.description;
         postData.sourceUrl = body.sourceUrl;
@@ -129,6 +131,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         postData.approved = approved;
         postData.ownerId = req.currentPerson ? req.currentPerson.id : 0;
         postData.voiceId = response.voice.id;
+        postData.publishedAt = body.publishedAt
 
         var post = new Post(postData);
 

@@ -106,24 +106,35 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
             this._inputKeyPressHandlerRef = this._inputKeyPressHandler.bind(this);
             this.input.getElement().addEventListener('keypress', this._inputKeyPressHandlerRef);
 
-            this.postButton.element.bind('click', function() {
-              $.ajax({
-                type: "POST",
-                url: window.location.pathname,
-                headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
-                data: this.postData,
-                success: function(response) {
-                  console.log('success', response);
-                },
-                error : function(data) {
-                  console.error('error', data);
-                },
-                dataType: 'json'
-              });
-
-            }.bind(this));
+            this.postButton.bind('buttonClick', this._handlePostButtonClick.bind(this));
 
             return this;
+        },
+
+        _handlePostButtonClick : function _handlePostButtonClick() {
+            var postEditedData = this._previewPostWidget.getEditedData();
+
+            var saveData = {
+                title : postEditedData.title,
+                description : postEditedData.description,
+                sourceType : postEditedData.sourceType,
+                sourceService : postEditedData.sourceService,
+                sourceUrl : postEditedData.sourceUrl,
+                imagePath : postEditedData.imagePath,
+                images : postEditedData.images.map(function(item) {return item.path;}),
+                publishedAt : postEditedData.publishedAt
+            };
+            console.log(saveData);
+
+            var args = { data : saveData };
+            API.postSave(args, this._savePostResponse.bind(this));
+        },
+
+        _savePostResponse : function _savePostResponse(err, response) {
+            // Object {ownerId: "", voiceId: "", id: ""}
+            console.log(err);
+            console.log(response);
+            // @TODO: window.reload();
         },
 
         /* Handles the keypress event on the input. We are only interested on the ENTER key.
@@ -155,79 +166,35 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
          * @method _requestPreview <private> [Function]
          */
         _requestPreview : function _requestPreview(url) {
-            var args = {
-                path : location.pathname,
-                data : {
-                    url: url
-                }
-            };
+            var args = { url : url };
+            API.postPreview(args, this._requestResponseHandler.bind(this));
+        },
 
-            this.postData = null,
+        _requestResponseHandler : function _requestResponseHandler(err, response) {
+            var errorMessage;
+            var post = {};
 
-            API.postPreview(args, function(err, response) {
-                if (err) {
-                    console.log(response);
-                    var msg = response.responseJSON.status;
-                    return this._setErrorState({message: msg}).enable();
-                }
+            if (err || response.error) {
+                if (err) errorMessage = response.responseJSON.status;
+                if (response.error) errorMessage = response.error;
 
-                var post = {
-                    name : '_previewPostWidget'
-                };
+                return this._setErrorState({message: errorMessage}).enable();
+            }
 
-                Object.keys(response).forEach(function(propertyName) {
-                    post[propertyName] = response[propertyName];
-                });
+            post.name ='_previewPostWidget';
+            Object.keys(response).forEach(function(propertyName) {
+                post[propertyName] = response[propertyName];
+            });
 
-                if (this._previewPostWidget) {
-                    this._previewPostWidget.unbind('imageCoverUpdated', this._updateImagePathRef);
-                    this._updateImagePathRef = null;
-                    this._previewPostWidget.destroy();
-                }
-
-                this.appendChild(new CV.PostEdit(post));
-                this._updateImagePathRef = this._updatePostDataImagePath.bind(this);
-                this._previewPostWidget.bind('imageCoverUpdated', this._updateImagePathRef);
-                this._previewPostWidget.render(this.content);
-
-                this.postData = {
-                  title : response.title,
-                  description : response.description,
-                  sourceType : response.sourceType,
-                  sourceService : response.sourceService,
-                  sourceUrl : response.sourceUrl,
-                  imagePath : '',
-                  images : response.images.map(function(item) {return item.path;}),
-                  publishedAt : new Date(this._previewPostWidget.romeTime.getDate())
-                };
-
-                console.log(response, this.postData);
-
-                this._activateIconType(post.sourceType);
-                this._enabledPostButton().enable();
-
-            }.bind(this));
-
-            return;
-
-            /*
             if (this._previewPostWidget) {
                 this._previewPostWidget.destroy();
             }
 
-            var posts = require('./../../../../demo-data/posts-preview.js');
-            var post = posts[Math.floor(Math.random() * posts.length)];
-            post.name = '_previewPostWidget';
-
-            this.appendChild(new CV.PostEdit(post)).render(this.content);
+            this.appendChild(CV.EditablePost.create(post));
+            this._previewPostWidget.render(this.content).edit();
 
             this._activateIconType(post.sourceType);
             this._enabledPostButton().enable();
-            */
-        },
-
-        _updatePostDataImagePath : function _updatePostDataImagePath() {
-            this.postData.imagePath = this._previewPostWidget.getCurrentImage().path;
         },
 
         /* Enables the Post Button.

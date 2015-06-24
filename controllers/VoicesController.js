@@ -13,35 +13,68 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         res.locals.voice = new Voice(voice);
         req.activeVoice = new Voice(voice);
 
-        db.raw("SELECT COUNT (*), \
-          to_char(\"Posts\".published_at, 'MM') AS MONTH, \
-          to_char(\"Posts\".published_at, 'YYYY') AS YEAR \
-          FROM \"Posts\" \
-          WHERE \"Posts\".voice_id = ? \
-          AND \"Posts\".approved = true \
-          GROUP BY MONTH, YEAR \
-          ORDER BY YEAR DESC, MONTH DESC", [voice.id])
-        .exec(function(err, postsCount) {
-          if (err) { return next(err); }
+        res.locals.postsCount = {
+          approved : {},
+          unapproved : {}
+        };
 
-          var counts = {}
+        var dates = { firstPostDate : null, lastPostDate : null};
 
-          var dates = { firstPostDate : null, lastPostDate : null};
+        async.series([function(done) {
+          db.raw("SELECT COUNT (*), \
+            to_char(\"Posts\".published_at, 'MM') AS MONTH, \
+            to_char(\"Posts\".published_at, 'YYYY') AS YEAR \
+            FROM \"Posts\" \
+            WHERE \"Posts\".voice_id = ? \
+            AND \"Posts\".approved = true \
+            GROUP BY MONTH, YEAR \
+            ORDER BY YEAR DESC, MONTH DESC", [voice.id])
+          .exec(function(err, postsCount) {
+            if (err) { return done(err); }
 
-          postsCount.rows.forEach(function(post) {
-            if (!counts[post.year]) {
-              counts[post.year] = {}
-            }
+            var counts = {}
 
-            counts[post.year][post.month] = post.count
-          });
+            postsCount.rows.forEach(function(post) {
+              if (!counts[post.year]) {
+                counts[post.year] = {}
+              }
 
-          res.locals.postsCount = counts;
+              counts[post.year][post.month] = post.count
+            });
 
+            res.locals.postsCount.approved = counts;
+            done();
+          })
+        }, function(done) {
+          db.raw("SELECT COUNT (*), \
+            to_char(\"Posts\".published_at, 'MM') AS MONTH, \
+            to_char(\"Posts\".published_at, 'YYYY') AS YEAR \
+            FROM \"Posts\" \
+            WHERE \"Posts\".voice_id = ? \
+            AND \"Posts\".approved = false \
+            GROUP BY MONTH, YEAR \
+            ORDER BY YEAR DESC, MONTH DESC", [voice.id])
+          .exec(function(err, postsCount) {
+            if (err) { return done(err); }
+
+            var counts = {}
+
+            postsCount.rows.forEach(function(post) {
+              if (!counts[post.year]) {
+                counts[post.year] = {}
+              }
+
+              counts[post.year][post.month] = post.count
+            });
+
+            res.locals.postsCount.unapproved = counts;
+            done();
+          })
+        }, function(done) {
           db('Posts').where({voice_id : voice.id, approved: true}).orderBy('published_at', 'ASC').limit(1)
           .exec(function(err, firstPost) {
             if (err) {
-              return next(err);
+              return done(err);
             }
 
             if (firstPost.length !== 0) {
@@ -51,7 +84,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
             db('Posts').where({voice_id : voice.id, approved: true}).orderBy('published_at', 'DESC').limit(1)
             .exec(function(err, lastPost) {
               if (err) {
-                return next(err);
+                return done(err);
               }
 
               if (lastPost.length !== 0) {
@@ -62,15 +95,15 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
               res.locals.voice.lastPostDate = dates.lastPostDate;
 
               Entity.findById(voice.ownerId, function(err, owner) {
-                if (err) { return next(err); }
+                if (err) { return done(err); }
 
                 res.locals.owner = new Entity(owner[0]);
 
-                next();
+                done();
               });
             })
           })
-        })
+        }], next);
       });
     },
 

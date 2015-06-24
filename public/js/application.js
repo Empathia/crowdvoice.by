@@ -69,11 +69,14 @@ require('./widgets/posts/post');
 require('./widgets/posts/post-image');
 require('./widgets/posts/post-video');
 require('./widgets/posts/post-link');
-// require('./widgets/posts/post-audio');
-// require('./widgets/posts/post-quote');
-require('./widgets/posts/edit/post-edit.js');
+
+// editable posts
+require('./widgets/posts/edit/editable-post.js');
+require('./widgets/posts/edit/editable-post-link.js');
+require('./widgets/posts/edit/editable-post-video.js');
+require('./widgets/posts/edit/editable-post-image.js');
+require('./widgets/posts/edit/image-controls.js');
 require('./widgets/posts/edit/remove-button.js');
-require('./widgets/posts/edit/post-edit-image-controls.js');
 require('./widgets/posts/moderate/publish-button.js');
 require('./widgets/posts/moderate/vote-buttons.js');
 
@@ -132,6 +135,10 @@ require('./widgets/elements/input-button.js');
 require('./widgets/elements/select.js');
 require('./widgets/elements/select-account.js');
 
+// threads and messages
+require('./widgets/messages/ThreadsContainer.js');
+require('./widgets/messages/Thread.js');
+require('./widgets/messages/Message.js');
 
 
 require('./widgets/audio.js');

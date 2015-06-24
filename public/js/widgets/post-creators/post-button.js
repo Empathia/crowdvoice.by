@@ -15,6 +15,19 @@ Class(CV, 'PostCreatorPostButton').inherits(Widget)({
 
             this.el = this.element[0];
             this.button = this.el.querySelector('.post-btn');
+
+            this._bindEvents();
+        },
+
+        _bindEvents : function _bindEvents() {
+            this._buttonClickHandlerRef = this._buttonClickHandler.bind(this);
+            this.button.addEventListener('click', this._buttonClickHandlerRef);
+
+            return this;
+        },
+
+        _buttonClickHandler : function _buttonClickHandler() {
+            this.dispatch('buttonClick');
         },
 
         _disable : function _disable() {
@@ -27,6 +40,15 @@ Class(CV, 'PostCreatorPostButton').inherits(Widget)({
             Widget.prototype._enable.call(this);
             this.button.classList.remove('-muted');
             this.button.removeAttribute('disabled');
+        },
+
+        destroy : function destroy() {
+            Widget.prototype.destroy.call(this);
+
+            this._buttonClickHandler.removeEventListener('click', this._buttonClickHandlerRef);
+            this._buttonClickHandlerRef = null;
+
+            return null;
         }
     }
 });

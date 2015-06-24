@@ -51,12 +51,10 @@ Class(CV, 'Post').inherits(Widget).includes(
         imageHeight: 0,
         totalReposts: 0,
         totalSaves: 0,
-        createdAt: '',
+        publishedAt: '',
 
         _repostIntent : function _repostIntent() {},
         _repost : function _repost() {},
-
-        _save : function _save() {},
 
         shareIntent : function shareIntent() {},
         _share : function _share() {},
@@ -83,7 +81,7 @@ Class(CV, 'Post').inherits(Widget).includes(
             this.imageHeight = null;
             this.totalReposts = null;
             this.totalSaves = null;
-            this.createdAt = null;
+            this.publishedAt = null;
 
             /* module image */
             this.imageLoaded = null;
