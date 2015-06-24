@@ -123,7 +123,7 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
 
             for (i = 0; i < len; i++) {
                 posts[i].name = 'post_' + i;
-                post = new CV.PostEdit(posts[i]);
+                post = CV.EditablePost.create(posts[i]);
                 post.el.dataset.date = moment(posts[i].publishedAt).format('YYYY-MM-DD');
 
                 this.appendChild(post).render(frag);

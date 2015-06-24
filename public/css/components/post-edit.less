@@ -1,50 +1,44 @@
-.post-edit {
+.edit-mode {
   .add-cover-button {
     display: none;
     margin: 0 auto 26px;
   }
 
-  .post-card {
-    display: block;
-    width: 340px;
-    margin: 0 auto;
+  .post-card-title,
+  .post-card-description {
+    padding: 2px 5px;
+    border: 1px solid #b8b8c1;
+    border-radius: 4px;
 
-    .post-card-title,
-    .post-card-description {
-      padding: 2px 5px;
-      border: 1px solid #b8b8c1;
-      border-radius: 4px;
-
-      &:focus {
-        outline-style: solid;
-        outline-width: 2px;
-      }
+    &:focus {
+      outline-style: solid;
+      outline-width: 2px;
     }
+  }
 
-    .post-card-description {
-      margin-bottom: .5em;
-    }
+  .post-card-description {
+    margin-bottom: .5em;
+  }
 
-    .post-card-info {
-      padding-bottom: 15px;
-    }
+  .post-card-info {
+    padding-bottom: 15px;
+  }
 
-    .post-card-svg-magnifier,
-    .post-card-image-wrapper::before,
-    .post-card-activity {
-      display: none;
-    }
+  .post-card-svg-magnifier,
+  .post-card-image-wrapper::before,
+  .post-card-activity {
+    display: none;
+  }
 
-    .cv-input-counter {
-      font-size: 12px;
-      line-height: 1;
-      padding: 2px 3px 10px 0;
-      text-align: right;
-      color: @color-grey-light;
+  .cv-input-counter {
+    font-size: 12px;
+    line-height: 1;
+    padding: 2px 3px 10px 0;
+    text-align: right;
+    color: @color-grey-light;
 
-      &.max-reached {
-        color: @color-danger;
-      }
+    &.max-reached {
+      color: @color-danger;
     }
   }
 
