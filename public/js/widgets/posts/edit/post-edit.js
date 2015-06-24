@@ -61,9 +61,9 @@ Class(CV, 'PostEdit').inherits(Widget)({
 
         _setup : function _setup() {
             if (this.images) {
-                // this.images = this.images.filter(function(image) {
-                //     return image.width >= 300;
-                // });
+                this.images = this.images.filter(function(image) {
+                    return image.width >= 300;
+                });
 
                 this._imagesLen = this.images.length;
             }
