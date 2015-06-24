@@ -157,7 +157,7 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
             this.timePickerButton = this.dateTimeElement.parentNode.querySelector('.post-date-picker-button');
 
             this.romeTime = rome(this.timePickerInput, {
-                appendTo : this.el,
+                appendTo : this.parent.el,
                 inputFormat : 'DD MMM, YYYY HH:mm',
                 initialValue : moment(this.updatedAt)
             });
