@@ -36,7 +36,9 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
         aboutBoxButtonElement : null,
         scrollableArea : null,
 
-        postsCount : 0,
+        postsCount : null,
+        postsCountApproved : 0,
+        postsCountUnapproved : 0,
         allowPosting : false,
 
         _window : null,
@@ -66,7 +68,8 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
 
             this._socket = io();
             this._window = window;
-            this.postsCount = this._formatPostsCountObject(this.postsCount);
+            this.postsCountApproved = this._formatPostsCountObject(this.postsCount.approved);
+            this.postsCountUnapproved = this._formatPostsCountObject(this.postsCount.unapproved);
 
             this._appendLayersManager()._checkInitialHash();
             this._bindEvents();
@@ -135,7 +138,7 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
                     element : document.querySelector('.voice-posts'),
                     id : this.id,
                     description : this.description,
-                    postsCount : this.postsCount,
+                    postsCount : this.postsCountApproved,
                     firstPostDate : this.firstPostDate,
                     lastPostDate : this.lastPostDate,
                     scrollableArea : this.scrollableArea,
@@ -255,7 +258,7 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
             var timestamp = data.layer.getIndicators()[0].getTimestamp();
 
             this.voiceFooter.setTimelineInitialDate(timestamp);
-            this.voiceFooter.createJumpToDateBubble(this.postsCount);
+            this.voiceFooter.createJumpToDateBubble(this.postsCountApproved);
 
             this.voicePostLayersManager.unbind('ready', this.layerManagerReadyRef);
             this.layerManagerReadyRef = null;

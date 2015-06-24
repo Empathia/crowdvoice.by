@@ -41,7 +41,7 @@ Class(CV, 'VoiceModerateManager').inherits(Widget)({
             Object.keys(voiceInfo).forEach(function(propertyName) {
                 data[propertyName] = voiceInfo[propertyName];
             });
-            data.postsCount = Voice.postsCount;
+            data.postsCount = Voice.postsCountUnapproved;
 
             this.appendChild(
                 new CV.VoicePostLayersModerateManager(data)
