@@ -1,1 +1,258 @@
- 
+<!--
+{"id":"6xOVBlryjQ0a","type":"person","name":"Jack","lastname":"Johnson","profileName":"jack-johnson","isAnonymous":false,"description":"","location":"","imageBaseUrl":"","imageMeta":"{}","backgroundBaseUrl":"","backgroundMeta":"{}","createdAt":"2015-06-22T15:33:57.953Z","updatedAt":"2015-06-22T15:33:57.953Z"}
+-->
+<main role="main" class="cv-main-profile profile-user -rel">
+  <div class="voice-background-cover">
+    <% if (currentPerson.background.exists('card')){ %>
+      <img class="voice-background-cover-image" src="<%= currentPerson.background.url('card') %>">
+    <% }else{ %>
+      <img class="voice-background-cover-image" src="/img/placeholder-background.png">
+    <% } %>
+  </div>
+
+  <section class="profile-intro -rel">
+
+    <% if (currentPerson.image.exists('card')){ %>
+      <img class="profile-image" src="<%= currentPerson.image.url('card') %>">
+    <% }else{ %>
+      <img class="profile-image" src="/img/placeholder-image.png">
+    <% } %>
+
+    <div class="pan-separator">
+
+      <div class="profile-tw">@<%= currentPerson.profileName %></div>
+      <h1 class="profile-heading -font-bold -m0"><%= currentPerson.name %> <%= currentPerson.lastname %></h1>
+      <p class="profile-description"><%= currentPerson.description %></p>
+
+      <div class="profile-card-activity">
+
+        <div class="profile-card-activity-repost -inline-block -mr1">
+          <svg class="profile-card-activity-svg"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-repost"></use></svg>
+          <span class="profile-card-activity-label"><%= currentPerson.location %></span>
+        </div>
+
+        <div class="profile-card-activity-saved -inline-block  -mr1 -ml1">
+          <svg class="profile-card-activity-svg"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-save"></use></svg>
+          <span class="profile-card-activity-label user-date"></span>
+          <script>
+            var userDate = moment(new Date('<%= currentPerson.createdAt %>').toISOString()).format('MMMM, YYYY');
+            $('.user-date').text('Joined ' + userDate );
+          </script>
+        </div>
+
+        <!--
+        <div class="profile-card-activity-saved -inline-block -ml1">
+          <svg class="profile-card-activity-svg"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-save"></use></svg>
+          <span class="profile-card-activity-label">www.ippf.org</span>
+        </div>
+        -->
+
+      </div>
+
+    </div>
+  </section>
+
+  <article role="article" class="stats profile-stats profile-menu -row -rel">
+      <div class="profile-tabs">
+        <div class="stats-col active -menu-tab -inline-block">
+          <p class="stats-number -font-bold">36</p>
+          <p class="stats-label">Voices</p>
+        </div>
+        <div class="stats-col -menu-tab -inline-block">
+          <p class="stats-number -font-bold">148</p>
+          <p class="stats-label">Followers</p>
+        </div>
+        <div class="stats-col -menu-tab -inline-block">
+          <p class="stats-number -font-bold">12</p>
+          <p class="stats-label">Following</p>
+        </div>
+      </div>
+      <div class="profile-actions">
+        <span class="-pr1"></span>
+        <span></span>
+      </div>
+  </article>
+
+  <div class="profile-list-type-container -rel">
+    <div class="profile-list-type">
+      <div class="style-grid active"><img src="/img/sample/icons/grid.png" alt=""></div>
+      <div class="style-list"><img src="/img/sample/icons/list.png" alt=""></div>
+    </div>
+  </div>
+
+  <section class="profile-body profile-menu-content -rel">
+
+    <div class="active -menu-tab-content">
+      <h2 class="profile-subheading -font-bold -m0">Voices</h2>
+      <div class="-row">
+        <div class="-col-4 -pr1 voice-cover-test-1 voice"></div>
+        <div class="-col-4 -pr1 voice-cover-test-2 voice"></div>
+        <div class="-col-4 -pr1 voice-cover-test-3 voice"></div>
+        <div class="-col-4 -pr1 voice-cover-test-4 voice"></div>
+        <div class="-col-4 -pr1 voice-cover-test-5 voice"></div>
+      </div>
+    </div>
+
+    <div class=" -menu-tab-content">
+      <h2 class="profile-subheading -font-bold -m0">Followers</h2>
+      <div class="-row">
+        <div class="-col-4 -pr1 follower-test-1 voice"></div>
+        <div class="-col-4 -pr1 follower-test-2 voice"></div>
+        <div class="-col-4 -pr1 follower-test-3 voice"></div>
+        <div class="-col-4 -pr1 follower-test-4 voice"></div>
+        <div class="-col-4 -pr1 follower-test-5 voice"></div>
+        <div class="-col-4 -pr1 follower-test-6 voice"></div>
+      </div>
+    </div>
+
+    <div class=" -menu-tab-content">
+      <h2 class="profile-subheading -font-bold -m0">Following</h2>
+      <div class="-row">
+        <div class="-col-4 -pr1 following-test-1 voice"></div>
+        <div class="-col-4 -pr1 following-test-2 voice"></div>
+        <div class="-col-4 -pr1 following-test-3 voice"></div>
+        <div class="-col-4 -pr1 following-test-4 voice"></div>
+        <div class="-col-4 -pr1 following-test-5 voice"></div>
+        <div class="-col-4 -pr1 following-test-6 voice"></div>
+      </div>
+    </div>
+
+  </section>
+
+</main>
+
+<script>
+  var postsContainer = document.querySelector('.voice-posts');
+  var posts = [];
+
+  //var featuredVoicesData = <% //JSON.stringify(voices) %>;
+  //new VoiceCover( featuredVoicesData[0] ).render( document.querySelector('.voice-cover-test-1') );
+  //new VoiceCover( featuredVoicesData[1] ).render( document.querySelector('.voice-cover-test-2') );
+  //new VoiceCover( featuredVoicesData[2] ).render( document.querySelector('.voice-cover-test-3') );
+  //new VoiceCover( featuredVoicesData[3] ).render( document.querySelector('.voice-cover-test-4') );
+  //new VoiceCover( featuredVoicesData[4] ).render( document.querySelector('.voice-cover-test-5') );
+
+  //var orgsData = <% //JSON.stringify(organizations) %>;
+
+  //new CV.Card(orgsData[0]).render(document.querySelector('.follower-test-1'));
+  //new CV.Card(orgsData[1]).render(document.querySelector('.follower-test-2'));
+  //new CV.Card(orgsData[2]).render(document.querySelector('.follower-test-3'));
+  //new CV.Card(orgsData[3]).render(document.querySelector('.follower-test-4'));
+  //new CV.Card(orgsData[4]).render(document.querySelector('.follower-test-5'));
+  //new CV.Card(orgsData[5]).render(document.querySelector('.follower-test-6'));
+//
+  //new CV.Card(orgsData[5]).render(document.querySelector('.following-test-1'));
+  //new CV.Card(orgsData[4]).render(document.querySelector('.following-test-2'));
+  //new CV.Card(orgsData[3]).render(document.querySelector('.following-test-3'));
+  //new CV.Card(orgsData[2]).render(document.querySelector('.following-test-4'));
+  //new CV.Card(orgsData[1]).render(document.querySelector('.following-test-5'));
+  //new CV.Card(orgsData[0]).render(document.querySelector('.following-test-6'));
+
+
+
+  //new Button({
+  //    style   : 'primary',
+  //    type    : 'single',
+  //    label   : 'Manage Organization',
+  //    name    : 'buttonManage'
+  //}).render(document.querySelector('.profile-actions'));
+
+  var btnTwiceOptions = {
+    "1": {label: 'Message', name: 'message'},
+    "2": {label: 'Follow', name: 'follow'}
+  };
+
+  new CV.Button({
+      style   : 'small',
+      type    : 'multiple',
+      name    : 'buttonTwice',
+      options : btnTwiceOptions
+  }).render(document.querySelector('.profile-actions span:first-child'));
+
+
+
+/*<svg class="voice-footer-svg">
+              <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-share"></use>
+            </svg>*/
+
+  //new CV.Button({
+  //    style   : 'small',
+  //    type    : 'single',
+  //    label   : '[.]',
+  //    name    : 'buttonFollow'
+  //}).render(document.querySelector('.profile-actions'));
+
+  //Normal
+var profileOptions = {
+  "1": {label: 'Share', name: 'share', icon: 'share'},
+  "2": {label: 'Embed', name: 'embed', icon: 'embed'},
+  "3": {label: 'Moderate', name: 'moderate', icon: 'moderate'}
+};
+var profileSettings = new CV.Select({
+  label     : '',
+  style     : 'small',
+  className : '-inline-block',
+  name      : 'select',
+  options   : profileOptions,
+  type      : 'icon',
+  icon      : 'settings'
+}).render(document.querySelector('.profile-actions span:last-child'));
+
+profileSettings.share.on('click', function(){
+  console.log('Share');
+});
+  //var btnMultiOptions = {
+  //  "1": {name: 'One', active : true},
+  //  "2": {name: 'Two'},
+  //  "3": {name: 'Three'}
+  //};
+  //new Button({
+  //    style   : '',
+  //    type    : 'multiple',
+  //    name    : 'buttonMultiple',
+  //    options : btnMultiOptions
+  //}).render(document.querySelector('.profile-actions'));
+
+  $( document ).ready(function() {
+
+    createMenuActions('.profile-menu', '.profile-menu-content');
+
+    function createMenuActions(menuContainer, contentContainer){
+      $( menuContainer ).find('.-menu-tab').each(function( index ) {
+        var elContent = $( contentContainer + ' .-menu-tab-content:nth-child(' + (index + 1) + ')');
+        $(this).on('click', createCallback(this, index, elContent, menuContainer, contentContainer));
+      });
+    }
+
+    function createCallback( tab, index, elContent, menuContainer, contentContainer ){
+      return function(){
+        $(menuContainer + ' .-menu-tab').removeClass('active');
+        $(this).addClass('active');
+        $(contentContainer + ' .-menu-tab-content').removeClass('active');
+        $(elContent).addClass('active');
+      }
+    }
+
+    $('.style-grid').on('click', function(){
+      $(this).addClass('active');
+      $('.style-list').removeClass('active');
+      $('.voice').addClass('-col-4 -pr1');
+      $('.voice .cv-voice-cover, .voice .widget-card').removeClass('list-style');
+    });
+
+    $('.style-list').on('click', function(){
+      $(this).addClass('active');
+      $('.style-grid').removeClass('active');
+      $('.voice').removeClass('-col-4 -pr1');
+      $('.voice .cv-voice-cover, .voice .widget-card').addClass('list-style');
+    });
+
+
+  });
+
+</script>
+
+
+
+
+
