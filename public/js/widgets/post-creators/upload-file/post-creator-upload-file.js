@@ -100,7 +100,7 @@ Class(CV, 'PostCreatorUploadFile').inherits(CV.PostCreator)({
             var post = posts[Math.floor(Math.random() * posts.length)];
             post.name = '_previewPostWidget';
 
-            this.appendChild(new CV.PostEdit(post)).render(this.content);
+            this.appendChild(CV.EditablePost.create(post)).edit().render(this.content);
 
             return this;
         },

@@ -17,8 +17,7 @@ Class(CV, 'PostEditImageControls').inherits(Widget)({
             <button class="image-remove ui-btn -color-bg-white -color-grey -sm">\
                 Remove\
             </button>\
-        </div>\
-    ',
+        </div>',
 
     prototype : {
         images : null,
