@@ -112,7 +112,7 @@ Class(CV, 'Select').inherits(Widget)({
 
                             break;
                         default:
-                        console.log(this.options[key].label);
+                        //console.log(this.options[key].label);
                             var optionEl = $('<li><div data-id="'+ key +'" class="option">'+this.options[key].label+'</div></li>');
                     }
 
