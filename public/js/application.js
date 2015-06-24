@@ -132,6 +132,10 @@ require('./widgets/elements/input-button.js');
 require('./widgets/elements/select.js');
 require('./widgets/elements/select-account.js');
 
+// threads and messages
+require('./widgets/messages/ThreadsContainer.js');
+require('./widgets/messages/Thread.js');
+require('./widgets/messages/Message.js');
 
 
 require('./widgets/audio.js');

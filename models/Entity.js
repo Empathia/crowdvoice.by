@@ -39,6 +39,10 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
           .andWhereRaw("(name like ? OR lastname like ? OR profile_name like ?)",['%' + reqObj.params.value + '%', '%' + reqObj.params.value + '%', '%' + reqObj.params.value + '%'])
           .andWhere('id', '!=', reqObj.params.currentPersonId)
           .exec(callback)
+      },
+
+      whereIn : function(requestObj, callback) {
+        db(requestObj.model.storage.tableName).whereIn(requestObj.columnName, requestObj.array).exec(callback)
       }
     },
 
@@ -52,6 +56,24 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
 
 
       this.queries.searchPeople(requestObj, function(err, data) {
+        for (i = 0; i < storage.processors.length; i++) {
+          data = storage.processors[i](data, requestObj);
+        }
+
+        return callback(err, data);
+      });
+    },
+
+    whereIn : function whereIn(requestObj, callback) {
+      // var data;
+      var storage = this;
+
+      for (i = 0; i < storage.preprocessors.length; i++) {
+        requestObj.data = storage.preprocessors[i](requestObj.data, requestObj);
+      }
+
+
+      this.queries.whereIn(requestObj, function(err, data) {
         for (i = 0; i < storage.processors.length; i++) {
           data = storage.processors[i](data, requestObj);
         }
@@ -78,6 +100,28 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
     this.storage.searchPeople(request, function(err, data) {
       callback(err, data);
       Model.dispatch('afterSearchPeople');
+    });
+
+    return this;
+  },
+
+  whereIn : function WhereIn(columnName, array, callback) {
+    var Model, request;
+
+    Model = this;
+
+    request = {
+      action : 'whereIn',
+      model : Model,
+      columnName : columnName,
+      array : array
+    };
+
+    this.dispatch('beforeWhereIn');
+
+    this.storage.whereIn(request, function(err, data) {
+      callback(err, data);
+      Model.dispatch('afterWhereIn');
     });
 
     return this;
@@ -344,6 +388,86 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
             return callback(null, true);
           }
         });
+      },
+
+      /* Return organizations for which the current entity is owner or member.
+       * @method organizations
+       * @return callback(err <Error>, organizations <Array>) <Callback>
+       */
+      organizations : function organizations(callback) {
+        var entity = this;
+
+        if (!this.id) {
+          return callback(new Error("Entity doesn't have an id"));
+        }
+
+        var organizations = [];
+
+        async.series([function(done) {
+          EntityOwner.find({'owner_id' : entity.id}, function(err, result) {
+            if (err) {
+              return done(err);
+            }
+
+            var ownedIds = result.map(function(item) {return item.ownedId});
+
+            if (ownedIds.length === 0) {
+              return done();
+            }
+
+            Entity.whereIn('id', ownedIds, function(err, result) {
+              if (err) {
+                return done(err);
+              }
+
+              organizations = organizations.concat(result);
+
+              done();
+            })
+          })
+        }, function(done) {
+          EntityMembership.find({'member_id': entity.id}, function(err, result) {
+            if (err) {
+              return done(err);
+            }
+
+            var entityIds = result.map(function(item) {return item.entityId});
+
+            if (entityIds.length === 0) {
+              return done();
+            }
+
+            Entity.whereIn('id', entityIds, function(err, result) {
+              if (err) {
+                return done(err);
+              }
+
+              organizations = organizations.concat(result);
+
+              done();
+            })
+          })
+        }], function(err) {
+          if (err) {
+            logger.error(err)
+            return callback(err);
+          }
+
+          organizations = organizations.filter(function(item) {return item.type === 'organization'})
+
+          var result = [];
+
+          organizations.forEach(function(organization) {
+            var orgInstance = new Entity(organization);
+
+            orgInstance = orgInstance.toJSON()
+            result.push(orgInstance)
+          })
+
+          callback(null, result)
+        })
+
+
       },
 
       /* Return voices for which the current entity is owner.

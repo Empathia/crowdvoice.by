@@ -26,7 +26,7 @@ module.exports = function(req, res, next) {
     res.locals.hashids = global.hashids;
   }
 
-  req.session.backURL = req.header('Referer') || '/';
+  req.session.backURL = req.header('Referrer') || '/';
 
   // Add currentPerson
   if (req.user) {
@@ -70,7 +70,24 @@ module.exports = function(req, res, next) {
         req.currentPerson = entity;
         req.role = 'Person'
 
-        return next();
+        var person = new Entity(entity);
+
+        person.id = hashids.decode(person.id)[0];
+
+        person.organizations(function(err, organizations) {
+
+          res.locals.currentPerson = entity;
+          req.currentPerson = entity;
+
+          res.locals.currentPerson.organizations = organizations;
+          req.currentPerson.organizations = organizations;
+
+          req.role = 'Person'
+
+          return next();
+        })
+
+
       });
     }
 
