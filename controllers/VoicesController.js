@@ -18,6 +18,8 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           unapproved : {}
         };
 
+        var dates = { firstPostDate : null, lastPostDate : null};
+
         async.series([function(done) {
           db.raw("SELECT COUNT (*), \
             to_char(\"Posts\".published_at, 'MM') AS MONTH, \
@@ -31,8 +33,6 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
             if (err) { return done(err); }
 
             var counts = {}
-
-            var dates = { firstPostDate : null, lastPostDate : null};
 
             postsCount.rows.forEach(function(post) {
               if (!counts[post.year]) {
@@ -58,8 +58,6 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
             if (err) { return done(err); }
 
             var counts = {}
-
-            var dates = { firstPostDate : null, lastPostDate : null};
 
             postsCount.rows.forEach(function(post) {
               if (!counts[post.year]) {
