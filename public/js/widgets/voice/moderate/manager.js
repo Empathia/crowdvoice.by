@@ -44,7 +44,7 @@ Class(CV, 'VoiceModerateManager').inherits(Widget)({
             data.postsCount = Voice.postsCountUnapproved;
 
             this.appendChild(
-                new CV.VoicePostLayersModerateManager(data)
+                new CV.VoicePostLayersModerateAbstract(data)
             ).render(this.el).setup().loadDefaultLayer();
 
             this.appendChild(

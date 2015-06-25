@@ -1,4 +1,4 @@
-Class(CV, 'VoicePostLayersModerateManager').inherits(CV.VoicePostLayers)({
+Class(CV, 'VoicePostLayersModerateAbstract').inherits(CV.VoicePostLayers)({
     prototype : {
         request : function request(id, dateString, scrollDirection) {
             this._socket.emit('getMonthPostsModerate', id, dateString, scrollDirection);

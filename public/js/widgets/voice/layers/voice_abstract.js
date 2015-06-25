@@ -1,4 +1,4 @@
-Class(CV, 'VoicePostLayersVoiceManager').inherits(CV.VoicePostLayers)({
+Class(CV, 'VoicePostLayersVoiceAbstract').inherits(CV.VoicePostLayers)({
     prototype : {
         request : function request(id, dateString, scrollDirection) {
             this._socket.emit('getMonthPosts', id, dateString, scrollDirection);

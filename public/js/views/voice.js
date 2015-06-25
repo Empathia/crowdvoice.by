@@ -133,7 +133,7 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
             }
 
             this.appendChild(
-                new CV.VoicePostLayersVoiceManager({
+                new CV.VoicePostLayersVoiceAbstract({
                     name : 'voicePostLayersManager',
                     element : document.querySelector('.voice-posts'),
                     id : this.id,
