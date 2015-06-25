@@ -236,7 +236,7 @@ Class(CV, 'VoicePostLayers').inherits(Widget)({
             this._currentMonthString = dateString;
 
             // prevent to append childs if the layer is already filled
-            if (this['postsLayer_' + dateString].getPosts().length > 1) return false;
+            if (this['postsLayer_' + dateString].getPosts().length) return false;
 
             // load from cache
             if (typeof this._cachedData[dateString] !== 'undefined') {
