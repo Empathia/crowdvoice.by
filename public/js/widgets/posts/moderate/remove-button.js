@@ -1,7 +1,7 @@
 /* jshint multistr: true */
 Class(CV, 'PostModerateRemoveButton').inherits(Widget)({
     HTML : '\
-        <button class="post-modetate-remove-btn cv-button primary tiny -abs">\
+        <button class="post-moderate-remove-btn cv-button primary tiny -abs">\
             <svg class="-s16">\
                 <use xlink:href="#svg-trash"></use>\
             </svg>\
