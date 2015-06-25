@@ -1,6 +1,6 @@
 /* jshint multistr: true */
 Class(CV, 'PostModerateVoteButtons').inherits(Widget)({
-    ELEMENT_CLASS : 'post-moderate-vote-buttons -abs -full-width -clearfix',
+    ELEMENT_CLASS : 'post-moderate-vote-buttons -abs -clearfix',
 
     HTML : '\
         <div> \
