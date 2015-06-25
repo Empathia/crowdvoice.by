@@ -45,7 +45,9 @@ Class(CV, 'PostCreatorPostButton').inherits(Widget)({
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
 
-            this._buttonClickHandler.removeEventListener('click', this._buttonClickHandlerRef);
+            this.el = null;
+
+            this.button.removeEventListener('click', this._buttonClickHandlerRef);
             this._buttonClickHandlerRef = null;
 
             return null;

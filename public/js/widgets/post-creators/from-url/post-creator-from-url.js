@@ -134,7 +134,7 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
             // Object {ownerId: "", voiceId: "", id: ""}
             console.log(err);
             console.log(response);
-            // @TODO: window.reload();
+            // @TODO: show message && window.reload();
         },
 
         /* Handles the keypress event on the input. We are only interested on the ENTER key.
@@ -170,6 +170,9 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
             API.postPreview(args, this._requestResponseHandler.bind(this));
         },
 
+        /* Handle the preview API call response (error or success).
+         * @method _requestResponseHandler <private> [Function]
+         */
         _requestResponseHandler : function _requestResponseHandler(err, response) {
             var errorMessage;
             var post = {};
