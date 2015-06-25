@@ -174,7 +174,68 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
     },
 
     update : function update(req, res) {
-      res.redirect('/post/id');
+      ACL.isAllowed('update', 'posts', req.role, {
+        currentPerson : req.currentPerson,
+        voiceSlug : req.params.voiceSlug,
+        profileName : req.params.profileName
+      }, function(err, response) {
+        if (err) {
+          return next(err);
+        }
+
+        if (!response.isAllowed) {
+          return next(new ForbiddenError())
+        }
+
+        var postData = {};
+        var body = req.body;
+
+        postData.id = hashids.decode(req.params.postId);
+        postData.title = body.title;
+        postData.description = body.description;
+        postData.sourceUrl = body.sourceUrl;
+        postData.sourceService = body.sourceService;
+        postData.sourceType = body.sourceType;
+        postData.approved = approved;
+        postData.ownerId = req.currentPerson ? req.currentPerson.id : 0;
+        postData.voiceId = response.voice.id;
+        postData.publishedAt = body.publishedAt
+
+        var post = new Post(postData);
+
+        post.save(function(err, result) {
+          if (err) {
+            return next(err);
+          }
+
+          var imagePath = '';
+          if (!body.imagePath !== '') {
+            imagePath = process.cwd() + '/public' + body.imagePath;
+          }
+
+          post.uploadImage('image', imagePath, function() {
+            post.save(function(err, resave) {
+              if (err) {
+                return next(err);
+              }
+
+              PostPresenter.build([post], function(err, posts) {
+                if (err) {
+                  return next(err);
+                }
+
+                body.images.forEach(function(image) {
+                  fs.unlinkSync(process.cwd() + '/public' + image)
+                  logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image);
+
+                  return res.json(posts[0]);
+                })
+              })
+            })
+          })
+
+        })
+      })
     },
 
     destroy : function destroy(req, res) {
