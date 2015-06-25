@@ -1,9 +1,13 @@
-.edit-mode {
-  .add-cover-button {
-    display: none;
-    margin: 0 auto 26px;
-  }
+.post-edit-add-cover-button {
+  display: none;
+  margin: 0 auto 26px;
 
+  &.active {
+    display: block;
+  }
+}
+
+.edit-mode {
   .post-card-title,
   .post-card-description {
     padding: 2px 5px;
@@ -90,7 +94,8 @@
   height: 12px;
 }
 
-.post-edit-remove-btn.cv-button {
+/* moderate */
+.post-moderate-remove-btn.cv-button {
   top: -10px;
   right: -10px;
   padding: 0 5px;

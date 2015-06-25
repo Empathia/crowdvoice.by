@@ -22,7 +22,7 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
         </div>',
 
     HTML_ADD_COVER_BUTTON : '\
-        <button class="add-cover-button ui-btn -color-bg-white -color-grey -sm">\
+        <button class="post-edit-add-cover-button ui-btn -color-bg-white -color-grey -sm">\
             Add Cover\
         </button>',
 
@@ -48,38 +48,29 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
         imageHeight: 0,
         publishedAt: '',
 
+        /* preview post creation props */
         images : null,
         imagePath : '',
 
-        _data : null,
+        /* private props */
         _currentImageIndex : 0,
         _imagesLen : 0,
 
+        /* Checks if we receive an Array of images on the initial config object,
+         * if so it means that we may have to show the controls to allow the user selecting a cover image
+         * @method setup <protected> [Function]
+         */
         setup : function setup() {
             if (this.images) {
                 this._imagesLen = this.images.length;
             }
 
             if (this._imagesLen) {
-                this.updatePostImage();
-                this._addImageControls();
+                this._currentImageIndex = 0;
+                this._updatePostImage()._addImageControls();
             }
 
             return this;
-        },
-
-        /* Updates the post image, the post imageContainer height;
-         * @method updatePostImage <private> [Function]
-         */
-        updatePostImage : function updatePostImage() {
-            var current = this.images[this._currentImageIndex];
-
-            this.imagePath = current.path;
-            this.imageWidth = current.width;
-            this.imageHeight = current.height;
-
-            this.setImageHeight(this.imageHeight);
-            this.setCoverImage(this.imagePath);
         },
 
         /* Returns the new modified data of Post.
@@ -96,13 +87,13 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
                 imageWidth : this.imageWidth,
                 imageHeight : this.imageHeight,
 
+                sourceType : this.sourceType,
+                sourceService : this.sourceService,
+                sourceUrl : this.sourceUrl,
+
                 // extra props
                 images : this.images,
                 imagePath : this.imagePath,
-
-                sourceType : this.sourceType,
-                sourceService : this.sourceService,
-                sourceUrl : this.sourceUrl
             };
         },
 
@@ -167,23 +158,35 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
             return this;
         },
 
+        /* Adds the delete post button (for moderation management)
+         * @method addRemoveButton <public> [Function]
+         */
         addRemoveButton : function addRemoveButton() {
-            this.appendChild(new CV.PostEditRemoveButton({name : 'removeButton'})).render(this.el);
+            this.appendChild(new CV.PostModerateRemoveButton({name : 'removeButton'})).render(this.el);
             return this;
         },
 
+        /* Adds the publish post button (for moderation management)
+         * @method addPublishButton <public> [Function]
+         */
         addPublishButton : function addPublishButton() {
             this.appendChild(new CV.PostModeratePublishButton({name : 'publishButton'})).render(this.el);
             this.el.classList.add('has-bottom-actions');
             return this;
         },
 
+        /* Adds the vote up/down buttons (for moderation management)
+         * @method addVoteButtons <public> [Function]
+         */
         addVoteButtons : function addVoteButtons() {
             this.appendChild(new CV.PostModerateVoteButtons({name : 'voteButtons'})).render(this.el);
             this.el.classList.add('has-bottom-actions');
             return this;
         },
 
+        /* Binds the required events when the edit method is run
+         * @method private _bindEditEvents <private> [Function]
+         */
         _bindEditEvents : function _bindEditEvents() {
             autosize(this.titleElement);
             autosize(this.descriptionElement);
@@ -194,17 +197,47 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
             this.titleElement.addEventListener('keypress', this._titleKeyPressHandler);
             this.titleElement.addEventListener('paste', this._pasteHandler);
             this.descriptionElement.addEventListener('paste', this._pasteHandler);
+
+            return this;
+        },
+
+        /* Updates the selected post image, the post imageContainer height and display the image cover
+         * @method _updatePostImage <private> [Function]
+         */
+        _updatePostImage : function _updatePostImage() {
+            var current = this.images[this._currentImageIndex];
+
+            this.imagePath = current.path;
+            this.imageWidth = current.width;
+            this.imageHeight = current.height;
+
+            this.setImageHeight(this.imageHeight);
+            this.setCoverImage(this.imagePath);
+
+            return this;
+        },
+
+        /* Reset dynamic post image so the response to save indicates the the user choose to not display any image
+         * @method _resetPostImage <private> [Function]
+         */
+        _resetPostImage : function _resetPostImage() {
+            this.imagePath = '';
+            this.imageWidth = null;
+            this.imageHeight = null;
         },
 
         /* Adds the image controls (next,prev,remove,add) to handle the cover and subscribe its events.
-         * @method _addImageControls <private> [Function]
+         * @method _addImageControls <protected> [Function]
          */
         _addImageControls : function _addImageControls() {
+            var imageControls = document.createElement('div');
+            imageControls.className = 'post-edit-image-controls';
+
             this.appendChild(
                 new CV.PostEditImageControls({
-                name : 'imageControls',
-                images : this.images
-            })
+                    name : 'imageControls',
+                    images : this.images
+                })
             ).render(this.imageWrapperElement);
 
             this._prevImageRef = this._prevImage.bind(this);
@@ -216,15 +249,15 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
             this._removeImageRef = this._removeImage.bind(this);
             this.imageControls.bind('removeImages', this._removeImageRef);
 
-            this.el.insertAdjacentHTML('afterbegin', this.constructor.HTML_ADD_COVER_BUTTON);
+            this.el.insertAdjacentHTML('beforebegin', this.constructor.HTML_ADD_COVER_BUTTON);
             this._showImageRef = this._showImage.bind(this);
-            this.addCoverButton = this.el.querySelector('.add-cover-button');
+            this.addCoverButton = this.el.parentNode.querySelector('.post-edit-add-cover-button');
             this.addCoverButton.addEventListener('click', this._showImageRef);
 
             return this;
         },
 
-        /* Updates the _currentImageIndex and run updatePostImage.
+        /* Updates the _currentImageIndex and run _updatePostImage.
          * @method _nextImage <private> [Function]
          */
         _nextImage : function _nextImage() {
@@ -234,10 +267,10 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
                 this._currentImageIndex = 0;
             }
 
-            this.updatePostImage();
+            this._updatePostImage();
         },
 
-        /* Updates the _currentImageIndex and run updatePostImage.
+        /* Updates the _currentImageIndex and run _updatePostImage.
          * @method _prevImage <private> [Function]
          */
         _prevImage : function _prevImage() {
@@ -247,7 +280,7 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
                 this._currentImageIndex = (this._imagesLen - 1);
             }
 
-            this.updatePostImage();
+            this._updatePostImage();
         },
 
         /* Hides the post.imageContainer, updates _image to '' and shows addCoverButton
@@ -255,7 +288,8 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
          */
         _removeImage : function _removeImage() {
             this.hideImageWrapper();
-            this.addCoverButton.style.display = 'block';
+            this._resetPostImage();
+            this.addCoverButton.classList.add('active');
         },
 
         /* Shows the post.imageContainer, updates _currentImageIndex to '' and hides addCoverButton
@@ -263,7 +297,8 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
          */
         _showImage : function _showImage() {
             this.showImageWrapper();
-            this.addCoverButton.style.display = 'none';
+            this._updatePostImage();
+            this.addCoverButton.classList.remove('active');
         },
 
         /* Prevent the user hiting ENTER
