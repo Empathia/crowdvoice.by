@@ -1,7 +1,7 @@
 /* jshint multistr: true */
 Class(CV, 'PostModeratePublishButton').inherits(Widget)({
     HTML : '\
-        <button class="post-moderate-publish-btn cv-button primary tiny -abs">\
+        <button class="post-moderate-publish-btn cv-button primary -abs">\
             <svg class="-s16">\
                 <use xlink:href="#svg-thumbs-up"></use>\
             </svg>\
