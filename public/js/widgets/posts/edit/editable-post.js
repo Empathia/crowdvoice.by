@@ -296,7 +296,6 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
          * @method _showImage <private> [Function]
          */
         _showImage : function _showImage() {
-            this.showImageWrapper();
             this._updatePostImage();
             this.addCoverButton.classList.remove('active');
         },
