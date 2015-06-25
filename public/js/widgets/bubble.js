@@ -46,46 +46,80 @@ Class(CV, 'Bubble').inherits(Widget)({
                 }).render(this.element.find('.header'))
             );
 
-            new this.action({
-                style   : '',
-                type    : '',
-                years   : this.actionData,
-                name    : 'action',
-            }).render(this.bodyElement);
+            var bubbleAction = this.appendChild(
+                new this.action({
+                    years   : this.actionData,
+                    name    : 'bubbleAction',
+                })
+            ).render(this.bodyElement);
 
             $(this.anchorEl).on('click', function(){
                 bubble.show();
                 return false;
             });
+
             $(this.closeButton.element).on('click', function(){
                 bubble.hide();
             });
+
             this.element.bind('click', function(e){
                 if( e.target !== this ){
                    return;
-               }
+                }
                 bubble.hide();
             });
+
+            $(document).on( 'scroll', function(){
+                bubble.hide();
+            });
+
+            bubbleAction.bind('close', function(){
+                this.hide();
+            }.bind(this));
 
         },
 
         position : function(){
             var bubble = this;
-             //console.log(this.getOffset( this ).left);
+            console.log('called pos');
+
+            var bodyMaxheight = parseInt(this.bodyElement.css('max-height'));
+
+            if (this.bodyElement.height() < bodyMaxheight){
+                this.bodyElement.css('overflow-y', 'auto');
+            }
 
             var anchorPos = this.getOffset(this.anchorEl);
-            //this.position();
             this.bubbleEl.css('position', 'absolute');
             this.element.css('top', window.scrollY + 'px');
+            var sidePadding = 10;
 
+            var leftValue = anchorPos.left - (bubble.width/2) + ($(bubble.anchorEl).width()/2);
+            var topValue = anchorPos.top - (bubble.bubbleEl.height()) - (bubble.element.find('.arrow').height()/2);
+            var arrowMargin = 0;
+
+            var diff = $(window).width() - ( leftValue + parseInt(this.bubbleEl.css('width')) );
+
+            if (leftValue < 0){
+                arrowMargin = ($(bubble.bubbleEl).width()/2) + leftValue - sidePadding -12;
+                leftValue = sidePadding;
+            } else if (diff < 0){
+                leftValue = leftValue + diff - sidePadding;
+                arrowMargin = ($(bubble.bubbleEl).width()/2) + ( -1 * diff) + sidePadding - 12;
+            } else {
+                arrowMargin = 'auto';
+            }
 
             this.bubbleEl.css({
                 'position': 'absolute',
-                'left': anchorPos.left - (bubble.width/2) + ($(bubble.anchorEl).width()/2),
-                'top': anchorPos.top - (bubble.bubbleEl.height()) - (bubble.element.find('.arrow').height()/2)
-                //'left': anchorPos.left - (bubble.width/2) + ($(bubble.anchorEl).width()/2),
-                //'top': anchorPos.top - (bubble.element.height()) - (bubble.element.find('.arrow').height()/2)
+                'left': leftValue,
+                'top': topValue
             });
+
+            this.bubbleEl.find('.arrow div').css({
+                'margin-left': arrowMargin
+            });
+
         },
 
         getOffset : function( el ) {
@@ -100,16 +134,14 @@ Class(CV, 'Bubble').inherits(Widget)({
         },
 
         show : function(){
-            //$('body').css('overflow', 'hidden');
+            $('body').css('overflow', 'hidden');
             this.render('body');
             this.element.show();
 
             this.position();
-
-
         },
         hide : function(){
-            //$('body').css('overflow', 'auto');
+            $('body').css('overflow', 'auto');
             this.element.hide();
         }
 

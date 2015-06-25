@@ -113,7 +113,7 @@ require('./widgets/bubble.js');
 require('./widgets/bubble/jump-to-date.js');
 require('./widgets/bubble/voices-list.js');
 require('./widgets/bubble/share.js');
-require('./widgets/bubble/help.js');
+require('./widgets/bubble/form-request-to-contribute.js');
 require('./widgets/notification.js');
 require('./widgets/modal.js');
 require('./widgets/login.js');

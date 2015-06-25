@@ -12,12 +12,20 @@ Class(CV, 'VoiceRequestToContribute').inherits(Widget)({
 
             this.el = this.element[0];
 
-            this.appendChild(
-                new CV.PopoverRequestToContribute({
-                    toggler: this.el.querySelector('.request-to-contribute-button'),
-                    container: this.el
-                })
-            );
+            new CV.Bubble({
+                title       : 'Want to help out?',
+                name        : 'bubbleRequest',
+                action      : CV.FormRequestToContribute,
+                width       : 600,
+                anchorEl    : this.el.querySelector('.request-to-contribute-button')
+            });
+
+            //this.appendChild(
+            //    new CV.PopoverRequestToContribute({
+            //        toggler: this.el.querySelector('.request-to-contribute-button'),
+            //        container: this.el
+            //    })
+            //);
         }
     }
 });

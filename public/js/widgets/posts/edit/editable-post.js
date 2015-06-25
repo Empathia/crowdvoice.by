@@ -54,15 +54,10 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
         _data : null,
         _currentImageIndex : 0,
         _imagesLen : 0,
-        _filteredImages : null,
 
         setup : function setup() {
             if (this.images) {
-                this._filteredImages = this.images.filter(function(image) {
-                    return image.width >= 300;
-                });
-
-                this._imagesLen = this._filteredImages.length;
+                this._imagesLen = this.images.length;
             }
 
             if (this._imagesLen) {
@@ -77,7 +72,7 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
          * @method updatePostImage <private> [Function]
          */
         updatePostImage : function updatePostImage() {
-            var current = this._filteredImages[this._currentImageIndex];
+            var current = this.images[this._currentImageIndex];
 
             this.imagePath = current.path;
             this.imageWidth = current.width;
@@ -162,7 +157,7 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
             this.timePickerButton = this.dateTimeElement.parentNode.querySelector('.post-date-picker-button');
 
             this.romeTime = rome(this.timePickerInput, {
-                appendTo : this.el,
+                appendTo : this.parent.el,
                 inputFormat : 'DD MMM, YYYY HH:mm',
                 initialValue : moment(this.updatedAt)
             });
@@ -196,9 +191,6 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
             this._showDatePickerRef = this._showDatePicker.bind(this);
             this.timePickerButton.addEventListener('click', this._showDatePickerRef);
 
-            // this._showImageRef = this._showImage.bind(this);
-            // this.addCoverButton.addEventListener('click', this._showImageRef);
-
             this.titleElement.addEventListener('keypress', this._titleKeyPressHandler);
             this.titleElement.addEventListener('paste', this._pasteHandler);
             this.descriptionElement.addEventListener('paste', this._pasteHandler);
@@ -211,7 +203,7 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
             this.appendChild(
                 new CV.PostEditImageControls({
                 name : 'imageControls',
-                images : this._filteredImages
+                images : this.images
             })
             ).render(this.imageWrapperElement);
 
@@ -273,7 +265,6 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
             this.showImageWrapper();
             this.addCoverButton.style.display = 'none';
         },
-
 
         /* Prevent the user hiting ENTER
          * @method _titleKeyPressHandler <private> [Function]
