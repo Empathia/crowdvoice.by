@@ -158,6 +158,15 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
             return this;
         },
 
+        /* Adds the `post-unmoderated` class name selector to Post main element.
+         * This class applies visual changes only.
+         * @method unmoderatedStyle <public> [Function]
+         */
+        unmoderatedStyle : function unmoderatedStyle() {
+            this.el.classList.add('post-unmoderated');
+            return this;
+        },
+
         /* Adds the delete post button (for moderation management)
          * @method addRemoveButton <public> [Function]
          */

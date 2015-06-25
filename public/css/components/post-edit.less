@@ -7,6 +7,11 @@
   }
 }
 
+.edit-mode,
+.post-unmoderated {
+  &.has-bottom-actions {padding-bottom: 35px}
+}
+
 .edit-mode {
   .post-card-title,
   .post-card-description {
@@ -22,10 +27,6 @@
 
   .post-card-description {
     margin-bottom: .5em;
-  }
-
-  .post-card-info {
-    padding-bottom: 15px;
   }
 
   .post-card-svg-magnifier,
@@ -44,10 +45,6 @@
     &.max-reached {
       color: @color-danger;
     }
-  }
-
-  &.has-bottom-actions {
-    padding-bottom: 20px;
   }
 }
 
@@ -95,6 +92,21 @@
 }
 
 /* moderate */
+.post-unmoderated {
+  .post-card-image-wrapper,
+  .post-card-info {
+    opacity: .3;
+    transition: opacity 500ms ease;
+  }
+
+  .post-card-activity {display: none}
+
+  &:hover {
+    .post-card-image-wrapper,
+    .post-card-info {opacity: 1}
+  }
+}
+
 .post-moderate-remove-btn.cv-button {
   top: -10px;
   right: -10px;

@@ -9,12 +9,13 @@ Class(CV, 'VoicePostLayersModerateAbstract').inherits(CV.VoicePostLayers)({
                 // @TODO: add conditionals
 
                 // Voice Owner / Org Member / Contributor
-                post.edit();
-                post.addRemoveButton();
-                post.addPublishButton();
+                // post.edit();
+                // post.addRemoveButton();
+                // post.addPublishButton();
 
                 // Visitor (posts list)
-                // post.addVoteButtons();
+                post.unmoderatedStyle();
+                post.addVoteButtons();
             });
 
             layer.reLayout();
