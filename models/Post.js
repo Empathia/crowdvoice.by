@@ -82,6 +82,8 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
       this.bind('beforeCreate', function() {
         if (!model.publishedAt) {
           model.publishedAt =  model.createdAt;
+        } else {
+          model.publishedAt = new Date(model.publishedAt);
         }
       });
 
