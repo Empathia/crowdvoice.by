@@ -76,7 +76,9 @@ require('./widgets/posts/edit/editable-post-link.js');
 require('./widgets/posts/edit/editable-post-video.js');
 require('./widgets/posts/edit/editable-post-image.js');
 require('./widgets/posts/edit/image-controls.js');
-require('./widgets/posts/edit/remove-button.js');
+
+// moderate actions
+require('./widgets/posts/moderate/remove-button.js');
 require('./widgets/posts/moderate/publish-button.js');
 require('./widgets/posts/moderate/vote-buttons.js');
 

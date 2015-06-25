@@ -7,9 +7,13 @@ Module('PostsPresenter')({
       post.id           = hashids.encode(post.id);
       post.voiceId      = hashids.encode(post.voiceId);
       post.ownerId      = hashids.encode(post.ownerId);
-      post.image        = postInstance.image.url('medium');
-      post.imageWidth   = postInstance.image.meta('medium').width
-      post.imageHeight  = postInstance.image.meta('medium').height
+
+      if (postInstance.image.meta('medium')) {
+        post.image        = postInstance.image.url('medium');
+        post.imageWidth   = postInstance.image.meta('medium').width;
+        post.imageHeight  = postInstance.image.meta('medium').height;
+      }
+
       next();
     }, function(err) {
       callback(err, posts);
