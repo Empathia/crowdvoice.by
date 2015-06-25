@@ -47,12 +47,18 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
         // Show select widget if currentPerson owns or is member of organizations
         this.newConversationOptions = {};
 
-        this.newConversationOptions[this.currentPerson.id] = {name : "Myself"}
+        this.newConversationOptions[this.currentPerson.id] = {
+          name : "myself",
+          label: "Myself"
+        }
 
         this.currentPerson.organizations.forEach(function(organization) {
-          container.newConversationOptions[organization.id] = {name : organization.name + ' ' + organization.lastname}
+          container.newConversationOptions[organization.id] = {
+            label : organization.name + ' ' + organization.lastname,
+            name : organization.name + organization.lastname
+          }
         })
-
+        console.log(this.newConversationOptions);
         this.newMessageButton = new CV.Select({
           label : 'New Conversation as...',
           name  : 'newMessageButton',

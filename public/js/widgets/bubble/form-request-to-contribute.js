@@ -37,20 +37,27 @@ Class(CV, 'FormRequestToContribute').inherits(Widget)({
             this.element.append(this.constructor.FORM);
             var that = this;
             this.element.find('button.submit').on('click', function(){
-                that.element.find('form').remove();
 
-                that.element.append(that.constructor.THANKS);
-
-                that.element.find('button.ok').on('click', function(){
-                    that.dispatch('close');
-
-                    //console.log('close');
-                });
+                that.showSuccess();
 
             });
 
+        },
+
+        showSuccess : function(){
+            var that = this;
+            this.element.find('form').remove();
+            this.element.append(that.constructor.THANKS);
+
+            this.element.find('button.ok').on('click', function(){
+                that.dispatch('close');
+            });
         }
 
     }
 
 });
+
+
+
+

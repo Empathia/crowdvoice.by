@@ -18,7 +18,7 @@ Class(CV, 'VoiceRequestToContribute').inherits(Widget)({
                 action      : CV.FormRequestToContribute,
                 width       : 600,
                 anchorEl    : this.el.querySelector('.request-to-contribute-button')
-            });//.render(document.querySelector('.placeholder-bubble'));
+            });
 
             //this.appendChild(
             //    new CV.PopoverRequestToContribute({
