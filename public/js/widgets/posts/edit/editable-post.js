@@ -158,6 +158,27 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
             return this;
         },
 
+        /* Remove event listeners added when the edit method was run.
+         * @method unedit <public> [Function]
+         */
+        unedit : function unedit() {
+            this.titleElement.removeEventListener('autosize:resized', this._postDimensionsChangedRef);
+            this.descriptionElement.removeEventListener('autosize:resized', this._postDimensionsChangedRef);
+            this._postDimensionsChangedRef = null;
+
+            autosize.destroy(this.titleElement);
+            autosize.destroy(this.descriptionElement);
+
+            this.timePickerButton.removeEventListener('click', this._showDatePickerRef);
+            this._showDatePickerRef = null;
+
+            this.titleElement.removeEventListener('keypress', this._titleKeyPressHandler);
+            this.titleElement.removeEventListener('paste', this._pasteHandler);
+            this.descriptionElement.removeEventListener('paste', this._pasteHandler);
+
+            return this;
+         },
+
         /* Adds the `post-unmoderated` class name selector to Post main element.
          * This class applies visual changes only.
          * @method unmoderatedStyle <public> [Function]

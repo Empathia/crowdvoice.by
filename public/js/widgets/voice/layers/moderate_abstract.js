@@ -45,6 +45,7 @@ Class(CV, 'VoicePostLayersModerateAbstract').inherits(CV.VoicePostLayers)({
             if (layers.allowPostEditing) {
                 layer.getPosts().forEach(function(post) {
                     post.unbind('dimensionsChanged', layers._reLayoutLayer);
+                    post.unedit();
                 });
             }
 

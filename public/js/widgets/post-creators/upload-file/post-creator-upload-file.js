@@ -93,7 +93,7 @@ Class(CV, 'PostCreatorUploadFile').inherits(CV.PostCreator)({
             this.uploadingTemplate.deactivate();
 
             if (this._previewPostWidget) {
-                this._previewPostWidget.destroy();
+                this._previewPostWidget.unedit().destroy();
             }
 
             var posts = require('./../../../../demo-data/posts-preview.js');

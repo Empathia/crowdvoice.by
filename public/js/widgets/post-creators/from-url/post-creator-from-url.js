@@ -190,7 +190,7 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
             });
 
             if (this._previewPostWidget) {
-                this._previewPostWidget.destroy();
+                this._previewPostWidget.unedit().destroy();
             }
 
             this.appendChild(CV.EditablePost.create(post));
