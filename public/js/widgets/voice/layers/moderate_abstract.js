@@ -17,7 +17,7 @@ Class(CV, 'VoicePostLayersModerateAbstract').inherits(CV.VoicePostLayers)({
 
             layer.addEditablePosts(postsData).getPosts().forEach(function(post) {
                 // Voice Owner / Org Member / Contributor
-                if (layer.allowPostEditing) {
+                if (layers.allowPostEditing) {
                     return post.edit().addRemoveButton().addPublishButton();
                 }
 
