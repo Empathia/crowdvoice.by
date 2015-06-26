@@ -39,7 +39,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
           isArea      : true,
           buttonLabel : 'Reply'
       }).render(this.element.find('.message-create'));
-
+      //console.log(this.replyButton);
 
       // New Conversation Button
       if (this.currentPerson.organizations.length > 0) {
@@ -58,7 +58,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
             name : organization.name + organization.lastname
           }
         })
-        console.log(this.newConversationOptions);
+
         this.newMessageButton = new CV.Select({
           label : 'New Conversation as...',
           name  : 'newMessageButton',
@@ -66,10 +66,18 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
           options: this.newConversationOptions
         }).render($('.profile-messages-intro'));
 
-        this.newMessageButton.element.find('li').bind('click', function() {
-          container.newMessageAs($(this).find('> div').attr('data-id'));
+
+        this.newMessageButton.element.find('li:first-child').bind('click', function() {
+          //console.log('myself');
+          container.newMessageAs($(this).find('> div').attr('data-id'), false);
           return;
-        })
+        });
+
+        this.newMessageButton.element.find('li:not(:first-child)').bind('click', function() {
+          //console.log('org');
+          container.newMessageAs($(this).find('> div').attr('data-id'), true );
+          return;
+        });
 
       } else {
         // Show normal button
@@ -88,7 +96,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
       // Create Thread list
       if (this.threads.length > 0) {
         this.threads.forEach(function(thread) {
-          container.addThread(thread)
+          container.addThread(thread);
         });
       } else {
         this.hideSideBar();
@@ -100,7 +108,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
     setup : function setup() {
       var container = this;
 
-      this.replyButton.element.on('click', function(){
+      this.replyButton.buttonEl.on('click', function(){
         if (container.currentThreadId) {
           container.postMessage();
         } else {
@@ -155,7 +163,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
     },
 
     addThread : function addThread(threadData) {
-      console.log(threadData)
+      //******console.log(threadData)
       var thread = new CV.Thread({
         name : 'thread_' + threadData.id,
         data : threadData
@@ -199,9 +207,10 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
       }
     },
 
-    newMessageAs : function newMessageAs(entityId) {
+    newMessageAs : function newMessageAs(entityId, isOrganization) {
       // set the senderEntityId so it can be accessible by other functions
       this.senderEntityId = entityId;
+      this.senderEntityIsOrg = isOrganization;
 
       this.noMessagesEl.hide();
       this.messagesContainerEl.hide();
@@ -271,8 +280,13 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
             var receiverEntityId = $(this).attr('data-partner-id');
 
             if (container.isOnThreadList(receiverEntityId)) {
-
-              threadListEl.find("[data-partner-id='" + receiverEntityId + "']").click();
+              if (container.senderEntityIsOrg ){
+                //console.log('org');
+                threadListEl.find("[data-partner-id='" + receiverEntityId + "'][is-organization='true']").click();
+              } else {
+                //console.log('not org');
+                threadListEl.find("[data-partner-id='" + receiverEntityId + "']").click();
+              }
               return;
 
             } else {
@@ -285,7 +299,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
             container.receiverEntityId = receiverEntityId;
 
             container.searchUsersResultEl.hide();
-          })
+          });
 
           container.searchUsersResultEl.append(liStr);
 
@@ -310,8 +324,16 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
       var foundIt = false;
 
       container.listElement.find('.message-side').each(function( index, value ) {
-        if ($(this).attr('data-partner-id') == partnerId){
-          foundIt = true;
+        //this.senderEntityIsOrg
+        //console.log($(this).attr('is-organization'));
+        if (container.senderEntityIsOrg){
+          if ($(this).attr('data-partner-id') == partnerId && $(this).attr('is-organization')){
+            foundIt = true;
+          }
+        } else {
+          if ($(this).attr('data-partner-id') == partnerId){
+            foundIt = true;
+          }
         }
 
       });

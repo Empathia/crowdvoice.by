@@ -377,6 +377,9 @@ hr{
 	button{
 		float: right;
 	}
+	.form-field{
+		float: right;
+	}
 }
 .profile-messages-intro:after{
   	content: "";
@@ -432,6 +435,14 @@ hr{
 		font-size: 12px;
 
 	}
+	.thread-type{
+		font-size: 11px;
+		opacity: .5;
+		line-height: 14px;
+		display: inline-block;
+		height: 18px;
+		padding-top: 2px;
+	}
 	.message-info{
 		float: left;
 		width: 200px;
@@ -450,6 +461,9 @@ hr{
 			font-weight: bold;
 			font-size: 11px;
 		}
+	}
+	&.active{
+		box-shadow: inset 0px 0px 10px rgba(0,0,0, 0.25);
 	}
 
 }
@@ -492,6 +506,16 @@ hr{
 		border-bottom: 1px solid #999;
 		height: 44px;
 		z-index:1;
+		.conversation-title{
+			span{
+			  font-size: 11px;
+			  font-weight: normal;
+			  height: 18px;
+			  display: inline-block;
+			  padding-top: 2px;
+			  opacity: .5;
+			}
+		}
 		.action-icon{
 			position: absolute;
 			top: 15px;
