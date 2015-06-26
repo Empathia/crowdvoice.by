@@ -40,6 +40,7 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
         postsCountApproved : 0,
         postsCountUnapproved : 0,
         allowPosting : false,
+        allowPostEditing : false,
 
         _window : null,
         _resizeTimer : null,
@@ -91,12 +92,14 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
 
             this.appendChild(
                 new CV.VoiceFooter({
+                    voiceType : this.type,
                     name : 'voiceFooter',
                     element : $('.voice-footer'),
                     firstPostDate : this.firstPostDate,
                     lastPostDate : this.lastPostDate,
                     scrollableArea : this.scrollableArea,
-                    allowPosting : this.allowPosting
+                    allowPosting : this.allowPosting,
+                    allowPostEditing : this.allowPostEditing
                 })
             );
 

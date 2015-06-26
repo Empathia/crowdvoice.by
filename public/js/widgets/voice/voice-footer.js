@@ -1,10 +1,12 @@
 Class(CV, 'VoiceFooter').inherits(Widget)({
     prototype : {
         /* OPTIONS */
+        voiceType : '',
         firstPostDate : '',
         lastPostDate : '',
         scrollableArea : null,
         allowPosting : false,
+        allowPostEditing : false,
 
         init : function init(config) {
             Widget.prototype.init.call(this, config);
@@ -51,11 +53,12 @@ Class(CV, 'VoiceFooter').inherits(Widget)({
                 })
             ).render(this.actionsColumn);
 
-            this.appendChild(
-                new CV.VoiceModerate({
-                    name : 'voiceModerate'
-                })
-            ).render(this.actionsColumn);
+            if (this.voiceType !== CV.VoiceView.TYPE_CLOSED ||
+                this.allowPostEditing) {
+                this.appendChild(
+                    new CV.VoiceModerate({ name : 'voiceModerate' })
+                ).render(this.actionsColumn);
+            }
 
         },
 
