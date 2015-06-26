@@ -13,17 +13,16 @@ Class(CV, 'VoicePostLayersModerateAbstract').inherits(CV.VoicePostLayers)({
          * @method addPosts <public, abstract> [Function]
          */
         addPosts : function addPosts(layer, postsData) {
-            layer.addEditablePosts(postsData).getPosts().forEach(function(post) {
-                // @TODO: add conditionals
+            var layers = this;
 
+            layer.addEditablePosts(postsData).getPosts().forEach(function(post) {
                 // Voice Owner / Org Member / Contributor
-                // post.edit();
-                // post.addRemoveButton();
-                // post.addPublishButton();
+                if (layer.allowPostEditing) {
+                    return post.edit().addRemoveButton().addPublishButton();
+                }
 
                 // Visitor (posts list)
-                post.unmoderatedStyle();
-                post.addVoteButtons();
+                return post.unmoderatedStyle().addVoteButtons();
             });
 
             layer.reLayout();

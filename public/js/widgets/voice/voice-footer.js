@@ -56,7 +56,10 @@ Class(CV, 'VoiceFooter').inherits(Widget)({
             if (this.voiceType !== CV.VoiceView.TYPE_CLOSED ||
                 this.allowPostEditing) {
                 this.appendChild(
-                    new CV.VoiceModerate({ name : 'voiceModerate' })
+                    new CV.VoiceModerate({
+                        name : 'voiceModerate',
+                        allowPostEditing : this.allowPostEditing
+                    })
                 ).render(this.actionsColumn);
             }
 

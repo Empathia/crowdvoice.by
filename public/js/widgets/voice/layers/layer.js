@@ -13,6 +13,7 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
         /* OPTIONS */
         dateString : '',
         columnWidth : 350,
+        allowPostEditing : false,
 
         /* PRIVATE PROPERTIES */
         _finalHeightIsKnow : false,
