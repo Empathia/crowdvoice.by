@@ -13,6 +13,7 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
         /* OPTIONS */
         dateString : '',
         columnWidth : 350,
+        allowPostEditing : false,
 
         /* PRIVATE PROPERTIES */
         _finalHeightIsKnow : false,
@@ -143,6 +144,54 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
             return this;
         },
 
+        /* Returns its children Posts instances.
+         * @method getPosts <public> [Function]
+         * @return [this._postWidgets]
+         */
+        getPosts : function getPosts() {
+            return this._postWidgets;
+        },
+
+        /* Returns its children PostIndicators instances.
+         * @method getIndicators <oublic> [Function]
+         * @return [this._indicatorWidgets]
+         */
+        getIndicators : function getIndicators() {
+            return this._indicatorWidgets;
+        },
+
+        isFinalHeightKnow : function isFinalHeightKnow() {
+            return this._finalHeightIsKnow;
+        },
+
+        arrangeBringToFront : function arrangeBringToFront() {
+            this.el.style.zIndex = 1;
+
+            return this;
+        },
+
+        arrangeReset : function arrangeReset() {
+            this.el.style.zIndex = "";
+
+            return this;
+        },
+
+        /* Destroy all its posts children.
+         * @return undefined
+         */
+        empty : function empty() {
+            while (this.children.length > 0) {
+                this.children[0].destroy();
+            }
+
+            this.waterfall.flushItems();
+
+            this._postWidgets = [];
+            this._indicatorWidgets = [];
+
+            return this;
+        },
+
         /* Create, append and render the posts dates indicators shown on the
          * far right of the screen. Will also make sure to only display the
          * first indicator per date coincidence YYYY-MM-DD.
@@ -197,54 +246,6 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
             for (i = 0; i < len; i++) {
                 this._indicatorWidgets[i].updatePosition();
             }
-        },
-
-        /* Returns its children Posts instances.
-         * @method getPosts <public> [Function]
-         * @return [this._postWidgets]
-         */
-        getPosts : function getPosts() {
-            return this._postWidgets;
-        },
-
-        /* Returns its children PostIndicators instances.
-         * @method getIndicators <oublic> [Function]
-         * @return [this._indicatorWidgets]
-         */
-        getIndicators : function getIndicators() {
-            return this._indicatorWidgets;
-        },
-
-        isFinalHeightKnow : function isFinalHeightKnow() {
-            return this._finalHeightIsKnow;
-        },
-
-        arrangeBringToFront : function arrangeBringToFront() {
-            this.el.style.zIndex = 1;
-
-            return this;
-        },
-
-        arrangeReset : function arrangeReset() {
-            this.el.style.zIndex = "";
-
-            return this;
-        },
-
-        /* Destroy all its posts children.
-         * @return undefined
-         */
-        empty : function empty() {
-            while (this.children.length > 0) {
-                this.children[0].destroy();
-            }
-
-            this.waterfall.flushItems();
-
-            this._postWidgets = [];
-            this._indicatorWidgets = [];
-
-            return this;
         },
 
         destroy : function destroy() {

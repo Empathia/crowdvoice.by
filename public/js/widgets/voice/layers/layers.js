@@ -73,23 +73,31 @@ Class(CV, 'VoicePostLayers').inherits(Widget)({
         },
 
         /* Implementation of the data request.
-         * All implementations should include this method.
+         * All Subclassses should include this method.
          * @method request <private, abstract> [Function]
          */
         request : function request() {
             throw new Error('VoicePostLayers.prototype.request not implemented');
         },
 
-        /* Implementation of addPosts
-         * All implementations should include this method.
+        /* Implementation of add posts.
+         * All Subclasses should include this method.
          * @method addPosts <private, abstract> [Function]
          */
         addPosts : function addPosts(layer, postsData) {
             throw new Error('VoicePostLayers.prototype.addPosts not implemented');
         },
 
+        /* Implementation of remove posts.
+         * All Subclasses should include this method.
+         * @method removePosts <private, abstract> [Function]
+         */
+        removePosts : function removePosts(layer) {
+            throw new Error('VoicePostLayers.prototype.removePosts not implemented');
+        },
+
         /* Implementation to request data event listeners.
-         * All implementations should include this method.
+         * All Subclasses should include this method.
          * @method __bindEvents <private, abstract> [Function]
          */
         __bindEvents : function __bindEvents() {
@@ -289,7 +297,10 @@ Class(CV, 'VoicePostLayers').inherits(Widget)({
             if (scrollDirection) {
                 var next2 = next && next.getNextSibling();
 
-                if (next2) next2.empty().arrangeReset();
+                if (next2) {
+                    this.removePosts(next2);
+                    next2.arrangeReset();
+                }
 
                 if (calcHeightDiff) {
                     // compensate the heigth difference when scrolling up
@@ -304,7 +315,10 @@ Class(CV, 'VoicePostLayers').inherits(Widget)({
 
             var prev2 = prev && prev.getPreviousSibling();
 
-            if (prev2) prev2.empty().arrangeReset();
+            if (prev2) {
+                this.removePosts(prev2);
+                prev2.arrangeReset();
+            }
         },
 
         getCurrentMonthLayer : function getCurrentMonthLayer() {
