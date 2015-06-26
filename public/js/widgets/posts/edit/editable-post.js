@@ -200,6 +200,10 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
             autosize(this.titleElement);
             autosize(this.descriptionElement);
 
+            this._postDimensionsChangedRef = this._postDimensionsChanged.bind(this);
+            this.titleElement.addEventListener('autosize:resized', this._postDimensionsChangedRef);
+            this.descriptionElement.addEventListener('autosize:resized', this._postDimensionsChangedRef);
+
             this._showDatePickerRef = this._showDatePicker.bind(this);
             this.timePickerButton.addEventListener('click', this._showDatePickerRef);
 
@@ -208,6 +212,13 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
             this.descriptionElement.addEventListener('paste', this._pasteHandler);
 
             return this;
+        },
+
+        /* Dispatch that the post has changed its dimensions. Usefull for parents to re-position Posts.
+         * @method _postDimensionsChanged <private> [Function]
+         */
+        _postDimensionsChanged : function _postDimensionsChanged() {
+            this.dispatch('dimensionsChanged', {layer: this.parent});
         },
 
         /* Updates the selected post image, the post imageContainer height and display the image cover

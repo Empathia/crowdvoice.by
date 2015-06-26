@@ -1,5 +1,11 @@
 
 /* Creates the layers, handle the data requests and fill them with posts.
+ * This is the base Class to handle the Layers, but it is not used directly
+ * though, instead we use one of its subclasses which overrides important
+ * bits of this interface, such as the path for the request, socket events names,
+ * etc. The current Subclassses are:
+ * - VoicePostLayersVoiceAbstract : To handle the Voice Posts
+ * - VoicePostLayersModerateAbstract : To handle the Voice Posts as on Moderation Mode
  */
 var moment = require('moment');
 var Velocity = require('velocity-animate');

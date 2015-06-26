@@ -1,3 +1,7 @@
+
+/* Subclass of VoicePostLayers
+ * Declares the required abstract methods to handle the Voice Posts on Moderation Mode
+ */
 Class(CV, 'VoicePostLayersModerateAbstract').inherits(CV.VoicePostLayers)({
 
     prototype : {
@@ -18,11 +22,13 @@ Class(CV, 'VoicePostLayersModerateAbstract').inherits(CV.VoicePostLayers)({
             layer.addEditablePosts(postsData).getPosts().forEach(function(post) {
                 // Voice Owner / Org Member / Contributor
                 if (layers.allowPostEditing) {
-                    return post.edit().addRemoveButton().addPublishButton();
+                    post.edit().addRemoveButton().addPublishButton();
+                    post.bind('dimensionsChanged', layers._reLayoutLayer);
+                    return;
                 }
 
                 // Visitor (posts list)
-                return post.unmoderatedStyle().addVoteButtons();
+                post.unmoderatedStyle().addVoteButtons();
             });
 
             layer.reLayout();
@@ -34,8 +40,26 @@ Class(CV, 'VoicePostLayersModerateAbstract').inherits(CV.VoicePostLayers)({
          * @method removePosts <public, abstract> [Function]
          */
         removePosts : function removePosts(layer) {
+            var layers = this;
+
+            if (layers.allowPostEditing) {
+                layer.getPosts().forEach(function(post) {
+                    post.unbind('dimensionsChanged', layers._reLayoutLayer);
+                });
+            }
+
             layer.empty();
+
             return this;
+        },
+
+        /* dimensionsChanged custom event handler. Updates the posts position when
+         * its dimentions has been changed. e.i. on edit mode » change the
+         * description/title length
+         * @method _reLayoutLayer <private> [Function]
+         */
+        _reLayoutLayer : function _reLayoutLayer(data) {
+            data.layer.reLayout();
         },
 
         /* Implementation for custom bindings required by this subclass.

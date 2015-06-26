@@ -1,3 +1,7 @@
+
+/* Subclass of VoicePostLayers
+ * Declares the required abstract methods to handle the Voice Posts on Normal Mode
+ */
 Class(CV, 'VoicePostLayersVoiceAbstract').inherits(CV.VoicePostLayers)({
 
     prototype : {
