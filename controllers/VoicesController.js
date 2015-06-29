@@ -142,6 +142,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
         if (response.isAllowed) {
           res.locals.allowPosting = response.allowPosting;
+          res.locals.allowPostEditing = response.allowPostEditing
 
           res.format({
             html : function () {

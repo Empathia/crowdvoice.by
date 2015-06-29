@@ -6,6 +6,8 @@ Class(CV, 'VoiceModerateManager').inherits(Widget)({
     HTML : '<div class="voice-moderate-wrapper"></div>',
 
     prototype : {
+        /* options */
+        allowPostEditing : false,
 
         el : null,
         layersManager : null,
@@ -42,9 +44,10 @@ Class(CV, 'VoiceModerateManager').inherits(Widget)({
                 data[propertyName] = voiceInfo[propertyName];
             });
             data.postsCount = Voice.postsCountUnapproved;
+            data.allowPostEditing = this.allowPostEditing;
 
             this.appendChild(
-                new CV.VoicePostLayersModerateManager(data)
+                new CV.VoicePostLayersModerateAbstract(data)
             ).render(this.el).setup().loadDefaultLayer();
 
             this.appendChild(

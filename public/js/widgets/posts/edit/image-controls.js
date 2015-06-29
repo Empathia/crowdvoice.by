@@ -1,23 +1,23 @@
 /* jshint multistr: true */
 Class(CV, 'PostEditImageControls').inherits(Widget)({
     HTML : '\
-        <div class="post-edit-image-controls">\
-            <div class="post-edit-images-nav ui-btn-group">\
-                <button class="images-nav-prev ui-btn -color-bg-white -color-grey -sm">\
-                    <svg class="post-edit-images-nav-svg">\
-                        <use xlink:href="#svg-arrow-left"></use>\
-                    </svg>\
-                </button>\
-                <button class="images-nav-next ui-btn -color-bg-white -color-grey -sm">\
-                    <svg class="post-edit-images-nav-svg">\
-                        <use xlink:href="#svg-arrow-right"></use>\
-                    </svg>\
-                </button>\
-            </div>\
-            <button class="image-remove ui-btn -color-bg-white -color-grey -sm">\
-                Remove\
+    <div class="post-edit-image-controls">\
+        <div class="post-edit-images-nav ui-btn-group">\
+            <button class="images-nav-prev ui-btn -color-bg-white -color-grey -sm">\
+                <svg class="post-edit-images-nav-svg">\
+                    <use xlink:href="#svg-arrow-left"></use>\
+                </svg>\
             </button>\
-        </div>',
+            <button class="images-nav-next ui-btn -color-bg-white -color-grey -sm">\
+                <svg class="post-edit-images-nav-svg">\
+                    <use xlink:href="#svg-arrow-right"></use>\
+                </svg>\
+            </button>\
+        </div>\
+        <button class="image-remove ui-btn -color-bg-white -color-grey -sm">\
+            Remove\
+        </button>\
+    </div>',
 
     prototype : {
         images : null,
@@ -32,10 +32,12 @@ Class(CV, 'PostEditImageControls').inherits(Widget)({
             this.el = this.element[0];
             this.imagesNav = this.el.querySelector('.post-edit-images-nav');
             this.imageRemove = this.el.querySelector('.image-remove');
+
             this._imagesLen = this.images.length;
 
-            if (this._imagesLen) {
+            if (this._imagesLen > 1) {
                 this.imagesNav.classList.add('active');
+
                 this.prevButton = this.el.querySelector('.images-nav-prev');
                 this.nextButton = this.el.querySelector('.images-nav-next');
             }
@@ -47,7 +49,7 @@ Class(CV, 'PostEditImageControls').inherits(Widget)({
             this._removeImageClickHandlerRef = this._removeImageClickHandler.bind(this);
             this.imageRemove.addEventListener('click', this._removeImageClickHandlerRef);
 
-            if (this._imagesLen) {
+            if (this._imagesLen > 1) {
                 this._prevClickHandlerRef = this._prevClickHandler.bind(this);
                 this.prevButton.addEventListener('click', this._prevClickHandlerRef);
 

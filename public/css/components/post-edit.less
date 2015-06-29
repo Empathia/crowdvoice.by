@@ -1,9 +1,18 @@
-.edit-mode {
-  .add-cover-button {
-    display: none;
-    margin: 0 auto 26px;
-  }
+.post-edit-add-cover-button {
+  display: none;
+  margin: 0 auto 26px;
 
+  &.active {
+    display: block;
+  }
+}
+
+.edit-mode,
+.post-unmoderated {
+  &.has-bottom-actions {padding-bottom: 55px}
+}
+
+.edit-mode {
   .post-card-title,
   .post-card-description {
     padding: 2px 5px;
@@ -18,10 +27,6 @@
 
   .post-card-description {
     margin-bottom: .5em;
-  }
-
-  .post-card-info {
-    padding-bottom: 15px;
   }
 
   .post-card-svg-magnifier,
@@ -40,10 +45,6 @@
     &.max-reached {
       color: @color-danger;
     }
-  }
-
-  &.has-bottom-actions {
-    padding-bottom: 20px;
   }
 }
 
@@ -90,7 +91,23 @@
   height: 12px;
 }
 
-.post-edit-remove-btn.cv-button {
+/* moderate */
+.post-unmoderated {
+  .post-card-image-wrapper,
+  .post-card-info {
+    opacity: .3;
+    transition: opacity 500ms ease;
+  }
+
+  .post-card-activity {display: none}
+
+  &:hover {
+    .post-card-image-wrapper,
+    .post-card-info {opacity: 1}
+  }
+}
+
+.post-moderate-remove-btn.cv-button {
   top: -10px;
   right: -10px;
   padding: 0 5px;
@@ -98,8 +115,11 @@
   .-m0;
 }
 
-.post-moderate-publish-btn {
-  bottom: 0;
+.post-moderate-publish-btn.cv-button {
+  left: -1px;
+  right: -1px;
+  bottom: -2px;
+  width: inherit;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 
@@ -107,7 +127,9 @@
 }
 
 .post-moderate-vote-buttons {
-  bottom: 0;
+  left: -1px;
+  right: -1px;
+  bottom: -2px;
 }
 
 .post-moderate-allow-btn,

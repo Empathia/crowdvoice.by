@@ -74,8 +74,14 @@
     aboutBoxButtonElement : document.querySelector('.voice-about-show-btn'),
     scrollableArea        : window,
 
+    /* Contains all the years, months and its totals for approved and unapproved posts of the voice - Object */
     postsCount            : <%= JSON.stringify(postsCount) %>,
-    allowPosting          : <%= allowPosting %>
+
+    /* Either the voice allows OR the user can create new posts for the current voice - Boolean */
+    allowPosting          : <%= allowPosting %>,
+
+    /* The user can edit posts on the current voice>? - Boolean */
+    allowPostEditing      : <%= allowPostEditing %>
   };
 
   for (var propertyName in otherOptions) {

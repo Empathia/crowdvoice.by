@@ -40,6 +40,7 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
         postsCountApproved : 0,
         postsCountUnapproved : 0,
         allowPosting : false,
+        allowPostEditing : false,
 
         _window : null,
         _resizeTimer : null,
@@ -91,12 +92,14 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
 
             this.appendChild(
                 new CV.VoiceFooter({
+                    voiceType : this.type,
                     name : 'voiceFooter',
                     element : $('.voice-footer'),
                     firstPostDate : this.firstPostDate,
                     lastPostDate : this.lastPostDate,
                     scrollableArea : this.scrollableArea,
-                    allowPosting : this.allowPosting
+                    allowPosting : this.allowPosting,
+                    allowPostEditing : this.allowPostEditing
                 })
             );
 
@@ -133,7 +136,7 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
             }
 
             this.appendChild(
-                new CV.VoicePostLayersVoiceManager({
+                new CV.VoicePostLayersVoiceAbstract({
                     name : 'voicePostLayersManager',
                     element : document.querySelector('.voice-posts'),
                     id : this.id,
@@ -142,7 +145,8 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
                     firstPostDate : this.firstPostDate,
                     lastPostDate : this.lastPostDate,
                     scrollableArea : this.scrollableArea,
-                    _socket : this._socket
+                    _socket : this._socket,
+                    allowPostEditing : this.allowPostEditing
                 })
             ).render(document.querySelector('.cv-main-content'), document.querySelector('.voice-footer'));
 

@@ -26,7 +26,7 @@ Module(CV, 'PostModuleImages')({
          */
         setImageHeight : function setImageHeight(height) {
             this.imageWrapperElement.style.height = height + 'px';
-            this.imageWrapperElement.classList.add('active');
+            this.showImageWrapper();
         },
 
         /* Display the image wrapper element which contains the image cover.

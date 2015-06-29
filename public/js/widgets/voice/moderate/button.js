@@ -10,8 +10,8 @@ Class(CV, 'VoiceModerate').inherits(Widget)({
     </button>',
 
     prototype : {
-
         el : null,
+        allowPostEditing : false,
 
         init : function init(config) {
             Widget.prototype.init.call(this, config);
@@ -40,7 +40,8 @@ Class(CV, 'VoiceModerate').inherits(Widget)({
 
             this.appendChild(
                 new CV.VoiceModerateManager({
-                    name : 'moderateManager'
+                    name : 'moderateManager',
+                    allowPostEditing : this.allowPostEditing
                 })
             ).render(document.body).setup();
         },

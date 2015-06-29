@@ -78,9 +78,13 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
         }
       });
 
-      // Set publishedAt to be the same as createdAt on create
-      this.bind('beforeCreate', function(){
-        model.publishedAt =  model.createdAt;
+      // Set publishedAt to be the same as createdAt on create if not present
+      this.bind('beforeCreate', function() {
+        if (!model.publishedAt) {
+          model.publishedAt =  model.createdAt;
+        } else {
+          model.publishedAt = new Date(model.publishedAt);
+        }
       });
 
       // Add image attachment
