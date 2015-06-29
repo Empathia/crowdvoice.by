@@ -198,11 +198,11 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
       // this.listElement.find('#'+threadId).remove();
 
       if (this.listElement.find('.message-side').length == 0){
-        container.hideSidebar();
+        container.hideSideBar();
         container.showUnselectedScreen();
 
       }else{
-        container.showSidebar();
+        container.showSideBar();
         container.showUnselectedScreen();
       }
     },
@@ -285,11 +285,10 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
             $('.search-users').val("");
 
             if (container.isOnThreadList(receiverEntityId)) {
+
               if (container.senderEntityIsOrg ){
-                //console.log('org');
                 threadListEl.find("[data-partner-id='" + receiverEntityId + "'][is-organization='true']").click();
               } else {
-                //console.log('not org');
                 threadListEl.find("[data-partner-id='" + receiverEntityId + "']").click();
               }
               return;
@@ -297,8 +296,6 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
             } else {
               container.showNewThreadScreen($(this).attr('data-partner-id'), $(this).attr('data-partner-name'));
             }
-
-
 
             // set the receiverEntityId in the threadsContainer so it can be accessible by other functions
             container.receiverEntityId = receiverEntityId;
@@ -316,6 +313,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
       //console.log(otherPersonID);
       this.messagesBodyHeaderEl.find('.m-action').show();
       this.messagesBodyHeaderEl.find('.m-new').hide();
+      this.currentThreadId = null;
 
       if (this.senderEntityIsOrg ){
         this.messagesBodyHeaderEl.find('span.conversation-title').html('Conversation with '
@@ -358,7 +356,9 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
       var container = this;
 
       var postMessageUrl = '/'+ container.currentPerson.profileName + '/messages';
-
+      console.log('postMessageUrl: ' + postMessageUrl);
+      console.log('senderEntityId: ' + container.senderEntityId);
+      console.log('receiverEntityId: ' + container.receiverEntityId);
       $.ajax({
         type: "POST",
         url: postMessageUrl,
@@ -374,7 +374,9 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
           container.addThread(data);
           container.showSideBar();
           //postMessage();
-          console.log(data);
+          threadListEl.find("[id='" + container.currentThreadId + "']").click();
+
+          //console.log(data);
         }
       });
     },
@@ -404,15 +406,15 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
             thread.data.messages.push(data);
 
             messageInstance.setup();
-            // var messageEl = messageText.clone();
+            //var messageEl = messageText.clone();
 
-            // messageEl.find('.message-data h3').text('<%= currentPerson.name %>' + " " +
-            //   '<%= currentPerson.lastname %>');
+            //messageEl.find('.message-data h3').text('<%= currentPerson.name %>' + " " +
+            //  '<%= currentPerson.lastname %>');
 
-            // messageEl.find('.message-data span').text(moment(new Date().toISOString()).
-            //   format('• MMMM Do, YYYY • h:mm a'));
+            //messageEl.find('.message-data span').text(moment(new Date().toISOString()).
+            //  format('• MMMM Do, YYYY • h:mm a'));
 
-            // messageEl.find('.message-data p').text(data.message);
+            //messageEl.find('.message-data p').text(data.message);
 
             messageInstance.render(container.messageListEl);
 
