@@ -159,7 +159,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
       res.render('voices/new.html', {errors: null});
     },
 
-    create : function create (req, res) {
+    create : function create (req, res, next) {
       var voice = new Voice({
         title: req.body.title,
         status: req.body.status,
@@ -173,12 +173,11 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
       });
       voice.save(function (err) {
         if (err) {
-          res.render('voices/new.html', {errors: err});
-        } else {
-          voice.addSlug(function (err) {
-            res.redirect(req.currentPerson.profileName + '/' + voice.getSlug());
-          });
+          return next(err)
         }
+        voice.addSlug(function (err) {
+          res.redirect(req.currentPerson.profileName + '/' + voice.getSlug());
+        });
       });
     },
 
@@ -186,7 +185,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
       res.render('voices/edit.html', {errors: null});
     },
 
-    update : function update (req, res) {
+    update : function update (req, res, next) {
       var voice = req.activeVoice;
       voice.setProperties({
         title: req.body.title || voice.title,
@@ -201,14 +200,74 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
       });
       voice.save(function (err) {
         if (err) {
-          res.render('voices/edit.hml', {errors: err});
-        } else {
-          res.redirect('/voice/' + voice.id);
+          return next(err);
         }
+        res.redirect('/voice/' + voice.id);
       });
     },
 
-    destroy : function destroy (req, res) {
+    requestToContribute : function requestToContribute(req, res, next) {
+        ACL.isAllowed('requestToContribute', 'voices', req.role, {
+          currentPerson : req.currentPerson,
+          profileName : req.params.profileName,
+          voiceSlug : req.params.voiceSlug
+        }, function(err, response) {
+          if (err) {
+            return next(err);
+          }
+
+          if (!response.isAllowed) {
+            return next( new ForbiddenError() );
+          }
+
+          var thread;
+
+          async.series([function(done) {
+            MessageThread.findOrCreate({
+              senderPerson : response.senderPerson,
+              senderEntity : response.senderEntity,
+              receiverEntity : response.receiverEntity
+            }, function(err, result) {
+              if (err) {
+                return done(err);
+              }
+
+              thread = result;
+
+              done();
+            })
+          }, function(done) {
+            thread.createMessage({
+              type : 'request_voice',
+              senderPersonId : response.senderPerson.id,
+              senderEntityId : response.senderEntity.id,
+              receiverEntityId : response.receiverEntity.id,
+              voiceId : response.voice.id,
+              message : req.body.message
+            }, function(err, result) {
+              if (err) {
+                return done(err)
+              }
+
+              done();
+            })
+          }], function(err) {
+            if (err) {
+              return next(err);
+            }
+
+            ThreadsPresenter.build(req, [thread], function(err, result) {
+              if (err) {
+                return next(err);
+              }
+
+              res.json(result[0]);
+            });
+          })
+        })
+    },
+
+    destroy : function destroy (req, res, next) {
       var voice = req.activeVoice;
       voice.deleted = true;
       voice.save(function (err) {
