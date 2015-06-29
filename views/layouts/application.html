@@ -189,6 +189,12 @@
           <svg class="sidebar-link-svg"><use xlink:href="#svg-messages-read"></use></svg>
           <span class="sidebar-link-label">Messages</span>
         </a>
+
+        <a href="/<%= currentPerson.profileName %>/messages" class="sidebar-link">
+          <svg class="sidebar-link-svg"><use xlink:href="#svg-messages-unread"></use></svg>
+          <span class="sidebar-link-badge">7</span>
+          <span class="sidebar-link-label">Messages</span>
+        </a>
       <% } %>
 
       <h4 class="sidebar-heading -upper">Discover</h4>

@@ -11,6 +11,7 @@ body.page-home > .cv-main-sidebar {
   .sidebar-link {color: @color-neutral-dark}
   .sidebar-link-svg {fill: @color-neutral-xx-mid}
   .sidebar-heading {color: @color-neutral-mid}
+  .sidebar-link-badge {border-color: @color-white}
 
   .sidebar-link:before {
     content: '';
@@ -51,6 +52,7 @@ body.page-inner > .cv-main-sidebar {
   .sidebar-link {color: @color-neutral-light}
   .sidebar-link-svg {fill: @color-neutral-x-mid}
   .sidebar-heading {color: @color-neutral-dark}
+  .sidebar-link-badge {border-color: @color-neutral-xxx-dark}
 }
 
 body.page-inner > .cv-main-sidebar .cv-main-logo {
@@ -110,6 +112,19 @@ body > .cv-main-sidebar.-is-expanded {
   width: 16px;
   height: 16px;
   transition: fill 240ms ease;
+}
+
+.sidebar-link-badge {
+  position: absolute;
+  font-size: 9px;
+  line-height: 1;
+  padding: 2px 4px 2px 3px;
+  left: 31px;
+  top: 0;
+  border: 1px solid;
+  border-radius: 2px;
+  background-color: @color-negative;
+  color: @color-white;
 }
 
 .sidebar-link-label {
