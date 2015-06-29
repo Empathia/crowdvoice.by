@@ -128,9 +128,9 @@
   left: @cv-sidebar-collapsed-width;
   right: 0;
   height: @cv-voice-footer-height;
-  border-top: 2px solid rgba(0,0,0,0.25);
+  border-top: 1px solid rgba(0,0,0,0.10);
   background-color: @color-white;
-  background-clip: content-box;
+  box-shadow: 0 1px 0 1px white;
   transform: translateZ(0);
 
   &-inner {
@@ -154,9 +154,14 @@
 
 .voice-footer-by {
   position: absolute;
-  font-size: .8rem;
+  font-size: 11px;
   transform: translateY(20px);
   transition: transform 200ms ease-in-out;
+
+  a {
+    color: @color-neutral-mid;
+    text-decoration: underline;
+  }
 }
 
 .voice-footer-meta-wrapper {
@@ -166,7 +171,7 @@
       transform: translateY(10px);
     }
     .voice-footer-by {
-      transform: translateY(26px);
+      transform: translateY(27px);
     }
   }
 }
