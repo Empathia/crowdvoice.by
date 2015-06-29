@@ -69,13 +69,13 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
 
         this.newMessageButton.element.find('li:first-child').bind('click', function() {
           //console.log('myself');
-          container.newMessageAs($(this).find('> div').attr('data-id'), false);
+          container.newMessageAs($(this).find('> div').attr('data-id'), false, '');
           return;
         });
 
         this.newMessageButton.element.find('li:not(:first-child)').bind('click', function() {
           //console.log('org');
-          container.newMessageAs($(this).find('> div').attr('data-id'), true );
+          container.newMessageAs($(this).find('> div').attr('data-id'), true, $(this).find('> div').text() );
           return;
         });
 
@@ -207,10 +207,11 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
       }
     },
 
-    newMessageAs : function newMessageAs(entityId, isOrganization) {
+    newMessageAs : function newMessageAs(entityId, isOrganization, orgName) {
       // set the senderEntityId so it can be accessible by other functions
       this.senderEntityId = entityId;
       this.senderEntityIsOrg = isOrganization;
+      this.senderEntityOrgName = orgName;
 
       this.noMessagesEl.hide();
       this.messagesContainerEl.hide();
@@ -279,6 +280,10 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
           liStr.on('click', function(){
             var receiverEntityId = $(this).attr('data-partner-id');
 
+            container.searchUsersResultEl.empty();
+            container.searchUsersResultEl.hide();
+            $('.search-users').val("");
+
             if (container.isOnThreadList(receiverEntityId)) {
               if (container.senderEntityIsOrg ){
                 //console.log('org');
@@ -293,7 +298,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
               container.showNewThreadScreen($(this).attr('data-partner-id'), $(this).attr('data-partner-name'));
             }
 
-            $('.search-users').val("");
+
 
             // set the receiverEntityId in the threadsContainer so it can be accessible by other functions
             container.receiverEntityId = receiverEntityId;
@@ -311,7 +316,15 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
       //console.log(otherPersonID);
       this.messagesBodyHeaderEl.find('.m-action').show();
       this.messagesBodyHeaderEl.find('.m-new').hide();
-      this.messagesBodyHeaderEl.find('span.conversation-title').text('Conversation with ' + otherPersonName);
+
+      if (this.senderEntityIsOrg ){
+        this.messagesBodyHeaderEl.find('span.conversation-title').html('Conversation with '
+          + otherPersonName +
+          ' - <span>As an Organization (<b>'+ this.senderEntityOrgName +'<b>)</span>');
+      } else {
+        this.messagesBodyHeaderEl.find('span.conversation-title').text('Conversation with ' + otherPersonName);
+      }
+
       this.messagesBodyHeaderEl.find('.delete-thread').hide();
       this.messagesContainerEl.show();
       this.refresh();
