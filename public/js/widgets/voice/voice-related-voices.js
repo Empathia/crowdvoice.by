@@ -1,6 +1,6 @@
 Class(CV, 'VoiceRelatedVoices').inherits(Widget)({
 
-    HTML : '<button class="cv-button tiny primary">Related Voices</button>',
+    HTML : '<button class="cv-button tiny">See Related Voices</button>',
 
     prototype : {
         init : function init(config) {

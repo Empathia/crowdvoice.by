@@ -26,10 +26,14 @@
 
       <div class="profile-card-activity">
 
-        <div class="profile-card-activity-repost -inline-block -mr1">
-          <svg class="profile-card-activity-svg"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-repost"></use></svg>
-          <span class="profile-card-activity-label"><%= currentPerson.location %></span>
-        </div>
+        <% if (currentPerson.location){ %>
+
+          <div class="profile-card-activity-repost -inline-block -mr1">
+            <svg class="profile-card-activity-svg"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-repost"></use></svg>
+            <span class="profile-card-activity-label"><%= currentPerson.location %></span>
+          </div>
+
+        <% } %>
 
         <div class="profile-card-activity-saved -inline-block  -mr1 -ml1">
           <svg class="profile-card-activity-svg"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-save"></use></svg>
@@ -73,7 +77,7 @@
       </div>
   </article>
 
-  <div class="profile-list-type-container -rel">
+  <div class="profile-list-type-container -rel" style="display: none;">
     <div class="profile-list-type">
       <div class="style-grid active"><img src="/img/sample/icons/grid.png" alt=""></div>
       <div class="style-list"><img src="/img/sample/icons/list.png" alt=""></div>

@@ -39,7 +39,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
           isArea      : true,
           buttonLabel : 'Reply'
       }).render(this.element.find('.message-create'));
-
+      //console.log(this.replyButton);
 
       // New Conversation Button
       if (this.currentPerson.organizations.length > 0) {
@@ -58,7 +58,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
             name : organization.name + organization.lastname
           }
         })
-        console.log(this.newConversationOptions);
+
         this.newMessageButton = new CV.Select({
           label : 'New Conversation as...',
           name  : 'newMessageButton',
@@ -66,10 +66,18 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
           options: this.newConversationOptions
         }).render($('.profile-messages-intro'));
 
-        this.newMessageButton.element.find('li').bind('click', function() {
-          container.newMessageAs($(this).find('> div').attr('data-id'));
+
+        this.newMessageButton.element.find('li:first-child').bind('click', function() {
+          //console.log('myself');
+          container.newMessageAs($(this).find('> div').attr('data-id'), false, '');
           return;
-        })
+        });
+
+        this.newMessageButton.element.find('li:not(:first-child)').bind('click', function() {
+          //console.log('org');
+          container.newMessageAs($(this).find('> div').attr('data-id'), true, $(this).find('> div').text() );
+          return;
+        });
 
       } else {
         // Show normal button
@@ -88,7 +96,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
       // Create Thread list
       if (this.threads.length > 0) {
         this.threads.forEach(function(thread) {
-          container.addThread(thread)
+          container.addThread(thread);
         });
       } else {
         this.hideSideBar();
@@ -100,7 +108,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
     setup : function setup() {
       var container = this;
 
-      this.replyButton.element.on('click', function(){
+      this.replyButton.buttonEl.on('click', function(){
         if (container.currentThreadId) {
           container.postMessage();
         } else {
@@ -155,7 +163,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
     },
 
     addThread : function addThread(threadData) {
-      console.log(threadData)
+      //******console.log(threadData)
       var thread = new CV.Thread({
         name : 'thread_' + threadData.id,
         data : threadData
@@ -190,18 +198,20 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
       // this.listElement.find('#'+threadId).remove();
 
       if (this.listElement.find('.message-side').length == 0){
-        container.hideSidebar();
+        container.hideSideBar();
         container.showUnselectedScreen();
 
       }else{
-        container.showSidebar();
+        container.showSideBar();
         container.showUnselectedScreen();
       }
     },
 
-    newMessageAs : function newMessageAs(entityId) {
+    newMessageAs : function newMessageAs(entityId, isOrganization, orgName) {
       // set the senderEntityId so it can be accessible by other functions
       this.senderEntityId = entityId;
+      this.senderEntityIsOrg = isOrganization;
+      this.senderEntityOrgName = orgName;
 
       this.noMessagesEl.hide();
       this.messagesContainerEl.hide();
@@ -270,22 +280,28 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
           liStr.on('click', function(){
             var receiverEntityId = $(this).attr('data-partner-id');
 
+            container.searchUsersResultEl.empty();
+            container.searchUsersResultEl.hide();
+            $('.search-users').val("");
+
             if (container.isOnThreadList(receiverEntityId)) {
 
-              threadListEl.find("[data-partner-id='" + receiverEntityId + "']").click();
+              if (container.senderEntityIsOrg ){
+                threadListEl.find("[data-partner-id='" + receiverEntityId + "'][is-organization='true']").click();
+              } else {
+                threadListEl.find("[data-partner-id='" + receiverEntityId + "']").click();
+              }
               return;
 
             } else {
               container.showNewThreadScreen($(this).attr('data-partner-id'), $(this).attr('data-partner-name'));
             }
 
-            $('.search-users').val("");
-
             // set the receiverEntityId in the threadsContainer so it can be accessible by other functions
             container.receiverEntityId = receiverEntityId;
 
             container.searchUsersResultEl.hide();
-          })
+          });
 
           container.searchUsersResultEl.append(liStr);
 
@@ -297,7 +313,16 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
       //console.log(otherPersonID);
       this.messagesBodyHeaderEl.find('.m-action').show();
       this.messagesBodyHeaderEl.find('.m-new').hide();
-      this.messagesBodyHeaderEl.find('span.conversation-title').text('Conversation with ' + otherPersonName);
+      this.currentThreadId = null;
+
+      if (this.senderEntityIsOrg ){
+        this.messagesBodyHeaderEl.find('span.conversation-title').html('Conversation with '
+          + otherPersonName +
+          ' - <span>As an Organization (<b>'+ this.senderEntityOrgName +'<b>)</span>');
+      } else {
+        this.messagesBodyHeaderEl.find('span.conversation-title').text('Conversation with ' + otherPersonName);
+      }
+
       this.messagesBodyHeaderEl.find('.delete-thread').hide();
       this.messagesContainerEl.show();
       this.refresh();
@@ -310,8 +335,16 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
       var foundIt = false;
 
       container.listElement.find('.message-side').each(function( index, value ) {
-        if ($(this).attr('data-partner-id') == partnerId){
-          foundIt = true;
+        //this.senderEntityIsOrg
+        //console.log($(this).attr('is-organization'));
+        if (container.senderEntityIsOrg){
+          if ($(this).attr('data-partner-id') == partnerId && $(this).attr('is-organization')){
+            foundIt = true;
+          }
+        } else {
+          if ($(this).attr('data-partner-id') == partnerId){
+            foundIt = true;
+          }
         }
 
       });
@@ -323,7 +356,9 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
       var container = this;
 
       var postMessageUrl = '/'+ container.currentPerson.profileName + '/messages';
-
+      console.log('postMessageUrl: ' + postMessageUrl);
+      console.log('senderEntityId: ' + container.senderEntityId);
+      console.log('receiverEntityId: ' + container.receiverEntityId);
       $.ajax({
         type: "POST",
         url: postMessageUrl,
@@ -339,7 +374,9 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
           container.addThread(data);
           container.showSideBar();
           //postMessage();
-          console.log(data);
+          threadListEl.find("[id='" + container.currentThreadId + "']").click();
+
+          //console.log(data);
         }
       });
     },
@@ -369,15 +406,15 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
             thread.data.messages.push(data);
 
             messageInstance.setup();
-            // var messageEl = messageText.clone();
+            //var messageEl = messageText.clone();
 
-            // messageEl.find('.message-data h3').text('<%= currentPerson.name %>' + " " +
-            //   '<%= currentPerson.lastname %>');
+            //messageEl.find('.message-data h3').text('<%= currentPerson.name %>' + " " +
+            //  '<%= currentPerson.lastname %>');
 
-            // messageEl.find('.message-data span').text(moment(new Date().toISOString()).
-            //   format('• MMMM Do, YYYY • h:mm a'));
+            //messageEl.find('.message-data span').text(moment(new Date().toISOString()).
+            //  format('• MMMM Do, YYYY • h:mm a'));
 
-            // messageEl.find('.message-data p').text(data.message);
+            //messageEl.find('.message-data p').text(data.message);
 
             messageInstance.render(container.messageListEl);
 

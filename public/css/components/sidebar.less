@@ -3,7 +3,7 @@
  *  home page
  * =========================================================================== */
 body.page-home > .cv-main-sidebar {
-  top: 74 + 50px;
+  top: unit(74 + 20, px);
   left: 0;
 
   .cv-main-logo {display: none}
@@ -11,6 +11,7 @@ body.page-home > .cv-main-sidebar {
   .sidebar-link {color: @color-neutral-dark}
   .sidebar-link-svg {fill: @color-neutral-xx-mid}
   .sidebar-heading {color: @color-neutral-mid}
+  .sidebar-link-badge {border-color: @color-white}
 
   .sidebar-link:before {
     content: '';
@@ -30,7 +31,6 @@ body.page-home > .cv-main-sidebar {
  * =========================================================================== */
 body.page-inner > .cv-main-sidebar {
   top: 0;
-  bottom: 0;
   left: -(@cv-sidebar-width - @cv-sidebar-collapsed-width);
   overflow: hidden;
   background-color: @color-neutral-xxx-dark;
@@ -51,10 +51,11 @@ body.page-inner > .cv-main-sidebar {
   .sidebar-link {color: @color-neutral-light}
   .sidebar-link-svg {fill: @color-neutral-x-mid}
   .sidebar-heading {color: @color-neutral-dark}
+  .sidebar-link-badge {border-color: @color-neutral-xxx-dark}
 }
 
 body.page-inner > .cv-main-sidebar .cv-main-logo {
-  margin-bottom: 55px;
+  margin-bottom: 25px;
   background-color: @color-black;
 
   .logo-type-cv {color: @color-white}
@@ -76,6 +77,7 @@ body > .cv-main-sidebar {
   position: fixed;
   z-index: 2;
   width: @cv-sidebar-width;
+  bottom: 0;
   transform: translateZ(0);
 
   .cv-main-logo {height: @cv-header-height}
@@ -84,6 +86,8 @@ body > .cv-main-sidebar {
 body > .cv-main-sidebar.-is-expanded {
   transform: translateX(@cv-sidebar-width - @cv-sidebar-collapsed-width) translateZ(0);
 }
+
+.sidebar-nav {height: 100%}
 
 .sidebar-link,
 .sidebar-heading {padding-left: 1.5em}
@@ -112,6 +116,19 @@ body > .cv-main-sidebar.-is-expanded {
   transition: fill 240ms ease;
 }
 
+.sidebar-link-badge {
+  position: absolute;
+  font-size: 9px;
+  line-height: 1;
+  padding: 2px 4px 2px 3px;
+  left: 31px;
+  top: 0;
+  border: 1px solid;
+  border-radius: 2px;
+  background-color: @color-negative;
+  color: @color-white;
+}
+
 .sidebar-link-label {
   padding-left: .5em;
   line-height: 1.25em;
@@ -122,4 +139,11 @@ body > .cv-main-sidebar.-is-expanded {
   margin-top: 2em;
 
   .-font-semi-bold;
+}
+
+.sidebar-link-help-support {
+  position: absolute;
+  left: 0;
+  bottom: 15px;
+  width: 100%;
 }
