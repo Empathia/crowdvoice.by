@@ -155,15 +155,41 @@
         </span>
       </a>
 
-      <a href="#" class="sidebar-link -is-active">
-        <svg class="sidebar-link-svg"><use xlink:href="#svg-home"></use></svg>
-        <span class="sidebar-link-label">Home</span>
-      </a>
+      <% if (currentPerson) { %>
+        <a href="/<%= currentPerson.profileName %>" class="sidebar-link">
+          <svg class="sidebar-link-svg"><use xlink:href="#svg-activity"></use></svg>
+          <span class="sidebar-link-label">My Feed</span>
+        </a>
+      <% } else { %>
+        <a href="/" class="sidebar-link -is-active">
+          <svg class="sidebar-link-svg"><use xlink:href="#svg-home"></use></svg>
+          <span class="sidebar-link-label">Home</span>
+        </a>
+      <% } %>
 
-      <a href="#" class="sidebar-link">
+      <a href="/page/about" class="sidebar-link">
         <svg class="sidebar-link-svg"><use xlink:href="#svg-fist"></use></svg>
         <span class="sidebar-link-label">About</span>
       </a>
+
+      <% if (currentPerson) { %>
+        <h4 class="sidebar-heading -upper">My Stuff</h4>
+
+        <a href="/<%= currentPerson.profileName %>/voices" class="sidebar-link">
+          <svg class="sidebar-link-svg"><use xlink:href="#svg-my-voices"></use></svg>
+          <span class="sidebar-link-label">My Voices</span>
+        </a>
+
+        <a href="/<%= currentPerson.profileName %>/saved_posts" class="sidebar-link">
+          <svg class="sidebar-link-svg"><use xlink:href="#svg-saved"></use></svg>
+          <span class="sidebar-link-label">Saved Posts</span>
+        </a>
+
+        <a href="/<%= currentPerson.profileName %>/messages" class="sidebar-link">
+          <svg class="sidebar-link-svg"><use xlink:href="#svg-messages-read"></use></svg>
+          <span class="sidebar-link-label">Messages</span>
+        </a>
+      <% } %>
 
       <h4 class="sidebar-heading -upper">Discover</h4>
 
@@ -187,34 +213,6 @@
         <span class="sidebar-link-label">Browse</span>
       </a>
 
-      <a href="#" class="sidebar-link">
-        <svg class="sidebar-link-svg"><use  xlink:href="#svg-map-pin"></use></svg>
-        <span class="sidebar-link-label">On the Map</span>
-      </a>
-
-      <% if (currentPerson) { %>
-        <h4 class="sidebar-heading -upper">My Stuff</h4>
-
-        <a href="" class="sidebar-link">
-          <svg class="sidebar-link-svg"><use xlink:href="#svg-my-voices"></use></svg>
-          <span class="sidebar-link-label">My Voices</span>
-        </a>
-
-        <a href="" class="sidebar-link">
-          <svg class="sidebar-link-svg"><use xlink:href="#svg-saved"></use></svg>
-          <span class="sidebar-link-label">Saved Posts</span>
-        </a>
-
-        <a href="" class="sidebar-link">
-          <svg class="sidebar-link-svg"><use xlink:href="#svg-stats"></use></svg>
-          <span class="sidebar-link-label">Stats</span>
-        </a>
-
-        <a href="/<%= currentPerson.profileName %>/messages" class="sidebar-link">
-          <svg class="sidebar-link-svg"><use xlink:href="#svg-messages-read"></use></svg>
-          <span class="sidebar-link-label">Messages</span>
-        </a>
-      <% } %>
     </nav>
   </aside>
 
