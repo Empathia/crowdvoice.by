@@ -7,8 +7,8 @@ Class(CV, 'SelectAccount').inherits(Widget)({
             <label><span></span></label>\
             <div class="cv-select is-account">\
                 <div class="account-info -inline-block">\
-                    <img class="account-info-avatar -rounded" width="22" height="22" src="">\
-                    <span class="account-info-name -color-grey-dark"></span>\
+                    <img class="account-info-avatar -rounded" width="28" height="28" src="">\
+                    <span class="account-info-name"></span>\
                     <span class="actions-wrapper -inline-block">\
                       <svg class="actions-dropdown-svg -block">\
                         <use xlink:href="#svg-arrow-down-2"></use>\

@@ -24,13 +24,13 @@
   <header class="cv-main-header -color-bg-white -clearfix">
     <div class="-float-left">
       <a class="cv-main-logo -inline-block" href="/">
-        <img class="-inline-block" src="/img/global/logo.png" width="36" height="41" />
+        <svg class="cv-main-logo__svg">
+          <use xlink:href="#svg-logo"></use>
+        </svg>
         <span class="cv-main-logo-type -inline-block">
-          <b class="-color-grey-dark">Crowdvoice</b>
-          <% if (typeof voiceInfo === "undefined") { %>
-            <span class="-color-grey-light">by&hellip;</span>
-          <% } else { %>
-            <span class="-color-grey-light">by</span>
+          <b>Crowdvoice by</b>
+          <% if (currentPerson === null) { %>
+            <span>&hellip;</span>
           <% } %>
         </span>
       </a>
@@ -74,7 +74,7 @@
               label         : 'Multiple',
               name          : 'select',
               accountImage  : "/img/sample/avatars/org-00.jpg",
-              accountName   : "<%= currentPerson.profileName %>",
+              accountName   : "<%= currentPerson.name + ' ' + currentPerson.lastname %>",
               options       : allMulti
             }).render(document.querySelector('.placeholder-account'));
           </script>
@@ -144,13 +144,13 @@
   <aside role="complementary" class="cv-main-sidebar">
     <nav role="navigation" class="sidebar-nav">
       <a class="cv-main-logo -block" href="/">
-        <img class="-inline-block" src="/img/global/logo.png" width="36" height="41" />
+        <svg class="cv-main-logo__svg">
+          <use xlink:href="#svg-logo"></use>
+        </svg>
         <span class="cv-main-logo-type -inline-block">
-          <b class="logo-type-cv">Crowdvoice</b>
-          <% if (typeof voiceInfo === "undefined") { %>
-            <span class="-color-grey-light">by&hellip;</span>
-          <% } else { %>
-            <span class="-color-grey-light">by</span>
+          <b class="logo-type-cv">Crowdvoice by</b>
+          <% if (currentPerson === null) { %>
+            <span>&hellip;</span>
           <% } %>
         </span>
       </a>
