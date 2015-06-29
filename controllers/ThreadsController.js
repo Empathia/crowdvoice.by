@@ -76,95 +76,58 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
         invitationRequestId : payload.invitationRequestId || null,
         voiceId : payload.voiceId || null,
         organizationId : payload.organizationId || null
-      }, function(err, isAllowed) {
+      }, function(err, response) {
         if (err) {
           return next(err);
         }
 
-        if (!isAllowed) {
+        if (!response.isAllowed) {
           return next(new ForbiddenError());
         }
 
-        res.format({
-          json : function() {
+        var thread;
 
+        async.series([function(done) {
+          MessageThread.findOrCreate({
+            senderPerson : response.senderPerson,
+            senderEntity : response.senderEntity,
+            receiverEntity : response.receiverEntity
+          }, function(err, result) {
+            if (err) {
+              return done(err)
+            }
 
-            async.waterfall([function(done) {
-              // Get the entity to know if its a person or organization
-              Entity.findById(payload.senderEntityId, function(err, senderEntity) {
-                done(err, senderEntity[0].type);
-              });
-            }, function(senderEntityType, done) {
-              // Build a query depending if entity is person or organization
-              var whereClause;
+            thread = result;
 
-              if (senderEntityType === 'organization') {
-                whereClause = [
-                  'sender_person_id = ? AND sender_entity_id = ? AND receiver_entity_id = ?',
-                  [hashids.decode(req.currentPerson.id)[0], payload.senderEntityId, payload.receiverEntityId]
-                ];
-              } else {
-                whereClause = [
-                  '(sender_entity_id = ? AND receiver_entity_id = ?) OR (sender_entity_id = ? AND receiver_entity_id = ?)',
-                  [payload.senderEntityId, payload.receiverEntityId, payload.receiverEntity, payload.senderEntityId]
-                ];
-              }
+            done();
+          })
+        }, function(done) {
+          thread.createMessage({
+            senderPersonId : hashids.decode(req.currentPerson.id)[0],
+            type : payload.type,
+            invitationRequestId : payload.invitationRequestId,
+            voiceId : payload.voiceId,
+            organizationId : payload.organizationId,
+            message : payload.message,
+          }, function(err, result) {
+            if (err) {
+              return done(err)
+            }
 
-              // Try to get the MessageThread
-              MessageThread.find(whereClause, done);
-            }, function(messageThread, done) {
-              var thread;
-
-              if (messageThread.length === 0) {
-                // If there is no existing MessageThread create a new one
-                thread = new MessageThread({
-                  senderPersonId : hashids.decode(req.currentPerson.id)[0],
-                  senderEntityId : payload.senderEntityId,
-                  receiverEntityId : payload.receiverEntityId
-                });
-              } else {
-                // Use the existing MessageThread
-                thread = new MessageThread(messageThread[0]);
-              }
-
-              // Unhide the Thread for both users
-              thread.hiddenForSender = false;
-              thread.hiddenForReceiver = false;
-
-              // Save the thread
-              thread.save(function(err, result) {
-                if (err) {
-                  return done(err);
-                }
-
-                // Append the new message
-                thread.createMessage({
-                  senderPersonId : hashids.decode(req.currentPerson.id)[0],
-                  type : payload.type,
-                  invitationRequestId : payload.invitationRequestId,
-                  voiceId : payload.voiceId,
-                  organizationId : payload.organizationId,
-                  message : payload.message,
-                }, function(err, result) {
-                  if (err) {
-                    return done(err);
-                  }
-
-                  done(err, thread);
-                })
-              })
-            }], function(err, thread) {
-              // Build the result
-
-              ThreadsPresenter.build(req, [thread], function(err, result) {
-                if (err) {
-                  return next(err);
-                }
-
-                res.json(result[0]);
-              });
-            });
+            done()
+          })
+        }], function(err) {
+          if (err) {
+            return next(err)
           }
+
+          ThreadsPresenter.build(req, [thread], function(err, result) {
+            if (err) {
+              return next(err);
+            }
+
+            res.json(result[0]);
+          });
         })
       })
     },

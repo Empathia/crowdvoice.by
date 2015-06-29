@@ -166,6 +166,75 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
     });
   },
 
+  /* MessageThread Factory.
+   * @method findOrCreate
+   * @property params <Object>
+   *  {
+   *    senderPerson : <Entity>,
+   *    senderEntity : <Entity>,
+   *    receiverEntity : <Entity>,
+   *  }
+   * @return null
+   */
+  findOrCreate : function findOrCreate(params, callback) {
+    var senderPerson   = params.senderPerson;
+    var senderEntity   = params.senderEntity;
+    var receiverEntity = params.receiverEntity;
+
+    var whereClause;
+
+    if (senderEntity.type === 'organization') {
+      whereClause = [
+        'sender_person_id = ? AND sender_entity_id = ? AND receiver_entity_id = ?',
+        [senderPerson.id, senderEntity.id, receiverEntity.id]
+      ];
+    } else {
+      whereClause = [
+        '(sender_entity_id = ? AND receiver_entity_id = ?) OR (sender_entity_id = ? AND receiver_entity_id = ?)',
+        [senderEntity.id, receiverEntity.id, receiverEntity.id, senderEntity.id]
+      ];
+    }
+
+    var messageThread;
+
+    async.series([function(done) {
+      MessageThread.find(whereClause, function(err, result) {
+        if (err) {
+          return done(err);
+        }
+
+        if (result.length === 0) {
+          messageThread = new MessageThread({
+            senderPersonId : senderPerson.id,
+            senderEntityId : senderEntity.id,
+            receiverEntityId : receiverEntity.id
+          })
+        } else {
+          messageThread = new MessageThread(result[0]);
+        }
+
+        done();
+      })
+    }, function(done) {
+      messageThread.hiddenForSender = false;
+      messageThread.hiddenForReceiver = false;
+
+      messageThread.save(function(err, result) {
+        if (err) {
+          return done(err);
+        }
+
+        done();
+      })
+    }], function(err) {
+      if (err) {
+        return callback(err);
+      }
+
+      callback(null, messageThread);
+    })
+  },
+
   prototype : {
     senderPersonId : null,
     senderEntityId : null,

@@ -36,11 +36,11 @@ Class(CV, 'FormRequestToContribute').inherits(Widget)({
 
             this.element.append(this.constructor.FORM);
             var that = this;
-            this.element.find('button.submit').on('click', function(){
-
-                that.showSuccess();
-
-            });
+            // this.element.find('button.submit').on('click', function(){
+						//
+            //     that.showSuccess();
+						//
+            // });
 
         },
 
@@ -57,7 +57,3 @@ Class(CV, 'FormRequestToContribute').inherits(Widget)({
     }
 
 });
-
-
-
-
