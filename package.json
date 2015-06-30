@@ -66,6 +66,7 @@
     "casual": "^1.4.7",
     "cli-table": "^0.3.1",
     "clone": "^1.0.2",
+    "gemini-scrollbar": "^1.2.7",
     "superagent": "^1.2.0",
     "tellurium": "git://github.com/benbeltran/tellurium.git"
   }
