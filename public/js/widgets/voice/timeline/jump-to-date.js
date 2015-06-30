@@ -100,7 +100,8 @@ Class(CV, 'VoiceTimelineJumpToDate').inherits(Widget)({
         _bindEvents : function _bindEvents() {
             this._handleActivateRef = this._handleActivate.bind(this);
             this.jumpToDatePopover.bind('activate', this._handleActivateRef);
-            this.jumpToDatePopover.bind('deactivate', this._handleDeactivate);
+            this._handleDeactivateRef = this._handleDeactivate.bind(this);
+            this.jumpToDatePopover.bind('deactivate', this._handleDeactivateRef);
 
             return this;
         },
@@ -132,6 +133,7 @@ Class(CV, 'VoiceTimelineJumpToDate').inherits(Widget)({
             this.jumpToDatePopover.arrowElement.style.webkitTransform = 'translateX(' + (togglerLeft - arrowLeft - 2) + 'px)';
             this.jumpToDatePopover.arrowElement.style.transform = 'translateX(' + (togglerLeft - arrowLeft - 2) + 'px)';
 
+            this.parent.activate();
             this.scrollbar.update();
 
             left = width = farRight = w = diff = togglerLeft = arrowLeft = null;
@@ -141,10 +143,11 @@ Class(CV, 'VoiceTimelineJumpToDate').inherits(Widget)({
          * @method _handleDeactivate <private> [Function]
          */
         _handleDeactivate : function _handleActivate() {
-            this.el.style.msTransform = '';
-            this.el.style.webkitTransform = '';
-            this.el.style.transform = '';
-            this.arrowElement.style.transform = '';
+            this.parent.deactivate();
+            this.jumpToDatePopover.el.style.msTransform = '';
+            this.jumpToDatePopover.el.style.webkitTransform = '';
+            this.jumpToDatePopover.el.style.transform = '';
+            this.jumpToDatePopover.arrowElement.style.transform = '';
         },
 
         /* Deactivate any active option and activate the one that matches the passed string by name.
@@ -167,7 +170,8 @@ Class(CV, 'VoiceTimelineJumpToDate').inherits(Widget)({
 
             this.jumpToDatePopover.unbind('activate', this._handleActivateRef);
             this._handleActivateRef = null;
-            this.jumpToDatePopover.unbind('deactivate', this._handleDeactivate);
+            this.jumpToDatePopover.unbind('deactivate', this._handleDeactivateRef);
+            this._handleDeactivateRef = null;
 
             this.postsCount = null;
             this.container = null;
