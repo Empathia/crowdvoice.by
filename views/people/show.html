@@ -1,10 +1,7 @@
-<!--
-{"id":"6xOVBlryjQ0a","type":"person","name":"Jack","lastname":"Johnson","profileName":"jack-johnson","isAnonymous":false,"description":"","location":"","imageBaseUrl":"","imageMeta":"{}","backgroundBaseUrl":"","backgroundMeta":"{}","createdAt":"2015-06-22T15:33:57.953Z","updatedAt":"2015-06-22T15:33:57.953Z"}
--->
 <main role="main" class="cv-main-profile profile-user -rel">
   <div class="voice-background-cover">
-    <% if (currentPerson.background.exists('card')){ %>
-      <img class="voice-background-cover-image" src="<%= currentPerson.background.url('card') %>">
+    <% if (person.background.exists('card')){ %>
+      <img class="voice-background-cover-image" src="<%= person.background.url('card') %>">
     <% }else{ %>
       <img class="voice-background-cover-image" src="/img/placeholder-background.png">
     <% } %>
@@ -12,25 +9,25 @@
 
   <section class="profile-intro -rel">
 
-    <% if (currentPerson.image.exists('card')){ %>
-      <img class="profile-image" src="<%= currentPerson.image.url('card') %>">
+    <% if (person.image.exists('card')){ %>
+      <img class="profile-image" src="<%= person.image.url('card') %>">
     <% }else{ %>
       <img class="profile-image" src="/img/placeholder-image.png">
     <% } %>
 
     <div class="pan-separator">
 
-      <div class="profile-tw">@<%= currentPerson.profileName %></div>
-      <h1 class="profile-heading -font-bold -m0"><%= currentPerson.name %> <%= currentPerson.lastname %></h1>
-      <p class="profile-description"><%= currentPerson.description %></p>
+      <div class="profile-tw">@<%= person.profileName %></div>
+      <h1 class="profile-heading -font-bold -m0"><%= person.name %> <%= person.lastname %></h1>
+      <p class="profile-description"><%= person.description %></p>
 
       <div class="profile-card-activity">
 
-        <% if (currentPerson.location){ %>
+        <% if (person.location){ %>
 
           <div class="profile-card-activity-repost -inline-block -mr1">
             <svg class="profile-card-activity-svg"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-repost"></use></svg>
-            <span class="profile-card-activity-label"><%= currentPerson.location %></span>
+            <span class="profile-card-activity-label"><%= person.location %></span>
           </div>
 
         <% } %>
@@ -39,7 +36,7 @@
           <svg class="profile-card-activity-svg"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-save"></use></svg>
           <span class="profile-card-activity-label user-date"></span>
           <script>
-            var userDate = moment(new Date('<%= currentPerson.createdAt %>').toISOString()).format('MMMM, YYYY');
+            var userDate = moment(new Date('<%= person.createdAt %>').toISOString()).format('MMMM, YYYY');
             $('.user-date').text('Joined ' + userDate );
           </script>
         </div>
