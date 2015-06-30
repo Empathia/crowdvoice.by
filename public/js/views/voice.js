@@ -114,7 +114,7 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
             if (this.coverImage) {
                 var image = document.createElement('img');
                 image.className = "voice-background-cover-image";
-                image.src = "<%= voice.coverImage %>";
+                image.src = voice.coverImage;
                 this.backgroundElement.appendChild(image);
             } else this.backgroundElement.className += ' -colored-background';
 
