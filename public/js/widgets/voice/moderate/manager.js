@@ -22,7 +22,7 @@ Class(CV, 'VoiceModerateManager').inherits(Widget)({
         _lastScrollTop : 0,
         _scrollTimer : null,
         _scrollTime : 250,
-        LAYER_CLASSNAME : 'cv-voice-posts-layer',
+        LAYER_CLASSNAME : 'cv-voice-posts-layer__detector',
 
         init : function init(config) {
             Widget.prototype.init.call(this, config);

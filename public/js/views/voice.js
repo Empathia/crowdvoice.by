@@ -54,7 +54,7 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
          */
         _layersOffsetLeft : 100,
 
-        LAYER_CLASSNAME : 'cv-voice-posts-layer',
+        LAYER_CLASSNAME : 'cv-voice-posts-layer__detector',
 
         /* socket io instance holder */
         _socket : null,
