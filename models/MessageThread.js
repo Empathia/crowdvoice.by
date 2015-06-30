@@ -6,7 +6,7 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
       {
         rule: function (val) {
           return db('Entities').where('id', '=', val).then(function(resp) {
-            if (resp.length === 0) throw new Checkit.FieldError("This senderPersonId doesn't exists!.")
+            if (resp.length === 0) throw new Checkit.FieldError("This senderPersonId doesn't exists!.");
          });
         },
         message: "This senderPersonId doesn't exists!."
@@ -18,8 +18,8 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
           return db('Entities').where({'id' : val}).then(function(response) {
             if (response[0].type !== 'person') {
               throw new Checkit.FieldError('The senderPerson is not of type person');
-            };
-          })
+            }
+          });
         }
       },
       {
@@ -32,7 +32,7 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
             if (user.deleted) {
               throw new Checkit.FieldError("This senderPerson's user has been deactivated");
             }
-          })
+          });
         }
       }
     ],
@@ -41,7 +41,7 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
       {
         rule: function (val) {
           return db('Entities').where('id', '=', val).then(function(resp) {
-            if (resp.length === 0) throw new Checkit.FieldError("This senderEntityId doesn't exists!.")
+            if (resp.length === 0) throw new Checkit.FieldError("This senderEntityId doesn't exists!.");
           });
         }
       },
@@ -52,7 +52,7 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
           return db('Entities').where({id : val}).then(function(senderEntity) {
             if (rule.target.senderEntityId && rule.target.senderPersonId) {
 
-              var senderEntity = senderEntity[0];
+              senderEntity = senderEntity[0];
 
               if (senderEntity.type === 'person') {
                 if (senderEntity.id !== rule.target.senderPersonId) {
@@ -60,7 +60,7 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
                 }
               }
             }
-          })
+          });
         },
         message: "senderEntity is not equal to senderPerson."
       },
@@ -72,9 +72,9 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
             user = user;
 
             if (user.deleted) {
-              throw new Error('senderEntity user has been deactivated!')
+              throw new Error('senderEntity user has been deactivated!');
             }
-          })
+          });
         }
       },
       {
@@ -107,7 +107,7 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
                   });
 
                 });
-              })
+              });
             }
           });
 
@@ -123,9 +123,9 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
 
           return db('Entities').where({id : val}).then(function(receiverEntity) {
             if (receiverEntity.length === 0) {
-              throw new Checkit.FieldError("receiverEntity doesn't exists!")
+              throw new Checkit.FieldError("receiverEntity doesn't exists!");
             }
-          })
+          });
         }
       },
       {
@@ -134,9 +134,9 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
 
           return db('Entities').where({id : val}).then(function(receiverEntity) {
             if (receiverEntity[0].type === 'organization') {
-              throw new Checkit.FieldError("receiverEntity is an organization!")
+              throw new Checkit.FieldError("receiverEntity is an organization!");
             }
-          })
+          });
         }
       }
     ]
@@ -208,13 +208,13 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
             senderPersonId : senderPerson.id,
             senderEntityId : senderEntity.id,
             receiverEntityId : receiverEntity.id
-          })
+          });
         } else {
           messageThread = new MessageThread(result[0]);
         }
 
         done();
-      })
+      });
     }, function(done) {
       messageThread.hiddenForSender = false;
       messageThread.hiddenForReceiver = false;
@@ -225,14 +225,14 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
         }
 
         done();
-      })
+      });
     }], function(err) {
       if (err) {
         return callback(err);
       }
 
       callback(null, messageThread);
-    })
+    });
   },
 
   prototype : {
@@ -319,7 +319,7 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
 
           var active = (!senderUser[0].deleted && !receiverUser[0].deleted);
 
-          return callback(null, active)
+          return callback(null, active);
         });
       });
     },
