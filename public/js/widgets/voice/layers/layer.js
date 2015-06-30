@@ -5,6 +5,7 @@ var Waterfall = require('../../../lib/waterfall');
 Class(CV, 'VoicePostsLayer').inherits(Widget)({
     HTML : '\
         <div class="cv-voice-posts-layer">\
+            <div class="cv-voice-posts-layer__detector"></div>\
             <div class="cv-voice-posts-layer__posts"></div>\
             <div class="cv-voice-posts-layer__ticks"></div>\
         </div>',
@@ -36,6 +37,7 @@ Class(CV, 'VoicePostsLayer').inherits(Widget)({
             this._indicatorWidgets = [];
 
             this.el.dataset.date = this.dateString;
+            this.el.querySelector('.cv-voice-posts-layer__detector').dataset.date = this.dateString;
 
             this.waterfall = new Waterfall({
                 containerElement : this.postContainerElement,

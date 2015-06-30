@@ -2,21 +2,39 @@
   position: absolute;
   top: -10px;
   left: 0;
-  opacity: 0;
+  padding: 1px;
+  opacity: 1;
+  background-color: @color-white;
+  border-radius: 50%;
   transition: opacity 400ms ease 400ms;
 
+  &.disable {
+    opacity: 0;
+  }
+
+  &:hover {
+    .cv-voice-timeline-clock {border-color: @color-primary}
+
+    .timeline-clock-h,
+    .timeline-clock-m {background-color: @color-primary}
+  }
+
   &.active {
-    opacity: 1;
+    background-color: @color-primary;
+
+    .cv-voice-timeline-clock {border-color: @color-white}
+
+    .timeline-clock-h,
+    .timeline-clock-m {background-color: @color-white}
   }
 }
 
 .cv-voice-timeline-clock {
   position: relative;
-  width: 16px;
-  height: 16px;
-  border: 2px solid;
+  width: 13px;
+  height: 13px;
+  border: 1px solid @color-neutral-x-dark;
   border-radius: 50%;
-  background: white;
 }
 
 .timeline-clock-h,
@@ -24,19 +42,17 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 2px;
-  transform-origin: 50% 1px;
-  margin: -1px 0 0 -1px;
-  background-color: @root-text-color;
+  width: 1px;
+  height: 4px;
+  transform-origin: 50% 0;
+  background-color: @color-neutral-x-dark;
 }
 
 .timeline-clock-h {
-  height: 4px;
   transform: rotateZ(180deg);
 }
 
 .timeline-clock-m {
-  height: 5px;
   transform: rotateZ(-90deg);
 }
 

@@ -1,4 +1,5 @@
 var moment = require('moment');
+var GeminiScrollbar = require('gemini-scrollbar');
 
 Class(CV, 'VoiceTimelineJumpToDate').inherits(Widget)({
     prototype : {
@@ -86,6 +87,9 @@ Class(CV, 'VoiceTimelineJumpToDate').inherits(Widget)({
 
             this.jumpToDatePopover.getContent().className += ' ui-vertical-list hoverable';
             this.jumpToDatePopover.setContent(frag);
+            this.scrollbar = new GeminiScrollbar({
+                element : this.jumpToDatePopover.getContent()
+            }).create();
 
             frag = _lastYear = optionWidget = null;
         },
@@ -94,8 +98,10 @@ Class(CV, 'VoiceTimelineJumpToDate').inherits(Widget)({
          * @method _bindEvents <private> [Function]
          */
         _bindEvents : function _bindEvents() {
-            this.jumpToDatePopover.bind('activate', this._handleActivate);
-            this.jumpToDatePopover.bind('deactivate', this._handleDeactivate);
+            this._handleActivateRef = this._handleActivate.bind(this);
+            this.jumpToDatePopover.bind('activate', this._handleActivateRef);
+            this._handleDeactivateRef = this._handleDeactivate.bind(this);
+            this.jumpToDatePopover.bind('deactivate', this._handleDeactivateRef);
 
             return this;
         },
@@ -104,25 +110,31 @@ Class(CV, 'VoiceTimelineJumpToDate').inherits(Widget)({
          * @method _handleActivate <private> [Function]
          */
         _handleActivate : function _handleActivate() {
-            var left = this.el.offsetLeft;
-            var width = this.el.offsetWidth;
+            var popover = this.jumpToDatePopover.el;
+            var left = popover.offsetLeft;
+            var width = popover.offsetWidth;
             var farRight = left + width;
             var w = window.innerWidth;
             var diff = farRight - w;
-            var togglerLeft = this.toggler.getBoundingClientRect().left;
+            var togglerLeft = this.jumpToDatePopover.toggler.getBoundingClientRect().left;
 
             if (diff > 0) {
-                this.el.style.msTransform = 'translateX(' + ((diff + 10) * -1) + 'px)';
-                this.el.style.webkitTransform = 'translateX(' + ((diff + 10) * -1) + 'px)';
-                this.el.style.transform = 'translateX(' + ((diff + 10) * -1) + 'px)';
+                popover.style.msTransform = 'translateX(' + ((diff + 10) * -1) + 'px)';
+                popover.style.webkitTransform = 'translateX(' + ((diff + 10) * -1) + 'px)';
+                popover.style.transform = 'translateX(' + ((diff + 10) * -1) + 'px)';
             }
 
             if (left < 0) {
-                this.el.style.left = '10px';
+                popover.style.left = '10px';
             }
 
-            var arrowLeft = this.arrowElement.getBoundingClientRect().left;
-            this.arrowElement.style.transform = 'translateX(' + (togglerLeft - arrowLeft - 2) + 'px)';
+            var arrowLeft = this.jumpToDatePopover.arrowElement.getBoundingClientRect().left;
+            this.jumpToDatePopover.arrowElement.style.msTransform = 'translateX(' + (togglerLeft - arrowLeft - 2) + 'px)';
+            this.jumpToDatePopover.arrowElement.style.webkitTransform = 'translateX(' + (togglerLeft - arrowLeft - 2) + 'px)';
+            this.jumpToDatePopover.arrowElement.style.transform = 'translateX(' + (togglerLeft - arrowLeft - 2) + 'px)';
+
+            this.parent.activate();
+            this.scrollbar.update();
 
             left = width = farRight = w = diff = togglerLeft = arrowLeft = null;
         },
@@ -131,10 +143,11 @@ Class(CV, 'VoiceTimelineJumpToDate').inherits(Widget)({
          * @method _handleDeactivate <private> [Function]
          */
         _handleDeactivate : function _handleActivate() {
-            this.el.style.msTransform = '';
-            this.el.style.webkitTransform = '';
-            this.el.style.transform = '';
-            this.arrowElement.style.transform = '';
+            this.parent.deactivate();
+            this.jumpToDatePopover.el.style.msTransform = '';
+            this.jumpToDatePopover.el.style.webkitTransform = '';
+            this.jumpToDatePopover.el.style.transform = '';
+            this.jumpToDatePopover.arrowElement.style.transform = '';
         },
 
         /* Deactivate any active option and activate the one that matches the passed string by name.
@@ -155,8 +168,10 @@ Class(CV, 'VoiceTimelineJumpToDate').inherits(Widget)({
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
 
-            this.jumpToDatePopover.unbind(this._handleActivate);
-            this.jumpToDatePopover.unbind(this._handleDeactivate);
+            this.jumpToDatePopover.unbind('activate', this._handleActivateRef);
+            this._handleActivateRef = null;
+            this.jumpToDatePopover.unbind('deactivate', this._handleDeactivateRef);
+            this._handleDeactivateRef = null;
 
             this.postsCount = null;
             this.container = null;

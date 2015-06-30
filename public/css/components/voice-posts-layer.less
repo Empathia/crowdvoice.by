@@ -1,22 +1,26 @@
 .cv-voice-posts-layer {
   position: relative;
-  // background-color: rgba(0, 244, 0, .25);
-  padding: 6em 0 6em 1px;
-  margin-top: -6em;
+  padding-top: 6em;
 
   &.first {
     padding-top: 0;
-    margin-top: 0;
   }
 
-  &.last {
-    margin-bottom: -4em;
+  &.last .cv-voice-posts-layer__detector {
+    bottom: 0;
   }
 }
 
+.cv-voice-posts-layer__detector {
+  position: absolute;
+  top: -1000px;
+  left: 0;
+  bottom: -1000px;
+  width: 2px;
+}
+
 .cv-voice-posts-layer__posts {
-  width: e('calc(100% - 100px)');
-  // background-color: rgba(135, 206, 235, .5);
+  margin: 0 100px 0 1px;
 }
 
 .cv-voice-posts-layer__ticks {

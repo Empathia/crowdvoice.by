@@ -7,7 +7,7 @@
     "node": ">=0.10.33"
   },
   "scripts": {
-    "start": "nodemon --watch controllers --watch middlewares --watch models --watch presenters bin/server.js",
+    "start": "nodemon --watch controllers --watch middlewares --watch models --watch presenters --watch lib bin/server.js",
     "dev": "webpack -d -w",
     "svg": "svg-sprite -s --symbol-dest=svg --symbol-prefix=.svg- --ss=sprite.svg --si --sx --shape-id-generator=svg-%s --dest=views/shared public/svg/*.svg"
   },
@@ -66,6 +66,7 @@
     "casual": "^1.4.7",
     "cli-table": "^0.3.1",
     "clone": "^1.0.2",
+    "gemini-scrollbar": "^1.2.7",
     "superagent": "^1.2.0",
     "tellurium": "git://github.com/benbeltran/tellurium.git"
   }

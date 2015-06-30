@@ -4,7 +4,7 @@ var Velocity = require('velocity-animate');
 
 Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
     HTML : '\
-        <div class="cv-voice-timeline-feedback -clickable">\
+        <div class="cv-voice-timeline-feedback disable -clickable">\
             <div class="cv-voice-timeline-clock">\
                 <span class="timeline-clock-h"></span>\
                 <span class="timeline-clock-m"></span>\
@@ -186,7 +186,7 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
 
             this._readAndUpdate();
 
-            this.activate();
+            this.enable();
         },
 
         activateJumpToDateOption : function activateJumpToDateOption(dateString) {
