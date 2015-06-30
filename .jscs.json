@@ -36,6 +36,7 @@
     "requireSpacesInFunction": {
         "beforeOpeningCurlyBrace": true
     },
+    "requirePaddingNewLinesAfterBlocks" : true,
     "validateIndentation": 2,
     "validateLineBreaks": "LF",
     "validateQuoteMarks": "'"
