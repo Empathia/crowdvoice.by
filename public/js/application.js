@@ -8,8 +8,11 @@ window.$ = jQuery;
 // our namespace
 window.CV = {};
 
+// lib
 require('./lib/widget-utils.js');
 require('./lib/Widget.js');
+require('./lib/image-halt');
+require('./lib/share-link-generator');
 
 window.validate = require('validate');
 //window.soundManager = require('SoundManager2').soundManager;
@@ -41,6 +44,10 @@ require('./views/voice');
 
 require('./widgets/voice/voice-header.js');
 require('./widgets/voice/voice-footer');
+require('./widgets/voice/footer/share-buttons-group');
+require('./widgets/voice/footer/share-button');
+require('./widgets/voice/footer/share-items');
+require('./widgets/voice/footer/embed-button');
 require('./widgets/voice/voice-follow-button.js');
 require('./widgets/voice/voice-related-voices.js');
 
