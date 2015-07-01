@@ -19,7 +19,16 @@
     top: 100%;
     left: 50%;
     margin-left: unit(-@popover-arrow-size, px);
+  }
 
+  /* top-right */
+  &@{-}top-right @{ns}-popover__arrow {
+    top: 100%;
+    right: 20px;
+  }
+
+  &@{-}top @{ns}-popover__arrow,
+  &@{-}top-right @{ns}-popover__arrow {
     &::before {border-top-color: inherit}
     &::after {
       margin-top: -1px;
@@ -46,6 +55,7 @@
   position: absolute;
   width: unit(@popover-arrow-size * 2, px);
   height: unit(@popover-arrow-size * 2, px);
+  border-color: inherit;
 
   &::before,
   &::after {
@@ -116,6 +126,12 @@
       left: 50%;
       bottom: 100%;
       transform: translate(-50%, -15px);
+    }
+
+    &@{-}top-right {
+      right: 0;
+      bottom: 100%;
+      transform: translate(15px,-15px);
     }
 
     &@{-}left {
