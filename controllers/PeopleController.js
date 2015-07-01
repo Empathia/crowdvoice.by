@@ -30,6 +30,28 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
         });
       });
     },
+
+    voices : function voices (req, res, next) {
+      Voice.find({owner_id: req.entity.id}, function (err, result) {
+        if (err) { next(err); return; }
+
+        var voices = [];
+        async.each(result, function (rvoice, done) {
+          var rvoice = new Voice(rvoice);
+          voices.push(rvoice);
+          done();
+        }, function (err) {
+          if (err) { next(err); return; }
+          res.format({
+            'application/json': function () {
+              res.json(voices);
+            }
+          });
+        });
+
+      });
+    },
+
   }
 });
 
