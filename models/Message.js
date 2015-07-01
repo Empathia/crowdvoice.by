@@ -206,29 +206,6 @@ var Message = Class('Message').inherits(Argon.KnexModel)({
           });
         },
         message : "The sender Person is not owner or member of the sender Organization"
-      },
-      {
-        rule : function(val) {
-          var rule = this;
-
-          return db('Entities').where({id : val}).then(function(senderEntity) {
-
-            if (senderEntity.length === 0) {
-              throw new Checkit.FieldError("senderEntity doesn't exist")
-            }
-
-            senderEntity = senderEntity[0];
-
-            if (senderEntity.type === 'organization') {
-              return db('MessageThreads').where({id : rule.target.threadId}).then(function(thread) {
-                if (senderEntity.id !== thread.senderEntityId) {
-                  throw new Checkit.FieldError("senderEntity is an organization and is not the same as thread.senderEntity")
-                }
-              })
-            }
-          })
-        },
-        message : "senderEntity is an organization and is not the same as thread.senderEntity"
       }
     ],
 

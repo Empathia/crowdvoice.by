@@ -9,7 +9,7 @@ module.exports = function(err, req, res, next) {
       }
 
       if (err.name && err.name === 'ForbiddenError') {
-        return res.status(404).render('shared/403.html', {layout : false, message : err.message});
+        return res.status(403).render('shared/403.html', {layout : false, message : err.message});
       }
 
       res.status(500);

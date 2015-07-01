@@ -51,6 +51,7 @@ CV.Thread = Class(CV, 'Thread').includes(Widget)({
       //console.log(this.data.senderEntity);
 
       if (this.data.senderEntity.type == "person"){
+        this.element.attr('is-organization', 'false');
         this.element.find('.thread-type').text('As Myself');
       } else {
         this.element.attr('is-organization', 'true');
@@ -76,7 +77,7 @@ CV.Thread = Class(CV, 'Thread').includes(Widget)({
 
     _activate : function _activate() {
       var thread = this;
-      console.log('_activate');
+      //console.log('_activate');
 
       thread.threadContainer.currentThreadId = thread.data.id;
 
@@ -89,13 +90,15 @@ CV.Thread = Class(CV, 'Thread').includes(Widget)({
       thread.threadContainer.messagesBodyHeaderEl.find('.m-action').show();
       thread.threadContainer.messagesBodyHeaderEl.find('.m-new').hide();
 
-      if(this.element.attr('is-organization')){
+      if(this.element.attr('is-organization') == 'true'){
         thread.threadContainer.messagesBodyHeaderEl.find('span.conversation-title').html('Conversation with '
           + this.threadPartnerName +
           ' - <span>As an Organization (<b>'+ this.data.senderEntity.name +'<b>)</span>');
 
       } else {
-        thread.threadContainer.messagesBodyHeaderEl.find('span.conversation-title').text('Conversation with ' + this.threadPartnerName);
+        thread.threadContainer.messagesBodyHeaderEl.find('span.conversation-title').html('Conversation with '
+          + this.threadPartnerName +
+          ' - <span>As Myself</span>');
       }
 
       //this.element.find('.thread-type').html('As an Organization <br>(<b>'+

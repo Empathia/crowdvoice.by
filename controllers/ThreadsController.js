@@ -118,7 +118,8 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
           })
         }], function(err) {
           if (err) {
-            return next(err)
+            console.log(err.errors);
+            return next(err);
           }
 
           ThreadsPresenter.build(req, [thread], function(err, result) {
@@ -126,7 +127,11 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
               return next(err);
             }
 
-            res.json(result[0]);
+            res.format({
+              json : function() {
+                res.json(result[0]);
+              }
+            });
           });
         })
       })

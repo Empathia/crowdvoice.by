@@ -62,7 +62,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           entity = new Entity(result[0]);
 
           done();
-        })
+        });
       }], function(err) {
         if (err) {
           return next(err);

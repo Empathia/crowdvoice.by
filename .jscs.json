@@ -5,7 +5,7 @@
     "disallowMultipleVarDecl": "exceptUndefined",
     "disallowNewlineBeforeBlockStatements": true,
     "disallowQuotedKeysInObjects": true,
-    "disallowSpaceAfterObjectKeys": true,
+    "disallowSpaceAfterObjectKeys": false,
     "disallowSpaceAfterPrefixUnaryOperators": true,
     "disallowSpacesInFunction": {
         "beforeOpeningRoundBrace": true
@@ -36,6 +36,7 @@
     "requireSpacesInFunction": {
         "beforeOpeningCurlyBrace": true
     },
+    "requirePaddingNewLinesAfterBlocks" : true,
     "validateIndentation": 2,
     "validateLineBreaks": "LF",
     "validateQuoteMarks": "'"
