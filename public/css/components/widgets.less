@@ -305,7 +305,10 @@ a.cv-button{
   &.focused{
     border: 1px solid @color-primary-dark;
   }
-
+  &.error {
+    border-color: @color-negative;
+    background-color: tint(@color-negative, 97.5);
+  }
 }
 
 .cv-input.full{

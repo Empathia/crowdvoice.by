@@ -163,7 +163,8 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
     },
 
     addThread : function addThread(threadData) {
-      //******console.log(threadData)
+      console.log(threadData)
+
       var thread = new CV.Thread({
         name : 'thread_' + threadData.id,
         data : threadData
@@ -211,6 +212,8 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
       // set the senderEntityId so it can be accessible by other functions
       this.senderEntityId = entityId;
       this.senderEntityIsOrg = isOrganization;
+      console.log(this.senderEntityIsOrg);
+
       this.senderEntityOrgName = orgName;
 
       this.noMessagesEl.hide();
@@ -285,11 +288,17 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
             $('.search-users').val("");
 
             if (container.isOnThreadList(receiverEntityId)) {
-
+              console.log(container.senderEntityIsOrg);
               if (container.senderEntityIsOrg ){
+                console.log('is');
+
+                console.log(threadListEl.find("[data-partner-id='" + receiverEntityId + "'][is-organization='true']"));
                 threadListEl.find("[data-partner-id='" + receiverEntityId + "'][is-organization='true']").click();
               } else {
-                threadListEl.find("[data-partner-id='" + receiverEntityId + "']").click();
+                console.log('not');
+
+                console.log($('body').find("[data-partner-id='" + receiverEntityId + "'][is-organization='false']"));
+                threadListEl.find("[data-partner-id='" + receiverEntityId + "'][is-organization='false']").click();
               }
               return;
 

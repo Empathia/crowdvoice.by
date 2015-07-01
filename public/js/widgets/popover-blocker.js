@@ -40,13 +40,6 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
             <use xlink:href="#svg-close"></use>\
         </svg>',
 
-    PLACEMENT_CLASSNAMES : {
-        top     : '-top',
-        right   : '-right',
-        bottom  : '-bottom',
-        left    : '-left'
-    },
-
     prototype : {
         toggler : null,
         container : null,
@@ -82,7 +75,7 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
             if (this.hasScrollbar) this.el.classList.add('has-scrollbar');
 
             this.backdropElement.classList.add('ui-popover-backdrop');
-            this.el.classList.add(this.constructor.PLACEMENT_CLASSNAMES[this.placement]);
+            this.el.classList.add('-' + this.placement);
 
             if (this.title || this.showCloseButton) {
                 this.el.insertAdjacentHTML('afterbegin', this.constructor.HTML_HEADER);

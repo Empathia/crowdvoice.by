@@ -71,7 +71,7 @@ Class(CV, 'VoiceAddContent').inherits(Widget)({
             this.appendChild(
                 new CV.PopoverBlocker({
                     name : 'addPostBubble',
-                    className : 'voice-add-content-bubble -color-border-grey-light',
+                    className : 'voice-add-content-bubble',
                     placement : 'left',
                     toggler : this.addPostButton,
                     content : this.constructor.BUBBLE_OPTIONS
