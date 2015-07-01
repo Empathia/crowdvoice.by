@@ -3,7 +3,7 @@
  * Show/hide/set/update/load/abort current post cover image.
  */
 
-require('../../../lib/image-halt');
+// require('../../../lib/image-halt');
 
 Module(CV, 'PostModuleImages')({
     prototype : {

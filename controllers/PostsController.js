@@ -65,7 +65,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         });
       }], function(err) {
         if (err) {
-          return next(err);
+          return next(err)
         }
 
         ACL.isAllowed('show', 'posts', req.role, {

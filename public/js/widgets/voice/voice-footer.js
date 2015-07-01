@@ -53,6 +53,12 @@ Class(CV, 'VoiceFooter').inherits(Widget)({
                 })
             ).render(this.actionsColumn);
 
+            this.appendChild(
+                new CV.VoiceFooterShareButtonsGroup({
+                    name : 'shareButtons'
+                })
+            ).render(this.actionsColumn);
+
             if (this.voiceType !== CV.VoiceView.TYPE_CLOSED ||
                 this.allowPostEditing) {
                 this.appendChild(
