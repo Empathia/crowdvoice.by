@@ -2,15 +2,14 @@
 {"id":"6xOVBlryjQ0a","type":"person","name":"Jack","lastname":"Johnson","profileName":"jack-johnson","isAnonymous":false,"description":"","location":"","imageBaseUrl":"","imageMeta":"{}","backgroundBaseUrl":"","backgroundMeta":"{}","createdAt":"2015-06-22T15:33:57.953Z","updatedAt":"2015-06-22T15:33:57.953Z"}
 -->
 <main role="main" class="cv-main-profile profile-user -rel">
-  <div class="voice-background-cover">
-    <% if (organization.background.exists('card')){ %>
-      <img class="voice-background-cover-image" src="<%= organization.background.url('card') %>">
-    <% }else{ %>
-      <img class="voice-background-cover-image" src="/img/placeholder-background.png">
-    <% } %>
-  </div>
 
   <section class="profile-intro -rel">
+
+    <% if (organization.background.exists('card')){ %>
+      <div class="profile-background-cover -bg-cover" style="background-image: url(<%= organization.background.url('card') %>);"></div>
+    <% }else{ %>
+      <div class="profile-background-cover" style="background-image: url(/img/placeholder-background.png);"></div>
+    <% } %>
 
     <% if (organization.image.exists('card')){ %>
       <img class="profile-image" src="<%= organization.image.url('card') %>">
@@ -18,7 +17,7 @@
       <img class="profile-image" src="/img/placeholder-image.png">
     <% } %>
 
-    <div class="pan-separator">
+    <div class="pan-separator -rel">
 
       <div class="profile-tw">@<%= organization.profileName %></div>
       <h1 class="profile-heading -font-bold -m0"><%= organization.name %> <%= organization.lastname %></h1>
