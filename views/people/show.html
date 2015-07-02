@@ -3,7 +3,7 @@
   <section class="profile-intro -rel">
 
     <% if (person.background.exists('card')){ %>
-      <div class="profile-background-cover -bg-cover" style="background-image: url(<%= person.background.url('card') %>);"></div>
+      <div class="profile-background-cover -img-cover" style="background-image: url(<%= person.background.url('card') %>);"></div>
     <% }else{ %>
       <div class="profile-background-cover" style="background-image: url(/img/placeholder-background.png);"></div>
     <% } %>
