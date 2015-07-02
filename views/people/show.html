@@ -1,13 +1,12 @@
 <main role="main" class="cv-main-profile profile-user -rel">
-  <div class="voice-background-cover">
-    <% if (person.background.exists('card')){ %>
-      <img class="voice-background-cover-image" src="<%= person.background.url('card') %>">
-    <% }else{ %>
-      <img class="voice-background-cover-image" src="/img/placeholder-background.png">
-    <% } %>
-  </div>
 
   <section class="profile-intro -rel">
+
+    <% if (person.background.exists('card')){ %>
+      <div class="profile-background-cover -bg-cover" style="background-image: url(<%= person.background.url('card') %>);"></div>
+    <% }else{ %>
+      <div class="profile-background-cover" style="background-image: url(/img/placeholder-background.png);"></div>
+    <% } %>
 
     <% if (person.image.exists('card')){ %>
       <img class="profile-image" src="<%= person.image.url('card') %>">
@@ -15,7 +14,7 @@
       <img class="profile-image" src="/img/placeholder-image.png">
     <% } %>
 
-    <div class="pan-separator">
+    <div class="pan-separator -rel">
 
       <div class="profile-tw">@<%= person.profileName %></div>
       <h1 class="profile-heading -font-bold -m0"><%= person.name %> <%= person.lastname %></h1>
