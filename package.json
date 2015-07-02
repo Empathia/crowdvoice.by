@@ -52,6 +52,7 @@
     "rome": "^2.1.17",
     "sanitize-html": "^1.6.1",
     "sanitize.css": "^1.1.0",
+    "share-url": "^1.0.0",
     "sharp": "^0.10.1",
     "socket.io": "^1.3.5",
     "style-loader": "^0.9.0",

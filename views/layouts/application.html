@@ -86,23 +86,24 @@
       <div class="header-actions">
         <div class="placeholder-create -inline-block"></div>
         <% if (typeof currentUser !== "undefined") { %>
-          <a class="ui-btn -transparent" href="#">
-            <svg class="header-actions-svg">
-              <use xlink:href="#svg-bell"></use>
+          <button class="header-actions-button cv-button small rounded -p0">
+            <svg class="header-actions-svg -s19">
+              <use xlink:href="#svg-incognito"></use>
             </svg>
-          </a>
-          <a class="ui-btn -transparent" href="#">
-            <svg class="header-actions-svg">
-              <use xlink:href="#svg-activity"></use>
+          </button>
+          <button class="header-actions-button cv-button small rounded -p0 -rel">
+            <svg class="header-actions-svg -s17">
+              <use xlink:href="#svg-notifications"></use>
             </svg>
-          </a>
+            <span class="ui-badge -abs">22</span>
+          </button>
         <% } %>
         <form class="header-search -inline-block" role="search">
-          <a class="ui-btn" href="#">
-            <svg class="header-actions-svg header-search-svg">
+          <button class="header-actions-button cv-button small rounded -p0">
+            <svg class="header-actions-svg header-search-svg -s14">
               <use xlink:href="#svg-search"></use>
             </svg>
-          </a>
+          </button>
         </form>
 
         <% if (typeof currentUser !== "undefined") { %>
@@ -190,9 +191,9 @@
           <span class="sidebar-link-label">Messages</span>
         </a>
 
-        <a href="/<%= currentPerson.profileName %>/messages" class="sidebar-link">
+        <a href="/<%= currentPerson.profileName %>/messages" class="sidebar-link -rel">
           <svg class="sidebar-link-svg"><use xlink:href="#svg-messages-unread"></use></svg>
-          <span class="sidebar-link-badge">7</span>
+          <span class="sidebar-link-badge ui-badge -abs">7</span>
           <span class="sidebar-link-label">Messages</span>
         </a>
       <% } %>

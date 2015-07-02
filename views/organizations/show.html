@@ -57,15 +57,15 @@
   <article role="article" class="stats profile-stats profile-menu -row -rel">
       <div class="profile-tabs">
         <div class="stats-col active -menu-tab -inline-block">
-          <p class="stats-number -font-bold">36</p>
+          <p class="stats-number counter-voice -font-bold">0</p>
           <p class="stats-label">Voices</p>
         </div>
         <div class="stats-col -menu-tab -inline-block">
-          <p class="stats-number -font-bold">148</p>
+          <p class="stats-number counter-followers -font-bold">0</p>
           <p class="stats-label">Followers</p>
         </div>
         <div class="stats-col -menu-tab -inline-block">
-          <p class="stats-number -font-bold">12</p>
+          <p class="stats-number counter-following -font-bold">0</p>
           <p class="stats-label">Following</p>
         </div>
       </div>
@@ -86,12 +86,8 @@
 
     <div class="active -menu-tab-content">
       <h2 class="profile-subheading -font-bold -m0">Voices</h2>
-      <div class="-row">
-        <div class="-col-4 -pr1 voice-cover-test-1 voice"></div>
-        <div class="-col-4 -pr1 voice-cover-test-2 voice"></div>
-        <div class="-col-4 -pr1 voice-cover-test-3 voice"></div>
-        <div class="-col-4 -pr1 voice-cover-test-4 voice"></div>
-        <div class="-col-4 -pr1 voice-cover-test-5 voice"></div>
+      <div class="-row profile-voice-container">
+        <!-- voices -->
       </div>
     </div>
 
@@ -124,8 +120,59 @@
 </main>
 
 <script>
-  var postsContainer = document.querySelector('.voice-posts');
-  var posts = [];
+  console.log('organization id: <%= organization.id %>');
+  console.log('url: /organization/<%= organization.id %>/voices');
+  $.ajax({
+    type: "GET",
+    url:'/organization/<%= organization.id %>/voices',
+    headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
+    data : {},
+    success: function(data) {
+      renderVoices(data);
+    }
+  });
+
+  function renderVoices(data){
+    $('.profile-menu .counter-voices').text(data.length);
+    console.log(data);
+    var url = '/jack-johnson/fukushima-disaster';
+    var tags = [
+      {
+        name: 'Current Events',
+        url: '/topic/current-events'
+      },
+      {
+        name: 'Health',
+        url: '/topic/health'
+      }
+    ];
+    var author = {
+      avatar: '/img/sample/avatars/sm/org-00.jpg',
+      username: 'guardian',
+      url: '/organization-test'
+    };
+    var followers = 3296;
+    var gallery = [];
+    var image_cover = '/img/sample/covers/feat-00.jpg';
+
+    data.forEach(function (voice, index) {
+
+      data[index].url = url;
+      data[index].tags = tags;
+      data[index].author = author;
+      data[index].followers = followers;
+      data[index].gallery = gallery;
+      data[index].image_cover = image_cover;
+
+      var voiceEl = $('<div class="-col-4 -pr1"></div>');
+
+
+      new VoiceCover( data[index] ).render( voiceEl);
+
+      $('.profile-voice-container').append(voiceEl);
+    });
+//
+  }
 
   //var featuredVoicesData = <% //JSON.stringify(voices) %>;
   //new VoiceCover( featuredVoicesData[0] ).render( document.querySelector('.voice-cover-test-1') );

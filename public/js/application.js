@@ -12,7 +12,7 @@ window.CV = {};
 require('./lib/widget-utils.js');
 require('./lib/Widget.js');
 require('./lib/image-halt');
-require('./lib/share-link-generator');
+require('share-url/neon');
 
 window.validate = require('validate');
 //window.soundManager = require('SoundManager2').soundManager;

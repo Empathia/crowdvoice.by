@@ -13,8 +13,15 @@ hr{
     display: table;
     clear: both;
 }
+.profile-background-cover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
 .profile-intro{
-	padding: 35px 0px;
+  padding: 35px 0 110px;
 	.pan-separator{
 		width: 560px;
 		margin: 0 auto;
@@ -133,6 +140,9 @@ hr{
 .profile-body{
 	padding: 35px 0px 25px 65px;
 	background: @color-white;
+	.profile-voice-container{
+		padding-right: 50px;
+	}
 }
 .profile-body:after{
   	content: "";
@@ -264,7 +274,7 @@ hr{
 
 .profile-menu{
 	color: @color-neutral-dark;
-	margin: 0px 40px;
+	margin: -74px 40px 0;
 	.menu-item{
 		text-align: center;
 		margin-right: 25px;

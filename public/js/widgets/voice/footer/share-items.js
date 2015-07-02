@@ -1,22 +1,22 @@
 /* jshint multistr: true */
 var Checkit = require('checkit');
 
-Class(CV, 'VoiceFooterShareItems').inherits(Widget).includes(CV.WidgetUtils, ShareLinkGenerator)({
+Class(CV, 'VoiceFooterShareItems').inherits(Widget).includes(CV.WidgetUtils, ShareUrl)({
     HTML : '\
         <div class="ui-vertical-list hoverable">\
-            <a class="ui-vertical-list-item -block" target="_blank" data-type="twitter">\
+            <a class="ui-vertical-list-item -block" target="_blank" data-type="twitter" title="Share on Twitter">\
                 <svg class="-s20 -mr1">\
                     <use xlink:href="#svg-twitter-square"></use>\
                 </svg>\
                 Twitter\
             </a>\
-            <a class="ui-vertical-list-item -block" target="_blank" data-type="facebook">\
+            <a class="ui-vertical-list-item -block" target="_blank" data-type="facebook" title="Share on Facebook">\
                 <svg class="-s20 -mr1">\
                     <use xlink:href="#svg-facebook-square"></use>\
                 </svg>\
                 Facebook\
             </a>\
-            <a class="ui-vertical-list-item -block" target="_blank" data-type="googleplus">\
+            <a class="ui-vertical-list-item -block" target="_blank" data-type="googleplus" title="Share on Google+">\
                 <svg class="-s20 -mr1">\
                     <use xlink:href="#svg-gplus-square"></use>\
                 </svg>\
@@ -49,7 +49,7 @@ Class(CV, 'VoiceFooterShareItems').inherits(Widget).includes(CV.WidgetUtils, Sha
             this.sendEmailButton = this.el.querySelector('[data-button="send-email"]');
 
             var url = location.href;
-            this.dom.updateAttr('href', this.fa, this.facebook({url: url}));
+            this.dom.updateAttr('href', this.fa, this.facebook({u: url}));
             this.dom.updateAttr('href', this.tw, this.twitter({url: url, text: voiceInfo.title}));
             this.dom.updateAttr('href', this.gp, this.googlePlus({url: url}));
 
@@ -77,7 +77,13 @@ Class(CV, 'VoiceFooterShareItems').inherits(Widget).includes(CV.WidgetUtils, Sha
                 return this.emailInputWrapper.classList.add('error');
             }
 
-            //@TODO: send mail
+            var emailUrlString = this.email({
+                to : this.emailInput.value,
+                subject : 'Check out this page',
+                body : window.location
+            });
+
+            window.location = emailUrlString;
         },
 
         _keyupHandler : function _keyupHandler(ev) {

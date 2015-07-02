@@ -76,16 +76,30 @@ body > .cv-main-header {
 .header-actions  {
   display: inline-block;
   padding-top: 14px;
-  padding-right: 1rem;
+  padding-right: 10px;
+
+  .placeholder-create {
+    margin-right: 12px;
+  }
+}
+
+.header-actions-button.cv-button {
+  margin: 0 10px;
+
+  .ui-badge {
+    top: -7px;
+    right: 0;
+    transform: translateX(50%);
+  }
+
+  &:hover .header-actions-svg {
+    fill: @color-neutral-x-mid;
+  }
 }
 
 .header-actions-svg {
-  width: 14px;
-  height: 14px;
-  margin: .5rem .5rem 0;
-  fill: @color-grey-light;
+  fill: @color-neutral-light;
 }
 
 .header-search {
-  padding-right: 1.5rem;
 }
