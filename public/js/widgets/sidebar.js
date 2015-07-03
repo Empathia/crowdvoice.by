@@ -6,13 +6,15 @@ Class(CV, 'Sidebar').inherits(Widget)({
     prototype : {
 
         el : null,
+        _body : null,
         _yield : null,
 
         init : function init(config) {
             Widget.prototype.init.call(this, config);
 
             this.el = this.element;
-            this._yield = document.body.querySelector('.yield');
+            this._body = document.body;
+            this._yield = this._body.querySelector('.yield');
 
             this._bindEvents();
         },
@@ -26,11 +28,13 @@ Class(CV, 'Sidebar').inherits(Widget)({
         },
 
         _mouseEnterHandler : function _mouseEnterHandler() {
+            this._body.style.overflow = 'hidden';
             this._yield.classList.add(this.constructor.IS_PAUSED_CLASSNAME);
             this.el.classList.add(this.constructor.IS_EXPANDED_CLASSNAME);
         },
 
         _mouseLeaveHandler : function _mouseLeaveHandler() {
+            this._body.style.overflow = '';
             this._yield.classList.remove(this.constructor.IS_PAUSED_CLASSNAME);
             this.el.classList.remove(this.constructor.IS_EXPANDED_CLASSNAME);
         },
@@ -45,7 +49,10 @@ Class(CV, 'Sidebar').inherits(Widget)({
             this._mouseLeaveHandlerRef = null;
 
             this.el = null;
+            this._body = null;
             this._yield = null;
+
+            return null;
         }
     }
 });
