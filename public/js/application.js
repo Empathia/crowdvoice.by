@@ -24,6 +24,7 @@ window.moment = moment;
 
 // generic widgets
 require('./widgets/sidebar.js');
+require('./widgets/header.js');
 require('./widgets/popover.js');
 require('./widgets/popover-blocker.js');
 require('./widgets/responsive-slider.js');

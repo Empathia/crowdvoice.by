@@ -27,9 +27,10 @@ body.page-inner .cv-main-header {
 
   .account-info-name {
     font-size: 15px;
-    text-decoration: underline;
     line-height: 28px;
     color: @color-neutral-dark;
+    &:extend(.-ctu);
+    &:extend(.-ctu-neutral-dark);
   }
 
   .actions-wrapper {
@@ -68,8 +69,12 @@ body > .cv-main-header {
 
 .header-login-actions {
   padding: 15px 2rem 0 15px;
-  .login-action-list{
-    padding-top: .5rem;
+
+  .login-actions {
+    &__list {
+      font-size: 15px;
+      padding-top: .5rem;
+    }
   }
 }
 
@@ -78,7 +83,7 @@ body > .cv-main-header {
   padding-top: 14px;
   padding-right: 10px;
 
-  .placeholder-create {
+  .header-create-dropdown {
     margin-right: 12px;
   }
 }

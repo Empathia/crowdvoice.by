@@ -35,110 +35,11 @@
         </span>
       </a>
 
-      <div class="header-login-actions -inline-block -color-grey-light">
-        <% if (!currentPerson) { %>
-          <div class="login-action-list">
-            <a href="/signup" class="action-signup">Signup</a> or <a href="/login" class="action-login">Login</a>
-          </div>
-        <% } else { %>
-          <div class="placeholder-account -inline-block"></div>
-          <script>
-          //Multiple
-            var allMulti = {
-              "1": {name: 'Your Profile'},
-              "2": {name: 'Manage Account'},
-              "3": {
-                name: 'Organization 01',
-                sub: {
-                  "0": {name: 'Profile'},
-                  "1": {name: 'Manage'}
-                }
-              },
-              "4": {
-                name: 'Organization 02',
-                sub: {
-                  "0": {name: 'Profile'},
-                  "1": {name: 'Manage'}
-                }
-              },
-              "5": {
-                name: 'Organization 03',
-                sub: {
-                  "0": {name: 'Profile'},
-                  "1": {name: 'Manage'}
-                }
-              },
-              "6": {name: 'Logout', url: '/logout'}
-            };
-            new CV.SelectAccount({
-              label         : 'Multiple',
-              name          : 'select',
-              accountImage  : "/img/sample/avatars/org-00.jpg",
-              accountName   : "<%= currentPerson.name + ' ' + currentPerson.lastname %>",
-              options       : allMulti
-            }).render(document.querySelector('.placeholder-account'));
-          </script>
-        <% } %>
-      </div>
+      <div class="header-login-actions -inline-block"></div>
     </div>
 
     <div class="-float-right -text-right">
-      <div class="header-actions">
-        <div class="placeholder-create -inline-block"></div>
-        <% if (typeof currentUser !== "undefined") { %>
-          <button class="header-actions-button cv-button small rounded -p0">
-            <svg class="header-actions-svg -s19">
-              <use xlink:href="#svg-incognito"></use>
-            </svg>
-          </button>
-          <button class="header-actions-button cv-button small rounded -p0 -rel">
-            <svg class="header-actions-svg -s17">
-              <use xlink:href="#svg-notifications"></use>
-            </svg>
-            <span class="ui-badge -abs">22</span>
-          </button>
-        <% } %>
-        <form class="header-search -inline-block" role="search">
-          <button class="header-actions-button cv-button small rounded -p0">
-            <svg class="header-actions-svg header-search-svg -s14">
-              <use xlink:href="#svg-search"></use>
-            </svg>
-          </button>
-        </form>
-
-        <% if (typeof currentUser !== "undefined") { %>
-
-          <script>
-
-            var createOptions = {
-              "1": {label: 'Voice', name: 'voice'},
-              "2": {label: 'Organization', name: 'organization'}
-            };
-
-            new CV.Select({
-              style: 'primary small',
-              label : 'Create New',
-              name  : 'createSelect',
-              options: createOptions
-            }).render(document.querySelector('.placeholder-create'));
-
-          </script>
-
-        <% } else { %>
-
-          <script>
-
-            new CV.Button({
-                style   : 'primary',
-                type    : 'single',
-                label   : 'Edit This Voice',
-                name    : 'buttonEdit'
-            })//.render(document.querySelector('.placeholder-create'));
-
-          </script>
-
-        <% } %>
-      </div>
+      <div class="header-actions"></div>
     </div>
   </header>
 
@@ -231,5 +132,13 @@
   <div class="yield">
     <%= yield %>
   </div>
+
+  <script>
+    new CV.Header({
+      element: $('.cv-main-header'),
+      currentPerson : currentPerson
+    });
+  </script>
+
 </body>
 </html>
