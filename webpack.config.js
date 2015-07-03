@@ -3,10 +3,13 @@ var path = require('path');
 var CompressionPlugin = require("compression-webpack-plugin");
 
 module.exports = {
-  entry: path.join(__dirname, '/public/js/application.js'),
+  entry: {
+      bundle : path.join(__dirname, '/public/js/application.js'),
+      systemStatus : path.join(__dirname, '/public/js/systemStatus.js')
+  },
   output: {
     path: path.join(__dirname, './public/dist'),
-    filename: 'bundle.js',
+    filename: '[name].js',
     sourceMap : '[file].map'
   },
   resolve: {
