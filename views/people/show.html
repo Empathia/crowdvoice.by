@@ -2,14 +2,14 @@
 
   <section class="profile-intro -rel">
 
-    <% if (person.background.exists('card')){ %>
-      <div class="profile-background-cover -img-cover" style="background-image: url(<%= person.background.url('card') %>);"></div>
+    <% if (person.background.exists('big')){ %>
+      <div class="profile-background-cover -img-cover" style="background-image: url(<%= person.background.url('big') %>);"></div>
     <% }else{ %>
       <div class="profile-background-cover" style="background-image: url(/img/placeholder-background.png);"></div>
     <% } %>
 
-    <% if (person.image.exists('card')){ %>
-      <img class="profile-image" src="<%= person.image.url('card') %>">
+    <% if (person.image.exists('medium')){ %>
+      <img class="profile-image" src="<%= person.image.url('medium') %>">
     <% }else{ %>
       <img class="profile-image" src="/img/placeholder-image.png">
     <% } %>
@@ -292,8 +292,3 @@ profileSettings.share.on('click', function(){
   });
 
 </script>
-
-
-
-
-

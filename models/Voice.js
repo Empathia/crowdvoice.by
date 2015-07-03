@@ -141,7 +141,7 @@ var Voice = Class('Voice').inherits(Argon.KnexModel).includes(ImageUploader)({
 
       // Add image attachment
       this.hasImage({
-        propertyName: 'background',
+        propertyName: 'image',
         versions: {
           card: function (readStream) {
             return readStream.pipe(sharp().resize(340));

@@ -151,16 +151,52 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
           propertyName: 'image',
           versions: {
             icon: function (readStream) {
-              return readStream.pipe(sharp().resize(16,16));
+              return readStream.pipe(
+                sharp()
+                  .resize(16,16)
+                  .interpolateWith(sharp.interpolator.nohalo)
+                  .embed()
+                  .progressive()
+                  .flatten()
+                  .background('#FFFFFF')
+                  .quality(100)
+              );
             },
             small: function (readStream) {
-              return readStream.pipe(sharp().resize(36,36));
+              return readStream.pipe(
+                sharp()
+                  .resize(36,36)
+                  .interpolateWith(sharp.interpolator.nohalo)
+                  .embed()
+                  .progressive()
+                  .flatten()
+                  .background('#FFFFFF')
+                  .quality(100)
+              );
             },
             card: function (readStream) {
-              return readStream.pipe(sharp().resize(88,88));
+              return readStream.pipe(
+                sharp()
+                .resize(88,88)
+                .interpolateWith(sharp.interpolator.nohalo)
+                .embed()
+                .progressive()
+                .flatten()
+                .background('#FFFFFF')
+                .quality(100)
+              );
             },
             medium: function (readStream) {
-              return readStream.pipe(sharp().resize(160,160));
+              return readStream.pipe(
+                sharp()
+                  .resize(160,160)
+                  .interpolateWith(sharp.interpolator.nohalo)
+                  .embed()
+                  .progressive()
+                  .flatten()
+                  .background('#FFFFFF')
+                  .quality(100)
+              );
             }
           },
           bucket: 'crowdvoice.by',
@@ -172,13 +208,42 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
           propertyName: 'background',
           versions: {
             card: function (readStream) {
-              return readStream.pipe(sharp().resize(340));
+              return readStream.pipe(
+                sharp()
+                  .resize(340)
+                  .interpolateWith(sharp.interpolator.nohalo)
+                  .embed()
+                  .progressive()
+                  .flatten()
+                  .background('#FFFFFF')
+                  .quality(100)
+              );
             },
             bluredCard: function (readStream) {
-              return gm(readStream.pipe(sharp().resize(340))).gaussian(5, 5).stream();
+              return readStream.pipe(
+                sharp()
+                  .resize(340)
+                  .interpolateWith(sharp.interpolator.nohalo)
+                  // .embed()
+                  .progressive()
+                  .flatten()
+                  .background('#FFFFFF')
+                  .blur(5)
+                  .quality(100)
+              );
             },
             big: function (readStream) {
-              return gm(readStream.pipe(sharp().resize(2560,1113))).gaussian(10, 10).stream();
+              return readStream.pipe(
+                sharp()
+                  .resize(2560, 1113)
+                  .interpolateWith(sharp.interpolator.nohalo)
+                  // .embed()
+                  .progressive()
+                  .flatten()
+                  .background('#FFFFFF')
+                  .blur(25)
+                  .quality(100)
+              );
             }
           },
           bucket: 'crowdvoice.by',
@@ -313,6 +378,22 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
         });
       },
 
+      /* Make an entity belong to current entity.
+       * @method setOwnershipTo
+       * @property entity <Object>
+       * @return undefined
+       */
+      setOwnershipTo : function setOwnershipTo(entity, done) {
+        var ownerRelation = new EntityOwner({
+          ownerId: this.id,
+          ownedId: entity.id
+        });
+
+        ownerRelation.save(function(err, result) {
+          done(err, result);
+        });
+      },
+
       /* Make an organization belong to current entity.
        * @method ownOrganization
        * @property organization <Object>
@@ -370,6 +451,27 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
             return callback(null, true);
           }
         });
+      },
+
+      addMember : function addMember(person, callback) {
+        if (!this.id) {
+          return callback(new Error('Must have an ID'));
+        }
+
+        if (this.type !== 'organization') {
+          return callback(new Error('Entity is not an organization'));
+        }
+
+        if (person.type !== 'person') {
+          return callback(new Error('Member is not a person'));
+        }
+
+        var entityMembership = new EntityMembership({
+          entityId : this.id,
+          memberId : person.id
+        });
+
+        return entityMembership.save(callback);
       },
 
       isMemberOf : function isMemberOf(entityId, callback) {
