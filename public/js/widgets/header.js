@@ -26,7 +26,7 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
                 <use xlink:href="#svg-incognito"></use>\
             </svg>\
         </button>\
-        <button class="header-actions-button cv-button small rounded -p0 -rel">\
+        <button class="header-notification-button header-actions-button cv-button small rounded -p0 -rel has-new-notifications">\
             <svg class="header-actions-svg -s17">\
                 <use xlink:href="#svg-notifications"></use>\
             </svg>\
