@@ -8,7 +8,7 @@
     <% if (organization.background.exists('big')){ %>
       <div class="profile-background-cover -img-cover" style="background-image: url(<%= organization.background.url('big') %>);"></div>
     <% }else{ %>
-      <div class="profile-background-cover" style="background-image: url(/img/placeholder-background.png);"></div>
+      <div class="profile-background-cover -colored-background"></div>
     <% } %>
 
     <% if (organization.image.exists('medium')){ %>

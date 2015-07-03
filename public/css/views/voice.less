@@ -1,11 +1,8 @@
 @import '../components/voice-timeline';
 
 .page-inner {
-  /*background-color: @color-grey-lighter;*/
-
   .cv-main-content {
     padding: 0 40px 0 40px;
-    /*background-color: @color-grey-lighter;*/
   }
 
   .cv-main-profile-edit {
@@ -16,8 +13,12 @@
     padding: 0;
   }
 
-  &.page-voice .cv-main-content {
-    padding-right: 0;
+  &.page-voice {
+    background-color: @color-neutral-xx-light;
+
+    .cv-main-content {
+      padding-right: 0;
+    }
   }
 }
 
@@ -52,13 +53,13 @@
   width: 100%;
 
   &::after {
-    /*content: '';
+    content: '';
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: linear-gradient(to bottom,rgba(0,0,0,0) 50%, @color-grey-lighter);*/
+    background-image: linear-gradient(to bottom,rgba(0,0,0,0) 50%, @color-neutral-xx-light);
   }
 
   &.-colored-background {

@@ -1,29 +1,28 @@
-<style type="text/css">
-    body {
-        font-size: 13px;
-        margin: 0;
-        color: #4c4c4c;
-        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-        text-align: center;
-    }
-
-    .view {
-        padding: 5em 0;
-    }
+<style>
+  body {
+    background: url(/img/system-status/naranja-3.jpg);
+    background-repeat: no-repeat;
+    background-position: 100% -30px;
+    background-size: 145px 301px;
+  }
 </style>
 
-<div class="view">
-    <h1>403</h1>
+<div class="message-wrapper">
+  <h1 class="message__title">403</h1>
 
-    <% if (message) { %>
-        <h2><%= message %></h2>
-    <% } else { %>
-        <h2>Forbiden!</h2>
-    <% } %>
+  <% if (message) { %>
+    <h2 class="message__text"><%= message %></h2>
+  <% } else { %>
+    <h2 class="message__text">Forbidden!</h2>
+  <% } %>
 
-    <p>Looks like you followed a bad link or something went wrong.</p>
+  <hr/>
 
-    <p>
-        Go back to the <a href="<%= CONFIG.siteUrl[application.env] %>/">Homepage</a>.
-    </p>
+  <p class="message__text-small">
+    Looks like you followed a bad link or something went wrong.
+  </p>
+
+  <div class="links">
+    <a href="<%= CONFIG.siteUrl[application.env] %>/" class="cv-button">Go to Homepage</a>
+  </div>
 </div>
