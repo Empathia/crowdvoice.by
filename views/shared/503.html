@@ -1,32 +1,31 @@
 <style>
   body {
-    background: url(/img/system-status/gris-1.jpg);
+    background: url(/img/system-status/naranja-3.jpg);
     background-repeat: no-repeat;
     background-position: 100% -30px;
-    background-size: 155px 294px;
+    background-size: 145px 301px;
   }
 </style>
 
 <div class="message-wrapper">
-  <h1 class="message__title">404</h1>
+  <h1 class="message__title">503</h1>
 
   <% if (message) { %>
     <h2 class="message__text"><%= message %></h2>
   <% } else { %>
-  <h2 class="message__text">
-    Oops, the page you’re looking for does not exist.
+    <h2 class="message__text">
+      Looks like we’re having some server issues.
     </h2>
   <% } %>
 
   <hr/>
 
   <p class="message__text-small">
-    You may want to head to the homepage.<br/>
+    Go back to the previous page and try again.<br/>
     If you think something is broken, please report a problem.
   </p>
 
   <div class="links">
-    <a href="<%= CONFIG.siteUrl[application.env] %>/" class="cv-button">Go to Homepage</a>
     <a href="/" class="cv-button">Report a Problem</a>
   </div>
 </div>
