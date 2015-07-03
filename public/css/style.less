@@ -56,24 +56,6 @@ body > .yield.-is-paused {
   transform: translateX(@cv-sidebar-width - @cv-sidebar-collapsed-width) translateZ(0);
 }
 
-.cv-main-logo {
-  padding: 13px 0 0 11px;
-  white-space: nowrap;
-
-  .cv-main-logo__svg {
-    width: 32px;
-    height: 36px;
-  }
-
-  .cv-main-logo-type {
-    font-size: 18px;
-    padding: 4px 0 0 4px;
-    color: @color-black;
-  }
-
-  .logo-type-cv {color: @color-grey-dark}
-  .logo-type-by {color: @color-grey-light}
-}
 .controller-errors{
   position: absolute;
   z-index: 1000;
@@ -94,6 +76,7 @@ body > .yield.-is-paused {
 @import './components/header';
 @import './components/sidebar';
 @import './components/footer';
+@import './components/logo';
 @import './components/tags';
 @import './components/voice-cover';
 @import './components/card';
