@@ -16,7 +16,7 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
     LOGIN_ACTIONS_HTML : '\
         <div class="login-action">\
             <div class="login-actions__list">\
-                <a href="/signup" class="action-signup -ctu -ctu-primary">Signup</a> or <a href="/login" class="action-login -ctu -ctu-primary">Login</a>\
+                <a href="/signup" class="action-signup -ctu -ctu-primary">Signup</a> or <a href="/login" class="-ctu -ctu-primary">Login</a>\
             </div>\
         </div>',
 
