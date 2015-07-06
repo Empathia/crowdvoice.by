@@ -76,7 +76,7 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
       this.actionsElement = this.element.find('.voice-actions');
 
 
-      this.dom.updateAttr('href', this.el.querySelector('.voice-cover-hover-overlay'), this.url);
+      this.dom.updateAttr('href', this.el.querySelector('.voice-cover-hover-overlay'), this.slug);
       this.dom.updateAttr('title', this.el.querySelector('.voice-cover-hover-overlay'), this.title + ' voice');
       //this.createTags(this.tags);
       this.dom.updateBgImage(this.el.querySelector('.voice-cover-main-image'), this.images.card.url);
@@ -93,9 +93,9 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
       this.dom.updateText(this.dateTimeElement, moment(this.updated_at).fromNow());
       this.dom.updateAttr('datetime', this.dateTimeElement, this.updated_at);
 
-      if (this.gallery.length >= 3) {
-        this.createGallery(this.gallery);
-      }
+      // if (this.gallery.length >= 3) {
+      //   this.createGallery(this.gallery);
+      // }
       if (this.style == 'list'){
         this.element.addClass('list-style');
       }

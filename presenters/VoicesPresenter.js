@@ -22,12 +22,15 @@ var VoicesPresenter = Module('VoicesPresenter')({
           }
 
           EntitiesPresenter.build(entities, function(err, result) {
-            console.log(result)
             if (err) {
               return nextVoice(err);
             }
 
             voiceInstance.author = result[0];
+
+            delete voiceInstance.ownerId;
+
+            // console.log(voiceInstance)
 
             // Images
             var images = {};

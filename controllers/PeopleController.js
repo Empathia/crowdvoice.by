@@ -31,27 +31,6 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
           });
         });
       });
-    },
-
-    voices : function voices(req, res, next) {
-      Voice.find({
-        'owner_id' : req.entity.id,
-        status : Voice.STATUS_PUBLISHED
-      }, function(err, result) {
-        if (err) { next(err); return; }
-
-        VoicesPresenter.build(result, function(err, voices) {
-          if (err) {
-            return next(err);
-          }
-
-          res.format({
-            json : function() {
-              res.json(voices);
-            }
-          });
-        });
-      });
     }
   }
 });
