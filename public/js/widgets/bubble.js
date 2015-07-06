@@ -69,10 +69,6 @@ Class(CV, 'Bubble').inherits(Widget)({
                 bubble.hide();
             });
 
-            $(document).on( 'scroll', function(){
-                bubble.hide();
-            });
-
             bubbleAction.bind('close', function(){
                 this.hide();
             }.bind(this));
@@ -141,7 +137,7 @@ Class(CV, 'Bubble').inherits(Widget)({
             this.position();
         },
         hide : function(){
-            $('body').css('overflow', 'auto');
+            $('body').css('overflow', '');
             this.element.hide();
         }
 
