@@ -12,6 +12,12 @@
             <p class="-font-bold">Account</p>
           </div>
           <div class="menu-item -menu-tab -inline-block">
+            <p class="-font-bold">Notifications</p>
+          </div>
+          <div class="menu-item -menu-tab -inline-block">
+            <p class="-font-bold">Blocked Users</p>
+          </div>
+          <div class="menu-item -menu-tab -inline-block">
             <p class="-font-bold">Organizations</p>
           </div>
         </div>
@@ -121,10 +127,28 @@
             </div>
           </div>
 
+            <br>
+
+          <div class="-row">
+            <div class="-col-12 placeholder-main">
+              <div class="form-field">
+                <label>Privacy<span></span></label>
+                <div class="text">
+                  <p>Your profile is public.</p>
+                  <span class="dim">Protect your account if you'd like to approve new followers before they can see your activity.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
         </div>
 
         <br>
+        <br>
+
         <hr>
+
         <br>
 
         <div class="-width-50">
@@ -144,6 +168,166 @@
         </div>
 
       </form>
+    </div>
+
+    <!-- ||||||||||||||||||||||||||||||||
+                Notifications
+     |||||||||||||||||||||||||||||||| -->
+
+    <div class="-menu-tab-content">
+      <div class="placeholder-notifications profile-notifications">
+        <div class="form-field"><label>Notify me</label></div>
+        <div class="settings-list">
+          <div class="setting-row">
+            <div class="-align-left">
+              <span class="setitle">When I am followed</span>
+            </div>
+            <div class="-align-right">
+              <div class="cv-check">
+                <input type="checkbox">
+                <span class="label">Email</span>
+              </div>
+              <div class="cv-check">
+                <input type="checkbox">
+                <span class="label">Web</span>
+              </div>
+            </div>
+          </div><!-- row -->
+          <div class="setting-row">
+            <div class="-align-left">
+              <span class="setitle">When my voices and organizations are followed</span>
+            </div>
+            <div class="-align-right">
+              <div class="cv-check">
+                <input type="checkbox">
+                <span class="label">Email</span>
+              </div>
+              <div class="cv-check">
+                <input type="checkbox">
+                <span class="label">Web</span>
+              </div>
+            </div>
+          </div><!-- row -->
+          <div class="setting-row">
+            <div class="-align-left">
+              <span class="setitle">When my content is reposted</span>
+            </div>
+            <div class="-align-right">
+              <div class="cv-check">
+                <input type="checkbox">
+                <span class="label">Email</span>
+              </div>
+              <div class="cv-check">
+                <input type="checkbox">
+                <span class="label">Web</span>
+              </div>
+            </div>
+          </div><!-- row -->
+          <div class="setting-row">
+            <div class="-align-left">
+              <span class="setitle">When I get new messages</span>
+            </div>
+            <div class="-align-right">
+              <div class="cv-check">
+                <input type="checkbox">
+                <span class="label">Email</span>
+              </div>
+              <div class="cv-check">
+                <input type="checkbox">
+                <span class="label">Web</span>
+              </div>
+            </div>
+          </div><!-- row -->
+          <div class="setting-row">
+            <div class="-align-left">
+              <span class="setitle">When new Voices from users and organizations I follow are created</span>
+            </div>
+            <div class="-align-right">
+              <div class="cv-check">
+                <input type="checkbox">
+                <span class="label">Email</span>
+              </div>
+              <div class="cv-check">
+                <input type="checkbox">
+                <span class="label">Web</span>
+              </div>
+            </div>
+          </div><!-- row -->
+        </div>
+
+        <br><br>
+        <div class="form-field"><label>Email digests</label></div>
+
+        <div class="settings-list">
+
+          <div class="setting-row">
+            <div class="-align-left">
+              <div class="setitle">
+                <div class="cv-check">
+                  <input type="checkbox">
+                  <span class="label">Voices, Users and Organizations suggested by CrowdVoice.by</span>
+                </div>
+              </div>
+            </div>
+            <div class="-align-right">
+              <div class="radio-group">
+                <input type="radio" name="option1" value="true" checked><span>Daily</span>
+                <input type="radio" name="option1" value="false"><span>Weekly</span>
+                <input type="radio" name="option1" value="false"><span>Monthly</span>
+                <input type="radio" name="option1" value="false"><span>Never</span>
+              </div>
+            </div>
+          </div><!-- row -->
+          <div class="setting-row">
+            <div class="-align-left">
+              <div class="setitle">
+                <div class="cv-check">
+                  <input type="checkbox">
+                  <span class="label">Announcements and updates</span>
+                </div>
+              </div>
+            </div>
+            <div class="-align-right">
+              <div class="radio-group">
+                <input type="radio" name="option2" value="true" checked><span>Daily</span>
+                <input type="radio" name="option2" value="false"><span>Weekly</span>
+                <input type="radio" name="option2" value="false"><span>Monthly</span>
+                <input type="radio" name="option2" value="false"><span>Never</span>
+              </div>
+            </div>
+          </div><!-- row -->
+          <div class="setting-row">
+            <div class="-align-left">
+              <div class="setitle">
+                <div class="cv-check">
+                  <input type="checkbox">
+                  <span class="label">New Voices, Users and Organizations Digest</span>
+                </div>
+              </div>
+            </div>
+            <div class="-align-right">
+              <div class="radio-group">
+                <input type="radio" name="option3" value="true" checked><span>Daily</span>
+                <input type="radio" name="option3" value="false"><span>Weekly</span>
+                <input type="radio" name="option3" value="false"><span>Monthly</span>
+                <input type="radio" name="option3" value="false"><span>Never</span>
+              </div>
+            </div>
+          </div><!-- row -->
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ||||||||||||||||||||||||||||||||
+                Users
+     |||||||||||||||||||||||||||||||| -->
+
+    <div class="-menu-tab-content">
+      <div class="placeholder-users">
+
+      </div>
     </div>
 
     <!-- ||||||||||||||||||||||||||||||||

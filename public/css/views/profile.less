@@ -138,13 +138,18 @@ hr{
 }
 
 .profile-body{
-	padding: 35px 0px 25px 65px;
+	padding: 35px 0px 25px 0px;
 	background: @color-white;
+}
+.profile-content-body{
+	padding: 35px 0px 25px 65px;
 	.profile-voice-container{
 		padding-right: 50px;
 	}
 }
-.profile-body:after{
+
+.profile-body:after,
+.profile-content-body:after{
   	content: "";
     display: table;
     clear: both;
@@ -274,7 +279,11 @@ hr{
 
 .profile-menu{
 	color: @color-neutral-dark;
-	margin: -74px 40px 0;
+	border-bottom: 1px solid @color-menu-border;
+	&.bg-fix{
+		margin: -74px 40px 0;
+		border-bottom: none;
+	}
 	.menu-item{
 		text-align: center;
 		margin-right: 25px;
@@ -734,6 +743,11 @@ width: 200px;
 display: none;
 */
 	}
+
+	@keyframes pulse {
+	  50% { opacity: .5 }
+	}
+
 	.icon-text{
 		color: @color-neutral-mid;
 		font-size: 11px;
@@ -742,13 +756,21 @@ display: none;
 	  	height: 20px;
 	  	cursor: pointer;
 	  	text-decoration: underline;
-	  	&.location{
+	  	&.detect-location{
 	  		background: transparent url('/img/ico-location-pin.png') center left no-repeat;
 	  	}
 	  	&.edit{
 	  		background: transparent url('/img/ico-edit.png') center left no-repeat;
 	  	}
+	  	&.looking {
+		  animation: pulse .75s ease-out 20;
+		}
 	}
+
+
+
+
+
 }
 
 
