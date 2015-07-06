@@ -79,7 +79,7 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
       this.dom.updateAttr('href', this.el.querySelector('.voice-cover-hover-overlay'), this.url);
       this.dom.updateAttr('title', this.el.querySelector('.voice-cover-hover-overlay'), this.title + ' voice');
       //this.createTags(this.tags);
-      this.dom.updateBgImage(this.el.querySelector('.voice-cover-main-image'), this.image_cover);
+      this.dom.updateBgImage(this.el.querySelector('.voice-cover-main-image'), this.images.bluredcard.url);
 
       this.dom.updateAttr('href', this.el.querySelector('.author-anchor'), this.author.url);
       this.dom.updateAttr('title', this.el.querySelector('.author-anchor'), this.author.username + ' profile');

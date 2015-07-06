@@ -12,7 +12,7 @@ exports.up = function(knex, Promise) {
 
       // Image attachment
       t.string('image_base_url', 1024).defaultTo('');
-      t.text('image_meta').defaultTo('{}');
+      t.json('image_meta').defaultTo('{}');
 
       t.string('source_service').notNullable();
       t.string('source_type').notNullable();

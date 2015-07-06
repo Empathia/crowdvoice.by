@@ -15,7 +15,8 @@ CONFIG.database.logQueries = true;
 var data = {
   users : {},
   entities : {},
-  organizations : {}
+  organizations : {},
+  voices : {}
 }
 
 async.series([function(next) {
@@ -585,11 +586,207 @@ async.series([function(next) {
             url : voice.slug
           });
 
-          slug.save(nextVoice);
+          slug.save(function(err, result) {
+            if (err) {
+              return nextVoice(err);
+            }
+
+            data.voices[slug.url] = voiceInstance;
+            nextVoice();
+          });
         });
       });
     });
   }, next);
+}, function(next) {
+
+  // Voices by organizations
+  var voices = [
+    {
+      data : {
+        title         : 'Winterfell',
+        description   : 'Winterfell is the seat of House Bolton (formerly House Stark). It is a very large castle located at the center of the North, from where the head of House Stark rules over his people. A small Godswood is enclosed within the walls. It is the capital of the North under King Robb Stark.',
+        ownerId       : data.organizations['house-stark'].id,
+        status        : Voice.STATUS_PUBLISHED,
+        type          : Voice.TYPE_PUBLIC,
+        latitude      : '4.815',
+        longitude     : '162.342',
+        locationName  : 'Winterfell'
+      },
+      image : path.join(process.cwd(), '/public/generator/voices/winterfell-background.jpg'),
+      slug  : 'winterfell'
+    },
+    {
+      data : {
+        title         : 'Bran the Builder',
+        description   : 'Brandon Stark, also known as Brandon the Builder and Bran the Builder, was the legendary founder[1] of House Stark who is said to have lived during the Age of Heroes.',
+        ownerId       : data.organizations['house-stark'].id,
+        status        : Voice.STATUS_PUBLISHED,
+        type          : Voice.TYPE_PUBLIC,
+        latitude      : '4.815',
+        longitude     : '162.342',
+        locationName  : 'The Wall'
+      },
+      image : path.join(process.cwd(), '/public/generator/voices/bran-background.jpg'),
+      slug  : 'bran-the-builder'
+    },
+    {
+      data : {
+        title         : 'Casterly Rock',
+        description   : 'Casterly Rock, nicknamed the Rock, is a fortress and the seat of House Lannister. The capital of the Westerlands, it overlooks the harbor of Lannisport and the Sunset Sea. Nearby strongholds include Kayce and Feastfires to the west, Sarsfield to the north, and Cornfield and Clegane\'s Keep to the south.',
+        ownerId       : data.organizations['house-lannister'].id,
+        status        : Voice.STATUS_PUBLISHED,
+        type          : Voice.TYPE_PUBLIC,
+        latitude      : '4.815',
+        longitude     : '162.342',
+        locationName  : 'Casterly Rock'
+      },
+      image : path.join(process.cwd(), '/public/generator/voices/casterly-rock.jpg'),
+      slug  : 'casterly-rock'
+    },
+    {
+      data : {
+        title         : 'King\'s Landing',
+        description   : 'King\'s Landing is the capital of the Seven Kingdoms. It is located on the east coast of Westeros in the Crownlands, overlooking Blackwater Bay. It is the site of the Iron Throne and the Red Keep, the seat of the King of the Andals and the First Men. ',
+        ownerId       : data.organizations['house-baratheon'].id,
+        status        : Voice.STATUS_PUBLISHED,
+        type          : Voice.TYPE_PUBLIC,
+        latitude      : '4.815',
+        longitude     : '162.342',
+        locationName  : 'King\'s Landing'
+      },
+      image : path.join(process.cwd(), '/public/generator/voices/kings-landing.jpg'),
+      slug  : 'kings-landing'
+    }
+  ];
+
+  async.eachLimit(voices, 1, function(voice, nextVoice) {
+    var voiceInstance = new Voice(voice.data);
+
+    voiceInstance.save(function(err, result) {
+      if (err) {
+        return nextVoice(err);
+      }
+
+      voiceInstance.uploadImage('image', voice.image, function(err) {
+        if (err) {
+          return nextVoice(err);
+        }
+
+        voiceInstance.save(function(err, result) {
+          if (err) {
+            return nextVoice(err);
+          }
+
+          var slug = new Slug({
+            voiceId : voiceInstance.id,
+            url : voice.slug
+          });
+
+          slug.save(function(err, result) {
+            if (err) {
+              return nextVoice(err);
+            }
+
+            data.voices[slug.url] = voiceInstance;
+            nextVoice();
+          });
+        });
+      });
+    });
+  }, next);
+
+}, function(next) {
+
+  // Follow persons
+  async.series([function(done) {
+    data.entities['tyrion-lannister'].followEntity(data.entities['jamie-lannister'], done);
+  }, function(done) {
+    data.entities['cersei-lannister'].followEntity(data.entities['jamie-lannister'], done);
+  }, function(done) {
+    data.entities['jamie-lannister'].followEntity(data.entities['cersei-lannister'], done);
+  }, function(done) {
+    data.entities['jamie-lannister'].followEntity(data.entities['tyrion-lannister'], done);
+  }, function(done) {
+    data.entities['jamie-lannister'].followEntity(data.entities['joffrey-baratheon'], done);
+  }, function(done) {
+    data.entities['jamie-lannister'].followEntity(data.entities['robert-baratheon'], done);
+  }, function(done) {
+    data.entities['daenerys-targaryen'].followEntity(data.entities['tyrion-lannister'], done);
+  }, function(done) {
+    data.entities['jon-snow'].followEntity(data.entities['arya-stark'], done);
+  }, function(done) {
+    data.entities['jon-snow'].followEntity(data.entities['eddard-stark'], done);
+  }, function(done) {
+    data.entities['arya-stark'].followEntity(data.entities['jon-snow'], done);
+  }, function(done) {
+    data.entities['arya-stark'].followEntity(data.entities['eddard-stark'], done);
+  }, function(done) {
+    data.entities['eddard-stark'].followEntity(data.entities['arya-stark'], done);
+  }, function(done) {
+    data.entities['robert-baratheon'].followEntity(data.entities['cersei-lannister'], done);
+  }, function(done) {
+    data.entities['robert-baratheon'].followEntity(data.entities['jamie-lannister'], done);
+  }, function(done) {
+    data.entities['joffrey-baratheon'].followEntity(data.entities['cersei-lannister'], done);
+  }, function(done) {
+    data.entities['joffrey-baratheon'].followEntity(data.entities['jamie-lannister'], done);
+  }], next);
+}, function(next) {
+
+  // Follow Voices and organizations
+
+  async.series([function(done) {
+    data.entities['tyrion-lannister'].followVoice(data.voices['walk-of-atonement'], done);
+  }, function(done) {
+    data.entities['tyrion-lannister'].followVoice(data.voices.meereen, done);
+  }, function(done) {
+    data.entities['tyrion-lannister'].followEntity(data.organizations['house-stark'], done);
+  }, function(done) {
+    data.entities['tyrion-lannister'].followEntity(data.organizations['house-lannister'], done);
+  }], next);
+}, function(next) {
+
+  // Threads And Messages
+
+  async.series([function(done) {
+    MessageThread.findOrCreate({
+      senderPerson : data.entities['tyrion-lannister'],
+      senderEntity : data.entities['tyrion-lannister'],
+      receiverEntity : data.entities['jon-snow']
+    }, function(err, thread) {
+      if (err) {
+        return done(err);
+      }
+
+      async.series([function(doneMessage) {
+        thread.createMessage({
+          senderPersonId : data.entities['tyrion-lannister'].id,
+          message : 'Look at me and tell me what you see.'
+        }, doneMessage);
+      }, function(doneMessage) {
+        thread.createMessage({
+          senderPersonId : data.entities['jon-snow'].id,
+          message : 'Is this a trick?'
+        }, doneMessage);
+      }, function(doneMessage) {
+        thread.createMessage({
+          senderPersonId : data.entities['tyrion-lannister'].id,
+          message : 'What you see is a dwarf. If I had been born a peasant, they might have left me out in the woods to die. Alas, I was born a Lannister of Casterly Rock. Things are expected of me. My father was the Hand of the King for twenty years. '
+        }, doneMessage);
+      }, function(doneMessage) {
+        thread.createMessage({
+          senderPersonId : data.entities['jon-snow'].id,
+          message : 'Until your brother killed that king.'
+        }, doneMessage);
+      }, function(doneMessage) {
+        thread.createMessage({
+          senderPersonId : data.entities['tyrion-lannister'].id,
+          message : 'Yes. Until my brother killed him. Life is full of these little ironies. My sister married the new king, and my repulsive nephew will be king after him. I must do my part for the honor of my house; wouldn\'t you agree? But how? Well, my brother has his sword, and I have my mind. And a mind needs books like a sword needs a whetstone. That\'s why I read so much, Jon Snow. '
+        }, doneMessage);
+      }], done);
+    })
+  }], next);
 }], function(err) {
   if (err) {
     logger.error(err);
