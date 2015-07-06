@@ -72,6 +72,7 @@
 
 <script>
   	$( document ).ready(function() {
+
   		resizeMessages();
 
         var threadsContainer = new CV.ThreadsContainer({
@@ -79,12 +80,15 @@
             element : $(document.querySelector('.messages-main')),
             threads : <%= JSON.stringify(threads) %>,
             currentPerson : <%= JSON.stringify(currentPerson) %>
-        })
+        });
+
+        var threadHash = window.location.hash.substr(1);
+
+        if (threadHash){
+        	threadsContainer.element.find('.messages-list #'+threadHash).click();
+        }
+
 	});
-
-
-
-
 
   	var searchElement = document.querySelector('.messages-search');
   	var createElement = $(document.querySelector('.message-create'));
@@ -177,8 +181,8 @@
 
 	function createThread () {
 		var postMessageUrl = '/'+ currentPersonProfileName + '/messages';
-		console.log(currentPersonID);
-		console.log(otherPersonID);
+		//console.log(currentPersonID);
+		//console.log(otherPersonID);
 		$.ajax({
           type: "POST",
           url: postMessageUrl,

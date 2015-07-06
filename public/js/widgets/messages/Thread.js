@@ -79,6 +79,7 @@ CV.Thread = Class(CV, 'Thread').includes(Widget)({
 
     _activate : function _activate() {
       var thread = this;
+      window.location.hash = thread.data.id;
       //console.log('_activate');
 
       thread.threadContainer.currentThreadId = thread.data.id;
