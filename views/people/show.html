@@ -4,13 +4,13 @@
 
     <% if (person.background.exists('big')){ %>
       <div class="profile-background-cover -img-cover" style="background-image: url(<%= person.background.url('big') %>);"></div>
-    <% }else{ %>
+    <% } else { %>
       <div class="profile-background-cover -colored-background"></div>
     <% } %>
 
     <% if (person.image.exists('medium')){ %>
       <img class="profile-image" src="<%= person.image.url('medium') %>">
-    <% }else{ %>
+    <% } else { %>
       <img class="profile-image" src="/img/placeholder-image.png">
     <% } %>
 

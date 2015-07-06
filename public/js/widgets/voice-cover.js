@@ -79,11 +79,11 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
       this.dom.updateAttr('href', this.el.querySelector('.voice-cover-hover-overlay'), this.url);
       this.dom.updateAttr('title', this.el.querySelector('.voice-cover-hover-overlay'), this.title + ' voice');
       //this.createTags(this.tags);
-      this.dom.updateBgImage(this.el.querySelector('.voice-cover-main-image'), this.images.bluredcard.url);
+      this.dom.updateBgImage(this.el.querySelector('.voice-cover-main-image'), this.images.card.url);
 
-      this.dom.updateAttr('href', this.el.querySelector('.author-anchor'), this.author.url);
-      this.dom.updateAttr('title', this.el.querySelector('.author-anchor'), this.author.username + ' profile');
-      this.dom.updateAttr('src', this.el.querySelector('.author-avatar'), this.author.avatar);
+      this.dom.updateAttr('href', this.el.querySelector('.author-anchor'), '/' + this.author.profileName);
+      this.dom.updateAttr('title', this.el.querySelector('.author-anchor'), this.author.name + ' profile');
+      this.dom.updateAttr('src', this.el.querySelector('.author-avatar'), this.author.images.icon.url);
       this.dom.updateText(this.el.querySelector('.author-username'), this.author.username);
 
       this.dom.updateText(this.el.querySelector('.voice-cover-title'), this.title);
