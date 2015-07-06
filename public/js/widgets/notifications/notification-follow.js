@@ -5,8 +5,8 @@ Class(CV, 'NotificationFollow').inherits(CV.Notification)({
         <div>\
             <div class="cv-notification__info">\
                 <div class="cv-notification__info-main">\
-                    <img class="main-avatar -rounded" src="/img/sample/covers/feat-00.jpg">\
-                    <p class="main-text">Esra’a Al Shafei followed you.</p>\
+                    <img class="main-avatar -rounded">\
+                    <p class="main-text"></p>\
                 </div>\
             </div>\
             <div class="cv-notification__close -clickable -abs -full-height">\
@@ -20,6 +20,13 @@ Class(CV, 'NotificationFollow').inherits(CV.Notification)({
     prototype : {
         init : function init(config) {
             Widget.prototype.init.call(this, config);
+
+            this.el = this.element[0];
+            this.mainAvatarElement = this.el.querySelector('.main-avatar');
+            this.mainText = this.el. querySelector('.main-text');
+
+            this.dom.updateAttr('src', this.mainAvatarElement, this.person.avatar);
+            this.dom.updateText(this.mainText, this.person.name + ' ' + this.person.lastname + ' followed you.');
             console.log('follow');
         }
     }

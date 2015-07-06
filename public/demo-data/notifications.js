@@ -4,7 +4,7 @@ module.exports = [
         person : {
             name : 'Esra’a',
             lastname : 'Al Shafei',
-            avatar : '/img/samples/avatar/twitter-00.jpg'
+            avatar : '/img/sample/avatars/twitter-00.jpg'
         }
     },
     {
@@ -13,7 +13,7 @@ module.exports = [
         person : {
             name : 'Esra’a',
             lastname : 'Al Shafei',
-            avatar : '/img/samples/avatar/twitter-00.jpg'
+            avatar : '/img/sample/avatars/twitter-00.jpg'
         }
     },
     {
@@ -21,12 +21,16 @@ module.exports = [
         person : {
             name : 'Esra’a',
             lastname : 'Al Shafei',
-            avatar : '/img/samples/avatar/twitter-00.jpg'
+            avatar : '/img/sample/avatars/twitter-00.jpg'
         },
-        voice : {
-            image : '',
+        voiceInfo : {
+            image_cover : '/img/sample/covers/feat-00.jpg',
             title : 'Continued Effects of the Fukushima Disaster',
+            url : 'http://akjfklas/',
             author : {
+                avatar : '/img/sample/avatars/twitter-00.jpg',
+                url : 'http://akjfklas/',
+                username : 'alkfhlkasjd',
                 fullname : 'The International Planned Parenhood Federation'
             }
         }
@@ -36,12 +40,14 @@ module.exports = [
         person : {
             name : 'Esra’a',
             lastname : 'Al Shafei',
-            avatar : '/img/samples/avatar/twitter-00.jpg'
+            avatar : '/img/sample/avatars/twitter-00.jpg'
         },
-        organization : {
-            title : 'The International Planned Parenhood Federation',
-            image : '/img/sample/avatars/org-03.jpg',
-            username : 'The International Planned Parenhood Federation'
+        organizationInfo : {
+            person : {
+                avatar : '/img/sample/avatars/org-03.jpg',
+                fullname : 'The International Planned Parenhood Federation',
+                username : 'IPPF'
+            }
         }
     }
 ];

@@ -129,9 +129,16 @@
 </footer>
 
 <script>
-  new CV.HomeView({
-    featuredVoicesData : <%= JSON.stringify(featuredVoices) %>,
-    orgsData : <%= JSON.stringify(mostActiveOrganizations) %>,
-    categoriesData : <%= JSON.stringify(categories) %>
+  var App = new CV.App({
+    notifications : <%= JSON.stringify(notifications) %>
   });
+
+  App.appendChild(
+    new CV.HomeView({
+      name : 'homeView',
+      featuredVoicesData : <%= JSON.stringify(featuredVoices) %>,
+      orgsData : <%= JSON.stringify(mostActiveOrganizations) %>,
+      categoriesData : <%= JSON.stringify(categories) %>
+    })
+  );
 </script>

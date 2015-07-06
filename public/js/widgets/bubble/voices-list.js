@@ -1,3 +1,4 @@
+/* jshint multistr: true */
 Class(CV, 'VoicesList').inherits(Widget)({
 
 	ELEMENT_CLASS : 'cv-voiceslist',
@@ -27,7 +28,7 @@ Class(CV, 'VoicesList').inherits(Widget)({
             }
 
             voices.forEach(function(voice){
-                var voiceMini = new VoiceCoverMini( voice ).render( this.element );
+                var voiceMini = new CV.VoiceCoverMini( voice ).render( this.element );
 
                 if(list.hasButton){
                     new CV.Button({
