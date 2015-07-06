@@ -34,50 +34,47 @@ var moment = require('moment');
 Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
     HTML : '\
     <article role="article" class="widget-card">\
-        <div class="card_background-image-wrapper -img-cover"></div>\
-        <div class="card_info-wrapper">\
+        <div class="card_background-image-wrapper -img-cover -text-center">\
             <img class="card_avatar -rounded" alt="{{author.full_name}}’s avatar image"/>\
-            <div class="pan-separator">\
-                <p class="card_username">\
-                    <a class="card_username-link"></a>\
-                </p>\
-                <h3 class="card_fullname">OpenGovFoundation</h3>\
-                <div class="card_stats">\
-                    <div class="-row">\
-                        <div class="-col-3">\
-                            <p class="stats-number card_total-voices-text -font-bold"></p>\
-                            <p class="stats-label card_total-voices-label-text"></p>\
-                        </div>\
-                        <div class="-col-3">\
-                            <p class="stats-number card_total-followers-text -font-bold"></p>\
-                            <p class="stats-label card_total-followers-label-text"></p>\
-                        </div>\
-                        <div class="-col-3">\
-                            <p class="stats-number card_total-following-text -font-bold"></p>\
-                            <p class="stats-label card_total-following-label-text"></p>\
-                        </div>\
-                        <div class="-col-3 card_collaborations-wrapper">\
-                            <p class="stats-number card_collaborations-text -font-bold"></p>\
-                            <p class="stats-label card_collaborations-label-text"></p>\
-                        </div>\
+            <p class="card_username">\
+                <a class="card_username-link"></a>\
+            </p>\
+            <h3 class="card_fullname -font-bold">OpenGovFoundation</h3>\
+            <div class="card_stats">\
+                <div class="-row">\
+                    <div class="-col-3">\
+                        <p class="stats-number card_total-voices-text -font-bold"></p>\
+                        <p class="stats-label card_total-voices-label-text"></p>\
+                    </div>\
+                    <div class="-col-3">\
+                        <p class="stats-number card_total-followers-text -font-bold"></p>\
+                        <p class="stats-label card_total-followers-label-text"></p>\
+                    </div>\
+                    <div class="-col-3">\
+                        <p class="stats-number card_total-following-text -font-bold"></p>\
+                        <p class="stats-label card_total-following-label-text"></p>\
+                    </div>\
+                    <div class="-col-3 card_collaborations-wrapper">\
+                        <p class="stats-number card_collaborations-text -font-bold"></p>\
+                        <p class="stats-label card_collaborations-label-text"></p>\
                     </div>\
                 </div>\
-                <p class="card_description">\
-                    <i class="card_description-text"></i>\
-                </p>\
-                <div class="card_meta">\
-                    <div class="card_meta-location -inline">\
-                        <svg class="card_meta-svg -color-grey-light">\
-                            <use xlink:href="#svg-map-pin"></use>\
-                        </svg>\
-                        <span class="card_meta-location-text"></span>\
-                    </div>\
-                    <div class="card_meta-joined-at -inline">\
-                        <svg class="card_meta-svg -color-grey-light">\
-                            <use xlink:href="#svg-calendar"></use>\
-                        </svg>\
-                        <time class="card_meta-joined-at-text" datetime=""></time>\
-                    </div>\
+            </div>\
+        </div>\
+        <div class="card_info-wrapper">\
+            <p class="card_description"></p>\
+            <div class="card_meta">\
+                <div class="card_meta-location -inline">\
+                    <svg class="card_meta-svg">\
+                        <use xlink:href="#svg-location"></use>\
+                    </svg>\
+                    <span class="card_meta-location-text"></span>\
+                </div>\
+                <div class="card_meta-joined-at -inline">\
+                    <svg class="card_meta-svg">\
+                        <use xlink:href="#svg-clock"></use>\
+                    </svg>\
+                    <time class="card_meta-joined-at-text" datetime=""></time>\
                 </div>\
             </div>\
             <div class="card_actions">\
@@ -88,7 +85,6 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
     ',
 
     prototype : {
-
         _totalCountActions : 0,
 
         init : function init(config) {
@@ -100,7 +96,7 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
             this.avatarEl = this.el.querySelector('.card_avatar');
             this.usernameEl = this.el.querySelector('.card_username-link');
             this.fullNameEl = this.el.querySelector('.card_fullname');
-            this.descriptionEl = this.el.querySelector('.card_description-text');
+            this.descriptionEl = this.el.querySelector('.card_description');
             this.locationEl = this.el.querySelector('.card_meta-location-text');
             this.joinedAtEl = this.el.querySelector('.card_meta-joined-at-text');
             this.actionsEl = this.el.querySelector('.card_actions .-row');
@@ -116,10 +112,40 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
 
             this._setupDefaultElements();
 
-            if (this.type === "organization") this._setupOrganizationElements();
-            else this._setupUserElements();
+            if (this.type === "organization") {
+                this._setupOrganizationElements();
+            } else {
+                this._setupUserElements();
+            }
+        },
 
-            this._addActionsRowClasses();
+        /* Adds the necessary action buttons automatically - per user's role-based (follow, message, invite to, join, etc).
+         * @method addActionButtons <public> [Function]
+         * @return CV.Card [Object]
+         */
+        addActionButtons : function addActionButtons() {
+            this.appendChild( new CV.CardActionFollow({name : 'followButton'})).render(this.actionsEl);
+            this._totalCountActions++;
+
+            this.appendChild( new CV.CardActionMessage({name : 'messageButton'})).render(this.actionsEl);
+            this._totalCountActions++;
+
+            if (this.type === "organization") {
+                this.appendChild( new CV.CardActionInvite({name : 'inviteButton'})).render(this.actionsEl);
+                this._totalCountActions++;
+            } else {
+                this.appendChild( new CV.CardActionJoin({name : 'joinButton'})).render(this.actionsEl);
+                this._totalCountActions++;
+            }
+
+            var n = 12 / this._totalCountActions;
+            [].slice.call(this.el.querySelectorAll('.post-card-actions-item'), 0).forEach(function(item) {
+                item.classList.add('-col-' + n);
+            });
+
+            this.el.classList.add('has-actions');
+
+            return this;
         },
 
         /**
@@ -147,20 +173,6 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
             this.dom.updateText(this.totalFollowingEl, this.format.numberUS(this.author.following));
             this.dom.updateText(this.totalFollowingLabelEl, 'Following');
 
-            this.appendChild(
-                new CV.CardActionFollow({
-                    name : 'followButton'
-                })
-            ).render(this.actionsEl);
-            this._totalCountActions++;
-
-            this.appendChild(
-                new CV.CardActionMessage({
-                    name : 'messageButton'
-                })
-            ).render(this.actionsEl);
-            this._totalCountActions++;
-
             return this;
         },
 
@@ -168,35 +180,12 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
             this.dom.updateText(this.collaborationsLabelEl, 'Members');
             this.dom.updateText(this.collaborationsEl, this.format.numberUS(this.author.collaborators));
 
-            this.appendChild(
-                new CV.CardActionInvite({
-                    name : 'inviteButton'
-                })
-            ).render(this.actionsEl);
-            this._totalCountActions++;
-
             return this;
         },
 
         _setupUserElements : function _setupUserElements() {
             this.dom.updateText(this.collaborationsLabelEl, 'Members');
             this.dom.updateText(this.collaborationsEl, this.format.numberUS(this.author.collaborations));
-
-            this.appendChild(
-                new CV.CardActionJoin({
-                    name : 'joinButton'
-                })
-            ).render(this.actionsEl);
-            this._totalCountActions++;
-
-            return this;
-        },
-
-        _addActionsRowClasses : function _addActionsRowClasses() {
-            var n = 12 / this._totalCountActions;
-            [].slice.call(this.el.querySelectorAll('.post-card-actions-item'), 0).forEach(function(item) {
-                item.classList.add('-col-' + n);
-            });
 
             return this;
         }

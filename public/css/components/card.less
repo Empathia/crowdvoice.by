@@ -1,18 +1,24 @@
 .widget-card {
-  min-height: 526px;
   margin-bottom: 1px;
+  padding-top: 44px;
+
+  &.has-actions {
+    .card_info-wrapper {
+      padding-bottom: 80px;
+    }
+    .card_actions {
+      display: block;
+    }
+  }
 }
 
 .card_background-image-wrapper {
-  overflow: hidden;
-  height: 200px;
   border-radius: 6px 6px 0 0;
 }
 
 .card_info-wrapper {
   position: relative;
-  min-height: 325px;
-  padding: 0 20px 80px;
+  padding: 25px 30px 20px;
   border-width: 0 1px 1px;
   border-style: none solid solid;
   border-color: #ccc;
@@ -22,47 +28,58 @@
 }
 
 .card_avatar {
-  font-size: 36px;
-  position: relative;
-  margin-top: -33px;
-  border: 2px solid #fff;
+  width: 88px;
+  margin-top: -44px;
+  border: 2px solid @color-white;
+  background-color: @color-white;
 }
 
-.card_username,
-.card_fullname {
-  margin-top: .5rem;
+.card_username {
+  margin-top: 11px;
 }
 
 .card_username-link {
-  color: @color-grey-light;
-  text-decoration: underline;
+  font-size: 12px;
+  color: @color-white;
+  opacity: 0.8;
 }
 
 .card_fullname {
-  font-size: 22px;
-  line-height: 30px;
-  margin-bottom: .3em;
+  font-size: 18px;
+  line-height: 27px;
+  margin: 5px 0 0;
+  padding: 0 1em;
   white-space: normal;
-  color: #333;
+  color: @color-white;
+}
+
+.card_stats {
+  padding: 10px 0 20px;
+  color: @color-white;
+
+  .-col-3 {
+    padding: .5em 0 1em;
+  }
 }
 
 .card_description {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.7rem;
   white-space: normal;
 }
 
-// .card_meta {padding-bottom: 1rem}
 .card_meta-location {margin-right: 1rem}
 .card_meta-joined-at {margin-left: 1rem}
 .card_meta-svg {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   margin-right: .5rem;
+  fill: @color-neutral-light;
 }
 .card_meta-joined-at-text,
 .card_meta-location-text {
-  font-size: 12px;
-  color: @color-grey-light;
+  font-size: 11px;
+  line-height: 14px;
+  color: @color-neutral-mid;
 }
 
 .card_meta-location {}
@@ -71,20 +88,8 @@
 .card_meta-joined-at {}
 .card_meta-joined-at-text {}
 
-.card_stats {
-  border-bottom-right-radius: inherit;
-  border-bottom-left-radius: inherit;
-
-  .-col-3 {
-    padding: .5em 0 1em;
-    border-right: 1px solid @color-grey-lighter;
-  }
-  .-col-3:last-child {
-    border-right: none;
-  }
-}
-
 .card_actions {
+  display: none;
   position: absolute;
   bottom: 0;
   left: 0;
