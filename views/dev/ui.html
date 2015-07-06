@@ -210,15 +210,17 @@ var block = new CV.Modal({
     width       : 700,
 });
 
-new CV.Notification({
-    style       : '',
-    type        : '',
-    title       : '',
+CV.Notification.create({
+    type        : 'follow',
     name        : 'notification',
-    //action      : Share,
-    //actionData  : years,
+    person : {
+      name : 'Esra’a',
+      lastname : 'Al Shafei',
+      avatar : '/img/samples/avatar/twitter-00.jpg'
+    }
 }).render(document.querySelector('.placeholder-bubble'));
 $('.placeholder-bubble').append('<br>');
+
 
 new CV.Bubble({
     style       : '',

@@ -14,6 +14,9 @@ require('./lib/Widget.js');
 require('./lib/image-halt');
 require('share-url/neon');
 
+// app
+require('./app');
+
 window.validate = require('validate');
 //window.soundManager = require('SoundManager2').soundManager;
 
@@ -34,6 +37,14 @@ WebFontConfig = {
 
 var moment = require('moment');
 window.moment = moment;
+
+// notifications
+require('./widgets/notifications/manager');
+require('./widgets/notifications/notification');
+require('./widgets/notifications/notification-follow');
+require('./widgets/notifications/notification-message');
+require('./widgets/notifications/notification-invite');
+require('./widgets/notifications/notification-request');
 
 // generic widgets
 require('./widgets/sidebar.js');
@@ -141,7 +152,6 @@ require('./widgets/bubble/jump-to-date.js');
 require('./widgets/bubble/voices-list.js');
 require('./widgets/bubble/share.js');
 require('./widgets/bubble/form-request-to-contribute.js');
-require('./widgets/notification.js');
 require('./widgets/modal.js');
 require('./widgets/login.js');
 require('./widgets/forms/create-voice.js');
