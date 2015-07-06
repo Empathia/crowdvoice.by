@@ -46,7 +46,11 @@ require('./widgets/input-counter.js');
 require('./widgets/dropdown.js');
 
 // components
-require('./widgets/card.js');
+require('./widgets/cards/card.js');
+require('./widgets/cards/action-follow.js');
+require('./widgets/cards/action-message.js');
+require('./widgets/cards/action-invite-to.js');
+require('./widgets/cards/action-join.js');
 require('./widgets/voice-cover.js');
 require('./widgets/voice-cover-mini.js');
 require('./widgets/category-cover.js');
