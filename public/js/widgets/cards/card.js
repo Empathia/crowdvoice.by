@@ -32,8 +32,9 @@
 var moment = require('moment');
 
 Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
+    ELEMENT_CLASS : 'widget-card',
     HTML : '\
-    <article role="article" class="widget-card">\
+    <article role="article">\
         <div class="card_background-image-wrapper -img-cover -text-center">\
             <img class="card_avatar -rounded" alt="{{author.full_name}}’s avatar image"/>\
             <p class="card_username">\

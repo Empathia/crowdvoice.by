@@ -1,4 +1,4 @@
-Class(CV, 'HomeView').includes(CV.WidgetUtils)({
+Class(CV, 'HomeView').includes(NodeSupport, CV.WidgetUtils)({
     prototype : {
 
         featuredVoicesData : null,

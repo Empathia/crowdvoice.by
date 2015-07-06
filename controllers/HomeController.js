@@ -8,17 +8,19 @@ var HomeController = Class('HomeController')({
     index : function(req, res, next) {
       ACL.isAllowed('show', 'homepage', req.role, {}, function(err, isAllowed) {
         if (err) {
-          return next(err)
+          return next(err);
         }
 
         if (!isAllowed) {
-          return next(new ForbiddenError())
+          return next(new ForbiddenError());
         }
 
         res.render('home/index.html', {
           layout : 'application',
 
           pageName : 'page-home',
+
+          notifications : require('./../public/demo-data/notifications'),
 
           /* =========================================================================== *
            *  HEADER STATS
