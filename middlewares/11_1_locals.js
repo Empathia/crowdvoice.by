@@ -56,19 +56,18 @@ module.exports = function(req, res, next) {
 
           res.locals.currentPerson = shadowEntity;
           req.currentPerson = shadowEntity;
-          req.role = 'Anonymous'
+          req.role = 'Anonymous';
+
+          req.currentPerson.organizations = [];
+          res.locals.currentPerson.organizations = [];
 
           return next();
-        })
+        });
     } else {
-      currentUser.entity(function (err, entity) {
+      currentUser.entity(function(err, entity) {
         if (err) {
-          return next(err)
+          return next(err);
         }
-
-        res.locals.currentPerson = entity;
-        req.currentPerson = entity;
-        req.role = 'Person'
 
         var person = new Entity(entity);
 
@@ -82,12 +81,34 @@ module.exports = function(req, res, next) {
           res.locals.currentPerson.organizations = organizations;
           req.currentPerson.organizations = organizations;
 
-          req.role = 'Person'
+          req.role = 'Person';
+
+          var images = {};
+
+          for (var version in person.imageMeta) {
+            images[version] = {
+              url : person.image.url(version),
+              meta : person.image.meta(version)
+            };
+          }
+
+          req.currentPerson.images = images;
+          res.locals.currentPerson.images = images;
+
+          var backgrounds = {};
+
+          for (var version in person.backgroundMeta) {
+            backgrounds[version] = {
+              url : person.background.url(version),
+              meta : person.background.meta(version)
+            };
+          }
+
+          req.currentPerson.backgrounds = images;
+          res.locals.currentPerson.backgrounds = images;
 
           return next();
-        })
-
-
+        });
       });
     }
 

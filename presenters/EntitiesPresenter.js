@@ -18,6 +18,17 @@ var EntitiesPresenter = Module('EntitiesPresenter')({
 
       entityInstance.images = images;
 
+      var backgrounds = {};
+
+      for (var version in entityInstance.backgroundMeta) {
+        backgrounds[version] = {
+          url : entityInstance.background.url(version),
+          meta : entityInstance.background.meta(version)
+        };
+      }
+
+      entityInstance.backgrounds = backgrounds;
+
       response.push(entityInstance);
 
       done();
