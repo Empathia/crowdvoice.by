@@ -24,6 +24,16 @@ body.page-home > .cv-main-sidebar {
   }
 
   .sidebar-link.-is-active:before {background-color: @color-primary}
+
+  .sidebar-link-messages{
+    .unread{display: none;}
+    .read{display: block;}
+    &.has-messages{
+      .unread{display: block;}
+      .read{display: none;}
+    }
+  }
+
 }
 
 /* =========================================================================== *
@@ -52,6 +62,15 @@ body.page-inner > .cv-main-sidebar {
   .sidebar-link-svg {fill: @color-neutral-x-mid}
   .sidebar-heading {color: @color-neutral-dark}
   .sidebar-link-badge {border-color: @color-neutral-xxx-dark}
+
+  .sidebar-link-messages{
+    .unread{display: none;}
+    .read{display: block;}
+    &.has-messages{
+      .unread{display: block;}
+      .read{display: none;}
+    }
+  }
 }
 
 body.page-inner > .cv-main-sidebar .cv-main-logo {

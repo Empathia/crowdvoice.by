@@ -101,6 +101,8 @@
   </section><!-- @homepage-organization-cards -->
 </main>
 
+<%= renderPartial('shared/footer.html') %>
+
 <footer role="contentinfo" class="cv-main-footer -hide">
   <div class="cv-main-footer-inner">
     <div class="-row">
@@ -129,9 +131,16 @@
 </footer>
 
 <script>
-  new CV.HomeView({
-    featuredVoicesData : <%= JSON.stringify(featuredVoices) %>,
-    orgsData : <%= JSON.stringify(mostActiveOrganizations) %>,
-    categoriesData : <%= JSON.stringify(categories) %>
+  var App = new CV.App({
+    notifications : <%= JSON.stringify(notifications) %>
   });
+
+  App.appendChild(
+    new CV.HomeView({
+      name : 'homeView',
+      featuredVoicesData : <%= JSON.stringify(featuredVoices) %>,
+      orgsData : <%= JSON.stringify(mostActiveOrganizations) %>,
+      categoriesData : <%= JSON.stringify(categories) %>
+    })
+  );
 </script>

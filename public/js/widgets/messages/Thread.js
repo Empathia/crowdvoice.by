@@ -11,8 +11,9 @@ CV.Thread = Class(CV, 'Thread').includes(Widget)({
           </div>',
   prototype : {
     data : {},
-    threadPartner :  null,
+    threadPartner     : null,
     threadPartnerName : null,
+    unreadCount       : 0,
 
     init : function init(config) {
       Widget.prototype.init.call(this, config);
@@ -26,6 +27,7 @@ CV.Thread = Class(CV, 'Thread').includes(Widget)({
 
       var senderOrReceiver = this.isSenderOrReceiver(thread.parent.currentPerson);
 
+      this.unreadCount = thread.data.unreadCount;
 
       if (senderOrReceiver === 'sender') {
         this.threadPartner = thread.data.receiverEntity;
@@ -77,6 +79,7 @@ CV.Thread = Class(CV, 'Thread').includes(Widget)({
 
     _activate : function _activate() {
       var thread = this;
+      window.location.hash = thread.data.id;
       //console.log('_activate');
 
       thread.threadContainer.currentThreadId = thread.data.id;
@@ -101,28 +104,24 @@ CV.Thread = Class(CV, 'Thread').includes(Widget)({
           ' - <span>As Myself</span>');
       }
 
-      //this.element.find('.thread-type').html('As an Organization <br>(<b>'+
-      //    this.data.senderEntity.name
-      //    +'<b>)');
-
       thread.threadContainer.messagesBodyHeaderEl.find('.delete-thread').show().attr('data-id', this.data.id);
 
-      // resizeMessages();
+      var updateThreadUrl = '/'+ thread.threadContainer.currentPerson.profileName + '/messages/'+ thread.data.id;
 
-      if (!thread.element.hasClass('updated')){
-        thread.element.addClass('updated');
-
-        var updateThreadUrl = '/'+ thread.threadContainer.currentPerson.profileName + '/messages/'+ thread.data.id;
-
-        $.ajax({
-          type: "PUT",
-          url: updateThreadUrl,
-          headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
-          success: function(data) {
-            console.log('Thread updated');
+      $.ajax({
+        type: "PUT",
+        url: updateThreadUrl,
+        headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
+        success: function(data) {
+          console.log('Thread updated');
+          if (!thread.element.hasClass('updated')){
+            thread.element.addClass('updated');
           }
-        });
-      }
+          thread.element.find('.actions span').text('0');
+          thread.dispatch('updated');
+        }
+      });
+
 
       thread.data.messages.forEach(function(message) {
         var messageInstance = new CV.Message({

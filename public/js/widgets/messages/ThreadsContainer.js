@@ -11,6 +11,9 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
 
     currentThread : null,
 
+    unreadMessages : 0,
+
+
     init : function init(config) {
       Widget.prototype.init.call(this, config);
 
@@ -24,6 +27,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
       this.messagesBodyHeaderEl = this.element.find('.messages-body-header');
       this.searchUsersResultEl = this.element.find('.search-users-result');
 
+      this.sidebarMessagesEl = $('.sidebar-link-messages');
 
       this.searchField = new CV.Input({
         name : 'searchField',
@@ -98,6 +102,9 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
         this.threads.forEach(function(thread) {
           container.addThread(thread);
         });
+
+        this.updateSidebarCount();
+
       } else {
         this.hideSideBar();
       }
@@ -162,8 +169,22 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
       });
     },
 
+    updateSidebarCount : function updateSidebarCount() {
+      //console.log(this.sidebarMessagesEl);
+      //console.log(this.unreadMessages);
+      if(this.unreadMessages > 0){
+        this.sidebarMessagesEl.addClass('has-messages');
+        this.sidebarMessagesEl.find('.sidebar-link-badge').text(this.unreadMessages);
+      } else {
+        this.sidebarMessagesEl.removeClass('has-messages');
+      }
+
+    },
+
     addThread : function addThread(threadData) {
-      console.log(threadData)
+      var container = this;
+
+      console.log(threadData);
 
       var thread = new CV.Thread({
         name : 'thread_' + threadData.id,
@@ -172,10 +193,18 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
 
       this.appendChild(thread);
 
+      thread.bind('updated', function(){
+        container.unreadMessages -= this.unreadCount;
+
+        container.updateSidebarCount();
+      });
+
       thread.threadContainer = this;
       thread.setup();
 
-      thread.render(this.listElement)
+      thread.render(this.listElement);
+
+      this.unreadMessages += threadData.unreadCount;
 
       this.refresh();
     },
