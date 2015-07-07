@@ -8,6 +8,10 @@ global.amazonS3 = new AWS.S3(CONFIG.s3);
 global.gm = require('gm').subClass({imageMagick: true});
 global.sharp = require('sharp');
 
+var os = require('os');
+
+var cpuLength = os.cpus().length;
+
 var casual = require('casual');
 
 CONFIG.database.logQueries = true;
@@ -16,8 +20,9 @@ var data = {
   users : {},
   entities : {},
   organizations : {},
-  voices : {}
-}
+  voices : {},
+  topics : {}
+};
 
 async.series([function(next) {
   var users = [
@@ -220,7 +225,7 @@ async.series([function(next) {
     }
   ];
 
-  async.eachLimit(entities, 1, function(entity, nextEntity) {
+  async.eachLimit(entities, cpuLength, function(entity, nextEntity) {
     var entityInstance = new Entity(entity.data);
 
     entityInstance.save(function(err, result) {
@@ -338,7 +343,7 @@ async.series([function(next) {
     }
   ];
 
-  async.eachLimit(organizations, 1, function(organization, nextOrganization) {
+  async.eachLimit(organizations, cpuLength, function(organization, nextOrganization) {
     var entityInstance = new Entity(organization.data);
 
     entityInstance.save(function(err, result) {
@@ -381,6 +386,65 @@ async.series([function(next) {
   }, next);
 }, function(next) {
 
+  // Topics
+  var topics = [
+    {
+      data : {
+        name : 'Human Rights',
+        slug : 'human-rights'
+      }
+    },
+    {
+      data : {
+        name : 'Politics',
+        slug : 'politics'
+      }
+    },
+    {
+      data : {
+        name : 'Education',
+        slug : 'education'
+      }
+    },
+    {
+      data : {
+        name : 'Health',
+        slug : 'health'
+      }
+    },
+    {
+      data : {
+        name : 'Environment',
+        slug : 'environment'
+      }
+    },
+    {
+      data : {
+        name : 'Privacy',
+        slug : 'privacy'
+      }
+    }
+  ];
+
+
+  async.each(topics, function(topic, done) {
+    var topicInstance = new Topic({
+      name : topic.data.name,
+      slug : topic.data.slug
+    });
+
+    topicInstance.save(function(err, result) {
+      if (err) {
+        return done(err);
+      }
+
+      data.topics[topicInstance.slug] = topicInstance;
+
+      done();
+    });
+  }, next);
+}, function(next) {
+  console.log('Voices')
   // Voices
   var voices = [
 
@@ -397,7 +461,8 @@ async.series([function(next) {
         locationName  : 'Mouth of the Blackwater Rush'
       },
       image : path.join(process.cwd(), '/public/generator/voices/blackwater-background.jpg'),
-      slug  : 'blackwater-battle'
+      slug  : 'blackwater-battle',
+      topics : ['politics', 'environment']
     },
     {
       data : {
@@ -411,7 +476,8 @@ async.series([function(next) {
         locationName  : 'Kings Landing'
       },
       image : path.join(process.cwd(), '/public/generator/voices/second-trial-by-combat.jpg'),
-      slug  : 'second-trial-by-combat'
+      slug  : 'second-trial-by-combat',
+      topics : ['human-rights']
     },
     {
       data : {
@@ -425,7 +491,8 @@ async.series([function(next) {
         locationName  : 'Westeros'
       },
       image : path.join(process.cwd(), '/public/generator/voices/5kings-background.jpg'),
-      slug  : 'war-of-the-5-kings'
+      slug  : 'war-of-the-5-kings',
+      topics : ['politics']
     },
     {
       data : {
@@ -439,7 +506,8 @@ async.series([function(next) {
         locationName  : 'Valyria'
       },
       image : path.join(process.cwd(), '/public/generator/voices/valyrian-roads.png'),
-      slug  : 'valyrian-roads'
+      slug  : 'valyrian-roads',
+      topics : ['politics', 'environment', 'education']
     },
     {
       data : {
@@ -453,7 +521,8 @@ async.series([function(next) {
         locationName  : 'Valyria'
       },
       image : path.join(process.cwd(), '/public/generator/voices/siege-to-mereen.png'),
-      slug  : 'meereen-siege'
+      slug  : 'meereen-siege',
+      topics : ['politics', 'human-rights', 'environment', 'privacy']
     },
 
     // Cersei
@@ -469,7 +538,8 @@ async.series([function(next) {
         locationName  : 'Kings Landing'
       },
       image : path.join(process.cwd(), '/public/generator/voices/walk-of-shame.jpg'),
-      slug  : 'walk-of-atonement'
+      slug  : 'walk-of-atonement',
+      topics : ['human-rights']
     },
     {
       data : {
@@ -483,7 +553,8 @@ async.series([function(next) {
         locationName  : 'Kings Landing'
       },
       image : path.join(process.cwd(), '/public/generator/voices/dead-of-arryn.jpg'),
-      slug  : 'dead-of-arryn'
+      slug  : 'dead-of-arryn',
+      topics : ['politics', 'health']
     },
 
     // Jamie
@@ -499,7 +570,8 @@ async.series([function(next) {
         locationName  : 'Kings Landing'
       },
       image : path.join(process.cwd(), '/public/generator/voices/roberts-rebelion.jpg'),
-      slug  : 'roberts-rebelion'
+      slug  : 'roberts-rebelion',
+      topics : ['politics']
     },
 
     // Daenerys
@@ -515,7 +587,8 @@ async.series([function(next) {
         locationName  : 'Essos'
       },
       image : path.join(process.cwd(), '/public/generator/voices/road-to-meereen.jpg'),
-      slug  : 'meereen'
+      slug  : 'meereen',
+      topics : ['politics', 'human-rights', 'education']
     },
     {
       data : {
@@ -529,7 +602,8 @@ async.series([function(next) {
         locationName  : 'Meereen'
       },
       image : path.join(process.cwd(), '/public/generator/voices/dance-dragons.jpg'),
-      slug  : 'a-dance-with-dragons'
+      slug  : 'a-dance-with-dragons',
+      topics : ['environment']
     },
 
     // Jon
@@ -545,7 +619,8 @@ async.series([function(next) {
         locationName  : 'Castle Black'
       },
       image : path.join(process.cwd(), '/public/generator/voices/castle-black.jpg'),
-      slug  : 'battle-of-castle-black'
+      slug  : 'battle-of-castle-black',
+      topics : ['politics']
     },
     {
       data : {
@@ -559,11 +634,12 @@ async.series([function(next) {
         locationName  : 'Beyond the wall'
       },
       image : path.join(process.cwd(), '/public/generator/voices/white-walkers.png'),
-      slug  : 'white-walkers'
+      slug  : 'white-walkers',
+      topics : ['health']
     }
   ];
 
-  async.eachLimit(voices, 1, function(voice, nextVoice) {
+  async.eachLimit(voices, cpuLength, function(voice, nextVoice) {
     var voiceInstance = new Voice(voice.data);
 
     voiceInstance.save(function(err, result) {
@@ -591,8 +667,21 @@ async.series([function(next) {
               return nextVoice(err);
             }
 
-            data.voices[slug.url] = voiceInstance;
-            nextVoice();
+            async.each(voice.topics, function(topic, nextTopic) {
+              var voiceTopic = new VoiceTopic({
+                voiceId : voiceInstance.id,
+                topicId : data.topics[topic].id
+              });
+
+              voiceTopic.save(nextTopic);
+            }, function(err) {
+              if (err) {
+                return nextVoice(err);
+              }
+
+              data.voices[slug.url] = voiceInstance;
+              nextVoice();
+            });
           });
         });
       });
@@ -614,7 +703,8 @@ async.series([function(next) {
         locationName  : 'Winterfell'
       },
       image : path.join(process.cwd(), '/public/generator/voices/winterfell-background.jpg'),
-      slug  : 'winterfell'
+      slug  : 'winterfell',
+      topics : ['human-rights']
     },
     {
       data : {
@@ -628,7 +718,8 @@ async.series([function(next) {
         locationName  : 'The Wall'
       },
       image : path.join(process.cwd(), '/public/generator/voices/bran-background.jpg'),
-      slug  : 'bran-the-builder'
+      slug  : 'bran-the-builder',
+      topics : ['education', 'politics']
     },
     {
       data : {
@@ -642,7 +733,8 @@ async.series([function(next) {
         locationName  : 'Casterly Rock'
       },
       image : path.join(process.cwd(), '/public/generator/voices/casterly-rock.jpg'),
-      slug  : 'casterly-rock'
+      slug  : 'casterly-rock',
+      topics : ['health']
     },
     {
       data : {
@@ -656,11 +748,12 @@ async.series([function(next) {
         locationName  : 'King\'s Landing'
       },
       image : path.join(process.cwd(), '/public/generator/voices/kings-landing.jpg'),
-      slug  : 'kings-landing'
+      slug  : 'kings-landing',
+      topics : ['politics', 'human-rights', 'health']
     }
   ];
 
-  async.eachLimit(voices, 1, function(voice, nextVoice) {
+  async.eachLimit(voices, cpuLength, function(voice, nextVoice) {
     var voiceInstance = new Voice(voice.data);
 
     voiceInstance.save(function(err, result) {
@@ -688,8 +781,21 @@ async.series([function(next) {
               return nextVoice(err);
             }
 
-            data.voices[slug.url] = voiceInstance;
-            nextVoice();
+            async.each(voice.topics, function(topic, nextTopic) {
+              var voiceTopic = new VoiceTopic({
+                voiceId : voiceInstance.id,
+                topicId : data.topics[topic].id
+              });
+
+              voiceTopic.save(nextTopic);
+            }, function(err) {
+              if (err) {
+                return nextVoice(err);
+              }
+
+              data.voices[slug.url] = voiceInstance;
+              nextVoice();
+            });
           });
         });
       });
@@ -740,6 +846,56 @@ async.series([function(next) {
     data.entities['tyrion-lannister'].followVoice(data.voices['walk-of-atonement'], done);
   }, function(done) {
     data.entities['tyrion-lannister'].followVoice(data.voices.meereen, done);
+  }, function(done) {
+    data.entities['tyrion-lannister'].followVoice(data.voices['dead-of-arryn'], done);
+  }, function(done) {
+    data.entities['tyrion-lannister'].followVoice(data.voices['casterly-rock'], done);
+  }, function(done) {
+    data.entities['tyrion-lannister'].followVoice(data.voices['kings-landing'], done);
+  }, function(done) {
+    data.entities['tyrion-lannister'].followVoice(data.voices['battle-of-castle-black'], done);
+  }, function(done) {
+    data.entities['tyrion-lannister'].followVoice(data.voices['white-walkers'], done);
+  }, function(done) {
+    data.entities['tyrion-lannister'].followVoice(data.voices['winterfell'], done);
+  }, function(done) {
+    data.entities['tyrion-lannister'].followVoice(data.voices['bran-the-builder'], done);
+  }, function(done) {
+    data.entities['tyrion-lannister'].followVoice(data.voices['roberts-rebelion'], done);
+  }, function(done) {
+    data.entities['tyrion-lannister'].followVoice(data.voices['meereen'], done);
+  }, function(done) {
+    data.entities['cersei-lannister'].followVoice(data.voices['casterly-rock'], done);
+  }, function(done) {
+    data.entities['cersei-lannister'].followVoice(data.voices['roberts-rebelion'], done);
+  }, function(done) {
+    data.entities['cersei-lannister'].followVoice(data.voices['winterfell'], done);
+  }, function(done) {
+    data.entities['cersei-lannister'].followVoice(data.voices['blackwater-battle'], done);
+  }, function(done) {
+    data.entities['cersei-lannister'].followVoice(data.voices['war-of-the-5-kings'], done);
+  }, function(done)  {
+    data.entities['cersei-lannister'].followVoice(data.voices['valyrian-roads'], done);
+  }, function(done) {
+    data.entities['cersei-lannister'].followVoice(data.voices['second-trial-by-combat'], done);
+  }, function(done) {
+    data.entities['jamie-lannister'].followVoice(data.voices['blackwater-battle'], done);
+  }, function(done) {
+    data.entities['jamie-lannister'].followVoice(data.voices['war-of-the-5-kings'], done);
+  }, function(done) {
+    data.entities['jamie-lannister'].followVoice(data.voices['valyrian-roads'], done);
+  }, function(done) {
+    data.entities['jamie-lannister'].followVoice(data.voices['meereen-siege'], done);
+  }, function(done) {
+    data.entities['jamie-lannister'].followVoice(data.voices['second-trial-by-combat'], done);
+  }, function(done) {
+    data.entities['jamie-lannister'].followVoice(data.voices['casterly-rock'], done);
+  }, function(done) {
+    data.entities['jamie-lannister'].followVoice(data.voices['kings-landing'], done);
+  }, function(done) {
+    data.entities['jamie-lannister'].followVoice(data.voices['winterfell'], done);
+  }, function(done) {
+    data.entities['jamie-lannister'].followVoice(data.voices['dead-of-arryn'], done);
   }, function(done) {
     data.entities['tyrion-lannister'].followEntity(data.organizations['house-stark'], done);
   }, function(done) {
@@ -805,7 +961,7 @@ async.series([function(next) {
         'https://www.youtube.com/watch?v=f4RGU2jXQiE'
       ];
 
-      async.timesLimit(250, 1, function(id, nextPost) {
+      async.timesLimit(250, cpuLength, function(id, nextPost) {
         var post =  new Post();
 
         var type = casual['random_element'](['image', 'video', 'link']);
@@ -880,6 +1036,7 @@ async.series([function(next) {
 }], function(err) {
   if (err) {
     logger.error(err);
+    console.error(data);
   }
 
   process.exit(0);
