@@ -2,12 +2,8 @@ var BlackListFilter = require(__dirname + '/BlackListFilter');
 
 var VoicesController = Class('VoicesController').includes(BlackListFilter)({
   prototype : {
-    init : function () {
-      return this;
-    },
-
-    getActiveVoice : function (req, res, next) {
-      Voice.findBySlug(req.params.voice_slug, function (err, voice) {
+    getActiveVoice : function(req, res, next) {
+      Voice.findBySlug(req.params['voice_slug'], function(err, voice) {
         if (err) { return next(err); }
 
         res.locals.voice = new Voice(voice);
@@ -18,7 +14,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           unapproved : {}
         };
 
-        var dates = { firstPostDate : null, lastPostDate : null};
+        var dates = { firstPostDate : null, lastPostDate : null };
 
         async.series([function(done) {
           db.raw("SELECT COUNT (*), \
@@ -32,19 +28,19 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           .exec(function(err, postsCount) {
             if (err) { return done(err); }
 
-            var counts = {}
+            var counts = {};
 
             postsCount.rows.forEach(function(post) {
               if (!counts[post.year]) {
-                counts[post.year] = {}
+                counts[post.year] = {};
               }
 
-              counts[post.year][post.month] = post.count
+              counts[post.year][post.month] = post.count;
             });
 
             res.locals.postsCount.approved = counts;
             done();
-          })
+          });
         }, function(done) {
           db.raw("SELECT COUNT (*), \
             to_char(\"Posts\".published_at, 'MM') AS MONTH, \
@@ -57,38 +53,43 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           .exec(function(err, postsCount) {
             if (err) { return done(err); }
 
-            var counts = {}
+            var counts = {};
 
             postsCount.rows.forEach(function(post) {
               if (!counts[post.year]) {
-                counts[post.year] = {}
+                counts[post.year] = {};
               }
 
-              counts[post.year][post.month] = post.count
+              counts[post.year][post.month] = post.count;
             });
 
             res.locals.postsCount.unapproved = counts;
             done();
-          })
+          });
         }, function(done) {
-          db('Posts').where({voice_id : voice.id, approved: true}).orderBy('published_at', 'ASC').limit(1)
+          db('Posts').where({
+            'voice_id' : voice.id,
+            approved : true
+          }).orderBy('published_at', 'ASC').limit(1)
           .exec(function(err, firstPost) {
             if (err) {
               return done(err);
             }
 
             if (firstPost.length !== 0) {
-              dates.firstPostDate = firstPost[0].published_at;
+              dates.firstPostDate = firstPost[0]['published_at'];
             }
 
-            db('Posts').where({voice_id : voice.id, approved: true}).orderBy('published_at', 'DESC').limit(1)
+            db('Posts').where({
+              'voice_id' : voice.id, approved: true
+            }).orderBy('published_at', 'DESC').limit(1)
             .exec(function(err, lastPost) {
               if (err) {
                 return done(err);
               }
 
               if (lastPost.length !== 0) {
-                dates.lastPostDate = lastPost[0].published_at;
+                dates.lastPostDate = lastPost[0]['published_at'];
               }
 
               res.locals.voice.firstPostDate = dates.firstPostDate;
@@ -101,13 +102,13 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
                 done();
               });
-            })
-          })
+            });
+          });
         }], next);
       });
     },
 
-    index : function index (req, res, next) {
+    index : function index(req, res, next) {
       var query = {
         ownerId: req.body.ownerId,
         topics: req.body.topics,
@@ -115,22 +116,22 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         createdAfter: req.body.createdAfter
       };
 
-      Voice.filterBy(query, function (err, result) {
+      Voice.filterBy(query, function(err, result) {
         if (err) { return next(err); }
 
         res.format({
-          'text/html': function () {
+          html : function() {
             res.locals.voices = result;
             res.render('voices/index.html');
           },
-          'application/json': function () {
+          json : function() {
             res.json(result);
           }
         });
       });
     },
 
-    show : function show (req, res, next) {
+    show : function show(req, res, next) {
       ACL.isAllowed('show', 'voices', req.role, {
         currentPerson : req.currentPerson,
         voice : res.locals.voice,
@@ -142,12 +143,20 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
         if (response.isAllowed) {
           res.locals.allowPosting = response.allowPosting;
-          res.locals.allowPostEditing = response.allowPostEditing
+          res.locals.allowPostEditing = response.allowPostEditing;
 
           res.format({
-            html : function () {
-              res.render('voices/show.html', {
-                pageName : 'page-inner page-voice'
+            html : function() {
+              VoicesPresenter.build([res.locals.voice], function(err, result) {
+                if (err) {
+                  return next(err);
+                }
+
+                res.locals.voice = result[0];
+
+                res.render('voices/show.html', {
+                  pageName : 'page-inner page-voice'
+                });
               });
             }
           });
@@ -155,11 +164,11 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
       });
     },
 
-    new : function (req, res) {
-      res.render('voices/new.html', {errors: null});
+    new : function(req, res) {
+      res.render('voices/new.html', { errors: null });
     },
 
-    create : function create (req, res, next) {
+    create : function create(req, res, next) {
       var voice = new Voice({
         title: req.body.title,
         status: req.body.status,
@@ -171,21 +180,22 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         latitude: req.body.latitude,
         longitude: req.body.longitude
       });
-      voice.save(function (err) {
+
+      voice.save(function(err) {
         if (err) {
-          return next(err)
+          return next(err);
         }
-        voice.addSlug(function (err) {
+        voice.addSlug(function(err) {
           res.redirect(req.currentPerson.profileName + '/' + voice.getSlug());
         });
       });
     },
 
-    edit : function edit (req, res) {
-      res.render('voices/edit.html', {errors: null});
+    edit : function edit(req, res) {
+      res.render('voices/edit.html', { errors: null });
     },
 
-    update : function update (req, res, next) {
+    update : function update(req, res, next) {
       var voice = req.activeVoice;
       voice.setProperties({
         title: req.body.title || voice.title,
@@ -198,7 +208,8 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         latitude: req.body.latitude || voice.latitude,
         longitude: req.body.longitude || voice.longitude
       });
-      voice.save(function (err) {
+
+      voice.save(function(err) {
         if (err) {
           return next(err);
         }
@@ -235,7 +246,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
               thread = result;
 
               done();
-            })
+            });
           }, function(done) {
             thread.createMessage({
               type : 'request_voice',
@@ -246,11 +257,11 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
               message : req.body.message
             }, function(err, result) {
               if (err) {
-                return done(err)
+                return done(err);
               }
 
               done();
-            })
+            });
           }], function(err) {
             if (err) {
               return next(err);
@@ -263,14 +274,14 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
               res.json(result[0]);
             });
-          })
-        })
+          });
+        });
     },
 
-    destroy : function destroy (req, res, next) {
+    destroy : function destroy(req, res, next) {
       var voice = req.activeVoice;
       voice.deleted = true;
-      voice.save(function (err) {
+      voice.save(function(err) {
         if (err) { return next(err); }
         res.redirect('/voices');
       });

@@ -229,20 +229,20 @@ var Voice = Class('Voice').inherits(Argon.KnexModel).includes(ImageUploader)({
       });
     },
 
-    toJSON : function toJSON() {
-      var model = this;
-      var json = {};
-
-      Object.keys(this).forEach(function(property) {
-        if (property === 'id' || property === 'ownerId') {
-          json[property] = hashids.encode(model[property]);
-        } else {
-          json[property] = model[property];
-        }
-      });
-
-      return json;
-    },
+    // toJSON : function toJSON() {
+    //   var model = this;
+    //   var json = {};
+    //
+    //   Object.keys(this).forEach(function(property) {
+    //     if (property === 'id' || property === 'ownerId') {
+    //       json[property] = hashids.encode(model[property]);
+    //     } else {
+    //       json[property] = model[property];
+    //     }
+    //   });
+    //
+    //   return json;
+    // },
 
     getSlug : function () {
       return this.title.toLowerCase().replace(/ /g, '_');

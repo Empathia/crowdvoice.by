@@ -9,7 +9,7 @@ var VoicesPresenter = Module('VoicesPresenter')({
       voiceInstance.id = hashids.encode(voiceInstance.id);
       voiceInstance.ownerId = hashids.encode(voiceInstance.ownerId);
 
-      Slug.find({ voice_id : voice.id }, function(err, result) {
+      Slug.find(['voice_id = ? ORDER BY id DESC LIMIT 1', [voice.id]], function(err, result) {
         if (err) {
           return nextVoice(err);
         }
