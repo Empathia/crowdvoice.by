@@ -33,36 +33,42 @@ module.exports = function(req, res, next) {
     var currentUser = new User(req.user);
 
     if (req.session.isAnonymous) {
-      db('Entities')
-        .where({id : db('EntityOwner').where('id', '=', currentUser.entityId).select('owned_id')})
-        .andWhere('is_anonymous', '=', true)
-        .andWhere('type', '=', 'person')
-        .exec(function(err, result) {
-          if (err) {
-            return next(err);
-          }
+      currentUser.entity(function(err, person) {
+        if (err) {
+          return next(err);
+        }
 
-          var result = result[0]
+        db('Entities')
+          .where({id : db('EntityOwner').where('id', '=', currentUser.entityId).select('owned_id')})
+          .andWhere('is_anonymous', '=', true)
+          .andWhere('type', '=', 'person')
+          .exec(function(err, result) {
+            if (err) {
+              return next(err);
+            }
 
-          var shadowEntity = new Entity({
-            id : result.id,
-            name : result.name,
-            lastname : result.lastname,
-            profileName : result.profile_name,
-            isAnonymous : result.is_anonymous,
-            createdAt : result.created_at,
-            updatedAt : result.updated_at
+            var result = result[0]
+
+            var shadowEntity = new Entity({
+              id : result.id,
+              name : result.name,
+              lastname : result.lastname,
+              profileName : person.profileName,
+              isAnonymous : result.is_anonymous,
+              createdAt : result.created_at,
+              updatedAt : result.updated_at
+            });
+
+            res.locals.currentPerson = shadowEntity;
+            req.currentPerson = shadowEntity;
+            req.role = 'Anonymous';
+
+            req.currentPerson.organizations = [];
+            res.locals.currentPerson.organizations = [];
+
+            return next();
           });
-
-          res.locals.currentPerson = shadowEntity;
-          req.currentPerson = shadowEntity;
-          req.role = 'Anonymous';
-
-          req.currentPerson.organizations = [];
-          res.locals.currentPerson.organizations = [];
-
-          return next();
-        });
+      })
     } else {
       currentUser.entity(function(err, entity) {
         if (err) {
