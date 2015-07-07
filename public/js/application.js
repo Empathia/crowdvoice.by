@@ -46,6 +46,7 @@ require('./widgets/search/button');
 // other
 require('./widgets/sidebar.js');
 require('./widgets/header.js');
+require('./widgets/incognito/button');
 
 // generic widgets
 require('./widgets/popover.js');
