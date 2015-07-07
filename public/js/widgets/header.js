@@ -21,11 +21,6 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
         </div>',
 
     BUTTON_ACTIONS_HTML : '\
-        <button class="header-actions-button cv-button small rounded -p0">\
-            <svg class="header-actions-svg -s19">\
-                <use xlink:href="#svg-incognito"></use>\
-            </svg>\
-        </button>\
         <button class="header-notification-button header-actions-button cv-button small rounded -p0 -rel has-new-notifications">\
             <svg class="header-actions-svg -s17">\
                 <use xlink:href="#svg-notifications"></use>\
@@ -49,8 +44,11 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
             this.loginActionsWrapper = this.el.querySelector('.header-login-actions');
             this.buttonActionsWrapper = this.el.querySelector('.header-actions');
 
-            if (this.currentPerson) this._setupForCurrentPerson();
-            else this._setupVisitor();
+            if (this.currentPerson && this.currentPerson.isAnonymous) {
+                this._setupAnonymous();
+            } else if (this.currentPerson && (this.currentPerson.isAnonymous === false)) {
+                this._setupForCurrentPerson();
+            } else this._setupVisitor();
 
             this.appendChild(
                 new CV.SearchButton({
@@ -69,6 +67,31 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
             return this;
         },
 
+        _setupAnonymous : function _setupAnonymous() {
+            var allMulti = {
+                '1' : {name: 'Logout', url: '/logout'}
+            };
+
+            this.appendChild(
+                new CV.SelectAccount({
+                    label         : 'Multiple',
+                    name          : 'select',
+                    accountImage  : "/img/sample/avatars/org-00.jpg",
+                    accountName   : 'Anonymous',
+                    options       : allMulti
+                })
+            ).render(this.loginActionsWrapper);
+
+            this.appendChild(
+                new CV.IncognitoButton({
+                    name : 'incognitoButton',
+                    currentPerson : this.currentPerson
+                })
+            ).render(this.buttonActionsWrapper);
+
+            return this;
+        },
+
         /* Append the ui for logged in users.
          * @method _setupForCurrentPerson <private> [Function]
          */
@@ -82,7 +105,6 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
             itemCounter = 2;
 
             this.currentPerson.organizations.forEach(function(organization) {
-                console.log(organization)
                 itemCounter++;
                 allMulti[itemCounter] = {
                     name : organization.name,
@@ -128,7 +150,14 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
                 })
             ).render(this.buttonActionsWrapper);
 
-            // incognito + alerts buttons
+            this.appendChild(
+                new CV.IncognitoButton({
+                    name : 'incognitoButton',
+                    currentPerson : this.currentPerson
+                })
+            ).render(this.buttonActionsWrapper);
+
+            // alerts buttons
             this.buttonActionsWrapper.insertAdjacentHTML('beforeend', this.constructor.BUTTON_ACTIONS_HTML);
 
             return this;
