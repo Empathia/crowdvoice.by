@@ -18,8 +18,8 @@ module.exports = [
         }
     },
     author : {
-      avatar: '/img/sample/avatars/sm/org-00.jpg',
-      username: 'guardian',
+      name : 'The Guardian',
+      profileName: 'guardian',
       url: '/organization-test',
       images : {
           icon : {
@@ -52,8 +52,8 @@ module.exports = [
         }
     },
     author : {
-      avatar: '/img/sample/avatars/sm/org-00.jpg',
-      username: 'guardian',
+      name : 'The Guardian',
+      profileName: 'guardian',
       url: '/organization-test',
       images : {
           icon : {
@@ -86,8 +86,8 @@ module.exports = [
         }
     },
     author : {
-      avatar: '/img/sample/avatars/sm/org-00.jpg',
-      username: 'guardian',
+      name : 'The Guardian',
+      profileName: 'guardian',
       url: '/organization-test',
       images : {
           icon : {
@@ -119,8 +119,8 @@ module.exports = [
         }
     },
     author : {
-      avatar: '/img/sample/avatars/sm/org-00.jpg',
-      username: 'guardian',
+      name : 'The Guardian',
+      profileName: 'guardian',
       url: '/organization-test',
       images : {
           icon : {
@@ -153,8 +153,8 @@ module.exports = [
         }
     },
     author : {
-      avatar: '/img/sample/avatars/sm/org-00.jpg',
-      username: 'guardian',
+      name : 'The Guardian',
+      profileName: 'guardian',
       url: '/organization-test',
       images : {
           icon : {

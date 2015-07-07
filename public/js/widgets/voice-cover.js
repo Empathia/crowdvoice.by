@@ -1,3 +1,4 @@
+/* jshint multistr: true */
 /**
  * VoiceCover Widget
  *
@@ -81,10 +82,11 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
       //this.createTags(this.tags);
       this.dom.updateBgImage(this.el.querySelector('.voice-cover-main-image'), this.images.card.url);
 
+      var authorFullname = this.author.lastname ? (this.author.name + ' ' + this.author.lastname) : this.author.name;
       this.dom.updateAttr('href', this.el.querySelector('.author-anchor'), '/' + this.author.profileName);
-      this.dom.updateAttr('title', this.el.querySelector('.author-anchor'), this.author.name + ' profile');
+      this.dom.updateAttr('title', this.el.querySelector('.author-anchor'), authorFullname + '’s profile');
       this.dom.updateAttr('src', this.el.querySelector('.author-avatar'), this.author.images.icon.url);
-      this.dom.updateText(this.el.querySelector('.author-username'), this.author.username);
+      this.dom.updateText(this.el.querySelector('.author-username'), 'by ' + authorFullname);
 
       this.dom.updateText(this.el.querySelector('.voice-cover-title'), this.title);
       this.dom.updateText(this.el.querySelector('.voice-cover-description'), this.description);
@@ -93,9 +95,6 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
       this.dom.updateText(this.dateTimeElement, moment(this.updated_at).fromNow());
       this.dom.updateAttr('datetime', this.dateTimeElement, this.updated_at);
 
-      // if (this.gallery.length >= 3) {
-      //   this.createGallery(this.gallery);
-      // }
       if (this.style == 'list'){
         this.element.addClass('list-style');
       }
@@ -129,32 +128,6 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
         this.element.find('.meta').prepend(this.tagListElement.clone().append('&nbsp;&middot;&nbsp;'));
 
       }, this);
-
-      return this;
-    },
-
-    /**
-     * Creates the thumbnails for each gallery-image and appends the resulting
-     * gallery to voiceCoverElement.
-     * @method createGallery <private> [Function]
-     * @params gallery <required> [Array] list of objects with image's info
-     * @return undefined
-     */
-    createGallery : function createGallery(gallery) {
-      var galleryWrapper = $(this.constructor.GALLERY_WRAPPER_HTML);
-
-      this.element.addClass(this.constructor.HAS_GALLERY_CLASSNAME);
-
-      gallery.forEach(function(image) {
-        var item = $(this.constructor.GALLERY_IMAGE_HTML);
-        this.dom.updateBgImage(item.find('.voice-cover-thumb-image')[0], image);
-        galleryWrapper.append(item);
-        item = null;
-      }, this);
-
-      this.voiceCoverElement.append(galleryWrapper);
-
-      galleryWrapper = null;
 
       return this;
     },
