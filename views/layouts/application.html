@@ -10,6 +10,7 @@
   <script type="text/javascript">
   window.currentPerson = <%= JSON.stringify(currentPerson) %>;
   </script>
+  <script src="/socket.io/socket.io.js"></script>
   <script src="/dist/bundle.js"></script>
 </head>
 
@@ -133,14 +134,8 @@
   <div class="yield">
     <%= yield %>
   </div>
-    <%= renderPartial('shared/footer.html') %>
 
-  <script>
-    new CV.Header({
-      element: $('.cv-main-header'),
-      currentPerson : currentPerson
-    });
-  </script>
+  <%= renderPartial('shared/footer.html') %>
 
 </body>
 </html>

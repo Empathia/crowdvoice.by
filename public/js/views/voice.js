@@ -36,10 +36,13 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
         aboutBoxButtonElement : null,
         scrollableArea : null,
 
+        /* Contains all the years, months and its totals for approved and unapproved posts of the voice - Object */
         postsCount : null,
         postsCountApproved : 0,
         postsCountUnapproved : 0,
+        /* Either the voice allows OR the user can create new posts for the current voice - Boolean */
         allowPosting : false,
+        /* The user can edit posts on the current voice>? - Boolean */
         allowPostEditing : false,
 
         _window : null,
@@ -67,7 +70,6 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
                 this[propertyName] = config[propertyName];
             }, this);
 
-            this._socket = io();
             this._window = window;
             this.postsCountApproved = this._formatPostsCountObject(this.postsCount.approved);
             this.postsCountUnapproved = this._formatPostsCountObject(this.postsCount.unapproved);

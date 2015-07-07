@@ -35,15 +35,13 @@ Class(CV, 'VoiceModerateManager').inherits(Widget)({
         /* Public method to start the thing after being rendered.
          */
         setup : function setup() {
-            var data = {
-                name : 'layersManager',
-                scrollableArea : this.el,
-                _socket : Voice._socket
-            };
+            var data = {};
             Object.keys(voiceInfo).forEach(function(propertyName) {
                 data[propertyName] = voiceInfo[propertyName];
             });
-            data.postsCount = Voice.postsCountUnapproved;
+            data.name = 'layersManager';
+            data.scrollableArea = this.el;
+            data.postsCount = App.Voice.postsCountUnapproved;
             data.allowPostEditing = this.allowPostEditing;
 
             this.appendChild(
