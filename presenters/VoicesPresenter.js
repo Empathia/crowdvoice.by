@@ -26,7 +26,7 @@ var VoicesPresenter = Module('VoicesPresenter')({
               return nextVoice(err);
             }
 
-            voiceInstance.author = result[0];
+            voiceInstance.owner = result[0];
 
             delete voiceInstance.ownerId;
 
