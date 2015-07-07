@@ -162,6 +162,18 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
                   .quality(100)
               );
             },
+            notification: function (readStream) {
+              return readStream.pipe(
+                sharp()
+                  .resize(28,28)
+                  .interpolateWith(sharp.interpolator.nohalo)
+                  .embed()
+                  .progressive()
+                  .flatten()
+                  .background('#FFFFFF')
+                  .quality(100)
+              );
+            },
             small: function (readStream) {
               return readStream.pipe(
                 sharp()
