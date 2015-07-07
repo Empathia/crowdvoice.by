@@ -118,6 +118,16 @@
 </main>
 
 <script>
+  // App
+  var ns = [];
+  <% if (typeof notifications !== "undefined") { %>
+    ns = <%= JSON.stringify(notifications) %>;
+  <% } %>
+  var App = new CV.App({
+    notifications : ns,
+    currentPerson : currentPerson
+  });
+
   $.ajax({
     type: "GET",
     url:'/<%= person.profileName %>/voices',
