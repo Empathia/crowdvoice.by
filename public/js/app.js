@@ -1,11 +1,20 @@
 Class(CV, 'App').includes(NodeSupport)({
     prototype : {
+        notifications : null,
+
         _socket : null,
 
         init : function init(config) {
+            this.notifications = [];
+
             Object.keys(config || {}).forEach(function(propertyName) {
                 this[propertyName] = config[propertyName];
             }, this);
+
+            new CV.Header({
+                element: $('.cv-main-header'),
+                currentPerson : currentPerson
+            });
 
             new CV.NotificationsManager({
                 notifications : this.notifications
