@@ -47,8 +47,8 @@ Class(CV, 'Post').inherits(Widget).includes(
         title: '',
         description: '',
         image: '',
-        imageWidth: 0,
-        imageHeight: 0,
+        /* imageMeta : {medium : {width, height}} */
+        imageMeta : null,
         totalReposts: 0,
         totalSaves: 0,
         publishedAt: '',
@@ -77,8 +77,7 @@ Class(CV, 'Post').inherits(Widget).includes(
             this.title = null;
             this.description = null;
             this.image = null;
-            this.imageWidth = null;
-            this.imageHeight = null;
+            this.imageMeta = null;
             this.totalReposts = null;
             this.totalSaves = null;
             this.publishedAt = null;

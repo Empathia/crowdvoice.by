@@ -39,6 +39,18 @@ Class(CV, 'App').includes(NodeSupport)({
 
             this.socketStart();
             return this.getSocket();
+        },
+
+        /* Make the sidebar interactive, expand on :hover.
+         * @method addInteractiveSidebar <punlic> [Function]
+         * @return CV.App [Object]
+         */
+        addInteractiveSidebar : function addInteractiveSidebar() {
+            new CV.Sidebar({
+                element : document.getElementsByClassName('cv-main-sidebar')[0]
+            });
+
+            return this;
         }
     }
 });

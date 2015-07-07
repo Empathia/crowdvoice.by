@@ -56,7 +56,7 @@ Class(CV, 'PostVideo').inherits(CV.Post)({
             this.imageWrapperElement = this.el.querySelector('.post-card-image-wrapper');
 
             if (this.image) {
-                this.setImageHeight(this.imageHeight);
+                this.setImageHeight(this.imageMeta.medium.height);
             } else {
                 this.imageLoaded = true;
             }

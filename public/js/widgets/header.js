@@ -33,13 +33,6 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
             <span class="ui-badge -abs">22</span>\
         </button>',
 
-    SEARCH_BUTTON_HTML : '\
-        <button class="header-actions-button cv-button small rounded -p0">\
-          <svg class="header-actions-svg header-search-svg -s14">\
-            <use xlink:href="#svg-search"></use>\
-          </svg>\
-        </button>',
-
     prototype : {
         /* options */
         currentPerson : null,
@@ -59,7 +52,12 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
             if (this.currentPerson) this._setupForCurrentPerson();
             else this._setupVisitor();
 
-            this.buttonActionsWrapper.insertAdjacentHTML('beforeend', this.constructor.SEARCH_BUTTON_HTML);
+            this.appendChild(
+                new CV.SearchButton({
+                    name : 'searchButton',
+                    className : 'header-actions-button'
+                })
+            ).render(this.buttonActionsWrapper);
         },
 
         /* Append the ui for not logged in users

@@ -37,11 +37,11 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
     <article role="article">\
         <div class="card_background-image-wrapper -img-cover -text-center">\
             <img class="card_avatar -rounded" alt="{{author.full_name}}’s avatar image"/>\
-            <p class="card_username">\
+            <p class="card_username -rel">\
                 <a class="card_username-link"></a>\
             </p>\
-            <h3 class="card_fullname -font-bold">OpenGovFoundation</h3>\
-            <div class="card_stats">\
+            <h3 class="card_fullname -rel -font-bold">OpenGovFoundation</h3>\
+            <div class="card_stats -rel">\
                 <div class="-row">\
                     <div class="-col-3">\
                         <p class="stats-number card_total-voices-text -font-bold"></p>\
