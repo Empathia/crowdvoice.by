@@ -5,7 +5,7 @@
  * @proposed data format
  * tags         {Array of Objects} list of topics tagged to the voice
  * image_cover  {String} path to the main cover image
- * author       {Object} author avatar, username, url
+ * owner       {Object} owner avatar, username, url
  * title        {String} voice title (65 chars max)
  * description  {String} voice description
  * followers    {Number} voice followers
@@ -29,9 +29,9 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
       </div>\
       <div class="voice-content">\
         <div class="author">\
-          <a class="author-anchor" href="{{voice-author-url}}">\
-            <img class="author-avatar -rounded" src="{{voice-author-avatar-small}}" alt="">\
-            <span class="author-username">{{voice-author-name}}</span>\
+          <a class="author-anchor" href="{{voice-owner-url}}">\
+            <img class="author-avatar -rounded" src="{{voice-owner-avatar-small}}" alt="">\
+            <span class="author-username">{{voice-owner-name}}</span>\
           </a>\
         </div>\
         <h2 class="voice-cover-title -font-bold">{{voice-title}}</h2>\
@@ -77,15 +77,15 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
       this.actionsElement = this.element.find('.voice-actions');
 
 
-      this.dom.updateAttr('href', this.el.querySelector('.voice-cover-hover-overlay'), this.author.profileName + '/' + this.slug);
+      this.dom.updateAttr('href', this.el.querySelector('.voice-cover-hover-overlay'), this.owner.profileName + '/' + this.slug);
       this.dom.updateAttr('title', this.el.querySelector('.voice-cover-hover-overlay'), this.title + ' voice');
       //this.createTags(this.tags);
       this.dom.updateBgImage(this.el.querySelector('.voice-cover-main-image'), this.images.card.url);
 
-      var authorFullname = this.author.lastname ? (this.author.name + ' ' + this.author.lastname) : this.author.name;
-      this.dom.updateAttr('href', this.el.querySelector('.author-anchor'), '/' + this.author.profileName);
+      var authorFullname = this.owner.lastname ? (this.owner.name + ' ' + this.owner.lastname) : this.owner.name;
+      this.dom.updateAttr('href', this.el.querySelector('.author-anchor'), '/' + this.owner.profileName);
       this.dom.updateAttr('title', this.el.querySelector('.author-anchor'), authorFullname + '’s profile');
-      this.dom.updateAttr('src', this.el.querySelector('.author-avatar'), this.author.images.icon.url);
+      this.dom.updateAttr('src', this.el.querySelector('.author-avatar'), this.owner.images.icon.url);
       this.dom.updateText(this.el.querySelector('.author-username'), 'by ' + authorFullname);
 
       this.dom.updateText(this.el.querySelector('.voice-cover-title'), this.title);

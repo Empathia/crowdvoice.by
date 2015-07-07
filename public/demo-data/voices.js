@@ -17,7 +17,7 @@ module.exports = [
             url : '/img/sample/covers/feat-00.jpg'
         }
     },
-    author : {
+    owner : {
       name : 'The Guardian',
       profileName: 'guardian',
       url: '/organization-test',
@@ -51,7 +51,7 @@ module.exports = [
             url : '/img/sample/covers/feat-01.jpg'
         }
     },
-    author : {
+    owner : {
       name : 'The Guardian',
       profileName: 'guardian',
       url: '/organization-test',
@@ -85,7 +85,7 @@ module.exports = [
             url : '/img/sample/covers/feat-02.jpg'
         }
     },
-    author : {
+    owner : {
       name : 'The Guardian',
       profileName: 'guardian',
       url: '/organization-test',
@@ -118,7 +118,7 @@ module.exports = [
             url : '/img/sample/covers/feat-00.jpg'
         }
     },
-    author : {
+    owner : {
       name : 'The Guardian',
       profileName: 'guardian',
       url: '/organization-test',
@@ -152,7 +152,7 @@ module.exports = [
             url : '/img/sample/covers/feat-00.jpg'
         }
     },
-    author : {
+    owner : {
       name : 'The Guardian',
       profileName: 'guardian',
       url: '/organization-test',
