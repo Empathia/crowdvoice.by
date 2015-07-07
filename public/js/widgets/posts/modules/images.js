@@ -15,7 +15,7 @@ Module(CV, 'PostModuleImages')({
          * @method setCoverImage <public> [Function]
          */
         setCoverImage : function setCoverImage(src) {
-            var cover = (this.imageWidth >= 300) ? 'add' : 'remove';
+            var cover = (this.imageMeta.medium.width >= 300) ? 'add' : 'remove';
             this.imageWrapperElement.classList[cover]('-img-cover');
             this.dom.updateBgImage(this.imageWrapperElement, src);
             return this;

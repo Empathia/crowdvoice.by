@@ -50,7 +50,7 @@ Class(CV, 'PostImage').inherits(CV.Post)({
             this.dateTimeElement = this.el.querySelector('.post-card-meta-date');
 
             if (this.image) {
-                this.setImageHeight(this.imageHeight);
+                this.setImageHeight(this.imageMeta.medium.height);
             } else {
                 this.imageLoaded = true;
             }
