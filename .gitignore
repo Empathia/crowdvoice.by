@@ -76,3 +76,5 @@ config.js
 config/config.js
 knexfile.js
 dump.rdb
+public/uploads/**/*
+public/uploads/development

@@ -356,6 +356,10 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
         params.receiverEntityId = this.senderEntityId;
       }
 
+      if (!params.type) {
+        params.type = 'message';
+      }
+
       var message = new Message(params);
 
       message.save(function(err, result) {

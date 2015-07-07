@@ -76,14 +76,14 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
       this.actionsElement = this.element.find('.voice-actions');
 
 
-      this.dom.updateAttr('href', this.el.querySelector('.voice-cover-hover-overlay'), this.url);
+      this.dom.updateAttr('href', this.el.querySelector('.voice-cover-hover-overlay'), this.slug);
       this.dom.updateAttr('title', this.el.querySelector('.voice-cover-hover-overlay'), this.title + ' voice');
       //this.createTags(this.tags);
-      this.dom.updateBgImage(this.el.querySelector('.voice-cover-main-image'), this.image_cover);
+      this.dom.updateBgImage(this.el.querySelector('.voice-cover-main-image'), this.images.card.url);
 
-      this.dom.updateAttr('href', this.el.querySelector('.author-anchor'), this.author.url);
-      this.dom.updateAttr('title', this.el.querySelector('.author-anchor'), this.author.username + ' profile');
-      this.dom.updateAttr('src', this.el.querySelector('.author-avatar'), this.author.avatar);
+      this.dom.updateAttr('href', this.el.querySelector('.author-anchor'), '/' + this.author.profileName);
+      this.dom.updateAttr('title', this.el.querySelector('.author-anchor'), this.author.name + ' profile');
+      this.dom.updateAttr('src', this.el.querySelector('.author-avatar'), this.author.images.icon.url);
       this.dom.updateText(this.el.querySelector('.author-username'), this.author.username);
 
       this.dom.updateText(this.el.querySelector('.voice-cover-title'), this.title);
@@ -93,9 +93,9 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
       this.dom.updateText(this.dateTimeElement, moment(this.updated_at).fromNow());
       this.dom.updateAttr('datetime', this.dateTimeElement, this.updated_at);
 
-      if (this.gallery.length >= 3) {
-        this.createGallery(this.gallery);
-      }
+      // if (this.gallery.length >= 3) {
+      //   this.createGallery(this.gallery);
+      // }
       if (this.style == 'list'){
         this.element.addClass('list-style');
       }

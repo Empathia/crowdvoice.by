@@ -92,7 +92,16 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
         propertyName: 'image',
         versions: {
           medium: function (readStream) {
-            return readStream.pipe(sharp().resize(340));
+            return readStream.pipe(
+              sharp()
+                .resize(340)
+                .interpolateWith(sharp.interpolator.nohalo)
+                .embed()
+                .progressive()
+                .flatten()
+                .background('#FFFFFF')
+                .quality(100)
+            );
           }
         },
         bucket: 'crowdvoice.by',

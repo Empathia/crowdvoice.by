@@ -5,14 +5,14 @@
 
   <section class="profile-intro -rel">
 
-    <% if (organization.background.exists('card')){ %>
-      <div class="profile-background-cover -img-cover" style="background-image: url(<%= organization.background.url('card') %>);"></div>
+    <% if (organization.background.exists('big')){ %>
+      <div class="profile-background-cover -img-cover" style="background-image: url(<%= organization.background.url('big') %>);"></div>
     <% }else{ %>
       <div class="profile-background-cover -colored-background"></div>
     <% } %>
 
-    <% if (organization.image.exists('card')){ %>
-      <img class="profile-image" src="<%= organization.image.url('card') %>">
+    <% if (organization.image.exists('medium')){ %>
+      <img class="profile-image" src="<%= organization.image.url('medium') %>">
     <% }else{ %>
       <img class="profile-image" src="/img/placeholder-image.png">
     <% } %>
@@ -20,7 +20,7 @@
     <div class="pan-separator -rel">
 
       <div class="profile-tw">@<%= organization.profileName %></div>
-      <h1 class="profile-heading -font-bold -m0"><%= organization.name %> <%= organization.lastname %></h1>
+      <h1 class="profile-heading -font-bold -m0"><%= organization.name %> </h1>
       <p class="profile-description"><%= organization.description %></p>
 
       <div class="profile-card-activity">
@@ -299,8 +299,3 @@ profileSettings.share.on('click', function(){
   });
 
 </script>
-
-
-
-
-

@@ -2,15 +2,15 @@
 
   <section class="profile-intro -rel">
 
-    <% if (person.background.exists('card')){ %>
-      <div class="profile-background-cover -img-cover" style="background-image: url(<%= person.background.url('card') %>);"></div>
-    <% }else{ %>
+    <% if (person.background.exists('big')){ %>
+      <div class="profile-background-cover -img-cover" style="background-image: url(<%= person.background.url('big') %>);"></div>
+    <% } else { %>
       <div class="profile-background-cover -colored-background"></div>
     <% } %>
 
-    <% if (person.image.exists('card')){ %>
-      <img class="profile-image" src="<%= person.image.url('card') %>">
-    <% }else{ %>
+    <% if (person.image.exists('medium')){ %>
+      <img class="profile-image" src="<%= person.image.url('medium') %>">
+    <% } else { %>
       <img class="profile-image" src="/img/placeholder-image.png">
     <% } %>
 
@@ -118,11 +118,9 @@
 </main>
 
 <script>
-  console.log('person id: <%= person.id %>');
-  console.log('url: /person/<%= person.id %>/voices');
   $.ajax({
     type: "GET",
-    url:'/person/<%= person.id %>/voices',
+    url:'/<%= person.profileName %>/voices',
     headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
     data : {},
     success: function(data) {
@@ -133,7 +131,7 @@
   function renderVoices(data){
     console.log(data);
     $('.profile-menu .counter-voices').text(data.length);
-    var url = '/jack-johnson/fukushima-disaster';
+
     var tags = [
       {
         name: 'Current Events',
@@ -144,23 +142,15 @@
         url: '/topic/health'
       }
     ];
-    var author = {
-      avatar: '/img/sample/avatars/sm/org-00.jpg',
-      username: 'guardian',
-      url: '/organization-test'
-    };
+
     var followers = 3296;
-    var gallery = [];
-    var image_cover = '/img/sample/covers/feat-00.jpg';
 
     data.forEach(function (voice, index) {
 
-      data[index].url = url;
+    //   data[index].url = url;
       data[index].tags = tags;
-      data[index].author = author;
+    //   data[index].author = author;
       data[index].followers = followers;
-      data[index].gallery = gallery;
-      data[index].image_cover = image_cover;
 
       var voiceEl = $('<div class="-col-4 -pr1"></div>');
 
@@ -292,8 +282,3 @@ profileSettings.share.on('click', function(){
   });
 
 </script>
-
-
-
-
-
