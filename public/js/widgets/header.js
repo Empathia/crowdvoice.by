@@ -74,32 +74,33 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
          */
         _setupForCurrentPerson : function _setupForCurrentPerson() {
             // account dropdown
+            var itemCounter = 0;
             var allMulti = {
-                "1": {name: 'Your Profile'},
-                "2": {name: 'Manage Account'},
-                "3": {
-                    name: 'Organization 01',
-                    sub: {
-                        "0": {name: 'Profile'},
-                        "1": {name: 'Manage'}
-                    }
-                },
-                "4": {
-                    name: 'Organization 02',
-                    sub: {
-                        "0": {name: 'Profile'},
-                        "1": {name: 'Manage'}
-                    }
-                },
-                "5": {
-                    name: 'Organization 03',
-                    sub: {
-                        "0": {name: 'Profile'},
-                        "1": {name: 'Manage'}
-                    }
-                },
-                "6": {name: 'Logout', url: '/logout'}
+                "1": {name: 'Your Profile', url: '/' + this.currentPerson.profileName},
+                "2": {name: 'Manage Account', url: '/' + this.currentPerson.profileName + '/edit'}
             };
+            itemCounter = 2;
+
+            this.currentPerson.organizations.forEach(function(organization) {
+                console.log(organization)
+                itemCounter++;
+                allMulti[itemCounter] = {
+                    name : organization.name,
+                    sub : {
+                        '0' : {
+                            name : 'Profile',
+                            url : '/' + organization.profileName
+                        },
+                        '1' : {
+                            name : 'Manage',
+                            url : '/' + organization.profileName + '/edit'
+                        }
+                    }
+                };
+            }, this);
+
+            itemCounter++;
+            allMulti[itemCounter] = {name: 'Logout', url: '/logout'};
 
             this.appendChild(
                 new CV.SelectAccount({
