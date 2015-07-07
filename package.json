@@ -7,7 +7,7 @@
     "node": ">=0.10.33"
   },
   "scripts": {
-    "start": "nodemon --watch public/demo-data --watch controllers --watch middlewares --watch models --watch presenters --watch lib bin/server.js",
+    "start": "nodemon --ext js,html --watch public/demo-data --watch views --watch controllers --watch middlewares --watch models --watch presenters --watch lib bin/server.js",
     "dev": "webpack -d -w",
     "svg": "svg-sprite -s --symbol-dest=svg --symbol-prefix=.svg- --ss=sprite.svg --si --sx --shape-id-generator=svg-%s --dest=views/shared public/svg/*.svg"
   },
