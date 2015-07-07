@@ -805,7 +805,7 @@ async.series([function(next) {
         'https://www.youtube.com/watch?v=f4RGU2jXQiE'
       ];
 
-      async.timesLimit(1000, 1, function(id, nextPost) {
+      async.timesLimit(250, 1, function(id, nextPost) {
         var post =  new Post();
 
         var type = casual['random_element'](['image', 'video', 'link']);
