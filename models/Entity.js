@@ -210,7 +210,7 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
             card: function (readStream) {
               return readStream.pipe(
                 sharp()
-                  .resize(340)
+                  .resize(440)
                   .interpolateWith(sharp.interpolator.nohalo)
                   .embed()
                   .progressive()
@@ -222,7 +222,7 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
             bluredCard: function (readStream) {
               return readStream.pipe(
                 sharp()
-                  .resize(340)
+                  .resize(440)
                   .interpolateWith(sharp.interpolator.nohalo)
                   // .embed()
                   .progressive()
