@@ -11,7 +11,7 @@ Class(CV, 'NotificationsManager').inherits(Widget)({
 
             this.el = this.element[0];
 
-            if (this.notifications) this._renderNotifications();
+            // if (this.notifications) this._renderNotifications();
         },
 
         _renderNotifications : function _renderNotifications() {
