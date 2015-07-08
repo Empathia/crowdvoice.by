@@ -189,7 +189,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
       var followerIds = [];
 
       async.series([function(done) {
-        EntityFollower.find({ 'followed_id' : entity.id }, function(err, result) {
+        EntityFollower.find({ 'followed_id' : hashids.decode(entity.id)[0] }, function(err, result) {
           if (err) {
             return done(err);
           }
@@ -222,7 +222,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
     },
 
     voicesFollowed : function voicesFollowing(req, res, next) {
-      VoiceFollower.find({ 'entity_id' : req.entity.id }, function(err, voicesFollowed) {
+      VoiceFollower.find({ 'entity_id' : hashids.decode(req.entity.id)[0] }, function(err, voicesFollowed) {
         if (err) {
           return next(err);
         }
@@ -248,7 +248,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
     },
 
     entitiesFollowed : function entitiesFollowed(req, res, next) {
-      EntityFollower.find({ 'follower_id' : req.entity.id }, function(err, entitiesFollowed) {
+      EntityFollower.find({ 'follower_id' : hashids.decode(req.entity.id)[0] }, function(err, entitiesFollowed) {
         if (err) {
           return next(err);
         }
