@@ -1,4 +1,5 @@
 var EntitiesPresenter = require('./EntitiesPresenter.js');
+var TopicsPresenter = require('./TopicsPresenter.js');
 
 var VoicesPresenter = Module('VoicesPresenter')({
   build : function build(voices, callback) {
@@ -28,10 +29,6 @@ var VoicesPresenter = Module('VoicesPresenter')({
 
             voiceInstance.owner = result[0];
 
-            delete voiceInstance.ownerId;
-
-            // console.log(voiceInstance)
-
             // Images
             var images = {};
 
@@ -44,9 +41,49 @@ var VoicesPresenter = Module('VoicesPresenter')({
 
             voiceInstance.images = images;
 
-            response.push(voiceInstance);
+            var topicIds = [];
 
-            nextVoice();
+            async.series([function(done) {
+              VoiceTopic.find({ 'voice_id' : voice.id }, function(err, result) {
+                if (err) {
+                  return done(err);
+                }
+
+                topicIds = result.map(function(item) {
+                  return item.topicId;
+                });
+
+                done();
+              });
+            }, function(done) {
+              Topic.whereIn('id', topicIds, function(err, result) {
+                if (err) {
+                  return done(err);
+                }
+
+                TopicsPresenter.build(result, function(err, topics) {
+                  if (err) {
+                    return done(err);
+                  }
+
+                  voiceInstance.topics = topics;
+
+                  done();
+                })
+              });
+            }], function(err) {
+              if (err) {
+                return nextVoice(err);
+              }
+
+              delete voiceInstance.imageMeta;
+              delete voiceInstance.imageBaseUrl;
+              delete voiceInstance.ownerId;
+
+              response.push(voiceInstance);
+
+              nextVoice();
+            });
           });
         });
       });

@@ -34,9 +34,16 @@ var Topic = Class('Topic').inherits(Argon.KnexModel).includes(ImageUploader)({
         propertyName: 'image',
         versions : {
           icon: function(readStream) {
-
-            // TODO: Confirm dimensions.
-            return readStream.pipe(sharp().resize(28, 28));
+            return readStream.pipe(
+              sharp()
+                .resize(192, 192)
+                .interpolateWith(sharp.interpolator.nohalo)
+                .embed()
+                .progressive()
+                .flatten()
+                .background('#FFFFFF')
+                .quality(100)
+            );
           }
         },
         bucket: 'crowdvoice.by',

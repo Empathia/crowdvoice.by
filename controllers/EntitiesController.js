@@ -200,7 +200,11 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
           done();
         });
-      }, function(done) {
+      }], function(err) {
+        if (err) {
+          return next(err);
+        }
+
         Entity.whereIn('id', followerIds, function(err, result) {
           if (err) {
             return done(err);
@@ -214,7 +218,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
             res.json(followers);
           });
         });
-      }]);
+      });
     },
 
     recommended : function recommended (req, res, next) {
