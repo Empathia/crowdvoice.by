@@ -57,7 +57,7 @@ CV.Thread = Class(CV, 'Thread').includes(Widget)({
         this.element.find('.thread-type').text('As Myself');
       } else {
         this.element.attr('is-organization', 'true');
-        this.element.find('.thread-type').html('As an Organization <br>(<b>'+
+        this.element.find('.thread-type').html('As an Organization (<b>'+
           this.data.senderEntity.name
           +'<b>)');
       }
@@ -70,6 +70,8 @@ CV.Thread = Class(CV, 'Thread').includes(Widget)({
       }
 
       this.element.on('click', function(){
+        thread.element.parent().find('.message-side').removeClass('active');
+        thread.element.addClass('active');
         thread.activate();
         return;
       });
@@ -96,12 +98,12 @@ CV.Thread = Class(CV, 'Thread').includes(Widget)({
       if(this.element.attr('is-organization') == 'true'){
         thread.threadContainer.messagesBodyHeaderEl.find('span.conversation-title').html('Conversation with '
           + this.threadPartnerName +
-          ' - <span>As an Organization (<b>'+ this.data.senderEntity.name +'<b>)</span>');
+          ' <span>- As an Organization (<b>'+ this.data.senderEntity.name +'<b>)</span>');
 
       } else {
         thread.threadContainer.messagesBodyHeaderEl.find('span.conversation-title').html('Conversation with '
           + this.threadPartnerName +
-          ' - <span>As Myself</span>');
+          ' <span>- As Myself</span>');
       }
 
       thread.threadContainer.messagesBodyHeaderEl.find('.delete-thread').show().attr('data-id', this.data.id);

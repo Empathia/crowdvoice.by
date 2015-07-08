@@ -32,13 +32,13 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
       this.searchField = new CV.Input({
         name : 'searchField',
         type    : 'search',
-        style     : 'tiny',
+        style     : 'small',
         placeholder : 'Search...'
       }).render(this.element.find('.messages-search'));
 
       this.replyButton = new CV.InputButton({
           name        : 'replyButton',
-          style       : 'primary large',
+          style       : 'primary',
           type        : '',
           isArea      : true,
           buttonLabel : 'Reply'
@@ -64,11 +64,11 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
         })
 
         this.newMessageButton = new CV.Select({
-          label : 'New Conversation as...',
+          label : 'New as...',
           name  : 'newMessageButton',
-          style   : 'primary small',
+          style   : 'small',
           options: this.newConversationOptions
-        }).render($('.profile-messages-intro'));
+        }).render($('.messages-new'));
 
 
         this.newMessageButton.element.find('li:first-child').bind('click', function() {
@@ -239,6 +239,8 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
 
     newMessageAs : function newMessageAs(entityId, isOrganization, orgName) {
       // set the senderEntityId so it can be accessible by other functions
+      this.listElement.find('.message-side').removeClass('active');
+
       this.senderEntityId = entityId;
       this.senderEntityIsOrg = isOrganization;
       console.log(this.senderEntityIsOrg);
@@ -250,6 +252,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
       this.messagesBodyContainerEl.addClass('active');
       this.messagesBodyHeaderEl.find('.m-action').hide();
       this.messagesBodyHeaderEl.find('.m-new').show();
+      this.messagesBodyHeaderEl.find('.m-new').find('input').focus();
       this.messageListEl.empty();
       this.refresh();
     },
@@ -356,7 +359,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
       if (this.senderEntityIsOrg ){
         this.messagesBodyHeaderEl.find('span.conversation-title').html('Conversation with '
           + otherPersonName +
-          ' - <span>As an Organization (<b>'+ this.senderEntityOrgName +'<b>)</span>');
+          ' <span>- As an Organization (<b>'+ this.senderEntityOrgName +'<b>)</span>');
       } else {
         this.messagesBodyHeaderEl.find('span.conversation-title').text('Conversation with ' + otherPersonName);
       }
@@ -462,22 +465,28 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
         });
     },
 
+    getHeight : function getHeight(){
+      return(window.innerHeight)?
+        window.innerHeight:
+        document.documentElement.clientHeight||document.body.clientHeight||0;
+    },
+
     refresh : function refresh() {
       this.replyButton.recalculate();
+      var padDiff = 0;
 
-      var chatHeight = $(window).height() - ($('.profile-messages-intro').outerHeight() + $('.cv-main-header').outerHeight());
-      $('.messages-sidebar, .messages-body, .messages-body-container').height(chatHeight);
+      var chatHeight = this.getHeight() - $('.cv-main-header').outerHeight();
+      $('.messages-sidebar, .messages-body, .messages-body-container').height(chatHeight - padDiff);
 
-      var sideMessagesHeight = chatHeight - $('.messages-search').outerHeight();
+      var sideMessagesHeight = chatHeight - padDiff - $('.messages-sidebar-header').outerHeight();
       $('.messages-list').css({'overflow-y':'scroll', 'height': sideMessagesHeight+'px'});
 
-      var bodyMessagesHeight = chatHeight - ($('.messages-body-header').outerHeight() + $('.message-create').outerHeight());
+      var bodyMessagesHeight = chatHeight - padDiff - ($('.messages-body-header').outerHeight() + $('.message-create').outerHeight());
       $('.messages-conversation').height(bodyMessagesHeight);
 
       var height = $('.messages-conversation > .msgs').height();
       $('.messages-conversation').scrollTop(height);
     }
 
-
   }
-})
+});
