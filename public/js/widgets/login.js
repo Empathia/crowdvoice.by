@@ -28,7 +28,7 @@ Class(CV, 'Login').inherits(Widget)({
         <form action="" method="post" accept-charset="utf-8">\
             <div class="form-field">\
               <div class="cv-input">\
-                <input type="text" class="username" name="username" value="" placeholder="Username"><br>\
+                <input type="text" class="username" name="username" value="" placeholder="Username" autofocus><br>\
               </div>\
             </div>\
             <div class="form-field">\
@@ -77,7 +77,7 @@ Class(CV, 'Login').inherits(Widget)({
             <div class="input-pair">\
               <div class="form-field">\
                 <div class="cv-input">\
-                  <input type="text" class="username" name="username" value="" placeholder="USERNAME">\
+                  <input type="text" class="username" name="username" value="" placeholder="USERNAME" autofocus>\
                 </div>\
               </div>\
               <div class="form-field">\

@@ -128,7 +128,7 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
                 new CV.SelectAccount({
                     label         : 'Multiple',
                     name          : 'select',
-                    accountImage  : "/img/sample/avatars/org-00.jpg",
+                    accountImage  : this.currentPerson.images.small.url,
                     accountName   : this.currentPerson.name + ' ' + this.currentPerson.lastname,
                     options       : allMulti
                 })

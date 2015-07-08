@@ -27,7 +27,7 @@ Class(CV, 'NotificationMessage').inherits(CV.Notification)({
             this.mainText = this.el. querySelector('.main-text');
             this.extraInfoElement = this.el.querySelector('.cv-notification__info-extra');
 
-            this.dom.updateAttr('src', this.mainAvatarElement, this.person.avatar);
+            this.dom.updateAttr('src', this.mainAvatarElement, this.person.images.small.url);
             this.dom.updateText(this.mainText, 'Message from ' + this.person.name + ' ' + this.person.lastname + ':');
             this.dom.updateText(this.extraInfoElement, this.message);
 

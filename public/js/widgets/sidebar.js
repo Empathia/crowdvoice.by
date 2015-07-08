@@ -13,10 +13,24 @@ Class(CV, 'Sidebar').inherits(Widget)({
             Widget.prototype.init.call(this, config);
 
             this.el = this.element;
+            this.linkElements = [].slice.call(this.el.querySelectorAll('.sidebar-link'), 0);
             this._body = document.body;
             this._yield = this._body.querySelector('.yield');
 
-            this._bindEvents();
+            this._checkAndActivateCurrentLink()._bindEvents();
+        },
+
+        _checkAndActivateCurrentLink : function _checkAndActivateCurrentLink() {
+            var pathname = window.location.pathname;
+
+            this.linkElements.some(function(link) {
+                if (link.getAttribute('href') === pathname) {
+                    link.classList.add('active');
+                    return true;
+                }
+            });
+
+            return this;
         },
 
         _bindEvents : function _bindEvents() {

@@ -13,9 +13,8 @@ module.exports = [
     ],
     image_cover : '/img/sample/covers/feat-00.jpg',
     images : {
-        card : {
-            url : '/img/sample/covers/feat-00.jpg'
-        }
+        small : { url : '/img/sample/covers/feat-00.jpg' },
+        card : { url : '/img/sample/covers/feat-00.jpg' }
     },
     owner : {
       name : 'The Guardian',
@@ -47,9 +46,8 @@ module.exports = [
     ],
     image_cover : '/img/sample/covers/feat-01.jpg',
     images : {
-        card : {
-            url : '/img/sample/covers/feat-01.jpg'
-        }
+        small : { url : '/img/sample/covers/feat-00.jpg' },
+        card : { url : '/img/sample/covers/feat-01.jpg' }
     },
     owner : {
       name : 'The Guardian',
@@ -81,9 +79,8 @@ module.exports = [
     ],
     image_cover : '/img/sample/covers/feat-02.jpg',
     images : {
-        card : {
-            url : '/img/sample/covers/feat-02.jpg'
-        }
+        small : { url : '/img/sample/covers/feat-00.jpg' },
+        card : { url : '/img/sample/covers/feat-02.jpg' }
     },
     owner : {
       name : 'The Guardian',
@@ -114,9 +111,8 @@ module.exports = [
     ],
     image_cover : '/img/sample/covers/feat-00.jpg',
     images : {
-        card : {
-            url : '/img/sample/covers/feat-00.jpg'
-        }
+        small : { url : '/img/sample/covers/feat-00.jpg' },
+        card : { url : '/img/sample/covers/feat-00.jpg' }
     },
     owner : {
       name : 'The Guardian',
@@ -148,9 +144,8 @@ module.exports = [
     ],
     image_cover : '/img/sample/covers/feat-00.jpg',
     images : {
-        card : {
-            url : '/img/sample/covers/feat-00.jpg'
-        }
+        small : { url : '/img/sample/covers/feat-00.jpg' },
+        card : { url : '/img/sample/covers/feat-00.jpg' }
     },
     owner : {
       name : 'The Guardian',

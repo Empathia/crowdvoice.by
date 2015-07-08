@@ -10,7 +10,6 @@
  * description  {String} voice description
  * followers    {Number} voice followers
  * updated_at   {String} ISO date string
- * gallery      <optional> {Array of Objects} list of thumbnail images (design expect 3 images)
  */
 
 var moment = require('moment');
@@ -75,7 +74,6 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
       this.voiceCoverElement = this.element.find('.voice-cover');
       this.dateTimeElement = this.el.querySelector('.voice-cover-datetime');
       this.actionsElement = this.element.find('.voice-actions');
-
 
       this.dom.updateAttr('href', this.el.querySelector('.voice-cover-hover-overlay'), this.owner.profileName + '/' + this.slug);
       this.dom.updateAttr('title', this.el.querySelector('.voice-cover-hover-overlay'), this.title + ' voice');

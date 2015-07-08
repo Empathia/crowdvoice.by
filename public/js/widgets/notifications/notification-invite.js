@@ -27,8 +27,10 @@ Class(CV, 'NotificationInvite').inherits(CV.Notification)({
             this.mainText = this.el. querySelector('.main-text');
             this.extraInfoElement = this.el.querySelector('.cv-notification__info-extra');
 
-            this.dom.updateAttr('src', this.mainAvatarElement, this.person.avatar);
-            this.dom.updateText(this.mainText, this.person.name + ' ' + this.person.lastname + ' invited you to contribute to a Voice:');
+            this.dom.updateAttr('src', this.mainAvatarElement, this.person.images.small.url);
+
+            var fullname = this.person.name + (this.person.lastname ? this.person.lastname : '');
+            this.dom.updateText(this.mainText, fullname + ' invited you to contribute to a Voice:');
 
             this.appendChild(
                 new CV.VoiceCoverMini(this.voiceInfo)

@@ -29,6 +29,7 @@ window.CV = {};
 require('./lib/widget-utils.js');
 require('./lib/Widget.js');
 require('./lib/image-halt');
+require('./lib/responsive-width');
 require('share-url/neon');
 require('./app');
 
@@ -43,6 +44,8 @@ require('./widgets/notifications/notification-request');
 // search
 require('./widgets/search/search');
 require('./widgets/search/button');
+require('./widgets/search/results-manager');
+require('./widgets/search/results-group');
 // other
 require('./widgets/sidebar.js');
 require('./widgets/header.js');
