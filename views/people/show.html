@@ -154,17 +154,11 @@
       }
     ];
 
-    var followers = 3296;
-
     data.forEach(function (voice, index) {
 
-    //   data[index].url = url;
       data[index].tags = tags;
-    //   data[index].author = author;
-      data[index].followers = followers;
 
       var voiceEl = $('<div class="-col-4 -pr1"></div>');
-
 
       new VoiceCover( data[index] ).render( voiceEl);
 
