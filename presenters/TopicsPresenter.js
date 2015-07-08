@@ -34,3 +34,5 @@ var TopicsPresenter = Module('TopicsPresenter')({
     });
   }
 });
+
+module.exports = TopicsPresenter;

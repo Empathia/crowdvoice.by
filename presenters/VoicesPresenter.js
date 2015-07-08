@@ -36,7 +36,7 @@ var VoicesPresenter = Module('VoicesPresenter')({
               images[version] = {
                 url : voiceInstance.image.url(version),
                 meta : voiceInstance.image.meta(version)
-              }
+              };
             }
 
             voiceInstance.images = images;
@@ -56,6 +56,8 @@ var VoicesPresenter = Module('VoicesPresenter')({
                 done();
               });
             }, function(done) {
+
+              // Topics
               Topic.whereIn('id', topicIds, function(err, result) {
                 if (err) {
                   return done(err);
@@ -69,7 +71,30 @@ var VoicesPresenter = Module('VoicesPresenter')({
                   voiceInstance.topics = topics;
 
                   done();
-                })
+                });
+              });
+            }, function(done) {
+
+              // Followers
+              VoiceFollower.find({ 'voice_id' : voice.id }, function(err, voiceFollowers) {
+                var followerIds = voiceFollowers.map(function(item) {
+                  return item.entityId;
+                });
+
+                Entity.whereIn('id', followerIds, function(err, result) {
+                  if (err) {
+                    return done(err);
+                  }
+                  EntitiesPresenter.build(result, function(err, followers) {
+                    if (err) {
+                      return done(err);
+                    }
+
+                    voiceInstance.followers = followers;
+
+                    done();
+                  });
+                });
               });
             }], function(err) {
               if (err) {
