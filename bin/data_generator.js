@@ -392,37 +392,43 @@ async.series([function(next) {
       data : {
         name : 'Human Rights',
         slug : 'human-rights'
-      }
+      },
+      image : path.join(process.cwd(), '/public/generator/topics/health.png')
     },
     {
       data : {
         name : 'Politics',
         slug : 'politics'
-      }
+      },
+      image : path.join(process.cwd(), '/public/generator/topics/health.png')
     },
     {
       data : {
         name : 'Education',
         slug : 'education'
-      }
+      },
+      image : path.join(process.cwd(), '/public/generator/topics/health.png')
     },
     {
       data : {
         name : 'Health',
         slug : 'health'
-      }
+      },
+      image : path.join(process.cwd(), '/public/generator/topics/health.png')
     },
     {
       data : {
         name : 'Environment',
         slug : 'environment'
-      }
+      },
+      image : path.join(process.cwd(), '/public/generator/topics/health.png')
     },
     {
       data : {
         name : 'Privacy',
         slug : 'privacy'
-      }
+      },
+      image : path.join(process.cwd(), '/public/generator/topics/health.png')
     }
   ];
 
@@ -438,9 +444,15 @@ async.series([function(next) {
         return done(err);
       }
 
-      data.topics[topicInstance.slug] = topicInstance;
+      topicInstance.uploadImage('image', topic.data.image, function(err) {
+        if (err) {
+          return done(err);
+        }
 
-      done();
+        data.topics[topicInstance.slug] = topicInstance;
+
+        topic.save(done);
+      });
     });
   }, next);
 }, function(next) {
@@ -802,6 +814,29 @@ async.series([function(next) {
     });
   }, next);
 
+}, function(next) {
+
+  // FeaturedVoices
+  var featured = [
+    data.voices.winterfell,
+    data.voices.meereen,
+    data.voices['second-trial-by-combat'],
+    data.voices['blackwater-battle'],
+    data.voices['meereen-siege'],
+    data.voices['battle-of-castle-black'],
+    data.voices['walk-of-atonement'],
+    data.voices['kings-landing'],
+    data.voices['valyrian-roads']
+  ];
+
+  async.each(featured, function(voice, nextFeatured) {
+    var featuredVoice = new FeaturedVoice({
+      voiceId : voice.id,
+      order : featured.indexOf(voice); || 0
+    });
+
+    featuredVoice.save(nextFeatured);
+  }, next);
 }, function(next) {
 
   // Follow persons
