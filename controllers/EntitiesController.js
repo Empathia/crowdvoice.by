@@ -185,26 +185,10 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
     },
 
     followers : function followers(req, res, next) {
-      var entity;
+      var entity = req.entity;
       var followerIds = [];
 
       async.series([function(done) {
-        Entity.find({ profile_name : req.params.profileName }, function(err, result) {
-          if (err) {
-            return done(err);
-          }
-
-          if (result.length === 0) {
-            return done(new NotFoundError('Entity Not Found'));
-          }
-
-          result = result[0];
-
-          entity = result;
-
-          done();
-        });
-      }, function(done) {
         EntityFollower.find({ 'followed_id' : entity.id }, function(err, result) {
           if (err) {
             return done(err);
