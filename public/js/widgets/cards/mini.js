@@ -31,12 +31,13 @@ Class(CV, 'CardMini').inherits(Widget).includes(CV.WidgetUtils)({
         },
 
         _setup : function _setup() {
-            this.dom.updateAttr('src', this.avatarElement, this.person.avatar);
-            this.dom.updateAttr('alt', this.avatarElement, this.person.fullname + "’s avatar image");
+            this.dom.updateAttr('src', this.avatarElement, this.images.small.url);
 
-            this.dom.updateText(this.fullNameElement, this.person.fullname);
+            var fullname = this.name + (this.lastname ? this.lastname : '');
+            this.dom.updateAttr('alt', this.avatarElement, this.profileName + "’s avatar image");
+            this.dom.updateText(this.fullNameElement, fullname);
 
-            this.dom.updateText(this.usernameElement, "@" + this.person.username);
+            this.dom.updateText(this.usernameElement, "@" + this.profileName);
 
             return this;
         }

@@ -25,7 +25,7 @@ Class(CV, 'NotificationFollow').inherits(CV.Notification)({
             this.mainAvatarElement = this.el.querySelector('.main-avatar');
             this.mainText = this.el. querySelector('.main-text');
 
-            this.dom.updateAttr('src', this.mainAvatarElement, this.person.avatar);
+            this.dom.updateAttr('src', this.mainAvatarElement, this.person.images.small.url);
             this.dom.updateText(this.mainText, this.person.name + ' ' + this.person.lastname + ' followed you.');
             console.log('follow');
         }
