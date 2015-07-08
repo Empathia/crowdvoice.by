@@ -12,21 +12,27 @@
   }
 }
 
+.card-inner {
+  position: relative;
+  min-height: 450px;
+  border: 1px solid fade(@color-black, 20%);
+  border-radius: 8px;
+  background-color: @color-white;
+  box-shadow: 0 1px 2px fade(@color-black, 10%);
+}
+
 .card_background-image-wrapper {
-  border-radius: 6px 6px 0 0;
+  margin: -1px -1px 0 -1px;
+  border-radius: inherit;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
 
   &:extend(.dark-background all);
 }
 
 .card_info-wrapper {
-  position: relative;
   padding: 25px 30px 20px;
-  border-width: 0 1px 1px;
-  border-style: none solid solid;
-  border-color: #ccc;
   text-align: center;
-  border-radius: 0 0 6px 6px;
-  background-color: #fff;
 }
 
 .card_avatar {
@@ -98,7 +104,10 @@
   width: 100%;
   height: 58px;
   background-color: #fff;
-  border-radius: 0 0 5px 5px;
+  border-radius: inherit;
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+  text-align: center;
 }
 
 /* =========================================================================== *
