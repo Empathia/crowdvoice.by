@@ -17,7 +17,7 @@ Class(CV, 'SearchButton').inherits(Widget)({
                 new CV.Search({
                     name : 'search'
                 })
-            ).render(document.querySelector('.cv-main-content'));
+            ).render(document.querySelector('main[role="main"]'));
 
             this._bindEvents();
         },
