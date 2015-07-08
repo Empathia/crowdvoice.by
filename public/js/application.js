@@ -29,6 +29,7 @@ window.CV = {};
 require('./lib/widget-utils.js');
 require('./lib/Widget.js');
 require('./lib/image-halt');
+require('./lib/responsive-width');
 require('share-url/neon');
 require('./app');
 
