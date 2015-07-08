@@ -30,14 +30,14 @@ Class(CV, 'HomeView').includes(NodeSupport, CV.WidgetUtils)({
                 featuredVoicesElements.push(this[voice.name].el);
             }, this);
 
-            window.featuredVoices = new CV.ResponsiveWidth({
+            var featuredVoices = new CV.ResponsiveWidth({
                 container : featuredVoicesWrapper,
                 items : [].slice.call(featuredVoicesElements, 0),
                 minWidth : 300
             }).setup();
 
             this.categoriesData.forEach(function(category) {
-                new CategoryCover({data: category}).render(categoriesHolder);
+                new CategoryCover(category).render(categoriesHolder);
             });
 
             this.orgsData.map(function(org) {
