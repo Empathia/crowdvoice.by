@@ -143,21 +143,7 @@
     console.log(data);
     $('.profile-menu .counter-voices').text(data.length);
 
-    var tags = [
-      {
-        name: 'Current Events',
-        url: '/topic/current-events'
-      },
-      {
-        name: 'Health',
-        url: '/topic/health'
-      }
-    ];
-
     data.forEach(function (voice, index) {
-
-      data[index].tags = tags;
-
       var voiceEl = $('<div class="-col-4 -pr1"></div>');
 
       new VoiceCover( data[index] ).render( voiceEl);
