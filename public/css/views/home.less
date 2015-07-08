@@ -114,70 +114,36 @@
  * =========================================================================== */
 .homepage-category-list {
   margin-bottom: 110px;
-  padding-top: 110px;
-  background: transparent url('/img/views/home/categories-background.jpg') 50% 0 repeat-x;
+  padding-top: 64px;
+  padding-bottom: 100px;
+  background-color: @color-neutral-xx-light;
 }
 
 .homepage-category-list-heading {
-  font-size: 48px;
-  line-height: 1.2em;
-  margin-bottom: 50px;
+  font-size: 40px;
+  line-height: 55px;
+  margin: 0 0 50px;
 }
 
 .homepage-category-list-item {
   float: left;
   width: 20%;
-  position: relative;
-  margin-bottom: 1px;
-  overflow: hidden;
-  transform: translateZ(0);
 
   .categories_link {
+    display: block;
+    color: @color-neutral-xx-dark;
+  }
+
+  .homepage-category-cover {
+    height: 200px;
+  }
+
+  .categories_title {
     font-size: 18px;
-    position: relative;
-    display: table;
-    width: 100%;
-    height: 15vw;
-    text-align: center;
-    background-color: rgba(0, 0, 0, 0.5);
-    color: #fff;
-
-    &-inner {
-
-      display: table-cell;
-      vertical-align: middle;
-    }
-  }
-
-  &:hover {
-    .homepage-category-cover {
-      transform: scale(1.1);
-    }
+    display: block;
+    &:extend(.-text-center);
   }
 }
-
-.homepage-category-list-item-inner {
-  position: relative;
-  margin-right: 1px;
-  overflow: hidden;
-}
-
-.homepage-category-cover {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  transition: transform 480ms ease;
-}
-
-.homepage-category-list-item:nth-child(1)   {border-top-left-radius: 6px}
-.homepage-category-list-item:nth-child(5)   {border-top-right-radius: 6px}
-.homepage-category-list-item:nth-child(6)   {border-bottom-left-radius: 6px}
-.homepage-category-list-item:nth-child(10)  {border-bottom-right-radius: 6px}
-
-.homepage-category-list-item:nth-child(5)   .homepage-category-list-item-inner,
-.homepage-category-list-item:nth-child(10)  .homepage-category-list-item-inner {margin-right: 0}
 
 .homepage-category-list-cta {
   margin-top: 70px;

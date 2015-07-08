@@ -2,14 +2,21 @@
 /**
  * VoiceCover Widget
  *
- * @proposed data format
- * tags         {Array of Objects} list of topics tagged to the voice
- * image_cover  {String} path to the main cover image
- * owner       {Object} owner avatar, username, url
- * title        {String} voice title (65 chars max)
  * description  {String} voice description
+ * createdAt    {String}
  * followers    {Array} voice entities followers
- * updatedAt   {String} ISO date string
+ * id           {String} the voice id
+ * images       {Object} Available image sizes
+ * latitude     {String}
+ * locationName {String}
+ * longitude    {String}
+ * owner        {Object} owner Entity
+ * slug         {String}
+ * status       {String}
+ * title        {String} voice title (65 chars max)
+ * topics       {Array} list of topics tagged to the voice
+ * type         {String}
+ * updatedAt    {String} ISO date string
  */
 
 var moment = require('moment');
@@ -77,7 +84,7 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
 
       this.dom.updateAttr('href', this.el.querySelector('.voice-cover-hover-overlay'), this.owner.profileName + '/' + this.slug);
       this.dom.updateAttr('title', this.el.querySelector('.voice-cover-hover-overlay'), this.title + ' voice');
-      //this.createTags(this.tags);
+      if (this.topics.length) this.createTopics(this.topics);
       this.dom.updateBgImage(this.el.querySelector('.voice-cover-main-image'), this.images.card.url);
 
       var authorFullname = this.owner.lastname ? (this.owner.name + ' ' + this.owner.lastname) : this.owner.name;
@@ -109,17 +116,17 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
 
     /**
      * Creates a tag per topic that is tagged to the topic and appends them.
-     * @method createTags <private> [Function]
+     * @method createTopics <private> [Function]
      * @params tags <required> [Array] list of topics tagged to the voice
      * @return undefined
      */
-    createTags : function createTags(tags) {
-      tags.forEach(function(tag) {
+    createTopics : function createTopics(topics) {
+      topics.forEach(function(topic) {
         var temp = $(this.constructor.TAG_ITEM_HTML);
         var anchor = temp.find('.cv-tags-tag');
 
-        this.dom.updateText(anchor[0], tag.name);
-        this.dom.updateAttr('href', anchor[0], tag.url);
+        this.dom.updateText(anchor[0], topic.name);
+        this.dom.updateAttr('href', anchor[0], '/topic/' + topic.slug);
 
         this.tagListElement.append(temp);
 

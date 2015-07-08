@@ -1,3 +1,4 @@
+/* jshint multistr: true */
 /**
  * @data format
  * name         {String} category name
@@ -7,34 +8,29 @@
 Class('CategoryCover').inherits(Widget).includes(CV.WidgetUtils)({
     HTML : '\
         <div class="homepage-category-list-item">\
-            <div class="homepage-category-list-item-inner">\
+            <a class="categories_link" href="#" alt="">\
                 <div class="homepage-category-cover -img-cover"></div>\
-                <a class="categories_link -font-semi-bold" href="#" alt="">\
-                    <span class="categories_link-inner"></span>\
-                </a>\
-            </div>\
+                <span class="categories_title -font-bold"></span>\
+            </a>\
         </div>\
     ',
 
     prototype : {
 
-        data : {
-            name: '',
-            image_cover: '',
-            url: ''
-        },
+        name : null,
+        slug : null,
+        images : null,
 
         init : function init(config) {
             Widget.prototype.init.call(this, config);
 
             this.el = this.element[0];
-
             this.anchorElement = this.el.querySelector('.categories_link');
 
-            this.dom.updateBgImage(this.el.querySelector('.homepage-category-cover'), this.data.image_cover);
-            this.dom.updateAttr('href', this.anchorElement, this.data.url);
-            this.dom.updateAttr('alt', this.anchorElement, this.data.name);
-            this.dom.updateText(this.el.querySelector('.categories_link-inner'), this.data.name);
+            this.dom.updateBgImage(this.el.querySelector('.homepage-category-cover'), this.images.icon.url);
+            this.dom.updateAttr('href', this.anchorElement, '/topic/' + this.slug);
+            this.dom.updateAttr('alt', this.anchorElement, this.name);
+            this.dom.updateText(this.el.querySelector('.categories_title'), this.name);
         }
     }
 });
