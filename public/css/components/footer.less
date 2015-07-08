@@ -1,50 +1,50 @@
 /* =========================================================================== *
- *  home page
- * =========================================================================== */
-
-/* =========================================================================== *
  *  globally shared
  * =========================================================================== */
 .cv-main-footer {
-  height: 120px;
-  background-color: #333;
+  padding: 33px 0 25px;
+  background: @color-neutral-xx-light;
+  color: @color-neutral-mid;
 
-  a {
-    color: #fff;
+  .footer-menu {
+    text-align: center;
+    -webkit-font-smoothing: antialiased;
+
+    a {
+      padding: 0px 10px;
+
+      &.side{
+        margin-top: 8px;
+        display: inline-block;
+        svg{
+          width: 24px;
+          height: 24px;
+          fill: @color-neutral-xx-mid;
+        }
+      }
+
+      &.logo{
+        svg{
+          width: 32px;
+          height: 36px;
+          font-size: 17px;
+          font-weight: bold;
+        }
+      }
+    }
   }
 }
 
-.cv-main-footer-inner {
-  padding: 0 2rem 0 @cv-sidebar-width;
+.footer-copy {
+  font-size: 12px;
+  margin-top: 18px;
 }
 
-.footer-links-container {
+/* =========================================================================== *
+ *  home page
+ * =========================================================================== */
+.page-home .cv-main-footer {
+  padding-left: @cv-sidebar-width;
+  padding-right: 2rem;
 }
 
-.footer-logo {
-  margin-top: 30px;
-}
-
-.footer-nav {
-  padding: 50px 0 0 1em;
-
-  a:after {
-    content: '•';
-    margin: 0 .5em;
-    color: #666666;
-  }
-}
-
-.footer-social {
-  padding-top: 50px;
-}
-
-.footer-subscribe-container {
-  padding-top: 45px;
-}
-
-@media (max-width: 1200px) {
-  .cv-main-footer-inner {
-    padding-left: 2rem;
-  }
-}

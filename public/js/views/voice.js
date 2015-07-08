@@ -12,7 +12,8 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
         id : null,
         title : '',
         description : '',
-        coverImage : '',
+        /* images {big, bluredCard, card, original }*/
+        images : null,
         latitude : '',
         longitude : '',
         locationName : '',
@@ -36,10 +37,13 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
         aboutBoxButtonElement : null,
         scrollableArea : null,
 
+        /* Contains all the years, months and its totals for approved and unapproved posts of the voice - Object */
         postsCount : null,
         postsCountApproved : 0,
         postsCountUnapproved : 0,
+        /* Either the voice allows OR the user can create new posts for the current voice - Boolean */
         allowPosting : false,
+        /* The user can edit posts on the current voice>? - Boolean */
         allowPostEditing : false,
 
         _window : null,
@@ -67,10 +71,10 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
                 this[propertyName] = config[propertyName];
             }, this);
 
-            this._socket = io();
             this._window = window;
             this.postsCountApproved = this._formatPostsCountObject(this.postsCount.approved);
             this.postsCountUnapproved = this._formatPostsCountObject(this.postsCount.unapproved);
+            this.postCount = this._getTotalPostCount(this.postsCountApproved);
 
             this._appendLayersManager()._checkInitialHash();
             this._bindEvents();
@@ -81,10 +85,6 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
          * @return [CV.VoiceView]
          */
         setupVoiceWidgets : function setupVoiceWidgets() {
-            new CV.Sidebar({
-                element : document.getElementsByClassName('cv-main-sidebar')[0]
-            });
-
             new CV.VoiceHeader({
                 element : document.getElementsByClassName('cv-main-header')[0],
                 footerVoiceTitle : document.getElementsByClassName('voice-footer-meta-wrapper')[0]
@@ -111,10 +111,10 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
          * @return [CV.Voice]
          */
         updateVoiceInfo : function updateVoiceInfo() {
-            if (this.coverImage) {
+            if (this.images.big.url) {
                 var image = document.createElement('img');
                 image.className = "voice-background-cover-image";
-                image.src = voice.coverImage;
+                image.src = this.images.big.url;
                 this.backgroundElement.appendChild(image);
             } else this.backgroundElement.className += ' -colored-background';
 
@@ -300,7 +300,7 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
             this.id = null;
             this.title = null;
             this.description = null;
-            this.coverImage = null;
+            this.images = null;
             this.latitude = null;
             this.longitude = null;
             this.locationName = null;

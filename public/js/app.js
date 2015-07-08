@@ -1,11 +1,20 @@
 Class(CV, 'App').includes(NodeSupport)({
     prototype : {
+        notifications : null,
+
         _socket : null,
 
         init : function init(config) {
+            this.notifications = [];
+
             Object.keys(config || {}).forEach(function(propertyName) {
                 this[propertyName] = config[propertyName];
             }, this);
+
+            new CV.Header({
+                element: $('.cv-main-header'),
+                currentPerson : currentPerson
+            });
 
             new CV.NotificationsManager({
                 notifications : this.notifications
@@ -30,6 +39,18 @@ Class(CV, 'App').includes(NodeSupport)({
 
             this.socketStart();
             return this.getSocket();
+        },
+
+        /* Make the sidebar interactive, expand on :hover.
+         * @method addInteractiveSidebar <punlic> [Function]
+         * @return CV.App [Object]
+         */
+        addInteractiveSidebar : function addInteractiveSidebar() {
+            new CV.Sidebar({
+                element : document.getElementsByClassName('cv-main-sidebar')[0]
+            });
+
+            return this;
         }
     }
 });

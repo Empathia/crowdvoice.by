@@ -1,7 +1,9 @@
 .cv-notifications {
+  z-index: 2;
   position: fixed;
   top: 6em;
   right: 1em;
+  will-change: transform;
 
   .cv-notification {
     width: 560px;
@@ -71,4 +73,8 @@
 .cv-notification.message .cv-notification__info-extra {
   font-size: 11px;
   color: @color-neutral-mid;
+
+  &:before {content: '“'}
+  &:after {content: '...”'}
 }
+

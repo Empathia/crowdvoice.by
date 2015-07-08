@@ -4,7 +4,7 @@ module.exports = [
         person : {
             name : 'Esra’a',
             lastname : 'Al Shafei',
-            avatar : '/img/sample/avatars/twitter-00.jpg'
+            images : {small: {url: '/img/sample/avatars/twitter-00.jpg'}}
         }
     },
     {
@@ -13,7 +13,7 @@ module.exports = [
         person : {
             name : 'Esra’a',
             lastname : 'Al Shafei',
-            avatar : '/img/sample/avatars/twitter-00.jpg'
+            images : {small: {url: '/img/sample/avatars/twitter-00.jpg'}}
         }
     },
     {
@@ -21,17 +21,17 @@ module.exports = [
         person : {
             name : 'Esra’a',
             lastname : 'Al Shafei',
-            avatar : '/img/sample/avatars/twitter-00.jpg'
+            images : {small: {url: '/img/sample/avatars/twitter-00.jpg'}},
         },
         voiceInfo : {
-            image_cover : '/img/sample/covers/feat-00.jpg',
             title : 'Continued Effects of the Fukushima Disaster',
             url : 'http://akjfklas/',
-            author : {
-                avatar : '/img/sample/avatars/twitter-00.jpg',
+            images : {small: {url: '/img/sample/covers/feat-00.jpg'}},
+            owner : {
                 url : 'http://akjfklas/',
-                username : 'alkfhlkasjd',
-                fullname : 'The International Planned Parenhood Federation'
+                profileName : 'alkfhlkasjd',
+                name : 'The International Planned Parenhood Federation',
+                images : {small: {url: '/img/sample/avatars/twitter-00.jpg'}},
             }
         }
     },
@@ -40,14 +40,12 @@ module.exports = [
         person : {
             name : 'Esra’a',
             lastname : 'Al Shafei',
-            avatar : '/img/sample/avatars/twitter-00.jpg'
+            images : {small: {url: '/img/sample/avatars/twitter-00.jpg'}},
         },
         organizationInfo : {
-            person : {
-                avatar : '/img/sample/avatars/org-03.jpg',
-                fullname : 'The International Planned Parenhood Federation',
-                username : 'IPPF'
-            }
+            name : 'The International Planned Parenhood Federation',
+            profileName : 'IPPF',
+            images : {small: {url: '/img/sample/avatars/twitter-00.jpg'}}
         }
     }
 ];

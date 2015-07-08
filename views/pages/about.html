@@ -1,6 +1,6 @@
 <main role="main" class="cv-main-content page-about -rel">
 
-    <div class="-col-12 page-container main">
+    <div class="page-container main -text-center">
       <div class="page-content">
         <h6>Who we are</h6>
         <h5>We're a group of human rights activists frustrated with the inadequate and often overpriced tools needed to make our causes accessible and engaging. Knowing that thousands of stories were going unheard, we were determined to give them a voice.</h5>
@@ -16,41 +16,43 @@
         </div>
       </div>
     </div>
-    <div class="-col-12 page-container grey">
+
+    <div class="page-container grey -text-center">
       <div class="page-content">
         <h2>The result is CrowdVoice.by</h2>
-        <h5>An interactive platform where anyone can broadcast and visualize a message, raise awareness, and invite change.</h5>
+        <h5 class="-font-light">An interactive platform where anyone can broadcast and visualize a message, raise awareness, and invite change.</h5>
       </div>
     </div>
-    <div class="-col-12 page-container light">
+
+    <div class="page-container light -text-center">
       <div class="page-content">
         <h6>Why we're needed</h6>
-        <p>Today’s digital media is cluttered and volatile, so we’re here to make sorting and preserving information easy. CrowdVoice.by gives you the tools to organize, share, and galvanize your cause, or simply archive content for future research and education. It's never been easier to connect to what matters.</p>
+        <p class="normal-text">Today’s digital media is cluttered and volatile, so we’re here to make sorting and preserving information easy. CrowdVoice.by gives you the tools to organize, share, and galvanize your cause, or simply archive content for future research and education. It's never been easier to connect to what matters.</p>
         <br><br><br><br><br>
         <h6>Community Oriented</h6>
-        <p>CrowdVoice.by is built to streamline the crowdsourcing of information, while allowing you to moderate content to best reflect your cause. We believe information advocacy works best with the involvement of networked communities. In other words, you, the people you know, the people they know, and so on. This core ethos carries over into our software.
+        <p class="normal-text">CrowdVoice.by is built to streamline the crowdsourcing of information, while allowing you to moderate content to best reflect your cause. We believe information advocacy works best with the involvement of networked communities. In other words, you, the people you know, the people they know, and so on. This core ethos carries over into our software.
           <br>
-          <a href="#">CrowdVoice.by is an open source project.</a>
+          <a href="#" class="-ctu -ctu-primary -font-bold">CrowdVoice.by is an open source project.</a>
         </p>
         <br><br>
-        <button class="cv-button">Donate!</button>
+        <button class="about-donate-button cv-button -upper">Donate!</button>
       </div>
       <img class="voice-left" src="/img/page-about-voice-left.png">
       <img class="voice-right" src="/img/page-about-voice-right.png">
     </div>
 
-    <div class="-col-12 page-container grey">
+    <div class="page-container grey -text-center">
       <div class="page-content">
         <h6>Our partners</h6>
-        <p>CrowdVoice.by is honored to have partnered with the following organizations.</p>
+        <p class="normal-text">CrowdVoice.by is honored to have partnered with the following organizations.</p>
         <br>
         <img class="partner" src="/img/sample/partners/shuttleworth.png">
       </div>
     </div>
 
-    <div class="-col-12 page-container light bg-images">
+    <div class="page-container light bg-images -text-center">
       <div class="page-content">
-        <h3>Create, curate, amplify and...</h3>
+        <h3 class="-font-light">Create, curate, amplify and...</h3>
         <h1>CrowdVoice</h1>
         <br><br><br>
         <button class="cv-button primary large">Sign Up Here!</button>
@@ -63,11 +65,16 @@
 </main>
 
 <script>
-
-$( document ).ready(function() {
-
-});
-
+  // App
+  var ns = [];
+  <% if (typeof notifications !== "undefined") { %>
+    ns = <%= JSON.stringify(notifications) %>;
+  <% } %>
+  var App = new CV.App({
+    notifications : ns,
+    currentPerson : currentPerson
+  });
+  App.addInteractiveSidebar();
 </script>
 
 

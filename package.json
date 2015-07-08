@@ -7,7 +7,7 @@
     "node": ">=0.10.33"
   },
   "scripts": {
-    "start": "nodemon --watch public/demo-data --watch controllers --watch middlewares --watch models --watch presenters --watch lib bin/server.js",
+    "start": "nodemon --ext js,html --watch public/demo-data --watch views --watch controllers --watch middlewares --watch models --watch presenters --watch lib bin/server.js",
     "dev": "webpack -d -w",
     "svg": "svg-sprite -s --symbol-dest=svg --symbol-prefix=.svg- --ss=sprite.svg --si --sx --shape-id-generator=svg-%s --dest=views/shared public/svg/*.svg"
   },
@@ -26,6 +26,7 @@
     "express": "^4.12.4",
     "file-loader": "^0.8.1",
     "follow-redirects": "0.0.3",
+    "fs-extra": "^0.21.0",
     "gm": "^1.18.1",
     "hashids": "^1.0.1",
     "imagesize": "^1.0.0",

@@ -38,7 +38,27 @@ Module(CV, 'VoiceHelper')({
             }
 
             return result;
-        }
+        },
 
+        /* Return the total postCount.
+         * @argument approvedPostsObject <required> [Object]
+         *  @example [{year: 2015, months: [{month: 5, total: 32}, {month: 6, total: 100}]]
+         * @return total [Number] @example 132
+         */
+        _getTotalPostCount : function _getTotalPostCount(approvedPostsObject) {
+            var result = [];
+
+            var totals = [].concat.apply([], approvedPostsObject.map(function(year) {
+                return year.months.map(function(month) {
+                    return month.total;
+                });
+            }));
+
+            result = totals.reduce(function(prev, curr) {
+                return prev + curr;
+            });
+
+            return result;
+        }
     }
 });

@@ -1,13 +1,10 @@
 var path = require('path');
 var BlackListFilter = require(__dirname + '/BlackListFilter');
+var VoicesPresenter = require(path.join(process.cwd(), '/presenters/VoicesPresenter.js'));
 
 var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
   prototype : {
-    init : function () {
-      return this;
-    },
-
     getEntityByProfileName : function (req, res, next) {
       Entity.find({
         profile_name: req.params.profile_name
@@ -15,10 +12,17 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
         if (err) { next(err); return; }
         if (result.length === 0) { next(new NotFoundError('Entity Not Found')); return; }
 
-        req.entity = new Entity(result[0]);
-        req.entityType = req.entity.type;
-        res.locals[req.entityType] = req.entity;
-        next();
+        EntitiesPresenter.build(result, function(err, entities) {
+          if (err) {
+            return next(err);
+          }
+
+          req.entity = entities[0];
+          req.entityType = req.entity.type;
+          res.locals[req.entityType] = entities[0];
+          next();
+        })
+
       });
     },
 
@@ -157,21 +161,62 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
     voices : function voices (req, res, next) {
       var entity = req.entity;
-      Voice.find({owner_id: entity.id}, function (err, result) {
+      Voice.find({
+        owner_id: hashids.decode(entity.id)[0],
+        status : Voice.STATUS_PUBLISHED
+      }, function (err, result) {
         if (err) { next(err); return; }
 
-        // Filter hidden info.
-        result.forEach(function (voice) {
-          delete(voice.ownerId);
-        });
-
-        res.format({
-          'application/json': function () {
-            res.send(result);
-          },
-          'text/html': function () {
-            next(new Error('Not found'));
+        VoicesPresenter.build(result, function(err, voices) {
+          if (err) {
+            return next(err);
           }
+
+          res.format({
+            'application/json': function () {
+              res.send(voices);
+            },
+            'text/html': function () {
+              next(new Error('Not found'));
+            }
+          });
+        });
+      });
+    },
+
+    followers : function followers(req, res, next) {
+      var entity = req.entity;
+      var followerIds = [];
+
+      async.series([function(done) {
+        EntityFollower.find({ 'followed_id' : entity.id }, function(err, result) {
+          if (err) {
+            return done(err);
+          }
+
+          followerIds = result.map(function(item) {
+            return item.followerId;
+          });
+
+          done();
+        });
+      }], function(err) {
+        if (err) {
+          return next(err);
+        }
+
+        Entity.whereIn('id', followerIds, function(err, result) {
+          if (err) {
+            return done(err);
+          }
+
+          EntitiesPresenter.build(result, function(err, followers) {
+            if (err) {
+              return done(err);
+            }
+
+            res.json(followers);
+          });
         });
       });
     },

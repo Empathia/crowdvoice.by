@@ -11,8 +11,8 @@ Class(CV, 'VoiceCoverMini').inherits(Widget).includes(CV.WidgetUtils)({
         <p class="voice-cover-title -font-semi-bold">{{voice-title}}</p>\
         <div class="meta">\
           <div class="author">\
-            By <a class="author-anchor" href="{{voice-author-url}}">\
-              <span class="author-username">{{voice-author-name}}</span>\
+            By <a class="author-anchor" href="{{voice-owner-url}}">\
+              <span class="author-username">{{voice-owner-name}}</span>\
             </a> &nbsp;&middot;&nbsp; \
           </div>\
           <ul class="cv-tags -list-horizontal"></ul>\
@@ -35,11 +35,12 @@ Class(CV, 'VoiceCoverMini').inherits(Widget).includes(CV.WidgetUtils)({
             this.el = this.element[0];
             this.tagListElement = this.element.find('.cv-tags');
 
-            this.dom.updateBgImage(this.el.querySelector('.voice-cover-main-image'), this.image_cover);
+            this.dom.updateBgImage(this.el.querySelector('.voice-cover-main-image'), this.images.small.url);
 
-            this.dom.updateAttr('href', this.el.querySelector('.author-anchor'), this.author.url);
-            this.dom.updateAttr('title', this.el.querySelector('.author-anchor'), this.author.username + ' profile');
-            this.dom.updateText(this.el.querySelector('.author-username'), this.author.fullname);
+            var fullname = this.owner.name + (this.owner.lastname ? this.owner.lastname : '');
+            this.dom.updateAttr('href', this.el.querySelector('.author-anchor'), this.owner.url);
+            this.dom.updateAttr('title', this.el.querySelector('.author-anchor'), this.owner.profileName + ' profile');
+            this.dom.updateText(this.el.querySelector('.author-username'), fullname);
 
             this.dom.updateText(this.el.querySelector('.voice-cover-title'), this.title);
 

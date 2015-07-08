@@ -1,15 +1,15 @@
+/* jshint multistr: true */
 /**
  * VoiceCover Widget
  *
  * @proposed data format
  * tags         {Array of Objects} list of topics tagged to the voice
  * image_cover  {String} path to the main cover image
- * author       {Object} author avatar, username, url
+ * owner       {Object} owner avatar, username, url
  * title        {String} voice title (65 chars max)
  * description  {String} voice description
  * followers    {Number} voice followers
  * updated_at   {String} ISO date string
- * gallery      <optional> {Array of Objects} list of thumbnail images (design expect 3 images)
  */
 
 var moment = require('moment');
@@ -28,9 +28,9 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
       </div>\
       <div class="voice-content">\
         <div class="author">\
-          <a class="author-anchor" href="{{voice-author-url}}">\
-            <img class="author-avatar -rounded" src="{{voice-author-avatar-small}}" alt="">\
-            <span class="author-username">{{voice-author-name}}</span>\
+          <a class="author-anchor" href="{{voice-owner-url}}">\
+            <img class="author-avatar -rounded" src="{{voice-owner-avatar-small}}" alt="">\
+            <span class="author-username">{{voice-owner-name}}</span>\
           </a>\
         </div>\
         <h2 class="voice-cover-title -font-bold">{{voice-title}}</h2>\
@@ -75,16 +75,16 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
       this.dateTimeElement = this.el.querySelector('.voice-cover-datetime');
       this.actionsElement = this.element.find('.voice-actions');
 
-
-      this.dom.updateAttr('href', this.el.querySelector('.voice-cover-hover-overlay'), this.url);
+      this.dom.updateAttr('href', this.el.querySelector('.voice-cover-hover-overlay'), this.owner.profileName + '/' + this.slug);
       this.dom.updateAttr('title', this.el.querySelector('.voice-cover-hover-overlay'), this.title + ' voice');
       //this.createTags(this.tags);
-      this.dom.updateBgImage(this.el.querySelector('.voice-cover-main-image'), this.image_cover);
+      this.dom.updateBgImage(this.el.querySelector('.voice-cover-main-image'), this.images.card.url);
 
-      this.dom.updateAttr('href', this.el.querySelector('.author-anchor'), this.author.url);
-      this.dom.updateAttr('title', this.el.querySelector('.author-anchor'), this.author.username + ' profile');
-      this.dom.updateAttr('src', this.el.querySelector('.author-avatar'), this.author.avatar);
-      this.dom.updateText(this.el.querySelector('.author-username'), this.author.username);
+      var authorFullname = this.owner.lastname ? (this.owner.name + ' ' + this.owner.lastname) : this.owner.name;
+      this.dom.updateAttr('href', this.el.querySelector('.author-anchor'), '/' + this.owner.profileName);
+      this.dom.updateAttr('title', this.el.querySelector('.author-anchor'), authorFullname + '’s profile');
+      this.dom.updateAttr('src', this.el.querySelector('.author-avatar'), this.owner.images.icon.url);
+      this.dom.updateText(this.el.querySelector('.author-username'), 'by ' + authorFullname);
 
       this.dom.updateText(this.el.querySelector('.voice-cover-title'), this.title);
       this.dom.updateText(this.el.querySelector('.voice-cover-description'), this.description);
@@ -93,9 +93,6 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
       this.dom.updateText(this.dateTimeElement, moment(this.updated_at).fromNow());
       this.dom.updateAttr('datetime', this.dateTimeElement, this.updated_at);
 
-      if (this.gallery.length >= 3) {
-        this.createGallery(this.gallery);
-      }
       if (this.style == 'list'){
         this.element.addClass('list-style');
       }
@@ -129,32 +126,6 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
         this.element.find('.meta').prepend(this.tagListElement.clone().append('&nbsp;&middot;&nbsp;'));
 
       }, this);
-
-      return this;
-    },
-
-    /**
-     * Creates the thumbnails for each gallery-image and appends the resulting
-     * gallery to voiceCoverElement.
-     * @method createGallery <private> [Function]
-     * @params gallery <required> [Array] list of objects with image's info
-     * @return undefined
-     */
-    createGallery : function createGallery(gallery) {
-      var galleryWrapper = $(this.constructor.GALLERY_WRAPPER_HTML);
-
-      this.element.addClass(this.constructor.HAS_GALLERY_CLASSNAME);
-
-      gallery.forEach(function(image) {
-        var item = $(this.constructor.GALLERY_IMAGE_HTML);
-        this.dom.updateBgImage(item.find('.voice-cover-thumb-image')[0], image);
-        galleryWrapper.append(item);
-        item = null;
-      }, this);
-
-      this.voiceCoverElement.append(galleryWrapper);
-
-      galleryWrapper = null;
 
       return this;
     },

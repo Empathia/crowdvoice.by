@@ -54,17 +54,7 @@
         </div>
       </div>
     </div>
-
-    <div class="-row -mb5">
-      <div class="-col-8 -pr1 voice-cover-test"></div>
-      <div class="-col-4 -pl1 voice-cover-test-2"></div>
-    </div>
-
-    <div class="-row">
-      <div class="-col-4 -pr1 voice-cover-test-3"></div>
-      <div class="-col-4 -pr1 -pl1 voice-cover-test-4"></div>
-      <div class="-col-4 -pl1 voice-cover-test-5"></div>
-    </div>
+    <div class="homepage-featured-voices-container"></div>
   </section><!-- @homepage-featured-voices -->
 
   <section class="homepage-category-list">
@@ -103,38 +93,19 @@
 
 <%= renderPartial('shared/footer.html') %>
 
-<footer role="contentinfo" class="cv-main-footer -hide">
-  <div class="cv-main-footer-inner">
-    <div class="-row">
-      <div class="footer-links-container -col-6">
-        <img class="footer-logo" src="/img/global/logo-footer.png" width="53" height="60" />
-        <nav class="footer-nav -inline-block" role="navigation">
-          <a href="#">Home</a>
-          <a href="#">About</a>
-          <a href="#">Browse</a>
-          <a href="#">Support</a>
-        </nav>
-        <div class="footer-social -inline-block">
-          [facebook] [twitter]
-        </div>
-      </div>
-      <div class="footer-subscribe-container -col-6">
-        <div class="ui-input-group">
-          <input class="ui-input -md" type="text" placeholder="Enter your email here to subscribe to our newsletter">
-          <span class="ui-input-group-btn">
-            <button class="ui-btn -primary -md -font-bold">Subscribe Me</button>
-          </span>
-        </div>
-      </div>
-    </div>
-  </div>
-</footer>
-
 <script>
+  // App
+  var ns = [];
+  <% if (typeof notifications !== "undefined") { %>
+    ns = <%= JSON.stringify(notifications) %>;
+  <% } %>
   var App = new CV.App({
-    notifications : <%= JSON.stringify(notifications) %>
+    notifications : ns,
+    currentPerson : currentPerson
   });
+  App.socketStart();
 
+  // Home
   App.appendChild(
     new CV.HomeView({
       name : 'homeView',

@@ -141,16 +141,42 @@ var Voice = Class('Voice').inherits(Argon.KnexModel).includes(ImageUploader)({
 
       // Add image attachment
       this.hasImage({
-        propertyName: 'background',
+        propertyName: 'image',
         versions: {
-          card: function (readStream) {
-            return readStream.pipe(sharp().resize(340));
+          card: function(readStream) {
+            return readStream.pipe(
+              sharp()
+                .resize(440)
+                .interpolateWith(sharp.interpolator.nohalo)
+                .progressive()
+                .flatten()
+                .background('#FFFFFF')
+                .quality(100)
+            );
           },
-          bluredCard: function (readStream) {
-            return gm(readStream.pipe(sharp().resize(340))).gaussian(5, 5).stream();
+          bluredCard: function(readStream) {
+            return readStream.pipe(
+              sharp()
+                .resize(440)
+                .interpolateWith(sharp.interpolator.nohalo)
+                .progressive()
+                .flatten()
+                .background('#FFFFFF')
+                .quality(100)
+                .blur(5)
+            );
           },
-          big: function (readStream) {
-            return gm(readStream.pipe(sharp().resize(2560,1113))).gaussian(10, 10).stream();
+          big: function(readStream) {
+            return readStream.pipe(
+              sharp()
+                .resize(2560,1113)
+                .interpolateWith(sharp.interpolator.nohalo)
+                .progressive()
+                .flatten()
+                .background('#FFFFFF')
+                .quality(100)
+                .blur(25)
+            );
           }
         },
         bucket: 'crowdvoice.by',
@@ -200,20 +226,20 @@ var Voice = Class('Voice').inherits(Argon.KnexModel).includes(ImageUploader)({
       });
     },
 
-    toJSON : function toJSON() {
-      var model = this;
-      var json = {};
-
-      Object.keys(this).forEach(function(property) {
-        if (property === 'id' || property === 'ownerId') {
-          json[property] = hashids.encode(model[property]);
-        } else {
-          json[property] = model[property];
-        }
-      });
-
-      return json;
-    },
+    // toJSON : function toJSON() {
+    //   var model = this;
+    //   var json = {};
+    //
+    //   Object.keys(this).forEach(function(property) {
+    //     if (property === 'id' || property === 'ownerId') {
+    //       json[property] = hashids.encode(model[property]);
+    //     } else {
+    //       json[property] = model[property];
+    //     }
+    //   });
+    //
+    //   return json;
+    // },
 
     getSlug : function () {
       return this.title.toLowerCase().replace(/ /g, '_');

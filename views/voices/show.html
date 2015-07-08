@@ -1,6 +1,3 @@
-
-<script src="/socket.io/socket.io.js"></script>
-
 <main role="main" class="cv-main-content -rel">
   <div class="voice-background-cover"></div>
 
@@ -52,24 +49,32 @@
 </main>
 
 <script>
+  // App
+  var ns = [];
+  <% if (typeof notifications !== "undefined") { %>
+    ns = <%= JSON.stringify(notifications) %>;
+  <% } %>
+  var App = new CV.App({
+    notifications : ns,
+    currentPerson : currentPerson
+  });
+  App.addInteractiveSidebar();
+  App.socketStart();
+
+  // Voice
   var profileInfo = <%= JSON.stringify(person) %>
   var voiceInfo = <%= JSON.stringify(voice) %>;
-
   var otherOptions = {
+    name                  : 'Voice',
+    _socket               : App.getSocket(),
     backgroundElement     : document.querySelector('.voice-background-cover'),
     followerCount         : 1260,
     postCountElement      : document.querySelector('.voice-stats__post-count'),
     followersCountElement : document.querySelector('.voice-stats__followers'),
     aboutBoxButtonElement : document.querySelector('.voice-about-show-btn'),
     scrollableArea        : window,
-
-    /* Contains all the years, months and its totals for approved and unapproved posts of the voice - Object */
     postsCount            : <%= JSON.stringify(postsCount) %>,
-
-    /* Either the voice allows OR the user can create new posts for the current voice - Boolean */
     allowPosting          : <%= allowPosting %>,
-
-    /* The user can edit posts on the current voice>? - Boolean */
     allowPostEditing      : <%= allowPostEditing %>
   };
 
@@ -77,8 +82,10 @@
     voiceInfo[propertyName] = otherOptions[propertyName];
   }
 
-  var Voice = new CV.VoiceView( voiceInfo );
+  App.appendChild(
+    new CV.VoiceView( voiceInfo )
+  );
 
-  Voice.updateVoiceInfo();
-  Voice.setupVoiceWidgets();
+  App.Voice.updateVoiceInfo();
+  App.Voice.setupVoiceWidgets();
 </script>

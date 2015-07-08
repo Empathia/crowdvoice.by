@@ -2,7 +2,7 @@
 
 /* Handles the modetate window ui. Uses VoicePostLayersManager to create the layers and fill them with posts.
  */
-Class(CV, 'VoiceModerateManager').inherits(Widget)({
+Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
     HTML : '<div class="voice-moderate-wrapper"></div>',
 
     prototype : {
@@ -35,15 +35,14 @@ Class(CV, 'VoiceModerateManager').inherits(Widget)({
         /* Public method to start the thing after being rendered.
          */
         setup : function setup() {
-            var data = {
-                name : 'layersManager',
-                scrollableArea : this.el,
-                _socket : Voice._socket
-            };
+            var data = {};
             Object.keys(voiceInfo).forEach(function(propertyName) {
                 data[propertyName] = voiceInfo[propertyName];
             });
-            data.postsCount = Voice.postsCountUnapproved;
+            data.name = 'layersManager';
+            data.scrollableArea = this.el;
+            data.postsCount = App.Voice.postsCountUnapproved;
+            data.postCount = this._getTotalPostCount(data.postsCount);
             data.allowPostEditing = this.allowPostEditing;
 
             this.appendChild(
@@ -53,7 +52,7 @@ Class(CV, 'VoiceModerateManager').inherits(Widget)({
             this.appendChild(
                 new CV.VoiceModerateFooter({
                     name : 'footer',
-                    totalPosts : 322
+                    totalPosts : data.postCount
                 })
             ).render(this.el);
 

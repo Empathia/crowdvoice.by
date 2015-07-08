@@ -13,17 +13,31 @@ body.page-home > .cv-main-sidebar {
   .sidebar-heading {color: @color-neutral-mid}
   .sidebar-link-badge {border-color: @color-white}
 
-  .sidebar-link:before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 7px;
-    height: 100%;
-    border-radius: 0 2px 2px;
-  }
+  .sidebar-link {
+    &::after {
+      content: '';
+      z-index: -1;
+      position: absolute;
+      top: 0;
+      left: 10px;
+      width: 170px;
+      bottom: 0;
+      background-color: fade(@color-primary, 5%);
+      border-radius: 3px;
+      opacity: 0;
+    }
 
-  .sidebar-link.-is-active:before {background-color: @color-primary}
+    &:hover {
+      .sidebar-link-svg {fill: @color-primary}
+      &::after {opacity: 1}
+    }
+
+    &.active {
+      color: @color-primary;
+      .sidebar-link-svg {fill: @color-primary}
+      &::before {opacity: 1}
+    }
+  }
 
   .sidebar-link-messages{
     .unread{display: none;}
@@ -33,7 +47,6 @@ body.page-home > .cv-main-sidebar {
       .read{display: none;}
     }
   }
-
 }
 
 /* =========================================================================== *
@@ -58,7 +71,27 @@ body.page-inner > .cv-main-sidebar {
     transition: opacity 240ms ease;
   }
 
-  .sidebar-link {color: @color-neutral-light}
+  .sidebar-link {
+    color: @color-neutral-light;
+
+    &:before {border-radius: 0}
+
+    &:hover {
+      background-color: fade(@color-primary, 5%);
+
+      &:before {opacity: 1}
+    }
+
+    &.active {
+      color: @color-white;
+      background-color: @color-primary;
+
+      .sidebar-link-svg {
+        fill: @color-white;
+      }
+    }
+  }
+
   .sidebar-link-svg {fill: @color-neutral-x-mid}
   .sidebar-heading {color: @color-neutral-dark}
   .sidebar-link-badge {border-color: @color-neutral-xxx-dark}
@@ -115,18 +148,22 @@ body > .cv-main-sidebar.-is-expanded {
   position: relative;
   font-size: 14px;
   display: block;
-  height: 28px;
-  margin-bottom: .5em;
-  padding-top: .4em;
+  height: 36px;
+  padding-top: 10px;
   white-space: nowrap;
   transition: color 240ms ease;
+}
 
-  &:hover,
-  &.-is-active {
-    color: @color-primary;
-
-    .sidebar-link-svg {fill: @color-primary}
-  }
+.sidebar-link::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 7px;
+  height: 100%;
+  border-radius: 0 2px 2px;
+  background-color: @color-primary;
+  opacity: 0;
 }
 
 .sidebar-link-svg {

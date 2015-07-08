@@ -1,27 +1,6 @@
-require('neon');
-require('neon/stdlib');
-
-var jQuery = require('./vendor/jquery-2.0.3.js');
-window.jQuery = jQuery;
-window.$ = jQuery;
-
-// our namespace
-window.CV = {};
-
-// lib
-require('./lib/widget-utils.js');
-require('./lib/Widget.js');
-require('./lib/image-halt');
-require('share-url/neon');
-
-// app
-require('./app');
-
-window.validate = require('validate');
-//window.soundManager = require('SoundManager2').soundManager;
-
+// Styles
 require('./../css/style.less');
-
+// Fonts
 WebFontConfig = {
     google: { families: [ 'Open+Sans:400,300,600,700,800:latin' ] }
 };
@@ -35,9 +14,26 @@ WebFontConfig = {
     s.parentNode.insertBefore(wf, s);
 })();
 
+// JS » deps
+var jQuery = require('./vendor/jquery-2.0.3.js');
+window.jQuery = jQuery;
+window.$ = jQuery;
+window.validate = require('validate');
 var moment = require('moment');
 window.moment = moment;
 
+// JS » Our stack, namespace, lib
+require('neon');
+require('neon/stdlib');
+window.CV = {};
+require('./lib/widget-utils.js');
+require('./lib/Widget.js');
+require('./lib/image-halt');
+require('./lib/responsive-width');
+require('share-url/neon');
+require('./app');
+
+// Global Widgets
 // notifications
 require('./widgets/notifications/manager');
 require('./widgets/notifications/notification');
@@ -45,10 +41,17 @@ require('./widgets/notifications/notification-follow');
 require('./widgets/notifications/notification-message');
 require('./widgets/notifications/notification-invite');
 require('./widgets/notifications/notification-request');
-
-// generic widgets
+// search
+require('./widgets/search/search');
+require('./widgets/search/button');
+require('./widgets/search/results-manager');
+require('./widgets/search/results-group');
+// other
 require('./widgets/sidebar.js');
 require('./widgets/header.js');
+require('./widgets/incognito/button');
+
+// generic widgets
 require('./widgets/popover.js');
 require('./widgets/popover-blocker.js');
 require('./widgets/responsive-slider.js');
