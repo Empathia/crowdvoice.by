@@ -1,4 +1,5 @@
 var BlackListFilter = require(__dirname + '/BlackListFilter');
+var EntitiesPresenter = require(path.join(process.cwd(), '/presenters/EntitiesPresenter.js'));
 
 var VoicesController = Class('VoicesController').includes(BlackListFilter)({
   prototype : {
@@ -99,6 +100,28 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                 if (err) { return done(err); }
 
                 res.locals.owner = new Entity(owner[0]);
+
+                done();
+              });
+            });
+          });
+        }, function(done) {
+          // Followers
+          VoiceFollower.find({ 'voice_id' : voice.id }, function(err, voiceFollowers) {
+            var followerIds = voiceFollowers.map(function(item) {
+              return item.entityId;
+            });
+
+            Entity.whereIn('id', followerIds, function(err, result) {
+              if (err) {
+                return done(err);
+              }
+              EntitiesPresenter.build(result, function(err, followers) {
+                if (err) {
+                  return done(err);
+                }
+
+                res.locals.voice.followers = followers;
 
                 done();
               });
