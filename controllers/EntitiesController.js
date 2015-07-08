@@ -221,7 +221,59 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
       });
     },
 
-    recommended : function recommended (req, res, next) {
+    voicesFollowed : function voicesFollowing(req, res, next) {
+      VoiceFollower.find({ 'entity_id' : req.entity.id }, function(err, voicesFollowed) {
+        if (err) {
+          return next(err);
+        }
+
+        var followedIds = voicesFollowed.map(function(item) {
+          return item.voiceId;
+        });
+
+        Voice.whereIn('id', followedIds, function(err, result) {
+          if (err) {
+            return next(err);
+          }
+
+          VoicesPresenter.build(result, function(err, voices) {
+            if (err) {
+              return next(err);
+            }
+
+            res.json(voices);
+          });
+        });
+      });
+    },
+
+    entitiesFollowed : function entitiesFollowed(req, res, next) {
+      EntityFollower.find({ 'follower_id' : req.entity.id }, function(err, entitiesFollowed) {
+        if (err) {
+          return next(err);
+        }
+
+        var followedIds = entitiesFollowed.map(function(item) {
+          return item.followedId;
+        });
+
+        Entity.whereId('id', followedIds, function(err, result) {
+          if (err) {
+            return next(err);
+          }
+
+          EntitiesPresenter.build(result, function(err, entities) {
+            if (err) {
+              return next(err);
+            }
+
+            res.json(entities);
+          });
+        });
+      });
+    },
+
+    recommended : function recommended(req, res, next) {
       var entity = req.entity;
       entity.recommendedVoices(function (err, voices) {
         if (err) { next(err); return; }
