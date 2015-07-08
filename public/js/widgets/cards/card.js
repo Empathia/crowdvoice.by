@@ -35,47 +35,49 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
     ELEMENT_CLASS : 'widget-card',
     HTML : '\
     <article role="article">\
-        <div class="card_background-image-wrapper -img-cover -text-center">\
-            <img class="card_avatar -rounded" alt="{{author.full_name}}’s avatar image"/>\
-            <p class="card_username -rel">\
-                <a class="card_username-link"></a>\
-            </p>\
-            <h3 class="card_fullname -rel -font-bold">OpenGovFoundation</h3>\
-            <div class="card_stats -rel">\
-                <div class="-row">\
-                    <div class="-col-3">\
-                        <p class="stats-number card_total-voices-text -font-bold"></p>\
-                        <p class="stats-label card_total-voices-label-text"></p>\
-                    </div>\
-                    <div class="-col-3">\
-                        <p class="stats-number card_total-followers-text -font-bold"></p>\
-                        <p class="stats-label card_total-followers-label-text"></p>\
-                    </div>\
-                    <div class="-col-3">\
-                        <p class="stats-number card_total-following-text -font-bold"></p>\
-                        <p class="stats-label card_total-following-label-text"></p>\
-                    </div>\
-                    <div class="-col-3 card_collaborations-wrapper">\
-                        <p class="stats-number card_collaborations-text -font-bold"></p>\
-                        <p class="stats-label card_collaborations-label-text"></p>\
+        <div class="card-inner">\
+            <div class="card_background-image-wrapper -img-cover -text-center">\
+                <img class="card_avatar -rounded" alt="{{author.full_name}}’s avatar image"/>\
+                <p class="card_username -rel">\
+                    <a class="card_username-link"></a>\
+                </p>\
+                <h3 class="card_fullname -rel -font-bold">OpenGovFoundation</h3>\
+                <div class="card_stats -rel">\
+                    <div class="-row">\
+                        <div class="-col-3">\
+                            <p class="stats-number card_total-voices-text -font-bold"></p>\
+                            <p class="stats-label card_total-voices-label-text"></p>\
+                        </div>\
+                        <div class="-col-3">\
+                            <p class="stats-number card_total-followers-text -font-bold"></p>\
+                            <p class="stats-label card_total-followers-label-text"></p>\
+                        </div>\
+                        <div class="-col-3">\
+                            <p class="stats-number card_total-following-text -font-bold"></p>\
+                            <p class="stats-label card_total-following-label-text"></p>\
+                        </div>\
+                        <div class="-col-3 card_collaborations-wrapper">\
+                            <p class="stats-number card_collaborations-text -font-bold"></p>\
+                            <p class="stats-label card_collaborations-label-text"></p>\
+                        </div>\
                     </div>\
                 </div>\
             </div>\
-        </div>\
-        <div class="card_info-wrapper">\
-            <p class="card_description"></p>\
-            <div class="card_meta">\
-                <div class="card_meta-location -inline">\
-                    <svg class="card_meta-svg">\
-                        <use xlink:href="#svg-location"></use>\
-                    </svg>\
-                    <span class="card_meta-location-text"></span>\
-                </div>\
-                <div class="card_meta-joined-at -inline">\
-                    <svg class="card_meta-svg">\
-                        <use xlink:href="#svg-clock"></use>\
-                    </svg>\
-                    <time class="card_meta-joined-at-text" datetime=""></time>\
+            <div class="card_info-wrapper">\
+                <p class="card_description"></p>\
+                <div class="card_meta">\
+                    <div class="card_meta-location -inline">\
+                        <svg class="card_meta-svg">\
+                            <use xlink:href="#svg-location"></use>\
+                        </svg>\
+                        <span class="card_meta-location-text"></span>\
+                    </div>\
+                    <div class="card_meta-joined-at -inline">\
+                        <svg class="card_meta-svg">\
+                            <use xlink:href="#svg-clock"></use>\
+                        </svg>\
+                        <time class="card_meta-joined-at-text" datetime=""></time>\
+                    </div>\
                 </div>\
             </div>\
             <div class="card_actions">\
