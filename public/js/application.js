@@ -43,6 +43,8 @@ require('./widgets/notifications/notification-request');
 // search
 require('./widgets/search/search');
 require('./widgets/search/button');
+require('./widgets/search/results-manager');
+require('./widgets/search/results-group');
 // other
 require('./widgets/sidebar.js');
 require('./widgets/header.js');
