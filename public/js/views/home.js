@@ -10,6 +10,8 @@ Class(CV, 'HomeView').includes(NodeSupport, CV.WidgetUtils)({
                 this[propertyName] = config[propertyName];
             }, this);
 
+            var featuredVoicesWrapper = document.querySelector('.homepage-featured-voices-container');
+            var featuredVoicesElements = [];
             var categoriesHolder = document.querySelector('.homepage-category-list-row');
             var orgsHolder = document.querySelector('.homepage-organization-cards-holder');
             var orgsList = orgsHolder.querySelector('.slider-list');
@@ -18,11 +20,21 @@ Class(CV, 'HomeView').includes(NodeSupport, CV.WidgetUtils)({
                 this.dom.updateText(number, this.format.numberUS(number.textContent));
             }, this);
 
-            new VoiceCover( this.featuredVoicesData[0] ).render( document.querySelector('.voice-cover-test') );
-            new VoiceCover( this.featuredVoicesData[1] ).render( document.querySelector('.voice-cover-test-2') );
-            new VoiceCover( this.featuredVoicesData[2] ).render( document.querySelector('.voice-cover-test-3') );
-            new VoiceCover( this.featuredVoicesData[3] ).render( document.querySelector('.voice-cover-test-4') );
-            new VoiceCover( this.featuredVoicesData[4] ).render( document.querySelector('.voice-cover-test-5') );
+            this.featuredVoicesData.forEach(function(voice, index) {
+                voice.name = 'featuredVoice_' + index;
+
+                this.appendChild(
+                    new VoiceCover(voice)
+                ).render(featuredVoicesWrapper);
+
+                featuredVoicesElements.push(this[voice.name].el);
+            }, this);
+
+            window.featuredVoices = new CV.ResponsiveWidth({
+                container : featuredVoicesWrapper,
+                items : [].slice.call(featuredVoicesElements, 0),
+                minWidth : 300
+            }).setup();
 
             this.categoriesData.forEach(function(category) {
                 new CategoryCover({data: category}).render(categoriesHolder);
