@@ -74,6 +74,7 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
             this._window = window;
             this.postsCountApproved = this._formatPostsCountObject(this.postsCount.approved);
             this.postsCountUnapproved = this._formatPostsCountObject(this.postsCount.unapproved);
+            this.postCount = this._getTotalPostCount(this.postsCountApproved);
 
             this._appendLayersManager()._checkInitialHash();
             this._bindEvents();
