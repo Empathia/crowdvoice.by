@@ -68,7 +68,7 @@
     name                  : 'Voice',
     _socket               : App.getSocket(),
     backgroundElement     : document.querySelector('.voice-background-cover'),
-    followerCount         : 1260,
+    followerCount         : <%= voice.followers.length %>,
     postCountElement      : document.querySelector('.voice-stats__post-count'),
     followersCountElement : document.querySelector('.voice-stats__followers'),
     aboutBoxButtonElement : document.querySelector('.voice-about-show-btn'),
