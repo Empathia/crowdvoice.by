@@ -21,7 +21,7 @@ Class(CV, 'InputButton').inherits(Widget)({
         <div class="cv-input is-area">\
             <textarea rows="" cols=""></textarea>\
         </div>\
-        <button class="cv-button primary large">Reply</button>\
+        <button class="cv-button primary">Reply</button>\
     ',
 
     prototype        : {

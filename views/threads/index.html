@@ -1,48 +1,44 @@
 
-<main role="main" class="cv-main-content -rel -nopad">
+<main role="main" class="-rel">
 
 
-  <section class="profile-messages-intro">
-      <h1 class="profile-heading messages-heading -font-bold -m0">Messages</h1>
-      <!-- New Message Button -->
-  </section>
 
-  <section class="profile-body messages-main -nopad">
+
+  <section class="messages-main">
 
     <div class="messages-sidebar">
-    	<article role="article" class="profile-menu top-menu -row" style="display: none;">
-	        <div class="profile-tabs">
-	          <div class="menu-item p-drafts active menu-tab -inline-block">
-	            <p class="-font-bold">Messages</p>
-	          </div>
-	          <div class="menu-item p-unlisted menu-tab -inline-block">
-	            <p class="-font-bold">Invitations</p>
-	          </div>
-	        </div>
-      	</article>
-      	<div class="messages-search"></div>
+      	<div class="messages-sidebar-header -clear-after">
+      		<div class="messages-search -col-7"></div>
+      		<div class="messages-new -pl1 -col-5"></div>
+      	</div>
+    	<div class="white-grad side-grad"><div></div></div>
+
       	<div class="messages-list">
 
       	</div>
     </div>
     <div class="messages-body">
 	<div class="no-messages">
-		<p>Please select a thread from the list on the left or <a href="#" class="new-message">compose a new message</a>.</p>
+		<p>Select a conversation from the list to start messaging.</p>
 	</div>
     <div class="messages-body-container">
 
     	<div class="messages-body-header">
     		<div class="m-action">
     			<span class="conversation-title">Conversation with Pepe Pecas <a href="#">one link</a> and after a while <a href="#"><b>another bold</b></a></span>
-      			<div class="action-icon delete-thread"><img src="/img/sample/icons/trashcan.png" alt=""></div>
+      			<div class="action-icon delete-thread">
+      				<svg class="">
+      					<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-trash"></use>
+      				</svg>
+      			</div>
       		</div>
       		<div class="m-new">
       			<div class="-col-3">
-      				<span>new message to:</span>
+      				<span>New message to:</span>
       			</div>
       			<div class="-col-9">
 	    			<div class="form-field">
-	    				<div class="cv-input tiny">
+	    				<div class="cv-input small hollow">
 	    					<input class="search-users" type="text" placeholder="Type name">
 	    				</div>
 	    			</div>
@@ -52,6 +48,7 @@
       		</div>
     	</div>
     	<div class="messages-container">
+    		<div class="white-grad"><div></div></div>
     		<div class="messages-conversation">
     			<div class="msgs">
     				<!-- messages container -->
@@ -73,7 +70,7 @@
 <script>
   	$( document ).ready(function() {
 
-  		resizeMessages();
+  		//resizeMessages();
 
         var threadsContainer = new CV.ThreadsContainer({
             name : 'threadContainer',
@@ -87,7 +84,7 @@
         if (threadHash){
         	threadsContainer.element.find('.messages-list #'+threadHash).click();
         }
-
+        //threadsContainer.resizeMessages();
 	});
 
   	var searchElement = document.querySelector('.messages-search');
@@ -364,11 +361,11 @@
 	}
 
 	function resizeMessages () {
-		// reply.recalculate();
-
-  		var chatHeight = $(window).height() - ($('.profile-messages-intro').outerHeight() + $('.cv-main-header').outerHeight());
+console.log('view');
+  		var chatHeight = $(window).height() + $('.cv-main-header').outerHeight();
 		$('.messages-sidebar, .messages-body, .messages-body-container').height(chatHeight);
-		var sideMessagesHeight = chatHeight - $('.messages-search').outerHeight();
+		console.log('chatHeight: ' + chatHeight);
+		var sideMessagesHeight = chatHeight - $('.messages-sidebar-header').outerHeight();
 		$('.messages-list').css({'overflow-y':'scroll', 'height': sideMessagesHeight+'px'});
 		var bodyMessagesHeight = chatHeight - ($('.messages-body-header').outerHeight() + $('.message-create').outerHeight());
 		$('.messages-conversation').height(bodyMessagesHeight);
