@@ -832,7 +832,7 @@ async.series([function(next) {
   async.each(featured, function(voice, nextFeatured) {
     var featuredVoice = new FeaturedVoice({
       voiceId : voice.id,
-      order : featured.indexOf(voice) || 0;
+      order : featured.indexOf(voice) || 0
     });
 
     featuredVoice.save(nextFeatured);
