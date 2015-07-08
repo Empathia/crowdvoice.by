@@ -10,7 +10,7 @@ global.sharp = require('sharp');
 
 var os = require('os');
 
-var cpuLength = os.cpus().length;
+var cpuLength = 2;
 
 var casual = require('casual');
 
@@ -444,14 +444,14 @@ async.series([function(next) {
         return done(err);
       }
 
-      topicInstance.uploadImage('image', topic.data.image, function(err) {
+      topicInstance.uploadImage('image', topic.image, function(err) {
         if (err) {
           return done(err);
         }
 
         data.topics[topicInstance.slug] = topicInstance;
 
-        topic.save(done);
+        topicInstance.save(done);
       });
     });
   }, next);
@@ -832,7 +832,7 @@ async.series([function(next) {
   async.each(featured, function(voice, nextFeatured) {
     var featuredVoice = new FeaturedVoice({
       voiceId : voice.id,
-      order : featured.indexOf(voice); || 0
+      position : featured.indexOf(voice) || 0
     });
 
     featuredVoice.save(nextFeatured);
