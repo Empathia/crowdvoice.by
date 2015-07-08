@@ -8,8 +8,8 @@
  * owner       {Object} owner avatar, username, url
  * title        {String} voice title (65 chars max)
  * description  {String} voice description
- * followers    {Number} voice followers
- * updated_at   {String} ISO date string
+ * followers    {Array} voice entities followers
+ * updatedAt   {String} ISO date string
  */
 
 var moment = require('moment');
@@ -89,9 +89,9 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
       this.dom.updateText(this.el.querySelector('.voice-cover-title'), this.title);
       this.dom.updateText(this.el.querySelector('.voice-cover-description'), this.description);
 
-      this.dom.updateText(this.el.querySelector('.voice-cover-followers'), this.format.numberUS(this.followers));
-      this.dom.updateText(this.dateTimeElement, moment(this.updated_at).fromNow());
-      this.dom.updateAttr('datetime', this.dateTimeElement, this.updated_at);
+      this.dom.updateText(this.el.querySelector('.voice-cover-followers'), this.format.numberUS(this.followers.length));
+      this.dom.updateText(this.dateTimeElement, moment(this.updatedAt).fromNow());
+      this.dom.updateAttr('datetime', this.dateTimeElement, this.updatedAt);
 
       if (this.style == 'list'){
         this.element.addClass('list-style');
@@ -102,7 +102,7 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
       }
 
       // 21 == 3 weeks (days)
-      if (moment().diff(moment(this.updated_at), 'days') <= 21) {
+      if (moment().diff(moment(this.updatedAt), 'days') <= 21) {
         this.addNewBadge();
       }
     },
