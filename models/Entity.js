@@ -80,7 +80,7 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
 
         return callback(err, data);
       });
-    },
+    }
   })),
 
   searchPeople : function searchPeople(params, callback) {
