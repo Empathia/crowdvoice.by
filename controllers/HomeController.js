@@ -1,11 +1,14 @@
 /* jshint multistr: true */
+
+var VoicesPresenter = require(path.join(process.cwd(), '/presenters/VoicesPresenter'));
+
+var TopicsPresenter = require(path.join(process.cwd(), '/presenters/TopicsPresenter'));
+
+var EntitiesPresenter = require(path.join(process.cwd(), '/presenters/EntitiesPresenter'));
+
 var HomeController = Class('HomeController')({
   prototype : {
-    init : function (){
-      return this;
-    },
-
-    index : function(req, res, next) {
+    index : function index(req, res, next) {
       ACL.isAllowed('show', 'homepage', req.role, {}, function(err, isAllowed) {
         if (err) {
           return next(err);
@@ -15,40 +18,92 @@ var HomeController = Class('HomeController')({
           return next(new ForbiddenError());
         }
 
-        res.render('home/index.html', {
-          layout : 'application',
+        async.series([function(done) {
+          console.log('feat')
+          // FeaturedVoices
+          FeaturedVoice.all(function(err, result) {
+            if (err) {
+              return done(err);
+            }
 
-          pageName : 'page-home',
+            var featuredIds = result.map(function(item) {
+              return item.voiceId;
+            });
 
-          notifications : require('./../public/demo-data/notifications'),
+            Voice.whereIn('id', featuredIds, function(err, voicesResult) {
+              if (err) {
+                return done(err);
+              }
+              console.log(voicesResult)
+              VoicesPresenter.build(voicesResult, function(err, voices) {
+                if (err) {
+                  return done(err);
+                }
 
-          /* =========================================================================== *
-           *  HEADER STATS
-           * =========================================================================== */
-          globalStats : {
-            countries: 36,
-            organizations: 148,
-            voices: 312,
-            posts: 579371,
-            people: 22665729
-          },
+                res.locals.featuredVoices = voices;
 
-          /* =========================================================================== *
-           *  FEATURED VOICES
-           * =========================================================================== */
-          featuredVoices : require('./../public/demo-data/voices.js'),
+                done();
+              });
+            });
+          });
+        }, function(done) {
+          console.log('topics')
+          Topic.all(function(err, result) {
+            if (err) {
+              return done(err);
+            }
 
-          /* =========================================================================== *
-           *  CATEGORIES
-           * =========================================================================== */
-          categories : require('./../public/demo-data/categories.js'),
+            TopicsPresenter.build(result, function(err, topics) {
+              if (err) {
+                return done(err);
+              }
 
-          /* =========================================================================== *
-           *  MOST ACTIVE ORGANIZATIONS
-           * =========================================================================== */
-          mostActiveOrganizations : require('./../public/demo-data/organizations.js')
+              res.locals.topics = topics;
+
+              done();
+            });
+          });
+        }, function(done) {
+          console.log('orgs')
+          Entity.find(['type = \'organization\' LIMIT 10', []], function(err, result) {
+            if (err) {
+              return done(err);
+            }
+
+            EntitiesPresenter.build(result, function(err, organizations) {
+              if (err) {
+                return done(err);
+              }
+
+              res.locals.mostActiveOrganizations = organizations;
+
+              done();
+            });
+          });
+        }], function(err) {
+          if (err) {
+            return next(err);
+          }
+
+          res.render('home/index.html', {
+            layout : 'application',
+
+            pageName : 'page-home',
+
+            notifications : require('./../public/demo-data/notifications'),
+
+            /* =========================================================================== *
+             *  HEADER STATS
+             * =========================================================================== */
+            globalStats : {
+              countries: 36,
+              organizations: 148,
+              voices: 312,
+              posts: 579371,
+              people: 22665729
+            }
+          });
         });
-
       });
 
     },
