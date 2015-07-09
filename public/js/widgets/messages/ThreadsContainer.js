@@ -447,20 +447,11 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
             thread.data.messages.push(data);
 
             messageInstance.setup();
-            //var messageEl = messageText.clone();
-
-            //messageEl.find('.message-data h3').text('<%= currentPerson.name %>' + " " +
-            //  '<%= currentPerson.lastname %>');
-
-            //messageEl.find('.message-data span').text(moment(new Date().toISOString()).
-            //  format('• MMMM Do, YYYY • h:mm a'));
-
-            //messageEl.find('.message-data p').text(data.message);
 
             messageInstance.render(container.messageListEl);
 
             container.refresh();
-            // $('.messages-conversation').scrollTop(10000);
+
           }
         });
     },

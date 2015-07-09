@@ -84,13 +84,38 @@ hr{
     clear: both;
 }
 
+.-menu-tab-content{
+	hr{
+  		height: 1px;
+  		background: @color-neutral-light;
+  		margin: 5px 0px 10px 0px;
+	}
+	.entities-voices-select{
+		margin-top: 10px;
+		display: inline-block;
+		.form-field{
+			margin-bottom: 0px;
+		}
+		.cv-select{
+			margin-bottom: 0px;
+		}
+	}
+}
+.profile-following-container{
+	.entities-followed{
+		display: block;
+	}
+	.voices-followed{
+		display: none;
+	}
+}
 
 .profile-subheading{
 	color: @color-neutral-xx-dark;
-  	border-bottom: 1px solid @color-neutral-light;
   	margin-bottom: 25px;
   	font-size: 30px;
   	line-height: 40px;
+  	display: inline-block;
 }
 
 .profile-stats{

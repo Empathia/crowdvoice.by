@@ -84,32 +84,27 @@
 
     <div class="active -menu-tab-content">
       <h2 class="profile-subheading -font-bold -m0">Voices</h2>
-      <div class="-row profile-voice-container">
+      <hr>
+      <div class="-row profile-voices-container">
         <!-- voices -->
       </div>
     </div>
 
     <div class=" -menu-tab-content">
       <h2 class="profile-subheading -font-bold -m0">Followers</h2>
-      <div class="-row">
-        <div class="-col-4 -pr1 follower-test-1 voice"></div>
-        <div class="-col-4 -pr1 follower-test-2 voice"></div>
-        <div class="-col-4 -pr1 follower-test-3 voice"></div>
-        <div class="-col-4 -pr1 follower-test-4 voice"></div>
-        <div class="-col-4 -pr1 follower-test-5 voice"></div>
-        <div class="-col-4 -pr1 follower-test-6 voice"></div>
+      <hr>
+      <div class="-row profile-followers-container">
+        <!-- followers -->
       </div>
     </div>
 
     <div class=" -menu-tab-content">
       <h2 class="profile-subheading -font-bold -m0">Following</h2>
-      <div class="-row">
-        <div class="-col-4 -pr1 following-test-1 voice"></div>
-        <div class="-col-4 -pr1 following-test-2 voice"></div>
-        <div class="-col-4 -pr1 following-test-3 voice"></div>
-        <div class="-col-4 -pr1 following-test-4 voice"></div>
-        <div class="-col-4 -pr1 following-test-5 voice"></div>
-        <div class="-col-4 -pr1 following-test-6 voice"></div>
+      <span class="entities-voices-select -pl1"></span>
+      <hr>
+      <div class="-row profile-following-container">
+        <div class="entities-followed">Entities</div>
+        <div class="voices-followed" style="display: none;">Voices</div>
       </div>
     </div>
 
@@ -129,6 +124,10 @@
   });
   App.addInteractiveSidebar();
 
+  var voicesFollowed = null;
+  var entitiesFollowed = null;
+  var totalFollowing = 0;
+
   $.ajax({
     type: "GET",
     url:'/<%= person.profileName %>/voices',
@@ -138,46 +137,79 @@
       renderVoices(data);
     }
   });
-
+  // **************************
+  // ****** render voices *****
+  // **************************
   function renderVoices(data){
-    console.log(data);
+    //console.log('voices: ' + data);
     $('.profile-menu .counter-voices').text(data.length);
 
     data.forEach(function (voice, index) {
       var voiceEl = $('<div class="-col-4 -pr1"></div>');
-
       new VoiceCover( data[index] ).render( voiceEl);
-
-      $('.profile-voice-container').append(voiceEl);
+      $('.profile-voices-container').append(voiceEl);
     });
-//
   }
 
 
-  //var orgsData = <% //JSON.stringify(organizations) %>;
+  $.ajax({
+    type: "GET",
+    url:'/<%= person.profileName %>/followers',
+    headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
+    data : {},
+    success: function(data) {
+      renderFollowers(data);
+    }
+  });
+  // *****************************
+  // ****** render followers *****
+  // *****************************
+  function renderFollowers(data){
+    //console.log('followers: ' + data);
+    $('.profile-menu .counter-followers').text(data.length);
 
-  //new CV.Card(orgsData[0]).render(document.querySelector('.follower-test-1'));
-  //new CV.Card(orgsData[1]).render(document.querySelector('.follower-test-2'));
-  //new CV.Card(orgsData[2]).render(document.querySelector('.follower-test-3'));
-  //new CV.Card(orgsData[3]).render(document.querySelector('.follower-test-4'));
-  //new CV.Card(orgsData[4]).render(document.querySelector('.follower-test-5'));
-  //new CV.Card(orgsData[5]).render(document.querySelector('.follower-test-6'));
-//
-  //new CV.Card(orgsData[5]).render(document.querySelector('.following-test-1'));
-  //new CV.Card(orgsData[4]).render(document.querySelector('.following-test-2'));
-  //new CV.Card(orgsData[3]).render(document.querySelector('.following-test-3'));
-  //new CV.Card(orgsData[2]).render(document.querySelector('.following-test-4'));
-  //new CV.Card(orgsData[1]).render(document.querySelector('.following-test-5'));
-  //new CV.Card(orgsData[0]).render(document.querySelector('.following-test-6'));
+    data.forEach(function (followers, index) {
+      var followerEl = $('<div class="-col-4 -pr1">' + data[index].name + ' </div>');
+      //new CV.Card( data[index] ).render( followerEl);
+      $('.profile-followers-container').append(followerEl);
+    });
+  }
 
+  $.ajax({
+    type: "GET",
+    url:'/<%= person.profileName %>/voicesFollowed',
+    headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
+    data : {},
+    success: function(data) {
+      console.log('voicesFollowed: ' + data);
+      renderFollowing(data, 'voices');
+    }
+  });
+  $.ajax({
+    type: "GET",
+    url:'/<%= person.profileName %>/entitiesFollowed',
+    headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
+    data : {},
+    success: function(data) {
+      console.log('entitiesFollowed: ' + data);
+      renderFollowing(data, 'entities');
+    }
+  });
+  // *****************************
+  // ****** render following *****
+  // *****************************
+  function renderFollowing(data, type){
+    //console.log('followers: ' + data);
+    totalFollowing += data.length;
+    $('.profile-menu .counter-following').text(totalFollowing);
 
+    data.forEach(function (followers, index) {
+      var followerEl = $('<div class="-col-4 -pr1">' + data[index].name + ' </div>');
+      //new CV.Card( data[index] ).render( followerEl);
+      $('.profile-following-container .' + type + '-followed').append(followerEl);
+    });
+  }
 
-  //new Button({
-  //    style   : 'primary',
-  //    type    : 'single',
-  //    label   : 'Manage Organization',
-  //    name    : 'buttonManage'
-  //}).render(document.querySelector('.profile-actions'));
 
   var btnTwiceOptions = {
     "1": {label: 'Message', name: 'message'},
@@ -191,49 +223,51 @@
       options : btnTwiceOptions
   }).render(document.querySelector('.profile-actions span:first-child'));
 
-
-
-/*<svg class="voice-footer-svg">
-              <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-share"></use>
-            </svg>*/
-
-  //new CV.Button({
-  //    style   : 'small',
-  //    type    : 'single',
-  //    label   : '[.]',
-  //    name    : 'buttonFollow'
-  //}).render(document.querySelector('.profile-actions'));
-
   //Normal
-var profileOptions = {
-  "1": {label: 'Share', name: 'share', icon: 'share'},
-  "2": {label: 'Embed', name: 'embed', icon: 'embed'},
-  "3": {label: 'Moderate', name: 'moderate', icon: 'moderate'}
-};
-var profileSettings = new CV.Select({
-  label     : '',
-  style     : 'small',
-  className : '-inline-block',
-  name      : 'select',
-  options   : profileOptions,
-  type      : 'icon',
-  icon      : 'settings'
-}).render(document.querySelector('.profile-actions span:last-child'));
+  var profileOptions = {
+    "1": {label: 'Share', name: 'share', icon: 'share'},
+    "2": {label: 'Embed', name: 'embed', icon: 'embed'},
+    "3": {label: 'Moderate', name: 'moderate', icon: 'moderate'}
+  };
 
-profileSettings.share.on('click', function(){
-  console.log('Share');
-});
-  //var btnMultiOptions = {
-  //  "1": {name: 'One', active : true},
-  //  "2": {name: 'Two'},
-  //  "3": {name: 'Three'}
-  //};
-  //new Button({
-  //    style   : '',
-  //    type    : 'multiple',
-  //    name    : 'buttonMultiple',
-  //    options : btnMultiOptions
-  //}).render(document.querySelector('.profile-actions'));
+  var profileSettings = new CV.Select({
+    label     : '',
+    style     : 'small',
+    className : '-inline-block',
+    name      : 'select',
+    options   : profileOptions,
+    type      : 'icon',
+    icon      : 'settings'
+  }).render(document.querySelector('.profile-actions span:last-child'));
+
+  profileSettings.share.on('click', function(){
+    console.log('Share');
+  });
+
+
+  // Following options
+  var followOptions = {
+    "1": {label: 'Entities', name: 'entities'},
+    "2": {label: 'Voices', name: 'voices'}
+  };
+
+  var followSelect = new CV.Select({
+    label     : 'Entities',
+    style     : 'tiny',
+    className : '-inline-block',
+    name      : 'select',
+    options   : followOptions
+  }).render(document.querySelector('.entities-voices-select'));
+
+  followSelect.entities.on('click', function(){
+    $('.entities-followed').show();
+    $('.voices-followed').hide();
+  });
+
+  followSelect.voices.on('click', function(){
+    $('.entities-followed').hide();
+    $('.voices-followed').show();
+  });
 
   $( document ).ready(function() {
 

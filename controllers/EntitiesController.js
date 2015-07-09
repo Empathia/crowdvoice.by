@@ -221,7 +221,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
       });
     },
 
-    voicesFollowed : function voicesFollowing(req, res, next) {
+    voicesFollowed : function voicesFollowed(req, res, next) {
       VoiceFollower.find({ 'entity_id' : hashids.decode(req.entity.id)[0] }, function(err, voicesFollowed) {
         if (err) {
           return next(err);
