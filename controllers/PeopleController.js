@@ -31,6 +31,62 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
           });
         });
       });
+    },
+
+    getOrganizations : function getOrganizations(req, res, next) {
+      var entity = req.currentPerson;
+      var orgsMemberOf;
+      var orgsOwnerOf;
+
+      async.series([
+        function (done) {
+          EntityMembership.find({ member_id: hashids.decode(entity.id)[0] }, function (err, result) {
+            if (err) { return done(err); }
+
+            var entityIds = result.map(function (val) {
+              return val.entityId;
+            })
+
+            Entity.whereIn('id', entityIds, function (err, result) {
+              if (err) { return done(err); }
+
+              EntitiesPresenter.build(result, req.currentPerson, function (err, result) {
+                if (err) { return done(err); }
+
+                orgsMemberOf = result;
+                done();
+              })
+            })
+          })
+        },
+
+        function (done) {
+          EntityOwner.find({ owner_id: hashids.decode(entity.id)[0] }, function (err, result) {
+            if (err) { return done(err); }
+
+            var entityIds = result.map(function (val) {
+              return val.entityId;
+            })
+
+            Entity.whereIn('id', entityIds, function (err, result) {
+              if (err) { return done(err); }
+
+              EntitiesPresenter.build(result, req.currentPerson, function (err, result) {
+                if (err) { return done(err); }
+
+                orgsOwnerOf = result;
+                done();
+              })
+            })
+          })
+        }
+      ], function (err) {
+        if (err) { return next(err); }
+
+        var result = orgsOwnerOf.concat(orgsMemberOf)
+
+        res.json(result);
+      })
     }
   }
 });
