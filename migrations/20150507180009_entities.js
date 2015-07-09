@@ -11,15 +11,15 @@ exports.up = function(knex, Promise) {
       t.string('profile_name', 512).unique().defaultTo(null);
       t.boolean('is_anonymous').defaultTo(false);
 
-      t.text('description').defaultTo('');
-      t.string('location', 512).defaultTo('');
+      t.text('description').defaultTo(null);
+      t.string('location', 512).defaultTo(null);
 
       // Image attachment
-      t.string('image_base_url', 1024).defaultTo('');
+      t.string('image_base_url', 1024).defaultTo(null);
       t.json('image_meta').defaultTo('{}');
 
       // Background attachment
-      t.string('background_base_url', 1024).defaultTo('');
+      t.string('background_base_url', 1024).defaultTo(null);
       t.json('background_meta').defaultTo('{}');
 
       t.index(['name', 'lastname', 'profile_name'], 'search_index');
