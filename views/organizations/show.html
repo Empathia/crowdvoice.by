@@ -58,9 +58,12 @@
           <p class="stats-label">Following</p>
         </div>
       </div>
-      <div class="profile-actions">
-        <span class="-pr1"></span>
-        <span></span>
+      <div class="profile-actions ui-has-tooltip">
+
+        <span class="ui-tooltip -top">To message or follow others and to see your messages please turn Anonymous mode off.</span>
+
+        <span class="-pr1 p-buttons"></span>
+        <span class="p-select"></span>
       </div>
   </article>
 
@@ -204,23 +207,22 @@
 
   //after
 
-  var btnTwiceOptions = {
+  var buttonActionsOptions = {
     "1": {label: 'Message', name: 'message'},
     "2": {label: 'Follow', name: 'follow'}
   };
 
-  new CV.Button({
+  var buttonActions = new CV.Button({
       style   : 'small',
       type    : 'multiple',
       name    : 'buttonTwice',
-      options : btnTwiceOptions
-  }).render(document.querySelector('.profile-actions span:first-child'));
+      options : buttonActionsOptions
+  }).render(document.querySelector('.profile-actions .p-buttons'));
 
     //Normal
   var profileOptions = {
-    "1": {label: 'Share', name: 'share', icon: 'share'},
-    "2": {label: 'Embed', name: 'embed', icon: 'embed'},
-    "3": {label: 'Moderate', name: 'moderate', icon: 'moderate'}
+    "1": {label: 'Request Membership', name: 'request', icon: 'user'},
+    "2": {label: 'Report/Claim', name: 'report', icon: 'info'}
   };
 
   var profileSettings = new CV.Select({
@@ -231,17 +233,31 @@
     options   : profileOptions,
     type      : 'icon',
     icon      : 'settings'
-  }).render(document.querySelector('.profile-actions span:last-child'));
+  }).render(document.querySelector('.profile-actions .p-select'));
 
-  profileSettings.share.on('click', function(){
-    console.log('Share');
-  });
-  profileSettings.share.on('click', function(){
-    console.log('embed');
-  });
-  profileSettings.share.on('click', function(){
-    console.log('moderate');
-  });
+
+
+  if (currentPerson.isAnonymous) {
+    buttonActions.disable();
+    profileSettings.disable();
+  } else {
+    //button actions
+    buttonActions.message.on('click', function(){
+      console.log('message click');
+    });
+    buttonActions.follow.on('click', function(){
+      console.log('follow click');
+    });
+    // select actions
+    profileSettings.request.on('click', function(){
+      console.log('request click');
+    });
+    profileSettings.report.on('click', function(){
+      console.log('report click');
+    });
+  }
+
+
 
   // Following options
   var followOptions = {
