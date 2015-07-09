@@ -134,7 +134,8 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
 
             this._setupDefaultElements();
 
-            if (window.currentPerson) {
+            // not currentPerson's card?
+            if (window.currentPerson && (window.currentPerson.id !== this.id)) {
                 this._addActionButtons();
             }
         },
