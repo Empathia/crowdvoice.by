@@ -6,6 +6,7 @@ Class(CV, 'Sidebar').inherits(Widget)({
     prototype : {
 
         el : null,
+        linkElements : null,
         _body : null,
         _yield : null,
 
@@ -17,7 +18,14 @@ Class(CV, 'Sidebar').inherits(Widget)({
             this._body = document.body;
             this._yield = this._body.querySelector('.yield');
 
-            this._checkAndActivateCurrentLink()._bindEvents();
+            this._checkAndActivateCurrentLink();
+        },
+
+        /* Make the sidebar expand/collapse on :hover
+         * @method enableInteraction <public> [Function]
+         */
+        enableInteraction : function enableInteraction() {
+            this._bindEvents();
         },
 
         _checkAndActivateCurrentLink : function _checkAndActivateCurrentLink() {
@@ -56,13 +64,18 @@ Class(CV, 'Sidebar').inherits(Widget)({
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
 
-            this.el.removeEventListener('mouseenter', this._mouseEnterHandlerRef);
-            this._mouseEnterHandlerRef = null;
+            if (this._mouseEnterHandlerRef) {
+                this.el.removeEventListener('mouseenter', this._mouseEnterHandlerRef);
+                this._mouseEnterHandlerRef = null;
+            }
 
-            this.el.removeEventListener('mouseleave', this._mouseLeaveHandlerRef);
-            this._mouseLeaveHandlerRef = null;
+            if (this._mouseLeaveHandlerRef) {
+                this.el.removeEventListener('mouseleave', this._mouseLeaveHandlerRef);
+                this._mouseLeaveHandlerRef = null;
+            }
 
             this.el = null;
+            this.linkElements = null;
             this._body = null;
             this._yield = null;
 
