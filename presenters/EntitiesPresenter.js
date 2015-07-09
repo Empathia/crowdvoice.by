@@ -64,16 +64,32 @@ var EntitiesPresenter = Module('EntitiesPresenter')({
 
           var entityFollowingCount = parseInt(result[0].count, 10);
 
-          db('VoiceFollowers').count('*').where({
+          VoiceFollower.find({
             'entity_id' : entity.id
-          }).exec(function(err, result) {
+          }, function(err, result) {
             if (err) {
-              return done(err);
+              return next(err);
             }
 
-            entityInstance.followingCount = entityFollowingCount + parseInt(result[0].count);
+            var voiceIds = result.map(function(item) {
+              return item.voiceId;
+            });
 
-            done();
+            Voice.whereIn('id', voiceIds, function(err, result) {
+              if (err) {
+                return next(err);
+              }
+
+              var voices = result.filter(function(item) {
+                if (item.status === Voice.STATUS_PUBLISHED) {
+                  return true;
+                }
+              });
+
+              entityInstance.followingCount = entityFollowingCount + voices.length;
+
+              done();
+            });
           });
         });
       }, function(done) {
