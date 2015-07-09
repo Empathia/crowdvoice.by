@@ -1,7 +1,7 @@
 <main role="main" class="cv-main-content cv-main-profile profile-user -rel">
 
   <section class="profile-intro -rel">
-
+    <% %>
     <% if (person.background.exists('big')){ %>
       <div class="profile-background-cover -img-cover" style="background-image: url(<%= person.background.url('big') %>);"></div>
     <% } else { %>
@@ -60,9 +60,12 @@
           <p class="stats-label">Following</p>
         </div>
       </div>
-      <div class="profile-actions">
-        <span class="-pr1"></span>
-        <span></span>
+      <div class="profile-actions ui-has-tooltip">
+
+        <span class="ui-tooltip -top">To message or follow others and to see your messages please turn Anonymous mode off.</span>
+
+        <span class="-pr1 p-buttons"></span>
+        <span class="p-select"></span>
       </div>
   </article>
 
@@ -205,23 +208,23 @@
 
   //after
 
-  var btnTwiceOptions = {
+  var buttonActionsOptions = {
     "1": {label: 'Message', name: 'message'},
     "2": {label: 'Follow', name: 'follow'}
   };
 
-  new CV.Button({
+  var buttonActions = new CV.Button({
       style   : 'small',
       type    : 'multiple',
-      name    : 'buttonTwice',
-      options : btnTwiceOptions
-  }).render(document.querySelector('.profile-actions span:first-child'));
+      name    : 'buttonActions',
+      options : buttonActionsOptions
+  }).render(document.querySelector('.profile-actions .p-buttons'));
+
 
   //Normal
   var profileOptions = {
-    "1": {label: 'Share', name: 'share', icon: 'share'},
-    "2": {label: 'Embed', name: 'embed', icon: 'embed'},
-    "3": {label: 'Moderate', name: 'moderate', icon: 'moderate'}
+    "1": {label: 'Invite to Organization...', name: 'organization', icon: 'invite-to'},
+    "2": {label: 'Invite to Contribute...', name: 'contribute', icon: 'user'}
   };
 
   var profileSettings = new CV.Select({
@@ -232,17 +235,31 @@
     options   : profileOptions,
     type      : 'icon',
     icon      : 'settings'
-  }).render(document.querySelector('.profile-actions span:last-child'));
+  }).render(document.querySelector('.profile-actions .p-select'));
 
-  profileSettings.share.on('click', function(){
-    console.log('Share');
-  });
-  profileSettings.share.on('click', function(){
-    console.log('embed');
-  });
-  profileSettings.share.on('click', function(){
-    console.log('moderate');
-  });
+
+  if (currentPerson.isAnonymous) {
+    buttonActions.disable();
+    profileSettings.disable();
+  } else {
+    //button actions
+    buttonActions.message.on('click', function(){
+      console.log('message click');
+    });
+    buttonActions.follow.on('click', function(){
+      console.log('follow click');
+    });
+    // select actions
+    profileSettings.organization.on('click', function(){
+      console.log('Organization click');
+    });
+    profileSettings.contribute.on('click', function(){
+      console.log('Contribute click');
+    });
+  }
+
+
+
 
   // Following options
   var followOptions = {

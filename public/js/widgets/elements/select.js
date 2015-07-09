@@ -33,6 +33,7 @@ Class(CV, 'Select').inherits(Widget)({
         title           : "",
         subTitle        : "",
         actionType      : null,
+        enabled         : true,
 
         init : function(config){
             Widget.prototype.init.call(this, config);
@@ -73,6 +74,7 @@ Class(CV, 'Select').inherits(Widget)({
 
             this.fillOptions();
             this.bindActions();
+
         },
 
         fillOptions : function(){
@@ -150,9 +152,13 @@ Class(CV, 'Select').inherits(Widget)({
         },
 
         bindActions : function(){
+
             this.headEl.on('click', function(){
-                this.open();
+                if(this.enabled){
+                    this.open();
+                }
             }.bind(this));
+
 
             var that = this;
 
@@ -204,7 +210,20 @@ Class(CV, 'Select').inherits(Widget)({
         close : function(){
             this.bodyEl.toggle();
             this.selectEl.toggleClass('active');
+        },
+
+        enable : function(){
+            this.enabled = true;
+            this.selectEl.removeClass('disabled');
+            this.selectEl.attr('disabled', false);
+        },
+        disable : function(){
+            this.enabled = false;
+            this.selectEl.addClass('disabled');
+            this.selectEl.attr('disabled', true);
+            this.bodyEl.detach();
         }
+
 
     }
 

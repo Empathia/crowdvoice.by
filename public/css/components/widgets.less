@@ -7,27 +7,16 @@
   .cv-button{
     margin: 0;
   }
+  &.disabled{
+    opacity: .5;
+    cursor: default;
+    .cv-button:hover{
+      border: 1px solid @color-neutral-light;
+      cursor: default;
+    }
+  }
 }
 
-.cv-button-group.twice{
-  .cv-button{
-    &:first-child{
-      border-top-right-radius: 0;
-      border-bottom-right-radius: 0;
-    }
-    &:last-child{
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
-      margin-left: -1px;
-    }
-  }
-  &:hover .cv-button:last-child{
-      border-left: 1px solid @color-primary-dark;
-  }
-  &:hover .cv-button:first-child{
-      border-rigth: 1px solid @color-primary-dark;
-  }
-}
 
 .cv-button-group.multiple{
   .cv-button{
@@ -180,7 +169,7 @@ a.cv-button{
 }
 
 .cv-button.disabled{
-  opacity: .3;
+  opacity: .5;
   cursor: default;
 }
 
@@ -420,6 +409,14 @@ a.cv-button{
 
   svg{
     fill: @color-neutral-dark;
+  }
+
+  &.disabled{
+    opacity: .5;
+    .cv-select-head:hover{
+      border: 1px solid @color-neutral-light;
+      cursor: default;
+    }
   }
 
   &.primary .cv-select-head{
