@@ -140,22 +140,19 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
     },
 
     follow : function follow (req, res, next) {
-      var entity = req.entity, follower;
+      var entity = req.entity;
+      var follower = req.currentPerson;
+      follower.id = hashids.decode(follower.id)[0];
+      entity.id = hashids.decode(entity.id)[0];
 
-      Entity.find({ id: req.body.followAs }, function (err, result) {
-        if (err) { next(err); return; }
+      // we don't want to allow the user to follow if he is anonymous
+      if (follower.isAnonymous) {
+        return next(new ForbiddenError('Anonymous users can\'t follow'));
+      }
 
-        if (result.length === 0) {
-          next(new NotFoundError('Entity Not Found')); return;
-        }
-
-        follower = new Entity(result[0]);
-
-        // TODO: Check if follower is authorized to do this.
-        follower.followEntity(entity, function (err) {
-          if (err) { next(err); }
-          res.redirect('/' + entity.profileName);
-        });
+      follower.followEntity(entity, function (err) {
+        if (err) { return next(err); }
+        res.redirect('/' + entity.profileName);
       });
     },
 

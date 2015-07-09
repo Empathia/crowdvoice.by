@@ -4,20 +4,17 @@ var EntitiesPresenter = require(path.join(process.cwd(), '/presenters/EntitiesPr
 var VoicesController = Class('VoicesController').includes(BlackListFilter)({
   prototype : {
     follow : function follow(req, res, next) {
-      Entity.find({ id: hashids.decode(req.currentPerson.id)[0] }, function(err, result) {
+      var follower = req.currentPerson;
+      follower.id = hashids.decode(follower.id)[0];
+
+      // we don't want to allow the user to follow if he is anonymous
+      if (follower.isAnonymous) {
+        return next(new ForbiddenError('Anonymous users can\'t follow'));
+      }
+
+      follower.followVoice(req.activeVoice, function(err) {
         if (err) { return next(err); }
-
-        if (result.length === 0) {
-          return next(new NotFoundError('Entity Not Found'));
-        }
-
-        var follower = new Entity(result[0]);
-
-        // TODO: Check if follower is authorized to do this.
-        follower.followVoice(req.activeVoice, function(err) {
-          if (err) { return next(err); }
-          res.json({ status: 'ok' });
-        });
+        res.json({ status: 'ok' });
       });
     },
 
