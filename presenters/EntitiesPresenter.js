@@ -2,7 +2,7 @@ var EntitiesPresenter = Module('EntitiesPresenter')({
   build : function build(entities, callback) {
     var response = [];
 
-    async.each(entities, function(entity, done) {
+    async.each(entities, function(entity, nextEntity) {
       var entityInstance = new Entity(entity);
 
       entityInstance.id = hashids.encode(entityInstance.id);
@@ -29,9 +29,64 @@ var EntitiesPresenter = Module('EntitiesPresenter')({
 
       entityInstance.backgrounds = backgrounds;
 
-      response.push(entityInstance);
+      async.series([function(done) {
+        db('Voices').count('*').where({
+          'owner_id' : entity.id,
+          status : 'STATUS_PUBLISHED'
+        }).exec(function(err, result) {
+          if (err) {
+            return done(err);
+          }
 
-      done();
+          entityInstance.voicesCount = parseInt(result[0].count, 10);
+
+          done();
+        });
+      }, function(done) {
+        db('EntityFollower').count('*').where({
+          'followed_id' :  entity.id
+        }).exec(function(err, result) {
+          if (err) {
+            return done(err);
+          }
+
+          entityInstance.followersCount = parseInt(result[0].count, 10);
+
+          done();
+        });
+      }, function(done) {
+        db('EntityFollower').count('*').where({
+          'follower_id' : entity.id
+        }).exec(function(err, result) {
+          if (err) {
+            return done(err);
+          }
+
+          entityInstance.followingCount = parseInt(result[0].count, 10);
+
+          done();
+        });
+      }, function(done) {
+        db('EntityMembership').count('*').where({
+          'entity_id' : entity.id
+        }).exec(function(err, result) {
+          if (err) {
+            return done(err);
+          }
+
+          entityInstance.membershipCount = parseInt(result[0].count, 10);
+
+          done();
+        });
+      }], function(err) {
+        if (err) {
+          return nextEntity(err);
+        }
+
+        response.push(entityInstance);
+
+        nextEntity();
+      })
     }, function(err) {
       if (err) {
         return callback(err);

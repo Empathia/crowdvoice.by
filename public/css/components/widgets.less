@@ -61,12 +61,6 @@
     display: inline-block;
   }
 
-  &:hover:enabled{
-    color: @color-neutral-x-dark;
-    fill: @color-neutral-x-dark;
-    border: 1px solid @color-primary-dark;
-  }
-
   &.rounded {
     min-width: 46px;
     border-radius: 23px;
@@ -126,6 +120,14 @@
   }
 
 }
+
+.cv-button:hover:enabled,
+a.cv-button:hover {
+  color: @color-neutral-x-dark;
+  fill: @color-neutral-x-dark;
+  border: 1px solid @color-primary-dark;
+}
+
 a.cv-button{
   display: table-cell;
   vertical-align: middle;

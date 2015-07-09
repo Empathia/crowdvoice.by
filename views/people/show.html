@@ -139,7 +139,7 @@
 
     data.forEach(function (voice, index) {
       var voiceEl = $('<div class="-col-4 -pr1"></div>');
-      new VoiceCover( data[index] ).render( voiceEl);
+      new VoiceCover(voice).render( voiceEl);
       $('.profile-voices-container').append(voiceEl);
     });
   }
@@ -161,9 +161,9 @@
     //console.log('followers: ' + data);
     $('.profile-menu .counter-followers').text(data.length);
 
-    data.forEach(function (followers, index) {
+    data.forEach(function (follower, index) {
       var followerEl = $('<div class="-col-4 -pr1"></div>');
-      new CV.Card( data[index] ).render( followerEl);
+      new CV.Card(follower).render( followerEl);
       $('.profile-followers-container').append(followerEl);
     });
   }

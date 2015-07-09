@@ -129,37 +129,35 @@
   float: left;
   width: 33.333%;
   padding-bottom: 100px;
+  text-align: center;
 
   .categories_link {
-    display: block;
+    display: inline-block;
     color: @color-neutral-xx-dark;
   }
 
   .homepage-category-cover {
+    width: 96px;
     height: 96px;
-    background-size: 96px 96px;
+    background-size: 100%;
     background-repeat: no-repeat;
+  }
+
+  .categories_link-wrapper {
+    padding-top: 35px;
   }
 
   .categories_title {
     font-size: 18px;
-    display: block;
-    padding: 35px 0 0;
-
     &:extend(.-text-center);
   }
 }
 
 .homepage-category-list-cta {
-  .ui-btn {
-    padding: .6em 3em;
-
-    div:last-child {
-      font-size: 16px;
-      line-height: 1.5em;
-      opacity: .5;
-    }
-  }
+  .cv-button {
+    display: inline-block;
+    padding-top: 16px;
+   }
 }
 
 /* =========================================================================== *

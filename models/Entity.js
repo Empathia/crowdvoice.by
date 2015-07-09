@@ -134,6 +134,8 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
       lastname: null,
       profileName: null,
       isAnonymous: false,
+      description : null,
+      location : null,
       createdAt: null,
       updatedAt: null,
 
