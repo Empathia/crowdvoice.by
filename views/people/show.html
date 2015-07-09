@@ -40,13 +40,6 @@
           </script>
         </div>
 
-        <!--
-        <div class="profile-card-activity-saved -inline-block -ml1">
-          <svg class="profile-card-activity-svg"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-save"></use></svg>
-          <span class="profile-card-activity-label">www.ippf.org</span>
-        </div>
-        -->
-
       </div>
 
     </div>
@@ -85,7 +78,7 @@
     <div class="active -menu-tab-content">
       <h2 class="profile-subheading -font-bold -m0">Voices</h2>
       <hr>
-      <div class="-row profile-voices-container">
+      <div class="-row profile-voices-container profile-container">
         <!-- voices -->
       </div>
     </div>
@@ -93,7 +86,7 @@
     <div class=" -menu-tab-content">
       <h2 class="profile-subheading -font-bold -m0">Followers</h2>
       <hr>
-      <div class="-row profile-followers-container">
+      <div class="-row profile-followers-container profile-container">
         <!-- followers -->
       </div>
     </div>
@@ -102,9 +95,9 @@
       <h2 class="profile-subheading -font-bold -m0">Following</h2>
       <span class="entities-voices-select -pl1"></span>
       <hr>
-      <div class="-row profile-following-container">
-        <div class="entities-followed">Entities</div>
-        <div class="voices-followed" style="display: none;">Voices</div>
+      <div class="-row profile-following-container  profile-container">
+        <div class="entities-followed"></div>
+        <div class="voices-followed" style="display: none;"></div>
       </div>
     </div>
 
@@ -124,8 +117,6 @@
   });
   App.addInteractiveSidebar();
 
-  var voicesFollowed = null;
-  var entitiesFollowed = null;
   var totalFollowing = 0;
 
   $.ajax({
@@ -141,7 +132,6 @@
   // ****** render voices *****
   // **************************
   function renderVoices(data){
-    //console.log('voices: ' + data);
     $('.profile-menu .counter-voices').text(data.length);
 
     data.forEach(function (voice, index) {
@@ -169,8 +159,8 @@
     $('.profile-menu .counter-followers').text(data.length);
 
     data.forEach(function (followers, index) {
-      var followerEl = $('<div class="-col-4 -pr1">' + data[index].name + ' </div>');
-      //new CV.Card( data[index] ).render( followerEl);
+      var followerEl = $('<div class="-col-4 -pr1"></div>');
+      new CV.Card( data[index] ).render( followerEl);
       $('.profile-followers-container').append(followerEl);
     });
   }
@@ -181,7 +171,6 @@
     headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
     data : {},
     success: function(data) {
-      console.log('voicesFollowed: ' + data);
       renderFollowing(data, 'voices');
     }
   });
@@ -191,7 +180,6 @@
     headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
     data : {},
     success: function(data) {
-      console.log('entitiesFollowed: ' + data);
       renderFollowing(data, 'entities');
     }
   });
@@ -204,12 +192,18 @@
     $('.profile-menu .counter-following').text(totalFollowing);
 
     data.forEach(function (followers, index) {
-      var followerEl = $('<div class="-col-4 -pr1">' + data[index].name + ' </div>');
-      //new CV.Card( data[index] ).render( followerEl);
+      if(type == 'voices'){
+        var followerEl = $('<div class="-col-4 -pr1"></div>');
+        new VoiceCover( data[index] ).render( followerEl);
+      } else if (type == 'entities'){
+        var followerEl = $('<div class="-col-4 -pr1"></div>');
+        new CV.Card( data[index] ).render( followerEl);
+      }
       $('.profile-following-container .' + type + '-followed').append(followerEl);
     });
   }
 
+  //after
 
   var btnTwiceOptions = {
     "1": {label: 'Message', name: 'message'},
@@ -243,16 +237,21 @@
   profileSettings.share.on('click', function(){
     console.log('Share');
   });
-
+  profileSettings.share.on('click', function(){
+    console.log('embed');
+  });
+  profileSettings.share.on('click', function(){
+    console.log('moderate');
+  });
 
   // Following options
   var followOptions = {
-    "1": {label: 'Entities', name: 'entities'},
+    "1": {label: 'Users', name: 'entities'},
     "2": {label: 'Voices', name: 'voices'}
   };
 
   var followSelect = new CV.Select({
-    label     : 'Entities',
+    label     : 'Users',
     style     : 'tiny',
     className : '-inline-block',
     name      : 'select',
