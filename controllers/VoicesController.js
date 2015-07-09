@@ -185,7 +185,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
           res.format({
             html : function() {
-              VoicesPresenter.build([res.locals.voice], function(err, result) {
+              VoicesPresenter.build([res.locals.voice], req.currentPerson, function(err, result) {
                 if (err) {
                   return next(err);
                 }

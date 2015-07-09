@@ -35,7 +35,7 @@ var HomeController = Class('HomeController')({
                 return done(err);
               }
               console.log(voicesResult)
-              VoicesPresenter.build(voicesResult, function(err, voices) {
+              VoicesPresenter.build(voicesResult, req.currentPerson, function(err, voices) {
                 if (err) {
                   return done(err);
                 }

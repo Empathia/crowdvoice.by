@@ -164,7 +164,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
       }, function (err, result) {
         if (err) { next(err); return; }
 
-        VoicesPresenter.build(result, function(err, voices) {
+        VoicesPresenter.build(result, req.currentPerson, function(err, voices) {
           if (err) {
             return next(err);
           }
@@ -239,7 +239,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
             }
           })
 
-          VoicesPresenter.build(result, function(err, voices) {
+          VoicesPresenter.build(result, req.currentPerson, function(err, voices) {
             if (err) {
               return next(err);
             }

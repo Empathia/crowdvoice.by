@@ -2,7 +2,7 @@ var EntitiesPresenter = require('./EntitiesPresenter.js');
 var TopicsPresenter = require('./TopicsPresenter.js');
 
 var VoicesPresenter = Module('VoicesPresenter')({
-  build : function build(voices, callback) {
+  build : function build(voices, currentPerson, callback) {
     var response = [];
     async.each(voices, function(voice, nextVoice) {
       var voiceInstance = new Voice(voice);
@@ -22,7 +22,7 @@ var VoicesPresenter = Module('VoicesPresenter')({
             return nextVoice(err);
           }
 
-          EntitiesPresenter.build(entities, req.currentPerson, function(err, result) {
+          EntitiesPresenter.build(entities, currentPerson, function(err, result) {
             if (err) {
               return nextVoice(err);
             }
@@ -85,7 +85,7 @@ var VoicesPresenter = Module('VoicesPresenter')({
                   if (err) {
                     return done(err);
                   }
-                  EntitiesPresenter.build(result, req.currentPerson, function(err, followers) {
+                  EntitiesPresenter.build(result, currentPerson, function(err, followers) {
                     if (err) {
                       return done(err);
                     }
