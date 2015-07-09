@@ -9,6 +9,7 @@ Class(CV, 'Select').inherits(Widget)({
                 <div class="cv-select-head">\
                   <span class="label"></span>\
                 </div>\
+                <div class="cv-select-mask"></div>\
                 <div class="cv-select-body">\
                   <ul>\
                   </ul>\
@@ -37,8 +38,11 @@ Class(CV, 'Select').inherits(Widget)({
 
         init : function(config){
             Widget.prototype.init.call(this, config);
+
             this.headEl = this.element.find('.cv-select-head');
             this.bodyEl = this.element.find('.cv-select-body');
+            this.maskEl = this.element.find('.cv-select-mask');
+
             this.selectEl = this.element.find('.cv-select');
 
             this.labelEl = this.element.find('.label');
@@ -79,13 +83,11 @@ Class(CV, 'Select').inherits(Widget)({
 
         fillOptions : function(){
 
-
             for (var key in this.options) {
                 if (this.options.hasOwnProperty(key)) {
 
                     switch(this.type) {
                         case 'check':
-
 
                             var optionEl = $('<li></li>');
                             var check = this.appendChild(new CV.Check({
@@ -159,6 +161,9 @@ Class(CV, 'Select').inherits(Widget)({
                 }
             }.bind(this));
 
+            this.maskEl.on('click', function(){
+                this.close();
+            }.bind(this));
 
             var that = this;
 
@@ -205,11 +210,13 @@ Class(CV, 'Select').inherits(Widget)({
         open : function(){
             this.bodyEl.toggle();
             this.selectEl.toggleClass('active');
+            this.maskEl.show();
         },
 
         close : function(){
             this.bodyEl.toggle();
             this.selectEl.toggleClass('active');
+            this.maskEl.hide();
         },
 
         enable : function(){

@@ -15,6 +15,7 @@ Class(CV, 'SelectAccount').inherits(Widget)({
                       </svg>\
                     </span>\
                 </div>\
+                <div class="cv-select-mask"></div>\
                 <div class="cv-select-body">\
                   <ul>\
                   </ul>\
@@ -48,6 +49,7 @@ Class(CV, 'SelectAccount').inherits(Widget)({
 
             this.bodyEl = this.element.find('.cv-select-body');
             this.selectEl = this.element.find('.cv-select');
+            this.maskEl = this.element.find('.cv-select-mask');
 
             this.labelEl = this.element.find('.label');
             this.optionsEl = this.element.find('ul');
@@ -144,9 +146,16 @@ Class(CV, 'SelectAccount').inherits(Widget)({
                 this.open();
             }.bind(this));
 
+            this.maskEl.on('click', function(){
+                this.close();
+            }.bind(this));
+
             var that = this;
             if (this.type != "check"){
                 this.element.find('li').bind('click', function(el){
+                    if ($(this).hasClass("has-children")){
+                        return;
+                    }
 
                     if (this.hasAttribute("url")){
                         //console.log(this.getAttribute("url"));
@@ -187,12 +196,17 @@ Class(CV, 'SelectAccount').inherits(Widget)({
         open : function(){
             this.bodyEl.toggle();
             this.element.toggleClass('active');
+            this.maskEl.show();
         },
 
         close : function(){
             this.bodyEl.toggle();
             this.element.toggleClass('active');
+            this.maskEl.hide();
         }
+
+
+
 
     }
 

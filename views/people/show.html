@@ -60,10 +60,7 @@
           <p class="stats-label">Following</p>
         </div>
       </div>
-      <div class="profile-actions ui-has-tooltip">
-
-        <span class="ui-tooltip -top">To message or follow others and to see your messages please turn Anonymous mode off.</span>
-
+      <div class="profile-actions">
         <span class="-pr1 p-buttons"></span>
         <span class="p-select"></span>
       </div>
@@ -241,6 +238,11 @@
   if (currentPerson.isAnonymous) {
     buttonActions.disable();
     profileSettings.disable();
+
+    var tooltipEl = $('<span class="ui-tooltip -top">To message or follow others and to see your messages please turn Anonymous mode off.</span>')
+    $('.profile-actions').addClass('ui-has-tooltip').append(tooltipEl);
+
+
   } else {
     //button actions
     buttonActions.message.on('click', function(){
