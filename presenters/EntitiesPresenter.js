@@ -62,9 +62,19 @@ var EntitiesPresenter = Module('EntitiesPresenter')({
             return done(err);
           }
 
-          entityInstance.followingCount = parseInt(result[0].count, 10);
+          var entityFollowingCount = parseInt(result[0].count, 10);
 
-          done();
+          db('VoiceFollowers').count('*').where({
+            'entity_id' : entity.id
+          }).exec(function(err, result) {
+            if (err) {
+              return done(err);
+            }
+
+            entityInstance.followingCount = entityFollowingCount + parseInt(result[0].count);
+
+            done();
+          });
         });
       }, function(done) {
         db('EntityMembership').count('*').where({
