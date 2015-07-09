@@ -55,6 +55,18 @@ var EntitiesPresenter = Module('EntitiesPresenter')({
           done();
         });
       }, function(done) {
+        db('EntityFollower').count('*').where({
+          'follower_id' : entity.id
+        }).exec(function(err, result) {
+          if (err) {
+            return done(err);
+          }
+
+          entityInstance.followingCount = parseInt(result[0].count, 10);
+
+          done();
+        });
+      }, function(done) {
         db('EntityMembership').count('*').where({
           'entity_id' : entity.id
         }).exec(function(err, result) {
