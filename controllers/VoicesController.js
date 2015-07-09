@@ -4,8 +4,6 @@ var EntitiesPresenter = require(path.join(process.cwd(), '/presenters/EntitiesPr
 var VoicesController = Class('VoicesController').includes(BlackListFilter)({
   prototype : {
     follow : function follow(req, res, next) {
-      var voiceToFollow = req.params.voice_slug, follower;
-
       Entity.find({ id: hashids.decode(req.currentPerson.id)[0] }, function(err, result) {
         if (err) { return next(err); }
 
@@ -13,10 +11,10 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           return next(new NotFoundError('Entity Not Found'));
         }
 
-        follower = new Entity(result[0]);
+        var follower = new Entity(result[0]);
 
         // TODO: Check if follower is authorized to do this.
-        follower.followVoice(voiceToFollow, function(err) {
+        follower.followVoice(req.activeVoice, function(err) {
           if (err) { return next(err); }
           res.json({ status: 'ok' });
         });
