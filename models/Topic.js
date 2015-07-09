@@ -83,7 +83,7 @@ var Topic = Class('Topic').inherits(Argon.KnexModel).includes(ImageUploader)({
                 .resize(192, 192)
                 .interpolateWith(sharp.interpolator.nohalo)
                 .embed()
-                .png();
+                .png()
                 .quality(100)
             );
           }
