@@ -121,12 +121,14 @@
 .homepage-category-list-heading {
   font-size: 40px;
   line-height: 55px;
-  margin: 0 0 50px;
+  margin: 0 auto 50px;
+  max-width: 800px;
 }
 
 .homepage-category-list-item {
   float: left;
-  width: 20%;
+  width: 33.333%;
+  padding-bottom: 100px;
 
   .categories_link {
     display: block;
@@ -134,19 +136,21 @@
   }
 
   .homepage-category-cover {
-    height: 200px;
+    height: 96px;
+    background-size: 96px 96px;
+    background-repeat: no-repeat;
   }
 
   .categories_title {
     font-size: 18px;
     display: block;
+    padding: 35px 0 0;
+
     &:extend(.-text-center);
   }
 }
 
 .homepage-category-list-cta {
-  margin-top: 70px;
-
   .ui-btn {
     padding: .6em 3em;
 
@@ -169,12 +173,4 @@
     padding-left: 1rem;
     padding-right: 1rem;
   }
-}
-
-/* =========================================================================== *
- *  tmp //replace with cv-button
- * =========================================================================== */
-
-a.ui-btn.-primary{
-  padding-top: 15px;
 }
