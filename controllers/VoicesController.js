@@ -6,9 +6,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
     follow : function follow(req, res, next) {
       var voiceToFollow = req.params.voice_slug, follower;
 
-      console.log('!!!!!!!!!!!!!!!!!!', req)
-
-      Entity.find({ id: hashids.decode(req.currentPerson.id)[0] }, function (err, result) {
+      Entity.find({ id: hashids.decode(req.currentPerson.id)[0] }, function(err, result) {
         if (err) { next(err); return; }
 
         if (result.length === 0) {
@@ -19,8 +17,8 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         follower = new Entity(result[0]);
 
         // TODO: Check if follower is authorized to do this.
-        follower.followVoice(voiceToFollow, function (err) {
-          if (err) { next(err); }
+        follower.followVoice(voiceToFollow, function(err) {
+          if (err) { return next(err); }
           res.json({ status: 'ok' });
         });
       });
