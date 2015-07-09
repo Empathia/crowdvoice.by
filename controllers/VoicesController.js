@@ -7,11 +7,10 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
       var voiceToFollow = req.params.voice_slug, follower;
 
       Entity.find({ id: hashids.decode(req.currentPerson.id)[0] }, function(err, result) {
-        if (err) { next(err); return; }
+        if (err) { return next(err); }
 
         if (result.length === 0) {
-          next(new NotFoundError('Entity Not Found'));
-          return;
+          return next(new NotFoundError('Entity Not Found'));
         }
 
         follower = new Entity(result[0]);
