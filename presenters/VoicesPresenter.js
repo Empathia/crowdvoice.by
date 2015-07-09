@@ -22,7 +22,7 @@ var VoicesPresenter = Module('VoicesPresenter')({
             return nextVoice(err);
           }
 
-          EntitiesPresenter.build(entities, function(err, result) {
+          EntitiesPresenter.build(entities, req.currentPerson, function(err, result) {
             if (err) {
               return nextVoice(err);
             }
@@ -85,7 +85,7 @@ var VoicesPresenter = Module('VoicesPresenter')({
                   if (err) {
                     return done(err);
                   }
-                  EntitiesPresenter.build(result, function(err, followers) {
+                  EntitiesPresenter.build(result, req.currentPerson, function(err, followers) {
                     if (err) {
                       return done(err);
                     }

@@ -70,7 +70,7 @@ var HomeController = Class('HomeController')({
               return done(err);
             }
 
-            EntitiesPresenter.build(result, function(err, organizations) {
+            EntitiesPresenter.build(result, req.currentPerson, function(err, organizations) {
               if (err) {
                 return done(err);
               }

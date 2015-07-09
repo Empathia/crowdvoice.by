@@ -131,7 +131,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
               if (err) {
                 return done(err);
               }
-              EntitiesPresenter.build(result, function(err, followers) {
+              EntitiesPresenter.build(result, req.currentPerson, function(err, followers) {
                 if (err) {
                   return done(err);
                 }

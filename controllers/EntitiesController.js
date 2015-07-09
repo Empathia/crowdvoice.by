@@ -12,7 +12,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
         if (err) { next(err); return; }
         if (result.length === 0) { next(new NotFoundError('Entity Not Found')); return; }
 
-        EntitiesPresenter.build(result, function(err, entities) {
+        EntitiesPresenter.build(result, req.currentPerson, function(err, entities) {
           if (err) {
             return next(err);
           }
@@ -207,7 +207,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
             return done(err);
           }
 
-          EntitiesPresenter.build(result, function(err, followers) {
+          EntitiesPresenter.build(result, req.currentPerson, function(err, followers) {
             if (err) {
               return done(err);
             }
@@ -265,7 +265,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
             return next(err);
           }
 
-          EntitiesPresenter.build(result, function(err, entities) {
+          EntitiesPresenter.build(result, req.currentPerson, function(err, entities) {
             if (err) {
               return next(err);
             }
