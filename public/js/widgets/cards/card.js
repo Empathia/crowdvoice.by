@@ -1,32 +1,28 @@
 /* jshint multistr: true */
 /**
- * Card Widget
+ * Card Widget (Display Entity Cards)
  *
- * @proposed data format
- * is_organization  {Boolean} indicates if the data belongs to an organization
- * profile_cover    {String} path to the profile cover updaloaded user/org
- * author           {Object} author avatar, username, full_name, url
- * description      {String} profile description
- * joined_at        {String} ISO date string
+ * backgrounds  {Object} {big, bluredCard, card, original: {url}}
+ * createdAt    {String} timestamp
+ * description  {String} entity description
+ * id           {String} entity unique id
+ * imageMeta    {Object} information about the avatar images
+ *      {card, icon, medium, notification, original, small: {channels, format, hasAlpha, hasProfile, height, space, width}}
+ * images       {Object} entity's avatar images formats available
+ *      {card, icon, medium, notification, original, small: {url}}
+ * isAnonymous  {Boolean} indicates if the entity's session has been started anonymously
+ * lastname     {String} entity's lastname (only present for "users" not "organizations")
+ * location     {String} entity's location name string
+ * name         {String} entity's name
+ * profileName  {String} entity's profile name
+ * type         {String} ("organization", "user") indicates if the data belongs to an organization or user
+ * updatedAt    {String} timestamp
+ *
+ * @TODO: missing data
  * voices_total     {Number} total count of published voices
  * followers        {Number} number of followers
  * collaborators    <optional> {Number} users participating in org's voices
  * collaborations   <optional> {Number} no. or voices in which is collaborating
-
- * @TODO : define how we will collect locations. what are we planning to do
- * with this data. eg. filtering, searching, showing flags.
- * location         <optional>
- *
- * @example
- * is_organization  : false
- * profile_cover    : 'http://.../profile-cover.jpg'
- * author           : {avatar: '.../avatar.jpg', username: 'username', full_name: 'John Doe", url: '.../username'}
- * description      : 'Suspendisse Dictum Feugiat'
- * joined_at        : '2015-03-30T13:59:47Z'
- * voices_total     : 32
- * followers        : 288
- * collaborators    : 12
- * collaborations   : 3
  */
 
 var moment = require('moment');
@@ -157,23 +153,24 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
          * @return Card [Object]
          */
         _setupDefaultElements : function _setupDefaultElements() {
-            this.dom.updateBgImage(this.profileCoverEl, this.author.profile_cover);
+            this.dom.updateBgImage(this.profileCoverEl, this.backgrounds.card.url);
 
-            this.dom.updateAttr('src', this.avatarEl, this.author.avatar);
-            this.dom.updateAttr('alt', this.avatarEl, this.author.full_name + "’s avatar image");
+            this.dom.updateAttr('src', this.avatarEl, this.images.card.url);
+            this.dom.updateAttr('alt', this.avatarEl, this.profileName + "’s avatar image");
 
-            this.dom.updateText(this.usernameEl, "@" + this.author.username);
-            this.dom.updateAttr('href', this.usernameEl, this.author.profile_url);
+            this.dom.updateText(this.usernameEl, "@" + this.profileName);
+            this.dom.updateAttr('href', this.usernameEl, this.profileName);
 
-            this.dom.updateText(this.fullNameEl, this.author.full_name);
-            this.dom.updateText(this.descriptionEl, this.author.description);
-            this.dom.updateText(this.locationEl, this.author.location);
-            this.dom.updateText(this.joinedAtEl, moment(this.author.created_at).format('MMM YYYY'));
-            this.dom.updateText(this.totalVoicesEl, this.format.numberUS(this.author.total_voices));
+            var fullname = this.name + (this.lastname ? this.lastname : '');
+            this.dom.updateText(this.fullNameEl, fullname);
+            this.dom.updateText(this.descriptionEl, this.description);
+            this.dom.updateText(this.locationEl, this.location);
+            this.dom.updateText(this.joinedAtEl, moment(this.createdAt).format('MMM YYYY'));
+            // this.dom.updateText(this.totalVoicesEl, this.format.numberUS(this.author.total_voices));
             this.dom.updateText(this.totalVoicesLabelEl, 'Voices');
-            this.dom.updateText(this.totalFollowersEl, this.format.numberUS(this.author.followers));
+            // this.dom.updateText(this.totalFollowersEl, this.format.numberUS(this.author.followers));
             this.dom.updateText(this.totalFollowersLabelEl, 'Followers');
-            this.dom.updateText(this.totalFollowingEl, this.format.numberUS(this.author.following));
+            // this.dom.updateText(this.totalFollowingEl, this.format.numberUS(this.author.following));
             this.dom.updateText(this.totalFollowingLabelEl, 'Following');
 
             return this;
@@ -181,14 +178,14 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
 
         _setupOrganizationElements : function _setupOrganizationElements() {
             this.dom.updateText(this.collaborationsLabelEl, 'Members');
-            this.dom.updateText(this.collaborationsEl, this.format.numberUS(this.author.collaborators));
+            // this.dom.updateText(this.collaborationsEl, this.format.numberUS(this.author.collaborators));
 
             return this;
         },
 
         _setupUserElements : function _setupUserElements() {
             this.dom.updateText(this.collaborationsLabelEl, 'Members');
-            this.dom.updateText(this.collaborationsEl, this.format.numberUS(this.author.collaborations));
+            // this.dom.updateText(this.collaborationsEl, this.format.numberUS(this.author.collaborations));
 
             return this;
         }

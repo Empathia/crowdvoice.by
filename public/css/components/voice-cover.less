@@ -54,13 +54,17 @@
 
 .voice-cover-main-image-wrapper {
   position: relative;
-  height: 295px;
+  padding-bottom: 100%;
   overflow: hidden;
   border-radius: 6px;
   transform: translateZ(0);
 }
 
 .voice-cover-main-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
   height: 100%;
   transition: transform 480ms ease;
 }

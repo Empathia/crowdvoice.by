@@ -11,10 +11,20 @@ Class(CV, 'App').includes(NodeSupport)({
                 this[propertyName] = config[propertyName];
             }, this);
 
-            new CV.Header({
-                element: $('.cv-main-header'),
-                currentPerson : currentPerson
-            });
+            this.appendChild(
+                new CV.Header({
+                    name : 'header',
+                    element: $('.cv-main-header'),
+                    currentPerson : currentPerson
+                })
+            );
+
+            this.appendChild(
+                new CV.Sidebar({
+                    name : 'sidebar',
+                    element : document.getElementsByClassName('cv-main-sidebar')[0]
+                })
+            );
 
             new CV.NotificationsManager({
                 notifications : this.notifications
@@ -46,10 +56,7 @@ Class(CV, 'App').includes(NodeSupport)({
          * @return CV.App [Object]
          */
         addInteractiveSidebar : function addInteractiveSidebar() {
-            new CV.Sidebar({
-                element : document.getElementsByClassName('cv-main-sidebar')[0]
-            });
-
+            this.sidebar.enableInteraction();
             return this;
         }
     }
