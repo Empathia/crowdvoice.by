@@ -133,13 +133,17 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
             }
 
             this._setupDefaultElements();
+
+            if (window.currentPerson) {
+                this._addActionButtons();
+            }
         },
 
         /* Adds the necessary action buttons automatically - per user's role-based (follow, message, invite to, join, etc).
-         * @method addActionButtons <public> [Function]
+         * @method _addActionButtons <private> [Function]
          * @return CV.Card [Object]
          */
-        addActionButtons : function addActionButtons() {
+        _addActionButtons : function _addActionButtons() {
             this.appendChild( new CV.CardActionFollow({name : 'followButton'})).render(this.actionsEl);
             this._totalCountActions++;
 
@@ -147,10 +151,10 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
             this._totalCountActions++;
 
             if (this.type === "organization") {
-                this.appendChild( new CV.CardActionInvite({name : 'inviteButton'})).render(this.actionsEl);
+                this.appendChild( new CV.CardActionJoin({name : 'joinButton'})).render(this.actionsEl);
                 this._totalCountActions++;
             } else {
-                this.appendChild( new CV.CardActionJoin({name : 'joinButton'})).render(this.actionsEl);
+                this.appendChild( new CV.CardActionInvite({name : 'inviteButton'})).render(this.actionsEl);
                 this._totalCountActions++;
             }
 
