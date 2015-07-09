@@ -393,21 +393,21 @@ async.series([function(next) {
         name : 'Human Rights',
         slug : 'human-rights'
       },
-      image : path.join(process.cwd(), '/public/generator/topics/health.png')
+      image : path.join(process.cwd(), '/public/generator/topics/human_rights.png')
     },
     {
       data : {
         name : 'Politics',
         slug : 'politics'
       },
-      image : path.join(process.cwd(), '/public/generator/topics/health.png')
+      image : path.join(process.cwd(), '/public/generator/topics/politics.png')
     },
     {
       data : {
         name : 'Education',
         slug : 'education'
       },
-      image : path.join(process.cwd(), '/public/generator/topics/health.png')
+      image : path.join(process.cwd(), '/public/generator/topics/education.png')
     },
     {
       data : {
@@ -421,14 +421,14 @@ async.series([function(next) {
         name : 'Environment',
         slug : 'environment'
       },
-      image : path.join(process.cwd(), '/public/generator/topics/health.png')
+      image : path.join(process.cwd(), '/public/generator/topics/environment.png')
     },
     {
       data : {
         name : 'Privacy',
         slug : 'privacy'
       },
-      image : path.join(process.cwd(), '/public/generator/topics/health.png')
+      image : path.join(process.cwd(), '/public/generator/topics/privacy.png')
     }
   ];
 
@@ -1043,7 +1043,7 @@ async.series([function(next) {
           hegith = 197;
         };
 
-        var url = 'http://lorempixel.com/' + width + '/' + height + '/';
+        var url = path.join(process.cwd(), '/public/generator/posts/' + casual.integer(from = 1, to = 18) + '.jpg');
 
         post.save(function(err, postRes) {
           if (err) {

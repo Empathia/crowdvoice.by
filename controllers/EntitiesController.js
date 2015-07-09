@@ -257,7 +257,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
           return item.followedId;
         });
 
-        Entity.whereId('id', followedIds, function(err, result) {
+        Entity.whereIn('id', followedIds, function(err, result) {
           if (err) {
             return next(err);
           }
