@@ -9,9 +9,11 @@ Class('CategoryCover').inherits(Widget).includes(CV.WidgetUtils)({
     HTML : '\
         <div class="homepage-category-list-item">\
             <a class="categories_link" href="#" alt="">\
-                <div class="homepage-category-cover -img-cover"></div>\
-                <span class="categories_title -font-bold"></span>\
+                <div class="homepage-category-cover"></div>\
             </a>\
+            <p class="categories_link-wrapper">\
+                <a class="categories_link categories_title -font-bold" href="#" alt=""></a>\
+            </p>\
         </div>\
     ',
 
@@ -25,12 +27,15 @@ Class('CategoryCover').inherits(Widget).includes(CV.WidgetUtils)({
             Widget.prototype.init.call(this, config);
 
             this.el = this.element[0];
-            this.anchorElement = this.el.querySelector('.categories_link');
+            this.anchorElements = [].slice.call(this.el.querySelectorAll('.categories_link'), 0);
 
             this.dom.updateBgImage(this.el.querySelector('.homepage-category-cover'), this.images.icon.url);
-            this.dom.updateAttr('href', this.anchorElement, '/topic/' + this.slug);
-            this.dom.updateAttr('alt', this.anchorElement, this.name);
             this.dom.updateText(this.el.querySelector('.categories_title'), this.name);
+
+            this.anchorElements.forEach(function(anchor) {
+                this.dom.updateAttr('href', anchor, '/topic/' + this.slug);
+                this.dom.updateAttr('alt', anchor, this.name);
+            }, this);
         }
     }
 });
