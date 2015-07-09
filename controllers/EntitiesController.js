@@ -236,6 +236,12 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
             return next(err);
           }
 
+          result = result.filter(function(item) {
+            if (item.status === Voice.STATUS_PUBLISHED) {
+              return true;
+            }
+          })
+
           VoicesPresenter.build(result, function(err, voices) {
             if (err) {
               return next(err);

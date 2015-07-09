@@ -86,6 +86,7 @@ var EntitiesPresenter = Module('EntitiesPresenter')({
                 }
               });
 
+              console.log('following', entityFollowingCount, voices.length)
               entityInstance.followingCount = entityFollowingCount + voices.length;
 
               done();
