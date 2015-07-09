@@ -109,7 +109,9 @@ async.series([function(next) {
         name        : 'Tyrion',
         lastname    : 'Lannister',
         profileName : 'tyrion-lannister',
-        isAnonymous : false
+        isAnonymous : false,
+        description : 'Tyrion Lannister is a fictional character in the A Song of Ice and Fire series of fantasy novels by American author George R. R. Martin, and its television adaptation Game of Thrones',
+        location : 'King\'s Landing'
       },
       user : data.users.tyrion,
       image : path.join(process.cwd(), '/public/generator/users/tyrion.jpg'),
@@ -121,7 +123,9 @@ async.series([function(next) {
         name        : 'Cersei',
         lastname    : 'Lannister',
         profileName : 'cersei-lannister',
-        isAnonymous : false
+        isAnonymous : false,
+        description : 'Cersei Lannister is the eldest child of Tywin and Joanna Lannister by mere moments, and the twin sister of Jaime Lannister.',
+        location : 'King\'s Landing'
       },
       user : data.users.cersei,
       image : path.join(process.cwd(), '/public/generator/users/cersei.jpg'),
@@ -133,7 +137,9 @@ async.series([function(next) {
         name        : 'Jamie',
         lastname    : 'Lannister',
         profileName : 'jamie-lannister',
-        isAnonymous : false
+        isAnonymous : false,
+        description : 'Ser Jaime Lannister, known as the Kingslayer, is a knight from House Lannister. He is the second child and first-born son of Lord Tywin Lannister of Casterly Rock and his wife Lady Joanna, also of House Lannister. He is the twin brother of Queen Cersei Lannister.',
+        location : 'King\'s Landing'
       },
       user : data.users.jamie,
       image : path.join(process.cwd(), '/public/generator/users/jamie.jpg'),
@@ -145,7 +151,9 @@ async.series([function(next) {
         name        : 'Daenerys',
         lastname    : 'Targaryen',
         profileName : 'daenerys-targaryen',
-        isAnonymous : false
+        isAnonymous : false,
+        description : 'Daenerys Targaryen, known as Daenerys Stormborn and Dany, is one of the last confirmed members of House Targaryen, along with her brother Viserys, and she is one of the major POV characters in A Song of Ice and Fire. ',
+        location : 'Meereen'
       },
       user : data.users.daenerys,
       image : path.join(process.cwd(), '/public/generator/users/daenerys.jpg'),
@@ -157,7 +165,9 @@ async.series([function(next) {
         name        : 'Jon',
         lastname    : 'Snow',
         profileName : 'jon-snow',
-        isAnonymous : false
+        isAnonymous : false,
+        description : 'Jon Snow is the bastard son of Eddard Stark, by a mother whose identity is a source of speculation.[2][3] He was raised by his father alongside his true-born half-siblings, but joins the Night\'s Watch when he nears adulthood. ',
+        location : 'The Wall'
       },
       user : data.users.jon,
       image : path.join(process.cwd(), '/public/generator/users/jon.jpg'),
@@ -169,7 +179,9 @@ async.series([function(next) {
         name        : 'Arya',
         lastname    : 'Stark',
         profileName : 'arya-stark',
-        isAnonymous : false
+        isAnonymous : false,
+        description : 'Arya Stark is the third child and second daughter of Lord Eddard Stark and Lady Catelyn Tully. A member of House Stark, she has five siblings: brothers Robb, Bran, Rickon, half-brother Jon Snow, and older sister Sansa.',
+        location : 'Winterfell'
       },
       user : data.users.arya,
       image : path.join(process.cwd(), '/public/generator/users/arya.jpg'),
@@ -181,7 +193,9 @@ async.series([function(next) {
         name        : 'Eddard',
         lastname    : 'Stark',
         profileName : 'eddard-stark',
-        isAnonymous : false
+        isAnonymous : false,
+        description : 'Eddard Stark, also affectionately called "Ned", is the head of House Stark, Lord of Winterfell, and Warden of the North.',
+        location : 'Winterfell'
       },
       user : data.users.eddard,
       image : path.join(process.cwd(), '/public/generator/users/eddard.jpg'),
@@ -193,7 +207,9 @@ async.series([function(next) {
         name        : 'Stannis',
         lastname    : 'Baratheon',
         profileName : 'stannis-baratheon',
-        isAnonymous : false
+        isAnonymous : false,
+        description : 'Stannis Baratheon is the head of House Baratheon of Dragonstone and the Lord of Dragonstone. He is the elder of King Robert I Baratheon\'s two younger brothers, the youngest being Lord Renly Baratheon.',
+        location : 'Dragonstone'
       },
       user : data.users.stannis,
       image : path.join(process.cwd(), '/public/generator/users/stannis.png'),
@@ -205,7 +221,9 @@ async.series([function(next) {
         name        : 'Robert',
         lastname    : 'Baratheon',
         profileName : 'robert-baratheon',
-        isAnonymous : false
+        isAnonymous : false,
+        description : 'King Robert I Baratheon is the Lord of the Seven Kingdoms of Westeros and the head of House Baratheon of King\'s Landing.',
+        location : 'Dragonstone'
       },
       user : data.users.robert,
       image : path.join(process.cwd(), '/public/generator/users/robert.jpg'),
@@ -217,7 +235,9 @@ async.series([function(next) {
         name        : 'Joffrey',
         lastname    : 'Baratheon',
         profileName : 'joffrey-baratheon',
-        isAnonymous : false
+        isAnonymous : false,
+        description : 'Prince Joffrey Baratheon is known to the Seven Kingdoms as the eldest son and heir of King Robert Baratheon and Queen Cersei Lannister.',
+        location : 'King\s Landing'
       },
       user : data.users.joffrey,
       image : path.join(process.cwd(), '/public/generator/users/joffrey.jpg'),
@@ -295,7 +315,9 @@ async.series([function(next) {
         name        : 'House Stark',
         lastname    : null,
         profileName : 'house-stark',
-        isAnonymous : false
+        isAnonymous : false,
+        description : 'House Stark was one of the Great Houses of Westeros, ruling over the vast region known as the North from their seat in Winterfell. It is by far one of the oldest lines of Westerosi nobility',
+        location : 'Winterfell'
       },
       owner : data.entities['eddard-stark'],
       members : [data.entities['arya-stark']],
@@ -308,7 +330,9 @@ async.series([function(next) {
         name        : 'House Lannister',
         lastname    : null,
         profileName : 'house-lannister',
-        isAnonymous : false
+        isAnonymous : false,
+        description : 'House Lannister of Casterly Rock is one of the Great Houses of Westeros, one of its richest and most powerful families and oldest dynasties.',
+        location : 'Casterly Rock'
       },
       owner : data.entities['cersei-lannister'],
       members : [data.entities['jamie-lannister'], data.entities['tyrion-lannister']],
@@ -321,7 +345,9 @@ async.series([function(next) {
         name        : 'House Targaryen',
         lastname    : null,
         profileName : 'house-targaryen',
-        isAnonymous : false
+        isAnonymous : false,
+        description : 'House Targaryen is one of the former Great Houses of Westeros and the previous ruling royal house of the Seven Kingdoms, before House Baratheon took the Iron Throne, and the few surviving Targaryens fled into exile. House Targaryen\'s symbol is a three-headed red dragon on a black background and their motto is "Fire and Blood".',
+        location : 'Valyria'
       },
       owner : data.entities['daenerys-targaryen'],
       members : [],
@@ -334,7 +360,9 @@ async.series([function(next) {
         name        : 'House Baratheon',
         lastname    : null,
         profileName : 'house-baratheon',
-        isAnonymous : false
+        isAnonymous : false,
+        description : 'House Baratheon is one of the Great Houses of Westeros, although also one of the youngest. It is the current royal house.',
+        location : 'King\'s Landing'
       },
       owner : data.entities['robert-baratheon'],
       members : [data.entities['stannis-baratheon']],
