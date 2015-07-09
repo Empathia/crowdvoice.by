@@ -1,5 +1,5 @@
 var EntitiesPresenter = Module('EntitiesPresenter')({
-  build : function build(entities, callback) {
+  build : function build(entities, currentPerson, callback) {
     var response = [];
 
     async.each(entities, function(entity, nextEntity) {
@@ -86,12 +86,36 @@ var EntitiesPresenter = Module('EntitiesPresenter')({
                 }
               });
 
-              console.log('following', entityFollowingCount, voices.length)
               entityInstance.followingCount = entityFollowingCount + voices.length;
 
               done();
             });
           });
+        });
+      }, function(done) {
+
+        // Is followed by me?
+        entityInstance.followed = false;
+
+        if (!currentPerson) {
+          return done();
+        }
+
+        EntityFollower.find({
+          'follower_id' : hashids.decode(currentPerson.id)[0],
+          'followed_id' : entity.id
+        }, function(err, result) {
+          if (err) {
+            return done(err);
+          }
+
+          if (result.length === 0) {
+            return done();
+          }
+
+          entityInstance.followed = true;
+
+          done();
         });
       }, function(done) {
         db('EntityMembership').count('*').where({
