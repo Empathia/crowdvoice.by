@@ -98,8 +98,10 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
         },
 
         _bindEvents : function _bindEvents() {
-            this._toggleHandlerRef = this.toggle.bind(this);
-            this.toggler.addEventListener('click', this._toggleHandlerRef, false);
+            if (this.toggler) {
+                this._toggleHandlerRef = this.toggle.bind(this);
+                this.toggler.addEventListener('click', this._toggleHandlerRef, false);
+            }
 
             this._backdropClickHandlerRef = this._backdropClickHandler.bind(this);
             this.backdropElement.addEventListener('click', this._backdropClickHandlerRef);
@@ -214,6 +216,19 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
 
+            if (this.closeButton) {
+                this.closeButton.removeEventListener('click', this._closeHandlerRef);
+                this._closeHandlerRef = null;
+            }
+
+            if (this.toggler) {
+                this.toggler.removeEventListener('click', this._toggleHandlerRef, false);
+                this._toggleHandlerRef = null;
+            }
+
+            this.backdropElement.removeEventListener('click', this._backdropClickHandlerRef);
+            this._backdropClickHandlerRef = null;
+
             this.toggler = null;
             this.container = null;
             this.placement = null;
@@ -221,17 +236,6 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
             this.content = null;
             this.showCloseButton = null;
             this.hasScrollbar = null;
-
-            if (this.closeButton) {
-                this.closeButton.removeEventListener('click', this._closeHandlerRef);
-                this._closeHandlerRef = null;
-            }
-
-            this.toggler.removeEventListener('click', this._toggleHandlerRef, false);
-            this._toggleHandlerRef = null;
-
-            this.backdropElement.removeEventListener('click', this._backdropClickHandlerRef);
-            this._backdropClickHandlerRef = null;
 
             this.el = null;
             this.headerElement = null;
