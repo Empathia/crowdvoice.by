@@ -150,9 +150,41 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
         return next(new ForbiddenError('Anonymous users can\'t follow'));
       }
 
-      follower.followEntity(entity, function (err) {
+      EntityFollower.find({
+        follower_id: follower.id,
+        followed_id: entity.id
+      }, function (err, result) {
         if (err) { return next(err); }
-        res.redirect('/' + entity.profileName);
+
+        if (result.length > 0) { // already following?
+          // unfollow
+          follower.unfollowEntity(entity, function (err) {
+            if (err) { return next(err); }
+
+            res.format({
+              html: function () {
+                res.redirect('/' + entity.profileName);
+              },
+              json: function () {
+                res.json({ status: 'unfollowed' });
+              }
+            })
+          });
+        } else {
+          // follow
+          follower.followEntity(entity, function (err) {
+            if (err) { return next(err); }
+
+            res.format({
+              html: function () {
+                res.redirect('/' + entity.profileName);
+              },
+              json: function () {
+                res.json({ status: 'followed' });
+              }
+            })
+          });
+        }
       });
     },
 
