@@ -213,6 +213,17 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
       });
     },
 
+    myVoices: function (req, res, next) {
+      ACL.isAllowed('myVoices', 'entities', req.role, {}, function (err, response) {
+        if (err) { return next(err); }
+        console.log(response)
+
+        if (!response.isAllowed) {
+          return next(new ForbiddenError())
+        }
+      })
+    },
+
     followers : function followers(req, res, next) {
       var entity = req.entity;
       var followerIds = [];
