@@ -4,7 +4,7 @@
  *
  * backgrounds      {Object}
  *                  {big, bluredCard, card, original: {url}}
- * createdAt        {String} timestamp
+ * createdAt        {String} timestamp of registry creation
  * description      {String} entity description
  * id               {String} entity unique id
  * imageMeta        {Object} information about the avatar images
@@ -17,13 +17,12 @@
  * name             {String} entity's name
  * profileName      {String} entity's profile name
  * type             {String} ("organization", "user") indicates if the data belongs to an organization or user
- * updatedAt        {String} timestamp
- * followersCount   {Number}
- * voicesCount      {Number}
- * membershipCount  {Number}
- *
- * @TODO: missing data
- * followingCount   {Number}
+ * updatedAt        {String} timestamp of last update
+ * followersCount   {Number} Entity's followers total
+ * voicesCount      {Number} Entity's published voices total
+ * membershipCount  {Number} total of members (for 'organization' Entities)
+ * followingCount   {Number} total of entities following
+ * followed         {Boolean} Flag for currentPerson. Indicates if currentPerson is following this entity
  */
 
 var moment = require('moment');
@@ -136,8 +135,11 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
 
             this._setupDefaultElements();
 
-            // not currentPerson's card?
-            if (window.currentPerson && (window.currentPerson.id !== this.id)) {
+            // not currentPerson's card? and is not anonymous
+            if (
+                (window.currentPerson && (window.currentPerson.id !== this.id)) &&
+                (window.currentPerson.isAnonymous === false)
+            ) {
                 this._addActionButtons();
             }
         },

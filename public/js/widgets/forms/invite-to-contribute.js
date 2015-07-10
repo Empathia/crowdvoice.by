@@ -26,6 +26,7 @@ Class(CV, 'InviteToContribute').inherits(Widget)({
 			  "2": {label: 'Ferguson Unrest', name: 'voice2'},
 			  "3": {label: 'Unemployment in Detroit', name: 'voice3'}
 			};
+
 			new CV.Select({
 			  	label 		: 'Select one',
 			  	name  		: 'select',
@@ -43,8 +44,6 @@ Class(CV, 'InviteToContribute').inherits(Widget)({
 			    hasTitle 	: true,
 			    title 		: "Write a message"
 			}).render(this.element.find('.placeholder-main'));
-
-
 
 			//********** bottom ***********
 

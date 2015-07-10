@@ -14,6 +14,9 @@ WebFontConfig = {
     s.parentNode.insertBefore(wf, s);
 })();
 
+// JS » polyfills
+require('./polyfills/rAF');
+
 // JS » deps
 var jQuery = require('./vendor/jquery-2.0.3.js');
 window.jQuery = jQuery;
@@ -157,9 +160,9 @@ require('./widgets/bubble.js');
 require('./widgets/bubble/jump-to-date.js');
 require('./widgets/bubble/voices-list.js');
 require('./widgets/bubble/share.js');
-require('./widgets/bubble/form-request-to-contribute.js');
 require('./widgets/modal.js');
 require('./widgets/login.js');
+require('./widgets/forms/request-to-contribute.js');
 require('./widgets/forms/create-voice.js');
 require('./widgets/forms/create-organization.js');
 require('./widgets/forms/invite-to-contribute.js');

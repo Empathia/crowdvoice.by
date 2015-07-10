@@ -19,6 +19,9 @@
         showCloseButton : true
     }).render();
  */
+
+var transitionEnd = require('../lib/ontransitionend');
+
 Class(CV, 'PopoverBlocker').inherits(Widget)({
     HTML : '\
         <div class="ui-popover">\
@@ -189,7 +192,12 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
 
             this.container.style.overflow = 'hidden';
             this._placeElement();
+
             this.container.appendChild(this.backdropElement);
+
+            requestAnimationFrame(function() {
+                this.backdropElement.classList.add('active');
+            }.bind(this));
         },
 
         /* Deactivate handler
@@ -200,7 +208,11 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
 
             this.container.style.overflow = '';
             this._unplaceElement();
-            this.container.removeChild(this.backdropElement);
+            this.backdropElement.classList.remove('active');
+
+            transitionEnd(this.backdropElement, function() {
+                this.container.removeChild(this.backdropElement);
+            }.bind(this));
         },
 
         render : function render(element, beforeElement) {
@@ -215,6 +227,10 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
 
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
+
+            if (this.backdropElement.parentNode) {
+                this.backdropElement.parentNode.removeChild(this.backdropElement);
+            }
 
             if (this.closeButton) {
                 this.closeButton.removeEventListener('click', this._closeHandlerRef);
