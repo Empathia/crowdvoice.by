@@ -238,7 +238,7 @@
   }).render(document.querySelector('.profile-actions .p-select'));
 
 
-  if (currentPerson.isAnonymous) {
+  if (currentPerson && currentPerson.isAnonymous) {
     buttonActions.disable();
     profileSettings.disable();
   } else {
