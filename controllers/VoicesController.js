@@ -3,54 +3,6 @@ var EntitiesPresenter = require(path.join(process.cwd(), '/presenters/EntitiesPr
 
 var VoicesController = Class('VoicesController').includes(BlackListFilter)({
   prototype : {
-    follow : function follow(req, res, next) {
-      var follower = req.currentPerson;
-      follower.id = hashids.decode(follower.id)[0];
-
-      // we don't want to allow the user to follow if he is anonymous
-      if (follower.isAnonymous) {
-        return next(new ForbiddenError('Anonymous users can\'t follow'));
-      }
-
-      // check if user is already following, if yes unfollow
-      VoiceFollower.find({
-        entity_id: follower.id,
-        voice_id: req.activeVoice.id
-      }, function (err, result) {
-        if (err) { return next(err); }
-
-        if (result.length > 0) { // we're following this voice
-          // so unfollow
-          follower.unfollowVoice(req.activeVoice, function (err) {
-            if (err) { return next(err); }
-
-            res.format({
-              html: function () {
-                res.redirect('/' + req.params.profileName + '/' + req.params.voice_slug)
-              },
-              json: function () {
-                res.json({ status: 'unfollowed' });
-              }
-            })
-          });
-        } else {
-          // follow
-          follower.followVoice(req.activeVoice, function(err) {
-            if (err) { return next(err); }
-
-            res.format({
-              html: function () {
-                res.redirect('/' + req.params.profileName + '/' + req.params.voice_slug)
-              },
-              json: function () {
-                res.json({ status: 'followed' });
-              }
-            })
-          });
-        }
-      });
-    },
-
     getActiveVoice : function(req, res, next) {
       Voice.findBySlug(req.params['voice_slug'], function(err, voice) {
         if (err) { return next(err); }
@@ -357,6 +309,54 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         res.redirect('/voices');
       });
     },
+
+    follow : function follow(req, res, next) {
+      var follower = req.currentPerson;
+      follower.id = hashids.decode(follower.id)[0];
+
+      // we don't want to allow the user to follow if he is anonymous
+      if (follower.isAnonymous) {
+        return next(new ForbiddenError('Anonymous users can\'t follow'));
+      }
+
+      // check if user is already following, if yes unfollow
+      VoiceFollower.find({
+        entity_id: follower.id,
+        voice_id: req.activeVoice.id
+      }, function (err, result) {
+        if (err) { return next(err); }
+
+        if (result.length > 0) { // we're following this voice
+          // so unfollow
+          follower.unfollowVoice(req.activeVoice, function (err) {
+            if (err) { return next(err); }
+
+            res.format({
+              html: function () {
+                res.redirect('/' + req.params.profileName + '/' + req.params.voice_slug)
+              },
+              json: function () {
+                res.json({ status: 'unfollowed' });
+              }
+            })
+          });
+        } else {
+          // follow
+          follower.followVoice(req.activeVoice, function(err) {
+            if (err) { return next(err); }
+
+            res.format({
+              html: function () {
+                res.redirect('/' + req.params.profileName + '/' + req.params.voice_slug)
+              },
+              json: function () {
+                res.json({ status: 'followed' });
+              }
+            })
+          });
+        }
+      });
+    }
   }
 });
 
