@@ -1,3 +1,7 @@
+var EntitiesPresenter = require(path.join(process.cwd(), '/presenters/EntitiesPresenter.js'));
+
+var VoicesPresenter = require(path.join(process.cwd(), '/presenters/VoicesPresenter.js'));
+
 module.exports = function(req, res, next) {
   if (CONFIG.enableRedis) {
     res.locals.csrfToken = req.csrfToken();
@@ -84,36 +88,49 @@ module.exports = function(req, res, next) {
           res.locals.currentPerson = entity;
           req.currentPerson = entity;
 
-          res.locals.currentPerson.organizations = organizations;
-          req.currentPerson.organizations = organizations;
+          EntitiesPresenter.build(organizations, entity, function(err, orgResult) {
+            res.locals.currentPerson.organizations = orgResult;
+            req.currentPerson.organizations = orgResult;
 
-          req.role = 'Person';
+            req.role = 'Person';
 
-          var images = {};
+            var images = {};
 
-          for (var version in person.imageMeta) {
-            images[version] = {
-              url : person.image.url(version),
-              meta : person.image.meta(version)
-            };
-          }
+            for (var version in person.imageMeta) {
+              images[version] = {
+                url : person.image.url(version),
+                meta : person.image.meta(version)
+              };
+            }
 
-          req.currentPerson.images = images;
-          res.locals.currentPerson.images = images;
+            req.currentPerson.images = images;
+            res.locals.currentPerson.images = images;
 
-          var backgrounds = {};
+            var backgrounds = {};
 
-          for (var version in person.backgroundMeta) {
-            backgrounds[version] = {
-              url : person.background.url(version),
-              meta : person.background.meta(version)
-            };
-          }
+            for (var version in person.backgroundMeta) {
+              backgrounds[version] = {
+                url : person.background.url(version),
+                meta : person.background.meta(version)
+              };
+            }
 
-          req.currentPerson.backgrounds = images;
-          res.locals.currentPerson.backgrounds = images;
+            req.currentPerson.backgrounds = images;
+            res.locals.currentPerson.backgrounds = images;
 
-          return next();
+            db('Voices').count('*').where({
+              'owner_id' : person.id,
+              status : Voice.STATUS_PUBLISHED
+            }).exec(function(err, result) {
+              if (err) {
+                return next(err);
+              }
+
+              req.currentPerson.voicesCount = parseInt(result[0].count, 10);
+
+              return next();
+            });
+          });
         });
       });
     }
