@@ -60,10 +60,7 @@
           <p class="stats-label">Following</p>
         </div>
       </div>
-      <div class="profile-actions ui-has-tooltip">
-
-        <span class="ui-tooltip -top">To message or follow others and to see your messages please turn Anonymous mode off.</span>
-
+      <div class="profile-actions">
         <span class="-pr1 p-buttons"></span>
         <span class="p-select"></span>
       </div>
@@ -229,7 +226,7 @@
 
   var profileSettings = new CV.Select({
     label     : '',
-    style     : 'small',
+    style     : 'small is-settings',
     className : '-inline-block',
     name      : 'select',
     options   : profileOptions,
@@ -237,10 +234,17 @@
     icon      : 'settings'
   }).render(document.querySelector('.profile-actions .p-select'));
 
+  //*********************************************************
+  //********************* IsAnonymous ***********************
+  //*********************************************************
 
   if (currentPerson && currentPerson.isAnonymous) {
     buttonActions.disable();
     profileSettings.disable();
+
+    var tooltipEl = $('<span class="ui-tooltip -top">To message or follow others and to see your messages please turn Anonymous mode off.</span>')
+    $('.profile-actions').addClass('ui-has-tooltip').append(tooltipEl);
+
   } else {
     //button actions
     buttonActions.message.on('click', function(){
@@ -251,15 +255,12 @@
     });
     // select actions
     profileSettings.organization.on('click', function(){
-      console.log('Organization click');
+      inviteToOrganizationModal.show();
     });
     profileSettings.contribute.on('click', function(){
-      console.log('Contribute click');
+      inviteToContributeModal.show();
     });
   }
-
-
-
 
   // Following options
   var followOptions = {
@@ -284,6 +285,33 @@
     $('.entities-followed').hide();
     $('.voices-followed').show();
   });
+
+  //*********************************************************
+  //*********************** Modals **************************
+  //*********************************************************
+
+  var inviteToContributeModal = new CV.Modal({
+    style       : '',
+    type        : '',
+    title       : 'Invite to Contribute',
+    name        : 'inviteToContributeModal',
+    action      : CV.InviteToContribute,
+    width       : 650,
+  });
+
+  var inviteToOrganizationModal = new CV.Modal({
+    style       : '',
+    type        : '',
+    title       : 'Invite to Organization',
+    name        : 'inviteToOrganizationModal',
+    action      : CV.InviteToOrganization,
+    width       : 650,
+  });
+
+
+  //*********************************************************
+  //*********************** Menu ****************************
+  //*********************************************************
 
   $( document ).ready(function() {
 

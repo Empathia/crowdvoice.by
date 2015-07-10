@@ -8,6 +8,9 @@ Class(CV, 'Bubble').inherits(Widget)({
                 <div class="header">\
                     <h3 class="title"></h3>\
                     <div class="line"></div>\
+                    <svg class="close">\
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-close"></use>\
+                    </svg>\
                 </div>\
                 <div class="body-wrapper">\
                     <div class="body"></div>\
@@ -30,6 +33,8 @@ Class(CV, 'Bubble').inherits(Widget)({
             Widget.prototype.init.call(this, config);
             var bubble = this;
             this.bubbleEl = this.element.find('.cv-bubble');
+            this.closeElement = this.element.find('.close');
+
 
             if( this.style ){ this.element.addClass(this.style) };
             if( this.width ){ this.bubbleEl.css('width', this.width + 'px') };
@@ -37,14 +42,9 @@ Class(CV, 'Bubble').inherits(Widget)({
             this.element.find('.title').text(this.title);
             this.bodyElement = this.element.find('.body');
 
-            var closeButton = this.appendChild(
-                new CV.Button({
-                    style   : '',
-                    type    : 'single',
-                    label   : 'X',
-                    name    : 'closeButton'
-                }).render(this.element.find('.header'))
-            );
+            this.closeElement.bind('click', function(){
+                this.hide();
+            }.bind(this));
 
             var bubbleAction = this.appendChild(
                 new this.action({
@@ -56,10 +56,6 @@ Class(CV, 'Bubble').inherits(Widget)({
             $(this.anchorEl).on('click', function(){
                 bubble.show();
                 return false;
-            });
-
-            $(this.closeButton.element).on('click', function(){
-                bubble.hide();
             });
 
             this.element.bind('click', function(e){

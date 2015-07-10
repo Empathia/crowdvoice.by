@@ -163,6 +163,7 @@ require('./widgets/login.js');
 require('./widgets/forms/create-voice.js');
 require('./widgets/forms/create-organization.js');
 require('./widgets/forms/invite-to-contribute.js');
+require('./widgets/forms/invite-to-organization.js');
 require('./widgets/forms/manage-contributors.js');
 require('./widgets/forms/manage-related-voices.js');
 require('./widgets/forms/users-list.js');

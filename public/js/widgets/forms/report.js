@@ -22,9 +22,9 @@ Class(CV, 'Report').inherits(Widget)({
             var sendElement = this.element.find('.send');
 
 			var allVoices = {
-			  "1": {name: 'This Organization is not authorized/official.', active: true},
-			  "2": {name: 'Ferguson Unrest'},
-			  "3": {name: 'Unemployment in Detroit'}
+			  "1": {label: 'This Organization is not authorized/official.', name: 'report1', active: true},
+			  "2": {label: 'Ferguson Unrest'},
+			  "3": {label: 'Unemployment in Detroit'}
 			};
 			new CV.Select({
 			  	label 		: 'Select one',
