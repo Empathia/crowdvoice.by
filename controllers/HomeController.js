@@ -35,7 +35,7 @@ var HomeController = Class('HomeController')({
                 return done(err);
               }
               console.log(voicesResult)
-              VoicesPresenter.build(voicesResult, function(err, voices) {
+              VoicesPresenter.build(voicesResult, req.currentPerson, function(err, voices) {
                 if (err) {
                   return done(err);
                 }
@@ -70,7 +70,7 @@ var HomeController = Class('HomeController')({
               return done(err);
             }
 
-            EntitiesPresenter.build(result, function(err, organizations) {
+            EntitiesPresenter.build(result, req.currentPerson, function(err, organizations) {
               if (err) {
                 return done(err);
               }

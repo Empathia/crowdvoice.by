@@ -1,14 +1,14 @@
 /* jshint multistr: true */
 Class(CV, 'CardActionMessage').inherits(Widget)({
 
-    ELEMENT_CLASS : 'post-card-actions-item',
+    ELEMENT_CLASS : 'card-actions-item',
 
     HTML : '\
         <div>\
-            <svg class="post-card-activity-svg">\
+            <svg class="card-activity-svg -s16">\
                 <use xlink:href="#svg-messages"></use>\
             </svg>\
-            <p class="post-card-actions-label">Message</p>\
+            <p class="card-actions-label">Message</p>\
         </div>',
 
     prototype : {

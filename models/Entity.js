@@ -268,7 +268,7 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
        *  + entity
        *  + callback
        */
-      followEntity : function followEntity (entity, done) {
+      followEntity : function followEntity (entity, callback) {
         var currentEntity = this;
 
         // We try to find first if the relation already exists,
@@ -277,18 +277,42 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
           follower_id: currentEntity.id,
           followed_id: entity.id
         }, function (err, result) {
-          if (err) { done(err); return; }
+          if (err) { return callback(err); }
           if (result.length > 0) {
-            done(null);
-          } else {
-            var entityFollower = new EntityFollower({
-              followerId: currentEntity.id,
-              followedId: entity.id
-            });
-            entityFollower.save(function (err, result) {
-              done(err, result);
-            });
+            return done(null);
           }
+
+          var entityFollower = new EntityFollower({
+            followerId: currentEntity.id,
+            followedId: entity.id
+          });
+          entityFollower.save(function (err, result) {
+            callback(err, result);
+          });
+        });
+      },
+
+      /* Unfollows an entity
+       * @method: unfollowEntity
+       * @params:
+       *  + entity
+       *  + callback
+       */
+      unfollowEntity : function unfollowEntity (entity, callback) {
+        currentEntity = this;
+
+        EntityFollower.find({
+          follower_id: currentEntity.id,
+          followed_id: entity.id
+        }, function (err, result) {
+          if (err) { return callback(err); }
+          if (result === 0) { // actually we're not following anything
+            return callback(null);
+          }
+
+          var entityFollower = new EntityFollower(result[0]);
+
+          entityFollower.destroy(callback)
         });
       },
 
@@ -332,13 +356,35 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
        *  + voice
        *  + callback
        */
-      followVoice: function followVoice (voice, done) {
+      followVoice: function followVoice (voice, callback) {
         var vf = new VoiceFollower({
           entityId: this.id,
           voiceId: voice.id
         });
-        vf.save(function (err, result) {
-          done(err, result);
+        vf.save(callback);
+      },
+
+      /* Unfollows a voice
+       * @method: unfollowVoice
+       * @params:
+       *  + entity
+       *  + callback
+       */
+      unfollowVoice : function unfollowVoice (voice, callback) {
+        currentEntity = this;
+
+        VoiceFollower.find({
+          entity_id: currentEntity.id,
+          voice_id: voice.id
+        }, function (err, result) {
+          if (err) { return callback(err); }
+          if (result.length === 0) { // actually we're not following anything
+            return callback(null);
+          }
+
+          var voiceFollower = new VoiceFollower(result[0]);
+
+          voiceFollower.destroy(callback)
         });
       },
 

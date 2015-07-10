@@ -12,7 +12,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
         if (err) { next(err); return; }
         if (result.length === 0) { next(new NotFoundError('Entity Not Found')); return; }
 
-        EntitiesPresenter.build(result, function(err, entities) {
+        EntitiesPresenter.build(result, req.currentPerson, function(err, entities) {
           if (err) {
             return next(err);
           }
@@ -140,22 +140,51 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
     },
 
     follow : function follow (req, res, next) {
-      var entity = req.entity, follower;
+      var entity = req.entity;
+      var follower = req.currentPerson;
+      follower.id = hashids.decode(follower.id)[0];
+      entity.id = hashids.decode(entity.id)[0];
 
-      Entity.find({ id: req.body.followAs }, function (err, result) {
-        if (err) { next(err); return; }
+      // we don't want to allow the user to follow if he is anonymous
+      if (follower.isAnonymous) {
+        return next(new ForbiddenError('Anonymous users can\'t follow'));
+      }
 
-        if (result.length === 0) {
-          next(new NotFoundError('Entity Not Found')); return;
+      EntityFollower.find({
+        follower_id: follower.id,
+        followed_id: entity.id
+      }, function (err, result) {
+        if (err) { return next(err); }
+
+        if (result.length > 0) { // already following?
+          // unfollow
+          follower.unfollowEntity(entity, function (err) {
+            if (err) { return next(err); }
+
+            res.format({
+              html: function () {
+                res.redirect('/' + entity.profileName);
+              },
+              json: function () {
+                res.json({ status: 'unfollowed' });
+              }
+            })
+          });
+        } else {
+          // follow
+          follower.followEntity(entity, function (err) {
+            if (err) { return next(err); }
+
+            res.format({
+              html: function () {
+                res.redirect('/' + entity.profileName);
+              },
+              json: function () {
+                res.json({ status: 'followed' });
+              }
+            })
+          });
         }
-
-        follower = new Entity(result[0]);
-
-        // TODO: Check if follower is authorized to do this.
-        follower.followEntity(entity, function (err) {
-          if (err) { next(err); }
-          res.redirect('/' + entity.profileName);
-        });
       });
     },
 
@@ -167,7 +196,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
       }, function (err, result) {
         if (err) { next(err); return; }
 
-        VoicesPresenter.build(result, function(err, voices) {
+        VoicesPresenter.build(result, req.currentPerson, function(err, voices) {
           if (err) {
             return next(err);
           }
@@ -210,7 +239,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
             return done(err);
           }
 
-          EntitiesPresenter.build(result, function(err, followers) {
+          EntitiesPresenter.build(result, req.currentPerson, function(err, followers) {
             if (err) {
               return done(err);
             }
@@ -236,7 +265,13 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
             return next(err);
           }
 
-          VoicesPresenter.build(result, function(err, voices) {
+          result = result.filter(function(item) {
+            if (item.status === Voice.STATUS_PUBLISHED) {
+              return true;
+            }
+          })
+
+          VoicesPresenter.build(result, req.currentPerson, function(err, voices) {
             if (err) {
               return next(err);
             }
@@ -262,7 +297,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
             return next(err);
           }
 
-          EntitiesPresenter.build(result, function(err, entities) {
+          EntitiesPresenter.build(result, req.currentPerson, function(err, entities) {
             if (err) {
               return next(err);
             }

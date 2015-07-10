@@ -106,6 +106,8 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
         followingCount : 0,
         voicesCount : 0,
         membershipCount : 0,
+        /* is currentPerson following this entity? */
+        followed : false,
 
         _totalCountActions : 0,
 
@@ -134,7 +136,8 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
 
             this._setupDefaultElements();
 
-            if (window.currentPerson) {
+            // not currentPerson's card?
+            if (window.currentPerson && (window.currentPerson.id !== this.id)) {
                 this._addActionButtons();
             }
         },
@@ -144,7 +147,11 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
          * @return CV.Card [Object]
          */
         _addActionButtons : function _addActionButtons() {
-            this.appendChild( new CV.CardActionFollow({name : 'followButton'})).render(this.actionsEl);
+            console.log(this.followed, this.el);
+            this.appendChild( new CV.CardActionFollow({
+                name : 'followButton',
+                followed: this.followed
+            })).render(this.actionsEl);
             this._totalCountActions++;
 
             this.appendChild( new CV.CardActionMessage({name : 'messageButton'})).render(this.actionsEl);
@@ -159,7 +166,7 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
             }
 
             var n = 12 / this._totalCountActions;
-            [].slice.call(this.el.querySelectorAll('.post-card-actions-item'), 0).forEach(function(item) {
+            [].slice.call(this.el.querySelectorAll('.card-actions-item'), 0).forEach(function(item) {
                 item.classList.add('-col-' + n);
             });
 

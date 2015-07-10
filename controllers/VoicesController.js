@@ -3,24 +3,6 @@ var EntitiesPresenter = require(path.join(process.cwd(), '/presenters/EntitiesPr
 
 var VoicesController = Class('VoicesController').includes(BlackListFilter)({
   prototype : {
-    follow : function follow(req, res, next) {
-      Entity.find({ id: hashids.decode(req.currentPerson.id)[0] }, function(err, result) {
-        if (err) { return next(err); }
-
-        if (result.length === 0) {
-          return next(new NotFoundError('Entity Not Found'));
-        }
-
-        var follower = new Entity(result[0]);
-
-        // TODO: Check if follower is authorized to do this.
-        follower.followVoice(req.activeVoice, function(err) {
-          if (err) { return next(err); }
-          res.json({ status: 'ok' });
-        });
-      });
-    },
-
     getActiveVoice : function(req, res, next) {
       Voice.findBySlug(req.params['voice_slug'], function(err, voice) {
         if (err) { return next(err); }
@@ -134,7 +116,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
               if (err) {
                 return done(err);
               }
-              EntitiesPresenter.build(result, function(err, followers) {
+              EntitiesPresenter.build(result, req.currentPerson, function(err, followers) {
                 if (err) {
                   return done(err);
                 }
@@ -188,7 +170,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
           res.format({
             html : function() {
-              VoicesPresenter.build([res.locals.voice], function(err, result) {
+              VoicesPresenter.build([res.locals.voice], req.currentPerson, function(err, result) {
                 if (err) {
                   return next(err);
                 }
@@ -327,6 +309,54 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         res.redirect('/voices');
       });
     },
+
+    follow : function follow(req, res, next) {
+      var follower = req.currentPerson;
+      follower.id = hashids.decode(follower.id)[0];
+
+      // we don't want to allow the user to follow if he is anonymous
+      if (follower.isAnonymous) {
+        return next(new ForbiddenError('Anonymous users can\'t follow'));
+      }
+
+      // check if user is already following, if yes unfollow
+      VoiceFollower.find({
+        entity_id: follower.id,
+        voice_id: req.activeVoice.id
+      }, function (err, result) {
+        if (err) { return next(err); }
+
+        if (result.length > 0) { // we're following this voice
+          // so unfollow
+          follower.unfollowVoice(req.activeVoice, function (err) {
+            if (err) { return next(err); }
+
+            res.format({
+              html: function () {
+                res.redirect('/' + req.params.profileName + '/' + req.params.voice_slug)
+              },
+              json: function () {
+                res.json({ status: 'unfollowed' });
+              }
+            })
+          });
+        } else {
+          // follow
+          follower.followVoice(req.activeVoice, function(err) {
+            if (err) { return next(err); }
+
+            res.format({
+              html: function () {
+                res.redirect('/' + req.params.profileName + '/' + req.params.voice_slug)
+              },
+              json: function () {
+                res.json({ status: 'followed' });
+              }
+            })
+          });
+        }
+      });
+    }
   }
 });
 

@@ -1,5 +1,5 @@
 var EntitiesPresenter = Module('EntitiesPresenter')({
-  build : function build(entities, callback) {
+  build : function build(entities, currentPerson, callback) {
     var response = [];
 
     async.each(entities, function(entity, nextEntity) {
@@ -62,7 +62,58 @@ var EntitiesPresenter = Module('EntitiesPresenter')({
             return done(err);
           }
 
-          entityInstance.followingCount = parseInt(result[0].count, 10);
+          var entityFollowingCount = parseInt(result[0].count, 10);
+
+          VoiceFollower.find({
+            'entity_id' : entity.id
+          }, function(err, result) {
+            if (err) {
+              return next(err);
+            }
+
+            var voiceIds = result.map(function(item) {
+              return item.voiceId;
+            });
+
+            Voice.whereIn('id', voiceIds, function(err, result) {
+              if (err) {
+                return next(err);
+              }
+
+              var voices = result.filter(function(item) {
+                if (item.status === Voice.STATUS_PUBLISHED) {
+                  return true;
+                }
+              });
+
+              entityInstance.followingCount = entityFollowingCount + voices.length;
+
+              done();
+            });
+          });
+        });
+      }, function(done) {
+
+        // Is followed by me?
+        entityInstance.followed = false;
+
+        if (!currentPerson) {
+          return done();
+        }
+
+        EntityFollower.find({
+          'follower_id' : hashids.decode(currentPerson.id)[0],
+          'followed_id' : entity.id
+        }, function(err, result) {
+          if (err) {
+            return done(err);
+          }
+
+          if (result.length === 0) {
+            return done();
+          }
+
+          entityInstance.followed = true;
 
           done();
         });
