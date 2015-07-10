@@ -149,7 +149,8 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
         _addActionButtons : function _addActionButtons() {
             this.appendChild( new CV.CardActionFollow({
                 name : 'followButton',
-                followed: this.followed
+                followed: this.followed,
+                profileName : this.profileName
             })).render(this.actionsEl);
             this._totalCountActions++;
 

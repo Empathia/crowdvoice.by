@@ -1,4 +1,5 @@
 /* jshint multistr: true */
+var API = require('../../lib/api');
 Class(CV, 'CardActionFollow').inherits(Widget)({
 
     ELEMENT_CLASS : 'card-actions-item card-actions-follow-button',
@@ -27,6 +28,7 @@ Class(CV, 'CardActionFollow').inherits(Widget)({
 
     prototype : {
         followed : false,
+        profileName : null,
 
         el : null,
 
@@ -108,19 +110,23 @@ Class(CV, 'CardActionFollow').inherits(Widget)({
          * @method _followHandler <private> [Function]
          */
         _followHandler : function _followHandler() {
-            // @TODO : call the follow APi
-            console.log('following');
             this._setIsFollowing()._cancelHoverState();
+
+            API.followEntity({profileName: this.profileName}, function(err, res) {
+                if (err) this._setIsNotFollowing();
+            }.bind(this));
         },
 
         /* Sets the button state as not following plus call the follow API
          * @method _unfollowHandlerRef <private> [Function]
          */
         _unfollowHandlerRef : function _unfollowHandlerRef() {
-            // @TODO: call unfollow API
-            console.log('unfollow');
             this.unfollowPopover.deactivate();
             this._setIsNotFollowing();
+
+            API.followEntity({profileName: this.profileName}, function(err, res) {
+                if (err) this._setIsFollowing();
+            }.bind(this));
         },
 
         _cancelHandlerRef : function _cancelHandlerRef() {
@@ -151,6 +157,9 @@ Class(CV, 'CardActionFollow').inherits(Widget)({
             this._clickHandlerRef = null;
 
             this.el = this.followed = null;
+
+            this.profileName = null;
+            this.followed = null;
 
             return null;
         }
