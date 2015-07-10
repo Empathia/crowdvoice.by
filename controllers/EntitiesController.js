@@ -160,13 +160,29 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
           // unfollow
           follower.unfollowEntity(entity, function (err) {
             if (err) { return next(err); }
-            res.redirect('/' + entity.profileName);
+
+            res.format({
+              html: function () {
+                res.redirect('/' + entity.profileName);
+              },
+              json: function () {
+                res.json({ status: 'unfollowed' });
+              }
+            })
           });
         } else {
           // follow
           follower.followEntity(entity, function (err) {
             if (err) { return next(err); }
-            res.redirect('/' + entity.profileName);
+
+            res.format({
+              html: function () {
+                res.redirect('/' + entity.profileName);
+              },
+              json: function () {
+                res.json({ status: 'followed' });
+              }
+            })
           });
         }
       });

@@ -23,13 +23,29 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           // so unfollow
           follower.unfollowVoice(req.activeVoice, function (err) {
             if (err) { return next(err); }
-            res.json({ status: 'unfollowed' });
+
+            res.format({
+              html: function () {
+                res.redirect('/' + req.params.profileName + '/' + req.params.voice_slug)
+              },
+              json: function () {
+                res.json({ status: 'unfollowed' });
+              }
+            })
           });
         } else {
           // follow
           follower.followVoice(req.activeVoice, function(err) {
             if (err) { return next(err); }
-            res.json({ status: 'followed' });
+
+            res.format({
+              html: function () {
+                res.redirect('/' + req.params.profileName + '/' + req.params.voice_slug)
+              },
+              json: function () {
+                res.json({ status: 'followed' });
+              }
+            })
           });
         }
       });
