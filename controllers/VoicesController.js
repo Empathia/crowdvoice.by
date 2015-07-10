@@ -12,6 +12,9 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         return next(new ForbiddenError('Anonymous users can\'t follow'));
       }
 
+      // TODO check if user is already following, if yes unfollow
+
+
       follower.followVoice(req.activeVoice, function(err) {
         if (err) { return next(err); }
         res.json({ status: 'ok' });

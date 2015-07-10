@@ -366,6 +366,30 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
         });
       },
 
+      /* Unfollows a voice
+       * @method: unfollowVoice
+       * @params:
+       *  + entity
+       *  + callback
+       */
+      unfollowVoice : function unfollowVoice (entity, callback) {
+        currentEntity = this;
+
+        VoiceFollower.find({
+          entity_id: currentEntity.id,
+          voice_id: entity.id
+        }, function (err, result) {
+          if (err) { return callback(err); }
+          if (result === 0) { // actually we're not following anything
+            return callback(null);
+          }
+
+          var voiceFollower = new VoiceFollower(result[0]);
+
+          voiceFollower.destroy(callback)
+        });
+      },
+
       /* Followed voices
        * @method: followedVoices
        * @params:
