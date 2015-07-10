@@ -241,64 +241,64 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
     },
 
     requestToContribute : function requestToContribute(req, res, next) {
-        ACL.isAllowed('requestToContribute', 'voices', req.role, {
-          currentPerson : req.currentPerson,
-          profileName : req.params.profileName,
-          voiceSlug : req.params.voiceSlug
-        }, function(err, response) {
+      ACL.isAllowed('requestToContribute', 'voices', req.role, {
+        currentPerson : req.currentPerson,
+        profileName : req.params.profileName,
+        voiceSlug : req.params.voiceSlug
+      }, function(err, response) {
+        if (err) {
+          return next(err);
+        }
+
+        if (!response.isAllowed) {
+          return next( new ForbiddenError() );
+        }
+
+        var thread;
+
+        async.series([function(done) {
+          MessageThread.findOrCreate({
+            senderPerson : response.senderPerson,
+            senderEntity : response.senderEntity,
+            receiverEntity : response.receiverEntity
+          }, function(err, result) {
+            if (err) {
+              return done(err);
+            }
+
+            thread = result;
+
+            done();
+          });
+        }, function(done) {
+          thread.createMessage({
+            type : 'request_voice',
+            senderPersonId : response.senderPerson.id,
+            senderEntityId : response.senderEntity.id,
+            receiverEntityId : response.receiverEntity.id,
+            voiceId : response.voice.id,
+            message : req.body.message
+          }, function(err, result) {
+            if (err) {
+              return done(err);
+            }
+
+            done();
+          });
+        }], function(err) {
           if (err) {
             return next(err);
           }
 
-          if (!response.isAllowed) {
-            return next( new ForbiddenError() );
-          }
-
-          var thread;
-
-          async.series([function(done) {
-            MessageThread.findOrCreate({
-              senderPerson : response.senderPerson,
-              senderEntity : response.senderEntity,
-              receiverEntity : response.receiverEntity
-            }, function(err, result) {
-              if (err) {
-                return done(err);
-              }
-
-              thread = result;
-
-              done();
-            });
-          }, function(done) {
-            thread.createMessage({
-              type : 'request_voice',
-              senderPersonId : response.senderPerson.id,
-              senderEntityId : response.senderEntity.id,
-              receiverEntityId : response.receiverEntity.id,
-              voiceId : response.voice.id,
-              message : req.body.message
-            }, function(err, result) {
-              if (err) {
-                return done(err);
-              }
-
-              done();
-            });
-          }], function(err) {
+          ThreadsPresenter.build(req, [thread], function(err, result) {
             if (err) {
               return next(err);
             }
 
-            ThreadsPresenter.build(req, [thread], function(err, result) {
-              if (err) {
-                return next(err);
-              }
-
-              res.json(result[0]);
-            });
+            res.json(result[0]);
           });
         });
+      });
     },
 
     destroy : function destroy(req, res, next) {

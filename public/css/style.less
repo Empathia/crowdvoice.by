@@ -29,11 +29,12 @@
 
 @import 'variables';
 
-// Color Utilities : .mixin-color : creates the following class selectors.
+// Color Utilities : .mixin-color (color, name) : creates the following class selectors.
 // + .-color-{name} [color, fill]
 // + .-color-bg-{name} [background-color]
 // + .-color-border-{name} [border-color]
 .mixin-color(@color-neutral-mid, neutral-mid);
+.mixin-color(@color-negative, negative);
 
 body {
   overflow-x: hidden;
