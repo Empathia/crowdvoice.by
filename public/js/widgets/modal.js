@@ -24,7 +24,7 @@ Class(CV, 'Modal').inherits(Widget)({
         style           : null,
         title           : null,
         action          : null,
-        actionData      : null,
+        data            : null,
         width           : null,
         modalElement    : null,
 
@@ -55,16 +55,16 @@ Class(CV, 'Modal').inherits(Widget)({
                 modal.hide();
             });
 
-            if(this.action){
+            var bubbleAction = this.appendChild(
                 new this.action({
-                    style   : '',
-                    type    : '',
-                    years   : this.actionData,
-                    name    : 'action'
-                }).render(this.bodyElement);
-            };
+                    data   : this.data,
+                    name    : 'bubbleAction',
+                })
+            ).render(this.bodyElement);
 
-
+            bubbleAction.bind('close', function(){
+                this.hide();
+            }.bind(this));
 
 
         },

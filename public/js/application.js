@@ -159,6 +159,7 @@ require('./widgets/bubble/voices-list.js');
 require('./widgets/bubble/share.js');
 require('./widgets/modal.js');
 require('./widgets/login.js');
+require('./widgets/forms/send-message.js');
 require('./widgets/forms/request-to-contribute.js');
 require('./widgets/forms/create-voice.js');
 require('./widgets/forms/create-organization.js');

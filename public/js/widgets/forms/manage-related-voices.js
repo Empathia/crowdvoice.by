@@ -31,8 +31,6 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
                 buttonLabel : "Add Voice"
 			}).render(this.element.find('.placeholder-main'));
 
-
-
 			new CV.VoicesList({
 			    type    	: '',
 			    name  		: '',

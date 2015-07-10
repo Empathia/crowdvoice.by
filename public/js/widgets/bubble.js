@@ -25,7 +25,7 @@ Class(CV, 'Bubble').inherits(Widget)({
         style           : null,
         title           : null,
         action          : null,
-        actionData      : null,
+        data            : null,
         width           : 300,
         anchorEl        : null,
         bubbleEl        : null,
@@ -48,7 +48,7 @@ Class(CV, 'Bubble').inherits(Widget)({
 
             var bubbleAction = this.appendChild(
                 new this.action({
-                    years   : this.actionData,
+                    data   : this.data,
                     name    : 'bubbleAction',
                 })
             ).render(this.bodyElement);
@@ -66,6 +66,7 @@ Class(CV, 'Bubble').inherits(Widget)({
             });
 
             bubbleAction.bind('close', function(){
+                console.log('close action');
                 this.hide();
             }.bind(this));
 

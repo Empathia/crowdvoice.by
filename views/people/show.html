@@ -203,110 +203,128 @@
     });
   }
 
-  //after
+  if (currentPerson && currentPerson.id != '<%= person.id %>'){
+    createControls();
 
-  var buttonActionsOptions = {
-    "1": {label: 'Message', name: 'message'},
-    "2": {label: 'Follow', name: 'follow'}
-  };
-
-  var buttonActions = new CV.Button({
-      style   : 'small',
-      type    : 'multiple',
-      name    : 'buttonActions',
-      options : buttonActionsOptions
-  }).render(document.querySelector('.profile-actions .p-buttons'));
-
-
-  //Normal
-  var profileOptions = {
-    "1": {label: 'Invite to Organization...', name: 'organization', icon: 'invite-to'},
-    "2": {label: 'Invite to Contribute...', name: 'contribute', icon: 'user'}
-  };
-
-  var profileSettings = new CV.Select({
-    label     : '',
-    style     : 'small is-settings',
-    className : '-inline-block',
-    name      : 'select',
-    options   : profileOptions,
-    type      : 'icon',
-    icon      : 'settings'
-  }).render(document.querySelector('.profile-actions .p-select'));
-
-  //*********************************************************
-  //********************* IsAnonymous ***********************
-  //*********************************************************
-
-  if (currentPerson && currentPerson.isAnonymous) {
-    buttonActions.disable();
-    profileSettings.disable();
-
-    var tooltipEl = $('<span class="ui-tooltip -top">To message or follow others and to see your messages please turn Anonymous mode off.</span>')
-    $('.profile-actions').addClass('ui-has-tooltip').append(tooltipEl);
-
-  } else {
-    //button actions
-    buttonActions.message.on('click', function(){
-      console.log('message click');
-    });
-    buttonActions.follow.on('click', function(){
-      console.log('follow click');
-    });
-    // select actions
-    profileSettings.organization.on('click', function(){
-      inviteToOrganizationModal.show();
-    });
-    profileSettings.contribute.on('click', function(){
-      inviteToContributeModal.show();
-    });
   }
 
-  // Following options
-  var followOptions = {
-    "1": {label: 'Users', name: 'entities'},
-    "2": {label: 'Voices', name: 'voices'}
-  };
-
-  var followSelect = new CV.Select({
-    label     : 'Users',
-    style     : 'tiny',
-    className : '-inline-block',
-    name      : 'select',
-    options   : followOptions
-  }).render(document.querySelector('.entities-voices-select'));
-
-  followSelect.entities.on('click', function(){
-    $('.entities-followed').show();
-    $('.voices-followed').hide();
-  });
-
-  followSelect.voices.on('click', function(){
-    $('.entities-followed').hide();
-    $('.voices-followed').show();
-  });
-
   //*********************************************************
-  //*********************** Modals **************************
+  //********************* createControls ********************
   //*********************************************************
 
-  var inviteToContributeModal = new CV.Modal({
-    style       : '',
-    type        : '',
-    title       : 'Invite to Contribute',
-    name        : 'inviteToContributeModal',
-    action      : CV.InviteToContribute,
-    width       : 650,
-  });
+  function createControls(){
 
-  var inviteToOrganizationModal = new CV.Modal({
-    style       : '',
-    type        : '',
-    title       : 'Invite to Organization',
-    name        : 'inviteToOrganizationModal',
-    action      : CV.InviteToOrganization,
-    width       : 650,
-  });
+
+    var buttonActionsOptions = {
+      "1": {label: 'Message', name: 'message'},
+      "2": {label: 'Follow', name: 'follow'}
+    };
+
+    var buttonActions = new CV.Button({
+        style   : 'small',
+        type    : 'multiple',
+        name    : 'buttonActions',
+        options : buttonActionsOptions
+    }).render(document.querySelector('.profile-actions .p-buttons'));
+
+
+    //Normal
+    var profileOptions = {
+      "1": {label: 'Invite to Organization...', name: 'organization', icon: 'invite-to'},
+      "2": {label: 'Invite to Contribute...', name: 'contribute', icon: 'user'}
+    };
+
+    var profileSettings = new CV.Select({
+      label     : '',
+      style     : 'small is-settings',
+      className : '-inline-block',
+      name      : 'select',
+      options   : profileOptions,
+      type      : 'icon',
+      icon      : 'settings'
+    }).render(document.querySelector('.profile-actions .p-select'));
+
+    //********************* IsAnonymous ***********************
+
+    if (currentPerson && currentPerson.isAnonymous) {
+      buttonActions.disable();
+      profileSettings.disable();
+
+      var tooltipEl = $('<span class="ui-tooltip -top">To message or follow others and to see your messages please turn Anonymous mode off.</span>')
+      $('.profile-actions').addClass('ui-has-tooltip').append(tooltipEl);
+
+    } else {
+      //button actions
+      buttonActions.message.on('click', function(){
+        sendMessageModal.show();
+      });
+      buttonActions.follow.on('click', function(){
+        console.log('follow click');
+      });
+      // select actions
+      profileSettings.organization.on('click', function(){
+        inviteToOrganizationModal.show();
+      });
+      profileSettings.contribute.on('click', function(){
+        inviteToContributeModal.show();
+      });
+    }
+
+    // Following options
+    var followOptions = {
+      "1": {label: 'Users', name: 'entities'},
+      "2": {label: 'Voices', name: 'voices'}
+    };
+
+    var followSelect = new CV.Select({
+      label     : 'Users',
+      style     : 'tiny',
+      className : '-inline-block',
+      name      : 'select',
+      options   : followOptions
+    }).render(document.querySelector('.entities-voices-select'));
+
+    followSelect.entities.on('click', function(){
+      $('.entities-followed').show();
+      $('.voices-followed').hide();
+    });
+
+    followSelect.voices.on('click', function(){
+      $('.entities-followed').hide();
+      $('.voices-followed').show();
+    });
+
+    //*********************** Modals **************************
+    var sendMessageModal = new CV.Modal({
+      title       : 'Send Message',
+      name        : 'sendMessageModal',
+      action      : CV.SendMessage,
+      data        : {
+                      type : 'message',
+                      profileName : currentPerson.profileName,
+                      senderEntityId : currentPerson.id,
+                      receiverEntityId : '<%= person.id %>'
+                    },
+      width       : 650
+    });
+
+    var inviteToContributeModal = new CV.Modal({
+      title       : 'Invite to Contribute',
+      name        : 'inviteToContributeModal',
+      action      : CV.InviteToContribute,
+      width       : 650,
+    });
+
+    var inviteToOrganizationModal = new CV.Modal({
+      title       : 'Invite to Organization',
+      name        : 'inviteToOrganizationModal',
+      action      : CV.InviteToOrganization,
+      width       : 650,
+    });
+  } //createControls
+
+
+
 
 
   //*********************************************************
