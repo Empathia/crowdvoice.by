@@ -85,10 +85,15 @@ module.exports = function(req, res, next) {
 
         person.organizations(function(err, organizations) {
 
+          organizations.forEach(function(organization){
+            organization.id = hashids.decode(organization.id)[0];
+          });
+
           res.locals.currentPerson = entity;
           req.currentPerson = entity;
 
           EntitiesPresenter.build(organizations, entity, function(err, orgResult) {
+            console.log('Organizations', orgResult, err)
             res.locals.currentPerson.organizations = orgResult;
             req.currentPerson.organizations = orgResult;
 
