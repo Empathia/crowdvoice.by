@@ -5,7 +5,6 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
   prototype : {
     follow : function follow(req, res, next) {
       var follower = req.currentPerson;
-      var currentVoice = req.activeVoice;
       follower.id = hashids.decode(follower.id)[0];
 
       // we don't want to allow the user to follow if he is anonymous
@@ -16,7 +15,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
       // check if user is already following, if yes unfollow
       VoiceFollower.find({
         entity_id: follower.id,
-        voice_id: currentVoice.id
+        voice_id: req.activeVoice.id
       }, function (err, result) {
         if (err) { return next(err); }
 
