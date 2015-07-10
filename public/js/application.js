@@ -66,6 +66,7 @@ require('./widgets/cards/action-follow');
 require('./widgets/cards/action-message');
 require('./widgets/cards/action-invite-to');
 require('./widgets/cards/action-join');
+require('./widgets/cards/popover-unfollow');
 
 require('./widgets/voice-cover');
 require('./widgets/voice-cover-mini');
