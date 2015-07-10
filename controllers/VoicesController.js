@@ -5,6 +5,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
   prototype : {
     follow : function follow(req, res, next) {
       var follower = req.currentPerson;
+      var currentVoice = req.activeVoice;
       follower.id = hashids.decode(follower.id)[0];
 
       // we don't want to allow the user to follow if he is anonymous
@@ -12,12 +13,26 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         return next(new ForbiddenError('Anonymous users can\'t follow'));
       }
 
-      // TODO check if user is already following, if yes unfollow
-
-
-      follower.followVoice(req.activeVoice, function(err) {
+      // check if user is already following, if yes unfollow
+      VoiceFollower.find({
+        entity_id: follower.id,
+        voice_id: currentVoice.id
+      }, function (err, result) {
         if (err) { return next(err); }
-        res.json({ status: 'ok' });
+
+        if (result.length > 0) { // we're following this voice
+          // so unfollow
+          follower.unfollowVoice(req.activeVoice, function (err) {
+            if (err) { return next(err); }
+            res.json({ status: 'unfollowed' });
+          });
+        } else {
+          // follow
+          follower.followVoice(req.activeVoice, function(err) {
+            if (err) { return next(err); }
+            res.json({ status: 'followed' });
+          });
+        }
       });
     },
 
