@@ -135,8 +135,11 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
 
             this._setupDefaultElements();
 
-            // not currentPerson's card?
-            if (window.currentPerson && (window.currentPerson.id !== this.id)) {
+            // not currentPerson's card? and is not anonymous
+            if (
+                (window.currentPerson && (window.currentPerson.id !== this.id)) &&
+                (window.currentPerson.isAnonymous === false)
+            ) {
                 this._addActionButtons();
             }
         },
