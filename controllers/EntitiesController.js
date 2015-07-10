@@ -1,4 +1,3 @@
-var path = require('path');
 var BlackListFilter = require(__dirname + '/BlackListFilter');
 var VoicesPresenter = require(path.join(process.cwd(), '/presenters/VoicesPresenter.js'));
 
