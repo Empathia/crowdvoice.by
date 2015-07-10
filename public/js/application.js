@@ -14,6 +14,9 @@ WebFontConfig = {
     s.parentNode.insertBefore(wf, s);
 })();
 
+// JS » polyfills
+require('./polyfills/rAF');
+
 // JS » deps
 var jQuery = require('./vendor/jquery-2.0.3.js');
 window.jQuery = jQuery;

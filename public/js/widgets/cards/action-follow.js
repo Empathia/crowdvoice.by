@@ -74,6 +74,7 @@ Class(CV, 'CardActionFollow').inherits(Widget)({
 
             this.unfollowPopover.bind('activate', this.activate.bind(this));
             this.unfollowPopover.bind('deactivate', this.deactivate.bind(this));
+            this.unfollowPopover.bind('destroy', this.deactivate.bind(this));
 
             return this;
         },
@@ -121,7 +122,6 @@ Class(CV, 'CardActionFollow').inherits(Widget)({
          * @method _unfollowHandlerRef <private> [Function]
          */
         _unfollowHandlerRef : function _unfollowHandlerRef() {
-            this.unfollowPopover.deactivate();
             this._setIsNotFollowing();
 
             API.followEntity({profileName: this.profileName}, function(err, res) {

@@ -549,6 +549,42 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
         });
       },
 
+
+      ownedOrganizations : function ownOrganizations(callback) {
+        var entity = this;
+
+        if (!this.id) {
+          return callback(new Error("Entity doesn't have an id"));
+        }
+
+        EntityOwner.find({'owner_id' : entity.id}, function(err, result) {
+          if (err) {
+            return callback(err);
+          }
+
+          var ownedIds = result.map(function(item) {return item.ownedId});
+
+          if (ownedIds.length === 0) {
+            return callback();
+          }
+
+          Entity.whereIn('id', ownedIds, function(err, result) {
+            if (err) {
+              return callback(err);
+            }
+
+            result = result.filter(function(item) {
+              if (item.type === 'organization') {
+                return true;
+              }
+            });
+
+            callback(null, result)
+          })
+        })
+
+      },
+
       /* Return organizations for which the current entity is owner or member.
        * @method organizations
        * @return callback(err <Error>, organizations <Array>) <Callback>
@@ -579,11 +615,17 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
                 return done(err);
               }
 
+              result = result.filter(function(item) {
+                if (item.type === 'organization') {
+                  return true;
+                }
+              });
+
               organizations = organizations.concat(result);
 
               done();
-            })
-          })
+            });
+          });
         }, function(done) {
           EntityMembership.find({'member_id': entity.id}, function(err, result) {
             if (err) {
@@ -600,6 +642,12 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
               if (err) {
                 return done(err);
               }
+
+              result = result.filter(function(item) {
+                if (item.type === 'organization') {
+                  return true;
+                }
+              });
 
               organizations = organizations.concat(result);
 
