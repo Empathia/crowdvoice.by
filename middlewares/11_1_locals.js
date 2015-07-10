@@ -79,64 +79,119 @@ module.exports = function(req, res, next) {
           return next(err);
         }
 
+        res.locals.currentPerson = entity;
+        req.currentPerson = entity;
+
+        req.role = 'Person';
+
         var person = new Entity(entity);
 
         person.id = hashids.decode(person.id)[0];
 
-        person.organizations(function(err, organizations) {
+        var images = {};
 
-          organizations.forEach(function(organization){
-            organization.id = hashids.decode(organization.id)[0];
-          });
+        for (var version in person.imageMeta) {
+          images[version] = {
+            url : person.image.url(version),
+            meta : person.image.meta(version)
+          };
+        }
 
-          res.locals.currentPerson = entity;
-          req.currentPerson = entity;
+        req.currentPerson.images = images;
+        res.locals.currentPerson.images = images;
 
-          EntitiesPresenter.build(organizations, entity, function(err, orgResult) {
-            console.log('Organizations', orgResult, err)
-            res.locals.currentPerson.organizations = orgResult;
-            req.currentPerson.organizations = orgResult;
+        var backgrounds = {};
 
-            req.role = 'Person';
+        for (var version in person.backgroundMeta) {
+          backgrounds[version] = {
+            url : person.background.url(version),
+            meta : person.background.meta(version)
+          };
+        }
 
-            var images = {};
+        req.currentPerson.backgrounds = images;
+        res.locals.currentPerson.backgrounds = images;
 
-            for (var version in person.imageMeta) {
-              images[version] = {
-                url : person.image.url(version),
-                meta : person.image.meta(version)
-              };
+        async.series([function(done) {
+
+          // Get organizations owned by currentPerson or that currentPerson is member of
+          person.organizations(function(err, organizations) {
+            if (err) {
+              return done(err);
             }
 
-            req.currentPerson.images = images;
-            res.locals.currentPerson.images = images;
+            organizations.forEach(function(organization){
+              organization.id = hashids.decode(organization.id)[0];
+            });
 
-            var backgrounds = {};
-
-            for (var version in person.backgroundMeta) {
-              backgrounds[version] = {
-                url : person.background.url(version),
-                meta : person.background.meta(version)
-              };
-            }
-
-            req.currentPerson.backgrounds = images;
-            res.locals.currentPerson.backgrounds = images;
-
-            db('Voices').count('*').where({
-              'owner_id' : person.id,
-              status : Voice.STATUS_PUBLISHED
-            }).exec(function(err, result) {
+            EntitiesPresenter.build(organizations, entity, function(err, result) {
               if (err) {
-                return next(err);
+                return done(err);
               }
 
-              req.currentPerson.voicesCount = parseInt(result[0].count, 10);
+              res.locals.currentPerson.organizations = result;
+              req.currentPerson.organizations = result;
 
-              return next();
+              done();
             });
           });
-        });
+        }, function(done) {
+
+          // Get Voices of type TYPE_CLOSED that are owned by currentPerson
+          Voice.find({
+            'owner_id' : person.id,
+            status : Voice.STATUS_PUBLISHED,
+            type : Voice.TYPE_CLOSED
+          }, function(err, result) {
+            if (err) {
+              return done(err);
+            }
+
+            VoicesPresenter.build(result, entity, function(err, voices) {
+              if (err) {
+                return done(err);
+              }
+
+              req.currentPerson.closedVoices = voices;
+              res.locals.currentPerson.closedVoices = voices;
+
+              return done();
+            });
+          });
+        }, function(done) {
+
+          // Get Voices Count of status STATUS_PUBLISHED;
+          db('Voices').count('*').where({
+            'owner_id' : person.id,
+            status : Voice.STATUS_PUBLISHED
+          }).exec(function(err, result) {
+            if (err) {
+              return done(err);
+            }
+
+            req.currentPerson.voicesCount = parseInt(result[0].count, 10);
+            res.locals.currentPerson.voicesCount = parseInt(result[0].count, 10);
+
+            return done();
+          });
+
+        }, function(done) {
+
+          // Get Organizations owned by currentUser
+
+          person.ownedOrganizations(function(err, organizations) {
+            EntitiesPresenter.build(organizations, entity, function(err, result) {
+              if (err) {
+                return done(err);
+              }
+
+              res.locals.currentPerson.ownedOrganizations = result;
+              req.currentPerson.ownedOrganizations = result;
+
+              done();
+            });
+          })
+        }], next);
       });
     }
 
