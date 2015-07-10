@@ -222,10 +222,35 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
         if (!response.isAllowed) {
           return next(new ForbiddenError());
-        } else {
-          // GET VOICES
-          res.json({ status: 'ok' })
         }
+
+        Voice.find({
+          owner_id: hashids.decode(req.currentPerson.id)[0]
+        }, function (err, result) {
+          if (err) { return next(err); }
+
+          var endResult = {
+            draft: [],
+            unlisted: [],
+            published: []
+          };
+
+          result.forEach(function (val) {
+            switch (val.status) {
+              case 'STATUS_DRAFT':
+                endResult.draft.push(val);
+                break;
+              case 'STATUS_UNLISTED':
+                endResult.unlisted.push(val);
+                break;
+              case 'STATUS_PUBLISHED':
+                endResult.published.push(val);
+                break;
+            };
+          });
+
+          res.json(endResult);
+        });
       });
     },
 
