@@ -15,14 +15,15 @@ Class(CV, 'VoiceRequestToContribute').inherits(Widget)({
             var bubble = new CV.Bubble({
                 title       : 'Want to help out?',
                 name        : 'bubbleRequest',
-                action      : CV.FormRequestToContribute,
+                action      : CV.RequestToContribute,
                 width       : 600,
                 anchorEl    : this.el.querySelector('.request-to-contribute-button')
             });
 
             this.appendChild(bubble);
 
-            bubble.bubbleAction.element.find('button.submit').bind('click', function() {
+            bubble.bubbleAction.element.find('button.submit').bind('click', function(e) {
+              e.preventDefault();
               var url = window.location.pathname + '/requestToContribute';
 
               var data = {
@@ -36,6 +37,7 @@ Class(CV, 'VoiceRequestToContribute').inherits(Widget)({
                 data : data,
                 success : function(data) {
                     bubble.bubbleAction.showSuccess();
+                    bubble.position();
                 },
                 error : function(data) {
                   console.error(data)
