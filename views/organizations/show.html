@@ -224,7 +224,7 @@
 
   var profileSettings = new CV.Select({
     label     : '',
-    style     : 'small',
+    style     : 'small is-settings',
     className : '-inline-block',
     name      : 'select',
     options   : profileOptions,
@@ -232,6 +232,9 @@
     icon      : 'settings'
   }).render(document.querySelector('.profile-actions .p-select'));
 
+  //*********************************************************
+  //********************* IsAnonymous ***********************
+  //*********************************************************
 
 
   if (currentPerson.isAnonymous) {
@@ -251,10 +254,10 @@
     });
     // select actions
     profileSettings.request.on('click', function(){
-      console.log('request click');
+      requestMembershipModal.show();
     });
     profileSettings.report.on('click', function(){
-      console.log('report click');
+      reportModal.show();
     });
   }
 
@@ -284,6 +287,32 @@
     $('.voices-followed').show();
   });
 
+  //*********************************************************
+  //*********************** Modals **************************
+  //*********************************************************
+
+  var reportModal = new CV.Modal({
+    style       : '',
+    type        : '',
+    title       : 'Report/Claim',
+    name        : 'reportModal',
+    action      : CV.Report,
+    width       : 650,
+  });
+
+  var requestMembershipModal = new CV.Modal({
+    style       : '',
+    type        : '',
+    title       : 'Request Membership',
+    name        : 'requestMembershipModal',
+    action      : CV.RequestMembership,
+    width       : 650,
+  });
+
+
+  //*********************************************************
+  //*********************** Menu ****************************
+  //*********************************************************
 
   $( document ).ready(function() {
 

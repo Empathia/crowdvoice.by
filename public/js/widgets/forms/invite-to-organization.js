@@ -1,6 +1,6 @@
-Class(CV, 'InviteToContribute').inherits(Widget)({
+Class(CV, 'InviteToOrganization').inherits(Widget)({
 
-	ELEMENT_CLASS : 'cv-form-invite-to-contribute',
+	ELEMENT_CLASS : 'cv-form-invite-to-organization',
 
     HTML : '\
         <div class="-clear-after">\
@@ -22,17 +22,18 @@ Class(CV, 'InviteToContribute').inherits(Widget)({
             var sendElement = this.element.find('.send');
 
 			var allVoices = {
-			  "1": {label: 'The Continued Effects of the Fukushima Disaster', name: 'voice1', active: true},
-			  "2": {label: 'Ferguson Unrest', name: 'voice2'},
-			  "3": {label: 'Unemployment in Detroit', name: 'voice3'}
+			  "1": {label: 'House Lanister', name: 'org1', active: true},
+			  "2": {label: 'House Baratheon', name: 'org2'},
+			  "3": {label: 'House Stark', name: 'org3'}
 			};
+
 			new CV.Select({
 			  	label 		: 'Select one',
 			  	name  		: 'select',
 			  	style 		: 'full',
 			  	options 	: allVoices,
 			  	hasTitle 	: true,
-		    	title 		: "To which of your voices would you like to invite this user to?"
+		    	title 		: "To which of your organizations would you like to invite this user to?"
 			}).render(this.element.find('.placeholder-main'));
 
 			new CV.Input({

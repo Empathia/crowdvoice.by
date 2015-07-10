@@ -226,7 +226,7 @@
 
   var profileSettings = new CV.Select({
     label     : '',
-    style     : 'small',
+    style     : 'small is-settings',
     className : '-inline-block',
     name      : 'select',
     options   : profileOptions,
@@ -234,6 +234,9 @@
     icon      : 'settings'
   }).render(document.querySelector('.profile-actions .p-select'));
 
+  //*********************************************************
+  //********************* IsAnonymous ***********************
+  //*********************************************************
 
   if (currentPerson.isAnonymous) {
     buttonActions.disable();
@@ -241,7 +244,6 @@
 
     var tooltipEl = $('<span class="ui-tooltip -top">To message or follow others and to see your messages please turn Anonymous mode off.</span>')
     $('.profile-actions').addClass('ui-has-tooltip').append(tooltipEl);
-
 
   } else {
     //button actions
@@ -253,15 +255,12 @@
     });
     // select actions
     profileSettings.organization.on('click', function(){
-      console.log('Organization click');
+      inviteToOrganizationModal.show();
     });
     profileSettings.contribute.on('click', function(){
-      console.log('Contribute click');
+      inviteToContributeModal.show();
     });
   }
-
-
-
 
   // Following options
   var followOptions = {
@@ -286,6 +285,33 @@
     $('.entities-followed').hide();
     $('.voices-followed').show();
   });
+
+  //*********************************************************
+  //*********************** Modals **************************
+  //*********************************************************
+
+  var inviteToContributeModal = new CV.Modal({
+    style       : '',
+    type        : '',
+    title       : 'Invite to Contribute',
+    name        : 'inviteToContributeModal',
+    action      : CV.InviteToContribute,
+    width       : 650,
+  });
+
+  var inviteToOrganizationModal = new CV.Modal({
+    style       : '',
+    type        : '',
+    title       : 'Invite to Organization',
+    name        : 'inviteToOrganizationModal',
+    action      : CV.InviteToOrganization,
+    width       : 650,
+  });
+
+
+  //*********************************************************
+  //*********************** Menu ****************************
+  //*********************************************************
 
   $( document ).ready(function() {
 

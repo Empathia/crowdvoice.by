@@ -8,9 +8,12 @@ Class(CV, 'Modal').inherits(Widget)({
                 <div class="header">\
                     <h3 class="title"></h3>\
                     <div class="line"></div>\
+                    <svg class="close">\
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-close"></use>\
+                    </svg>\
                 </div>\
                 <div class="body-wrapper">\
-                    <div class="body"></div>\
+                    <div class="body -clear-after"></div>\
                 </div>\
             </div>\
         </div>\
@@ -29,6 +32,8 @@ Class(CV, 'Modal').inherits(Widget)({
             Widget.prototype.init.call(this, config);
             var modal = this;
             this.modalElement = this.element.find('.cv-modal');
+            this.closeElement = this.element.find('.close');
+            this.bodyElement = this.element.find('.body');
 
             if( this.style ){ this.element.addClass(this.style) };
             if( this.width ){
@@ -38,16 +43,8 @@ Class(CV, 'Modal').inherits(Widget)({
             this.element.find('.title').text(this.title);
             this.bodyElement = this.element.find('.body');
 
-            var closeButton;
-            this.appendChild(
-                closeButton = new CV.Button({
-                    style   : 'clean',
-                    type    : 'single',
-                    label   : 'X',
-                    name    : 'actionButton'
-                }).render(this.element.find('.header'))
-            );
-            closeButton.bind('click', function(){
+
+            this.closeElement.bind('click', function(){
                 this.hide();
             }.bind(this));
 
@@ -67,6 +64,9 @@ Class(CV, 'Modal').inherits(Widget)({
                 }).render(this.bodyElement);
             };
 
+
+
+
         },
 
         show : function(){
@@ -75,8 +75,13 @@ Class(CV, 'Modal').inherits(Widget)({
             this.element.show();
             this.modalElement.css({
                 'margin-left': -1*(this.modalElement.width()/2),
-                'margin-top': -1*(this.modalElement.height()/2)
+                //'margin-top': -1*(this.modalElement.height()/2)
             });
+
+            if (this.bodyElement.find('> div').height() > this.bodyElement.height()){
+                this.bodyElement.css('overflow-y', 'scroll');
+            }
+
         },
         hide : function(){
             $('body').css('overflow', 'auto');

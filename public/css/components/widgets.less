@@ -699,6 +699,14 @@ a.cv-button{
   }
 }
 
+.cv-select.is-settings{
+  .cv-select-body{
+    min-width: 100%;
+    width: 200px;
+    right: 0;
+  }
+}
+
 /*******************************************
                 @form
 *******************************************/
@@ -768,8 +776,7 @@ form{
   border-radius: 10px;
   z-index: 5;
   .header{
-    height: 63px;
-    border-bottom: 1px solid #ccc;
+    height: 50px;
     position: relative;
     padding-top: 10px;
     .line{
@@ -783,16 +790,19 @@ form{
     h3{
       display: inline-block;
       width: auto;
-      margin: 13px 0px 0px 18px;
-      color: #666;
+      margin: 11px 0px 0px 30px;
+      color: #454B4D;
+      font-size: 20px;
+      line-height: 28px;
+      font-weight: normal;
       position: relative;
       z-index: 1;
       background: #fff;
-      padding: 0px 5px;
+      padding: 0px 10px;
     }
-    button.cv-button{
+    svg{
       float: right;
-      margin: 14px 15px 0px 0px;
+      margin: 18px 20px 0px 0px;
       position: relative;
       z-index: 1;
       background-color: #fff;
@@ -801,9 +811,13 @@ form{
       color: #333;
       font-weight: bold;
       line-height: 19px;
-      padding: 3px 5px;
+      padding: 0px 10px;
       height: auto;
+      width: 35px;
+      height: 15px;
+      cursor: pointer;
     }
+
 
   }
   .body-wrapper{
@@ -812,7 +826,7 @@ form{
   }
   .body{
     max-height: 377px;
-    overflow-y: scroll;
+    /*overflow-y: scroll;*/
 
   }
 
@@ -967,10 +981,13 @@ form{
   z-index: 10;
   .cv-modal{
     left: 50%;
-    top: 50%;
+    /*top: 50%;*/
+    top: 0;
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
     max-height: 680px;
     .body{
-      padding: 40px;
+      padding: 30px;
       max-height: 620px;
     }
   }
