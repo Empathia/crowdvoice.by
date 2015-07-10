@@ -230,6 +230,7 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
 
             if (this.backdropElement.parentNode) {
                 this.backdropElement.parentNode.removeChild(this.backdropElement);
+                this.container.style.overflow = '';
             }
 
             if (this.closeButton) {
