@@ -166,7 +166,7 @@ Class(CV, 'VoicePostLayers').inherits(Widget)({
             if (!layer) return;
             if (layer === this.getCurrentMonthLayer()) return;
 
-            // this._listenScrollEvent = false;
+            this.parent._listenScrollEvent = false;
 
             this._layers.forEach(function(l) {
                 if (l.getPosts().length) l.empty();
@@ -174,8 +174,10 @@ Class(CV, 'VoicePostLayers').inherits(Widget)({
 
             Velocity(layer.el, 'scroll', {
                 duration : 600,
+                easing : 'linear',
                 complete : function() {
-                    // _this._listenScrollEvent = true;
+                    _this.parent._listenScrollEvent = true;
+                    _this.scrollTo(_this.getScrollTop() + 2);
                 }
             });
         },
@@ -304,14 +306,18 @@ Class(CV, 'VoicePostLayers').inherits(Widget)({
             var currentLayer = this.getCurrentMonthLayer();
             var prev = currentLayer.getPreviousSibling();
             var next = currentLayer.getNextSibling();
-            var calcHeightDiff = false;
+            var calculateScrollDiff = false;
+            var oldScrollHeight = 0;
+            var oldScrollY = 0;
 
             if (typeof this._cachedData[dateString] === 'undefined') {
                 this._cachedData[dateString] = postsData;
             }
 
-            if (!currentLayer.isFinalHeightKnow()) {
-                calcHeightDiff = true;
+            if (scrollDirection && !currentLayer.isFinalHeightKnow()) {
+                calculateScrollDiff = true;
+                oldScrollHeight = this.getScrollHeight();
+                oldScrollY = this.getScrollTop();
             }
 
             if (currentLayer.id === 0) {
@@ -340,12 +346,17 @@ Class(CV, 'VoicePostLayers').inherits(Widget)({
                     next2.arrangeReset();
                 }
 
-                if (calcHeightDiff) {
-                    // compensate the heigth difference when scrolling up
-                    var diff = currentLayer.getHeight() - this.getAverageLayerHeight();
-                    var y = this.scrollableArea + diff;
+                if (calculateScrollDiff) {
+                    /* compensate the heigth difference when scrolling up */
+                    var newScrollHeight = this.getScrollHeight();
+                    var newScrollY = this.getScrollTop();
+                    var scrollHeightDiff = oldScrollHeight - newScrollHeight;
+                    var scrollYDiff = oldScrollY - newScrollY;
+                    var diff = newScrollY - (scrollHeightDiff - scrollYDiff);
 
-                    this.scrollableArea.scrollTo(0, y);
+                    this.parent._listenScrollEvent = false;
+                    this.scrollTo(diff);
+                    this.parent._listenScrollEvent = true;
                 }
 
                 return;
