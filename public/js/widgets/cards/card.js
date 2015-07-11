@@ -160,8 +160,16 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
             this._totalCountActions++;
 
             if (this.type === "organization") {
-                this.appendChild( new CV.CardActionJoin({name : 'joinButton'})).render(this.actionsEl);
-                this._totalCountActions++;
+                if (window.currentPerson.ownedOrganizations.length) {
+                    var alreadyMember = window.currentPerson.organizations.concat(window.currentPerson.ownedOrganizations).some(function(organization) {
+                        return (organization.id === this.id);
+                    }, this);
+
+                    if (alreadyMember === false) {
+                        this.appendChild( new CV.CardActionJoin({name : 'joinButton'})).render(this.actionsEl);
+                        this._totalCountActions++;
+                    }
+                }
             } else {
                 if (window.currentPerson.voicesCount || window.currentPerson.ownedOrganizations.length) {
                     this.appendChild( new CV.CardActionInvite({name : 'inviteButton'})).render(this.actionsEl);
