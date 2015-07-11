@@ -14,6 +14,45 @@ Class(CV, 'CardActionInvite').inherits(Widget)({
     prototype : {
         init : function init(config) {
             Widget.prototype.init.call(this, config);
+
+            this.el = this.element[0];
+
+            this.appendChild(new CV.CardInviteToPopover({
+                name : 'inviteToPopoverContent'
+            }));
+
+            this.appendChild(new CV.PopoverBlocker({
+                name : 'inviteToPopover',
+                className : 'invite-to-popover',
+                content : this.inviteToPopoverContent.el
+            })).render(this.el);
+
+            this._bindEvents();
+        },
+
+        _bindEvents : function _bindEvents() {
+            this.inviteToPopover.bind('activate', this.activate.bind(this));
+            this.inviteToPopover.bind('deactivate', this.deactivate.bind(this));
+
+            this._clickHandlerRef = this._clickHandler.bind(this);
+            this.el.addEventListener('click', this._clickHandlerRef);
+
+            return this;
+        },
+
+        /* Click Button Handler. Is in charge of calling the follow API.
+         * @method _clickHandler <private> [Function]
+         */
+        _clickHandler : function _clickHandler(ev) {
+            this.inviteToPopover.activate();
+        },
+
+        destroy : function destroy() {
+            Widget.prototype.destroy.call(this);
+
+            this.el = null;
+
+            return null;
         }
     }
 });
