@@ -104,7 +104,7 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
             };
             itemCounter = 2;
 
-            this.currentPerson.organizations.forEach(function(organization) {
+            this.currentPerson.ownedOrganizations.forEach(function(organization) {
                 itemCounter++;
                 allMulti[itemCounter] = {
                     name : organization.name,
