@@ -163,8 +163,10 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
                 this.appendChild( new CV.CardActionJoin({name : 'joinButton'})).render(this.actionsEl);
                 this._totalCountActions++;
             } else {
-                this.appendChild( new CV.CardActionInvite({name : 'inviteButton'})).render(this.actionsEl);
-                this._totalCountActions++;
+                if (window.currentPerson.voicesCount || window.currentPerson.ownedOrganizations.length) {
+                    this.appendChild( new CV.CardActionInvite({name : 'inviteButton'})).render(this.actionsEl);
+                    this._totalCountActions++;
+                }
             }
 
             var n = 12 / this._totalCountActions;
