@@ -162,10 +162,20 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
          * @method _checkInitialHash <private> [Function]
          */
         _checkInitialHash : function _checkInitialHash() {
-            var hash = window.location.hash;
+            var hash = window.location.hash.replace(/^#!/, '');
 
             if (hash !== "" && /^\d{4}-\d{2}$/.test(hash)) {
-                return this.loadLayer(hash);
+                // if is the very first layer, do not scrollTo, just load it
+                if (hash === this.voicePostLayersManager._layers[0].dateString) {
+                    return this.voicePostLayersManager.loadDefaultLayer();
+                }
+
+                // otherwise, animate the scrolling
+                this.voicePostLayersManager._jumpToHandlerRef({
+                    dateString: hash
+                });
+
+                return undefined;
             }
 
             this.voicePostLayersManager.loadDefaultLayer();

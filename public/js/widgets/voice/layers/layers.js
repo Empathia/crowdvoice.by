@@ -269,12 +269,20 @@ Class(CV, 'VoicePostLayers').inherits(Widget)({
          * @method _beforeRequest <private> [Function]
          */
         _beforeRequest : function _beforeRequest(dateString, scrollDirection) {
-            if (dateString == this._currentMonthString) return false;
+            if (this.name === 'voicePostLayersManager') {
+                window.location.hash = '!' + dateString;
+            }
+
+            if (dateString == this._currentMonthString) {
+                return false;
+            }
 
             this._currentMonthString = dateString;
 
             // prevent to append childs if the layer is already filled
-            if (this['postsLayer_' + dateString].getPosts().length) return false;
+            if (this['postsLayer_' + dateString].getPosts().length) {
+                return undefined;
+            }
 
             // load from cache
             if (typeof this._cachedData[dateString] !== 'undefined') {
