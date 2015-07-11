@@ -28,6 +28,27 @@ Class(CV, 'VoicePostLayersVoiceAbstract').inherits(CV.VoicePostLayers)({
             return this;
         },
 
+        /* Implementation to get the scroll height of the scrollable area.
+         * @method getScrollHeight <protected, abstract> [Function]
+         */
+        getScrollHeight : function getScrollHeight() {
+            return document.body.scrollHeight;
+        },
+
+        /* Implementation to get the scroll top of the scrollable area.
+         * @method getScrollTop <protected, abstract> [Function]
+         */
+        getScrollTop : function getScrollTop() {
+            return this.scrollableArea.scrollY;
+        },
+
+        /* Implementation to scroll to a y position of the scrollable area.
+         * @method getScrollTo <protected, abstract> [Function]
+         */
+        scrollTo : function scrollTo(y) {
+            this.scrollableArea.scrollTo(0, y);
+        },
+
         /* Implementation for custom bindings required by this subclass.
          * @method __bindEvents <protected, abstract> [Function]
          */

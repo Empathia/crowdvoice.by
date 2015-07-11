@@ -94,6 +94,30 @@ Class(CV, 'VoicePostLayers').inherits(Widget)({
             throw new Error('VoicePostLayers.prototype.addPosts not implemented');
         },
 
+        /* Implementation of get scroll height.
+         * All Subclasses should include this method.
+         * @method getScrollHeight <private, abstract> [Function]
+         */
+        getScrollHeight : function getScrollHeight() {
+            throw new Error('VoicePostLayers.prototype.getScrollHeight not implemented');
+        },
+
+        /* Implementation of get scroll top.
+         * All Subclasses should include this method.
+         * @method getScrollTop <private, abstract> [Function]
+         */
+        getScrollTop : function getScrollTop() {
+            throw new Error('VoicePostLayers.prototype.getScrollTop not implemented');
+        },
+
+        /* Implementation of scroll to.
+         * All Subclasses should include this method.
+         * @method scrollTo <private, abstract> [Function]
+         */
+        scrollTo : function scrollTo() {
+            throw new Error('VoicePostLayers.prototype.scrollTo not implemented');
+        },
+
         /* Implementation of remove posts.
          * All Subclasses should include this method.
          * @method removePosts <private, abstract> [Function]
