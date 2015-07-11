@@ -203,7 +203,11 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
 
             var fullname = this.name + (this.lastname ? this.lastname : '');
             this.dom.updateText(this.fullNameEl, fullname);
-            this.dom.updateText(this.descriptionEl, this.description);
+            var description = this.description;
+            if (description.length > 160) {
+                description = description.slice(0, 160 - 3) + '...';
+            }
+            this.dom.updateText(this.descriptionEl, description);
             this.dom.updateText(this.locationEl, this.location);
             this.dom.updateText(this.joinedAtEl, moment(this.createdAt).format('MMM YYYY'));
 
