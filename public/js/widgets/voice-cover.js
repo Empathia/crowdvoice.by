@@ -30,7 +30,7 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
           <div class="voice-cover-main-image -img-cover"></div>\
         </div>\
         <a class="voice-cover-hover-overlay" href="{{voice-url}}">\
-          <button class="voice-cover-hover-overlay-button ui-btn -md -overlay -font-semi-bold">View Voice</button>\
+          <button class="voice-cover-hover-overlay-button cv-button tiny -font-semi-bold">View Voice</button>\
         </a>\
       </div>\
       <div class="voice-content">\
@@ -46,8 +46,6 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
           <span class="voice-cover-followers">{{voice-followers}}</span> followers &middot;&nbsp;\
           Updated <time class="voice-cover-datetime" datetime="{{voice-updated-at-iso}}">{{voice-updated-at-human}}</time></div>\
       </div>\
-      <div class="voice-actions">\
-      </div>\
     </article>\
   ',
 
@@ -57,18 +55,10 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
     </li>\
   ',
 
-  HAS_GALLERY_CLASSNAME : 'gallery',
-  GALLERY_WRAPPER_HTML : '<div class="voice-cover-image-list -row"></div>',
-  GALLERY_IMAGE_HTML :  '\
-    <div class="voice-cover-image-list-item -col-4">\
-      <div class="voice-cover-thumb-image -img-cover"></div>\
-    </div>\
-  ',
-
   IS_NEW_BADGE_HTML : '\
     <svg class="voice-cover-badge-new">\
       <use xlink:href="#svg-badge"></use>\
-      <text x="50%" y="50%" class="-font-bold">NEW</text>\
+      <text x="50%" y="50%" dy=".3em" class="-font-bold">NEW</text>\
     </svg>\
   ',
 
@@ -80,12 +70,13 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
       this.tagListElement = this.element.find('.cv-tags');
       this.voiceCoverElement = this.element.find('.voice-cover');
       this.dateTimeElement = this.el.querySelector('.voice-cover-datetime');
-      this.actionsElement = this.element.find('.voice-actions');
 
       this.dom.updateAttr('href', this.el.querySelector('.voice-cover-hover-overlay'), this.owner.profileName + '/' + this.slug + '/');
       this.dom.updateAttr('title', this.el.querySelector('.voice-cover-hover-overlay'), this.title + ' voice');
-      if (this.topics.length) this.createTopics(this.topics);
       this.dom.updateBgImage(this.el.querySelector('.voice-cover-main-image'), this.images.card.url);
+      if (this.topics.length) {
+          this.createTopics(this.topics);
+      }
 
       var authorFullname = this.owner.lastname ? (this.owner.name + ' ' + this.owner.lastname) : this.owner.name;
       this.dom.updateAttr('href', this.el.querySelector('.author-anchor'), '/' + this.owner.profileName);
@@ -100,15 +91,7 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
       this.dom.updateText(this.dateTimeElement, moment(this.updatedAt).fromNow());
       this.dom.updateAttr('datetime', this.dateTimeElement, this.updatedAt);
 
-      if (this.style == 'list'){
-        this.element.addClass('list-style');
-      }
-      if (this.hasActions){
-        this.element.addClass('hasActions');
-        this.addActions();
-      }
-
-      // 21 == 3 weeks (days)
+      // is new? no older than 21 days == 3 weeks
       if (moment().diff(moment(this.updatedAt), 'days') <= 21) {
         this.addNewBadge();
       }
@@ -152,34 +135,6 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
       });
 
       return this;
-    },
-
-    /**
-     * Adds action buttons to the voice.
-     * @method addActions <private> [Function]
-     * @return undefined
-     */
-    addActions : function addActions() {
-
-      var btnTwiceOptions = {
-        "1": {name: 'Edit'},
-        "2": {name: 'Republish as ...'}
-      };
-
-      new CV.Button({
-          style   : 'tiny',
-          type    : 'twice',
-          name    : 'buttonTwice',
-          options : btnTwiceOptions
-      }).render(this.actionsElement);
-
-      new CV.Button({
-          style   : 'primary tiny',
-          type    : 'single',
-          label   : 'Delete',
-          name    : 'buttonFollow'
-      }).render(this.actionsElement);
-
     }
   }
 });
