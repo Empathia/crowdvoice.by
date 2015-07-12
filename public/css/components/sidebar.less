@@ -39,15 +39,6 @@ body.page-home > .cv-main-sidebar {
       &::before {opacity: 1}
     }
   }
-
-  .sidebar-link-messages{
-    .unread{display: none;}
-    .read{display: block;}
-    &.has-messages{
-      .unread{display: block;}
-      .read{display: none;}
-    }
-  }
 }
 
 /* =========================================================================== *
@@ -74,37 +65,23 @@ body.page-inner > .cv-main-sidebar {
 
   .sidebar-link {
     color: @color-neutral-light;
-
-    &:before {border-radius: 0}
+    &::before {border-radius: 0}
 
     &:hover {
       background-color: fade(@color-primary, 5%);
-
-      &:before {transform: translateX(0)}
+      &::before {transform: translateX(0)}
     }
 
     &.active {
       color: @color-white;
       background-color: @color-primary;
-
-      .sidebar-link-svg {
-        fill: @color-white;
-      }
+      .sidebar-link-svg {fill: @color-white}
     }
   }
 
   .sidebar-link-svg {fill: @color-neutral-x-mid}
   .sidebar-heading {color: @color-neutral-dark}
   .sidebar-link-badge {border-color: @color-neutral-xxx-dark}
-
-  .sidebar-link-messages{
-    .unread{display: none;}
-    .read{display: block;}
-    &.has-messages{
-      .unread{display: block;}
-      .read{display: none;}
-    }
-  }
 }
 
 body.page-inner > .cv-main-sidebar .cv-main-logo {
@@ -153,6 +130,9 @@ body > .cv-main-sidebar.-is-expanded {
   padding-top: 10px;
   white-space: nowrap;
   transition: color 240ms ease;
+  will-change: transform;
+
+  &:hover .sidebar-link-svg {animation: ui-zoomit 300ms ease}
 }
 
 .sidebar-link::before {
@@ -165,7 +145,7 @@ body > .cv-main-sidebar.-is-expanded {
   border-radius: 0 2px 2px;
   background-color: @color-primary;
   transform: translateX(-7px);
-  transition: transform 100ms ease-out;
+  transition: transform 124ms ease;
 }
 
 .sidebar-link-svg {
@@ -193,7 +173,18 @@ body > .cv-main-sidebar.-is-expanded {
 
 .sidebar-link-help-support {
   position: absolute;
-  left: 0;
+left: 0;
   bottom: 15px;
   width: 100%;
 }
+
+.sidebar-link-messages {
+  .unread {display: none}
+  .read {display: block}
+
+  &.has-messages {
+    .unread {display: block}
+    .read {display: none}
+  }
+}
+
