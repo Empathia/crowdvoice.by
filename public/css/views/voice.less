@@ -87,6 +87,14 @@
   color: rgba(255, 255, 255, 0.5);
 }
 
+.voice-about-show-btn.cv-button {
+  border: 1px solid fade(@color-white, 70%);
+  background-color: transparent;
+  color: @color-white;
+  &:hover,
+  &:hover:enabled {color: @color-white}
+}
+
 .voice-posts {
   padding-bottom: @cv-voice-footer-height;
 
@@ -103,6 +111,11 @@
     &.active {
       display: inline-block;
     }
+  }
+
+  .voice-about-hide-btn {
+    padding: 0 6px;
+    margin: 7px 0 0 0;
   }
 }
 
