@@ -1,12 +1,12 @@
 // Styles
 require('./../css/style.less');
 // Fonts
-WebFontConfig = {
+window.WebFontConfig = {
     google: { families: [ 'Open+Sans:400,300,600,700,800:latin' ] }
 };
 (function() {
     var wf = document.createElement('script');
-    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+    wf.src = ('https:' === document.location.protocol ? 'https' : 'http') +
         '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
     wf.type = 'text/javascript';
     wf.async = 'true';
@@ -18,9 +18,7 @@ WebFontConfig = {
 require('./polyfills/rAF');
 
 // JS » deps
-var jQuery = require('./vendor/jquery-2.0.3.js');
-window.jQuery = jQuery;
-window.$ = jQuery;
+window.jQuery = window.$ = require('jquery');
 window.validate = require('validate');
 var moment = require('moment');
 window.moment = moment;
