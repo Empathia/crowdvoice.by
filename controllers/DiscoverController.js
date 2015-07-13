@@ -26,8 +26,6 @@ var findTrending = function (resultFromKnex, name) {
     })
   }
 
-  console.log(result)
-
   // sort
   result.sort(function (a, b) {
     return b - a
@@ -116,13 +114,11 @@ var DiscoverController = Class('DiscoverController')({
             if (err) { return next(err) }
 
             res.format({
-              /*
               html: function () {
                 res.locals.voices = result
                 req.voices = result
                 res.render('discover/trending/voices')
               },
-              */
               json: function () {
                 res.json(result)
               },
@@ -153,13 +149,11 @@ var DiscoverController = Class('DiscoverController')({
               if (err) { return next(err) }
 
               res.format({
-                /*
                 html: function () {
                   res.locals.people = result
                   req.people = result
                   res.render('discover/trending/people')
                 },
-                */
                 json: function () {
                   res.json(result)
                 },
@@ -195,13 +189,11 @@ var DiscoverController = Class('DiscoverController')({
               if (err) { return next(err) }
 
               res.format({
-                /*
                 html: function () {
                   res.locals.organizations = result
                   req.organizations = result
                   res.render('discover/trending/organizations')
                 },
-                */
                 json: function () {
                   res.json(result)
                 },
