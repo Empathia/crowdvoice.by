@@ -64,6 +64,18 @@ var DiscoverController = Class('DiscoverController')({
         })
       })
     },
+
+    trendingVoices: function (req, res, next) {
+      //
+    },
+
+    trendingPeople: function (req, res, next) {
+      //
+    },
+
+    trendingOrganizations: function (req, res, next) {
+      //
+    },
   },
 })
 
