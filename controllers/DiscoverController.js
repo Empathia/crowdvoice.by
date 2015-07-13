@@ -1,7 +1,8 @@
 var dbLimit = 50 // how many posts we can ask for at a time
 
 var findTrending = function (resultFromKnex) {
-  var amounts = {} // what we're returning
+  var amounts = {}, // what we're returning
+    result = []
 
   // get all the voice IDs
   var followedVoices = resultFromKnex.map(function (val) {
@@ -17,7 +18,17 @@ var findTrending = function (resultFromKnex) {
     }
   })
 
-  return amounts
+  // convert to array
+  for (var voiceId in followedVoices) {
+    result.push({ id: voiceId, followersCount: followedVoices[voiceId] })
+  }
+
+  // sort
+  result.sort(function (a, b) {
+    return b - a
+  })
+
+  return result
 }
 
 var DiscoverController = Class('DiscoverController')({
@@ -89,7 +100,28 @@ var DiscoverController = Class('DiscoverController')({
       VoiceFollower.all(function (err, result) {
         if (err) { return next(err) }
 
-        res.json(findTrending(result))
+        var trendingVoiceIds = findTrending(result).map(function (val) {
+          return val.id
+        })
+
+        Voice.whereIn('id', trendingVoiceIds, function (err, result) {
+          if (err) { return next(err) }
+
+          VoicesPresenter.build(result, req.currentPerson, function (err, result) {
+            if (err) { return next(err) }
+
+            res.format({
+              html: function () {
+                res.locals.voices = result
+                req.voices = result
+                res.render('discover/trending/voices')
+              },
+              json: function () {
+                res.json(result)
+              },
+            })
+          })
+        })
       })
     },
 
