@@ -31,7 +31,6 @@ Class(CV, 'VoicePostLayers').inherits(Widget)({
         _socket : null,
         /* holds the references of the VoicePostsLayer children instances */
         _layers : null,
-        _cachedData : null,
         _currentMonthString : '',
         _availableWidth : 0,
         _windowInnerHeight : 0,
@@ -47,7 +46,6 @@ Class(CV, 'VoicePostLayers').inherits(Widget)({
             this._window = window;
             this._socket = this._socket || this.parent._socket;
             this._layers = [];
-            this._cachedData = {};
             this._lazyLoadingImageArray = [];
         },
 
@@ -297,8 +295,9 @@ Class(CV, 'VoicePostLayers').inherits(Widget)({
             }
 
             // load from cache
-            if (typeof this._cachedData[dateString] !== 'undefined') {
-                return this.loadLayer(this._cachedData[dateString], dateString, scrollDirection);
+            var posts = CV.PostsRegistry.get(dateString);
+            if (posts) {
+                return this.loadLayer(posts, dateString, scrollDirection);
             }
 
             // request to the server
@@ -320,8 +319,8 @@ Class(CV, 'VoicePostLayers').inherits(Widget)({
             var oldScrollHeight = 0;
             var oldScrollY = 0;
 
-            if (typeof this._cachedData[dateString] === 'undefined') {
-                this._cachedData[dateString] = postsData;
+            if (!CV.PostsRegistry.get(dateString)) {
+                CV.PostsRegistry.set(dateString, postsData);
             }
 
             if (scrollDirection && !currentLayer.isFinalHeightKnow()) {
@@ -436,7 +435,6 @@ Class(CV, 'VoicePostLayers').inherits(Widget)({
             this._window = null;
             this._socket = null;
             this._layers = null;
-            this._cachedData = null;
             this._currentMonthString = null;
             this._availableWidth = null;
             this._windowInnerHeight = null;

@@ -3,8 +3,12 @@
  * Declares the required abstract methods to handle the Voice Posts on Normal Mode
  */
 Class(CV, 'VoicePostLayersVoiceAbstract').inherits(CV.VoicePostLayers)({
-
     prototype : {
+        setup : function setup() {
+            CV.VoicePostLayers.prototype.setup.call(this);
+
+            CV.PostsRegistry.setup(this.postsCount);
+        },
 
         /* Implementation to request post data to the server.
          * @method request <protected, abstract> [Function]

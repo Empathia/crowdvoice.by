@@ -79,6 +79,7 @@ require('./views/home');
 require('./widgets/voice/voice-helper.js');
 require('./views/voice');
 
+require('./widgets/voice/posts-registry');
 require('./widgets/voice/voice-header.js');
 require('./widgets/voice/voice-footer');
 require('./widgets/voice/footer/share-buttons-group');
