@@ -127,7 +127,7 @@ var DiscoverController = Class('DiscoverController')({
 
     trendingPeople: function (req, res, next) {
       // TODO: Use Knex (db) directly for performance reasons
-      Entity.find(['type = ? AND NOT is_anonymous = ? LIMIT ?', ['person', true, dbLimit]], function (err, result) {
+      Entity.find(['type = ? AND is_anonymous = ? LIMIT ?', ['person', false, dbLimit]], function (err, result) {
         if (err) { return next(err) }
 
         var people = result.map(function (val) {
@@ -136,21 +136,23 @@ var DiscoverController = Class('DiscoverController')({
 
         EntityFollower.whereIn('followed_id', people, function (err, result) {
           var trendingPeopleIds = findTrending(result, 'followedId').map(function (val) {
-            return val.id
+            return val.followedId
           })
 
           Entity.whereIn('id', trendingPeopleIds, function (err, result) {
             if (err) { return next(err) }
 
-            VoicesPresenter.build(result, req.currentPerson, function (err, result) {
+            EntitiesPresenter.build(result, req.currentPerson, function (err, result) {
               if (err) { return next(err) }
 
               res.format({
+                /*
                 html: function () {
                   res.locals.people = result
                   req.people = result
                   res.render('discover/trending/people')
                 },
+                */
                 json: function () {
                   res.json(result)
                 },
@@ -162,7 +164,46 @@ var DiscoverController = Class('DiscoverController')({
     },
 
     trendingOrganizations: function (req, res, next) {
-      //
+      // TODO: Use Knex (db) directly for performance reasons
+      // get all entities that are orgs (within 50 limit)
+      Entity.find(['type = ? LIMIT ?', ['organization', dbLimit]], function (err, allEntities) {
+        if (err) { return next(err) }
+
+        // get list of IDs
+        var orgs = allEntities.map(function (val) {
+          return val.id
+        })
+
+        // we got a list of orgs amongst the entities, now let's find followers
+        // for any of these orgs
+        EntityFollower.whereIn('followed_id', orgs, function (err, result) {
+          console.log(result)
+          var trendingOrgsIds = findTrending(result, 'followedId').map(function (val) {
+            return val.followedId
+          })
+
+          Entity.whereIn('id', trendingOrgsIds, function (err, result) {
+            if (err) { return next(err) }
+
+            EntitiesPresenter.build(result, req.currentPerson, function (err, result) {
+              if (err) { return next(err) }
+
+              res.format({
+                /*
+                html: function () {
+                  res.locals.organizations = result
+                  req.organizations = result
+                  res.render('discover/trending/organizations')
+                },
+                */
+                json: function () {
+                  res.json(result)
+                },
+              })
+            })
+          })
+        })
+      })
     },
   },
 })
