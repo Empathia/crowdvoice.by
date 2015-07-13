@@ -1,4 +1,4 @@
-var dbLimit = 50
+var dbLimit = 50 // how many posts we can ask for at a time
 
 var DiscoverController = Class('DiscoverController')({
   prototype: {
@@ -6,19 +6,62 @@ var DiscoverController = Class('DiscoverController')({
       Voice.find(['status = ? ORDER BY created_at DESC LIMIT ?', [Voice.STATUS_PUBLISHED, dbLimit]], function (err, result) {
         if (err) { return next(err) }
 
-        res.json(result)
+        VoicesPresenter(result, req.currentPerson, function (err, result) {
+          if (err) { return next(err) }
+
+          res.format({
+            html: function () {
+              res.locals.voices = result
+              req.voices = result
+              res.render('discover/new/voices')
+            },
+            json: function () {
+              res.json(result)
+            },
+          })
+        })
       })
     },
 
     newPeople: function(req, res, next) {
-      Entity.find({
-        type: 'person'
+      Entity.find(['type = ? AND NOT is_anonymous = ? ORDER BY created_at DESC LIMIT ?', ['person', true, dbLimit]], function (err, result) {
+        if (err) { return next(err) }
+
+        EntitiesPresenter.build(result, req.currentPerson, function (err, result) {
+          if (err) { return next(err) }
+
+          res.format({
+            html: function () {
+              res.locals.people = result
+              req.people = result
+              res.render('discover/new/people')
+            },
+            json: function () {
+              res.json(result)
+            },
+          })
+        })
       })
     },
 
     newOrganizations: function(req, res, next) {
-      Entity.find({
-        type: 'organization'
+      Entity.find(['type = ? ORDER BY created_at DESC LIMIT ?', ['organization', dbLimit]], function (err, result) {
+        if (err) { return next(err) }
+
+        EntitiesPresenter.build(result, req.currentPerson, function (err, result) {
+          if (err) { return next(err) }
+
+          res.format({
+            html: function () {
+              res.locals.organizations = result
+              req.organizations = result
+              res.render('discover/new/organizations')
+            },
+            json: function () {
+              res.json(result)
+            },
+          })
+        })
       })
     },
   },
