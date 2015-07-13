@@ -3,13 +3,15 @@ Class(CV, 'SendMessage').inherits(Widget)({
 	ELEMENT_CLASS : 'cv-form-send-messages',
 
     HTML : '\
-        <div>\
-	        <form>\
-		        <div class="-col-12 placeholder-main">\
-		        </div>\
-		        <div class="-col-12 placeholder-send"></div>\
-	        </form>\
-        </div>\
+        <div></div>\
+    ',
+
+    FORM : '\
+        <form>\
+	        <div class="-col-12 placeholder-main">\
+	        </div>\
+	        <div class="-col-12 placeholder-send"></div>\
+        </form>\
     ',
 
     SENT : '\
@@ -29,10 +31,17 @@ Class(CV, 'SendMessage').inherits(Widget)({
 
         init : function(config){
             Widget.prototype.init.call(this, config);
-            var sendElement = this.element.find('.send');
-        	var sendmessage = this;
+            //var sendElement = this.element.find('.send');
+        	//var sendmessage = this;
 
-			new CV.Input({
+			this.setup();
+
+        },
+
+        setup : function(){
+        	this.element.empty();
+		    this.element.append(this.constructor.FORM);
+		    new CV.Input({
 			    type    	: '',
 			    name  		: '',
 			    style 		: '',
@@ -52,7 +61,6 @@ Class(CV, 'SendMessage').inherits(Widget)({
   				e.preventDefault();
   				this.sendMessage();
 			}.bind(this));
-
         },
 
         sendMessage : function(){
@@ -70,11 +78,12 @@ Class(CV, 'SendMessage').inherits(Widget)({
 					message : sendmessage.element.find('textarea').val()
 		        },
 		        success: function(data) {
-		            console.log('Message sent!');
+		            //console.log('Message sent!');
 		            sendmessage.element.find('form').remove();
 		            sendmessage.element.append(sendmessage.constructor.SENT);
 		            sendmessage.element.find('button').on('click', function(){
 		                sendmessage.dispatch('close');
+		                sendmessage.setup();
 		            });
 
 		        }

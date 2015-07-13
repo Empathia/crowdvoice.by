@@ -202,112 +202,119 @@
     });
   }
 
-  //after
-
-  var buttonActionsOptions = {
-    "1": {label: 'Message', name: 'message'},
-    "2": {label: 'Follow', name: 'follow'}
-  };
-
-  var buttonActions = new CV.Button({
-      style   : 'small',
-      type    : 'multiple',
-      name    : 'buttonTwice',
-      options : buttonActionsOptions
-  }).render(document.querySelector('.profile-actions .p-buttons'));
-
-    //Normal
-  var profileOptions = {
-    "1": {label: 'Request Membership', name: 'request', icon: 'user'},
-    "2": {label: 'Report/Claim', name: 'report', icon: 'info'}
-  };
-
-  var profileSettings = new CV.Select({
-    label     : '',
-    style     : 'small is-settings',
-    className : '-inline-block',
-    name      : 'select',
-    options   : profileOptions,
-    type      : 'icon',
-    icon      : 'settings'
-  }).render(document.querySelector('.profile-actions .p-select'));
-
-  //*********************************************************
-  //********************* IsAnonymous ***********************
-  //*********************************************************
-
-
-  if (currentPerson && currentPerson.isAnonymous) {
-    buttonActions.disable();
-    profileSettings.disable();
-
-    var tooltipEl = $('<span class="ui-tooltip -top">To message or follow others and to see your messages please turn Anonymous mode off.</span>')
-    $('.profile-actions').addClass('ui-has-tooltip').append(tooltipEl);
-
-  } else {
-    //button actions
-    buttonActions.message.on('click', function(){
-      console.log('message click');
-    });
-    buttonActions.follow.on('click', function(){
-      console.log('follow click');
-    });
-    // select actions
-    profileSettings.request.on('click', function(){
-      requestMembershipModal.show();
-    });
-    profileSettings.report.on('click', function(){
-      reportModal.show();
-    });
+  if (true){
+    createControls();
   }
 
-
-
-  // Following options
-  var followOptions = {
-    "1": {label: 'Users', name: 'entities'},
-    "2": {label: 'Voices', name: 'voices'}
-  };
-
-  var followSelect = new CV.Select({
-    label     : 'Users',
-    style     : 'tiny',
-    className : '-inline-block',
-    name      : 'select',
-    options   : followOptions
-  }).render(document.querySelector('.entities-voices-select'));
-
-  followSelect.entities.on('click', function(){
-    $('.entities-followed').show();
-    $('.voices-followed').hide();
-  });
-
-  followSelect.voices.on('click', function(){
-    $('.entities-followed').hide();
-    $('.voices-followed').show();
-  });
-
   //*********************************************************
-  //*********************** Modals **************************
+  //********************* createControls ********************
   //*********************************************************
 
-  var reportModal = new CV.Modal({
-    style       : '',
-    type        : '',
-    title       : 'Report/Claim',
-    name        : 'reportModal',
-    action      : CV.Report,
-    width       : 650,
-  });
+  function createControls(){
 
-  var requestMembershipModal = new CV.Modal({
-    style       : '',
-    type        : '',
-    title       : 'Request Membership',
-    name        : 'requestMembershipModal',
-    action      : CV.RequestMembership,
-    width       : 650,
-  });
+
+    var buttonActionsOptions = {
+      "1": {label: 'Message', name: 'message'},
+      "2": {label: 'Follow', name: 'follow'}
+    };
+
+    var buttonActions = new CV.Button({
+        style   : 'small',
+        type    : 'multiple',
+        name    : 'buttonTwice',
+        options : buttonActionsOptions
+    }).render(document.querySelector('.profile-actions .p-buttons'));
+
+      //Normal
+    var profileOptions = {
+      "1": {label: 'Request Membership', name: 'request', icon: 'user'},
+      "2": {label: 'Report/Claim', name: 'report', icon: 'info'}
+    };
+
+    var profileSettings = new CV.Select({
+      label     : '',
+      style     : 'small is-settings',
+      className : '-inline-block',
+      name      : 'select',
+      options   : profileOptions,
+      type      : 'icon',
+      icon      : 'settings'
+    }).render(document.querySelector('.profile-actions .p-select'));
+
+    //********************* IsAnonymous ***********************
+
+    if (currentPerson && currentPerson.isAnonymous) {
+      buttonActions.disable();
+      profileSettings.disable();
+
+      var tooltipEl = $('<span class="ui-tooltip -top">To message or follow others and to see your messages please turn Anonymous mode off.</span>')
+      $('.profile-actions').addClass('ui-has-tooltip').append(tooltipEl);
+
+    } else {
+      //button actions
+      buttonActions.message.on('click', function(){
+        console.log('message click');
+      });
+      buttonActions.follow.on('click', function(){
+        console.log('follow click');
+      });
+      // select actions
+      profileSettings.request.on('click', function(){
+        requestMembershipModal.show();
+      });
+      profileSettings.report.on('click', function(){
+        reportModal.show();
+      });
+    }
+
+    // Following options
+    var followOptions = {
+      "1": {label: 'Users', name: 'entities'},
+      "2": {label: 'Voices', name: 'voices'}
+    };
+
+    var followSelect = new CV.Select({
+      label     : 'Users',
+      style     : 'tiny',
+      className : '-inline-block',
+      name      : 'select',
+      options   : followOptions
+    }).render(document.querySelector('.entities-voices-select'));
+
+    followSelect.entities.on('click', function(){
+      $('.entities-followed').show();
+      $('.voices-followed').hide();
+    });
+
+    followSelect.voices.on('click', function(){
+      $('.entities-followed').hide();
+      $('.voices-followed').show();
+    });
+
+    //*********************** Modals **************************
+
+    var reportModal = new CV.Modal({
+      style       : '',
+      type        : '',
+      title       : 'Report/Claim',
+      name        : 'reportModal',
+      action      : CV.Report,
+      width       : 650,
+    });
+
+    var requestMembershipModal = new CV.Modal({
+      style       : '',
+      type        : '',
+      title       : 'Request Membership',
+      name        : 'requestMembershipModal',
+      action      : CV.RequestMembership,
+      width       : 650,
+    });
+
+  }//createControls
+
+
+
 
 
   //*********************************************************

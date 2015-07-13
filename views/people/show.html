@@ -119,6 +119,8 @@
 
   var totalFollowing = 0;
 
+
+
   $.ajax({
     type: "GET",
     url:'/<%= person.profileName %>/voices',
@@ -213,11 +215,15 @@
   //*********************************************************
 
   function createControls(){
-
-
+    var followLabel;
+    if ('<%= JSON.stringify(person.followed) %>' == 'true' ){
+      followLabel = 'Following';
+    } else {
+      followLabel = 'Follow';
+    }
     var buttonActionsOptions = {
       "1": {label: 'Message', name: 'message'},
-      "2": {label: 'Follow', name: 'follow'}
+      "2": {label: followLabel, name: 'follow'}
     };
 
     var buttonActions = new CV.Button({
@@ -259,7 +265,7 @@
         sendMessageModal.show();
       });
       buttonActions.follow.on('click', function(){
-        console.log('follow click');
+        followEntity();
       });
       // select actions
       profileSettings.organization.on('click', function(){
@@ -294,6 +300,25 @@
       $('.voices-followed').show();
     });
 
+    //*********************** Functions **************************
+    function followEntity(){
+      $.ajax({
+        type: "GET",
+        url:'/<%= person.profileName %>/follow',
+        headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
+        data : {},
+        dataType : "json",
+        success: function(data) {
+          if (data.status == 'followed'){
+            buttonActions.follow.text('Following');
+          } else if (data.status == 'unfollowed'){
+            buttonActions.follow.text('Follow');
+          }
+        }
+      });
+    }
+
+
     //*********************** Modals **************************
     var sendMessageModal = new CV.Modal({
       title       : 'Send Message',
@@ -321,6 +346,7 @@
       action      : CV.InviteToOrganization,
       width       : 650,
     });
+
   } //createControls
 
 
