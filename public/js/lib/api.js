@@ -1,10 +1,8 @@
 module.exports = {
-
     /* Holds the page token, used for the server to accept our requests.
      * @property token <private>
      */
     token : $('meta[name="csrf-token"]').attr('content'),
-
 
     /**************************************************************************
      * VOICES
@@ -15,13 +13,16 @@ module.exports = {
      * @arguments callback <required> [Function]
      */
     postPreview : function postPreview(args, callback) {
-        if (!args.url || !callback) throw new Error('Missing required params');
-        if ((typeof callback).toLowerCase() !== "function") throw new Error('Callback should be a function');
+        if (!args.url || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
 
         var path = window.location.pathname;
-
-        if (/\/$/.test(path)) path += 'preview';
-        else path += '/preview';
+        path += (/\/$/.test(path)) ? 'preview' : '/preview';
 
         $.ajax({
             type : "POST",
@@ -38,8 +39,13 @@ module.exports = {
      * @arguments callback <required> [Function]
      */
     postSave : function postSave(args, callback) {
-        if (!args.data || !callback) throw new Error('Missing required params');
-        if ((typeof callback).toLowerCase() !== "function") throw new Error('Callback should be a function');
+        if (!args.data || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
 
         $.ajax({
             type : 'POST',
@@ -62,8 +68,13 @@ module.exports = {
      * @arguments callback <required> [Function]
      */
     followEntity : function followEntity(args, callback) {
-        if (!args.profileName || !callback) throw new Error('Missing required params');
-        if ((typeof callback).toLowerCase() !== "function") throw new Error('Callback should be a function');
+        if (!args.profileName || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
 
         $.ajax({
             type : 'GET',

@@ -1,4 +1,3 @@
-/* jshint multistr: true */
 /**
  * Card Widget (Display Entity Cards)
  *
@@ -149,26 +148,30 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
          * @return CV.Card [Object]
          */
         _addActionButtons : function _addActionButtons() {
-            this.appendChild( new CV.CardActionFollow({
-                name : 'followButton',
-                followed: this.followed,
-                profileName : this.profileName
-            })).render(this.actionsEl);
-            this._totalCountActions++;
+            var isOrganizationOwner = window.currentPerson.ownedOrganizations.some(function(organization) {
+                return organization.id === this.id;
+            }, this);
 
-            this.appendChild( new CV.CardActionMessage({name : 'messageButton'})).render(this.actionsEl);
-            this._totalCountActions++;
+            if (isOrganizationOwner === false) {
+                this.appendChild( new CV.CardActionFollow({
+                    name : 'followButton',
+                    followed: this.followed,
+                    profileName : this.profileName
+                })).render(this.actionsEl);
+                this._totalCountActions++;
+
+                this.appendChild( new CV.CardActionMessage({name : 'messageButton'})).render(this.actionsEl);
+                this._totalCountActions++;
+            }
 
             if (this.type === "organization") {
-                if (window.currentPerson.ownedOrganizations.length) {
-                    var alreadyMember = window.currentPerson.organizations.concat(window.currentPerson.ownedOrganizations).some(function(organization) {
-                        return (organization.id === this.id);
-                    }, this);
+                var alreadyMember = window.currentPerson.organizations.concat(window.currentPerson.ownedOrganizations).some(function(organization) {
+                    return (organization.id === this.id);
+                }, this);
 
-                    if (alreadyMember === false) {
-                        this.appendChild( new CV.CardActionJoin({name : 'joinButton'})).render(this.actionsEl);
-                        this._totalCountActions++;
-                    }
+                if (alreadyMember === false) {
+                    this.appendChild( new CV.CardActionJoin({name : 'joinButton'})).render(this.actionsEl);
+                    this._totalCountActions++;
                 }
             } else {
                 if (window.currentPerson.voicesCount || window.currentPerson.ownedOrganizations.length) {

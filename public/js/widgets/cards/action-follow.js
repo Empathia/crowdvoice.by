@@ -1,4 +1,3 @@
-/* jshint multistr: true */
 var API = require('../../lib/api');
 Class(CV, 'CardActionFollow').inherits(Widget)({
 
@@ -37,8 +36,11 @@ Class(CV, 'CardActionFollow').inherits(Widget)({
 
             this.el = this.element[0];
 
-            if (this.followed === true) this._setIsFollowing();
-            else this._setIsNotFollowing();
+            if (this.followed === true) {
+                this._setIsFollowing();
+            } else {
+                this._setIsNotFollowing();
+            }
 
             this._bindEvents();
         },
@@ -85,8 +87,13 @@ Class(CV, 'CardActionFollow').inherits(Widget)({
         _setIsNotFollowing : function _setIsNotFollowing() {
             this.followed = false;
 
-            if (this.unfollowPopover) this.unfollowPopover.destroy();
-            if (this.unfollowPopoverContent) this.unfollowPopoverContent.destroy();
+            if (this.unfollowPopover) {
+                this.unfollowPopover.destroy();
+            }
+
+            if (this.unfollowPopoverContent) {
+                this.unfollowPopoverContent.destroy();
+            }
 
             this.el.innerHTML = '';
             this.el.insertAdjacentHTML('beforeend', this.constructor.HTML_FOLLOW);
@@ -97,7 +104,7 @@ Class(CV, 'CardActionFollow').inherits(Widget)({
         /* Click Button Handler. Is in charge of calling the follow API.
          * @method _clickHandler <private> [Function]
          */
-        _clickHandler : function _clickHandler(ev) {
+        _clickHandler : function _clickHandler() {
             if (this.followed === true) {
                 // wants to unfollow? you need to confirm first.
                 this.unfollowPopover.activate();
@@ -113,8 +120,10 @@ Class(CV, 'CardActionFollow').inherits(Widget)({
         _followHandler : function _followHandler() {
             this._setIsFollowing()._cancelHoverState();
 
-            API.followEntity({profileName: this.profileName}, function(err, res) {
-                if (err) this._setIsNotFollowing();
+            API.followEntity({profileName: this.profileName}, function(err) {
+                if (err) {
+                    this._setIsNotFollowing();
+                }
             }.bind(this));
         },
 
@@ -124,8 +133,10 @@ Class(CV, 'CardActionFollow').inherits(Widget)({
         _unfollowHandlerRef : function _unfollowHandlerRef() {
             this._setIsNotFollowing();
 
-            API.followEntity({profileName: this.profileName}, function(err, res) {
-                if (err) this._setIsFollowing();
+            API.followEntity({profileName: this.profileName}, function(err) {
+                if (err) {
+                    this._setIsFollowing();
+                }
             }.bind(this));
         },
 

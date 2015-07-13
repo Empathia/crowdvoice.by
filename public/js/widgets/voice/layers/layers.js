@@ -89,8 +89,10 @@ Class(CV, 'VoicePostLayers').inherits(Widget)({
         /* Implementation of add posts.
          * All Subclasses should include this method.
          * @method addPosts <private, abstract> [Function]
+         * @argument layer <required> [HTMLElement] reference to the layer to add the posts
+         * @argument postData [Object] <required> the post data returned by the server
          */
-        addPosts : function addPosts(layer, postsData) {
+        addPosts : function addPosts() {
             throw new Error('VoicePostLayers.prototype.addPosts not implemented');
         },
 
@@ -121,8 +123,9 @@ Class(CV, 'VoicePostLayers').inherits(Widget)({
         /* Implementation of remove posts.
          * All Subclasses should include this method.
          * @method removePosts <private, abstract> [Function]
+         * @argument layer <required> [HTMLElement] the layer to remove the post from
          */
-        removePosts : function removePosts(layer) {
+        removePosts : function removePosts() {
             throw new Error('VoicePostLayers.prototype.removePosts not implemented');
         },
 
@@ -163,13 +166,20 @@ Class(CV, 'VoicePostLayers').inherits(Widget)({
             var layer = this['postsLayer_' + data.dateString];
             var _this = this;
 
-            if (!layer) return;
-            if (layer === this.getCurrentMonthLayer()) return;
+            if (!layer) {
+                return void 0;
+            }
+
+            if (layer === this.getCurrentMonthLayer()) {
+                return void 0;
+            }
 
             this.parent._listenScrollEvent = false;
 
             this._layers.forEach(function(l) {
-                if (l.getPosts().length) l.empty();
+                if (l.getPosts().length) {
+                    l.empty();
+                }
             });
 
             Velocity(layer.el, 'scroll', {
@@ -275,15 +285,15 @@ Class(CV, 'VoicePostLayers').inherits(Widget)({
                 window.location.hash = '!' + dateString;
             }
 
-            if (dateString == this._currentMonthString) {
-                return false;
+            if (dateString === this._currentMonthString) {
+                return void 0;
             }
 
             this._currentMonthString = dateString;
 
             // prevent to append childs if the layer is already filled
             if (this['postsLayer_' + dateString].getPosts().length) {
-                return undefined;
+                return void 0;
             }
 
             // load from cache
@@ -336,7 +346,9 @@ Class(CV, 'VoicePostLayers').inherits(Widget)({
 
             currentLayer.arrangeReset();
 
-            if (prev) prev.arrangeBringToFront();
+            if (prev) {
+                prev.arrangeBringToFront();
+            }
 
             if (scrollDirection) {
                 var next2 = next && next.getNextSibling();

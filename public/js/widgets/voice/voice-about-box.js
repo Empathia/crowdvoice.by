@@ -8,7 +8,7 @@ Class(CV, 'VoiceAboutBox').inherits(Widget).includes(CV.WidgetUtils)({
               <img class="voice-card-about-logo -float-left" src="/img/views/voice/cv-logo-placeholder.png" width="28" height="32" alt="">\
               <h3 class="voice-card-about-title -font-bold -float-left">About this Voice</h3>\
             </div>\
-            <button class="voice-about-hide-btn ui-btn -sm -outline -float-right">Hide</button>\
+            <button class="voice-about-hide-btn cv-button micro -float-right">Hide</button>\
           </div>\
           <div class="voice-card-about-description"></div>\
         </article>\

@@ -48,7 +48,9 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
                 this._setupAnonymous();
             } else if (this.currentPerson && (this.currentPerson.isAnonymous === false)) {
                 this._setupForCurrentPerson();
-            } else this._setupVisitor();
+            } else {
+                this._setupVisitor();
+            }
 
             this.appendChild(
                 new CV.SearchButton({

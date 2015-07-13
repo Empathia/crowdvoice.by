@@ -1,4 +1,3 @@
-/* jshint multistr: true */
 /**
  * VoiceCover Widget
  *
@@ -29,8 +28,8 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
         <div class="voice-cover-main-image-wrapper">\
           <div class="voice-cover-main-image -img-cover"></div>\
         </div>\
-        <a class="voice-cover-hover-overlay" href="{{voice-url}}">\
-          <button class="voice-cover-hover-overlay-button ui-btn -md -overlay -font-semi-bold">View Voice</button>\
+        <a class="voice-cover-hover-overlay" data-voice-anchor href="{{voice-url}}">\
+          <button class="voice-cover-hover-overlay-button cv-button tiny -font-semi-bold">View Voice</button>\
         </a>\
       </div>\
       <div class="voice-content">\
@@ -40,13 +39,13 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
             <span class="author-username">{{voice-owner-name}}</span>\
           </a>\
         </div>\
-        <h2 class="voice-cover-title -font-bold">{{voice-title}}</h2>\
+        <h2 class="voice-cover-title -font-bold">\
+          <a class="voice-cover-title-anchor" data-voice-anchor href="{{voice-url}}">{{voice-title}}</a>\
+        </h2>\
         <p class="voice-cover-description">{{voice-description}}</p>\
         <div class="meta">\
           <span class="voice-cover-followers">{{voice-followers}}</span> followers &middot;&nbsp;\
           Updated <time class="voice-cover-datetime" datetime="{{voice-updated-at-iso}}">{{voice-updated-at-human}}</time></div>\
-      </div>\
-      <div class="voice-actions">\
       </div>\
     </article>\
   ',
@@ -57,18 +56,10 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
     </li>\
   ',
 
-  HAS_GALLERY_CLASSNAME : 'gallery',
-  GALLERY_WRAPPER_HTML : '<div class="voice-cover-image-list -row"></div>',
-  GALLERY_IMAGE_HTML :  '\
-    <div class="voice-cover-image-list-item -col-4">\
-      <div class="voice-cover-thumb-image -img-cover"></div>\
-    </div>\
-  ',
-
   IS_NEW_BADGE_HTML : '\
     <svg class="voice-cover-badge-new">\
       <use xlink:href="#svg-badge"></use>\
-      <text x="50%" y="50%" class="-font-bold">NEW</text>\
+      <text x="50%" y="50%" dy=".3em" class="-font-bold">NEW</text>\
     </svg>\
   ',
 
@@ -80,12 +71,30 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
       this.tagListElement = this.element.find('.cv-tags');
       this.voiceCoverElement = this.element.find('.voice-cover');
       this.dateTimeElement = this.el.querySelector('.voice-cover-datetime');
-      this.actionsElement = this.element.find('.voice-actions');
+      this.voiceAnchors = [].slice.call(this.el.querySelectorAll('[data-voice-anchor]'), 0);
 
-      this.dom.updateAttr('href', this.el.querySelector('.voice-cover-hover-overlay'), this.owner.profileName + '/' + this.slug + '/');
-      this.dom.updateAttr('title', this.el.querySelector('.voice-cover-hover-overlay'), this.title + ' voice');
-      if (this.topics.length) this.createTopics(this.topics);
+     this._updateValues();
+
+      // is new? no older than 21 days == 3 weeks
+      if (moment().diff(moment(this.updatedAt), 'days') <= 21) {
+        this.addNewBadge();
+      }
+    },
+
+    /* Update the widget's elements values with the received config
+     * @method _updateValues <private> [Function]
+     */
+    _updateValues : function _updateValues() {
+      this.voiceAnchors.forEach(function(anchor) {
+        this.dom.updateAttr('href', anchor, this.owner.profileName + '/' + this.slug + '/');
+        this.dom.updateAttr('title', anchor, this.title + ' voice');
+      }, this);
+
       this.dom.updateBgImage(this.el.querySelector('.voice-cover-main-image'), this.images.card.url);
+
+      if (this.topics.length) {
+        this.createTopics(this.topics);
+      }
 
       var authorFullname = this.owner.lastname ? (this.owner.name + ' ' + this.owner.lastname) : this.owner.name;
       this.dom.updateAttr('href', this.el.querySelector('.author-anchor'), '/' + this.owner.profileName);
@@ -93,32 +102,19 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
       this.dom.updateAttr('src', this.el.querySelector('.author-avatar'), this.owner.images.icon.url);
       this.dom.updateText(this.el.querySelector('.author-username'), 'by ' + authorFullname);
 
-      this.dom.updateText(this.el.querySelector('.voice-cover-title'), this.title);
+      this.dom.updateText(this.el.querySelector('.voice-cover-title-anchor'), this.title);
       this.dom.updateText(this.el.querySelector('.voice-cover-description'), this.description);
 
       this.dom.updateText(this.el.querySelector('.voice-cover-followers'), this.format.numberUS(this.followers.length));
       this.dom.updateText(this.dateTimeElement, moment(this.updatedAt).fromNow());
       this.dom.updateAttr('datetime', this.dateTimeElement, this.updatedAt);
-
-      if (this.style == 'list'){
-        this.element.addClass('list-style');
-      }
-      if (this.hasActions){
-        this.element.addClass('hasActions');
-        this.addActions();
-      }
-
-      // 21 == 3 weeks (days)
-      if (moment().diff(moment(this.updatedAt), 'days') <= 21) {
-        this.addNewBadge();
-      }
     },
 
     /**
      * Creates a tag per topic that is tagged to the topic and appends them.
      * @method createTopics <private> [Function]
      * @params tags <required> [Array] list of topics tagged to the voice
-     * @return undefined
+     * @return CV.VoiceCover
      */
     createTopics : function createTopics(topics) {
       topics.forEach(function(topic) {
@@ -140,7 +136,7 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
     /**
      * Appends the new badge to the voiceCoverElement.
      * @method addNewBadge <private> [Function]
-     * @return undefined
+     * @return CV.VoiceCover
      */
     addNewBadge : function addNewBadge() {
       var badge = $(this.constructor.IS_NEW_BADGE_HTML);
@@ -152,34 +148,6 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
       });
 
       return this;
-    },
-
-    /**
-     * Adds action buttons to the voice.
-     * @method addActions <private> [Function]
-     * @return undefined
-     */
-    addActions : function addActions() {
-
-      var btnTwiceOptions = {
-        "1": {name: 'Edit'},
-        "2": {name: 'Republish as ...'}
-      };
-
-      new CV.Button({
-          style   : 'tiny',
-          type    : 'twice',
-          name    : 'buttonTwice',
-          options : btnTwiceOptions
-      }).render(this.actionsElement);
-
-      new CV.Button({
-          style   : 'primary tiny',
-          type    : 'single',
-          label   : 'Delete',
-          name    : 'buttonFollow'
-      }).render(this.actionsElement);
-
     }
   }
 });
