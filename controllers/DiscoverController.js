@@ -127,7 +127,7 @@ var DiscoverController = Class('DiscoverController')({
 
     trendingPeople: function (req, res, next) {
       // TODO: Use Knex (db) directly for performance reasons
-      Entity.find(['type = ? LIMIT ?', ['person', dbLimit]], function (err, result) {
+      Entity.find(['type = ? AND NOT is_anonymous = ? LIMIT ?', ['person', true, dbLimit]], function (err, result) {
         if (err) { return next(err) }
 
         var people = result.map(function (val) {
