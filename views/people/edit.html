@@ -161,7 +161,7 @@
 </main>
 
 <script type="text/javascript"
-      src="https://maps.googleapis.com/maps/api/js?region=MX&v=3.exp&libraries=places">
+      src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places">
   </script>
 
 <script>
@@ -313,27 +313,36 @@
 
   //******* blocked ************
 
-  new CV.UsersList({
-      type          : '',
-      name          : '',
-      style         : '',
-      hasButton     : true,
-      users         : users,
-      listTitle     : "{count} Blocked users",
-      dateTitle     : "Blocked on"
-  }).render($('.placeholder-users'));
+  //new CV.UsersList({
+  //    type          : '',
+  //    name          : '',
+  //    style         : '',
+  //    hasButton     : true,
+  //    users         : users,
+  //    listTitle     : "{count} Blocked users",
+  //    dateTitle     : "Blocked on"
+  //}).render($('.placeholder-users'));
 
   //******* organizations ************
 
-  new CV.UsersList({
-      type          : '',
-      name          : '',
-      style         : '',
-      hasButton     : true,
-      users         : users,
-      listTitle     : "You own and / or belong to {count} organizations",
-      dateTitle     : "Member since"
-  }).render($('.placeholder-organizations'));
+  $.ajax({
+    type: "GET",
+    url:'/'+currentPerson.profileName+'/edit/getOrganizations',
+    headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
+    data : {},
+    success: function(data) {
+      console.log(data);
+      new CV.UsersList({
+          hasButton     : true,
+          users         : data,
+          listTitle     : "You own and / or belong to {count} organizations",
+          dateTitle     : "Member since"
+      }).render($('.placeholder-organizations'));
+    }
+  });
+
+
+
 
 
   $( document ).ready(function() {

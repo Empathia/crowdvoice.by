@@ -12,6 +12,9 @@ Class(CV, 'CardActionMessage').inherits(Widget)({
         </div>',
 
     prototype : {
+
+        id : null,
+
         init : function init(config) {
             Widget.prototype.init.call(this, config);
             var button = this;
@@ -27,7 +30,7 @@ Class(CV, 'CardActionMessage').inherits(Widget)({
                       type : 'message',
                       profileName : currentPerson.profileName,
                       senderEntityId : currentPerson.id,
-                      receiverEntityId : '<%= person.id %>'
+                      receiverEntityId : button.id
                     },
                     anchorEl    : button.element
                 }).show();

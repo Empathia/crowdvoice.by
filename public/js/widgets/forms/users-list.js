@@ -26,34 +26,18 @@ Class(CV, 'UsersList').inherits(Widget)({
 
             this.users.forEach(function(user){
                 //new userMini( user ).render( this.element );
-                var userDate = new Date(user.author.created_at);
+                var userDate = new Date(user.createdAt);
 
                 var prettyDate = months[userDate.getUTCMonth()] + ', ' + userDate.getUTCFullYear();
 
                 var userDOM = '\
                     <div class="cv-user">\
                         <div class="img">\
-                            <img src="' + user.author.avatar + '">\
+                            <img src="' + user.images.card.url + '">\
                         </div>\
                         <div class="info">\
-                            <span class="name">' + user.author.full_name + '</span><br>\
-                            <span class="username">' + user.author.username + '</span>\
-                        </div>\
-                        <div class="action">\
-                        </div>\
-                    </div>\
-                ';
-
-                var oldUserDOM = '\
-                    <div class="cv-user">\
-                        <div class="img">\
-                            <img src="' + user.author.avatar + '">\
-                        </div>\
-                        <div class="info">\
-                            <span class="name">' + user.author.full_name + '</span> • \
-                            <span class="username">' + user.author.username + '</span><br>\
-                            <span class="location">' + user.author.location + '</span> • \
-                            <span class="date">' + usersList.dateTitle + ' ' + prettyDate + '</span>\
+                            <span class="name">' + user.name + '</span><br>\
+                            <span class="username">@' + user.profileName + '</span>\
                         </div>\
                         <div class="action">\
                         </div>\
@@ -66,8 +50,8 @@ Class(CV, 'UsersList').inherits(Widget)({
                     new CV.Button({
                         style   : 'tiny',
                         type    : 'single',
-                        label   : 'Unblock',
-                        name    : 'buttonRemove'
+                        label   : 'Leave',
+                        name    : 'buttonLeave'
                     }).render(userEl.find('.action'));
                 }
 

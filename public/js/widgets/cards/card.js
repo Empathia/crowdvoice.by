@@ -160,7 +160,7 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
                 })).render(this.actionsEl);
                 this._totalCountActions++;
 
-                this.appendChild( new CV.CardActionMessage({name : 'messageButton'})).render(this.actionsEl);
+                this.appendChild( new CV.CardActionMessage({name : 'messageButton', id : this.id})).render(this.actionsEl);
                 this._totalCountActions++;
             }
 
