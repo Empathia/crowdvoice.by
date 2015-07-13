@@ -9,9 +9,22 @@ var GoogleNewsFetcherController = Class('GoogleNewsFetcherController')({
           return next(err);
         }
 
+        var result = [];
+
+        response.forEach(function(item) {
+          var obj = {
+            title : item.title,
+            description : item.description,
+            date : item.date,
+            sourceUrl : item.link
+          }
+
+          result.push(obj);
+        });
+
         res.format({
           json : function() {
-            res.json(response);
+            res.json(result);
           }
         });
       });
