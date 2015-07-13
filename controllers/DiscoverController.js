@@ -1,26 +1,26 @@
 var dbLimit = 50 // how many posts we can ask for at a time
 
-var findTrending = function (resultFromKnex) {
+var findTrending = function (resultFromKnex, name) {
   var amounts = {}, // what we're returning
     result = []
 
   // get all the voice IDs
-  var followedVoices = resultFromKnex.map(function (val) {
-    return val.voiceId
+  var followed = resultFromKnex.map(function (val) {
+    return val[name]
   })
 
   // find out how many times each number repeats
-  followedVoices.forEach(function (voiceId) {
-    if (amounts[voiceId]) {
-      amounts[voiceId] += 1
+  followed.forEach(function (followedId) {
+    if (amounts[followedId]) {
+      amounts[followedId] += 1
     } else {
-      amounts[voiceId] = 1
+      amounts[followedId] = 1
     }
   })
 
   // convert to array
-  for (var voiceId in followedVoices) {
-    result.push({ id: voiceId, followersCount: followedVoices[voiceId] })
+  for (var followedId in followed) {
+    result.push({ id: followedId, followersCount: followed[followedId] })
   }
 
   // sort
@@ -28,7 +28,7 @@ var findTrending = function (resultFromKnex) {
     return b - a
   })
 
-  return result
+  return result.slice(0, dbLimit - 1)
 }
 
 var DiscoverController = Class('DiscoverController')({
@@ -100,7 +100,7 @@ var DiscoverController = Class('DiscoverController')({
       VoiceFollower.all(function (err, result) {
         if (err) { return next(err) }
 
-        var trendingVoiceIds = findTrending(result).map(function (val) {
+        var trendingVoiceIds = findTrending(result, 'voiceId').map(function (val) {
           return val.id
         })
 
@@ -126,7 +126,39 @@ var DiscoverController = Class('DiscoverController')({
     },
 
     trendingPeople: function (req, res, next) {
-      //
+      Entity.find({ type: 'person' }, function (err, result) {
+        if (err) { return next(err) }
+
+        var people = result.map(function (val) {
+          return val.id
+        })
+
+        // TODO: EntityFollower does not have .whereIn
+        EntityFollower.whereIn('followed_id', people, function (err, result) {
+          var trendingPeopleIds = findTrending(result, 'followedId').map(function (val) {
+            return val.id
+          })
+
+          Entity.whereIn('followed_id', trendingPeopleIds, function (err, result) {
+            if (err) { return next(err) }
+
+            VoicesPresenter.build(result, req.currentPerson, function (err, result) {
+              if (err) { return next(err) }
+
+              res.format({
+                html: function () {
+                  res.locals.people = result
+                  req.people = result
+                  res.render('discover/trending/people')
+                },
+                json: function () {
+                  res.json(result)
+                },
+              })
+            })
+          })
+        })
+      })
     },
 
     trendingOrganizations: function (req, res, next) {
