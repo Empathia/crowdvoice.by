@@ -1,5 +1,7 @@
 var VoicesPresenter = require(path.join(process.cwd(), '/presenters/VoicesPresenter.js'));
 
+var PostsPresenter = require(path.join(process.cwd(), '/presenters/PostsPresenter.js'));
+
 var PeopleController = Class('PeopleController').inherits(EntitiesController)({
   prototype : {
     init : function () {
@@ -20,14 +22,21 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
           });
         }, function(err) {
           if (err) { next(err); return; }
-          res.format({
-            'application/json': function() {
-              res.json(posts);
-            },
-            'text/html': function() {
-              res.locals.savedPosts = posts;
-              res.render('people/saved_posts.html', {});
+
+          PostsPresenter.build(posts, function(err, result) {
+            if (err) {
+              return next(err);
             }
+
+            res.format({
+              'application/json': function() {
+                res.json(result);
+              },
+              'text/html': function() {
+                res.locals.savedPosts = result;
+                res.render('people/saved_posts.html');
+              }
+            });
           });
         });
       });
