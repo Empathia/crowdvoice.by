@@ -1,5 +1,25 @@
 var dbLimit = 50 // how many posts we can ask for at a time
 
+var findTrending = function (resultFromKnex) {
+  var amounts = {} // what we're returning
+
+  // get all the voice IDs
+  var followedVoices = resultFromKnex.map(function (val) {
+    return val.voiceId
+  })
+
+  // find out how many times each number repeats
+  followedVoices.forEach(function (voiceId) {
+    if (amounts[voiceId]) {
+      amounts[voiceId] += 1
+    } else {
+      amounts[voiceId] = 1
+    }
+  })
+
+  return amounts
+}
+
 var DiscoverController = Class('DiscoverController')({
   prototype: {
     newVoices: function(req, res, next) {
@@ -66,7 +86,11 @@ var DiscoverController = Class('DiscoverController')({
     },
 
     trendingVoices: function (req, res, next) {
-      //
+      VoiceFollower.all(function (err, result) {
+        if (err) { return next(err) }
+
+        res.json(findTrending(result))
+      })
     },
 
     trendingPeople: function (req, res, next) {
