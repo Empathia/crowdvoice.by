@@ -116,7 +116,9 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
                 image.className = "voice-background-cover-image";
                 image.src = this.images.big.url;
                 this.backgroundElement.appendChild(image);
-            } else this.backgroundElement.className += ' -colored-background';
+            } else {
+                this.backgroundElement.className += ' -colored-background';
+            }
 
             this.dom.updateText(this.postCountElement, this.format.numberUS(this.postCount));
             this.dom.updateText(this.followersCountElement, this.format.numberUS(this.followerCount));
@@ -219,9 +221,13 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
             var y = 0;
             var el;
 
-            if (!this._listenScrollEvent) return;
+            if (!this._listenScrollEvent) {
+                return void 0;
+            }
 
-            if (!scrollingUpwards) y = this.voicePostLayersManager._windowInnerHeight - 1;
+            if (!scrollingUpwards) {
+                y = this.voicePostLayersManager._windowInnerHeight - 1;
+            }
 
             el = document.elementFromPoint(this._layersOffsetLeft, y);
 
@@ -233,7 +239,9 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
 
             this._lastScrollTop = st;
 
-            if (this._scrollTimer) this._window.clearTimeout(this._scrollTimer);
+            if (this._scrollTimer) {
+                this._window.clearTimeout(this._scrollTimer);
+            }
 
             this._scrollTimer = this._window.setTimeout(function() {
                 this.voicePostLayersManager.loadImagesVisibleOnViewport();
@@ -246,7 +254,9 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
         _resizeHandler : function _resizeHandler() {
             var _this = this;
 
-            if (this._resizeTimer) this._window.clearTimeout(this._resizeTimer);
+            if (this._resizeTimer) {
+                this._window.clearTimeout(this._resizeTimer);
+            }
 
             this._resizeTimer = this._window.setTimeout(function() {
                 _this.voicePostLayersManager.update();
@@ -332,7 +342,9 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
             this.followersCountElement = null;
             this.aboutBoxButtonElement = null;
 
-            if (this._resizeTimer) this._window.clearTimeout(this._resizeTimer);
+            if (this._resizeTimer) {
+                this._window.clearTimeout(this._resizeTimer);
+            }
             this._resizeTimer = null;
             this._resizeTime = 250;
             this._window = null;

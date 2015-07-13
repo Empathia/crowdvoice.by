@@ -295,7 +295,7 @@ Class(CV, 'VoicePostLayers').inherits(Widget)({
             }
 
             // load from cache
-            var posts = CV.PostsRegistry.get(dateString);
+            var posts = this.getPostsRegistry(dateString);
             if (posts) {
                 return this.loadLayer(posts, dateString, scrollDirection);
             }
@@ -319,8 +319,8 @@ Class(CV, 'VoicePostLayers').inherits(Widget)({
             var oldScrollHeight = 0;
             var oldScrollY = 0;
 
-            if (!CV.PostsRegistry.get(dateString)) {
-                CV.PostsRegistry.set(dateString, postsData);
+            if (!this.getPostsRegistry(dateString)) {
+                this.setPostsRegistry(dateString, postsData);
             }
 
             if (scrollDirection && !currentLayer.isFinalHeightKnow()) {

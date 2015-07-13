@@ -6,8 +6,17 @@ Class(CV, 'VoicePostLayersVoiceAbstract').inherits(CV.VoicePostLayers)({
     prototype : {
         setup : function setup() {
             CV.VoicePostLayers.prototype.setup.call(this);
-
             CV.PostsRegistry.setup(this.postsCount);
+
+            return this;
+        },
+
+        getPostsRegistry : function getPostsRegistry(date) {
+            return CV.PostsRegistry.get(date);
+        },
+
+        setPostsRegistry : function setPostsRegistry(date, posts) {
+            CV.PostsRegistry.set(date, posts);
         },
 
         /* Implementation to request post data to the server.

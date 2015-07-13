@@ -5,6 +5,20 @@
 Class(CV, 'VoicePostLayersModerateAbstract').inherits(CV.VoicePostLayers)({
 
     prototype : {
+        setup : function setup() {
+            CV.VoicePostLayers.prototype.setup.call(this);
+            CV.ModeratePostsRegistry.setup(this.postsCount);
+
+            return this;
+        },
+
+        getPostsRegistry : function getPostsRegistry(date) {
+            return CV.ModeratePostsRegistry.get(date);
+        },
+
+        setPostsRegistry : function setPostsRegistry(date, posts) {
+            CV.ModeratePostsRegistry.set(date, posts);
+        },
 
         /* Implementation to request post data to the server.
          * @method request <protected, abstract> [Function]

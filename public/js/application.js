@@ -101,6 +101,7 @@ require('./widgets/voice/layers/layer');
 require('./widgets/voice/layers/indicator');
 require('./widgets/voice/voice-about-box');
 
+require('./widgets/voice/moderate/registry');
 require('./widgets/voice/moderate/button.js');
 require('./widgets/voice/moderate/manager.js');
 require('./widgets/voice/moderate/footer-button.js');
