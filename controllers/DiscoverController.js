@@ -28,7 +28,7 @@ var findTrending = function (resultFromKnex, name) {
 
   // sort
   result.sort(function (a, b) {
-    return b - a
+    return b.followersCount - a.followersCount
   })
 
   return result.slice(0, dbLimit - 1)
