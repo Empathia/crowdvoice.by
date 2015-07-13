@@ -14,6 +14,26 @@ Class(CV, 'CardActionMessage').inherits(Widget)({
     prototype : {
         init : function init(config) {
             Widget.prototype.init.call(this, config);
+            var button = this;
+
+            this.element.on('click', function(){
+
+                new CV.Bubble({
+                    title       : 'Send Message',
+                    name        : 'sendMessageBubble',
+                    action      : CV.SendMessage,
+                    width       : 320,
+                    data        : {
+                      type : 'message',
+                      profileName : currentPerson.profileName,
+                      senderEntityId : currentPerson.id,
+                      receiverEntityId : '<%= person.id %>'
+                    },
+                    anchorEl    : button.element
+                }).show();
+
+            });
+
         }
     }
 });

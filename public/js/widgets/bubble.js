@@ -66,15 +66,15 @@ Class(CV, 'Bubble').inherits(Widget)({
             });
 
             bubbleAction.bind('close', function(){
-                console.log('close action');
                 this.hide();
             }.bind(this));
+
+            this.render('body');
 
         },
 
         position : function(){
             var bubble = this;
-            console.log('called pos');
 
             var bodyMaxheight = parseInt(this.bodyElement.css('max-height'));
 
@@ -83,12 +83,17 @@ Class(CV, 'Bubble').inherits(Widget)({
             }
 
             var anchorPos = this.getOffset(this.anchorEl);
+
+            var viewableOffsetTop = this.anchorEl.offset().top - $(window).scrollTop();
+            var viewableOffsetLeft = this.anchorEl.offset().left - $(window).scrollLeft();
+
             this.bubbleEl.css('position', 'absolute');
             this.element.css('top', window.scrollY + 'px');
+
             var sidePadding = 10;
 
-            var leftValue = anchorPos.left - (bubble.width/2) + ($(bubble.anchorEl).width()/2);
-            var topValue = anchorPos.top - (bubble.bubbleEl.height()) - (bubble.element.find('.arrow').height()/2);
+            var leftValue = viewableOffsetLeft - (bubble.width/2) + ($(bubble.anchorEl).width()/2);
+            var topValue = viewableOffsetTop - (bubble.bubbleEl.height()) - (bubble.element.find('.arrow').height()/2);
             var arrowMargin = 0;
 
             var diff = $(window).width() - ( leftValue + parseInt(this.bubbleEl.css('width')) );
@@ -128,14 +133,13 @@ Class(CV, 'Bubble').inherits(Widget)({
 
         show : function(){
             $('body').css('overflow', 'hidden');
-            this.render('body');
             this.element.show();
 
             this.position();
         },
         hide : function(){
             $('body').css('overflow', '');
-            this.element.hide();
+            this.element.detach();
         }
 
     }

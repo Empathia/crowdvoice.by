@@ -66,6 +66,13 @@ Class(CV, 'SendMessage').inherits(Widget)({
         sendMessage : function(){
 
         	var sendmessage = this;
+        	tmpdata =  {
+		        	type : 'message',
+					senderEntityId : sendmessage.data.senderEntityId,
+					receiverEntityId : sendmessage.data.receiverEntityId,
+					message : sendmessage.element.find('textarea').val()
+		        }
+                    console.log(tmpdata);
 
         	$.ajax({
 		        type: "POST",
