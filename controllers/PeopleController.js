@@ -59,6 +59,12 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
             Entity.whereIn('id', entityIds, function (err, result) {
               if (err) { return done(err); }
 
+              result = result.filter(function(item) {
+                if (item.type === 'organization') {
+                  return true;
+                }
+              });
+
               EntitiesPresenter.build(result, req.currentPerson, function (err, result) {
                 if (err) { return done(err); }
 
@@ -74,16 +80,23 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
             if (err) { return done(err); }
 
             var entityIds = result.map(function (val) {
-              return val.entityId;
-            })
+              return val.ownedId;
+            });
 
             Entity.whereIn('id', entityIds, function (err, result) {
               if (err) { return done(err); }
+
+              result = result.filter(function(item) {
+                if (item.type === 'organization') {
+                  return true;
+                }
+              });
 
               EntitiesPresenter.build(result, req.currentPerson, function (err, result) {
                 if (err) { return done(err); }
 
                 orgsOwnerOf = result;
+
                 done();
               })
             })
@@ -92,7 +105,7 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
       ], function (err) {
         if (err) { return next(err); }
 
-        var result = orgsOwnerOf.concat(orgsMemberOf)
+        var result = orgsOwnerOf.concat(orgsMemberOf);
 
         res.json(result);
       })
