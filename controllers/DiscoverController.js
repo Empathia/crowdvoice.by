@@ -6,32 +6,40 @@ var DiscoverController = Class('DiscoverController')({
       Voice.find(['status = ? ORDER BY created_at DESC LIMIT ?', [Voice.STATUS_PUBLISHED, dbLimit]], function (err, result) {
         if (err) { return next(err) }
 
-        res.format({
-          html: function () {
-            res.locals.voices = result
-            req.voices = result
-            res.render('discover/new/voices')
-          },
-          json: function () {
-            res.json(result)
-          },
+        VoicesPresenter(result, req.currentPerson, function (err, result) {
+          if (err) { return next(err) }
+
+          res.format({
+            html: function () {
+              res.locals.voices = result
+              req.voices = result
+              res.render('discover/new/voices')
+            },
+            json: function () {
+              res.json(result)
+            },
+          })
         })
       })
     },
 
     newPeople: function(req, res, next) {
-      Entity.find(['type = ? AND NOT is_anonymous = ? ORDER BY created_at DESC LIMIT ?', ['person', 't', dbLimit]], function (err, result) {
+      Entity.find(['type = ? AND NOT is_anonymous = ? ORDER BY created_at DESC LIMIT ?', ['person', true, dbLimit]], function (err, result) {
         if (err) { return next(err) }
 
-        res.format({
-          html: function () {
-            res.locals.people = result
-            req.people = result
-            res.render('discover/new/people')
-          },
-          json: function () {
-            res.json(result)
-          },
+        EntitiesPresenter.build(result, req.currentPerson, function (err, result) {
+          if (err) { return next(err) }
+
+          res.format({
+            html: function () {
+              res.locals.people = result
+              req.people = result
+              res.render('discover/new/people')
+            },
+            json: function () {
+              res.json(result)
+            },
+          })
         })
       })
     },
@@ -40,15 +48,19 @@ var DiscoverController = Class('DiscoverController')({
       Entity.find(['type = ? ORDER BY created_at DESC LIMIT ?', ['organization', dbLimit]], function (err, result) {
         if (err) { return next(err) }
 
-        res.format({
-          html: function () {
-            res.locals.organizations = result
-            req.organizations = result
-            res.render('discover/new/organizations')
-          },
-          json: function () {
-            res.json(result)
-          },
+        EntitiesPresenter.build(result, req.currentPerson, function (err, result) {
+          if (err) { return next(err) }
+
+          res.format({
+            html: function () {
+              res.locals.organizations = result
+              req.organizations = result
+              res.render('discover/new/organizations')
+            },
+            json: function () {
+              res.json(result)
+            },
+          })
         })
       })
     },
