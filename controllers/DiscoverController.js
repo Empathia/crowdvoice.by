@@ -126,20 +126,20 @@ var DiscoverController = Class('DiscoverController')({
     },
 
     trendingPeople: function (req, res, next) {
-      Entity.find({ type: 'person' }, function (err, result) {
+      // TODO: Use Knex (db) directly for performance reasons
+      Entity.find(['type = ? LIMIT ?', ['person', dbLimit]], function (err, result) {
         if (err) { return next(err) }
 
         var people = result.map(function (val) {
           return val.id
         })
 
-        // TODO: EntityFollower does not have .whereIn
         EntityFollower.whereIn('followed_id', people, function (err, result) {
           var trendingPeopleIds = findTrending(result, 'followedId').map(function (val) {
             return val.id
           })
 
-          Entity.whereIn('followed_id', trendingPeopleIds, function (err, result) {
+          Entity.whereIn('id', trendingPeopleIds, function (err, result) {
             if (err) { return next(err) }
 
             VoicesPresenter.build(result, req.currentPerson, function (err, result) {
