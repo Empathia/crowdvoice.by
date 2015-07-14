@@ -204,7 +204,7 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
             this.dom.updateText(this.usernameEl, "@" + this.profileName);
             this.dom.updateAttr('href', this.usernameEl, this.profileName);
 
-            var fullname = this.name + (this.lastname ? this.lastname : '');
+            var fullname = this.name + (this.lastname ? (' ' + this.lastname) : '');
             this.dom.updateText(this.fullNameEl, fullname);
             var description = this.description;
             if (description.length > 160) {

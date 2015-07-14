@@ -327,7 +327,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         if (err) { return next(err); }
 
         if (result.length > 0) { // we're following this voice
-          // so unfollow
+          // unfollow
           follower.unfollowVoice(req.activeVoice, function (err) {
             if (err) { return next(err); }
 

@@ -202,7 +202,16 @@
     });
   }
 
-  if (true){
+  var isOrganizationOwner = false;
+
+  var currentOrganization = <%= JSON.stringify(organization) %>;
+  currentPerson.ownedOrganizations.forEach(function(org){
+    if (currentOrganization.id == org.id){
+      isOrganizationOwner = true;
+    }
+  });
+
+  if (!isOrganizationOwner){
     createControls();
   }
 
@@ -211,18 +220,18 @@
   //*********************************************************
 
   function createControls(){
+    var followLabel;
+    if ('<%= JSON.stringify(organization.followed) %>' == 'true' ){
+      followLabel = 'Following';
+    } else {
+      followLabel = 'Follow';
+    }
 
-
-    var buttonActionsOptions = {
-      "1": {label: 'Message', name: 'message'},
-      "2": {label: 'Follow', name: 'follow'}
-    };
-
-    var buttonActions = new CV.Button({
+    var buttonFollow = new CV.Button({
         style   : 'small',
-        type    : 'multiple',
-        name    : 'buttonTwice',
-        options : buttonActionsOptions
+        type    : 'single',
+        label   : followLabel,
+        name    : 'buttonFollow',
     }).render(document.querySelector('.profile-actions .p-buttons'));
 
       //Normal
@@ -251,12 +260,9 @@
       $('.profile-actions').addClass('ui-has-tooltip').append(tooltipEl);
 
     } else {
-      //button actions
-      buttonActions.message.on('click', function(){
-        console.log('message click');
-      });
-      buttonActions.follow.on('click', function(){
-        console.log('follow click');
+
+      buttonFollow.element.on('click', function(){
+        followEntity();
       });
       // select actions
       profileSettings.request.on('click', function(){
@@ -267,29 +273,24 @@
       });
     }
 
-    // Following options
-    var followOptions = {
-      "1": {label: 'Users', name: 'entities'},
-      "2": {label: 'Voices', name: 'voices'}
-    };
+    //*********************** Functions **************************
+    function followEntity(){
+      $.ajax({
+        type: "GET",
+        url:'/<%= organization.profileName %>/follow',
+        headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
+        data : {},
+        dataType : "json",
+        success: function(data) {
+          if (data.status == 'followed'){
+            buttonFollow.element.text('Following');
+          } else if (data.status == 'unfollowed'){
+            buttonFollow.element.text('Follow');
+          }
+        }
+      });
+    }
 
-    var followSelect = new CV.Select({
-      label     : 'Users',
-      style     : 'tiny',
-      className : '-inline-block',
-      name      : 'select',
-      options   : followOptions
-    }).render(document.querySelector('.entities-voices-select'));
-
-    followSelect.entities.on('click', function(){
-      $('.entities-followed').show();
-      $('.voices-followed').hide();
-    });
-
-    followSelect.voices.on('click', function(){
-      $('.entities-followed').hide();
-      $('.voices-followed').show();
-    });
 
     //*********************** Modals **************************
 
@@ -313,7 +314,29 @@
 
   }//createControls
 
+// Following options
+var followOptions = {
+  "1": {label: 'Users', name: 'entities'},
+  "2": {label: 'Voices', name: 'voices'}
+};
 
+var followSelect = new CV.Select({
+  label     : 'Users',
+  style     : 'tiny',
+  className : '-inline-block',
+  name      : 'select',
+  options   : followOptions
+}).render(document.querySelector('.entities-voices-select'));
+
+followSelect.entities.on('click', function(){
+  $('.entities-followed').show();
+  $('.voices-followed').hide();
+});
+
+followSelect.voices.on('click', function(){
+  $('.entities-followed').hide();
+  $('.voices-followed').show();
+});
 
 
 
