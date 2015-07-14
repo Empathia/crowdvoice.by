@@ -40,10 +40,10 @@ Class(CV, 'CardActionInvite').inherits(Widget)({
             return this;
         },
 
-        /* Click Button Handler. Is in charge of calling the follow API.
+        /* Click Button Handler.
          * @method _clickHandler <private> [Function]
          */
-        _clickHandler : function _clickHandler(ev) {
+        _clickHandler : function _clickHandler() {
             this.inviteToPopover.activate();
         },
 
