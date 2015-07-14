@@ -207,7 +207,8 @@ var EntitiesPresenter = Module('EntitiesPresenter')({
 
           // Get own voices
           Voice.find({
-            'owner_id' : entity.id
+            'owner_id' : entity.id,
+            status : Voice.STATUS_PUBLISHED
           }, function(err, result) {
             if (err) {
               return doneVoice(err);
