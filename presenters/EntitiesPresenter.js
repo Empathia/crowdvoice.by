@@ -13,7 +13,7 @@ var EntitiesPresenter = Module('EntitiesPresenter')({
         images[version] = {
           url : entityInstance.image.url(version),
           meta : entityInstance.image.meta(version)
-        }
+        };
       }
 
       entityInstance.images = images;
