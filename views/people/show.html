@@ -276,29 +276,6 @@
       });
     }
 
-    // Following options
-    var followOptions = {
-      "1": {label: 'Users', name: 'entities'},
-      "2": {label: 'Voices', name: 'voices'}
-    };
-
-    var followSelect = new CV.Select({
-      label     : 'Users',
-      style     : 'tiny',
-      className : '-inline-block',
-      name      : 'select',
-      options   : followOptions
-    }).render(document.querySelector('.entities-voices-select'));
-
-    followSelect.entities.on('click', function(){
-      $('.entities-followed').show();
-      $('.voices-followed').hide();
-    });
-
-    followSelect.voices.on('click', function(){
-      $('.entities-followed').hide();
-      $('.voices-followed').show();
-    });
 
     //*********************** Functions **************************
     function followEntity(){
@@ -349,7 +326,29 @@
 
   } //createControls
 
+// Following options
+var followOptions = {
+  "1": {label: 'Users', name: 'entities'},
+  "2": {label: 'Voices', name: 'voices'}
+};
 
+var followSelect = new CV.Select({
+  label     : 'Users',
+  style     : 'tiny',
+  className : '-inline-block',
+  name      : 'select',
+  options   : followOptions
+}).render(document.querySelector('.entities-voices-select'));
+
+followSelect.entities.on('click', function(){
+  $('.entities-followed').show();
+  $('.voices-followed').hide();
+});
+
+followSelect.voices.on('click', function(){
+  $('.entities-followed').hide();
+  $('.voices-followed').show();
+});
 
 
 
