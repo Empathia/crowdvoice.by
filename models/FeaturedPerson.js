@@ -1,11 +1,11 @@
-var FeaturedVoice = Class('FeaturedEntity').inherits(Argon.KnexModel)({
+var FeaturedPerson = Class('FeaturedPerson').inherits(Argon.KnexModel)({
   validations: {
     entityId: ['required'],
     position: ['required'],
   },
 
   storage: (new Argon.Storage.Knex({
-    tableName: 'FeaturedEntities',
+    tableName: 'FeaturedPeople',
   })),
 
   prototype: {
@@ -14,4 +14,4 @@ var FeaturedVoice = Class('FeaturedEntity').inherits(Argon.KnexModel)({
   },
 })
 
-module.exports = FeaturedVoice
+module.exports = FeaturedPerson
