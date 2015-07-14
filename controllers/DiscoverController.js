@@ -217,7 +217,7 @@ var DiscoverController = Class('DiscoverController')({
         },
 
         function (trendingOrgs, callback) {
-          EntitiesPresenter.build(result, req.currentPerson, callback)
+          EntitiesPresenter.build(trendingOrgs, req.currentPerson, callback)
         },
       ], function (err, result) {
         if (err) { return next(err) }
