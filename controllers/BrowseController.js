@@ -20,6 +20,11 @@ var BrowseController = Class('BrowseController')({
         if (err) { return next(err) }
 
         res.format({
+          html: function () {
+            res.locals.featuredVoices = result
+            req.featuredVoices = result
+            res.render('browse/featured/voices')
+          },
           json: function () {
             res.json(result)
           },
@@ -47,6 +52,11 @@ var BrowseController = Class('BrowseController')({
         if (err) { return next(err) }
 
         res.format({
+          html: function () {
+            res.locals.featuredPeople = result
+            req.featuredPeople = result
+            res.render('browse/featured/people')
+          },
           json: function () {
             res.json(result)
           },
@@ -55,22 +65,33 @@ var BrowseController = Class('BrowseController')({
     },
 
     featuredOrganizations: function (req, res, next) {
-      FeaturedOrganization.all(function (err, allFeaturedOrgs) {
+      async.waterfall([
+        function (callback) {
+          FeaturedOrganization.all(callback)
+        },
+
+        function (allFeaturedOrgs, callback) {
+          var featuredOrgsIds = allFeaturedOrgs.map(function (val) {
+            return val.entityId
+          })
+          Entity.whereIn('id', featuredOrgsIds, callback)
+        },
+
+        function (featuredOrgsEntities, callback) {
+          EntitiesPresenter.build(featuredOrgsEntities, req.currentPerson, callback)
+        },
+      ], function (err, result) {
         if (err) { return next(err) }
 
-        EntitiesPresenter.build(allFeaturedOrgs, req.currentPerson, function (err, presenterOrgs) {
-          if (err) { return next(err) }
-
-          res.format({
-            html: function () {
-              res.locals.featuredOrganizations = presenterOrgs
-              req.featuredOrganizations = presenterOrgs
-              res.render('browse/featured/organizations')
-            },
-            json: function () {
-              res.json(presenterOrgs)
-            },
-          })
+        res.format({
+          html: function () {
+            res.locals.featuredOrganizations = result
+            req.featuredOrganizations = result
+            res.render('browse/featured/organizations')
+          },
+          json: function () {
+            res.json(result)
+          },
         })
       })
     },
