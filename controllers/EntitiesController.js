@@ -102,7 +102,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
         description: req.body['description'] || entity.description,
         location: req.body['location'] || entity.location
       });
-      console.log(entity)
+
       async.series([
         function (done) {
           entity.save(function (err) {
@@ -248,16 +248,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
             };
           });
 
-          res.format({
-            html: function () {
-              req.voices = endResult;
-              res.params.voices = endResult;
-              res.render('entities/myVoices');
-            },
-            json: function () {
-              res.json(endResult);
-            }
-          });
+          res.json(endResult);
         });
       });
     },
