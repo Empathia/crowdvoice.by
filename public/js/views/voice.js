@@ -92,6 +92,7 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
 
             this.appendChild(
                 new CV.VoiceFooter({
+                    id : this.id,
                     voiceType : this.type,
                     name : 'voiceFooter',
                     element : $('.voice-footer'),

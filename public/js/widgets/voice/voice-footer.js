@@ -1,6 +1,7 @@
 Class(CV, 'VoiceFooter').inherits(Widget)({
     prototype : {
         /* OPTIONS */
+        id : '',
         voiceType : '',
         firstPostDate : '',
         lastPostDate : '',
@@ -28,36 +29,29 @@ Class(CV, 'VoiceFooter').inherits(Widget)({
             // and or based on the voice type (open|close)
 
             if (this.allowPosting) {
-                this.appendChild(
-                    new CV.VoiceAddContent({
-                        name : 'voiceAddContent'
-                    })
-                ).render(this.element);
+                this.appendChild(new CV.VoiceAddContent({
+                    name : 'voiceAddContent'
+                })).render(this.element);
             }
 
-            this.appendChild(
-                new CV.VoiceFollowButton({
-                    name : 'followButton'
-                })
-            ).render(this.actionsColumn);
+            this.appendChild(new CV.VoiceFollowButton({
+                name : 'followButton'
+            })).render(this.actionsColumn);
 
-            this.appendChild(
-                new CV.VoiceRelatedVoices({
-                    name : 'relatedVoicesButton'
-                })
-            ).render(this.actionsColumn);
+            this.appendChild(new CV.VoiceRelatedVoices({
+                name : 'relatedVoicesButton'
+            })).render(this.actionsColumn);
 
-            this.appendChild(
-                new CV.VoiceRequestToContribute({
+            // currentPerson does not belongs/owns this voice already?
+            if (window.currentPerson && (window.currentPerson.voiceIds.indexOf(this.id) === -1)) {
+                this.appendChild(new CV.VoiceRequestToContribute({
                     name : 'voiceRequestToContribute'
-                })
-            ).render(this.actionsColumn);
+                })).render(this.actionsColumn);
+            }
 
-            this.appendChild(
-                new CV.VoiceFooterShareButtonsGroup({
-                    name : 'shareButtons'
-                })
-            ).render(this.actionsColumn);
+            this.appendChild(new CV.VoiceFooterShareButtonsGroup({
+                name : 'shareButtons'
+            })).render(this.actionsColumn);
 
             if (this.voiceType !== CV.VoiceView.TYPE_CLOSED ||
                 this.allowPostEditing) {
