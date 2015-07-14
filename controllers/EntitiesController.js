@@ -248,7 +248,16 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
             };
           });
 
-          res.json(endResult);
+          res.format({
+            html: function () {
+              req.voices = endResult;
+              res.params.voices = endResult;
+              res.render('entities/myVoices');
+            },
+            json: function () {
+              res.json(endResult);
+            }
+          });
         });
       });
     },

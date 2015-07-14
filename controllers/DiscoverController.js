@@ -1,5 +1,7 @@
 var dbLimit = 50 // how many posts we can ask for at a time
 
+// counts up how many times it finds a number (ID according to
+// `name`) so that we can tell which are trending.
 var findTrending = function (resultFromKnex, name) {
   var amounts = {},
     result = []
@@ -37,169 +39,190 @@ var findTrending = function (resultFromKnex, name) {
 var DiscoverController = Class('DiscoverController')({
   prototype: {
     newVoices: function(req, res, next) {
-      Voice.find(['status = ? ORDER BY created_at DESC LIMIT ?', [Voice.STATUS_PUBLISHED, dbLimit]], function (err, result) {
+      async.waterfall([
+        function (callback) {
+          Voice.find(['status = ? ORDERY BY created_at DESC LIMIT ?', [Voice.STATUS_PUBLISHED, dbLimit]],
+            callback)
+        },
+
+        function (voices, callback) {
+          VoicesPresenter.build(voices, req.currentPerson, callback)
+        },
+      ], function (err, result) {
         if (err) { return next(err) }
 
-        VoicesPresenter.build(result, req.currentPerson, function (err, result) {
-          if (err) { return next(err) }
-
-          res.format({
-            html: function () {
-              res.locals.voices = result
-              req.voices = result
-              res.render('discover/new/voices')
-            },
-            json: function () {
-              res.json(result)
-            },
-          })
+        res.format({
+          html: function () {
+            res.locals.voices = result
+            req.voices = result
+            res.render('discover/new/voices')
+          },
+          json: function () {
+            res.json(result)
+          },
         })
       })
     },
 
     newPeople: function(req, res, next) {
-      Entity.find(['type = ? AND NOT is_anonymous = ? ORDER BY created_at DESC LIMIT ?', ['person', true, dbLimit]], function (err, result) {
+      async.waterfall([
+        function (callback) {
+          Entity.find(['type = ? AND is_anonymous = ? ORDER BY created_at DESC LIMIT ?', ['person', false, dbLimit]],
+            callback)
+        },
+
+        function (people, callback) {
+          EntitiesPresenter.build(people, req.currentPerson, callback)
+        },
+      ], function (err, result) {
         if (err) { return next(err) }
 
-        EntitiesPresenter.build(result, req.currentPerson, function (err, result) {
-          if (err) { return next(err) }
-
-          res.format({
-            html: function () {
-              res.locals.people = result
-              req.people = result
-              res.render('discover/new/people')
-            },
-            json: function () {
-              res.json(result)
-            },
-          })
+        res.format({
+          html: function () {
+            res.locals.people = result
+            req.people = result
+            res.render('discover/new/people')
+          },
+          json: function () {
+            res.json(result)
+          },
         })
       })
     },
 
     newOrganizations: function(req, res, next) {
-      Entity.find(['type = ? ORDER BY created_at DESC LIMIT ?', ['organization', dbLimit]], function (err, result) {
+      async.waterfall([
+        function (callback) {
+          Entity.find(['type = ? ORDER BY created_at DESC LIMIT ?', ['organization', dbLimit]],
+            callback)
+        },
+
+        function (orgs, callback) {
+          EntitiesPresenter.build(orgs, req.currentPerson, callback)
+        },
+      ], function (err, result) {
         if (err) { return next(err) }
 
-        EntitiesPresenter.build(result, req.currentPerson, function (err, result) {
-          if (err) { return next(err) }
-
-          res.format({
-            html: function () {
-              res.locals.organizations = result
-              req.organizations = result
-              res.render('discover/new/organizations')
-            },
-            json: function () {
-              res.json(result)
-            },
-          })
+        res.format({
+          html: function () {
+            res.locals.organizations = result
+            req.organizations = result
+            res.render('discover/new/organizations')
+          },
+          json: function () {
+            res.json(result)
+          },
         })
       })
     },
 
     trendingVoices: function (req, res, next) {
-      VoiceFollower.all(function (err, result) {
+      async.waterfall([
+        function (callback) {
+          VoiceFollower.all(callback)
+        },
+
+        function (allVoices, callback) {
+          var trendingVoiceIds = findTrending(allVoices, 'voiceId').map(function (val) {
+            return val.id
+          })
+          Voice.whereIn('id', trendingVoiceIds, callback)
+        },
+
+        function (trendingVoices, callback) {
+          VoicesPresenter.build(trendingVoices, req.currentPerson, callback)
+        },
+      ], function (err, result) {
         if (err) { return next(err) }
 
-        var trendingVoiceIds = findTrending(result, 'voiceId').map(function (val) {
-          return val.id
-        })
-
-        Voice.whereIn('id', trendingVoiceIds, function (err, result) {
-          if (err) { return next(err) }
-
-          VoicesPresenter.build(result, req.currentPerson, function (err, result) {
-            if (err) { return next(err) }
-
-            res.format({
-              html: function () {
-                res.locals.voices = result
-                req.voices = result
-                res.render('discover/trending/voices')
-              },
-              json: function () {
-                res.json(result)
-              },
-            })
-          })
+        res.format({
+          html: function () {
+            res.locals.voices = result
+            req.voices = result
+            res.render('discover/trending/voices')
+          },
+          json: function () {
+            res.json(result)
+          },
         })
       })
     },
 
     trendingPeople: function (req, res, next) {
-      // TODO: Use Knex (db) directly for performance reasons
-      Entity.find(['type = ? AND is_anonymous = ? LIMIT ?', ['person', false, dbLimit]], function (err, allPeople) {
-        if (err) { return next(err) }
+      async.waterfall([
+        function (callback) {
+          Entity.find(['type = ? AND is_anonymous = ? LIMIT ?', ['person', false, dbLimit]],
+            callback)
+        },
 
-        var allPeopleIds = allPeople.map(function (val) {
-          return val.id
-        })
+        function (allPeople, callback) {
+          var allPeopleIds = allPeople.map(function (val) {
+            return val.id
+          })
+          EntityFollower.whereIn('followed_id', allPeopleIds, callback)
+        },
 
-        EntityFollower.whereIn('followed_id', allPeopleIds, function (err, followedIds) {
+        function (followedIds, callback) {
           var trendingPeopleIds = findTrending(followedIds, 'followedId').map(function (val) {
             return val.id
           })
+          Entity.whereIn('id', trendingPeopleIds, callback)
+        },
 
-          Entity.whereIn('id', trendingPeopleIds, function (err, trendingPeople) {
-            if (err) { return next(err) }
+        function (trendingPeople, callback) {
+          EntitiesPresenter.build(trendingPeople, req.currentPerson, callback)
+        },
+      ], function (err, result) {
+        if (err) { return next(err) }
 
-            EntitiesPresenter.build(trendingPeople, req.currentPerson, function (err, result) {
-              if (err) { return next(err) }
-
-              res.format({
-                html: function () {
-                  res.locals.people = result
-                  req.people = result
-                  res.render('discover/trending/people')
-                },
-                json: function () {
-                  res.json(result)
-                },
-              })
-            })
-          })
+        res.format({
+          html: function () {
+            res.locals.people = result
+            req.people = result
+            res.render('discover/trending/people')
+          },
+          json: function () {
+            res.json(result)
+          },
         })
       })
     },
 
     trendingOrganizations: function (req, res, next) {
-      // TODO: Use Knex (db) directly for performance reasons
-      // get all entities that are orgs (within 50 limit)
-      Entity.find(['type = ? LIMIT ?', ['organization', dbLimit]], function (err, allEntities) {
-        if (err) { return next(err) }
+      async.waterfall([
+        function (callback) {
+          Entity.find(['type = ? LIMIT ?', ['organization', dbLimit]], callback)
+        },
 
-        // get list of IDs
-        var orgs = allEntities.map(function (val) {
-          return val.id
-        })
-
-        // we got a list of orgs amongst the entities, now let's find followers
-        // for any of these orgs
-        EntityFollower.whereIn('followed_id', orgs, function (err, result) {
-          var trendingOrgsIds = findTrending(result, 'followedId').map(function (val) {
+        function (allOrgs, callback) {
+          var orgsIds = allOrgs.map(function (val) {
             return val.id
           })
+          EntityFollower.whereIn('followed_id', orgsIds, callback)
+        },
 
-          Entity.whereIn('id', trendingOrgsIds, function (err, result) {
-            if (err) { return next(err) }
-
-            EntitiesPresenter.build(result, req.currentPerson, function (err, result) {
-              if (err) { return next(err) }
-
-              res.format({
-                html: function () {
-                  res.locals.organizations = result
-                  req.organizations = result
-                  res.render('discover/trending/organizations')
-                },
-                json: function () {
-                  res.json(result)
-                },
-              })
-            })
+        function (followedIds, callback) {
+          var trendingOrgsIds = findTrending(followedIds, 'followedId').map(function (val) {
+            return val.id
           })
+          Entity.whereIn('id', trendingOrgsIds, callback)
+        },
+
+        function (trendingOrgs, callback) {
+          EntitiesPresenter.build(result, req.currentPerson, callback)
+        },
+      ], function (err, result) {
+        if (err) { return next(err) }
+
+        res.format({
+          html: function () {
+            res.locals.organizations = result
+            req.organizations = result
+            res.render('discover/trending/organizations')
+          },
+          json: function () {
+            res.json(result)
+          },
         })
       })
     },
