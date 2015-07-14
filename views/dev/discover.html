@@ -73,39 +73,39 @@
 </main>
 
 <script>
-  var postsContainer = document.querySelector('.voice-posts');
-  var posts = [];
-
-  var featuredVoicesData = <%= JSON.stringify(voices) %>;
-
-  new VoiceCover( featuredVoicesData[0] ).render( document.querySelector('.draft-test-1') );
-  new VoiceCover( featuredVoicesData[1] ).render( document.querySelector('.draft-test-2') );
-  new VoiceCover( featuredVoicesData[2] ).render( document.querySelector('.draft-test-3') );
-  new VoiceCover( featuredVoicesData[3] ).render( document.querySelector('.draft-test-4') );
-  new VoiceCover( featuredVoicesData[4] ).render( document.querySelector('.draft-test-5') );
-
-  new VoiceCover( featuredVoicesData[4] ).render( document.querySelector('.unlisted-test-1') );
-  new VoiceCover( featuredVoicesData[3] ).render( document.querySelector('.unlisted-test-2') );
-  new VoiceCover( featuredVoicesData[2] ).render( document.querySelector('.unlisted-test-3') );
-  new VoiceCover( featuredVoicesData[1] ).render( document.querySelector('.unlisted-test-4') );
-  new VoiceCover( featuredVoicesData[0] ).render( document.querySelector('.unlisted-test-5') );
-
-  var orgsData = <%= JSON.stringify(organizations) %>;
-
-  new CV.Card(orgsData[0]).render(document.querySelector('.public-test-1'));
-  new CV.Card(orgsData[1]).render(document.querySelector('.public-test-2'));
-  new CV.Card(orgsData[2]).render(document.querySelector('.public-test-3'));
-  new CV.Card(orgsData[3]).render(document.querySelector('.public-test-4'));
-  new CV.Card(orgsData[4]).render(document.querySelector('.public-test-5'));
-  new CV.Card(orgsData[5]).render(document.querySelector('.public-test-6'));
-
-  new CV.Card(orgsData[5]).render(document.querySelector('.archive-test-1'));
-  new CV.Card(orgsData[4]).render(document.querySelector('.archive-test-2'));
-  new CV.Card(orgsData[3]).render(document.querySelector('.archive-test-3'));
-  new CV.Card(orgsData[2]).render(document.querySelector('.archive-test-4'));
-  new CV.Card(orgsData[1]).render(document.querySelector('.archive-test-5'));
-  new CV.Card(orgsData[0]).render(document.querySelector('.archive-test-6'));
-
+  //var postsContainer = document.querySelector('.voice-posts');
+  //var posts = [];
+//
+  //var featuredVoicesData = <%= JSON.stringify(voices) %>;
+//
+  //new VoiceCover( featuredVoicesData[0] ).render( document.querySelector('.draft-test-1') );
+  //new VoiceCover( featuredVoicesData[1] ).render( document.querySelector('.draft-test-2') );
+  //new VoiceCover( featuredVoicesData[2] ).render( document.querySelector('.draft-test-3') );
+  //new VoiceCover( featuredVoicesData[3] ).render( document.querySelector('.draft-test-4') );
+  //new VoiceCover( featuredVoicesData[4] ).render( document.querySelector('.draft-test-5') );
+//
+  //new VoiceCover( featuredVoicesData[4] ).render( document.querySelector('.unlisted-test-1') );
+  //new VoiceCover( featuredVoicesData[3] ).render( document.querySelector('.unlisted-test-2') );
+  //new VoiceCover( featuredVoicesData[2] ).render( document.querySelector('.unlisted-test-3') );
+  //new VoiceCover( featuredVoicesData[1] ).render( document.querySelector('.unlisted-test-4') );
+  //new VoiceCover( featuredVoicesData[0] ).render( document.querySelector('.unlisted-test-5') );
+//
+  //var orgsData = <%= JSON.stringify(organizations) %>;
+//
+  //new CV.Card(orgsData[0]).render(document.querySelector('.public-test-1'));
+  //new CV.Card(orgsData[1]).render(document.querySelector('.public-test-2'));
+  //new CV.Card(orgsData[2]).render(document.querySelector('.public-test-3'));
+  //new CV.Card(orgsData[3]).render(document.querySelector('.public-test-4'));
+  //new CV.Card(orgsData[4]).render(document.querySelector('.public-test-5'));
+  //new CV.Card(orgsData[5]).render(document.querySelector('.public-test-6'));
+//
+  //new CV.Card(orgsData[5]).render(document.querySelector('.archive-test-1'));
+  //new CV.Card(orgsData[4]).render(document.querySelector('.archive-test-2'));
+  //new CV.Card(orgsData[3]).render(document.querySelector('.archive-test-3'));
+  //new CV.Card(orgsData[2]).render(document.querySelector('.archive-test-4'));
+  //new CV.Card(orgsData[1]).render(document.querySelector('.archive-test-5'));
+  //new CV.Card(orgsData[0]).render(document.querySelector('.archive-test-6'));
+//
   $( document ).ready(function() {
 
     createMenuActions('.profile-menu', '.profile-menu-content');

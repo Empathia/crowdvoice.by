@@ -1,0 +1,190 @@
+<main role="main" class="cv-main-content -rel">
+
+  <section class="profile-voices-intro">
+      <h1 class="profile-heading -inline-block -font-bold -m0">Newest</h1>
+      <div class="profile-select-options -inline-block">
+
+      </div>
+
+      <article role="article" class="profile-menu -row -rel">
+        <div class="profile-tabs">
+          <div class="menu-item active -menu-tab -inline-block">
+            <p class="-font-bold">Voices</p>
+          </div>
+          <div class="menu-item -menu-tab -inline-block">
+            <p class="-font-bold">People</p>
+          </div>
+          <div class="menu-item -menu-tab -inline-block">
+            <p class="-font-bold">Organizations</p>
+          </div>
+
+        </div>
+
+      </article>
+
+  </section>
+
+  <section class="profile-body profile-menu-content -rel">
+
+
+    <div class="active -menu-tab-content">
+      <div class="-row discover-voices-container">
+        <!-- voices -->
+      </div>
+    </div>
+
+    <div class="-menu-tab-content">
+    	<div class="-row discover-people-container">
+        	<!-- people -->
+      	</div>
+    </div>
+
+    <div class="-menu-tab-content">
+    	<div class="-row discover-organizations-container">
+        	<!-- organizations -->
+      	</div>
+    </div>
+
+
+  </section>
+
+</main>
+
+<script>
+
+	var allTimes = {
+		"1": {label: 'This week', name: 'thisweek', active: true},
+		"2": {label: 'Last week', name: 'lastweek'},
+		"3": {label: 'Two weeks ago', name: 'twoweeks'},
+		"4": {label: 'Three weeks ago', name: 'threeweeks'}
+	};
+	new CV.Select({
+		style : 'tiny',
+		label : 'Choose Time',
+		name  : 'selectTime',
+		options: allTimes
+	}).render($('.profile-select-options'));
+
+	function renderData(data, instance, className){
+		data.forEach(function (item, index) {
+		  var itemEl = $('<div class="-col-4 -pr1"></div>');
+		  new instance(item).render( itemEl);
+		  $('.discover-' + className + '-container').append(itemEl);
+		});
+	}
+
+	function getData(url, instance, className){
+		$.ajax({
+			type: "GET",
+			url: url,
+			headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
+			data : {},
+			dataType : 'json',
+			success: function(data) {
+				console.log('New '+ className);
+			  	console.log(data);
+			  	renderData(data, instance, className)
+			}
+		});
+	}
+
+	getData('/discover/new/voices', VoiceCover, 'voices');
+	getData('/discover/new/people', CV.Card, 'people');
+	getData('/discover/new/organizations', CV.Card, 'organizations');
+
+	//$.ajax({
+	//	type: "GET",
+	//	url:'/discover/new/voices',
+	//	headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
+	//	data : {},
+	//	dataType : 'json',
+	//	success: function(data) {
+	//		console.log('New voices');
+	//	  	console.log(data);
+	//	  	//renderVoices(data);
+	//	  	renderData(data, VoiceCover, 'voices')
+	//	}
+	//});
+
+	//$.ajax({
+	//	type: "GET",
+	//	url:'/discover/new/people',
+	//	headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
+	//	data : {},
+	//	dataType : 'json',
+	//	success: function(data) {
+	//		console.log('New people');
+	//	  	console.log(data);
+	//	  	//renderPeople(data);
+	//	  	renderData(data, CV.Card, 'people');
+	//	}
+	//});
+//
+	//$.ajax({
+	//	type: "GET",
+	//	url:'/discover/new/organizations',
+	//	headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
+	//	data : {},
+	//	dataType : 'json',
+	//	success: function(data) {
+	//		console.log('New organizations');
+	//	  	console.log(data);
+	//	  	renderData(data, CV.Card, 'organizations');
+	//	}
+	//});
+
+	// **************************
+	// ****** render voices *****
+	// **************************
+	//function renderVoices(data){
+	//	data.forEach(function (voice, index) {
+	//	  var voiceEl = $('<div class="-col-4 -pr1"></div>');
+	//	  new VoiceCover(voice).render( voiceEl);
+	//	  $('.discover-voices-container').append(voiceEl);
+	//	});
+	//}
+
+	// *****************************
+	// ****** render followers *****
+	// *****************************
+	//function renderPeople(data){
+	//	data.forEach(function (person, index) {
+	//	  var personEl = $('<div class="-col-4 -pr1"></div>');
+	//	  new CV.Card(person).render( personEl);
+	//	  $('.discover-people-container').append(personEl);
+	//	});
+	//}
+
+
+
+  $( document ).ready(function() {
+
+    createMenuActions('.profile-menu', '.profile-menu-content');
+
+    function createMenuActions(menuContainer, contentContainer){
+      $( menuContainer ).find('.-menu-tab').each(function( index ) {
+        var elContent = $( contentContainer + ' .-menu-tab-content:nth-child(' + (index + 1) + ')');
+        $(this).on('click', createCallback(this, index, elContent, menuContainer, contentContainer));
+      });
+    }
+
+    function createCallback( tab, index, elContent, menuContainer, contentContainer ){
+      return function(){
+        $(menuContainer + ' .-menu-tab').removeClass('active');
+        $(this).addClass('active');
+        $(contentContainer + ' .-menu-tab-content').removeClass('active');
+        $(elContent).addClass('active');
+      }
+    }
+
+
+  });
+
+
+
+</script>
+
+
+
+
+
