@@ -102,9 +102,6 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
         description: req.body['description'] || entity.description,
         location: req.body['location'] || entity.location
       });
-      if (typeof(req.body['isAnonymous']) !== 'undefined') {
-        entity.isAnonymous = (req.body['isAnonymous'] === "true") ? true : false
-      }
 
       async.series([
         function (done) {
@@ -131,7 +128,10 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
         }
       ], function (err) {
         if (err) {
-          res.render(req.entityType + '/edit.html', {errors: err});
+          res.locals.errors = err;
+          req.errors = err;
+          console.log(err)
+          res.redirect('/' + entity.profileName + '/edit');
         } else {
           res.redirect('/' + entity.profileName + '/edit');
         }
@@ -223,10 +223,12 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
           return next(new ForbiddenError());
         }
 
-        Voice.find({
-          owner_id: hashids.decode(req.currentPerson.id)[0]
-        }, function (err, result) {
+        Voice.find({ owner_id: hashids.decode(req.currentPerson.id)[0] }, function (err, result) {
           if (err) { return next(err); }
+
+          // atm both req.currentPerson.id and req.entity.id should both be
+          // hashed, but they are not. when anonymous req.currentPerson is NOT
+          // hashed, thus messing up user checking and stuff.
 
           var endResult = {
             draft: [],
