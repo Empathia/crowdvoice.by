@@ -70,6 +70,8 @@ var SearchController = Class('SearchController')({
             res.render('search/index.html');
           },
           json : function() {
+            delete response.full;
+
             res.json(response);
           }
         });
