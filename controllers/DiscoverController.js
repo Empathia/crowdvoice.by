@@ -40,7 +40,7 @@ var DiscoverController = Class('DiscoverController')({
       Voice.find(['status = ? ORDER BY created_at DESC LIMIT ?', [Voice.STATUS_PUBLISHED, dbLimit]], function (err, result) {
         if (err) { return next(err) }
 
-        VoicesPresenter(result, req.currentPerson, function (err, result) {
+        VoicesPresenter.build(result, req.currentPerson, function (err, result) {
           if (err) { return next(err) }
 
           res.format({
