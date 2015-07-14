@@ -102,10 +102,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
         description: req.body['description'] || entity.description,
         location: req.body['location'] || entity.location
       });
-      if (typeof(req.body['isAnonymous']) !== 'undefined') {
-        entity.isAnonymous = (req.body['isAnonymous'] === "true") ? true : false
-      }
-
+      console.log(entity)
       async.series([
         function (done) {
           entity.save(function (err) {
@@ -131,7 +128,10 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
         }
       ], function (err) {
         if (err) {
-          res.render(req.entityType + '/edit.html', {errors: err});
+          res.locals.errors = err;
+          req.errors = err;
+          console.log(err)
+          res.redirect('/' + entity.profileName + '/edit');
         } else {
           res.redirect('/' + entity.profileName + '/edit');
         }
