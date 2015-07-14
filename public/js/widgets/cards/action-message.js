@@ -13,28 +13,32 @@ Class(CV, 'CardActionMessage').inherits(Widget)({
 
     prototype : {
 
-        id : null,
+        id      : null,
+        bubble  : null,
 
         init : function init(config) {
             Widget.prototype.init.call(this, config);
             var button = this;
+            var bCreated = false;
 
             this.element.on('click', function(){
 
-                new CV.Bubble({
-                    title       : 'Send Message',
-                    name        : 'sendMessageBubble',
-                    action      : CV.SendMessage,
-                    width       : 320,
-                    data        : {
-                      type : 'message',
-                      profileName : currentPerson.profileName,
-                      senderEntityId : currentPerson.id,
-                      receiverEntityId : button.id
-                    },
-                    anchorEl    : button.element
-                }).show();
-
+                if (!bCreated){
+                    bCreated = true;
+                    button.bubble = new CV.Bubble({
+                        title       : 'Send Message',
+                        name        : 'sendMessageBubble',
+                        action      : CV.SendMessage,
+                        width       : 320,
+                        data        : {
+                          type : 'message',
+                          profileName : currentPerson.profileName,
+                          senderEntityId : currentPerson.id,
+                          receiverEntityId : button.id
+                        },
+                        anchorEl    : button.element
+                    }).show();
+                }
             });
 
         }

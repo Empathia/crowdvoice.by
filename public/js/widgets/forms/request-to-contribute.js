@@ -4,15 +4,18 @@ Class(CV, 'RequestToContribute').inherits(Widget)({
 
     HTML : '\
         <div class="-clear-after">\
-            <form>\
-                <div class="-col-12 placeholder-main">\
-                </div>\
-                <div class="-col-12 placeholder-send"></div>\
-            </form>\
         </div>\
     ',
 
-    THANKS : '\
+    FORM : '\
+        <form>\
+            <div class="-col-12 placeholder-main">\
+            </div>\
+            <div class="-col-12 placeholder-send"></div>\
+        </form>\
+    ',
+
+    SENT : '\
         <div class="sent-form">\
         <h2>Thanks for the interest to help out!</h2>\
         <p>We will review your request as soon as possible and may contact you to get some more information or directly with a response.</p>\
@@ -25,12 +28,18 @@ Class(CV, 'RequestToContribute').inherits(Widget)({
         type            : null,
         style           : null,
         voices          : null,
+        data            : null,
 
         init : function(config){
             Widget.prototype.init.call(this, config);
 
+            this.setup();
+
+        },
+
+        setup : function(){
+            this.element.empty();
             this.element.append(this.constructor.FORM);
-            var that = this;
 
             new CV.Input({
                 type        : '',
@@ -41,25 +50,43 @@ Class(CV, 'RequestToContribute').inherits(Widget)({
                 title       : "Briefly state why would you be a valuable content contributor to this Voice."
             }).render(this.element.find('.placeholder-main'));
 
-
-            //********** bottom ***********
-
-            new CV.Button({
+            var formButton = new CV.Button({
                 style   : 'primary full submit',
                 type    : 'single',
                 label   : 'Submit Request',
                 name    : 'buttonSend'
             }).render(this.element.find('.placeholder-send'));
 
+            formButton.element.click(function(e){
+                e.preventDefault();
+                this.sendMessage();
+            }.bind(this));
+
         },
 
-        showSuccess : function(){
-            var that = this;
-            this.element.find('form').remove();
-            this.element.append(that.constructor.THANKS);
+        sendMessage : function(){
+            var sendmessage = this;
 
-            this.element.find('button.ok').on('click', function(){
-                that.dispatch('close');
+            var textData = {
+                message : this.element.find('form textarea').val()
+            }
+
+            $.ajax({
+                method : 'POST',
+                url : window.location.pathname + 'requestToContribute',
+                headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
+                data : textData,
+                success : function(data) {
+                    sendmessage.element.find('form').remove();
+                    sendmessage.element.append(sendmessage.constructor.SENT);
+                    sendmessage.element.find('button').on('click', function(){
+                        sendmessage.dispatch('close');
+                        sendmessage.setup();
+                    });
+                },
+                error : function(data) {
+                  console.error(data)
+                }
             });
         }
 
