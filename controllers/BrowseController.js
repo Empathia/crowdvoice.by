@@ -1,22 +1,28 @@
 var BrowseController = Class('BrowseController')({
   prototype: {
     featuredVoices: function (req, res, next) {
-      FeaturedVoice.all(function (err, allFeaturedVoices) {
+      async.waterfall([
+        function (callback) {
+          FeaturedVoice.all(callback)
+        },
+
+        function (allFeaturedVoices, callback) {
+          var featuredVoicesIds = allFeaturedVoices.map(function (val) {
+            return val.voiceId
+          })
+          Voice.whereIn('id', featuredVoicesIds, callback)
+        },
+
+        function (featuredVoices, callback) {
+          VoicesPresenter.build(featuredVoices, req.currentPerson, callback)
+        },
+      ], function (err, result) {
         if (err) { return next(err) }
 
-        EntitiesPresenter.build(allFeaturedVoices, req.currentPerson, function (err, presenterVoices) {
-          if (err) { return next(err) }
-
-          res.format({
-            html: function () {
-              res.locals.featuredVoices = presenterVoices
-              req.featuredVoices = presenterVoices
-              res.render('browse/featured/voices')
-            },
-            json: function () {
-              res.json(presenterVoices)
-            },
-          })
+        res.format({
+          json: function () {
+            res.json(result)
+          },
         })
       })
     },
