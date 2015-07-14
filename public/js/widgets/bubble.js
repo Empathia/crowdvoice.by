@@ -70,6 +70,7 @@ Class(CV, 'Bubble').inherits(Widget)({
             }.bind(this));
 
             this.render('body');
+            this.hide();
 
         },
 
@@ -136,10 +137,11 @@ Class(CV, 'Bubble').inherits(Widget)({
             this.element.show();
 
             this.position();
+            console.log('show');
         },
         hide : function(){
             $('body').css('overflow', '');
-            this.element.detach();
+            this.element.hide();
         }
 
     }

@@ -16,41 +16,13 @@ Class(CV, 'VoiceRequestToContribute').inherits(Widget)({
                 title       : 'Want to help out?',
                 name        : 'bubbleRequest',
                 action      : CV.RequestToContribute,
+                data        : {},
                 width       : 600,
-                anchorEl    : this.el.querySelector('.request-to-contribute-button')
+                anchorEl    : $(this.el).find('.request-to-contribute-button')
             });
 
             this.appendChild(bubble);
 
-            bubble.bubbleAction.element.find('button.submit').bind('click', function(e) {
-              e.preventDefault();
-              var url = window.location.pathname + '/requestToContribute';
-
-              var data = {
-                message : bubble.bubbleAction.element.find('form textarea').val()
-              }
-
-              $.ajax({
-                method : 'POST',
-                url : url,
-                headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
-                data : data,
-                success : function(data) {
-                    bubble.bubbleAction.showSuccess();
-                    bubble.position();
-                },
-                error : function(data) {
-                  console.error(data)
-                }
-              })
-            })
-
-            //this.appendChild(
-            //    new CV.PopoverRequestToContribute({
-            //        toggler: this.el.querySelector('.request-to-contribute-button'),
-            //        container: this.el
-            //    })
-            //);
         }
     }
 });
