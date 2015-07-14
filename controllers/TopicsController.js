@@ -1,6 +1,62 @@
 var TopicsController = Class('TopicsController')({
   prototype : {
 
+    getTopicBySlug : function getTopicBySlug (req, res, next) {
+      var result = {
+        currentTopic: null,
+        voices: null
+      }
+
+      async.waterfall([
+        function (callback) {
+          Topic.find({ slug: req.params.topicSlug }, callback);
+        },
+
+        function (topic, callback) {
+          TopicsPresenter.build(topic, callback);
+        },
+
+        function (presenterTopic, callback) {
+          var topicId = hashids.decode(presenterTopic[0].id)[0];
+          result.currentTopic = presenterTopic[0];
+
+          VoiceTopic.find({ topic_id: topicId }, callback);
+        },
+
+        function (voicesForTopic, callback) {
+          var voicesIds = voicesForTopic.map(function (val) {
+            return val.voiceId;
+          });
+
+          Voice.whereIn('id', voicesIds, callback);
+        },
+
+        function (voices, callback) {
+          VoicesPresenter.build(voices, req.currentPerson, callback);
+        }
+      ], function (err, voices) {
+        if (err) { return next(err); }
+
+        result.voices = voices;
+
+        res.format({
+          html: function () {
+            req.currentTopic = result.currentTopic;
+            req.voices = result.voices;
+            res.locals.currentTopic = result.currentTopic;
+            res.locals.voices = result.voices;
+            res.render('topics/show');
+          },
+          json: function () {
+            res.json(result);
+          }
+        });
+      });
+    },
+
+    // Many of the following methods are not being used, but should still remain
+    // here.
+
     getTopicById : function getTopicById (req, res, next) {
       // Check params
       if (isNaN(req.params.id)) {
@@ -98,7 +154,7 @@ var TopicsController = Class('TopicsController')({
           if (!req.files['image']) { return done(); }
           topic.uploadImage('image', req.files['image'].path, function (err) {
             done(err);
-          });  
+          });
         }
       ], function (err) {
         if (err) {
