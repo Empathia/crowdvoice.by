@@ -45,7 +45,7 @@ var DiscoverController = Class('DiscoverController')({
     newVoices: function(req, res, next) {
       async.waterfall([
         function (callback) {
-          Voice.find(['status = ? ORDERY BY created_at DESC LIMIT ?', [Voice.STATUS_PUBLISHED, dbLimit]],
+          Voice.find(['status = ? ORDER BY created_at DESC LIMIT ?', [Voice.STATUS_PUBLISHED, dbLimit]],
             callback)
         },
 
