@@ -223,10 +223,12 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
           return next(new ForbiddenError());
         }
 
-        Voice.find({
-          owner_id: hashids.decode(req.currentPerson.id)[0]
-        }, function (err, result) {
+        Voice.find({ owner_id: hashids.decode(req.currentPerson.id)[0] }, function (err, result) {
           if (err) { return next(err); }
+
+          // atm both req.currentPerson.id and req.entity.id should both be
+          // hashed, but they are not. when anonymous req.currentPerson is NOT
+          // hashed, thus messing up user checking and stuff.
 
           var endResult = {
             draft: [],

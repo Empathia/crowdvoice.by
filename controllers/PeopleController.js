@@ -1,11 +1,25 @@
 var VoicesPresenter = require(path.join(process.cwd(), '/presenters/VoicesPresenter.js'));
-
 var PostsPresenter = require(path.join(process.cwd(), '/presenters/PostsPresenter.js'));
 
 var PeopleController = Class('PeopleController').inherits(EntitiesController)({
   prototype : {
     init : function () {
       return this;
+    },
+
+    myFeed : function myFeed(req, res, next) {
+      ACL.isAllowed('myFeed', 'entities', req.role, {
+        currentEntity: req.entity,
+        currentPerson: req.currentPerson
+      }, function (err, response) {
+        if (err) { return next(err); }
+
+        if (!response.isAllowed) {
+          return next(new ForbiddenError());
+        }
+
+        res.render('people/myFeed');
+      });
     },
 
     savedPosts : function savedPosts(req, res, next) {
