@@ -9,6 +9,11 @@ var EntitiesPresenter = require(path.join(process.cwd(), '/presenters/EntitiesPr
 var HomeController = Class('HomeController')({
   prototype : {
     index : function index(req, res, next) {
+      // if the person is logged in, redirect to their feed
+      if (req.currentPerson) {
+        res.redirect('/' + req.currentPerson.profileName + '/myFeed');
+      }
+
       ACL.isAllowed('show', 'homepage', req.role, {}, function(err, isAllowed) {
         if (err) {
           return next(err);
