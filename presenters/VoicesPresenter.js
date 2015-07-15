@@ -44,6 +44,8 @@ var VoicesPresenter = Module('VoicesPresenter')({
             var topicIds = [];
 
             async.series([function(done) {
+
+              // Get topic ids
               VoiceTopic.find({ 'voice_id' : voice.id }, function(err, result) {
                 if (err) {
                   return done(err);
@@ -80,6 +82,15 @@ var VoicesPresenter = Module('VoicesPresenter')({
                 var followerIds = voiceFollowers.map(function(item) {
                   return item.entityId;
                 });
+
+                // Is the currentPerson Following?
+                voiceInstance.followed = false;
+
+                // if (currentPerson) {
+                //   if (followerIds.indexOf(hashids.decode(currentPerson.id)[0]) !== -1) {
+                //     voiceInstance.followed = true;
+                //   }
+                // }
 
                 Entity.whereIn('id', followerIds, function(err, result) {
                   if (err) {

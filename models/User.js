@@ -89,6 +89,45 @@ var User = Class('User').inherits(Argon.KnexModel)({
       });
     },
 
+    /* Returns the user's associated shadow entity
+     * @method shadow
+     */
+    shadow : function shadow(done) {
+      var model = this;
+
+      model.entity(function(err, person) {
+        if (err) {
+          return done(err);
+        }
+
+        db('Entities')
+          .where({ id : db('EntityOwner').where('id', '=', model.entityId).select('owned_id') })
+          .andWhere('is_anonymous', '=', true)
+          .andWhere('type', '=', 'person')
+          .exec(function(err, result) {
+            if (err) {
+              return done(err);
+            }
+
+            var result = result[0]
+
+            var shadowEntity = new Entity({
+              id : result.id,
+              name : result.name,
+              lastname : result.lastname,
+              profileName : person.profileName,
+              isAnonymous : result.is_anonymous,
+              createdAt : result.created_at,
+              updatedAt : result.updated_at
+            });
+
+            // shadowEntity.id = hashids.encode(shadowEntity.id);
+
+            return done(null, shadowEntity)
+          });
+      })
+    },
+
     /* Returns the model raw data. It also filters the sensitive data.
      * @method toJson
      */

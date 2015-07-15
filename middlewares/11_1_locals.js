@@ -38,43 +38,29 @@ module.exports = function(req, res, next) {
     var currentUser = new User(req.user);
 
     if (req.session.isAnonymous) {
-      currentUser.entity(function(err, person) {
+      currentUser.shadow(function(err, shadowEntity) {
         if (err) {
           return next(err);
         }
 
-        db('Entities')
-          .where({ id : db('EntityOwner').where('id', '=', currentUser.entityId).select('owned_id') })
-          .andWhere('is_anonymous', '=', true)
-          .andWhere('type', '=', 'person')
-          .exec(function(err, result) {
+        currentUser.entity(function(err, entity) {
+          if (err) {
+            return next(err);
+          }
+
+          EntitiesPresenter.build([shadowEntity], entity, function(err, presenterResult) {
             if (err) {
               return next(err);
             }
 
-            var result = result[0]
+            res.locals.currentPerson = presenterResult[0];
+            req.currentPerson = presenterResult[0];
 
-            var shadowEntity = new Entity({
-              id : result.id,
-              name : result.name,
-              lastname : result.lastname,
-              profileName : person.profileName,
-              isAnonymous : result.is_anonymous,
-              createdAt : result.created_at,
-              updatedAt : result.updated_at
-            });
-
-            shadowEntity.id = hashids.encode(shadowEntity.id);
-
-            res.locals.currentPerson = shadowEntity;
-            req.currentPerson = shadowEntity;
             req.role = 'Anonymous';
 
-            req.currentPerson.organizations = [];
-            res.locals.currentPerson.organizations = [];
-
-            return next();
+            next();
           });
+        });
       });
     } else {
       currentUser.entity(function(err, entity) {
