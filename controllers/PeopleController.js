@@ -7,8 +7,51 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
       return this;
     },
 
-    feed : function feed(req, res, next) {
-      ACL.isAllowed('feed', 'entities', req.role, {
+    myVoices: function (req, res, next) {
+      ACL.isAllowed('myVoices', 'entities', req.role, {
+        currentEntity: req.entity,
+        currentPerson: req.currentPerson
+      }, function (err, response) {
+        if (err) { return next(err); }
+
+        if (!response.isAllowed) {
+          return next(new ForbiddenError());
+        }
+
+        Voice.find({ owner_id: response.entity.id }, function (err, result) {
+          if (err) { return next(err); }
+
+          // atm both req.currentPerson.id and req.entity.id should both be
+          // hashed, but they are not. when anonymous req.currentPerson is NOT
+          // hashed, thus messing up user checking and stuff.
+
+          var endResult = {
+            draft: [],
+            unlisted: [],
+            published: []
+          };
+
+          result.forEach(function (val) {
+            switch (val.status) {
+              case 'STATUS_DRAFT':
+                endResult.draft.push(val);
+                break;
+              case 'STATUS_UNLISTED':
+                endResult.unlisted.push(val);
+                break;
+              case 'STATUS_PUBLISHED':
+                endResult.published.push(val);
+                break;
+            };
+          });
+
+          res.json(endResult);
+        });
+      });
+    },
+
+    feed: function (req, res, next) {
+      ACL.isAllowed('myFeed', 'entities', req.role, {
         currentEntity: req.entity,
         currentPerson: req.currentPerson
       }, function (err, response) {
