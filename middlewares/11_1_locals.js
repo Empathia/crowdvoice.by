@@ -13,7 +13,7 @@ module.exports = function(req, res, next) {
 
     // Sessions and cookie expire;
     if (req.isAuthenticated() && req.session.cookie.expires) {
-      if ((Date.now() >  req.session.cookie.expires.getTime() )) {
+      if ((Date.now() >  req.session.cookie.expires.getTime())) {
         req.session.destroy(); // Session is expired
       } else {
         var expires;
@@ -64,6 +64,8 @@ module.exports = function(req, res, next) {
               updatedAt : result.updated_at
             });
 
+            shadowEntity.id = hashids.encode(shadowEntity.id);
+
             res.locals.currentPerson = shadowEntity;
             req.currentPerson = shadowEntity;
             req.role = 'Anonymous';
@@ -73,7 +75,7 @@ module.exports = function(req, res, next) {
 
             return next();
           });
-      })
+      });
     } else {
       currentUser.entity(function(err, entity) {
         if (err) {
@@ -104,7 +106,7 @@ module.exports = function(req, res, next) {
                 return done(err);
               }
 
-              organizations.forEach(function(organization){
+              organizations.forEach(function(organization) {
                 organization.id = hashids.decode(organization.id)[0];
               });
 
