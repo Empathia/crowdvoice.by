@@ -86,11 +86,11 @@ var VoicesPresenter = Module('VoicesPresenter')({
                 // Is the currentPerson Following?
                 voiceInstance.followed = false;
 
-                // if (currentPerson) {
-                //   if (followerIds.indexOf(hashids.decode(currentPerson.id)[0]) !== -1) {
-                //     voiceInstance.followed = true;
-                //   }
-                // }
+                if (currentPerson) {
+                  if (followerIds.indexOf(currentPerson.id) !== -1) {
+                    voiceInstance.followed = true;
+                  }
+                }
 
                 Entity.whereIn('id', followerIds, function(err, result) {
                   if (err) {
