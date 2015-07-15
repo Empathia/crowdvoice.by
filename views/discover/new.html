@@ -53,23 +53,55 @@
 <script>
 
 	var allTimes = {
-		"1": {label: 'This week', name: 'thisweek', active: true},
+		"1": {label: 'This week', name: 'thisweek'},
 		"2": {label: 'Last week', name: 'lastweek'},
 		"3": {label: 'Two weeks ago', name: 'twoweeks'},
 		"4": {label: 'Three weeks ago', name: 'threeweeks'}
 	};
-	new CV.Select({
+
+	var selectTime = new CV.Select({
 		style : 'tiny',
-		label : 'Choose Time',
+		label : 'Showing All',
 		name  : 'selectTime',
 		options: allTimes
 	}).render($('.profile-select-options'));
 
+	selectTime.thisweek.on('click', function(){
+		filterItems(0);
+	});
+	selectTime.lastweek.on('click', function(){
+		filterItems(1);
+	});
+	selectTime.twoweeks.on('click', function(){
+		filterItems(2);
+	});
+	selectTime.threeweeks.on('click', function(){
+		filterItems(3);
+	});
+	function filterItems(weekNum){
+		var currentTime = moment();
+		var timeDiff;
+		items.forEach(function(item){
+
+			timeDiff = currentTime.diff(moment(item.createdAt), 'weeks');
+			if (timeDiff == weekNum){
+				itemsContainer.find('.id-'+ item.id).show();
+			} else {
+				itemsContainer.find('.id-'+ item.id).hide();
+			}
+
+		});
+	}
+
+	var items = [];
+
 	function renderData(data, instance, className){
 		data.forEach(function (item, index) {
 		  var itemEl = $('<div class="-col-4 -pr1"></div>');
-		  new instance(item).render( itemEl);
+		  var newInstance = new instance(item).render( itemEl);
 		  $('.discover-' + className + '-container').append(itemEl);
+		  newInstance.element.addClass('id-' + item.id);
+		  //console.log(item.createdAt);
 		});
 	}
 
@@ -81,9 +113,8 @@
 			data : {},
 			dataType : 'json',
 			success: function(data) {
-				console.log('New '+ className);
-			  	console.log(data);
-			  	renderData(data, instance, className)
+			  	items = items.concat(data);
+			  	renderData(data, instance, className);
 			}
 		});
 	}
@@ -156,9 +187,9 @@
 	//}
 
 
-
+	var itemsContainer;
   $( document ).ready(function() {
-
+  	itemsContainer = $('.profile-body');
     createMenuActions('.profile-menu', '.profile-menu-content');
 
     function createMenuActions(menuContainer, contentContainer){
