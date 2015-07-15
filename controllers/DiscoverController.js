@@ -24,13 +24,13 @@ var findTrending = function (resultFromKnex, name) {
   for (var followedId in amounts) {
     result.push({
       id: followedId,
-      followersCount: amounts[followedId]
+      count: amounts[followedId]
     })
   }
 
   // sort
   result.sort(function (a, b) {
-    return b.followersCount - a.followersCount
+    return b.count - a.count
   })
 
   return result.slice(0, dbLimit - 1)
@@ -38,8 +38,8 @@ var findTrending = function (resultFromKnex, name) {
 
 var DiscoverController = Class('DiscoverController')({
   prototype: {
-    newIndex : function(req, res, next){
-      res.render('discover/new');
+    newIndex: function (req, res, next) {
+      res.render('discover/new')
     },
 
     newVoices: function(req, res, next) {
@@ -135,6 +135,12 @@ var DiscoverController = Class('DiscoverController')({
             return val.id
           })
           Voice.whereIn('id', trendingVoiceIds, callback)
+        },
+
+        function (voices, callback) {
+          callback(null, voices.filter(function (val) {
+            return (val.status === Voice.STATUS_PUBLISHED)
+          }))
         },
 
         function (trendingVoices, callback) {
@@ -234,9 +240,55 @@ var DiscoverController = Class('DiscoverController')({
         })
       })
     },
-    recommendedIndex : function(req, res, next){
-      res.render('discover/recommended');
-    }
+
+    recommendedIndex: function (req, res, next) {
+      res.render('discover/recommended')
+    },
+
+    updatedVoices: function (req, res, next) {
+      async.waterfall([
+        function (callback) {
+          Voice.all(callback)
+        },
+
+        function (allVoices, callback) {
+          var voicesIds = allVoices.map(function (val) {
+            return val.id
+          })
+          Post.whereIn('voice_id', voicesIds, callback)
+        },
+
+        function (posts, callback) {
+          var mostVoicesIds = findTrending(posts, 'voiceId').map(function (val) {
+            return val.id
+          })
+          Voice.whereIn('id', mostVoicesIds, callback)
+        },
+
+        function (voices, callback) {
+          callback(null, voices.filter(function (val) {
+            return (val.status === Voice.STATUS_PUBLISHED)
+          }))
+        },
+
+        function (voices, callback) {
+          VoicesPresenter.build(voices, req.currentPerson, callback)
+        },
+      ], function (err, result) {
+        if (err) { return next(err) }
+
+        res.format({
+          html: function () {
+            res.locals.updatedVoices = result
+            req.updatedVoices = result
+            res.render('discover/trending/updatedVoices')
+          },
+          json: function () {
+            res.json(result)
+          },
+        })
+      })
+    },
   },
 })
 
