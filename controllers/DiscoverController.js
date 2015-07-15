@@ -24,13 +24,13 @@ var findTrending = function (resultFromKnex, name) {
   for (var followedId in amounts) {
     result.push({
       id: followedId,
-      followersCount: amounts[followedId]
+      count: amounts[followedId]
     })
   }
 
   // sort
   result.sort(function (a, b) {
-    return b.followersCount - a.followersCount
+    return b.count - a.count
   })
 
   return result.slice(0, dbLimit - 1)
@@ -135,6 +135,12 @@ var DiscoverController = Class('DiscoverController')({
             return val.id
           })
           Voice.whereIn('id', trendingVoiceIds, callback)
+        },
+
+        function (voices, callback) {
+          callback(null, voices.filter(function (val) {
+            return (val.status === Voice.STATUS_PUBLISHED)
+          }))
         },
 
         function (trendingVoices, callback) {
@@ -253,15 +259,21 @@ var DiscoverController = Class('DiscoverController')({
         },
 
         function (posts, callback) {
-          var mostVoices = findTrending(posts, 'voice_id').map(function (val) {
+          var mostVoicesIds = findTrending(posts, 'voiceId').map(function (val) {
             return val.id
           })
-          Voice.whereIn('id', mostVoices, callback)
+          Voice.whereIn('id', mostVoicesIds, callback)
+        },
+
+        function (voices, callback) {
+          callback(null, voices.filter(function (val) {
+            return (val.status === Voice.STATUS_PUBLISHED)
+          }))
         },
 
         function (voices, callback) {
           VoicesPresenter.build(voices, req.currentPerson, callback)
-        }
+        },
       ], function (err, result) {
         if (err) { return next(err) }
 
