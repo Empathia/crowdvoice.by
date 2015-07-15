@@ -38,8 +38,8 @@ var findTrending = function (resultFromKnex, name) {
 
 var DiscoverController = Class('DiscoverController')({
   prototype: {
-    newIndex : function(req, res, next){
-      res.render('discover/new');
+    newIndex: function (req, res, next) {
+      res.render('discover/new')
     },
 
     newVoices: function(req, res, next) {
@@ -234,9 +234,49 @@ var DiscoverController = Class('DiscoverController')({
         })
       })
     },
-    recommendedIndex : function(req, res, next){
-      res.render('discover/recommended');
-    }
+
+    recommendedIndex: function (req, res, next) {
+      res.render('discover/recommended')
+    },
+
+    updatedVoices: function (req, res, next) {
+      async.waterfall([
+        function (callback) {
+          Voice.all(callback)
+        },
+
+        function (allVoices, callback) {
+          var voicesIds = allVoices.map(function (val) {
+            return val.id
+          })
+          Post.whereIn('voice_id', voicesIds, callback)
+        },
+
+        function (posts, callback) {
+          var mostVoices = findTrending(posts, 'voice_id').map(function (val) {
+            return val.id
+          })
+          Voice.whereIn('id', mostVoices, callback)
+        },
+
+        function (voices, callback) {
+          VoicesPresenter.build(voices, req.currentPerson, callback)
+        }
+      ], function (err, result) {
+        if (err) { return next(err) }
+
+        res.format({
+          html: function () {
+            res.locals.updatedVoices = result
+            req.updatedVoices = result
+            res.render('discover/trending/updatedVoices')
+          },
+          json: function () {
+            res.json(result)
+          },
+        })
+      })
+    },
   },
 })
 

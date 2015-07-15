@@ -72,7 +72,6 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
         requestObj.data = storage.preprocessors[i](requestObj.data, requestObj);
       }
 
-
       this.queries.whereIn(requestObj, function(err, data) {
         for (i = 0; i < storage.processors.length; i++) {
           data = storage.processors[i](data, requestObj);
