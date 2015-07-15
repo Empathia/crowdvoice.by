@@ -473,7 +473,6 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
         if (!done) { return; }
 
         var entity = this;
-
         EntityOwner.find({
           owned_id: entity.id
         }, function (err, result) {
