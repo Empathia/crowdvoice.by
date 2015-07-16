@@ -33,9 +33,9 @@ module.exports = {
         }
     },
 
-    /* Checks if currentPerson is member of a specific organization.
-     * @argument type <required> [String] ('organization')
-     * @argument id <required> [String] organization id
+    /* Checks if currentPerson is member of a specific organization or a specific voice.
+     * @argument type <required> [String] ('organization' || 'voice')
+     * @argument id <required> [String] organization || voice id
      * @return [Boolean]
      */
     memberOf : function memberOf(type, id) {
@@ -44,6 +44,14 @@ module.exports = {
             return (organizations.some(function(organization) {
                 return (organization.id === id);
             }));
+        }
+
+        if (type === 'voice') {
+            if (!this.get().voiceIds.length) {
+                return false;
+            }
+
+            return (this.get().voiceIds.indexOf(id) !== -1);
         }
     },
 

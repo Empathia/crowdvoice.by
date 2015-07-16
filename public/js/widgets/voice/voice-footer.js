@@ -1,3 +1,5 @@
+var Person = require('./../../lib/currentPerson');
+
 Class(CV, 'VoiceFooter').inherits(Widget)({
     prototype : {
         /* OPTIONS */
@@ -34,16 +36,18 @@ Class(CV, 'VoiceFooter').inherits(Widget)({
                 })).render(this.element);
             }
 
-            this.appendChild(new CV.VoiceFollowButton({
-                name : 'followButton'
-            })).render(this.actionsColumn);
+            if (Person.get() && !Person.memberOf('voice', this.id)) {
+                this.appendChild(new CV.VoiceFollowButton({
+                    name : 'followButton'
+                })).render(this.actionsColumn);
+            }
 
             this.appendChild(new CV.VoiceRelatedVoices({
                 name : 'relatedVoicesButton'
             })).render(this.actionsColumn);
 
             // currentPerson does not belongs/owns this voice already?
-            if (window.currentPerson && (window.currentPerson.voiceIds.indexOf(this.id) === -1)) {
+            if (Person.get() && !Person.memberOf('voice', this.id)) {
                 this.appendChild(new CV.VoiceRequestToContribute({
                     name : 'voiceRequestToContribute'
                 })).render(this.actionsColumn);
