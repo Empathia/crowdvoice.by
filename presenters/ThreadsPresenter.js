@@ -1,6 +1,6 @@
 Module('ThreadsPresenter')({
   build : function build(req, threads, callback) {
-    async.each(threads, function(thread, next) {
+    async.eachLimit(threads, 1, function(thread, next) {
       var threadInstance = new MessageThread(thread);
 
       var senderOrReceiver = threadInstance.isPersonSender(hashids.decode(req.currentPerson.id)[0]) ? 'Sender' : 'Receiver';

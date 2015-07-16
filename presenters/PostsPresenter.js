@@ -1,6 +1,6 @@
 Module('PostsPresenter')({
   build : function build(posts, callback) {
-    async.each(posts, function(post, next) {
+    async.eachLimit(posts, 1, function(post, next) {
 
       var postInstance = new Post(post);
 
