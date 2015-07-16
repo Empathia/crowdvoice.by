@@ -37,9 +37,8 @@
     </div>
 
     <div class="-menu-tab-content">
-      <div class="-row discover-updated-voices-container">
+      <div class="-row discover-updated-container">
         <!-- updated voices -->
-        Most updated voices
       </div>
     </div>
 
@@ -99,6 +98,8 @@
 	getData('/discover/trending/voices', VoiceCover, 'voices');
 	getData('/discover/trending/people', CV.Card, 'people');
 	getData('/discover/trending/organizations', CV.Card, 'organizations');
+	getData('/discover/trending/updatedVoices', VoiceCover, 'updated');
+
 
 	//$.ajax({
 	//	type: "GET",
