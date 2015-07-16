@@ -3,13 +3,7 @@ var Person = require('./../../lib/currentPerson');
 Class(CV, 'VoiceFooter').inherits(Widget)({
     prototype : {
         /* OPTIONS */
-        id : '',
-        voiceType : '',
-        firstPostDate : '',
-        lastPostDate : '',
-        scrollableArea : null,
-        allowPosting : false,
-        allowPostEditing : false,
+        voice : null,
 
         init : function init(config) {
             Widget.prototype.init.call(this, config);
@@ -20,9 +14,9 @@ Class(CV, 'VoiceFooter').inherits(Widget)({
             this.appendChild(
                 new CV.VoiceTimelineFeedback({
                     name : 'voiceTimelineFeedback',
-                    firstPostDate : this.firstPostDate,
-                    lastPostDate : this.lastPostDate,
-                    scrollableArea : this.scrollableArea
+                    firstPostDate : this.voice.firstPostDate,
+                    lastPostDate : this.voice.lastPostDate,
+                    scrollableArea : this.voice.scrollableArea
                 })
             ).render(this.element);
 
@@ -30,15 +24,16 @@ Class(CV, 'VoiceFooter').inherits(Widget)({
             // add condition based on the user type and or privilegies (ACL)
             // and or based on the voice type (open|close)
 
-            if (this.allowPosting) {
+            if (this.voice.allowPosting) {
                 this.appendChild(new CV.VoiceAddContent({
                     name : 'voiceAddContent'
                 })).render(this.element);
             }
 
-            if (Person.get() && !Person.memberOf('voice', this.id)) {
+            if (Person.get() && !Person.memberOf('voice', this.voice.id)) {
                 this.appendChild(new CV.VoiceFollowButton({
-                    name : 'followButton'
+                    name : 'followButton',
+                    voice : this.voice
                 })).render(this.actionsColumn);
             }
 
@@ -47,7 +42,7 @@ Class(CV, 'VoiceFooter').inherits(Widget)({
             })).render(this.actionsColumn);
 
             // currentPerson does not belongs/owns this voice already?
-            if (Person.get() && !Person.memberOf('voice', this.id)) {
+            if (Person.get() && !Person.memberOf('voice', this.voice.id)) {
                 this.appendChild(new CV.VoiceRequestToContribute({
                     name : 'voiceRequestToContribute'
                 })).render(this.actionsColumn);
@@ -57,16 +52,14 @@ Class(CV, 'VoiceFooter').inherits(Widget)({
                 name : 'shareButtons'
             })).render(this.actionsColumn);
 
-            if (this.voiceType !== CV.VoiceView.TYPE_CLOSED ||
-                this.allowPostEditing) {
+            if (this.voice.type !== CV.VoiceView.TYPE_CLOSED || this.voice.allowPostEditing) {
                 this.appendChild(
                     new CV.VoiceModerate({
                         name : 'voiceModerate',
-                        allowPostEditing : this.allowPostEditing
+                        allowPostEditing : this.voice.allowPostEditing
                     })
                 ).render(this.actionsColumn);
             }
-
         },
 
         /* Sets the Timeline's inital date.
