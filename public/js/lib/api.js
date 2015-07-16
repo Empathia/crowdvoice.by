@@ -8,6 +8,30 @@ module.exports = {
      * VOICES
      *************************************************************************/
 
+    /* Follow/Unfollow Voice.
+     * @arguments args.profileName <required> [String] the voice owner profileName
+     * @arguments args.voiceSlug <required> [String] the voice slug
+     * @arguments callback <required> [Function]
+     */
+    followVoice : function followVoice(args, callback) {
+        if (!args.profileName || !args.voiceSlug || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'GET',
+            url : '/' + args.profileName + '/' + args.voiceSlug + '/follow',
+            dataType : 'json',
+            headers : {'csrf-token' : this.token},
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
     /* Requests the data to create a Post preview on the current Voice.
      * @arguments args.url <required> [String] absolute url of a page, image or video (youtube/vimeo)
      * @arguments callback <required> [Function]
