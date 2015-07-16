@@ -186,6 +186,18 @@ var Voice = Class('Voice').inherits(Argon.KnexModel).includes(ImageUploader)({
       this.hasImage({
         propertyName: 'image',
         versions: {
+          small : function(readStream) {
+            return readStream.pipe(
+              sharp()
+                .resize(36, 36)
+                .interpolateWith(sharp.interpolator.nohalo)
+                .progressive()
+                .flatten()
+                .embed()
+                .background('#FFFFFF')
+                .quality(100)
+            );
+          },
           card: function(readStream) {
             return readStream.pipe(
               sharp()
