@@ -201,7 +201,7 @@ var EntitiesPresenter = Module('EntitiesPresenter')({
       }, function(done) {
 
         // Get the Voice ids that the Entity is owner or contributor
-        voiceIds = [];
+        var voiceIds = [];
 
         async.series([function(doneVoice) {
 
