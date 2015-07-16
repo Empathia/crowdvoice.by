@@ -11,7 +11,7 @@ var HomeController = Class('HomeController')({
     index : function index(req, res, next) {
       // if the person is logged in, redirect to their feed
       if (req.currentPerson) {
-        res.redirect('/' + req.currentPerson.profileName + '/myFeed');
+        res.redirect('/' + req.currentPerson.profileName + '/feed');
       }
 
       ACL.isAllowed('show', 'homepage', req.role, {}, function(err, isAllowed) {

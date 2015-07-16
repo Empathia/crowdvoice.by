@@ -289,6 +289,27 @@ var DiscoverController = Class('DiscoverController')({
         })
       })
     },
+
+    browseIndex : function(req, res, next){
+
+      Topic.all(function(err, result) {
+        if (err) {
+          return done(err);
+        }
+
+        TopicsPresenter.build(result, function(err, topics) {
+          if (err) {
+            return done(err);
+          }
+
+          res.locals.topics = topics;
+          res.render('discover/browse');
+          //done();
+        });
+      });
+
+    }
+
   },
 })
 

@@ -62,6 +62,17 @@
 
 <script>
 
+	// App
+	var ns = [];
+	<% if (typeof notifications !== "undefined") { %>
+		ns = <%= JSON.stringify(notifications) %>;
+	<% } %>
+		var App = new CV.App({
+		notifications : ns,
+		currentPerson : currentPerson
+	});
+	App.addInteractiveSidebar();
+
 	function renderData(data, instance, className){
 		data.forEach(function (item, index) {
 		  var itemEl = $('<div class="-col-4 -pr1"></div>');

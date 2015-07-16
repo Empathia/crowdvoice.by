@@ -1,4 +1,3 @@
-/* jshint multistr: true */
 Class(CV, 'SearchResultsGroup').inherits(Widget).includes(CV.WidgetUtils)({
     HTML : '\
         <tr>\
@@ -29,7 +28,7 @@ Class(CV, 'SearchResultsGroup').inherits(Widget).includes(CV.WidgetUtils)({
                     ).render(this.itemsWrapper);
                 }
 
-                if (this.name === 'organizations' || this.name === 'users') {
+                if (this.name === 'organizations' || this.name === 'people') {
                     this.appendChild(
                         new CV.CardMini(propertyName)
                     ).render(this.itemsWrapper);
