@@ -1,4 +1,5 @@
-/* jshint multistr: true */
+var Person = require('./../../lib/currentPerson');
+
 Class(CV, 'IncognitoButton').inherits(Widget)({
     HTML : '\
     <button class="header-actions-button cv-button small rounded -p0">\
@@ -8,14 +9,12 @@ Class(CV, 'IncognitoButton').inherits(Widget)({
     </button>',
 
     prototype : {
-        currentPerson : null,
-
         init : function init(config) {
             Widget.prototype.init.call(this, config);
 
             this.el = this.element[0];
 
-            if (this.currentPerson.isAnonymous) {
+            if (Person.anon()) {
                 this.activate();
             }
 
