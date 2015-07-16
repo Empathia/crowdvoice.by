@@ -102,6 +102,8 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
             </div>\
         </div>',
 
+    MAX_DESCRIPTION_LENGTH : 180,
+
     prototype : {
         followersCount : 0,
         followingCount : 0,
@@ -205,10 +207,8 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
 
             var fullname = this.name + (this.lastname ? (' ' + this.lastname) : '');
             this.dom.updateText(this.fullNameEl, fullname);
-            var description = this.description;
-            if (description.length > 160) {
-                description = description.slice(0, 160 - 3) + '...';
-            }
+
+            var description = this.format.truncate(this.description, this.constructor.MAX_DESCRIPTION_LENGTH, true);
             this.dom.updateText(this.descriptionEl, description);
             this.dom.updateText(this.locationEl, this.location);
             this.dom.updateText(this.joinedAtEl, moment(this.createdAt).format('MMM YYYY'));
