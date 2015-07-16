@@ -7,7 +7,6 @@ module.exports = {
     /**************************************************************************
      * VOICES
      *************************************************************************/
-
     /* Follow/Unfollow Voice.
      * @arguments args.profileName <required> [String] the voice owner profileName
      * @arguments args.voiceSlug <required> [String] the voice slug
@@ -86,7 +85,6 @@ module.exports = {
     /**************************************************************************
      * ENTITIES
      *************************************************************************/
-
     /* Follow/Unfollow Entity
      * @arguments args.profileName <required> [String] the entity profileName
      * @arguments callback <required> [Function]
@@ -103,6 +101,33 @@ module.exports = {
         $.ajax({
             type : 'GET',
             url : '/' + args.profileName + '/follow',
+            dataType : 'json',
+            headers : {'csrf-token' : this.token},
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
+
+    /**************************************************************************
+     * SEARCH
+     *************************************************************************/
+    /* Get Voices, People and Organizations results from a specified query.
+     * @arguments args.query <required> [String] the query string
+     * @arguments callback <required> [Function]
+     */
+    search : function search(args, callback) {
+        if (!args.query || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'GET',
+            url : '/search/' + args.query,
             dataType : 'json',
             headers : {'csrf-token' : this.token},
             success : function success(data) {callback(false, data);},
