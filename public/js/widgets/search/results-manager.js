@@ -2,6 +2,7 @@
 Class(CV, 'SearchResultsManager').inherits(Widget)({
     ELEMENT_CLASS : 'search-results-table',
     HTML : '<table></table>',
+    MAX_TOTAL_RESULTS: 9,
 
     prototype : {
         init : function init(config) {
@@ -11,25 +12,27 @@ Class(CV, 'SearchResultsManager').inherits(Widget)({
         },
 
         renderResults : function renderResults(results) {
-            Object.keys(results).forEach(function(propertyName) {
-                this.appendChild(
-                    new CV.SearchResultsGroup({
-                        name : propertyName,
-                        data : results[propertyName]
-                    })
-                ).print().render(this.el);
+            var preview = results.preview;
+
+            Object.keys(preview).forEach(function(propertyName) {
+                if (preview[propertyName].length) {
+                    this.appendChild(
+                        new CV.SearchResultsGroup({
+                            name : propertyName,
+                            data : preview[propertyName]
+                        })
+                    ).print().render(this.el);
+                }
             }, this);
 
-            // @TODO : if greater than max results to display show button
-            this.appendChild(
-                new CV.Button({
+            if (results.totals > this.constructor.MAX_TOTAL_RESULTS) {
+                this.appendChild(new CV.SearchResultsViewAllButton({
                     name : 'viewAllButton',
-                    className : '-full-width',
-                    label : 'View all 76 results »'
-                })
-            );
+                    totals : results.totals
+                }));
 
-            this.el.parentNode.insertBefore(this.viewAllButton.element[0], this.el.nextSibling);
+                this.el.parentNode.insertBefore(this.viewAllButton.el, this.el.nextSibling);
+            }
         },
 
         clearResults : function clearResults() {

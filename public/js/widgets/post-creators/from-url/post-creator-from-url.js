@@ -1,4 +1,3 @@
-/* jshint multistr: true */
 var API = require('../../../lib/api');
 var Checkit = require('checkit');
 
@@ -143,11 +142,15 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
         _inputKeyPressHandler : function _inputKeyPressHandler(ev) {
             var inputValue, checkitResponse;
 
-            if (ev.keyCode !== 13) return;
+            if (ev.keyCode !== 13) {
+                return void 0;
+            }
 
             inputValue = this.input.getValue();
 
-            if (inputValue === this._inputLastValue) return;
+            if (inputValue === this._inputLastValue) {
+                return void 0;
+            }
 
             this._inputLastValue = inputValue;
             checkitResponse = this._checkitUrl.runSync({url: inputValue});
@@ -178,8 +181,13 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
             var post = {};
 
             if (err || response.error) {
-                if (err) errorMessage = response.responseJSON.status;
-                if (response.error) errorMessage = response.error;
+                if (err) {
+                    errorMessage = response.responseJSON.status;
+                }
+
+                if (response.error) {
+                    errorMessage = response.error;
+                }
 
                 return this._setErrorState({message: errorMessage}).enable();
             }

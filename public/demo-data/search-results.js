@@ -61,7 +61,7 @@ module.exports = {
         }
     ],
 
-    'users' : [
+    'people' : [
         {
             name : 'Darío',
             lastname : 'Muñoz González',

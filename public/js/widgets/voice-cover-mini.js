@@ -35,16 +35,18 @@ Class(CV, 'VoiceCoverMini').inherits(Widget).includes(CV.WidgetUtils)({
             this.el = this.element[0];
             this.tagListElement = this.element.find('.cv-tags');
 
-            this.dom.updateBgImage(this.el.querySelector('.voice-cover-main-image'), this.images.small.url);
+            this.dom.updateBgImage(this.el.querySelector('.voice-cover-main-image'), this.images.card.url);
 
-            var fullname = this.owner.name + (this.owner.lastname ? this.owner.lastname : '');
+            var fullname = this.owner.name + (this.owner.lastname ? (' ' + this.owner.lastname) : '');
             this.dom.updateAttr('href', this.el.querySelector('.author-anchor'), this.owner.url);
             this.dom.updateAttr('title', this.el.querySelector('.author-anchor'), this.owner.profileName + ' profile');
             this.dom.updateText(this.el.querySelector('.author-username'), fullname);
 
             this.dom.updateText(this.el.querySelector('.voice-cover-title'), this.title);
 
-            if (this.tags) this.createTags(this.tags);
+            if (this.tags) {
+                this.createTags(this.tags);
+            }
         },
 
         /**

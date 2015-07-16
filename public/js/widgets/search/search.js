@@ -1,4 +1,5 @@
-/* jshint multistr: true */
+var API = require('../../lib/api');
+
 Class(CV, 'Search').inherits(Widget)({
     ELEMENT_CLASS : 'cv-search-overlay',
 
@@ -25,6 +26,8 @@ Class(CV, 'Search').inherits(Widget)({
     ',
 
     prototype : {
+        _lastSearchQuery : '',
+
         init : function init(config) {
             Widget.prototype.init.call(this, config);
 
@@ -35,20 +38,16 @@ Class(CV, 'Search').inherits(Widget)({
             this.resultsWrapper = this.el.querySelector('.cv-search-overlay__results');
             this.closeElement = this.el.querySelector('.cv-search-overlay__close');
 
-            this.appendChild(
-                new CV.InputClearable({
-                    name : 'input',
-                    placeholder : 'Search...',
-                    inputClass : '-block -lg -br0'
-                })
-            ).render(this.inputWrapper);
+            this.appendChild(new CV.InputClearable({
+                name : 'input',
+                placeholder : 'Search...',
+                inputClass : '-block -lg -br0'
+            })).render(this.inputWrapper);
 
-            this.appendChild(
-                new CV.SearchResultsManager({
-                    name : 'resultsManager',
-                    className : '-full-width'
-                })
-            ).render(this.resultsWrapper);
+            this.appendChild(new CV.SearchResultsManager({
+                name : 'resultsManager',
+                className : '-full-width'
+            })).render(this.resultsWrapper);
 
             this._bindEvents();
         },
@@ -64,9 +63,19 @@ Class(CV, 'Search').inherits(Widget)({
         },
 
         _inputKeyPressHandler : function _inputKeyPressHandler(ev) {
-            if (ev.keyCode !== 13) return;
+            if (ev.keyCode !== 13) {
+                return void 0;
+            }
 
-            this._setSearchingState()._requestSearchResults(this.input.getValue());
+            var inputValue = this.input.getValue();
+
+            if (inputValue === this._lastSearchQuery) {
+                return void 0;
+            }
+
+            this._lastSearchQuery = inputValue;
+
+            this._setSearchingState()._requestSearchResults(inputValue);
         },
 
         _closeElementClickHandler : function _closeElementClickHandler() {
@@ -84,12 +93,16 @@ Class(CV, 'Search').inherits(Widget)({
             return this;
         },
 
-        _requestSearchResults : function _requestSearchResults(searchQueryString) {
-            // fake it for now
-            window.setTimeout(function() {
+        _requestSearchResults : function _requestSearchResults(queryString) {
+            queryString = queryString.trim().replace(/\s/g, '+');
+            queryString = window.encodeURIComponent(queryString);
+
+            API.search({query: queryString}, function(err, res) {
+                console.log(err);
+                console.log(res);
                 this._setResponseState();
-                this.resultsManager.renderResults(require('../../../demo-data/search-results'));
-            }.bind(this), 1000);
+                this.resultsManager.renderResults(res);
+            }.bind(this));
         },
 
         _activate : function _activate() {
