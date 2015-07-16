@@ -33,7 +33,7 @@ Class(CV, 'CardMini').inherits(Widget).includes(CV.WidgetUtils)({
         _setup : function _setup() {
             this.dom.updateAttr('src', this.avatarElement, this.images.small.url);
 
-            var fullname = this.name + (this.lastname ? this.lastname : '');
+            var fullname = this.name + (this.lastname ? (' ' + this.lastname) : '');
             this.dom.updateAttr('alt', this.avatarElement, this.profileName + "’s avatar image");
             this.dom.updateText(this.fullNameElement, fullname);
 
