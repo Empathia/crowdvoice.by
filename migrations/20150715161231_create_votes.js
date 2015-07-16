@@ -6,7 +6,7 @@ exports.up = function(knex, Promise) {
       t.integer('value').defaultTo(0).index();
       t.integer('post_id').defaultTo(0).index();
       t.integer('entity_id').defaultTo(0).index();
-      t.integer('ip').defaultTo(0).index();
+      t.string('ip').defaultTo(0).index();
       t.timestamps();
     })
   ]);
