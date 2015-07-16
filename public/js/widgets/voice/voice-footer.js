@@ -1,12 +1,9 @@
+var Person = require('./../../lib/currentPerson');
+
 Class(CV, 'VoiceFooter').inherits(Widget)({
     prototype : {
         /* OPTIONS */
-        voiceType : '',
-        firstPostDate : '',
-        lastPostDate : '',
-        scrollableArea : null,
-        allowPosting : false,
-        allowPostEditing : false,
+        voice : null,
 
         init : function init(config) {
             Widget.prototype.init.call(this, config);
@@ -17,9 +14,9 @@ Class(CV, 'VoiceFooter').inherits(Widget)({
             this.appendChild(
                 new CV.VoiceTimelineFeedback({
                     name : 'voiceTimelineFeedback',
-                    firstPostDate : this.firstPostDate,
-                    lastPostDate : this.lastPostDate,
-                    scrollableArea : this.scrollableArea
+                    firstPostDate : this.voice.firstPostDate,
+                    lastPostDate : this.voice.lastPostDate,
+                    scrollableArea : this.voice.scrollableArea
                 })
             ).render(this.element);
 
@@ -27,48 +24,42 @@ Class(CV, 'VoiceFooter').inherits(Widget)({
             // add condition based on the user type and or privilegies (ACL)
             // and or based on the voice type (open|close)
 
-            if (this.allowPosting) {
-                this.appendChild(
-                    new CV.VoiceAddContent({
-                        name : 'voiceAddContent'
-                    })
-                ).render(this.element);
+            if (this.voice.allowPosting) {
+                this.appendChild(new CV.VoiceAddContent({
+                    name : 'voiceAddContent'
+                })).render(this.element);
             }
 
-            this.appendChild(
-                new CV.VoiceFollowButton({
-                    name : 'followButton'
-                })
-            ).render(this.actionsColumn);
+            if (Person.get() && !Person.memberOf('voice', this.voice.id)) {
+                this.appendChild(new CV.VoiceFollowButton({
+                    name : 'followButton',
+                    voice : this.voice
+                })).render(this.actionsColumn);
+            }
 
-            this.appendChild(
-                new CV.VoiceRelatedVoices({
-                    name : 'relatedVoicesButton'
-                })
-            ).render(this.actionsColumn);
+            this.appendChild(new CV.VoiceRelatedVoices({
+                name : 'relatedVoicesButton'
+            })).render(this.actionsColumn);
 
-            this.appendChild(
-                new CV.VoiceRequestToContribute({
+            // currentPerson does not belongs/owns this voice already?
+            if (Person.get() && !Person.memberOf('voice', this.voice.id)) {
+                this.appendChild(new CV.VoiceRequestToContribute({
                     name : 'voiceRequestToContribute'
-                })
-            ).render(this.actionsColumn);
+                })).render(this.actionsColumn);
+            }
 
-            this.appendChild(
-                new CV.VoiceFooterShareButtonsGroup({
-                    name : 'shareButtons'
-                })
-            ).render(this.actionsColumn);
+            this.appendChild(new CV.VoiceFooterShareButtonsGroup({
+                name : 'shareButtons'
+            })).render(this.actionsColumn);
 
-            if (this.voiceType !== CV.VoiceView.TYPE_CLOSED ||
-                this.allowPostEditing) {
+            if (this.voice.type !== CV.VoiceView.TYPE_CLOSED || this.voice.allowPostEditing) {
                 this.appendChild(
                     new CV.VoiceModerate({
                         name : 'voiceModerate',
-                        allowPostEditing : this.allowPostEditing
+                        allowPostEditing : this.voice.allowPostEditing
                     })
                 ).render(this.actionsColumn);
             }
-
         },
 
         /* Sets the Timeline's inital date.

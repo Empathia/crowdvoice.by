@@ -1,4 +1,5 @@
-/* jshint multistr: true */
+var Person = require('./../../lib/currentPerson');
+
 Class(CV, 'CardActionMessage').inherits(Widget)({
 
     ELEMENT_CLASS : 'card-actions-item',
@@ -32,8 +33,8 @@ Class(CV, 'CardActionMessage').inherits(Widget)({
                         width       : 320,
                         data        : {
                           type : 'message',
-                          profileName : currentPerson.profileName,
-                          senderEntityId : currentPerson.id,
+                          profileName : Person.get().profileName,
+                          senderEntityId : Person.get().id,
                           receiverEntityId : button.id
                         },
                         anchorEl    : button.element

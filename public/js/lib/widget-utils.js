@@ -84,6 +84,22 @@ Module(CV, 'WidgetUtils')({
                 s = ~~(seconds % 3600 % 60);
 
                 return ((h > 0 ? h + ":" + (m < 10 ? "0" : "") : "") + m + ":" + (s < 10 ? "0" : "") + s);
+            },
+
+            /* Truncate text.
+             * @argument text <required> [String] the text to truncate
+             * @argument max <required> [Number] the max number of chars
+             * @argument ellipsis <optional> [Boolean] should append ellipsis at the end?
+             */
+            truncate : function truncate(text, max, ellipsis) {
+                if (text.length > max) {
+                    var _max = ellipsis ? (max - 3) : max;
+                    var _symbol = ellipsis ? '...' : '';
+
+                    return (text.slice(0, _max) + _symbol);
+                }
+
+                return text;
             }
         }
     }

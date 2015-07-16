@@ -1,4 +1,5 @@
-/* jshint multistr: true */
+var Person = require('./../lib/currentPerson');
+
 Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
     // template replication of the original header element for quick visual reference of its main elements,
     // we do not use this, instead we use an already rendered version of it.
@@ -29,9 +30,6 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
         </button>',
 
     prototype : {
-        /* options */
-        currentPerson : null,
-
         /* private */
         el : null,
         loginActionsWrapper : null,
@@ -44,12 +42,14 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
             this.loginActionsWrapper = this.el.querySelector('.header-login-actions');
             this.buttonActionsWrapper = this.el.querySelector('.header-actions');
 
-            if (this.currentPerson && this.currentPerson.isAnonymous) {
-                this._setupAnonymous();
-            } else if (this.currentPerson && (this.currentPerson.isAnonymous === false)) {
-                this._setupForCurrentPerson();
-            } else {
+            if (!Person.get()) {
                 this._setupVisitor();
+            } else {
+                if (Person.anon()) {
+                    this._setupAnonymous();
+                } else {
+                    this._setupForCurrentPerson();
+                }
             }
 
             this.appendChild(
@@ -84,12 +84,9 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
                 })
             ).render(this.loginActionsWrapper);
 
-            this.appendChild(
-                new CV.IncognitoButton({
-                    name : 'incognitoButton',
-                    currentPerson : this.currentPerson
-                })
-            ).render(this.buttonActionsWrapper);
+            this.appendChild(new CV.IncognitoButton({
+                name : 'incognitoButton'
+            })).render(this.buttonActionsWrapper);
 
             return this;
         },
@@ -101,12 +98,12 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
             // account dropdown
             var itemCounter = 0;
             var allMulti = {
-                "1": {name: 'Your Profile', url: '/' + this.currentPerson.profileName},
-                "2": {name: 'Manage Account', url: '/' + this.currentPerson.profileName + '/edit'}
+                "1": {name: 'Your Profile', url: '/' + Person.get().profileName},
+                "2": {name: 'Manage Account', url: '/' + Person.get().profileName + '/edit'}
             };
             itemCounter = 2;
 
-            this.currentPerson.ownedOrganizations.forEach(function(organization) {
+            Person.get().ownedOrganizations.forEach(function(organization) {
                 itemCounter++;
                 allMulti[itemCounter] = {
                     name : organization.name,
@@ -130,8 +127,8 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
                 new CV.SelectAccount({
                     label         : 'Multiple',
                     name          : 'select',
-                    accountImage  : this.currentPerson.images.small.url,
-                    accountName   : this.currentPerson.name + ' ' + this.currentPerson.lastname,
+                    accountImage  : Person.get().images.small.url,
+                    accountName   : Person.get().name + ' ' + Person.get().lastname,
                     options       : allMulti
                 })
             ).render(this.loginActionsWrapper);
@@ -152,12 +149,9 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
                 })
             ).render(this.buttonActionsWrapper);
 
-            this.appendChild(
-                new CV.IncognitoButton({
-                    name : 'incognitoButton',
-                    currentPerson : this.currentPerson
-                })
-            ).render(this.buttonActionsWrapper);
+            this.appendChild(new CV.IncognitoButton({
+                name : 'incognitoButton',
+            })).render(this.buttonActionsWrapper);
 
             // alerts buttons
             this.buttonActionsWrapper.insertAdjacentHTML('beforeend', this.constructor.BUTTON_ACTIONS_HTML);

@@ -129,7 +129,6 @@ require('./widgets/posts/moderate/publish-button.js');
 require('./widgets/posts/moderate/vote-buttons.js');
 
 require('./widgets/voice/voice-request-to-contribute.js');
-require('./widgets/popover-request-to-contribute.js');
 
 // post creators
 require('./widgets/post-creators/post-creator.js');

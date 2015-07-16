@@ -63,6 +63,8 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
     </svg>\
   ',
 
+  MAX_DESCRIPTION_LENGTH : 180,
+
   prototype : {
     init : function init(config) {
       Widget.prototype.init.call(this, config);
@@ -96,14 +98,16 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
         this.createTopics(this.topics);
       }
 
-      var authorFullname = this.owner.lastname ? (this.owner.name + ' ' + this.owner.lastname) : this.owner.name;
+      var authorFullname = this.owner.name + (this.owner.lastname ? (' ' + this.owner.lastname) : '');
       this.dom.updateAttr('href', this.el.querySelector('.author-anchor'), '/' + this.owner.profileName);
       this.dom.updateAttr('title', this.el.querySelector('.author-anchor'), authorFullname + '’s profile');
       this.dom.updateAttr('src', this.el.querySelector('.author-avatar'), this.owner.images.icon.url);
       this.dom.updateText(this.el.querySelector('.author-username'), 'by ' + authorFullname);
 
       this.dom.updateText(this.el.querySelector('.voice-cover-title-anchor'), this.title);
-      this.dom.updateText(this.el.querySelector('.voice-cover-description'), this.description);
+
+      var description = this.format.truncate(this.description, this.constructor.MAX_DESCRIPTION_LENGTH, true);
+      this.dom.updateText(this.el.querySelector('.voice-cover-description'), description);
 
       this.dom.updateText(this.el.querySelector('.voice-cover-followers'), this.format.numberUS(this.followers.length));
       this.dom.updateText(this.dateTimeElement, moment(this.updatedAt).fromNow());

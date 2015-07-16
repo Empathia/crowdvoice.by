@@ -1,3 +1,7 @@
+/* global io */
+
+var Person = require('./lib/currentPerson');
+
 Class(CV, 'App').includes(NodeSupport)({
     prototype : {
         notifications : null,
@@ -11,11 +15,12 @@ Class(CV, 'App').includes(NodeSupport)({
                 this[propertyName] = config[propertyName];
             }, this);
 
+            Person.set(window.currentPerson);
+
             this.appendChild(
                 new CV.Header({
                     name : 'header',
-                    element: $('.cv-main-header'),
-                    currentPerson : currentPerson
+                    element: $('.cv-main-header')
                 })
             );
 
@@ -45,7 +50,9 @@ Class(CV, 'App').includes(NodeSupport)({
          * @return this._socket
          */
         getSocket : function getSocket() {
-            if (this._socket) return this._socket;
+            if (this._socket) {
+                return this._socket;
+            }
 
             this.socketStart();
             return this.getSocket();
