@@ -51,7 +51,7 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
     },
 
     feed: function (req, res, next) {
-      ACL.isAllowed('myFeed', 'entities', req.role, {
+      ACL.isAllowed('feed', 'entities', req.role, {
         currentEntity: req.entity,
         currentPerson: req.currentPerson
       }, function (err, response) {

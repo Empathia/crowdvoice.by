@@ -2,7 +2,7 @@ var Vote = Class('Vote').inherits(Argon.KnexModel)({
   validations: {
     value: ['required'],
     postId: ['required'],
-    entityId: ['required'],
+    entityId: [],
     ip: ['required'],
   },
 

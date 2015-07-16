@@ -31,7 +31,7 @@ var VotesController = Class('VotesController').includes(BlackListFilter)({
         value: upOrDown,
         postId: req.params.postId,
         entityId: entityId,
-        ip: req.headers['x-real-ip'],
+        ip: req.headers['x-real-ip'] || req.ip,
       })
 
       vote.save(function (err) {
