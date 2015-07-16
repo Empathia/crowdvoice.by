@@ -22,8 +22,11 @@
  * membershipCount  {Number} total of members (for 'organization' Entities)
  * followingCount   {Number} total of entities following
  * followed         {Boolean} Flag for currentPerson. Indicates if currentPerson is following this entity
+ * voiceIds         {Array} Voice ids of voices this entity belongs or owns
+ * organizationIds  {Array} Organization ids of organizations this entity belongs or owns
  */
 
+var Person = require('./../../lib/currentPerson');
 var moment = require('moment');
 
 Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
@@ -133,14 +136,7 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
             }
 
             this._setupDefaultElements();
-
-            // not currentPerson's card? and is not anonymous
-            if (
-                (window.currentPerson && (window.currentPerson.id !== this.id)) &&
-                (window.currentPerson.isAnonymous === false)
-            ) {
-                this._addActionButtons();
-            }
+            this._addActionButtons();
         },
 
         /* Adds the necessary action buttons automatically - per user's role-based (follow, message, invite to, join, etc).
@@ -148,11 +144,15 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
          * @return CV.Card [Object]
          */
         _addActionButtons : function _addActionButtons() {
-            var isOrganizationOwner = window.currentPerson.ownedOrganizations.some(function(organization) {
-                return organization.id === this.id;
-            }, this);
+            if (!Person.get()) {
+                return void 0;
+            }
 
-            if (isOrganizationOwner === false) {
+            if (Person.is(this.id) || Person.anon()) {
+                return void 0;
+            }
+
+            if (!Person.ownerOf('organization', this.id)) {
                 this.appendChild( new CV.CardActionFollow({
                     name : 'followButton',
                     followed: this.followed,
@@ -165,17 +165,16 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
             }
 
             if (this.type === "organization") {
-                var alreadyMember = window.currentPerson.organizations.concat(window.currentPerson.ownedOrganizations).some(function(organization) {
-                    return (organization.id === this.id);
-                }, this);
-
-                if (alreadyMember === false) {
+                if (!Person.memberOf('organization', this.id)) {
                     this.appendChild( new CV.CardActionJoin({name : 'joinButton'})).render(this.actionsEl);
                     this._totalCountActions++;
                 }
             } else {
-                if (window.currentPerson.voicesCount || window.currentPerson.ownedOrganizations.length) {
-                    this.appendChild( new CV.CardActionInvite({name : 'inviteButton'})).render(this.actionsEl);
+                if (Person.canInviteEntity(this)) {
+                    this.appendChild(new CV.CardActionInvite({
+                        name : 'inviteButton',
+                        entity : this
+                    })).render(this.actionsEl);
                     this._totalCountActions++;
                 }
             }

@@ -4,6 +4,9 @@
  * In any case it will also instantiate the appropiate form Modal to render when clicked.
  * Each Modal handles its own logic.
  */
+
+var Person = require('./../../lib/currentPerson');
+
 Class(CV, 'CardInviteToPopover').inherits(Widget)({
     ELEMENT_CLASS : 'ui-vertical-list hoverable -list-clean',
     HTML : '<ul></ul>',
@@ -11,6 +14,8 @@ Class(CV, 'CardInviteToPopover').inherits(Widget)({
     HTML_ORGANIZATION_ITEM : '<li class="ui-vertical-list-item -nw" data-action="member">Become a member of&hellip;</li>',
 
     prototype : {
+        entity : null,
+
         el : null,
 
         /* indicates if currentPerson has voices [Boolean] */
@@ -28,14 +33,12 @@ Class(CV, 'CardInviteToPopover').inherits(Widget)({
 
             this.el = this.element[0];
 
-            // has voices to invite to?
-            this._hasVoices = window.currentPerson.voicesCount;
+            this._hasVoices = Person.canInviteEntityToAVoice(this.entity);
             if (this._hasVoices) {
                 this._setInviteToVoice();
             }
 
-            // own any organization to invite to?
-            this._ownOrganizations = window.currentPerson.ownedOrganizations.length;
+            this._ownOrganizations = Person.canInviteEntityToAnOrg(this.entity);
             if (this._ownOrganizations) {
                 this._setInviteToOrganization();
             }

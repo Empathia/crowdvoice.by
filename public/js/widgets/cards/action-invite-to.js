@@ -12,13 +12,16 @@ Class(CV, 'CardActionInvite').inherits(Widget)({
         </div>',
 
     prototype : {
+        entity: null,
+
         init : function init(config) {
             Widget.prototype.init.call(this, config);
 
             this.el = this.element[0];
 
             this.appendChild(new CV.CardInviteToPopover({
-                name : 'inviteToPopoverContent'
+                name : 'inviteToPopoverContent',
+                entity : this.entity
             }));
 
             this.appendChild(new CV.PopoverBlocker({
