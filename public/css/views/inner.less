@@ -13,9 +13,24 @@
 	}
 }
 
-.browse-page .slider-item {
+.browse-page .slider-item,
+.topics-page .slider-item {
   padding-left: 1rem;
   padding-right: 1rem;
+  float: initial;
+
+}
+.topics-page{
+	&.category-list{
+		background: #f9f9f9;
+		padding: 20px 40px 10px 40px;
+		box-shadow: inset 0px -6px 5px -5px rgba(0,0,0, .1);
+		position: relative;
+		z-index: 5;
+	}
+	.homepage-category-list-item{
+		padding-bottom: 0px;
+	}
 }
 .browse-page .browse-element{
 	div{

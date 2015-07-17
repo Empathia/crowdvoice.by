@@ -15,7 +15,7 @@
 
 <main role="main" class="cv-main-content topics-page -rel">
   <section class="profile-voices-intro">
-      <h1 class="profile-heading -inline-block -font-bold -m0"><%= currentTopic.name %></h1>
+      <h1 class="profile-heading -inline-block -font-bold -m0">Human Rights</h1>
       <div class="profile-select-options -inline-block">
 
       </div>
@@ -76,22 +76,27 @@
 	});
 	App.addInteractiveSidebar();
 
-	//var categories = <% //JSON.stringify(topics) %>;
+	var categories = <%= JSON.stringify(topics) %>;
 
-    //var cardsHolder = document.querySelector('.categories-cards-holder');
-    //var cardsList = cardsHolder.querySelector('.slider-list');
-	//
-    //categories.map(function(item) {
-    //    var card = new CategoryCover(item);
-    //    card.element[0].classList.add('slider-item');
-    //    return card.render(cardsList);
+    //var categoriesHolder = document.querySelector('.category-list');
+    //categories.forEach(function(category) {
+    //    new CategoryCover(category).render(categoriesHolder);
     //});
-	//
-    //new CV.ResponsiveSlider({
-    //    element : cardsHolder,
-    //    dots : true,
-    //    minSlideWidth : 300
-    //});
+
+    var cardsHolder = document.querySelector('.categories-cards-holder');
+    var cardsList = cardsHolder.querySelector('.slider-list');
+
+    categories.map(function(item) {
+        var card = new CategoryCover(item);
+        card.element[0].classList.add('slider-item');
+        return card.render(cardsList);
+    });
+
+    new CV.ResponsiveSlider({
+        element : cardsHolder,
+        dots : true,
+        minSlideWidth : 300
+    });
 
 	var items = [];
 
@@ -118,12 +123,10 @@
 			}
 		});
 	}
-	var voices = <%= JSON.stringify(voices) %>;
-	renderData(voices, VoiceCover, 'voices');
 
-	//getData('/discover/new/voices', VoiceCover, 'voices');
-	//getData('/discover/new/people', CV.Card, 'people');
-	//getData('/discover/new/organizations', CV.Card, 'organizations');
+	getData('/discover/new/voices', VoiceCover, 'voices');
+	getData('/discover/new/people', CV.Card, 'people');
+	getData('/discover/new/organizations', CV.Card, 'organizations');
 
 	var itemsContainer;
 	$( document ).ready(function() {
