@@ -38,7 +38,7 @@ Class(CV, 'VoiceCoverMini').inherits(Widget).includes(CV.WidgetUtils)({
             this.dom.updateAttr('src', this.el.querySelector('.voice-cover'), this.data.images.small.url);
 
             var fullname = this.data.owner.name + (this.data.owner.lastname ? (' ' + this.data.owner.lastname) : '');
-            this.dom.updateAttr('href', this.el.querySelector('.author-anchor'), this.data.owner.url);
+            this.dom.updateAttr('href', this.el.querySelector('.author-anchor'), '/' + this.data.owner.profileName);
             this.dom.updateAttr('title', this.el.querySelector('.author-anchor'), this.data.owner.profileName + ' profile');
             this.dom.updateText(this.el.querySelector('.author-username'), fullname);
 
@@ -68,7 +68,7 @@ Class(CV, 'VoiceCoverMini').inherits(Widget).includes(CV.WidgetUtils)({
                 var anchor = temp.find('.cv-tags-tag');
 
                 this.dom.updateText(anchor[0], tag.name);
-                this.dom.updateAttr('href', anchor[0], tag.url);
+                this.dom.updateAttr('href', anchor[0], '/topic/' + tag.slug);
 
                 this.tagListElement.append(temp);
             }, this);
