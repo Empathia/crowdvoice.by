@@ -60,13 +60,13 @@ var VotesController = Class('VotesController').includes(BlackListFilter)({
       if (isLoggedIn) {
         // the user is logged in, if we find a vote from him for the post just
         // forbid the new vote
-        Vote.find({ postId: req.params.postId, entityId: entityId }, function (err, result) {
+        Vote.find({ post_id: req.params.postId, entity_id: entityId }, function (err, result) {
           if (err) { return next(err) }
 
           if (result.length >= 1) {
             return next(new ForbiddenError())
           } else {
-            makeVote()
+            return makeVote()
           }
         })
       } else {
@@ -75,15 +75,18 @@ var VotesController = Class('VotesController').includes(BlackListFilter)({
           if (err) { return next(err) }
 
           if (result.length > 2) {
-            var then = moment(result[2].createdAt),
-              now = new Date(),
-              diff = then.diff(now, 'hours')
+            var times = result.map(function (val) {
+              return moment(val.createdAt)
+            })
 
-            if (diff < -24) {
+            // TODO: should be within 24 hours, not same day
+            if (times[0].isSame(times[2], 'day')) {
               return next(new ForbiddenError())
             } else {
-              makeVote()
+              return makeVote()
             }
+          } else {
+            return makeVote()
           }
         })
       }
