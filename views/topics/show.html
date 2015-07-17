@@ -93,37 +93,44 @@
     //    minSlideWidth : 300
     //});
 
+	var responsives = {
+    	'voices' 		: null,
+    	'people' 		: null,
+    	'organizations' : null
+    }
+
 	var items = [];
 
 	function renderData(data, instance, className){
-		data.forEach(function (item, index) {
-		  var itemEl = $('<div class="-col-4 -pr1"></div>');
-		  var newInstance = new instance(item).render( itemEl);
-		  $('.discover-' + className + '-container').append(itemEl);
-		  newInstance.element.addClass('id-' + item.id);
-		  //console.log(item.createdAt);
-		});
+		//data.forEach(function (item, index) {
+		//  var itemEl = $('<div class="-col-4 -pr1"></div>');
+		//  var newInstance = new instance(item).render( itemEl);
+		//  $('.discover-' + className + '-container').append(itemEl);
+		//  newInstance.element.addClass('id-' + item.id);
+		//  //console.log(item.createdAt);
+		//});
+
+		var itemsWrapper = document.querySelector('.discover-' + className + '-container');
+        var itemsElements = [];
+
+        data.forEach(function(item, index) {
+            var itemWidget = new instance(item).render(itemsWrapper);
+			itemWidget.element.addClass('id-' + item.id);
+
+            itemsElements.push(itemWidget.el);
+        });
+
+        responsives[className] = new CV.ResponsiveWidth({
+            container : itemsWrapper,
+            items : [].slice.call(itemsElements, 0),
+            minWidth : 300
+        }).setup();
+
 	}
 
-	function getData(url, instance, className){
-		$.ajax({
-			type: "GET",
-			url: url,
-			headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
-			data : {},
-			dataType : 'json',
-			success: function(data) {
-			  	items = items.concat(data);
-			  	renderData(data, instance, className);
-			}
-		});
-	}
+
 	var voices = <%= JSON.stringify(voices) %>;
 	renderData(voices, VoiceCover, 'voices');
-
-	//getData('/discover/new/voices', VoiceCover, 'voices');
-	//getData('/discover/new/people', CV.Card, 'people');
-	//getData('/discover/new/organizations', CV.Card, 'organizations');
 
 	var itemsContainer;
 	$( document ).ready(function() {
@@ -143,6 +150,9 @@
 	        $(this).addClass('active');
 	        $(contentContainer + ' .-menu-tab-content').removeClass('active');
 	        $(elContent).addClass('active');
+	        responsives['voices'].setup();
+	        responsives['people'].setup();
+	        responsives['organizations'].setup();
 	      }
 	    }
 
