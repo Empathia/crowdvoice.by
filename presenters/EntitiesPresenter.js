@@ -2,7 +2,7 @@ var EntitiesPresenter = Module('EntitiesPresenter')({
   build : function build(entities, currentPerson, callback) {
     var response = [];
 
-    async.each(entities, function(entity, nextEntity) {
+    async.eachLimit(entities, 1, function(entity, nextEntity) {
       var entityInstance = new Entity(entity);
 
       entityInstance.id = hashids.encode(entityInstance.id);

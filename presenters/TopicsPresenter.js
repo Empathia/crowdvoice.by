@@ -2,7 +2,7 @@ var TopicsPresenter = Module('TopicsPresenter')({
   build : function build(topics, callback) {
     var response = [];
 
-    async.each(topics, function(topic, nextTopic) {
+    async.eachLimit(topics, 1, function(topic, nextTopic) {
       var topicInstance = new Topic(topic);
 
       topicInstance.id = hashids.encode(topicInstance.id);

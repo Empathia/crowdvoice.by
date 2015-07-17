@@ -27,6 +27,7 @@ Class(CV, 'Search').inherits(Widget)({
 
     prototype : {
         _lastSearchQuery : '',
+        _keypressTimer : null,
 
         init : function init(config) {
             Widget.prototype.init.call(this, config);
@@ -57,25 +58,32 @@ Class(CV, 'Search').inherits(Widget)({
             this.closeElement.addEventListener('click', this._closeElementClickHandlerRef);
 
             this._inputKeyPressHandlerRef = this._inputKeyPressHandler.bind(this);
-            this.input.getElement().addEventListener('keypress', this._inputKeyPressHandlerRef);
+            this.input.getElement().addEventListener('keyup', this._inputKeyPressHandlerRef);
 
             return this;
         },
 
         _inputKeyPressHandler : function _inputKeyPressHandler(ev) {
-            if (ev.keyCode !== 13) {
-                return void 0;
+            var _this = this;
+            var inputValue = this.input.getValue();
+
+            if (this._keypressTimer) {
+                window.clearTimeout(this._keypressTimer);
             }
 
-            var inputValue = this.input.getValue();
+            if (inputValue.length <= 2) {
+                return void 0;
+            }
 
             if (inputValue === this._lastSearchQuery) {
                 return void 0;
             }
 
-            this._lastSearchQuery = inputValue;
-
-            this._setSearchingState()._requestSearchResults(inputValue);
+            this._keypressTimer = window.setTimeout(function() {
+                window.clearTimeout(_this._keypressTimer);
+                _this._lastSearchQuery = inputValue;
+                _this._setSearchingState()._requestSearchResults(inputValue);
+            }, 200);
         },
 
         _closeElementClickHandler : function _closeElementClickHandler() {
@@ -94,8 +102,8 @@ Class(CV, 'Search').inherits(Widget)({
         },
 
         _requestSearchResults : function _requestSearchResults(queryString) {
-            queryString = queryString.trim().replace(/\s/g, '+');
-            queryString = window.encodeURIComponent(queryString);
+            // queryString = queryString.trim().replace(/\s/g, '+');
+            // queryString = window.encodeURIComponent(queryString);
 
             API.search({query: queryString}, function(err, res) {
                 console.log(err);

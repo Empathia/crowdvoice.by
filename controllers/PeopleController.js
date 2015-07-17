@@ -7,8 +7,8 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
       return this;
     },
 
-    myFeed : function myFeed(req, res, next) {
-      ACL.isAllowed('myFeed', 'entities', req.role, {
+    feed : function feed(req, res, next) {
+      ACL.isAllowed('feed', 'entities', req.role, {
         currentEntity: req.entity,
         currentPerson: req.currentPerson
       }, function (err, response) {
@@ -18,7 +18,7 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
           return next(new ForbiddenError());
         }
 
-        res.render('people/myFeed');
+        res.render('people/feed');
       });
     },
 
