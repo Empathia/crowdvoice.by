@@ -867,6 +867,40 @@ async.series([function(next) {
   }, next);
 }, function(next) {
 
+  // Featured people
+  var featured = [
+    data.entities['tyrion-lannister'],
+    data.entities['jon-snow'],
+    data.entities['cersei-lannister']
+  ];
+
+  async.each(featured, function(person, nextPerson) {
+    var featuredPerson = new FeaturedPerson({
+      entityId : person.id,
+      position : featured.indexOf(person) || 0
+    });
+
+    featuredPerson.save(nextPerson);
+  }, next);
+}, function(next) {
+
+  // Featured organizations
+  var featured = [
+    data.organizations['house-lannister'],
+    data.organizations['house-stark'],
+    data.organizations['house-targaryen']
+  ];
+
+  async.each(featured, function(organization, nextOrganization) {
+    var featuredOrganization = new FeaturedOrganization({
+      entityId : organization.id,
+      position : featured.indexOf(organization) || 0
+    });
+
+    featuredOrganization.save(nextOrganization);
+  }, next);
+}, function(next) {
+
   // Follow persons
   async.series([function(done) {
     data.entities['tyrion-lannister'].followEntity(data.entities['jamie-lannister'], done);
