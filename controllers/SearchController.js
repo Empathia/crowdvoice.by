@@ -7,7 +7,15 @@ var SearchController = Class('SearchController')({
     index : function(req, res, next) {
       var query = req.params.query;
 
-      query = query.replace(/[^A-Za-z0-9\p{L}(\p{L}|\p{Nd})]+/g, ' | ');
+      query = query.replace(/[^A-Za-z0-9\p{L}\p{Nd}]+/g, ' | ');
+
+      if (query.substr(0, 3) === ' | ') {
+        query = query.substr(3, query.length);
+      }
+
+      if (query.substr(query.length - 3, query.length) === ' | ') {
+        query = query.substr(0, query.length - 3);
+      }
 
       var response = {
 
