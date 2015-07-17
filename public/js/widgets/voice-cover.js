@@ -88,7 +88,7 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
      */
     _updateValues : function _updateValues() {
       this.voiceAnchors.forEach(function(anchor) {
-        this.dom.updateAttr('href', anchor, this.owner.profileName + '/' + this.slug + '/');
+        this.dom.updateAttr('href', anchor, '/' + this.owner.profileName + '/' + this.slug + '/');
         this.dom.updateAttr('title', anchor, this.title + ' voice');
       }, this);
 
