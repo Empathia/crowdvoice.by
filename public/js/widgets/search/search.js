@@ -27,6 +27,7 @@ Class(CV, 'Search').inherits(Widget)({
 
     prototype : {
         _lastSearchQuery : '',
+        _queryRegex : null,
         _keypressTimer : null,
 
         init : function init(config) {
@@ -39,10 +40,12 @@ Class(CV, 'Search').inherits(Widget)({
             this.resultsWrapper = this.el.querySelector('.cv-search-overlay__results');
             this.closeElement = this.el.querySelector('.cv-search-overlay__close');
 
+            this._queryRegex = new RegExp(/[^A-Za-z0-9\p{L}(\p{L}|\p{Nd})]+/g);
+
             this.appendChild(new CV.InputClearable({
                 name : 'input',
                 placeholder : 'Search...',
-                inputClass : '-block -lg -br0'
+                inputClass : '-block -lg -br0 -font-bold'
             })).render(this.inputWrapper);
 
             this.appendChild(new CV.SearchResultsManager({
@@ -63,7 +66,7 @@ Class(CV, 'Search').inherits(Widget)({
             return this;
         },
 
-        _inputKeyPressHandler : function _inputKeyPressHandler(ev) {
+        _inputKeyPressHandler : function _inputKeyPressHandler() {
             var _this = this;
             var inputValue = this.input.getValue();
 
@@ -102,8 +105,7 @@ Class(CV, 'Search').inherits(Widget)({
         },
 
         _requestSearchResults : function _requestSearchResults(queryString) {
-            // queryString = queryString.trim().replace(/\s/g, '+');
-            // queryString = window.encodeURIComponent(queryString);
+            queryString = queryString.replace(this._queryRegex, ' ');
 
             API.search({query: queryString}, function(err, res) {
                 console.log(err);
