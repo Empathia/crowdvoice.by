@@ -1,6 +1,19 @@
 var TopicsController = Class('TopicsController')({
   prototype : {
 
+    populateLocals : function (req, res, next) {
+      Topic.all(function (err, allTopics) {
+        if (err) { return next(err) }
+
+        TopicsPresenter.build(allTopics, function (err, presenterTopics) {
+          if (err) { return next(err) }
+
+          res.locals.topics = presenterTopics
+          return next()
+        })
+      })
+    },
+
     getTopicBySlug : function getTopicBySlug (req, res, next) {
       var result = {
         currentTopic: null,
