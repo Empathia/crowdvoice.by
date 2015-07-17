@@ -1,6 +1,65 @@
 var TopicsController = Class('TopicsController')({
   prototype : {
 
+    people : function (req, res, next) {
+      async.waterfall([
+        // get our topic, by slug
+        function (callback) {
+          Topic.find({ slug: req.params.topicSlug }, callback)
+        },
+
+        // find records related to our topic
+        function (topic, callback) {
+          VoiceTopic.find({ topic_id: topic[0].id }, callback)
+        },
+
+        // get voices by topic
+        function (voiceTopic, callback) {
+          var voicesIds = voiceTopic.map(function (val) {
+            return val.voiceId
+          })
+          // Knex queries FTW
+          db('Voices')
+            .whereIn('id', voicesIds)
+            .andWhere('status', Voice.STATUS_PUBLISHED)
+            .exec(callback)
+        },
+
+        // get owners of voices
+        function (voices, callback) {
+          var ownersIds = voices.map(function (val) {
+            return val.owner_id
+          })
+          // Knex queries FTW
+          db('Entities')
+            .whereIn('id', ownersIds)
+            .andWhere('is_anonymous', false)
+            .exec(callback)
+        },
+
+        function (entities, callback) {
+          EntitiesPresenter.build(entities, req.currentPerson, callback)
+        },
+      ], function (err, result) {
+        if (err) { return next(err) }
+
+        res.format({
+          html: function () {
+            req.entities = result
+            res.locals.entities = result
+            res.render('topics/people')
+          },
+          json: function () {
+            res.json(result)
+          },
+        })
+      })
+    },
+
+    organizations : function (req, res, next) {
+
+    },
+
     populateLocals : function (req, res, next) {
       Topic.all(function (err, allTopics) {
         if (err) { return next(err) }
@@ -8,13 +67,14 @@ var TopicsController = Class('TopicsController')({
         TopicsPresenter.build(allTopics, function (err, presenterTopics) {
           if (err) { return next(err) }
 
+          req.topics = presenterTopics
           res.locals.topics = presenterTopics
           return next()
         })
       })
     },
 
-    getTopicBySlug : function getTopicBySlug (req, res, next) {
+    getTopicBySlug : function (req, res, next) {
       var result = {
         currentTopic: null,
         voices: null
@@ -76,7 +136,6 @@ var TopicsController = Class('TopicsController')({
         next(new Error('Id has to be an integer'));
       }
 
-      console.log(req.params.id);
       Topic.findById(req.params.id, function (err, result) {
         if (err) { next(err); return; }
         if (result.length === 0) { next(new Error('Not found')); }

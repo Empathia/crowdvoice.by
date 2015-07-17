@@ -21,10 +21,6 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
         Voice.find({ owner_id: response.entity.id }, function (err, result) {
           if (err) { return next(err); }
 
-          // atm both req.currentPerson.id and req.entity.id should both be
-          // hashed, but they are not. when anonymous req.currentPerson is NOT
-          // hashed, thus messing up user checking and stuff.
-
           var endResult = {
             draft: [],
             unlisted: [],
@@ -45,7 +41,14 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
             };
           });
 
-          res.json(endResult);
+          res.format({
+            html: function () {
+              res.render('person/myVoices');
+            },
+            json: function () {
+              res.json(endResult);
+            },
+          })
         });
       });
     },
