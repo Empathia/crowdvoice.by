@@ -9,7 +9,6 @@ var SearchController = Class('SearchController')({
 
       query = query.replace(/[^A-Za-z0-9\p{L}(\p{L}|\p{Nd})]+/g, ' | ');
 
-
       var response = {
 
         preview : {

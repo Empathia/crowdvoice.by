@@ -193,7 +193,6 @@ var Voice = Class('Voice').inherits(Argon.KnexModel).includes(ImageUploader)({
                 .interpolateWith(sharp.interpolator.nohalo)
                 .progressive()
                 .flatten()
-                .embed()
                 .background('#FFFFFF')
                 .quality(100)
             );
