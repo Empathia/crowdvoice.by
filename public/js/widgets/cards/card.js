@@ -82,7 +82,7 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
             </div>\
             <div class="card-stat-item -col-3 card_collaborations-wrapper">\
                 <p class="stats-number card_collaborations-text -font-bold"></p>\
-                <p class="stats-label card_collaborations-label-text">Member</p>\
+                <p class="stats-label card_collaborations-label-text">Members</p>\
             </div>\
         </div>',
 

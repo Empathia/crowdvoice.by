@@ -1,22 +1,21 @@
-/* jshint multistr: true */
 var Checkit = require('checkit');
 
 Class(CV, 'VoiceFooterShareItems').inherits(Widget).includes(CV.WidgetUtils, ShareUrl)({
     HTML : '\
         <div class="ui-vertical-list hoverable">\
-            <a class="ui-vertical-list-item -block" target="_blank" data-type="twitter" title="Share on Twitter">\
+            <a class="ui-vertical-list-item -block -tdn" target="_blank" data-type="twitter" title="Share on Twitter">\
                 <svg class="-s20 -mr1">\
                     <use xlink:href="#svg-twitter-square"></use>\
                 </svg>\
                 Twitter\
             </a>\
-            <a class="ui-vertical-list-item -block" target="_blank" data-type="facebook" title="Share on Facebook">\
+            <a class="ui-vertical-list-item -block -tdn" target="_blank" data-type="facebook" title="Share on Facebook">\
                 <svg class="-s20 -mr1">\
                     <use xlink:href="#svg-facebook-square"></use>\
                 </svg>\
                 Facebook\
             </a>\
-            <a class="ui-vertical-list-item -block" target="_blank" data-type="googleplus" title="Share on Google+">\
+            <a class="ui-vertical-list-item -block -tdn" target="_blank" data-type="googleplus" title="Share on Google+">\
                 <svg class="-s20 -mr1">\
                     <use xlink:href="#svg-gplus-square"></use>\
                 </svg>\
@@ -86,7 +85,7 @@ Class(CV, 'VoiceFooterShareItems').inherits(Widget).includes(CV.WidgetUtils, Sha
             window.location = emailUrlString;
         },
 
-        _keyupHandler : function _keyupHandler(ev) {
+        _keyupHandler : function _keyupHandler() {
             this.emailInputWrapper.classList.remove('error');
         },
 
