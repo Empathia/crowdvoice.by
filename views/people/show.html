@@ -1,4 +1,4 @@
-<main role="main" class="cv-main-content cv-main-profile profile-user -rel">
+<main role="main" class="cv-main-content cv-main-profile profile-user profile-page -rel">
 
   <section class="profile-intro -rel">
     <% %>
@@ -86,6 +86,7 @@
     <div class=" -menu-tab-content">
       <h2 class="profile-subheading -font-bold -m0">Followers</h2>
       <hr>
+      <br>
       <div class="-row profile-followers-container profile-container">
         <!-- followers -->
       </div>
@@ -96,8 +97,9 @@
       <span class="entities-voices-select -pl1"></span>
       <hr>
       <div class="-row profile-following-container  profile-container">
-        <div class="entities-followed"></div>
         <div class="voices-followed" style="display: none;"></div>
+        <br>
+        <div class="entities-followed"></div>
       </div>
     </div>
 
@@ -119,30 +121,15 @@
 
   var totalFollowing = 0;
 
-
-
   $.ajax({
     type: "GET",
     url:'/<%= person.profileName %>/voices',
     headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
     data : {},
     success: function(data) {
-      renderVoices(data);
+      renderData(data, VoiceCover, 'voices');
     }
   });
-  // **************************
-  // ****** render voices *****
-  // **************************
-  function renderVoices(data){
-    $('.profile-menu .counter-voices').text(data.length);
-
-    data.forEach(function (voice, index) {
-      var voiceEl = $('<div class="-col-4 -pr1"></div>');
-      new VoiceCover(voice).render( voiceEl);
-      $('.profile-voices-container').append(voiceEl);
-    });
-  }
-
 
   $.ajax({
     type: "GET",
@@ -150,22 +137,9 @@
     headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
     data : {},
     success: function(data) {
-      renderFollowers(data);
+      renderData(data, CV.Card, 'followers');
     }
   });
-  // *****************************
-  // ****** render followers *****
-  // *****************************
-  function renderFollowers(data){
-    //console.log('followers: ' + data);
-    $('.profile-menu .counter-followers').text(data.length);
-
-    data.forEach(function (follower, index) {
-      var followerEl = $('<div class="-col-4 -pr1"></div>');
-      new CV.Card(follower).render( followerEl);
-      $('.profile-followers-container').append(followerEl);
-    });
-  }
 
   $.ajax({
     type: "GET",
@@ -173,41 +147,72 @@
     headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
     data : {},
     success: function(data) {
-      renderFollowing(data, 'voices');
+      renderFollowing(data, VoiceCover, 'voices-followed');
     }
   });
+
   $.ajax({
     type: "GET",
     url:'/<%= person.profileName %>/entitiesFollowed',
     headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
     data : {},
     success: function(data) {
-      renderFollowing(data, 'entities');
+      renderFollowing(data, CV.Card, 'entities-followed');
     }
   });
-  // *****************************
-  // ****** render following *****
-  // *****************************
-  function renderFollowing(data, type){
+
+  var responsives = {
+    'voices'    : null,
+    'followers'    : null,
+    'voices-followed' : null,
+    'entities-followed' : null
+  }
+
+  function renderData(data, instance, className){
+    $('.profile-menu .counter-' + className).text(data.length);
+
+    var itemsWrapper = document.querySelector('.profile-' + className + '-container');
+    var itemsElements = [];
+
+    data.forEach(function(item, index) {
+      var itemWidget = new instance(item).render(itemsWrapper);
+      itemWidget.element.addClass('id-' + item.id);
+      itemsElements.push(itemWidget.el);
+    });
+
+    responsives[className] = new CV.ResponsiveWidth({
+        container : itemsWrapper,
+        items : [].slice.call(itemsElements, 0),
+        minWidth : 300
+    }).setup();
+
+  }
+
+  function renderFollowing(data, instance, className){
     //console.log('followers: ' + data);
     totalFollowing += data.length;
     $('.profile-menu .counter-following').text(totalFollowing);
 
-    data.forEach(function (followers, index) {
-      if(type == 'voices'){
-        var followerEl = $('<div class="-col-4 -pr1"></div>');
-        new VoiceCover( data[index] ).render( followerEl);
-      } else if (type == 'entities'){
-        var followerEl = $('<div class="-col-4 -pr1"></div>');
-        new CV.Card( data[index] ).render( followerEl);
-      }
-      $('.profile-following-container .' + type + '-followed').append(followerEl);
+    var itemsWrapper = document.querySelector('.profile-following-container .' + className );
+    var itemsElements = [];
+
+    data.forEach(function(item, index) {
+      var itemWidget = new instance(item).render(itemsWrapper);
+      itemWidget.element.addClass('id-' + item.id);
+      itemsElements.push(itemWidget.el);
     });
+
+    responsives[className] = new CV.ResponsiveWidth({
+        container : itemsWrapper,
+        items : [].slice.call(itemsElements, 0),
+        minWidth : 300
+    }).setup();
+
   }
+
 
   if (currentPerson && currentPerson.id != '<%= person.id %>'){
     createControls();
-
   }
 
   //*********************************************************
@@ -343,15 +348,22 @@ var followSelect = new CV.Select({
 followSelect.entities.on('click', function(){
   $('.entities-followed').show();
   $('.voices-followed').hide();
+  refreshItems();
 });
 
 followSelect.voices.on('click', function(){
   $('.entities-followed').hide();
   $('.voices-followed').show();
+  refreshItems();
 });
 
 
-
+  function refreshItems(){
+    responsives['voices'].setup();
+    responsives['followers'].setup();
+    responsives['voices-followed'].setup();
+    responsives['entities-followed'].setup();
+  }
   //*********************************************************
   //*********************** Menu ****************************
   //*********************************************************
@@ -373,22 +385,9 @@ followSelect.voices.on('click', function(){
         $(this).addClass('active');
         $(contentContainer + ' .-menu-tab-content').removeClass('active');
         $(elContent).addClass('active');
+        refreshItems();
       }
     }
-
-    $('.style-grid').on('click', function(){
-      $(this).addClass('active');
-      $('.style-list').removeClass('active');
-      $('.voice').addClass('-col-4 -pr1');
-      $('.voice .cv-voice-cover, .voice .widget-card').removeClass('list-style');
-    });
-
-    $('.style-list').on('click', function(){
-      $(this).addClass('active');
-      $('.style-grid').removeClass('active');
-      $('.voice').removeClass('-col-4 -pr1');
-      $('.voice .cv-voice-cover, .voice .widget-card').addClass('list-style');
-    });
 
 
   });
