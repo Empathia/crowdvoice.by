@@ -182,11 +182,27 @@
 /* =========================================================================== *
  * card-mini
  * =========================================================================== */
+.card-mini.has-meta {
+  .card-mini-fullname,
+  .card-mini-username {
+    &:extend(.-inline-block);
+  }
+
+  .card-mini-username {
+    margin: 1px 0 0 5px;
+  }
+}
+
 .card-mini-info {
   margin-left: 46px;
 }
 
 .card-mini-username {
+  font-size: 11px;
+  color: @color-neutral-mid;
+}
+
+.card-info-meta {
   font-size: 11px;
   color: @color-neutral-mid;
 }
