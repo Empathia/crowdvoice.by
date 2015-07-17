@@ -129,9 +129,6 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
         this.dom.updateAttr('href', anchor[0], '/topic/' + topic.slug);
 
         this.tagListElement.append(temp);
-
-        this.element.find('.meta').prepend(this.tagListElement.clone().append('&nbsp;&middot;&nbsp;'));
-
       }, this);
 
       return this;

@@ -21,17 +21,20 @@ Class(CV, 'SearchResultsGroup').inherits(Widget).includes(CV.WidgetUtils)({
         print : function print() {
             this.dom.updateText(this.titleElement, this.name);
 
-            this.data.forEach(function(propertyName) {
+            this.data.forEach(function(propertyName, index) {
+                var data = {
+                    name : propertyName.id + '_' + index,
+                    data: propertyName
+                };
+
                 if (this.name === 'voices') {
-                    this.appendChild(
-                        new CV.VoiceCoverMini(propertyName)
-                    ).render(this.itemsWrapper);
+                    this.appendChild(new CV.VoiceCoverMini(data))
+                        .render(this.itemsWrapper).showMeta();
                 }
 
                 if (this.name === 'organizations' || this.name === 'people') {
-                    this.appendChild(
-                        new CV.CardMini(propertyName)
-                    ).render(this.itemsWrapper);
+                    this.appendChild(new CV.CardMini(data))
+                        .render(this.itemsWrapper).showMeta();
                 }
             }, this);
 

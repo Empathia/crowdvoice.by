@@ -212,49 +212,6 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
       });
     },
 
-    myVoices: function (req, res, next) {
-      ACL.isAllowed('myVoices', 'entities', req.role, {
-        currentEntity: req.entity,
-        currentPerson: req.currentPerson
-      }, function (err, response) {
-        if (err) { return next(err); }
-
-        if (!response.isAllowed) {
-          return next(new ForbiddenError());
-        }
-
-        Voice.find({ owner_id: hashids.decode(req.currentPerson.id)[0] }, function (err, result) {
-          if (err) { return next(err); }
-
-          // atm both req.currentPerson.id and req.entity.id should both be
-          // hashed, but they are not. when anonymous req.currentPerson is NOT
-          // hashed, thus messing up user checking and stuff.
-
-          var endResult = {
-            draft: [],
-            unlisted: [],
-            published: []
-          };
-
-          result.forEach(function (val) {
-            switch (val.status) {
-              case 'STATUS_DRAFT':
-                endResult.draft.push(val);
-                break;
-              case 'STATUS_UNLISTED':
-                endResult.unlisted.push(val);
-                break;
-              case 'STATUS_PUBLISHED':
-                endResult.published.push(val);
-                break;
-            };
-          });
-
-          res.json(endResult);
-        });
-      });
-    },
-
     followers : function followers(req, res, next) {
       var entity = req.entity;
       var followerIds = [];

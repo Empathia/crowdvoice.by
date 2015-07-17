@@ -7,8 +7,7 @@ var SearchController = Class('SearchController')({
     index : function(req, res, next) {
       var query = req.params.query;
 
-      query = query.replace(/[\ ~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g, ' | ');
-
+      query = query.replace(/[^A-Za-z0-9\p{L}(\p{L}|\p{Nd})]+/g, ' | ');
 
       var response = {
 
