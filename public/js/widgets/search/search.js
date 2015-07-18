@@ -1,4 +1,5 @@
 var API = require('../../lib/api');
+var Gemini = require('gemini-scrollbar');
 
 Class(CV, 'Search').inherits(Widget)({
     ELEMENT_CLASS : 'cv-search-overlay',
@@ -21,7 +22,15 @@ Class(CV, 'Search').inherits(Widget)({
                     </div>\
                 </div>\
             </div>\
-            <div class="cv-search-overlay__results"></div>\
+            <div class="cv-search-overlay__results">\
+                <div class="gm-scrollbar -vertical">\
+                    <span class="thumb"></span>\
+                </div>\
+                <div class="gm-scrollbar -horizontal">\
+                    <span class="thumb"></span>\
+                </div>\
+                <div class="gm-scroll-view"></div>\
+            </div>\
         </div>\
     ',
 
@@ -38,8 +47,12 @@ Class(CV, 'Search').inherits(Widget)({
             this._body = document.body;
             this.inputWrapper = this.el.querySelector('.cv-search-overlay__input');
             this.inputLoader = this.inputWrapper.querySelector('.cv-loader');
-            this.resultsWrapper = this.el.querySelector('.cv-search-overlay__results');
             this.closeElement = this.el.querySelector('.cv-search-overlay__close');
+
+            this.scrollbar = new Gemini({
+                element : this.el.querySelector('.cv-search-overlay__results'),
+                createElements : false
+            }).create();
 
             this._queryRe = new RegExp('[^A-Za-z0-9\\p{L}\\p{Nd}]+','g');
             this._queryRe2 = new RegExp('[\\ ~`!#$%\\^&*+=\\-\\[\\]\';,{}|":<>\\?]','g');
@@ -51,9 +64,8 @@ Class(CV, 'Search').inherits(Widget)({
             })).render(this.inputWrapper);
 
             this.appendChild(new CV.SearchResultsManager({
-                name : 'resultsManager',
-                className : '-full-width'
-            })).render(this.resultsWrapper);
+                name : 'resultsManager'
+            })).render(this.scrollbar.getViewElement());
 
             this._bindEvents();
         },
@@ -97,7 +109,6 @@ Class(CV, 'Search').inherits(Widget)({
 
         _setSearchingState : function _setSearchingState() {
             this.inputLoader.classList.add('active');
-            this.resultsManager.clearResults();
             return this;
         },
 
@@ -110,8 +121,9 @@ Class(CV, 'Search').inherits(Widget)({
             API.search({query: queryString}, function(err, res) {
                 console.log(err);
                 console.log(res);
+                this.resultsManager.clearResults().renderResults(res);
+                this.scrollbar.update();
                 this._setResponseState();
-                this.resultsManager.renderResults(res);
             }.bind(this));
         },
 

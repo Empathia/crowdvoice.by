@@ -1,7 +1,10 @@
 /* jshint multistr: true */
 Class(CV, 'SearchResultsManager').inherits(Widget)({
-    ELEMENT_CLASS : 'search-results-table',
-    HTML : '<table></table>',
+    ELEMENT_CLASS : 'search-results',
+    HTML : '\
+        <div>\
+            <table class="search-results-table -full-width"></table>\
+        </div>',
     MAX_TOTAL_RESULTS: 9,
 
     prototype : {
@@ -9,6 +12,7 @@ Class(CV, 'SearchResultsManager').inherits(Widget)({
             Widget.prototype.init.call(this, config);
 
             this.el = this.element[0];
+            this.tableElement = this.el.getElementsByTagName('table')[0];
         },
 
         renderResults : function renderResults(results) {
@@ -21,7 +25,7 @@ Class(CV, 'SearchResultsManager').inherits(Widget)({
                             name : propertyName,
                             data : preview[propertyName]
                         })
-                    ).print().render(this.el);
+                    ).print().render(this.tableElement);
                 }
             }, this);
 
@@ -29,9 +33,7 @@ Class(CV, 'SearchResultsManager').inherits(Widget)({
                 this.appendChild(new CV.SearchResultsViewAllButton({
                     name : 'viewAllButton',
                     totals : results.totals
-                }));
-
-                this.el.parentNode.insertBefore(this.viewAllButton.el, this.el.nextSibling);
+                })).render(this.el);
             }
         },
 
