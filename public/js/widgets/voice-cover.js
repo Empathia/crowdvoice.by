@@ -1,6 +1,7 @@
 /**
  * VoiceCover Widget
  *
+ * data =>
  * description  {String} voice description
  * createdAt    {String}
  * followers    {Array} voice entities followers
@@ -20,7 +21,7 @@
 
 var moment = require('moment');
 
-Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
+Class(CV, 'VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
     HTML : '\
     <article class="cv-voice-cover" role="article">\
         <ul class="cv-tags -list-horizontal"></ul>\
@@ -37,8 +38,8 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
                 <a class="author-anchor" href="{{voice-owner-url}}">\
                     <img class="author-avatar -rounded" src="{{voice-owner-avatar-small}}" alt="">\
                 </a>\
-                by <a class="author-anchor author-username" href="{{voice-owner-url}}">\
-                    <span class="">{{voice-owner-name}}</span>\
+                by <a class="author-anchor" href="{{voice-owner-url}}">\
+                    <span class="author-username">{{voice-owner-name}}</span>\
                 </a>\
             </div>\
             <h2 class="voice-cover-title -font-bold">\
@@ -66,6 +67,7 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
     MAX_DESCRIPTION_LENGTH : 180,
 
     prototype : {
+        data : null,
         init : function init(config) {
             Widget.prototype.init.call(this, config);
 
@@ -74,11 +76,12 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
             this.voiceCoverElement = this.element.find('.voice-cover');
             this.dateTimeElement = this.el.querySelector('.voice-cover-datetime');
             this.voiceAnchors = [].slice.call(this.el.querySelectorAll('[data-voice-anchor]'), 0);
+            this.authorAnchors = [].slice.call(this.el.querySelectorAll('.author-anchor'), 0);
 
             this._updateValues();
 
             // is new? no older than 21 days == 3 weeks
-            if (moment().diff(moment(this.updatedAt), 'days') <= 21) {
+            if (moment().diff(moment(this.data.updatedAt), 'days') <= 21) {
                 this.addNewBadge();
             }
         },
@@ -88,30 +91,32 @@ Class('VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
          */
         _updateValues : function _updateValues() {
             this.voiceAnchors.forEach(function(anchor) {
-                this.dom.updateAttr('href', anchor, '/' + this.owner.profileName + '/' + this.slug + '/');
-                this.dom.updateAttr('title', anchor, this.title + ' voice');
+                this.dom.updateAttr('href', anchor, '/' + this.data.owner.profileName + '/' + this.data.slug + '/');
+                this.dom.updateAttr('title', anchor, this.data.title + ' voice');
             }, this);
 
-            this.dom.updateBgImage(this.el.querySelector('.voice-cover-main-image'), this.images.card.url);
+            this.dom.updateBgImage(this.el.querySelector('.voice-cover-main-image'), this.data.images.card.url);
 
-            if (this.topics.length) {
-                this.createTopics(this.topics);
+            if (this.data.topics.length) {
+                this.createTopics(this.data.topics);
             }
 
-            var authorFullname = this.owner.name + (this.owner.lastname ? (' ' + this.owner.lastname) : '');
-            this.dom.updateAttr('href', this.el.querySelector('.author-anchor'), '/' + this.owner.profileName);
-            this.dom.updateAttr('title', this.el.querySelector('.author-anchor'), authorFullname + '’s profile');
-            this.dom.updateAttr('src', this.el.querySelector('.author-avatar'), this.owner.images.icon.url);
+            var authorFullname = this.data.owner.name + (this.data.owner.lastname ? (' ' + this.data.owner.lastname) : '');
+            this.authorAnchors.forEach(function(anchor) {
+                this.dom.updateAttr('title', anchor, authorFullname + '’s profile');
+                this.dom.updateAttr('href', anchor, '/' + this.data.owner.profileName);
+            }, this);
+            this.dom.updateAttr('src', this.el.querySelector('.author-avatar'), this.data.owner.images.icon.url);
             this.dom.updateText(this.el.querySelector('.author-username'), authorFullname);
 
-            this.dom.updateText(this.el.querySelector('.voice-cover-title-anchor'), this.title);
+            this.dom.updateText(this.el.querySelector('.voice-cover-title-anchor'), this.data.title);
 
-            var description = this.format.truncate(this.description, this.constructor.MAX_DESCRIPTION_LENGTH, true);
+            var description = this.format.truncate(this.data.description, this.constructor.MAX_DESCRIPTION_LENGTH, true);
             this.dom.updateText(this.el.querySelector('.voice-cover-description'), description);
 
-            this.dom.updateText(this.el.querySelector('.voice-cover-followers'), this.format.numberUS(this.followers.length));
-            this.dom.updateText(this.dateTimeElement, moment(this.updatedAt).fromNow());
-            this.dom.updateAttr('datetime', this.dateTimeElement, this.updatedAt);
+            this.dom.updateText(this.el.querySelector('.voice-cover-followers'), this.format.numberUS(this.data.followers.length));
+            this.dom.updateText(this.dateTimeElement, moment(this.data.updatedAt).fromNow());
+            this.dom.updateAttr('datetime', this.dateTimeElement, this.data.updatedAt);
         },
 
         /**

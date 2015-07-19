@@ -89,7 +89,7 @@
     var itemsElements = [];
 
     data.forEach(function(item, index) {
-        var itemWidget = new instance(item).render(itemsWrapper);
+      var itemWidget = new instance({data: item}).render(itemsWrapper);
         itemWidget.element.addClass('id-' + item.id);
           itemsElements.push(itemWidget.el);
         });
@@ -117,7 +117,7 @@
 		});
 	}
 
-	getData('/discover/new/voices', VoiceCover, 'voices');
+	getData('/discover/new/voices', CV.VoiceCover, 'voices');
 	getData('/discover/new/people', CV.Card, 'people');
 	getData('/discover/new/organizations', CV.Card, 'organizations');
 

@@ -19,9 +19,11 @@ Class(CV, 'HomeView').includes(NodeSupport, CV.WidgetUtils)({
             var featuredVoicesWrapper = document.querySelector('.homepage-featured-voices-container');
             var featuredVoicesElements = [];
             this.featuredVoicesData.forEach(function(voice, index) {
-                voice.name = 'featuredVoice_' + index;
-                this.appendChild( new VoiceCover(voice)).render(featuredVoicesWrapper);
-                featuredVoicesElements.push(this[voice.name].el);
+                this.appendChild(new CV.VoiceCover({
+                    name : 'featuredVoice_' + index,
+                    data : voice
+                })).render(featuredVoicesWrapper);
+                featuredVoicesElements.push(this['featuredVoice_' + index].el);
             }, this);
 
             new CV.ResponsiveWidth({
@@ -40,7 +42,7 @@ Class(CV, 'HomeView').includes(NodeSupport, CV.WidgetUtils)({
             var orgsHolder = document.querySelector('.homepage-organization-cards-holder');
             var orgsList = orgsHolder.querySelector('.slider-list');
             this.orgsData.map(function(org) {
-                var card = new CV.Card(org);
+                var card = new CV.Card({data: org});
                 card.element[0].classList.add('slider-item');
 
                 return card.render(orgsList);

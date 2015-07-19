@@ -91,7 +91,7 @@
         var itemsElements = [];
 
         data.forEach(function(item, index) {
-            var itemWidget = new instance(item).render(itemsWrapper);
+          var itemWidget = new instance({data: item}).render(itemsWrapper);
 			itemWidget.element.addClass('id-' + item.id);
 
             itemsElements.push(itemWidget.el);
@@ -119,10 +119,10 @@
 		});
 	}
 
-	getData('/discover/trending/voices', VoiceCover, 'voices');
+  getData('/discover/trending/voices', CV.VoiceCover, 'voices');
 	getData('/discover/trending/people', CV.Card, 'people');
 	getData('/discover/trending/organizations', CV.Card, 'organizations');
-	getData('/discover/trending/updatedVoices', VoiceCover, 'updated');
+	getData('/discover/trending/updatedVoices', CV.VoiceCover, 'updated');
 
 
 	//$.ajax({

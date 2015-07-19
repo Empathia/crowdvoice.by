@@ -177,7 +177,7 @@
         var cardsList = cardsHolder.querySelector('.slider-list');
 
         data.map(function(item) {
-            var card = new instance(item);
+          var card = new instance({data: item});
             card.element[0].classList.add('slider-item');
             return card.render(cardsList);
         });
@@ -203,7 +203,7 @@
 		});
 	}
 
-	getData('/browse/featured/voices', VoiceCover, 'voices');
+	getData('/browse/featured/voices', CV.VoiceCover, 'voices');
 	getData('/browse/featured/people', CV.Card, 'people');
 	getData('/browse/featured/organizations', CV.Card, 'organizations');
 

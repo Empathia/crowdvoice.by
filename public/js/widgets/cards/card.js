@@ -129,7 +129,7 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
             this.joinedAtEl = this.el.querySelector('.card_meta-joined-at-text');
             this.actionsEl = this.el.querySelector('.card_actions .-row');
 
-            if (this.type === "organization") {
+            if (this.data.type === "organization") {
                 this.statsWrapper.insertAdjacentHTML('afterbegin', this.constructor.HTML_STATS_ORGANIZATION);
                 this._setupOrganizationElements();
             } else {
@@ -150,32 +150,35 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
                 return void 0;
             }
 
-            if (Person.is(this.id) || Person.anon()) {
+            if (Person.is(this.data.id) || Person.anon()) {
                 return void 0;
             }
 
-            if (!Person.ownerOf('organization', this.id)) {
+            if (!Person.ownerOf('organization', this.data.id)) {
                 this.appendChild( new CV.CardActionFollow({
                     name : 'followButton',
-                    followed: this.followed,
-                    profileName : this.profileName
+                    followed: this.data.followed,
+                    profileName : this.data.profileName
                 })).render(this.actionsEl);
                 this._totalCountActions++;
 
-                this.appendChild( new CV.CardActionMessage({name : 'messageButton', id : this.id})).render(this.actionsEl);
+                this.appendChild(new CV.CardActionMessage({
+                    name : 'messageButton',
+                    id : this.data.id
+                })).render(this.actionsEl);
                 this._totalCountActions++;
             }
 
-            if (this.type === "organization") {
-                if (!Person.memberOf('organization', this.id)) {
-                    this.appendChild( new CV.CardActionJoin({name : 'joinButton'})).render(this.actionsEl);
+            if (this.data.type === "organization") {
+                if (!Person.memberOf('organization', this.data.id)) {
+                    this.appendChild(new CV.CardActionJoin({name : 'joinButton'})).render(this.actionsEl);
                     this._totalCountActions++;
                 }
             } else {
-                if (Person.canInviteEntity(this)) {
+                if (Person.canInviteEntity(this.data)) {
                     this.appendChild(new CV.CardActionInvite({
                         name : 'inviteButton',
-                        entity : this
+                        entity : this.data
                     })).render(this.actionsEl);
                     this._totalCountActions++;
                 }
@@ -197,31 +200,34 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
          * @return Card [Object]
          */
         _setupDefaultElements : function _setupDefaultElements() {
-            this.dom.updateBgImage(this.profileCoverEl, this.backgrounds.card.url);
+            this.dom.updateBgImage(this.profileCoverEl, this.data.backgrounds.card.url);
 
-            this.dom.updateAttr('src', this.avatarEl, this.images.card.url);
-            this.dom.updateAttr('alt', this.avatarEl, this.profileName + "’s avatar image");
+            this.dom.updateAttr('src', this.avatarEl, this.data.images.card.url);
+            this.dom.updateAttr('alt', this.avatarEl, this.data.profileName + "’s avatar image");
 
-            this.dom.updateText(this.usernameEl, "@" + this.profileName);
-            this.dom.updateAttr('href', this.usernameEl, this.profileName);
+            this.dom.updateText(this.usernameEl, "@" + this.data.profileName);
+            this.dom.updateAttr('href', this.usernameEl, '/' + this.data.profileName);
 
-            var fullname = this.name + (this.lastname ? (' ' + this.lastname) : '');
+            var fullname = this.data.name + (this.data.lastname ? (' ' + this.data.lastname) : '');
             this.dom.updateText(this.fullNameEl, fullname);
 
-            var description = this.format.truncate(this.description, this.constructor.MAX_DESCRIPTION_LENGTH, true);
+            var description = this.format.truncate(this.data.description, this.constructor.MAX_DESCRIPTION_LENGTH, true);
             this.dom.updateText(this.descriptionEl, description);
-            this.dom.updateText(this.locationEl, this.location);
-            this.dom.updateText(this.joinedAtEl, moment(this.createdAt).format('MMM YYYY'));
+            this.dom.updateText(this.locationEl, this.data.location);
+            this.dom.updateText(this.joinedAtEl, moment(this.data.createdAt).format('MMM YYYY'));
 
-            this.dom.updateText(this.statsWrapper.querySelector('.card_total-voices-text'), this.format.numberUS(this.voicesCount));
-            this.dom.updateText(this.statsWrapper.querySelector('.card_total-followers-text'), this.format.numberUS(this.followersCount));
-            this.dom.updateText(this.statsWrapper.querySelector('.card_total-following-text'), this.format.numberUS(this.followingCount));
+            this.dom.updateText(this.statsWrapper.querySelector('.card_total-voices-text'), this.format.numberUS(this.data.voicesCount));
+            this.dom.updateText(this.statsWrapper.querySelector('.card_total-followers-text'), this.format.numberUS(this.data.followersCount));
+            this.dom.updateText(this.statsWrapper.querySelector('.card_total-following-text'), this.format.numberUS(this.data.followingCount));
 
             return this;
         },
 
         _setupOrganizationElements : function _setupOrganizationElements() {
-            this.dom.updateText(this.statsWrapper.querySelector('.card_collaborations-text'), this.format.numberUS(this.membershipCount));
+            this.dom.updateText(
+                this.statsWrapper.querySelector('.card_collaborations-text'),
+                this.format.numberUS(this.data.membershipCount)
+            );
 
             return this;
         },
