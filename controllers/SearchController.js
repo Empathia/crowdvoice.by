@@ -76,6 +76,8 @@ var SearchController = Class('SearchController')({
           html : function() {
             req.searchResults = response.full;
             res.locals.searchResults = response.full;
+            res.locals.totals = response.totals;
+            res.locals.searchQuery = query.replace(/\|/g, '');
 
             res.render('search/index.html');
           },

@@ -83,6 +83,10 @@ require('./widgets/category-cover');
 require('./views/home');
 require('./widgets/voice/voice-helper.js');
 require('./views/voice');
+require('./views/search');
+require('./widgets/search-view/voices-tab');
+require('./widgets/search-view/users-tab');
+require('./widgets/search-view/organizations-tab');
 
 require('./widgets/voice/posts-registry');
 require('./widgets/voice/voice-header.js');
