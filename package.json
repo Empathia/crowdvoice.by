@@ -27,6 +27,8 @@
     "file-loader": "^0.8.1",
     "follow-redirects": "0.0.3",
     "fs-extra": "^0.21.0",
+    "gemini-scrollbar": "^1.2.8",
+    "get-location-origin": "^1.0.0",
     "gm": "^1.18.1",
     "hashids": "^1.0.1",
     "imagesize": "^1.0.0",

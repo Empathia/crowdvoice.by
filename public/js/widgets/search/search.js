@@ -121,7 +121,7 @@ Class(CV, 'Search').inherits(Widget)({
             API.search({query: queryString}, function(err, res) {
                 console.log(err);
                 console.log(res);
-                this.resultsManager.clearResults().renderResults(res);
+                this.resultsManager.clearResults().renderResults(res, queryString);
                 this.scrollbar.update();
                 this._setResponseState();
             }.bind(this));
