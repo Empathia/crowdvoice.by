@@ -60,6 +60,10 @@ require('./widgets/responsive-slider.js');
 require('./widgets/input-clearable.js');
 require('./widgets/input-counter.js');
 require('./widgets/dropdown.js');
+require('./widgets/tabs/manager');
+require('./widgets/tabs/tab');
+require('./widgets/tabs/tab-nav');
+require('./widgets/tabs/tab-content');
 
 // components
 require('./widgets/cards/card');
