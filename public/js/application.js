@@ -158,9 +158,7 @@ require('./widgets/post-creators/write-article/cover-button');
 
 // bubbles
 require('./widgets/bubble.js');
-require('./widgets/bubble/jump-to-date.js');
 require('./widgets/bubble/voices-list.js');
-require('./widgets/bubble/share.js');
 require('./widgets/modal.js');
 require('./widgets/login.js');
 require('./widgets/forms/send-message.js');
