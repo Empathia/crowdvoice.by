@@ -41,7 +41,7 @@ var SearchFrom = Class('SearchFrom')({
     youtube : function(req, res, next) {
       var q = req.params.q;
 
-      youtube.search('mexico', 50, function(err, response) {
+      youtube.search(q, 50, function(err, response) {
         if (err) {
           return next(err);
         }
