@@ -1,9 +1,5 @@
 var BlackListFilter = require(__dirname + '/BlackListFilter');
 
-var canTheyVote = function () {
-
-}
-
 var VotesController = Class('VotesController').includes(BlackListFilter)({
   prototype: {
     vote: function (req, res, next) {
@@ -77,10 +73,11 @@ var VotesController = Class('VotesController').includes(BlackListFilter)({
           if (result.length > 2) {
             var times = result.map(function (val) {
               return moment(val.createdAt)
+            }).map(function (val) {
+              return moment().diff(val, 'hours')
             })
 
-            // TODO: should be within 24 hours, not same day
-            if (times[0].isSame(times[2], 'day')) {
+            if (times.some(function (val) { return val <= 24 })) {
               return next(new ForbiddenError())
             } else {
               return makeVote()
