@@ -81,6 +81,34 @@ module.exports = {
         });
     },
 
+    /**************************************************************************
+     * VOICES
+     *************************************************************************/
+    /* Search for Posts in Sources
+     * @arguments args.profileName <required> [String] the voice owner profileName
+     * @arguments args.voiceSlug <required> [String] the voice slug
+     * @arguments args.source <required> [String] the source to search on ['googleNews', 'youtube']
+     * @arguments args.query <required> [String] the query string
+     * @arguments callback <required> [Function]
+     */
+    searchPostsInSource : function searchPostsInSource(args, callback) {
+        if (!args.profileName || !args.voiceSlug || !args.source || !args.query|| !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'GET',
+            dataType : 'json',
+            url : '/' + args.profileName + '/' + args.voiceSlug + '/' + args.source + '/' + args.query,
+            headers : {'csrf-token' : this.token},
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
+    },
 
     /**************************************************************************
      * ENTITIES

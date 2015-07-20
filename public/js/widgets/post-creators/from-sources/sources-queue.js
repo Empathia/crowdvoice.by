@@ -16,7 +16,23 @@ Class(CV, 'PostCreatorFromSourcesQueue').inherits(Widget)({
             Widget.prototype.init.call(this, config);
 
             this.el = this.element[0];
+            this.onboarding = this.el.querySelector('.from-sources-queue-onboarding');
         },
+
+        setSearchingState : function setSearchingState() {
+            this.hideOnboarding();
+            return this;
+        },
+
+        showOnboarding : function showOnboarding() {
+            this.onboarding.classList.add('active');
+            return this;
+        },
+
+        hideOnboarding : function hideOnboarding() {
+            this.onboarding.classList.remove('active');
+            return this;
+        }
     }
 });
 

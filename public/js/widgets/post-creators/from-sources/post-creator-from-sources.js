@@ -1,4 +1,5 @@
-/* jshint multistr: true */
+var API = require('../../../lib/api');
+
 Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
 
     ELEMENT_CLASS : 'cv-post-creator post-creator-from-sources',
@@ -12,7 +13,6 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
     ',
 
     prototype : {
-
         el : null,
         header : null,
         content : null,
@@ -39,46 +39,36 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
          * @return [PostCreatorFromUrl]
          */
         _setup : function _setup() {
-            this.appendChild(
-                new CV.PostCreatorFromSourcesDropdown({
-                    name : 'sourcesDropdown',
-                    className : '-float-left -full-height'
-                })
-            ).render(this.header);
+            this.appendChild(new CV.PostCreatorFromSourcesDropdown({
+                name : 'sourcesDropdown',
+                className : '-float-left -full-height'
+            })).render(this.header);
 
-            this.appendChild(
-                new CV.PostCreatorPostButton({
-                    name : 'postButton',
-                    className : '-float-right -full-height -color-border-grey-light'
-                })
-            ).render(this.header);
+            this.appendChild( new CV.PostCreatorPostButton({
+                name : 'postButton',
+                className : '-float-right -full-height -color-border-grey-light'
+            })).render(this.header);
 
             this.inputWrapper.className = '-overflow-hidden -full-height';
 
-            this.appendChild(
-                new CV.InputClearable({
-                    name : 'input',
-                    placeholder : 'Search for content',
-                    inputClass : '-block -lg -br0 -bw0 -full-height',
-                    className : '-full-height'
-                })
-            ).render(this.inputWrapper);
+            this.appendChild(new CV.InputClearable({
+                name : 'input',
+                placeholder : 'Search for content',
+                inputClass : '-block -lg -br0 -bw0 -full-height',
+                className : '-full-height'
+            })).render(this.inputWrapper);
 
             this.header.appendChild(this.inputWrapper);
 
-            this.appendChild(
-                new CV.PostCreatorFromSourcesResults({
-                    name : 'results',
-                    className : '-color-bg-white -full-height -float-left'
-                })
-            ).render(this.content);
+            this.appendChild(new CV.PostCreatorFromSourcesResults({
+                name : 'results',
+                className : '-color-bg-white -full-height -float-left'
+            })).render(this.content);
 
-            this.appendChild(
-                new CV.PostCreatorFromSourcesQueue({
-                    name : 'queue',
-                    className : '-color-bg-grey-lighter -color-border-grey-light -full-height -float-left'
-                })
-            ).render(this.content);
+            this.appendChild(new CV.PostCreatorFromSourcesQueue({
+                name : 'queue',
+                className : '-color-bg-grey-lighter -color-border-grey-light -full-height -float-left'
+            })).render(this.content);
 
             return this;
         },
@@ -102,15 +92,70 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
         _inputKeyPressHandler : function _inputKeyPressHandler(ev) {
             var inputValue;
 
-            if (ev.keyCode !== 13) return;
+            if (ev.keyCode !== 13) {
+                return void 0;
+            }
 
             inputValue = this.input.getValue();
 
-            if (inputValue === this._inputLastValue) return;
+            if (inputValue === this._inputLastValue) {
+                return void 0;
+            }
 
             this._inputLastValue = inputValue;
 
-            this._disablePostButton();
+            this._disablePostButton()._setSearching()._request(inputValue);
+        },
+
+        _request : function _request(query) {
+            this._query = query;
+
+            var args = {
+                profileName : App.Voice.owner.profileName,
+                voiceSlug : App.Voice.slug,
+                source : 'youtube',
+                query : this._query
+            };
+
+            API.searchPostsInSource(args, this._requestResponseHandler.bind(this));
+        },
+
+        _requestResponseHandler : function _requestResponseHandler(err, response) {
+            console.log(err);
+            console.log(response);
+
+            this.results.showResults({
+                source : 'youtube',
+                data : response,
+                query : this._query
+            });
+
+            this._setResultsState();
+        },
+
+        _showContent : function _showContent() {
+            this.content.classList.add('active');
+            return this;
+        },
+
+        _setSearching : function _setSearching() {
+            this._showContent();
+            this.results.setSearchingState();
+            this.queue.setSearchingState();
+            return this;
+        },
+
+        _setNoResultsState : function _setNoResultsState() {
+            this._showContent();
+            this.results.setNoResultsState();
+            return this;
+        },
+
+        _setResultsState : function _setResultsState() {
+            this._showContent();
+            this.results.setResultsState();
+            this.queue.showOnboarding();
+            return this;
         },
 
         /* Enables the Post Button.
@@ -129,6 +174,12 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
         _disablePostButton : function _disablePostButton() {
             this.postButton.disable();
             return this;
+        },
+
+        _activate : function _activate() {
+            CV.PostCreator.prototype._activate.call(this);
+
+            this.input.getElement().focus();
         },
 
         destroy : function destroy() {
