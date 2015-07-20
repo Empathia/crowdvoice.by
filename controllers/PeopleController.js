@@ -25,7 +25,7 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
             if (err) { return next(err); }
 
             var endResult = {
-              draft: [],
+              drafts: [],
               unlisted: [],
               published: []
             };
@@ -33,7 +33,7 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
             result.forEach(function (val) {
               switch (val.status) {
                 case 'STATUS_DRAFT':
-                  endResult.draft.push(val);
+                  endResult.drafts.push(val);
                   break;
                 case 'STATUS_UNLISTED':
                   endResult.unlisted.push(val);
@@ -45,15 +45,16 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
             });
 
             res.format({
-              /*
               html: function () {
-                res.render('person/myVoices');
-              },*/
+                res.locals.voices = endResult;
+                res.render('people/myVoices');
+              },
               json: function () {
                 res.json(endResult);
               },
             });
           });
+
         });
       });
     },
@@ -74,8 +75,8 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
     },
 
     savedPosts : function savedPosts(req, res, next) {
-      var entity = req.entity;
-      SavedPost.find({ 'entity_id' : entity.id }, function(err, result) {
+
+      SavedPost.find({ 'entity_id' : hashids.decode(req.currentPerson.id)[0] }, function(err, result) {
         if (err) { next(err); return; }
 
         var posts = [];
@@ -88,21 +89,22 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
         }, function(err) {
           if (err) { next(err); return; }
 
-          PostsPresenter.build(posts, function(err, result) {
-            if (err) {
-              return next(err);
-            }
-
+          //PostsPresenter.build(posts, function(err, result) {
+          //  if (err) {
+          //    return next(err);
+          //  }
+//
             res.format({
               'application/json': function() {
                 res.json(result);
               },
               'text/html': function() {
                 res.locals.savedPosts = result;
-                res.render('people/saved_posts.html');
+                res.render('people/savedPosts.html');
               }
             });
-          });
+
+          //});
         });
       });
     },

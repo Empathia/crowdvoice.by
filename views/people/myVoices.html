@@ -1,0 +1,145 @@
+<main role="main" class="cv-main-content myvoices-page -rel">
+
+  <section class="profile-voices-intro">
+      <h1 class="profile-heading -inline-block -font-bold -m0">My Voices</h1>
+      <div class="profile-select-options -inline-block">
+
+      </div>
+
+      <article role="article" class="profile-menu -row -rel">
+
+        <div class="profile-tabs">
+          <div class="menu-item active -menu-tab -inline-block">
+            <p class="-font-bold">Drafts</p>
+          </div>
+          <div class="menu-item -menu-tab -inline-block">
+            <p class="-font-bold">Published</p>
+          </div>
+          <div class="menu-item -menu-tab -inline-block">
+            <p class="-font-bold">Unlisted</p>
+          </div>
+
+        </div>
+
+      </article>
+
+  </section>
+
+  <section class="profile-body profile-menu-content -rel">
+
+    <div class="active -menu-tab-content">
+      <div class="-row drafts-container">
+        <!-- voices -->
+      </div>
+    </div>
+
+    <div class="-menu-tab-content">
+    	<div class="-row published-container">
+        	<!-- people -->
+      	</div>
+    </div>
+
+    <div class="-menu-tab-content">
+    	<div class="-row unlisted-container">
+        	<!-- organizations -->
+      	</div>
+    </div>
+
+  </section>
+
+</main>
+
+<script>
+	// App
+	var ns = [];
+	<% if (typeof notifications !== "undefined") { %>
+		ns = <%= JSON.stringify(notifications) %>;
+	<% } %>
+		var App = new CV.App({
+		notifications : ns,
+		currentPerson : currentPerson
+	});
+	App.addInteractiveSidebar();
+
+	var voices = <%= JSON.stringify(voices) %>;
+	console.log(voices);
+
+	var responsives = {
+    	'drafts' 		: null,
+    	'published' 		: null,
+    	'unlisted' : null
+    }
+
+
+	var items = [];
+
+	function renderData(data, instance, className){
+
+        var itemsWrapper = document.querySelector('.' + className + '-container');
+        var itemsElements = [];
+
+        if (data.length == 0){
+        	itemsWrapper.innerHTML = '<p class="onboarding-message">You have no '+ className +'. <a href="#">Create a Voice</a>.</p>';
+        	responsives[className] = new CV.ResponsiveWidth({
+	            container : itemsWrapper,
+	            items : [].slice.call(itemsElements, 0),
+	            minWidth : 300
+	        }).setup();
+        	return;
+        }
+
+        data.forEach(function(item, index) {
+            var itemWidget = new instance({data:item}).render(itemsWrapper);
+			itemWidget.element.addClass('id-' + item.id);
+
+            itemsElements.push(itemWidget.el);
+        });
+
+        responsives[className] = new CV.ResponsiveWidth({
+            container : itemsWrapper,
+            items : [].slice.call(itemsElements, 0),
+            minWidth : 300
+        }).setup();
+
+	}
+
+  	renderData(voices['drafts'], CV.VoiceCover, 'drafts');
+  	renderData(voices['published'], CV.VoiceCover, 'published');
+  	renderData(voices['unlisted'], CV.VoiceCover, 'unlisted');
+
+	var itemsContainer;
+
+  	$( document ).ready(function() {
+  		itemsContainer = $('.profile-body');
+    	createMenuActions('.profile-menu', '.profile-menu-content');
+
+	    function createMenuActions(menuContainer, contentContainer){
+	      $( menuContainer ).find('.-menu-tab').each(function( index ) {
+	        var elContent = $( contentContainer + ' .-menu-tab-content:nth-child(' + (index + 1) + ')');
+	        $(this).on('click', createCallback(this, index, elContent, menuContainer, contentContainer));
+	      });
+	    }
+
+	    function createCallback( tab, index, elContent, menuContainer, contentContainer ){
+	      return function(){
+	        $(menuContainer + ' .-menu-tab').removeClass('active');
+	        $(this).addClass('active');
+	        $(contentContainer + ' .-menu-tab-content').removeClass('active');
+	        $(elContent).addClass('active');
+	        responsives['drafts'].setup();
+	        responsives['published'].setup();
+	        responsives['unlisted'].setup();
+	      }
+	    }
+
+
+  });
+
+
+
+</script>
+
+
+
+
+
