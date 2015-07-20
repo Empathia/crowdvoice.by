@@ -18,6 +18,7 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
         content : null,
         inputWrapper : null,
 
+        _currentSource : '',
         _inputKeyPressHandlerRef : null,
         _inputLastValue : null,
 
@@ -70,6 +71,8 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
                 className : '-color-bg-grey-lighter -color-border-grey-light -full-height -float-left'
             })).render(this.content);
 
+            this._currentSource = this.sourcesDropdown.getSource();
+
             return this;
         },
 
@@ -80,10 +83,17 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
         _bindEvents : function _bindEvents() {
             CV.PostCreator.prototype._bindEvents.call(this);
 
+            this._sourceChangedRef = this._sourceChanged.bind(this);
+            this.sourcesDropdown.bind('sourceChanged', this._sourceChangedRef);
+
             this._inputKeyPressHandlerRef = this._inputKeyPressHandler.bind(this);
             this.input.getElement().addEventListener('keypress', this._inputKeyPressHandlerRef);
 
             return this;
+        },
+
+        _sourceChanged : function _sourceChanged(ev) {
+            this._currentSource = ev.source;
         },
 
         /* Handles the keypress event on the input. We are only interested on the ENTER key.
@@ -98,11 +108,11 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
 
             inputValue = this.input.getValue();
 
-            if (inputValue === this._inputLastValue) {
-                return void 0;
-            }
+            // if (inputValue === this._inputLastValue) {
+            //     return void 0;
+            // }
 
-            this._inputLastValue = inputValue;
+            // this._inputLastValue = inputValue;
 
             this._disablePostButton()._setSearching()._request(inputValue);
         },
@@ -113,7 +123,7 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
             var args = {
                 profileName : App.Voice.owner.profileName,
                 voiceSlug : App.Voice.slug,
-                source : 'youtube',
+                source : this._currentSource,
                 query : this._query
             };
 
@@ -124,8 +134,8 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
             console.log(err);
             console.log(response);
 
-            this.results.showResults({
-                source : 'youtube',
+            this.results.renderResults({
+                source : this._currentSource,
                 data : response,
                 query : this._query
             });

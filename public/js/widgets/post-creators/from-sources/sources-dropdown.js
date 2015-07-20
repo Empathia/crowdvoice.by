@@ -12,7 +12,7 @@ Class(CV, 'PostCreatorFromSourcesDropdown').inherits(Widget)({
             this.el = this.element[0];
             this.dropdownOptions = [];
 
-            this._setup()._bindEvents()._setActiveOption(this.dropdownOptionTwitter);
+            this._setup()._bindEvents()._setActiveOption(this.dropdownOptions[0]);
         },
 
         _setup : function _setup() {
@@ -26,17 +26,17 @@ Class(CV, 'PostCreatorFromSourcesDropdown').inherits(Widget)({
                 })
             ).render(this.el);
 
-            this.appendChild(
-                new CV.PostCreatorFromSourcesDropdownOption({
-                    name : 'dropdownOptionTwitter',
-                    source : 'twitter',
-                    iconID : 'twitter-bird',
-                    label : 'Twitter',
-                    className : 'ui-vertical-list-item'
-                })
-            );
-            this.dropdown.addContent(this.dropdownOptionTwitter.el);
-            this.dropdownOptions.push(this.dropdownOptionTwitter);
+            // this.appendChild(
+            //     new CV.PostCreatorFromSourcesDropdownOption({
+            //         name : 'dropdownOptionTwitter',
+            //         source : 'twitter',
+            //         iconID : 'twitter-bird',
+            //         label : 'Twitter',
+            //         className : 'ui-vertical-list-item'
+            //     })
+            // );
+            // this.dropdown.addContent(this.dropdownOptionTwitter.el);
+            // this.dropdownOptions.push(this.dropdownOptionTwitter);
 
             this.appendChild(
                 new CV.PostCreatorFromSourcesDropdownOption({
@@ -53,7 +53,7 @@ Class(CV, 'PostCreatorFromSourcesDropdown').inherits(Widget)({
             this.appendChild(
                 new CV.PostCreatorFromSourcesDropdownOption({
                     name : 'dropdownOptionGoogleNews',
-                    source : 'googlenews',
+                    source : 'googleNews',
                     iconID : 'article',
                     label : 'Google News',
                     className : 'ui-vertical-list-item'
@@ -74,6 +74,10 @@ Class(CV, 'PostCreatorFromSourcesDropdown').inherits(Widget)({
             return this;
         },
 
+        getSource : function getSource() {
+            return this._currentSource;
+        },
+
         setDropdownLabel : function setDropdownLabel(label) {
             this.dropdown.setLabel(label);
             return this;
@@ -89,6 +93,7 @@ Class(CV, 'PostCreatorFromSourcesDropdown').inherits(Widget)({
             optionWidget.activate();
             this.setDropdownLabel(optionWidget.getIcon().cloneNode(true));
             this.dropdown.deactivate();
+            this.dispatch('sourceChanged', {source: optionWidget.source});
         },
 
         _deactivateOptions : function _deactivateOptions() {

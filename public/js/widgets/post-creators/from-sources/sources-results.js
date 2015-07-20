@@ -40,7 +40,7 @@ Class(CV, 'PostCreatorFromSourcesResults').inherits(Widget).includes(CV.WidgetUt
             this.loader = this.el.querySelector('.cv-loader');
         },
 
-        showResults : function showResults(config) {
+        renderResults : function renderResults(config) {
             this.dom.updateText(
                 this.totalsElement,
                 config.data.length
@@ -51,11 +51,28 @@ Class(CV, 'PostCreatorFromSourcesResults').inherits(Widget).includes(CV.WidgetUt
                 config.query
             );
 
-            config.data.forEach(function(data) {
-                this.appendChild(
-                    new CV.PostCreatorFromSourcesYoutube(data)
-                ).render(this.resultList);
-            }, this);
+            this.clearResults();
+
+            if (config.source === 'youtube') {
+                config.data.forEach(function(data) {
+                    this.appendChild(new CV.PostCreatorFromSourcesYoutube(data)).render(this.resultList);
+                }, this);
+            } else if (config.source === 'googleNews') {
+                config.data.forEach(function(data) {
+                    this.appendChild(new CV.PostCreatorFromSourcesGoogleNews(data)).render(this.resultList);
+                }, this);
+            }
+
+            return this;
+        },
+
+        /* Destroy any children without destroying itself.
+         * @method clearResults <public> [Function]
+         */
+        clearResults : function clearResults() {
+            while(this.children.length > 0) {
+                this.children[0].destroy();
+            }
             return this;
         },
 
