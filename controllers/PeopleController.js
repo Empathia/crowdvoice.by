@@ -18,37 +18,42 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
           return next(new ForbiddenError());
         }
 
-        Voice.find({ owner_id: response.entity.id }, function (err, result) {
+        Voice.find({ owner_id: response.entity.id }, function (err, voices) {
           if (err) { return next(err); }
 
-          var endResult = {
-            draft: [],
-            unlisted: [],
-            published: []
-          };
+          VoicesPresenter.build(voices, req.currentPerson, function (err, result) {
+            if (err) { return next(err); }
 
-          result.forEach(function (val) {
-            switch (val.status) {
-              case 'STATUS_DRAFT':
-                endResult.draft.push(val);
-                break;
-              case 'STATUS_UNLISTED':
-                endResult.unlisted.push(val);
-                break;
-              case 'STATUS_PUBLISHED':
-                endResult.published.push(val);
-                break;
+            var endResult = {
+              draft: [],
+              unlisted: [],
+              published: []
             };
-          });
 
-          res.format({
-            html: function () {
-              res.render('person/myVoices');
-            },
-            json: function () {
-              res.json(endResult);
-            },
-          })
+            result.forEach(function (val) {
+              switch (val.status) {
+                case 'STATUS_DRAFT':
+                  endResult.draft.push(val);
+                  break;
+                case 'STATUS_UNLISTED':
+                  endResult.unlisted.push(val);
+                  break;
+                case 'STATUS_PUBLISHED':
+                  endResult.published.push(val);
+                  break;
+              };
+            });
+
+            res.format({
+              /*
+              html: function () {
+                res.render('person/myVoices');
+              },*/
+              json: function () {
+                res.json(endResult);
+              },
+            });
+          });
         });
       });
     },
