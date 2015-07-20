@@ -329,7 +329,7 @@ Class(CV, 'VoicePostLayers').inherits(Widget)({
                 oldScrollY = this.getScrollTop();
             }
 
-            if (currentLayer.id === 0) {
+            if ((this.name === 'voicePostLayersManager') && (currentLayer.id === 0)) {
                 this._appendVoiceAboutBox(currentLayer);
             }
 
