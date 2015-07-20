@@ -15,7 +15,7 @@ Module(CV, 'PostModuleImages')({
          * @method setCoverImage <public> [Function]
          */
         setCoverImage : function setCoverImage(src) {
-            var cover = (this.imageMeta.medium.width >= 300) ? 'add' : 'remove';
+            var cover = (this.imageWidth >= 300) ? 'add' : 'remove';
             this.imageWrapperElement.classList[cover]('-img-cover');
             this.dom.updateBgImage(this.imageWrapperElement, src);
             return this;
@@ -48,8 +48,9 @@ Module(CV, 'PostModuleImages')({
          * @return [CV.Post]
          */
         loadImage : function loadImage() {
-            if (!this.image) return this;
-            if (this.imageLoaded === true) return this;
+            if (!this.image) {return this;}
+
+            if (this.imageLoaded === true) {return this;}
 
             if (this.haltImage) {
                 this.haltImage.load();
@@ -68,9 +69,11 @@ Module(CV, 'PostModuleImages')({
          * @return [CV.Post]
          */
         abortImage : function abortImage() {
-            if (!this.image) return this;
-            if (!this.haltImage) return this;
-            if (this.imageLoaded === true) return this;
+            if (!this.image) {return this;}
+
+            if (!this.haltImage) {return this;}
+
+            if (this.imageLoaded === true) {return this;}
 
             this.haltImage.abort();
 

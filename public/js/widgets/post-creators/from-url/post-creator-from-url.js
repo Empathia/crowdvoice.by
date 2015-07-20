@@ -55,36 +55,32 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
          * @return [PostCreatorFromUrl]
          */
         _setup : function _setup() {
-            this.appendChild(
-                new CV.PostCreatorErrorTemplate({
-                    name : 'errorTemplate'
-                })
-            ).render(this.content);
+            this.appendChild(new CV.PostCreatorErrorTemplate({
+                name : 'errorTemplate'
+            })).render(this.content);
 
-            this.appendChild(
-                new CV.PostCreatorFromUrlSourceIcons({
+            this.appendChild(new CV.PostCreatorSuccessTemplate({
+                name : 'successTemplate'
+            })).render(this.content);
+
+            this.appendChild(new CV.PostCreatorFromUrlSourceIcons({
                 name : 'sourceIcons',
                 className : '-rel -float-left -full-height -color-border-grey-light'
-            })
-            ).render(this.header);
+            })).render(this.header);
 
-            this.appendChild(
-                new CV.PostCreatorPostButton({
-                    name : 'postButton',
-                    className : '-rel -float-right -full-height -color-border-grey-light'
-                })
-            ).render(this.header);
+            this.appendChild(new CV.PostCreatorPostButton({
+                name : 'postButton',
+                className : '-rel -float-right -full-height -color-border-grey-light'
+            })).render(this.header);
 
             this.inputWrapper.className = '-overflow-hidden -full-height';
 
-            this.appendChild(
-                new CV.InputClearable({
+            this.appendChild(new CV.InputClearable({
                 name : 'input',
                 placeholder : 'Paste the URL of an image, video or web page here',
                 inputClass : '-block -lg -br0 -bw0 -full-height',
                 className : '-full-height'
-            })
-            ).render(this.inputWrapper);
+            })).render(this.inputWrapper);
 
             this.header.appendChild(this.inputWrapper);
 
@@ -131,9 +127,14 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
 
         _savePostResponse : function _savePostResponse(err, response) {
             // Object {ownerId: "", voiceId: "", id: ""}
-            console.log(err);
-            console.log(response);
-            // @TODO: show message && window.reload();
+            var errorMessage = '';
+
+            if (err) {
+                errorMessage = 'Error - ' + response.status;
+                return this._setErrorState({message: errorMessage}).enable();
+            }
+
+            this._setSuccessState();
         },
 
         /* Handles the keypress event on the input. We are only interested on the ENTER key.
@@ -247,6 +248,17 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
 
             this.el.classList.add('has-error');
             this.errorTemplate.activate();
+
+            return this;
+        },
+
+        _setSuccessState : function _setSuccessState() {
+            this.el.classList.add('is-success');
+            this.successTemplate.activate();
+
+            window.setTimeout(function() {
+                window.location.reload();
+            }, 2000);
 
             return this;
         },

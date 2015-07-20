@@ -144,6 +144,7 @@ require('./widgets/post-creators/post-creator.js');
 require('./widgets/post-creators/post-button.js');
 require('./widgets/post-creators/uploading.js');
 require('./widgets/post-creators/error.js');
+require('./widgets/post-creators/success.js');
 
 require('./widgets/post-creators/from-url/post-creator-from-url.js');
 require('./widgets/post-creators/from-url/source-icons.js');
