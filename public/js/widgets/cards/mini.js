@@ -13,10 +13,12 @@ Class(CV, 'CardMini').inherits(Widget).includes(CV.WidgetUtils)({
 
     HTML : '\
         <article role="article">\
-            <img class="card-mini-avatar -rounded -float-left" alt="{{person.full_name}}’s avatar image" width="36" height="36"/>\
+            <a href="#" class="-float-left" data-author-anchor>\
+                <img class="card-mini-avatar -rounded" alt="{{person.full_name}}’s avatar image" width="36" height="36"/>\
+            </a>\
             <div class="card-mini-info">\
                 <div>\
-                    <p class="card-mini-fullname -font-semi-bold"></p>\
+                    <a href="#" class="card-mini-fullname -font-semi-bold -tdn" data-author-anchor></a>\
                     <p class="card-mini-username"></p>\
                 </div>\
             </div>\
@@ -37,6 +39,7 @@ Class(CV, 'CardMini').inherits(Widget).includes(CV.WidgetUtils)({
             this.avatarElement = this.el.querySelector('.card-mini-avatar');
             this.fullNameElement = this.el.querySelector('.card-mini-fullname');
             this.usernameElement = this.el.querySelector('.card-mini-username');
+            this.authorAnchors = [].slice.call(this.el.querySelectorAll('[data-author-anchor]'), 0);
 
             this._setup();
         },
@@ -45,6 +48,11 @@ Class(CV, 'CardMini').inherits(Widget).includes(CV.WidgetUtils)({
          * @method _setup <private> [Function]
          */
         _setup : function _setup() {
+            this.authorAnchors.forEach(function(anchor) {
+                this.dom.updateAttr('href', anchor, '/' + this.data.profileName);
+                this.dom.updateAttr('title', anchor, this.data.profileName + '’s profile');
+            }, this);
+
             this.dom.updateAttr('src', this.avatarElement, this.data.images.small.url);
 
             var fullname = this.data.name + (this.data.lastname ? (' ' + this.data.lastname) : '');

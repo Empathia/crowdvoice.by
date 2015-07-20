@@ -72,8 +72,8 @@ Class(CV, 'VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
             Widget.prototype.init.call(this, config);
 
             this.el = this.element[0];
-            this.tagListElement = this.element.find('.cv-tags');
-            this.voiceCoverElement = this.element.find('.voice-cover');
+            this.tagListElement = this.el.querySelector('.cv-tags');
+            this.voiceCoverElement = this.el.querySelector('.voice-cover');
             this.dateTimeElement = this.el.querySelector('.voice-cover-datetime');
             this.voiceAnchors = [].slice.call(this.el.querySelectorAll('[data-voice-anchor]'), 0);
             this.authorAnchors = [].slice.call(this.el.querySelectorAll('.author-anchor'), 0);
@@ -127,13 +127,12 @@ Class(CV, 'VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
          */
         createTopics : function createTopics(topics) {
             topics.forEach(function(topic) {
-                var temp = $(this.constructor.TAG_ITEM_HTML);
-                var anchor = temp.find('.cv-tags-tag');
+                this.tagListElement.insertAdjacentHTML('beforeend', this.constructor.TAG_ITEM_HTML);
+                var anchors = this.tagListElement.getElementsByClassName('cv-tags-tag');
+                var anchor = anchors[anchors.length-1];
 
-                this.dom.updateText(anchor[0], topic.name);
-                this.dom.updateAttr('href', anchor[0], '/topic/' + topic.slug);
-
-                this.tagListElement.append(temp);
+                this.dom.updateText(anchor, topic.name);
+                this.dom.updateAttr('href', anchor, '/topic/' + topic.slug);
             }, this);
 
             return this;
@@ -145,12 +144,11 @@ Class(CV, 'VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
          * @return CV.VoiceCover
          */
         addNewBadge : function addNewBadge() {
-            var badge = $(this.constructor.IS_NEW_BADGE_HTML);
-
-            this.voiceCoverElement.append( badge );
+            this.voiceCoverElement.insertAdjacentHTML('beforeend', this.constructor.IS_NEW_BADGE_HTML);
+            var badge = this.voiceCoverElement.querySelector('.voice-cover-badge-new');
 
             requestAnimationFrame(function() {
-                badge[0].classList.add('active');
+                badge.classList.add('active');
             });
 
             return this;
