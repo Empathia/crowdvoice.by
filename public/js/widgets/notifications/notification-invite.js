@@ -33,7 +33,7 @@ Class(CV, 'NotificationInvite').inherits(CV.Notification)({
             this.dom.updateText(this.mainText, fullname + ' invited you to contribute to a Voice:');
 
             this.appendChild(
-                new CV.VoiceCoverMini(this.voiceInfo)
+                new CV.VoiceCoverMini({data: this.voiceInfo})
             ).render(this.extraInfoElement);
 
             console.log('invite');

@@ -31,7 +31,7 @@ Class(CV, 'NotificationRequest').inherits(CV.Notification)({
             this.dom.updateText(this.mainText, this.person.name + ' ' + this.person.lastname + ' has requested to join your Organization:');
 
             this.appendChild(
-                new CV.CardMini(this.organizationInfo)
+                new CV.CardMini({data: this.organizationInfo})
             ).render(this.extraInfoElement);
 
             console.log('request');
