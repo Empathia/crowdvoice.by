@@ -30,6 +30,8 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
               published: []
             };
 
+            var voicesLength = result.length;
+
             result.forEach(function (val) {
               switch (val.status) {
                 case 'STATUS_DRAFT':
@@ -46,6 +48,7 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
 
             res.format({
               html: function () {
+                res.locals.voicesLength = voicesLength;
                 res.locals.voices = endResult;
                 res.render('people/myVoices');
               },

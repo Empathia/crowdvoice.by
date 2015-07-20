@@ -64,11 +64,21 @@
 	var voices = <%= JSON.stringify(voices) %>;
 	console.log(voices);
 
+	var voicesLength = <%= JSON.stringify(voicesLength) %>;
+	console.log(voicesLength);
+
 	var responsives = {
     	'drafts' 		: null,
     	'published' 		: null,
     	'unlisted' : null
     }
+
+	var onboarding = '\
+		<section class="profile-onboarding -rel">\
+	    <h1>Raise your Voice!</h1>\
+	    <p>You have no Voices yet. But don\'t worry, it is never too late! Create a Voice to support a cause that matters to you! Have people contribute to create and moderate it\'s content and embed it to amplify your message through the web.</p>\
+	    <br>\
+	  </section>';
 
 
 	var items = [];
@@ -103,9 +113,26 @@
 
 	}
 
-  	renderData(voices['drafts'], CV.VoiceCover, 'drafts');
-  	renderData(voices['published'], CV.VoiceCover, 'published');
-  	renderData(voices['unlisted'], CV.VoiceCover, 'unlisted');
+	if (voicesLength > 0){
+		renderData(voices['drafts'], CV.VoiceCover, 'drafts');
+	  	renderData(voices['published'], CV.VoiceCover, 'published');
+	  	renderData(voices['unlisted'], CV.VoiceCover, 'unlisted');
+	}else{
+        var contentWrapper = document.querySelector('.cv-main-content');
+
+		contentWrapper.innerHTML = onboarding;
+		var buttonCreate = new CV.Button({
+		    style   : 'primary',
+		    type    : 'single',
+		    label   : 'Create Voice',
+		    name    : 'buttonCreate'
+		}).render(document.querySelector('.profile-onboarding'));
+
+		buttonCreate.element.on('click', function(){
+			console.log('create');
+		});
+	}
+
 
 	var itemsContainer;
 
@@ -126,9 +153,12 @@
 	        $(this).addClass('active');
 	        $(contentContainer + ' .-menu-tab-content').removeClass('active');
 	        $(elContent).addClass('active');
-	        responsives['drafts'].setup();
-	        responsives['published'].setup();
-	        responsives['unlisted'].setup();
+	        if(voicesLength > 0){
+		        responsives['drafts'].setup();
+		        responsives['published'].setup();
+	        	responsives['unlisted'].setup();
+	    	}
+
 	      }
 	    }
 
