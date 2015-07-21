@@ -163,7 +163,15 @@ module.exports = function(req, res, next) {
                 done();
               });
             })
-          }], next);
+          }], function(err) {
+            if (err) {
+              return next(err);
+            }
+
+            req.session.currentPerson = req.currentPerson;
+
+            next();
+          });
         });
 
         // var images = {};

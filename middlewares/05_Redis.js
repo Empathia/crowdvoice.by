@@ -12,7 +12,7 @@ if (CONFIG.enableRedis) {
 
   var redisStoreInstance = new RedisStore();
 
-  var sessionMiddleWare = expressSession({
+  global.sessionMiddleWare = expressSession({
     resave : false,
     saveUninitialized : true,
     key : CONFIG.sessionKey,

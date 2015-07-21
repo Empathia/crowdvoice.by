@@ -101,7 +101,7 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
           }, function(err) {
             if (err) { next(err); return; }
 
-            PostsPresenter.build(posts, function(err, result) {
+            PostsPresenter.build(posts, req.currentPerson, function(err, result) {
               if (err) {
                 return next(err);
               }
