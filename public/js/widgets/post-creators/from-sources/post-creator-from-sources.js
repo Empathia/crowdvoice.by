@@ -7,11 +7,14 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
 
     HTML : '\
     <div>\
+        <div class="input-error-message -on-error -abs -color-danger"></div>\
         <header class="cv-post-creator__header -clearfix"></header>\
         <div class="cv-post-creator__content -abs"></div>\
         <div class="cv-post-creator__disable"></div>\
     </div>\
     ',
+
+    DEFAULT_ERROR_MESSAGE : 'There was a problem searching for content.',
 
     prototype : {
         el : null,
@@ -32,6 +35,7 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
             this.header = this.el.querySelector('.cv-post-creator__header');
             this.content = this.el.querySelector('.cv-post-creator__content');
             this.inputWrapper = document.createElement('div');
+            this.errorMessage = this.el.querySelector('.input-error-message');
 
             this.addCloseButton()._setup()._bindEvents()._disablePostButton();
         },
@@ -113,8 +117,13 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
         },
 
         _requestPreviewHandler : function _requestPreviewHandler(err, response) {
-            console.log(err);
-            console.log(response);
+            if (err) {
+                console.log(response);
+                return this._setErrorState({
+                    message : response.status + ' - ' + response.statusText
+                }).enable();
+            }
+
             this.queuePanel.addPost(response);
             this.enable()._enabledPostButton();
         },
@@ -150,7 +159,7 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
 
             // this._inputLastValue = inputValue;
 
-            this.disable()._disablePostButton()._setSearching()._request(inputValue);
+            this.disable()._removeErrorState()._disablePostButton()._setSearching()._request(inputValue);
         },
 
         _request : function _request(query) {
@@ -167,8 +176,12 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
         },
 
         _requestResponseHandler : function _requestResponseHandler(err, response) {
-            console.log(err);
-            console.log(response);
+            if (err) {
+                console.log(response);
+                return this._setErrorState({
+                    message : response.status + ' - ' + response.statusText
+                }).enable();
+            }
 
             this.resultsPanel.renderResults({
                 source : this._currentSource,
@@ -208,6 +221,31 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
             this._showContent();
             this.resultsPanel.setResultsState();
             this.queuePanel.showOnboarding();
+            return this;
+        },
+
+        /* Sets the error state.
+         * @method _setErrorState <private> [Function]
+         * @return [PostCreatorFromUrl]
+         */
+        _setErrorState : function _setErrorState(config) {
+            if (config && config.message) {
+                this.dom.updateText(this.errorMessage, config.message);
+            } else {
+                this.dom.updateText(this.errorMessage, this.constructor.DEFAULT_ERROR_MESSAGE);
+            }
+
+            this.el.classList.add('has-error');
+
+            return this;
+        },
+
+        /* Remove error messages.
+         * @method _removeErrorState <private> [Function]
+         * @return [CV.PostCreatorFromUrl]
+         */
+        _removeErrorState : function _removeErrorState() {
+            this.el.classList.remove('has-error');
             return this;
         },
 
