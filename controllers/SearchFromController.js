@@ -49,14 +49,16 @@ var SearchFrom = Class('SearchFrom')({
         var result = [];
 
         response.items.forEach(function(item) {
-          var obj = {
-            title : item.snippet.title,
-            description : item.snippet.description,
-            date : item.snippet.publishedAt,
-            sourceUrl : 'http://youtube.com/watch?v=' + item.id.videoId
-          }
+          if (item.id) {
+            var obj = {
+              title : item.snippet && item.snippet.title || 'No Title',
+              description : item.snippet && item.snippet.description || 'No Description',
+              date : item.snippet && item.snippet.publishedAt || new Date(),
+              sourceUrl : 'http://youtube.com/watch?v=' + item.id.videoId
+            }
 
-          result.push(obj);
+            result.push(obj);
+          }
         });
 
         res.json(result);
