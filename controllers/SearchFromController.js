@@ -49,7 +49,7 @@ var SearchFrom = Class('SearchFrom')({
         var result = [];
 
         response.items.forEach(function(item) {
-          if (item.id) {
+          if (!item.id) {
             var obj = {
               title : item.snippet && item.snippet.title || 'No Title',
               description : item.snippet && item.snippet.description || 'No Description',

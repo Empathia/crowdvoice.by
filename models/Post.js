@@ -152,20 +152,6 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
         basePath: '{env}/{modelName}_{id}/{property}_{versionName}.{extension}'
       });
     }
-
-    // toJSON : function toJSON () {
-    //   var json = {};
-    //
-    //   Object.keys(this).forEach(function(property) {
-    //     if (property === 'id' || property === 'ownerId' || property === 'voiceId') {
-    //       json[property] = hashids.encode(this[property]);
-    //     } else {
-    //       json[property] = this[property];
-    //     }
-    //   });
-    //
-    //   return json;
-    // }
   }
 });
 
