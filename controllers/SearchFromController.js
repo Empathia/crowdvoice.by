@@ -49,11 +49,11 @@ var SearchFrom = Class('SearchFrom')({
         var result = [];
 
         response.items.forEach(function(item) {
-          if (!item.id) {
+          if (item.id.kind === 'youtube#video') {
             var obj = {
-              title : item.snippet && item.snippet.title || 'No Title',
-              description : item.snippet && item.snippet.description || 'No Description',
-              date : item.snippet && item.snippet.publishedAt || new Date(),
+              title : item.snippet.title,
+              description : item.snippet.description,
+              date : item.snippet.publishedAt,
               sourceUrl : 'http://youtube.com/watch?v=' + item.id.videoId
             }
 
