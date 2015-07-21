@@ -66,14 +66,14 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
 
             this.header.appendChild(this.inputWrapper);
 
-            this.appendChild(new CV.PostCreatorFromSourcesResults({
-                name : 'resultsPanel',
-                className : '-color-bg-white -full-height -float-left'
-            })).render(this.content);
-
             this.appendChild(new CV.PostCreatorFromSourcesQueue({
                 name : 'queuePanel',
-                className : '-color-bg-grey-lighter -color-border-grey-light -full-height -float-left'
+                className : '-color-bg-grey-lighter -color-border-grey-light -full-height -float-right'
+            })).render(this.content);
+
+            this.appendChild(new CV.PostCreatorFromSourcesResults({
+                name : 'resultsPanel',
+                className : '-color-bg-white -full-height -overflow-hidden'
             })).render(this.content);
 
             this._currentSource = this.sourcesDropdown.getSource();

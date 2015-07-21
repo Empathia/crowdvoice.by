@@ -56,14 +56,9 @@ Class(CV, 'PostCreatorFromSourcesQueue').inherits(Widget)({
 
         addPost : function addPost(postData) {
             this.hideOnboarding();
-
             postData.name = 'post_' + this._index;
-            this.appendChild(CV.EditablePost.create(postData));
-            this.list.insertAdjacentElement('afterbegin', this['post_' + this._index].el);
-            this['post_' + this._index].edit();
-
+            this.appendChild(CV.EditablePost.create(postData)).render(this.list, this.list.firstChild).edit();
             this.loader.classList.remove('active');
-
             this._index++;
         }
     }
