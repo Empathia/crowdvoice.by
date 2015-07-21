@@ -113,6 +113,11 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
 
         _sourceChanged : function _sourceChanged(ev) {
             this._currentSource = ev.source;
+
+            if (this._query) {
+                this.input.setValue(this._query);
+                this.disable()._disablePostButton()._setSearching()._request(this._query);
+            }
         },
 
         /* Handles the keypress event on the input. We are only interested on the ENTER key.

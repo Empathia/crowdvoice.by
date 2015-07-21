@@ -5,15 +5,15 @@ Class(CV, 'PostCreatorFromSourcesQueue').inherits(Widget)({
 
     HTML : '\
         <div class="-rel">\
+            <div class="from-sources-queue-onboarding -color-grey-light -text-center">\
+                <p>Add here the posts you want to include in this voice.<br/>You’ll be able to edit their title and description.</p>\
+            </div>\
+            <div class="from-sources-queue-list -text-center"></div>\
             <div class="cv-loader -abs">\
                 <div class="ball-spin-fade-loader">\
                     <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>\
                 </div>\
             </div>\
-            <div class="from-sources-queue-onboarding -color-grey-light -text-center">\
-                <p>Add here the posts you want to include in this voice.<br/>You’ll be able to edit their title and description.</p>\
-            </div>\
-            <div class="from-sources-queue-list -text-center"></div>\
         </div>\
     ',
 
@@ -41,6 +41,10 @@ Class(CV, 'PostCreatorFromSourcesQueue').inherits(Widget)({
         },
 
         showOnboarding : function showOnboarding() {
+            if (this._index) {
+                return void 0;
+            }
+
             this.onboarding.classList.add('active');
             return this;
         },
