@@ -13,7 +13,7 @@ Class(CV, 'PostVideo').inherits(CV.Post)({
                 </svg>\
             </div>\
         </div>\
-        <div class="post-card-info">\
+        <div class="post-card-info -text-left">\
             <div class="post-card-meta">\
                 <span class="post-card-meta-source"></span>\
                 on <time class="post-card-meta-date" datetime=""></time>\
