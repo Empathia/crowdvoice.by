@@ -1,4 +1,5 @@
 var API = require('../../../lib/api');
+var Velocity = require('velocity-animate');
 
 Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
 
@@ -98,7 +99,14 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
         _addPost : function _addPost(ev) {
             this.disable();
             this.queuePanel.setAddingPost();
-            // this.resultsPanel.children.indexOf(ev.data)
+
+            if (this.resultsPanel.children.indexOf(ev.data) >= 0) {
+                Velocity(ev.data.el, 'slideUp', {
+                    delay : 1000,
+                    duration : 400
+                });
+            }
+
             API.postPreview({
                 url : ev.data.sourceUrl
             }, this._requestPreviewHandler.bind(this));
