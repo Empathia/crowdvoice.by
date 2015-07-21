@@ -61,6 +61,20 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
          * @method setup <protected> [Function]
          */
         setup : function setup() {
+            var parent = this.el.parentNode;
+            var wrapper = document.createElement('div');
+            var position = 0;
+            for (var i = 0; i < parent.childNodes.length; i++) {
+                if (parent.childNodes[i] === this.el) {
+                    position = i;
+                    break;
+                }
+            }
+            wrapper.className = 'post-editable';
+            wrapper.appendChild(this.el);
+            parent.insertBefore(wrapper, parent.childNodes[position]);
+            this.el = wrapper;
+
             if (this.images) {
                 this._imagesLen = this.images.length;
             }
@@ -290,7 +304,7 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
             this._removeImageRef = this._removeImage.bind(this);
             this.imageControls.bind('removeImages', this._removeImageRef);
 
-            this.el.insertAdjacentHTML('beforebegin', this.constructor.HTML_ADD_COVER_BUTTON);
+            this.el.insertAdjacentHTML('afterbegin', this.constructor.HTML_ADD_COVER_BUTTON);
             this._showImageRef = this._showImage.bind(this);
             this.addCoverButton = this.el.parentNode.querySelector('.post-edit-add-cover-button');
             this.addCoverButton.addEventListener('click', this._showImageRef);
@@ -345,8 +359,10 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
          * @method _titleKeyPressHandler <private> [Function]
          */
         _titleKeyPressHandler : function _titleKeyPressHandler(ev) {
-            var charCode = (typeof ev.which == 'number') ? ev.which : ev.keyCode;
-            if (charCode === 13) ev.preventDefault();
+            var charCode = (typeof ev.which === 'number') ? ev.which : ev.keyCode;
+            if (charCode === 13) {
+                ev.preventDefault();
+            }
         },
 
         _pasteHandler : function _pasteHandler(ev) {
