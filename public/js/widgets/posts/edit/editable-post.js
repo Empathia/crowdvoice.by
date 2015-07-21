@@ -70,7 +70,10 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
                     break;
                 }
             }
-            wrapper.className = 'post-editable';
+            wrapper.className = 'post-editable -rel';
+            Object.keys(this.el.dataset).forEach(function(attr) {
+                wrapper.dataset[attr] = this.el.dataset[attr];
+            }, this);
             wrapper.appendChild(this.el);
             parent.insertBefore(wrapper, parent.childNodes[position]);
             this.el = wrapper;

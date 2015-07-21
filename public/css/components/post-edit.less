@@ -9,7 +9,8 @@
 
 .edit-mode,
 .post-unmoderated {
-  &.has-bottom-actions {padding-bottom: 55px}
+  &.has-bottom-actions.post-card,
+  &.has-bottom-actions .post-card {padding-bottom: 55px}
 }
 
 .edit-mode {
@@ -116,10 +117,9 @@
 }
 
 .post-moderate-publish-btn.cv-button {
-  left: -1px;
-  right: -1px;
-  bottom: -2px;
-  width: inherit;
+  left: 0;
+  bottom: 0;
+  width: 100%;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 
