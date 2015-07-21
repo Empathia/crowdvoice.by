@@ -15,9 +15,11 @@ application._serverStart();
 
 require('./../presenters/PostsPresenter');
 
-io.on('connection', function(socket) {
-  logger.log('socket connected');
+io.use(function(socket, next) {
+  sessionMiddleWare(socket.request, socket.request.res, next);
+});
 
+io.on('connection', function(socket) {
   socket.on('getMonthPosts', function(voiceId, dateString, up) {
     var dateData = dateString.split('-');
 
@@ -26,7 +28,7 @@ io.on('connection', function(socket) {
     Post.find(['"Posts".voice_id = ? AND EXTRACT(MONTH FROM "Posts".published_at) = ? AND EXTRACT(YEAR FROM "Posts".published_at) = ? AND approved = true ORDER BY "Posts".published_at DESC', [hashids.decode(voiceId)[0], dateData[1], dateData[0]]], function(err, posts) {
       logger.log(posts.length);
 
-      PostsPresenter.build(posts, function(err, results) {
+      PostsPresenter.build(posts, socket.request.session.currentPerson, function(err, results) {
         if (err) {
           return socket.emit('monthPosts', {'error': err}, dateString, up);
         }
@@ -44,7 +46,7 @@ io.on('connection', function(socket) {
     Post.find(['"Posts".voice_id = ?  AND EXTRACT(MONTH FROM "Posts".published_at) = ?  AND EXTRACT(YEAR FROM "Posts".published_at) = ?  AND approved = false ORDER BY "Posts".published_at DESC', [hashids.decode(voiceId)[0], dateData[1], dateData[0]]], function(err, posts) {
       logger.log(posts.length);
 
-      PostsPresenter.build(posts, function(err, results) {
+      PostsPresenter.build(posts, socket.request.session.currentPerson, function(err, results) {
         if (err) {
           return socket.emit('monthPostsModerate', {'error': err}, dateString, up);
         }
