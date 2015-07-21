@@ -1,12 +1,17 @@
 var moment = require('moment');
 
 Class(CV, 'PostCreatorFromSourcesGoogleNews').inherits(Widget).includes(CV.WidgetUtils)({
-    ELEMENT_CLASS : 'post-creator-from-sources__google-news',
+    ELEMENT_CLASS : 'post-creator-from-sources__google-news -rel',
     HTML : '\
         <article>\
-            <p class="source-title -font-bold -inline"></p>\
-            <p class="source-date -inline"></p>\
-            <div class="source-description"></div>\
+            <div class="source-preview-wrapper">\
+                <p class="source-title -font-bold -inline"></p>\
+                <p class="source-date -inline"></p>\
+                <div class="source-description -pt1"></div>\
+            </div>\
+            <div class="source-add-button -abs">\
+                <button class="cv-button tiny">+ Add This</button>\
+            </div>\
         </article>',
 
     prototype : {
