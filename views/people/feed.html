@@ -1,11 +1,150 @@
+<main role="main" class="cv-main-content myvoices-page -rel">
+
+	<div class="-col-9 -pr1">
+	  <section class="profile-voices-intro">
+	      <h1 class="profile-heading -inline-block -font-bold -m0">My Feed</h1>
+	      <br>
+	      <article role="article" class="profile-menu -row -rel"></article>
+	  </section>
+
+	  <section class="profile-body -rel">
+
+	    <div class="feed-item">
+	    	<div class="feed-item-time">3 hours</div>
+	    	<div class="feed-item-image">
+	    		<img class="voice-cover" width="48" height="48" src="/uploads/development/voice_6/image_small.jpeg">
+	    	</div>
+	    	<div class="feed-item-content">
+	    		<div class="feed-item-title">
+		    		<a href="#"><b>Esra'a Al Shafei</b></a> followed organizations.
+		  		</div>
+	    		<div class="feed-item-list1"></div>
+	    	</div>
+
+	    </div>
+
+		<div class="feed-item">
+	    	<div class="feed-item-time">3 hours</div>
+	    	<div class="feed-item-image">
+	    		<img class="voice-cover" width="48" height="48" src="/uploads/development/voice_6/image_small.jpeg">
+	    	</div>
+	    	<div class="feed-item-content">
+	    		<div class="feed-item-title">
+		    		<a href="#"><b>Esra'a Al Shafei</b></a> followed organizations.
+		  		</div>
+	    		<div class="feed-item-list2"></div>
+	    	</div>
+
+	    </div>
+
+
+
+	  </section>
+	</div>
+	<div class="-col-3 -pl1">
+		<section class="profile-voices-intro">
+	      <h3 class="profile-heading -inline-block -font-bold -m0">Top Voices</h3>
+	      <br>
+	      <article role="article" class="profile-menu -row -rel"></article>
+	  </section>
+
+	  <section class="profile-sidebar -rel">
+	  	<div class="voices-list">
+	  	</div>
+	  	<br>
+	  	<div class="voices-button">
+	  	</div>
+	  	<br>
+	  	<div class="voices-stats">
+
+			<div class="-col-6">
+				<div class="profile-stat">
+					<div class="stat-num">7</div>
+					<p>Voices</p>
+					<span>you created or are contributing on</span>
+				</div>
+			</div>
+			<div class="-col-6">
+				<div class="profile-stat">
+					<div class="stat-num">3</div>
+					<p>Organizations</p>
+					<span>that you own or are a member of</span>
+				</div>
+			</div>
+
+	  	</div>
+
+
+	  </section>
+	</div>
+</main>
+
 <script>
-  var ns = [];
-  <% if (typeof notifications !== "undefined") { %>
-    ns = <%= JSON.stringify(notifications) %>;
-  <% } %>
-  var App = new CV.App({
-    notifications : ns,
-    currentPerson : currentPerson
-  });
-  App.addInteractiveSidebar();
+  	var ns = [];
+  	<% if (typeof notifications !== "undefined") { %>
+    	ns = <%= JSON.stringify(notifications) %>;
+  	<% } %>
+  	var App = new CV.App({
+    	notifications : ns,
+    	currentPerson : currentPerson
+  	});
+  	App.addInteractiveSidebar();
+
+	function renderData(data, instance, className, showMeta){
+
+        var itemsWrapper = document.querySelector('.'+className);
+        var itemsElements = [];
+
+        data.forEach(function(item, index) {
+            var itemWidget = new instance({data:item}).render(itemsWrapper);
+            if(showMeta){
+            	itemWidget.showMeta();
+            }
+			itemWidget.element.addClass('id-' + item.id);
+            itemsElements.push(itemWidget.el);
+        });
+
+        //data.forEach(function(item, index) {
+        //    var itemWidget = new instance({data:item}).render(document.querySelector('.feed-item-list'));
+		//	itemWidget.showMeta();
+		//	itemWidget.element.addClass('id-' + item.id);
+		//
+        //    itemsElements.push(itemWidget.el);
+        //});
+
+	}
+
+	$.ajax({
+		type: "GET",
+		url:'/<%= person.profileName %>/voices',
+		headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
+		data : {},
+		success: function(data) {
+		  renderData(data, CV.VoiceCoverMini, 'voices-list', false);
+		  renderData(data, CV.VoiceCoverMini, 'feed-item-list1', true);
+		  renderData(data, CV.VoiceCoverMini, 'feed-item-list2', true);
+
+		}
+	});
+
+	var buttonDiscover = new CV.Button({
+		style   : 'primary small full',
+		type    : 'single',
+		label   : 'Discover More',
+		name    : 'buttonDiscover'
+	}).render(document.querySelector('.voices-button'));
+
+	buttonDiscover.element.on('click', function(){
+		console.log('click');
+	});
+
 </script>
+
+
+
+
+
+
+
+
+
