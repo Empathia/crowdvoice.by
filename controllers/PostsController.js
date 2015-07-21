@@ -247,7 +247,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
       request(url, function(err, response, body) {
         if (err) {
-          return next(new NotFoundError('Bad URL'));
+          return res.status(400).json({ status : 'Bad URL' })
         }
 
         var longUrl = response.request.uri.href;
