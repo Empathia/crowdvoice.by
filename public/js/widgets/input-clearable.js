@@ -19,6 +19,7 @@ Class(CV, 'InputClearable').inherits(Widget).includes(CV.WidgetUtils)({
         value : '',
         placeholder : '',
         inputClass : '',
+        min : 2,
 
         el : null,
         clearButton : null,
@@ -63,7 +64,7 @@ Class(CV, 'InputClearable').inherits(Widget).includes(CV.WidgetUtils)({
         },
 
         _keyDownHandler : function _keyDownHandler() {
-            var x = this.getValue() ? 'add' : 'remove';
+            var x = (this.getValue().length > this.min) ? 'add' : 'remove';
 
             this.clearButton.classList[x](this.constructor.ACTIVE_CLASSNAME);
         },
