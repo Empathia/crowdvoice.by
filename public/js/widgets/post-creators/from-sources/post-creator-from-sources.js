@@ -62,12 +62,12 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
             this.header.appendChild(this.inputWrapper);
 
             this.appendChild(new CV.PostCreatorFromSourcesResults({
-                name : 'results',
+                name : 'resultsPanel',
                 className : '-color-bg-white -full-height -float-left'
             })).render(this.content);
 
             this.appendChild(new CV.PostCreatorFromSourcesQueue({
-                name : 'queue',
+                name : 'queuePanel',
                 className : '-color-bg-grey-lighter -color-border-grey-light -full-height -float-left'
             })).render(this.content);
 
@@ -90,21 +90,25 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
             this.input.getElement().addEventListener('keypress', this._inputKeyPressHandlerRef);
 
             this._addPostRef = this._addPost.bind(this);
-            this.results.bind('addPost', this._addPostRef);
+            this.resultsPanel.bind('addPost', this._addPostRef);
 
             return this;
         },
 
         _addPost : function _addPost(ev) {
-            // this.results.children.indexOf(ev.data)
-            // ev.data.sourceUrl
-            API.postPreview({url: ev.data.sourceUrl}, this._requestPreviewHandler.bind(this));
+            this.disable();
+            this.queuePanel.setAddingPost();
+            // this.resultsPanel.children.indexOf(ev.data)
+            API.postPreview({
+                url : ev.data.sourceUrl
+            }, this._requestPreviewHandler.bind(this));
         },
 
         _requestPreviewHandler : function _requestPreviewHandler(err, response) {
-            console.log(err)
-            console.log(response)
-            this.queue.addPost(response);
+            console.log(err);
+            console.log(response);
+            this.queuePanel.addPost(response);
+            this.enable()._enabledPostButton();
         },
 
         _sourceChanged : function _sourceChanged(ev) {
@@ -133,7 +137,7 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
 
             // this._inputLastValue = inputValue;
 
-            this._disablePostButton()._setSearching()._request(inputValue);
+            this.disable()._disablePostButton()._setSearching()._request(inputValue);
         },
 
         _request : function _request(query) {
@@ -153,7 +157,7 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
             console.log(err);
             console.log(response);
 
-            this.results.renderResults({
+            this.resultsPanel.renderResults({
                 source : this._currentSource,
                 data : response,
                 query : this._query
@@ -164,6 +168,8 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
             } else {
                 this._setResultsState();
             }
+
+            this.enable();
         },
 
         _showContent : function _showContent() {
@@ -173,22 +179,22 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
 
         _setSearching : function _setSearching() {
             this._showContent();
-            this.results.setSearchingState();
-            this.queue.setSearchingState();
+            this.resultsPanel.setSearchingState();
+            this.queuePanel.setSearchingState();
             return this;
         },
 
         _setNoResultsState : function _setNoResultsState() {
             this._showContent();
-            console.log(this._query)
-            this.results.setNoResultsState(this._query);
+            console.log(this._query);
+            this.resultsPanel.setNoResultsState(this._query);
             return this;
         },
 
         _setResultsState : function _setResultsState() {
             this._showContent();
-            this.results.setResultsState();
-            this.queue.showOnboarding();
+            this.resultsPanel.setResultsState();
+            this.queuePanel.showOnboarding();
             return this;
         },
 
@@ -215,6 +221,19 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
 
             this.input.getElement().focus();
         },
+
+        _enable : function _enable() {
+            Widget.prototype._enable.call(this);
+
+            this.input.getElement().focus();
+        },
+
+        _disable  : function _disable() {
+            Widget.prototype._disable.call(this);
+
+            this.input.getElement().blur();
+        },
+
 
         destroy : function destroy() {
             this.input.getElement().removeEventListener('keypress', this._inputKeyPressHandlerRef);

@@ -3,6 +3,7 @@
  * ========================================================================= */
 .post-creator-from-sources {}
 
+/* HEADER » DROPDOWN */
 .from-sources-dropdown {
   border-right-width: 1px;
 
@@ -27,11 +28,13 @@
   }
 }
 
+/* HEADER » POST BUTTON */
 .from-sources-post-button {
   padding: 1rem 1.25rem 0;
   border-left-width: 1px;
 }
 
+/* BODY » CONTENT */
 .cv-post-creator__content,
 .from-sources-result {
   display: none;
@@ -47,21 +50,10 @@
   &.active {display: block;}
 }
 
+/* BODY » LEFT PANEL */
 .from-sources-content-left {
   width: 60%;
   border-top-left-radius: 6px;
-
-  .cv-loader {
-    display: none;
-    top: 50%;
-    left: 50%;
-
-    .ball-spin-fade-loader > div {
-      background-color: @color-neutral-mid;
-    }
-
-    &.active {display: block;}
-  }
 }
 
 .from-sources-results {
@@ -91,6 +83,7 @@
   right: 2rem;
 }
 
+/* BODY » RIGHT PANEL */
 .from-sources-content-right {
   width: 40%;
   border-top-right-radius: 6px;
@@ -104,5 +97,21 @@
   .post-card {
     max-width: 300px;
     margin: 2em 0;
+  }
+}
+
+/* BODY » BOTH PANELS */
+.from-sources-content-left,
+.from-sources-content-right {
+  .cv-loader {
+    display: none;
+    top: 50%;
+    left: 50%;
+
+    .ball-spin-fade-loader > div {
+      background-color: @color-neutral-mid;
+    }
+
+    &.active {display: block;}
   }
 }
