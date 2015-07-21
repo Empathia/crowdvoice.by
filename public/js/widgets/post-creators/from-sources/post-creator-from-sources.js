@@ -23,6 +23,7 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
         inputWrapper : null,
 
         _currentSource : '',
+        _addedPostsCounter : 0,
         _inputKeyPressHandlerRef : null,
         _inputLastValue : null,
 
@@ -104,19 +105,12 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
             this.disable();
             this.queuePanel.setAddingPost();
 
-            if (this.resultsPanel.children.indexOf(ev.data) >= 0) {
-                Velocity(ev.data.el, 'slideUp', {
-                    delay : 1000,
-                    duration : 400
-                });
-            }
-
             API.postPreview({
                 url : ev.data.sourceUrl
-            }, this._requestPreviewHandler.bind(this));
+            }, this._requestPreviewHandler.bind(this, ev));
         },
 
-        _requestPreviewHandler : function _requestPreviewHandler(err, response) {
+        _requestPreviewHandler : function _requestPreviewHandler(ev, err, response) {
             if (err) {
                 console.log(response);
                 return this._setErrorState({
@@ -124,6 +118,12 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
                 }).enable();
             }
 
+            if (this.resultsPanel.children.indexOf(ev.data) >= 0) {
+                Velocity(ev.data.el, 'slideUp', {duration : 400});
+            }
+
+            this._addedPostsCounter++;
+            this.postButton.updateCounter(this._addedPostsCounter);
             this.queuePanel.addPost(response);
             this.enable()._enabledPostButton();
         },
