@@ -108,6 +108,10 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
             this.disable();
             this.queuePanel.setAddingPost();
 
+            if (this.resultsPanel.children.indexOf(ev.data) >= 0) {
+                Velocity(ev.data.el, 'slideUp', {delay: 500, duration : 400});
+            }
+
             API.postPreview({
                 url : ev.data.sourceUrl
             }, this._requestPreviewHandler.bind(this, ev));
@@ -119,13 +123,14 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
         _requestPreviewHandler : function _requestPreviewHandler(ev, err, response) {
             if (err) {
                 console.log(response);
+
+                if (this.resultsPanel.children.indexOf(ev.data) >= 0) {
+                    Velocity(ev.data.el, 'slideDown', {duration : 400});
+                }
+
                 return this._setErrorState({
                     message : response.status + ' - ' + response.statusText
                 }).enable();
-            }
-
-            if (this.resultsPanel.children.indexOf(ev.data) >= 0) {
-                Velocity(ev.data.el, 'slideUp', {duration : 400});
             }
 
             this._addedPostsCounter++;
