@@ -30,6 +30,8 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
               published: []
             };
 
+            var voicesLength = result.length;
+
             result.forEach(function (val) {
               switch (val.status) {
                 case 'STATUS_DRAFT':
@@ -46,6 +48,7 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
 
             res.format({
               html: function () {
+                res.locals.voicesLength = voicesLength;
                 res.locals.voices = endResult;
                 res.render('people/myVoices');
               },
@@ -75,36 +78,48 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
     },
 
     savedPosts : function savedPosts(req, res, next) {
+      ACL.isAllowed('savedPosts', 'entities', req.role, {
+        currentEntity : req.entity,
+        currentPerson : req.currentPerson
+      }, function(err, response) {
+        if (err) {
+          return next(err);
+        }
 
-      SavedPost.find({ 'entity_id' : hashids.decode(req.currentPerson.id)[0] }, function(err, result) {
-        if (err) { next(err); return; }
+        if (!response.isAllowed) {
+          return next(new ForbiddenError);
+        }
 
-        var posts = [];
-        async.each(result, function(sp, done) {
-          var sp = new SavedPost(sp);
-          sp.post(function(err, post) {
-            posts.push(post);
-            done();
-          });
-        }, function(err) {
+        SavedPost.find({ 'entity_id' : response.entity.id }, function(err, result) {
           if (err) { next(err); return; }
 
-          //PostsPresenter.build(posts, function(err, result) {
-          //  if (err) {
-          //    return next(err);
-          //  }
-//
-            res.format({
-              'application/json': function() {
-                res.json(result);
-              },
-              'text/html': function() {
-                res.locals.savedPosts = result;
-                res.render('people/savedPosts.html');
-              }
-            });
+          var posts = [];
 
-          //});
+          async.each(result, function(sp, done) {
+            var sp = new SavedPost(sp);
+            sp.post(function(err, post) {
+              posts.push(post);
+              done();
+            });
+          }, function(err) {
+            if (err) { next(err); return; }
+
+            PostsPresenter.build(posts, function(err, result) {
+              if (err) {
+                return next(err);
+              }
+
+              res.format({
+                html : function() {
+                  res.locals.savedPosts = result;
+                  res.render('people/savedPosts.html');
+                },
+                json : function() {
+                  res.json(result);
+                }
+              });
+            });
+          });
         });
       });
     },
