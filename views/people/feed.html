@@ -3,6 +3,9 @@
 	<div class="-col-9 -pr1">
 	  <section class="profile-voices-intro">
 	      <h1 class="profile-heading -inline-block -font-bold -m0">My Feed</h1>
+	      <div class="profile-select-options -inline-block">
+
+	      </div>
 	      <br>
 	      <article role="article" class="profile-menu -row -rel"></article>
 	  </section>
@@ -90,6 +93,21 @@
   	});
   	App.addInteractiveSidebar();
 
+  	var allTimes = {
+		"1": {label: 'Jesus', name: 'thisweek', active : true},
+		"2": {label: 'Maria', name: 'lastweek'},
+		"3": {label: 'Y', name: 'twoweeks'},
+		"4": {label: 'Jose', name: 'threeweeks'}
+	};
+
+	var selectTime = new CV.Select({
+		style : 'tiny',
+		label : 'Showing All',
+		name  : 'selectTime',
+		options: allTimes
+	}).render($('.profile-select-options'));
+
+
 	function renderData(data, instance, className, showMeta){
 
         var itemsWrapper = document.querySelector('.'+className);
@@ -103,14 +121,6 @@
 			itemWidget.element.addClass('id-' + item.id);
             itemsElements.push(itemWidget.el);
         });
-
-        //data.forEach(function(item, index) {
-        //    var itemWidget = new instance({data:item}).render(document.querySelector('.feed-item-list'));
-		//	itemWidget.showMeta();
-		//	itemWidget.element.addClass('id-' + item.id);
-		//
-        //    itemsElements.push(itemWidget.el);
-        //});
 
 	}
 
