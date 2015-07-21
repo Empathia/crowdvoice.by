@@ -101,6 +101,9 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
             return this;
         },
 
+        /* Calls the API to generate a preview.
+         * @method _addPost <private>
+         */
         _addPost : function _addPost(ev) {
             this.disable();
             this.queuePanel.setAddingPost();
@@ -110,6 +113,9 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
             }, this._requestPreviewHandler.bind(this, ev));
         },
 
+        /* API preview call response handler.
+         * Add the preview to the queue.
+         */
         _requestPreviewHandler : function _requestPreviewHandler(ev, err, response) {
             if (err) {
                 console.log(response);
@@ -162,6 +168,8 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
             this.disable()._removeErrorState()._disablePostButton()._setSearching()._request(inputValue);
         },
 
+        /* Calls our search API endpoint to search for content on the current source.
+         */
         _request : function _request(query) {
             this._query = query;
 

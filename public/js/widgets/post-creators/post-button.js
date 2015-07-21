@@ -5,7 +5,7 @@ Class(CV, 'PostCreatorPostButton').inherits(Widget).includes(CV.WidgetUtils)({
 
     HTML : '\
         <div>\
-            <button class="post-btn ui-btn -primary -pl2 -pr2">Post <span data-counter></span></button>\
+            <button class="cv-button small primary -pl2 -pr2" data-button>Post <span data-counter></span></button>\
         </div>\
     ',
 
@@ -14,7 +14,7 @@ Class(CV, 'PostCreatorPostButton').inherits(Widget).includes(CV.WidgetUtils)({
             Widget.prototype.init.call(this, config);
 
             this.el = this.element[0];
-            this.button = this.el.querySelector('.post-btn');
+            this.button = this.el.querySelector('[data-button]');
             this.counter = this.el.querySelector('[data-counter]');
 
             this._bindEvents();
