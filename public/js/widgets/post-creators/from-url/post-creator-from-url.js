@@ -11,11 +11,6 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
         <header class="cv-post-creator__header -clearfix"></header>\
         <div class="cv-post-creator__content -abs"></div>\
         <div class="cv-post-creator__disable">\
-            <div class="cv-loader -abs">\
-                <div class="ball-spin-fade-loader">\
-                    <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>\
-                </div>\
-            </div>\
         </div>\
     </div>\
     ',
@@ -55,6 +50,10 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
          * @return [PostCreatorFromUrl]
          */
         _setup : function _setup() {
+            this.appendChild(new CV.Loader({
+                name : 'loader'
+            })).render(this.el.querySelector('.cv-post-creator__disable'));
+
             this.appendChild(new CV.PostCreatorErrorTemplate({
                 name : 'errorTemplate'
             })).render(this.content);
@@ -182,12 +181,12 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
             var post = {};
 
             if (err || response.error) {
-                if (err) {
+                if (response.responseJSON) {
                     errorMessage = response.responseJSON.status;
-                }
-
-                if (response.error) {
+                } else if (typeof response.error === 'string') {
                     errorMessage = response.error;
+                } else {
+                    errorMessage = response.status + ' - ' + response.statusText;
                 }
 
                 return this._setErrorState({message: errorMessage}).enable();

@@ -16,11 +16,6 @@ Class(CV, 'Search').inherits(Widget)({
                 <svg class="input-search-icon -s18 -abs">\
                     <use xlink:href="#svg-search"></use>\
                 </svg>\
-                <div class="cv-loader -abs">\
-                    <div class="ball-spin-fade-loader">\
-                        <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>\
-                    </div>\
-                </div>\
             </div>\
             <div class="cv-search-overlay__results">\
                 <div class="gm-scrollbar -vertical">\
@@ -46,7 +41,6 @@ Class(CV, 'Search').inherits(Widget)({
             this.el = this.element[0];
             this._body = document.body;
             this.inputWrapper = this.el.querySelector('.cv-search-overlay__input');
-            this.inputLoader = this.inputWrapper.querySelector('.cv-loader');
             this.closeElement = this.el.querySelector('.cv-search-overlay__close');
 
             this.scrollbar = new Gemini({
@@ -56,6 +50,10 @@ Class(CV, 'Search').inherits(Widget)({
 
             this._queryRe = new RegExp('[^A-Za-z0-9\\p{L}\\p{Nd}]+','g');
             this._queryRe2 = new RegExp('[\\ ~`!#$%\\^&*+=\\-\\[\\]\';,{}|":<>\\?]','g');
+
+            this.appendChild(new CV.Loader({
+                name : 'loader'
+            })).render(this.inputWrapper);
 
             this.appendChild(new CV.InputClearable({
                 name : 'input',
@@ -108,12 +106,12 @@ Class(CV, 'Search').inherits(Widget)({
         },
 
         _setSearchingState : function _setSearchingState() {
-            this.inputLoader.classList.add('active');
+            this.loader.activate();
             return this;
         },
 
         _setResponseState : function _setResponseState() {
-            this.inputLoader.classList.remove('active');
+            this.loader.deactivate();
             return this;
         },
 

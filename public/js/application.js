@@ -52,6 +52,7 @@ require('./widgets/search/results-view-all-button');
 require('./widgets/sidebar.js');
 require('./widgets/header.js');
 require('./widgets/incognito/button');
+require('./widgets/loader');
 
 // generic widgets
 require('./widgets/popover.js');

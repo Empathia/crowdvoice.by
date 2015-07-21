@@ -9,11 +9,6 @@ Class(CV, 'PostCreatorFromSourcesQueue').inherits(Widget)({
                 <p>Add here the posts you want to include in this voice.<br/>You’ll be able to edit their title and description.</p>\
             </div>\
             <div class="from-sources-queue-list -text-center"></div>\
-            <div class="cv-loader -abs">\
-                <div class="ball-spin-fade-loader">\
-                    <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>\
-                </div>\
-            </div>\
         </div>\
     ',
 
@@ -26,7 +21,10 @@ Class(CV, 'PostCreatorFromSourcesQueue').inherits(Widget)({
             this.el = this.element[0];
             this.list = this.el.querySelector('.from-sources-queue-list');
             this.onboarding = this.el.querySelector('.from-sources-queue-onboarding');
-            this.loader = this.el.querySelector('.cv-loader');
+
+            this.appendChild(new CV.Loader({
+                name : 'loader'
+            })).render(this.el);
         },
 
         setSearchingState : function setSearchingState() {
@@ -36,7 +34,7 @@ Class(CV, 'PostCreatorFromSourcesQueue').inherits(Widget)({
 
         setAddingPost : function setAddingPost() {
             this.hideOnboarding();
-            this.loader.classList.add('active');
+            this.loader.activate();
             return this;
         },
 
@@ -59,7 +57,7 @@ Class(CV, 'PostCreatorFromSourcesQueue').inherits(Widget)({
             postData.name = 'post_' + this._index;
             this.appendChild(CV.EditablePost.create(postData)).render(this.list, this.list.firstChild)
                 .edit().addRemoveButton();
-            this.loader.classList.remove('active');
+            this.loader.deactivate();
             this._index++;
         }
     }
