@@ -4,8 +4,8 @@ Class(CV, 'PostCreatorFromSourcesYoutube').inherits(Widget).includes(CV.WidgetUt
     ELEMENT_CLASS : 'post-creator-from-sources__youtube',
     HTML : '\
         <article>\
-            <p class="source-title -font-bold"></p>\
-            <p class="source-date"></p>\
+            <p class="source-title -font-bold -inline"></p>\
+            <p class="source-date -inline"></p>\
             <p class="source-description"></p>\
         </article>\
     ',

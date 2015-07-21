@@ -57,7 +57,7 @@
     left: 50%;
 
     .ball-spin-fade-loader > div {
-      background-color: @color-grey;
+      background-color: @color-neutral-mid;
     }
 
     &.active {display: block;}
@@ -65,11 +65,16 @@
 }
 
 .from-sources-results {
+  display: none;
+
   header {
     font-size: 11px;
     padding: 10px 1em;
-    border-bottom: 1px solid @color-neutral-mid;
+    border-bottom: 1px solid @color-neutral-light;
+    color: @color-neutral-mid;
   }
+
+  &.active {display: block;}
 }
 
 .from-sources-result-list {

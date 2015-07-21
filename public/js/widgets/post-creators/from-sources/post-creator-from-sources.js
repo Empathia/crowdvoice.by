@@ -108,6 +108,10 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
 
             inputValue = this.input.getValue();
 
+            if (inputValue.length <= 2) {
+                return void 0;
+            }
+
             // if (inputValue === this._inputLastValue) {
             //     return void 0;
             // }
@@ -140,7 +144,11 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
                 query : this._query
             });
 
-            this._setResultsState();
+            if (!response.length) {
+                this._setNoResultsState();
+            } else {
+                this._setResultsState();
+            }
         },
 
         _showContent : function _showContent() {
@@ -157,7 +165,8 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
 
         _setNoResultsState : function _setNoResultsState() {
             this._showContent();
-            this.results.setNoResultsState();
+            console.log(this._query)
+            this.results.setNoResultsState(this._query);
             return this;
         },
 

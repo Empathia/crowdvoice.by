@@ -8,14 +8,15 @@ Class(CV, 'PostCreatorFromSourcesResults').inherits(Widget).includes(CV.WidgetUt
             <section class="from-sources-results">\
                 <header>\
                     <span class="-font-bold">\
-                        <b data-total-number></b> results for <span data-term></span>.\
+                        <b data-total-number></b>\
+                        &nbsp;results for <i>‘<span data-term></span>’</i>.\
                     </span>\
-                    Select the posts you would like to add to this Voice.\
+                    &nbsp;Select the posts you would like to add to this Voice.\
                 </header>\
                 <div class="from-sources-result-list"></div>\
             </section>\
             <div class="from-sources-no-results -color-grey-light -text-center">\
-                <p>We found no results for ‘{{TERM}}’.<br/>Please refine your search and try again.</p>\
+                <p>We found no results for ‘<span data-query></span>’.<br/>Please refine your search and try again.</p>\
             </div>\
             <div class="cv-loader -abs">\
                 <div class="ball-spin-fade-loader">\
@@ -36,7 +37,8 @@ Class(CV, 'PostCreatorFromSourcesResults').inherits(Widget).includes(CV.WidgetUt
             this.totalsElement = this.resultsWrapper.querySelector('[data-total-number]');
             this.queryElement = this.resultsWrapper.querySelector('[data-term]');
 
-            this.noResults  = this.el.querySelector('.from-sources-no-results');
+            this.noResults = this.el.querySelector('.from-sources-no-results');
+            this.noResultsQuery = this.noResults.querySelector('[data-query]');
             this.loader = this.el.querySelector('.cv-loader');
         },
 
@@ -90,7 +92,11 @@ Class(CV, 'PostCreatorFromSourcesResults').inherits(Widget).includes(CV.WidgetUt
             return this;
         },
 
-        setNoResultsState : function setNoResultsState() {
+        setNoResultsState : function setNoResultsState(queryString) {
+            this.dom.updateText(
+                this.noResultsQuery,
+                queryString
+            );
             this.noResults.classList.add('active');
             this.resultsWrapper.classList.remove('active');
             this.loader.classList.remove('active');

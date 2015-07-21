@@ -4,8 +4,8 @@ Class(CV, 'PostCreatorFromSourcesGoogleNews').inherits(Widget).includes(CV.Widge
     ELEMENT_CLASS : 'post-creator-from-sources__google-news',
     HTML : '\
         <article>\
-            <p class="source-title -font-bold"></p>\
-            <p class="source-date"></p>\
+            <p class="source-title -font-bold -inline"></p>\
+            <p class="source-date -inline"></p>\
             <div class="source-description"></div>\
         </article>',
 
