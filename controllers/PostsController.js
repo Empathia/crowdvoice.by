@@ -246,6 +246,10 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
       var url = req.body.url;
 
       request(url, function(err, response, body) {
+        if (err) {
+          return next(new NotFoundError('Bad URL'));
+        }
+
         var longUrl = response.request.uri.href;
 
         if (err) {
