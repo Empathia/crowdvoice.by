@@ -89,7 +89,22 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
             this._inputKeyPressHandlerRef = this._inputKeyPressHandler.bind(this);
             this.input.getElement().addEventListener('keypress', this._inputKeyPressHandlerRef);
 
+            this._addPostRef = this._addPost.bind(this);
+            this.results.bind('addPost', this._addPostRef);
+
             return this;
+        },
+
+        _addPost : function _addPost(ev) {
+            // this.results.children.indexOf(ev.data)
+            // ev.data.sourceUrl
+            API.postPreview({url: ev.data.sourceUrl}, this._requestPreviewHandler.bind(this));
+        },
+
+        _requestPreviewHandler : function _requestPreviewHandler(err, response) {
+            console.log(err)
+            console.log(response)
+            this.queue.addPost(response);
         },
 
         _sourceChanged : function _sourceChanged(ev) {

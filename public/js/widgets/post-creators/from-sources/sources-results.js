@@ -40,18 +40,23 @@ Class(CV, 'PostCreatorFromSourcesResults').inherits(Widget).includes(CV.WidgetUt
             this.noResults = this.el.querySelector('.from-sources-no-results');
             this.noResultsQuery = this.noResults.querySelector('[data-query]');
             this.loader = this.el.querySelector('.cv-loader');
+
+            this._bindEvents();
+        },
+
+        _bindEvents : function _bindEvents() {
+            this._addPostRef = this._addPost.bind(this);
+            CV.PostCreatorFromSourcesYoutube.bind('addPost', this._addPostRef);
+            CV.PostCreatorFromSourcesGoogleNews.bind('addPost', this._addPostRef);
+        },
+
+        _addPost : function _addPost(ev) {
+            this.dispatch('addPost', {data: ev.data});
         },
 
         renderResults : function renderResults(config) {
-            this.dom.updateText(
-                this.totalsElement,
-                config.data.length
-            );
-
-            this.dom.updateText(
-                this.queryElement,
-                config.query
-            );
+            this.dom.updateText(this.totalsElement, config.data.length);
+            this.dom.updateText(this.queryElement, config.query);
 
             this.clearResults();
 

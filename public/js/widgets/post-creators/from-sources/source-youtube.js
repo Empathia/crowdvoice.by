@@ -28,25 +28,35 @@ Class(CV, 'PostCreatorFromSourcesYoutube').inherits(Widget).includes(CV.WidgetUt
             this.titleElement = this.el.querySelector('.source-title');
             this.dateElement = this.el.querySelector('.source-date');
             this.descriptionElement = this.el.querySelector('.source-description');
+            this.addButton = this.el.querySelector('.source-add-button button');
 
-            this._setup();
+            this._setup()._bindEvents();
         },
 
         _setup : function _setup() {
-            this.dom.updateText(
-                this.titleElement,
-                this.title
-            );
+            this.dom.updateText(this.titleElement, this.title);
+            this.dom.updateText(this.dateElement, moment(this.date).format('MMM, YYYY'));
+            this.dom.updateText(this.descriptionElement, this.description);
+            return this;
+        },
 
-            this.dom.updateText(
-                this.dateElement,
-                moment(this.date).format('MMM, YYYY')
-            );
+        _bindEvents : function _bindEvents() {
+            this._clickHandlerRef = this._clickHandler.bind(this);
+            this.addButton.addEventListener('click', this._clickHandlerRef);
+            return this;
+        },
 
-            this.dom.updateText(
-                this.descriptionElement,
-                this.description
-            );
+        _clickHandler : function _clickHandler() {
+            CV.PostCreatorFromSourcesYoutube.dispatch('addPost', {data: this});
+        },
+
+        destroy : function destroy() {
+            Widget.prototype.destroy.call(this);
+
+            this.addButton.removeEventListener('click', this._clickHandlerRef);
+            this._clickHandlerRef = null;
+
+            return null;
         }
     }
 });
