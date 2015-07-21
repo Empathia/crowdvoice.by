@@ -9,7 +9,7 @@ Class(CV, 'PostLink').inherits(CV.Post)({
                 <use xlink:href="#svg-magnifier"></use>\
             </svg>\
         </div>\
-        <div class="post-card-info">\
+        <div class="post-card-info -text-left">\
             <div class="post-card-meta">\
                 <span class="post-card-meta-source"></span>\
                 on <time class="post-card-meta-date" datetime=""></time>\

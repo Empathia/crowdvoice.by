@@ -30,7 +30,7 @@ Class(CV, 'VoiceFooter').inherits(Widget)({
                 })).render(this.element);
             }
 
-            if (Person.get() && !Person.memberOf('voice', this.voice.id)) {
+            if (Person.get() && !Person.anon() && !Person.memberOf('voice', this.voice.id)) {
                 this.appendChild(new CV.VoiceFollowButton({
                     name : 'followButton',
                     voice : this.voice
@@ -42,7 +42,7 @@ Class(CV, 'VoiceFooter').inherits(Widget)({
             })).render(this.actionsColumn);
 
             // currentPerson does not belongs/owns this voice already?
-            if (Person.get() && !Person.memberOf('voice', this.voice.id)) {
+            if (Person.get() && !Person.anon() && !Person.memberOf('voice', this.voice.id)) {
                 this.appendChild(new CV.VoiceRequestToContribute({
                     name : 'voiceRequestToContribute'
                 })).render(this.actionsColumn);

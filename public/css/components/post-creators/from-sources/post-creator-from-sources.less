@@ -1,0 +1,122 @@
+/* ============================================================================
+ * From Sources
+ * ========================================================================= */
+.post-creator-from-sources {
+  .input-error-message {
+    top: 70px;
+    left: 70px;
+  }
+}
+
+/* HEADER » DROPDOWN */
+.from-sources-dropdown {
+  border-right-width: 1px;
+
+  .ui-dropdown__head {
+    padding: 1.6rem 1.5rem 0;
+
+    .from-sources-dropdown-option-svg {
+      fill: @color-grey;
+    }
+  }
+
+  .ui-dropdown__body {min-width: 170px}
+  .ui-dropdown-arrow {margin: 6px 0 0 10px}
+}
+
+.from-sources-dropdown-option {
+  white-space: nowrap;
+  line-height: 16px;
+
+  .from-sources-dropdown-option-svg {
+    margin-right: 10px;
+  }
+}
+
+/* HEADER » POST BUTTON */
+.from-sources-post-button {
+  padding: 1rem 1.25rem 0;
+  border-left-width: 1px;
+}
+
+/* BODY » CONTENT */
+.cv-post-creator__content,
+.from-sources-result {
+  display: none;
+  &.active {display: block;}
+}
+
+.from-sources-no-results,
+.from-sources-queue-onboarding {
+  display: none;
+  padding-top: 12em;
+  font-style: italic;
+
+  &.active {display: block;}
+}
+
+/* BODY » LEFT PANEL */
+.from-sources-content-left {
+  width: 60%;
+  border-top-left-radius: 6px;
+}
+
+.from-sources-results {
+  display: none;
+
+  header {
+    font-size: 11px;
+    padding: 10px 1em;
+    border-bottom: 1px solid @color-neutral-light;
+    color: @color-neutral-mid;
+  }
+
+  &.active {display: block;}
+}
+
+.from-sources-result-list {
+  overflow: auto;
+  height: e('calc(100vh - 138px)');
+}
+
+.source-preview-wrapper {
+  padding-right: 100px;
+}
+
+.source-add-button {
+  top: 1.5rem;
+  right: 2rem;
+}
+
+/* BODY » RIGHT PANEL */
+.from-sources-content-right {
+  width: 40%;
+  border-top-right-radius: 6px;
+  border-left-width: 1px;
+}
+
+.from-sources-queue-list {
+  overflow: auto;
+  height: e('calc(100vh - 100px)');
+
+  .post-card {
+    max-width: 300px;
+    margin: 2em 0;
+  }
+}
+
+/* BODY » BOTH PANELS */
+.from-sources-content-left,
+.from-sources-content-right {
+  .cv-loader {
+    display: none;
+    top: 50%;
+    left: 50%;
+
+    .ball-spin-fade-loader > div {
+      background-color: @color-neutral-mid;
+    }
+
+    &.active {display: block;}
+  }
+}

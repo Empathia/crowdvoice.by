@@ -1,4 +1,4 @@
-Module('PostsPresenter')({
+var PostsPresenter = Module('PostsPresenter')({
   build : function build(posts, callback) {
     async.eachLimit(posts, 1, function(post, next) {
 
@@ -20,3 +20,5 @@ Module('PostsPresenter')({
     });
   }
 });
+
+module.exports = PostsPresenter;

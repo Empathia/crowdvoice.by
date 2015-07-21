@@ -154,6 +154,8 @@ require('./widgets/post-creators/from-sources/sources-dropdown.js');
 require('./widgets/post-creators/from-sources/sources-dropdown-option.js');
 require('./widgets/post-creators/from-sources/sources-results.js');
 require('./widgets/post-creators/from-sources/sources-queue.js');
+require('./widgets/post-creators/from-sources/source-youtube.js');
+require('./widgets/post-creators/from-sources/source-google-news.js');
 
 require('./widgets/post-creators/upload-file/post-creator-upload-file.js');
 require('./widgets/post-creators/upload-file/header-messages.js');

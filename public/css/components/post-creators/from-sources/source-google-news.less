@@ -1,0 +1,28 @@
+.post-creator-from-sources__google-news {
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid @color-neutral-light;
+
+  .source-date {
+    font-size: 11px;
+    line-height: 21px;
+    margin: 0 0 0 6px;
+    color: @color-neutral-mid;
+  }
+
+  /* google news markup :/ */
+  .source-description {
+    td.j > font > div:first-of-type,
+    td.j > font > br {
+      display: none;
+    }
+
+    > table > tbody > tr > td:first-child {
+      width: 0;
+    }
+
+    > table > tbody > tr > td:first-child > font > a {
+      margin-right: 20px;
+      display: inline-block;
+    }
+  }
+}

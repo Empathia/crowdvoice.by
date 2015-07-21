@@ -211,11 +211,13 @@
   var isOrganizationOwner = false;
 
   var currentOrganization = <%= JSON.stringify(organization) %>;
-  currentPerson.ownedOrganizations.forEach(function(org){
-    if (currentOrganization.id == org.id){
-      isOrganizationOwner = true;
-    }
-  });
+  if (currentPerson) {
+    currentPerson.ownedOrganizations.forEach(function(org){
+      if (currentOrganization.id == org.id){
+        isOrganizationOwner = true;
+      }
+    });
+  }
 
   if (!isOrganizationOwner){
     createControls();
