@@ -215,7 +215,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         voice.addSlug(function(err) {
           if (err) { return next(err) }
 
-          feed.voiceCreated(req, res, next)
+          feed.voiceCreated(req, res, next, model)
 
           res.redirect(req.currentPerson.profileName + '/' + voice.getSlug())
         });
