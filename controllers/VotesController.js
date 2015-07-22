@@ -67,21 +67,22 @@ var VotesController = Class('VotesController').includes(BlackListFilter)({
         })
       } else {
         // get the latest 3, find out if they're all in the same day
-        Vote.find(['post_id = ? AND ip = ? ORDER BY created_at DESC LIMIT ?', [req.params.postId, ip, 3]], function (err, result) {
+        Vote.find(['post_id = ? AND entity_id IS NULL AND ip = ? ORDER BY created_at DESC LIMIT ?', [req.params.postId, ip, 3]], function (err, result) {
           if (err) { return next(err) }
 
-          if (result.length > 2) {
-            var times = result.map(function (val) {
-              return moment(val.createdAt)
-            }).map(function (val) {
-              return moment().diff(val, 'hours')
-            })
+          var times = result.map(function (val) {
+            // get our times
+            return moment(val.createdAt)
+          }).map(function (val) {
+            // get our differences from now in hours
+            return moment().diff(val, 'hours')
+          }).filter(function (val) {
+            // only get those that are lower than 24 hours
+            return val <= 24
+          })
 
-            if (times.some(function (val) { return val <= 24 })) {
-              return next(new ForbiddenError())
-            } else {
-              return makeVote()
-            }
+          if (times.length > 2) {
+            return next(new ForbiddenError())
           } else {
             return makeVote()
           }
