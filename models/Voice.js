@@ -9,6 +9,8 @@ var Voice = Class('Voice').inherits(Argon.KnexModel).includes(ImageUploader)({
 
   validations : {
     ownerId : ['required'],
+    status : ['required'],
+    type : ['required'],
     title : [
       'required',
       {
