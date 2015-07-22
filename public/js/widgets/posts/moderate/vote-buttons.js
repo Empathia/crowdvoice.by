@@ -23,7 +23,7 @@ Class(CV, 'PostModerateVoteButtons').inherits(Widget).includes(CV.WidgetUtils)({
         <div class="post-moderate-vote-already-cast-msg cv-button -block -m0 -text-center -font-semi-bold -upper">\
             (Vote Already Cast)\
         </div>',
-    HTML_ERROR : '<div class="post-moderate-vote-error-msg"></div>',
+    HTML_ERROR : '<div class="post-moderate-vote-error-msg cv-button -block -m0 -text-center -font-semi-bold -upper -abs"></div>',
 
     prototype : {
         /* The Post parent [Object, Widget reference] */
@@ -92,6 +92,10 @@ Class(CV, 'PostModerateVoteButtons').inherits(Widget).includes(CV.WidgetUtils)({
                 this.el.querySelector('.post-moderate-vote-error-msg'),
                 message
             );
+
+            window.setTimeout(function() {
+                this.el.removeChild(this.el.querySelector('.post-moderate-vote-error-msg'));
+            }.bind(this), 5000);
             return this;
         },
 
