@@ -1,5 +1,6 @@
 var BlackListFilter = require(__dirname + '/BlackListFilter');
 var VoicesPresenter = require(path.join(process.cwd(), '/presenters/VoicesPresenter.js'));
+var feed = require(__dirname + '/../lib/feed.js');
 
 var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
@@ -80,7 +81,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
       entity.type = req.entityType;
       entity.save(function (err) {
         if (err) {
-          res.render(req.entityType + '/new.html', {errors: err});
+          return next(err);
         } else {
           res.redirect('/' + entity.profileName);
         }
@@ -93,7 +94,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
     update : function update (req, res, next) {
       var entity = req.entity;
-      var pathToPublic = path.join(__dirname, '../public');
+      var pathToPublic = path.join(__dirname, '/../public');
 
       entity.setProperties({
         name: req.body['name'] || entity.name,
@@ -105,26 +106,18 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
       async.series([
         function (done) {
-          entity.save(function (err) {
-            done(err);
-          });
+          entity.save(done);
         },
         function (done) {
           if (!req.files['image']) { return done(); }
-          entity.uploadImage('image', req.files['image'].path, function (err) {
-            done(err);
-          });
+          entity.uploadImage('image', req.files['image'].path, done);
         },
         function (done) {
           if (!req.files['background']) { return done(); }
-          entity.uploadImage('background', req.files['background'].path, function (err) {
-            done(err);
-          });
+          entity.uploadImage('background', req.files['background'].path, done);
         },
         function (done) {
-          entity.save(function (err) {
-            done(err);
-          });
+          entity.save(done);
         }
       ], function (err) {
         if (err) {

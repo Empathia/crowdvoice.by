@@ -11,9 +11,6 @@ global.moment = require('moment');
 // Load routes
 require('./../lib/routes.js');
 
-// Feed event binding
-require('./../lib/feed.js');
-
 application._serverStart();
 
 require('./../presenters/PostsPresenter');

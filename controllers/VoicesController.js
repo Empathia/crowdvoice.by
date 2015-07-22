@@ -1,5 +1,6 @@
 var BlackListFilter = require(__dirname + '/BlackListFilter');
 var EntitiesPresenter = require(path.join(process.cwd(), '/presenters/EntitiesPresenter.js'));
+var feed = require(__dirname + '/../lib/feed.js');
 
 var VoicesController = Class('VoicesController').includes(BlackListFilter)({
   prototype : {
@@ -17,117 +18,121 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
         var dates = { firstPostDate : null, lastPostDate : null };
 
-        async.series([function(done) {
-          db.raw("SELECT COUNT (*), \
-            to_char(\"Posts\".published_at, 'MM') AS MONTH, \
-            to_char(\"Posts\".published_at, 'YYYY') AS YEAR \
-            FROM \"Posts\" \
-            WHERE \"Posts\".voice_id = ? \
-            AND \"Posts\".approved = true \
-            GROUP BY MONTH, YEAR \
-            ORDER BY YEAR DESC, MONTH DESC", [voice.id])
-          .exec(function(err, postsCount) {
-            if (err) { return done(err); }
+        async.series([
+          function(done) {
+            db.raw("SELECT COUNT (*), \
+              to_char(\"Posts\".published_at, 'MM') AS MONTH, \
+              to_char(\"Posts\".published_at, 'YYYY') AS YEAR \
+              FROM \"Posts\" \
+              WHERE \"Posts\".voice_id = ? \
+              AND \"Posts\".approved = true \
+              GROUP BY MONTH, YEAR \
+              ORDER BY YEAR DESC, MONTH DESC", [voice.id])
+            .exec(function(err, postsCount) {
+              if (err) { return done(err); }
 
-            var counts = {};
+              var counts = {};
 
-            postsCount.rows.forEach(function(post) {
-              if (!counts[post.year]) {
-                counts[post.year] = {};
-              }
+              postsCount.rows.forEach(function(post) {
+                if (!counts[post.year]) {
+                  counts[post.year] = {};
+                }
 
-              counts[post.year][post.month] = post.count;
-            });
-
-            res.locals.postsCount.approved = counts;
-            done();
-          });
-        }, function(done) {
-          db.raw("SELECT COUNT (*), \
-            to_char(\"Posts\".published_at, 'MM') AS MONTH, \
-            to_char(\"Posts\".published_at, 'YYYY') AS YEAR \
-            FROM \"Posts\" \
-            WHERE \"Posts\".voice_id = ? \
-            AND \"Posts\".approved = false \
-            GROUP BY MONTH, YEAR \
-            ORDER BY YEAR DESC, MONTH DESC", [voice.id])
-          .exec(function(err, postsCount) {
-            if (err) { return done(err); }
-
-            var counts = {};
-
-            postsCount.rows.forEach(function(post) {
-              if (!counts[post.year]) {
-                counts[post.year] = {};
-              }
-
-              counts[post.year][post.month] = post.count;
-            });
-
-            res.locals.postsCount.unapproved = counts;
-            done();
-          });
-        }, function(done) {
-          db('Posts').where({
-            'voice_id' : voice.id,
-            approved : true
-          }).orderBy('published_at', 'ASC').limit(1)
-          .exec(function(err, firstPost) {
-            if (err) {
-              return done(err);
-            }
-
-            if (firstPost.length !== 0) {
-              dates.firstPostDate = firstPost[0]['published_at'];
-            }
-
-            db('Posts').where({
-              'voice_id' : voice.id, approved: true
-            }).orderBy('published_at', 'DESC').limit(1)
-            .exec(function(err, lastPost) {
-              if (err) {
-                return done(err);
-              }
-
-              if (lastPost.length !== 0) {
-                dates.lastPostDate = lastPost[0]['published_at'];
-              }
-
-              res.locals.voice.firstPostDate = dates.firstPostDate;
-              res.locals.voice.lastPostDate = dates.lastPostDate;
-
-              Entity.findById(voice.ownerId, function(err, owner) {
-                if (err) { return done(err); }
-
-                res.locals.owner = new Entity(owner[0]);
-
-                done();
+                counts[post.year][post.month] = post.count;
               });
-            });
-          });
-        }, function(done) {
-          // Followers
-          VoiceFollower.find({ 'voice_id' : voice.id }, function(err, voiceFollowers) {
-            var followerIds = voiceFollowers.map(function(item) {
-              return item.entityId;
-            });
 
-            Entity.whereIn('id', followerIds, function(err, result) {
+              res.locals.postsCount.approved = counts;
+              done();
+            });
+          },
+          function(done) {
+            db.raw("SELECT COUNT (*), \
+              to_char(\"Posts\".published_at, 'MM') AS MONTH, \
+              to_char(\"Posts\".published_at, 'YYYY') AS YEAR \
+              FROM \"Posts\" \
+              WHERE \"Posts\".voice_id = ? \
+              AND \"Posts\".approved = false \
+              GROUP BY MONTH, YEAR \
+              ORDER BY YEAR DESC, MONTH DESC", [voice.id])
+            .exec(function(err, postsCount) {
+              if (err) { return done(err); }
+
+              var counts = {};
+
+              postsCount.rows.forEach(function(post) {
+                if (!counts[post.year]) {
+                  counts[post.year] = {};
+                }
+
+                counts[post.year][post.month] = post.count;
+              });
+
+              res.locals.postsCount.unapproved = counts;
+              done();
+            });
+          },
+          function(done) {
+            db('Posts').where({
+              'voice_id' : voice.id,
+              approved : true
+            }).orderBy('published_at', 'ASC').limit(1)
+            .exec(function(err, firstPost) {
               if (err) {
                 return done(err);
               }
-              EntitiesPresenter.build(result, req.currentPerson, function(err, followers) {
+
+              if (firstPost.length !== 0) {
+                dates.firstPostDate = firstPost[0]['published_at'];
+              }
+
+              db('Posts').where({
+                'voice_id' : voice.id, approved: true
+              }).orderBy('published_at', 'DESC').limit(1)
+              .exec(function(err, lastPost) {
                 if (err) {
                   return done(err);
                 }
 
-                res.locals.voice.followers = followers;
+                if (lastPost.length !== 0) {
+                  dates.lastPostDate = lastPost[0]['published_at'];
+                }
 
-                done();
+                res.locals.voice.firstPostDate = dates.firstPostDate;
+                res.locals.voice.lastPostDate = dates.lastPostDate;
+
+                Entity.findById(voice.ownerId, function(err, owner) {
+                  if (err) { return done(err); }
+
+                  res.locals.owner = new Entity(owner[0]);
+
+                  done();
+                });
               });
             });
-          });
-        }], next);
+          }, function(done) {
+            // Followers
+            VoiceFollower.find({ 'voice_id' : voice.id }, function(err, voiceFollowers) {
+              var followerIds = voiceFollowers.map(function(item) {
+                return item.entityId;
+              });
+
+              Entity.whereIn('id', followerIds, function(err, result) {
+                if (err) {
+                  return done(err);
+                }
+                EntitiesPresenter.build(result, req.currentPerson, function(err, followers) {
+                  if (err) {
+                    return done(err);
+                  }
+
+                  res.locals.voice.followers = followers;
+
+                  done();
+                });
+              });
+            });
+          }
+        ], next);
       });
     },
 
@@ -191,7 +196,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
       res.render('voices/new.html', { errors: null });
     },
 
-    create : function create(req, res, next) {
+    create: function (req, res, next) {
       var voice = new Voice({
         title: req.body.title,
         status: req.body.status,
@@ -201,15 +206,18 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         twitterSearch: req.body.twitterSearch,
         rssUrl: req.body.rssUrl,
         latitude: req.body.latitude,
-        longitude: req.body.longitude
-      });
+        longitude: req.body.longitude,
+      })
 
       voice.save(function(err) {
-        if (err) {
-          return next(err);
-        }
+        if (err) { return next(err) }
+
         voice.addSlug(function(err) {
-          res.redirect(req.currentPerson.profileName + '/' + voice.getSlug());
+          if (err) { return next(err) }
+
+          feed.voiceCreated(req, res, next)
+
+          res.redirect(req.currentPerson.profileName + '/' + voice.getSlug())
         });
       });
     },
@@ -233,9 +241,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
       });
 
       voice.save(function(err) {
-        if (err) {
-          return next(err);
-        }
+        if (err) { return next(err); }
         res.redirect('/voice/' + voice.id);
       });
     },
