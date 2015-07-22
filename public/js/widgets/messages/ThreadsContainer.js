@@ -124,7 +124,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
       });
 
       this.element.find('a.new-message').on('click', function(){
-        container.newMessage();
+        container.newMessageAs(container.currentPerson.id);
         return false;
       });
 
