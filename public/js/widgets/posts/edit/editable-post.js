@@ -4,7 +4,7 @@ var rome = require('rome');
 var moment = require('moment');
 var autosize = require('autosize');
 
-Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSupport)({
+Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSupport, BubblingSupport)({
 
     MAX_LENGTH_TITLE : 80,
     MAX_LENGTH_DESCRIPTION : 180,
@@ -209,7 +209,8 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
          * @method addRemoveButton <public> [Function]
          */
         addRemoveButton : function addRemoveButton() {
-            this.appendChild(new CV.PostModerateRemoveButton({name : 'removeButton'})).render(this.el);
+            this.appendChild(new CV.PostModerateRemoveButton({name : 'removeButton'}));
+            this.el.appendChild(this.removeButton.el);
             return this;
         },
 
@@ -217,7 +218,8 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
          * @method addPublishButton <public> [Function]
          */
         addPublishButton : function addPublishButton() {
-            this.appendChild(new CV.PostModeratePublishButton({name : 'publishButton'})).render(this.el);
+            this.appendChild(new CV.PostModeratePublishButton({name : 'publishButton'}));
+            this.el.appendChild(this.publishButton.el);
             this.el.classList.add('has-bottom-actions');
             return this;
         },
@@ -226,7 +228,8 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
          * @method addVoteButtons <public> [Function]
          */
         addVoteButtons : function addVoteButtons() {
-            this.appendChild(new CV.PostModerateVoteButtons({name : 'voteButtons'})).render(this.el);
+            this.appendChild(new CV.PostModerateVoteButtons({name : 'voteButtons'}));
+            this.el.appendChild(this.voteButtons.el);
             this.el.classList.add('has-bottom-actions');
             return this;
         },

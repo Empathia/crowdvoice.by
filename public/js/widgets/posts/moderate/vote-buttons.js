@@ -22,6 +22,7 @@ Class(CV, 'PostModerateVoteButtons').inherits(Widget)({
     prototype : {
         init : function init(config) {
             Widget.prototype.init.call(this, config);
+            this.el = this.element[0];
         }
     }
 });

@@ -98,7 +98,23 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
             this._addPostRef = this._addPost.bind(this);
             this.resultsPanel.bind('addPost', this._addPostRef);
 
+            this._postDeletedRef = this._postDeleted.bind(this);
+            this.bind('post:moderate:delete', this._postDeletedRef);
+
             return this;
+        },
+
+        /* Listener handler for when a Post was removed from the queuePanel,
+         * decrement the post button couter label and disable the button if it
+         * has reach back to zero.
+         * @method _postDeleted <private>
+         */
+        _postDeleted : function _postDeleted(ev) {
+            this._addedPostsCounter--;
+            this.postButton.updateCounter(this._addedPostsCounter);
+            if (!this._addedPostsCounter) {
+                this._disablePostButton();
+            }
         },
 
         /* Calls the API to generate a preview.

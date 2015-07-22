@@ -1,5 +1,5 @@
 /* jshint multistr: true */
-Class(CV, 'PostCreatorFromSourcesQueue').inherits(Widget)({
+Class(CV, 'PostCreatorFromSourcesQueue').inherits(Widget).includes(BubblingSupport)({
 
     ELEMENT_CLASS : 'from-sources-content-right',
 
@@ -22,9 +22,22 @@ Class(CV, 'PostCreatorFromSourcesQueue').inherits(Widget)({
             this.list = this.el.querySelector('.from-sources-queue-list');
             this.onboarding = this.el.querySelector('.from-sources-queue-onboarding');
 
-            this.appendChild(new CV.Loader({
-                name : 'loader'
-            })).render(this.el);
+            this.loader = new CV.Loader().render(this.el);
+
+            this._deleteFromQueueRef = this._deleteFromQueue.bind(this);
+            this.bind('post:moderate:delete', this._deleteFromQueueRef);
+        },
+
+        _deleteFromQueue : function _deleteFromQueue(ev) {
+            var childIndex = this.children.indexOf(ev.data.parent);
+            if (childIndex >= 0) {
+                this.children[childIndex].destroy();
+                this._index--;
+
+                if (this._index === 0) {
+                    this.showOnboarding();
+                }
+            }
         },
 
         setSearchingState : function setSearchingState() {
@@ -55,9 +68,11 @@ Class(CV, 'PostCreatorFromSourcesQueue').inherits(Widget)({
         addPost : function addPost(postData) {
             this.hideOnboarding();
             postData.name = 'post_' + this._index;
-            this.appendChild(CV.EditablePost.create(postData)).render(this.list, this.list.firstChild)
-                .edit().addRemoveButton();
+            this.appendChild(CV.EditablePost.create(postData)).render(this.list, this.list.firstChild);
+            this['post_' + this._index].edit();
+            this['post_' + this._index].addRemoveButton();
             this.loader.deactivate();
+
             this._index++;
         }
     }
