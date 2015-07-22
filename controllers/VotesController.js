@@ -56,7 +56,7 @@ var VotesController = Class('VotesController').includes(BlackListFilter)({
       if (isLoggedIn) {
         // the user is logged in, if we find a vote from him for the post just
         // forbid the new vote
-        Vote.find({ post_id: req.params.postId, entity_id: entityId }, function (err, result) {
+        Vote.find({ post_id: hashids.decode(req.params.postId)[0], entity_id: entityId }, function (err, result) {
           if (err) { return next(err) }
 
           if (result.length >= 1) {
@@ -67,7 +67,7 @@ var VotesController = Class('VotesController').includes(BlackListFilter)({
         })
       } else {
         // get the latest 3, find out if they're all in the same day
-        Vote.find(['post_id = ? AND entity_id IS NULL AND ip = ? ORDER BY created_at DESC LIMIT ?', [req.params.postId, ip, 3]], function (err, result) {
+        Vote.find(['post_id = ? AND entity_id IS NULL AND ip = ? ORDER BY created_at DESC LIMIT ?', [hashids.decode(req.params.postId)[0], ip, 3]], function (err, result) {
           if (err) { return next(err) }
 
           var times = result.map(function (val) {
