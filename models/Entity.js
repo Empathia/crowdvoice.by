@@ -19,9 +19,9 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
     profileName: [
       'required',
       {
-        rule: function (val) {
+        rule: function(val) {
           if (val.match(/[^a-zA-Z0-9_-]/)) {
-            throw new Checkit.FieldError('Profilename should only contain letters, numbers and dashes.')
+            throw new Checkit.FieldError('Profilename should only contain letters, numbers and dashes.');
           }
         },
         message : 'Profilename should only contain letters, numbers and dashes.'
