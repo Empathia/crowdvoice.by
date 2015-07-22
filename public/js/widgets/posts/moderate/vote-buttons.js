@@ -43,7 +43,7 @@ Class(CV, 'PostModerateVoteButtons').inherits(Widget)({
             var args = {
                 profileName : App.Voice.owner.profileName,
                 voiceSlug : App.Voice.slug,
-                postId : this.parent.id,
+                postId : this.postId,
                 vote : 'up'
             };
 
@@ -54,7 +54,7 @@ Class(CV, 'PostModerateVoteButtons').inherits(Widget)({
             var args = {
                 profileName : App.Voice.owner.profileName,
                 voiceSlug : App.Voice.slug,
-                postId : this.parent.id,
+                postId : this.postId,
                 vote : 'up'
             };
 

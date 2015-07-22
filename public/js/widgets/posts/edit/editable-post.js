@@ -1,5 +1,3 @@
-/* jshint multistr: true */
-
 var rome = require('rome');
 var moment = require('moment');
 var autosize = require('autosize');
@@ -109,7 +107,7 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
                 sourceUrl : this.sourceUrl,
 
                 // extra props
-                images : this.images,
+                images : this.images || [],
                 imagePath : this.imagePath,
             };
         },
@@ -209,7 +207,10 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
          * @method addRemoveButton <public> [Function]
          */
         addRemoveButton : function addRemoveButton() {
-            this.appendChild(new CV.PostModerateRemoveButton({name : 'removeButton'}));
+            this.appendChild(new CV.PostModerateRemoveButton({
+                name : 'removeButton',
+                postId : this.id
+            }));
             this.el.appendChild(this.removeButton.el);
             return this;
         },
@@ -218,7 +219,10 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
          * @method addPublishButton <public> [Function]
          */
         addPublishButton : function addPublishButton() {
-            this.appendChild(new CV.PostModeratePublishButton({name : 'publishButton'}));
+            this.appendChild(new CV.PostModeratePublishButton({
+                name : 'publishButton',
+                postId : this.id
+            }));
             this.el.appendChild(this.publishButton.el);
             this.el.classList.add('has-bottom-actions');
             return this;
@@ -228,7 +232,10 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
          * @method addVoteButtons <public> [Function]
          */
         addVoteButtons : function addVoteButtons() {
-            this.appendChild(new CV.PostModerateVoteButtons({name : 'voteButtons'}));
+            this.appendChild(new CV.PostModerateVoteButtons({
+                name : 'voteButtons',
+                postId : this.id
+            }));
             this.el.appendChild(this.voteButtons.el);
             this.el.classList.add('has-bottom-actions');
             return this;

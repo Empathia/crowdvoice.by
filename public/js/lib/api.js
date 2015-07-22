@@ -57,6 +57,9 @@ module.exports = {
         });
     },
 
+    /**************************************************************************
+     * POSTS
+     *************************************************************************/
     /* Saves a Post on the current Voice.
      * @argument args.data <required> [Object] the post data
      * @argument callback <required> [Function]
@@ -81,9 +84,31 @@ module.exports = {
         });
     },
 
-    /**************************************************************************
-     * POSTS
-     *************************************************************************/
+    /* Allows a post to be voted up or down.
+     * @argument args.profileName <required> [String] the voice owner profileName
+     * @argument args.voiceSlug <required> [String] the voice slug
+     * @argument args.postId <required> [String] the post id to up/down vote
+     * @argument args.vote <required> [String] ("up" | "down") upvote or downvote
+     */
+    postVote : function postVote(args, callback) {
+        if (!args.profileName || !args.voiceSlug || !args.postId || !args.vote || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'GET',
+            dataType : 'json',
+            url : '/' + args.profileName + '/' + args.voiceSlug + '/' + args.postId + '/vote/' + args.vote,
+            headers : {'csrf-token' : this.token},
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
+    },
+
     /* Search for Posts in Sources
      * @argument args.profileName <required> [String] the voice owner profileName
      * @argument args.voiceSlug <required> [String] the voice slug
@@ -104,31 +129,6 @@ module.exports = {
             type : 'GET',
             dataType : 'json',
             url : '/' + args.profileName + '/' + args.voiceSlug + '/' + args.source + '/' + args.query,
-            headers : {'csrf-token' : this.token},
-            success : function success(data) { callback(false, data); },
-            error : function error(err) { callback(true, err); }
-        });
-    },
-
-    /* Allows a post to be voted up or down.
-     * @argument args.profileName <required> [String] the voice owner profileName
-     * @argument args.voiceSlug <required> [String] the voice slug
-     * @argument args.postId <required> [String] the post id to up/down vote
-     * @argument args.vote <required> [String] ("up" | "down") upvote or downvote
-     */
-    postVote : function postVote(args, callback) {
-        if (!args.profileName || !args.voiceSlug || !args.postId || !args.vote || !callback) {
-            throw new Error('Missing required params');
-        }
-
-        if ((typeof callback).toLowerCase() !== "function") {
-            throw new Error('Callback should be a function');
-        }
-
-        $.ajax({
-            type : 'GET',
-            dataType : 'json',
-            url : '/' + args.profileName + '/' + args.voiceSlug + '/' + args.postId + '/vote/' + args.vote,
             headers : {'csrf-token' : this.token},
             success : function success(data) { callback(false, data); },
             error : function error(err) { callback(true, err); }
