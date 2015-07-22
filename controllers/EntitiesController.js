@@ -4,10 +4,10 @@ var VoicesPresenter = require(path.join(process.cwd(), '/presenters/VoicesPresen
 var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
   prototype : {
-    getEntityByProfileName : function (req, res, next) {
+    getEntityByProfileName : function(req, res, next) {
       Entity.find({
-        profile_name: req.params.profile_name
-      }, function (err, result) {
+        'profile_name' : req.params['profile_name']
+      }, function(err, result) {
         if (err) { next(err); return; }
         if (result.length === 0) { next(new NotFoundError('Entity Not Found')); return; }
 
@@ -25,11 +25,11 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
       });
     },
 
-    getEntity : function getEntity (req, res, next) {
+    getEntity : function getEntity(req, res, next) {
       Entity.find({
         id: req.params.id,
         type: req.entityType
-      }, function (err, result) {
+      }, function(err, result) {
         if (err) { next(err); return; }
         if (result.length === 0) {
           next(new NotFoundError('Entity Not Found')); return;
@@ -42,8 +42,8 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
       });
     },
 
-    index : function index (req, res, next) {
-      Entity.find({type:req.entityType}, function (err, result) {
+    index : function index(req, res, next) {
+      Entity.find({ type:req.entityType }, function(err, result) {
         if (err) { next(err); return; }
 
         if (result.length === 0) {
@@ -51,26 +51,26 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
         }
 
         res.format({
-          'text/html': function () {
+          'text/html': function() {
             res.locals[inflection.pluralize(req.entityType)] = result;
             res.render(req.entityType + '/index.html', {});
           },
-          'application/json': function () {
+          'application/json': function() {
             res.json(result);
           }
         });
       });
     },
 
-    show : function show (req, res, next) {
+    show : function show(req, res, next) {
       res.render(inflection.pluralize(req.entityType) + '/show.html');
     },
 
-    new : function (req, res, next) {
-      res.render(inflection.pluralize(req.entityType) + '/new.html', {errors: null});
+    new : function(req, res, next) {
+      res.render(inflection.pluralize(req.entityType) + '/new.html', { errors: null });
     },
 
-    create : function create (req, res, next) {
+    create : function create(req, res, next) {
       var entity = new Entity({
         name: req.body['name'],
         lastname: req.body['lastname'],
@@ -78,67 +78,101 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
         isAnonymous: req.body['isAnonymous'] === "true" ? true : false
       });
       entity.type = req.entityType;
-      entity.save(function (err) {
+      entity.save(function(err) {
         if (err) {
-          res.render(req.entityType + '/new.html', {errors: err});
+          res.render(req.entityType + '/new.html', { errors: err });
         } else {
           res.redirect('/' + entity.profileName);
         }
       });
     },
 
-    edit : function edit (req, res, next) {
-      res.render(inflection.pluralize(req.entityType) + '/edit.html', {errors: null});
-    },
-
-    update : function update (req, res, next) {
-      var entity = req.entity;
-      var pathToPublic = path.join(__dirname, '../public');
-
-      entity.setProperties({
-        name: req.body['name'] || entity.name,
-        lastname: req.body['lastname'] || entity.lastname,
-        profileName: req.body['profileName'] || entity.profileName,
-        description: req.body['description'] || entity.description,
-        location: req.body['location'] || entity.location
-      });
-
-      async.series([
-        function (done) {
-          entity.save(function (err) {
-            done(err);
-          });
-        },
-        function (done) {
-          if (!req.files['image']) { return done(); }
-          entity.uploadImage('image', req.files['image'].path, function (err) {
-            done(err);
-          });
-        },
-        function (done) {
-          if (!req.files['background']) { return done(); }
-          entity.uploadImage('background', req.files['background'].path, function (err) {
-            done(err);
-          });
-        },
-        function (done) {
-          entity.save(function (err) {
-            done(err);
-          });
-        }
-      ], function (err) {
+    edit : function edit(req, res, next) {
+      ACL.isAllowed('edit', 'entities', req.role, {
+        entity : req.entity,
+        currentPerson : req.currentPerson
+      }, function(err, response) {
         if (err) {
-          res.locals.errors = err;
-          req.errors = err;
-          console.log(err)
-          res.redirect('/' + entity.profileName + '/edit');
-        } else {
-          res.redirect('/' + entity.profileName + '/edit');
+          return next(err);
         }
+
+        if (!response.isAllowed) {
+          return next(new ForbiddenError());
+        }
+
+        res.render(inflection.pluralize(req.entityType) + '/edit.html');
       });
     },
 
-    follow : function follow (req, res, next) {
+    update : function update(req, res, next) {
+      ACL.isAllowed('update', 'entities', req.role, {
+        entity : req.entity,
+        currentPerson : req.currentPerson
+      }, function(err, response) {
+        if (err) {
+          return next(err);
+        }
+
+        if (!response.isAllowed) {
+          return next(new ForbiddenError());
+        }
+
+        Entity.find({ id : hashids.decode(req.entity.id)[0] }, function(err, result) {
+          if (err) {
+            return next(err);
+          }
+
+          var entity = new Entity(result[0]);
+
+          var pathToPublic = path.join(__dirname, '../public');
+
+          entity.setProperties({
+            name: req.body.name || entity.name,
+            lastname: req.body.lastname || entity.lastname,
+            profileName: req.body.profileName || entity.profileName,
+            description: req.body.description || entity.description,
+            location: req.body.location || entity.location
+          });
+
+          async.series([
+            function(done) {
+              entity.save(function(err) {
+                done(err);
+              });
+            },
+            function(done) {
+              if (!req.files.image) { return done(); }
+              entity.uploadImage('image', req.files.image.path, function(err) {
+                done(err);
+              });
+            },
+            function(done) {
+              if (!req.files.background) { return done(); }
+              entity.uploadImage('background', req.files.background.path, function(err) {
+                done(err);
+              });
+            },
+            function(done) {
+              entity.save(function(err) {
+                done(err);
+              });
+            }
+          ], function(err) {
+            if (err) {
+              res.locals.errors = err;
+              req.errors = err;
+              logger.log(err);
+
+              res.render(inflection.pluralize(req.entityType) + '/edit.html');
+            } else {
+              res.redirect('/' + entity.profileName + '/edit');
+            }
+          });
+        });
+      });
+    },
+
+    follow : function follow(req, res, next) {
       var entity = req.entity;
       var follower = req.currentPerson;
       follower.id = hashids.decode(follower.id)[0];
@@ -152,33 +186,34 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
       EntityFollower.find({
         follower_id: follower.id,
         followed_id: entity.id
-      }, function (err, result) {
+      }, function(err, result) {
         if (err) { return next(err); }
 
         if (result.length > 0) { // already following?
           // unfollow
-          follower.unfollowEntity(entity, function (err) {
+          follower.unfollowEntity(entity, function(err) {
             if (err) { return next(err); }
 
             res.format({
-              html: function () {
+              html: function() {
                 res.redirect('/' + entity.profileName);
               },
-              json: function () {
+              json: function() {
                 res.json({ status: 'unfollowed' });
               }
-            })
+            });
           });
         } else {
+
           // follow
-          follower.followEntity(entity, function (err) {
+          follower.followEntity(entity, function(err) {
             if (err) { return next(err); }
 
             res.format({
-              html: function () {
+              html: function() {
                 res.redirect('/' + entity.profileName);
               },
-              json: function () {
+              json: function() {
                 res.json({ status: 'followed' });
               }
             })
@@ -187,12 +222,12 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
       });
     },
 
-    voices : function voices (req, res, next) {
+    voices : function voices(req, res, next) {
       var entity = req.entity;
       Voice.find({
-        owner_id: hashids.decode(entity.id)[0],
+        'owner_id' : hashids.decode(entity.id)[0],
         status : Voice.STATUS_PUBLISHED
-      }, function (err, result) {
+      }, function(err, result) {
         if (err) { next(err); return; }
 
         VoicesPresenter.build(result, req.currentPerson, function(err, voices) {
@@ -201,10 +236,10 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
           }
 
           res.format({
-            'application/json': function () {
+            json: function() {
               res.send(voices);
             },
-            'text/html': function () {
+            html: function() {
               next(new Error('Not found'));
             }
           });
@@ -309,14 +344,48 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
     recommended : function recommended(req, res, next) {
       var entity = req.entity;
-      entity.recommendedVoices(function (err, voices) {
+      entity.recommendedVoices(function(err, voices) {
         if (err) { next(err); return; }
         res.format({
-          'application/json': function () {
+          'application/json': function() {
             res.json(voices);
           },
-          'default': function () {
+          'default': function() {
             next(new NotFoundError('Unknown format for this request'));
+          }
+        });
+      });
+    },
+
+    isProfileNameAvailable : function isProfileNameAvailable(req, res, next) {
+      ACL.isAllowed('isProfileNameAvailable', 'entities', req.role, {
+        currentPerson : req.currentPerson,
+        entity : req.entity
+      }, function(err, isAllowed) {
+        if (err) {
+          return next(err);
+        }
+
+        if (!isAllowed) {
+          return next(new ForbiddenError());
+        }
+
+        var value = req.body.value.toLowerCase().trim();
+        var currentPersonId = hashids.decode(req.currentPerson.id)[0];
+        res.format({
+          json : function() {
+
+            Entity.find(['profile_name = ? AND id != ?', [value, currentPersonId]], function(err, result) {
+              if (err) {
+                return next(err);
+              }
+
+              if (result.length > 0) {
+                return res.json({ status : 'taken' });
+              } else {
+                return res.json({ status : 'available' });
+              }
+            });
           }
         });
       });

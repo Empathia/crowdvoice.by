@@ -53,6 +53,7 @@ var SearchFrom = Class('SearchFrom')({
             var obj = {
               title : item.snippet.title,
               description : item.snippet.description,
+              thumb : item.snippet.thumbnails.medium,
               date : item.snippet.publishedAt,
               sourceUrl : 'http://youtube.com/watch?v=' + item.id.videoId
             }

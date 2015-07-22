@@ -117,7 +117,7 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
          * If it has more than 1 postData.images then it shows the next/prev buttons for switching images.
          * @method _makeItEditable <private> [Function]
          */
-        edit : function edit() {
+        edit : function edit(config) {
             this.el.classList.add('edit-mode');
             this.titleElement.classList.add('-font-bold');
 
@@ -138,23 +138,19 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
             this.descriptionElement.setAttribute('maxlength', this.constructor.MAX_LENGTH_DESCRIPTION);
 
             // add letters counter based on maxlengths
-            this.appendChild(
-                new CV.InputCounter({
-                    name : 'titleCounter',
-                    inputReference : this.titleElement,
-                    maxLength : this.constructor.MAX_LENGTH_TITLE,
-                    className : '-block'
-                })
-            ).render(this.el, this.descriptionElement);
+            this.appendChild(new CV.InputCounter({
+                name : 'titleCounter',
+                inputReference : this.titleElement,
+                maxLength : this.constructor.MAX_LENGTH_TITLE,
+                className : '-block'
+            })).render(this.el, this.descriptionElement);
 
-            this.appendChild(
-                new CV.InputCounter({
-                    name : 'descriptionCounter',
-                    inputReference : this.descriptionElement,
-                    maxLength : this.constructor.MAX_LENGTH_DESCRIPTION,
-                    className : '-block'
-                })
-            ).render(this.el.querySelector('.post-card-info'));
+            this.appendChild(new CV.InputCounter({
+                name : 'descriptionCounter',
+                inputReference : this.descriptionElement,
+                maxLength : this.constructor.MAX_LENGTH_DESCRIPTION,
+                className : '-block'
+            })).render(this.el.querySelector('.post-card-info'));
 
             // add the date picker
             this.dateTimeElement.style.display = 'none';
@@ -163,7 +159,7 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
             this.timePickerButton = this.dateTimeElement.parentNode.querySelector('.post-date-picker-button');
 
             this.romeTime = rome(this.timePickerInput, {
-                appendTo : this.parent.el,
+                appendTo : (config && config.appendCalendarTo !== "undefined") ? config.appendCalendarTo : this.parent.el,
                 inputFormat : 'DD MMM, YYYY HH:mm',
                 initialValue : moment(this.updatedAt)
             });
@@ -190,6 +186,8 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
             this.titleElement.removeEventListener('keypress', this._titleKeyPressHandler);
             this.titleElement.removeEventListener('paste', this._pasteHandler);
             this.descriptionElement.removeEventListener('paste', this._pasteHandler);
+
+            this.romeTime.destroy();
 
             return this;
          },
@@ -234,7 +232,7 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
         addVoteButtons : function addVoteButtons() {
             this.appendChild(new CV.PostModerateVoteButtons({
                 name : 'voteButtons',
-                postId : this.id
+                post : this
             }));
             this.el.appendChild(this.voteButtons.el);
             this.el.classList.add('has-bottom-actions');

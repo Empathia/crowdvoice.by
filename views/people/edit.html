@@ -234,13 +234,37 @@
   }).render($('.form-profile .placeholder-main'));
 
   new CV.Input({
+      type      : '',
+      name      : 'lastname',
+      style     : 'small -w-50',
+      hasTitle  : true,
+      title     : "Your Lastname",
+      value     : "<%= currentPerson.lastname %>"
+  }).render($('.form-profile .placeholder-main'));
+
+  var profileName = new CV.Input({
       style       : 'small -w-50',
-      name        : 'username',
+      name        : 'profileName',
       placeholder : 'http://www.crowdvoice.by/@',
       hasTitle    : true,
-      title       : "Username",
+      title       : "Profile Name",
       value     : "<%= currentPerson.profileName %>"
   }).render($('.form-profile .placeholder-main'));
+
+  profileName.inputEl.find('input').bind('keyup', function() {
+      $.ajax({
+          method : 'POST',
+          url : '/<%= currentPerson.profileName %>/isProfileNameAvailable',
+          headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
+          data : {
+              value : profileName.inputEl.find('input').val()
+          },
+          success : function(data) {
+            // Data could be {status : 'taken'} || {status : available}
+              console.log(data);
+          }
+      })
+  })
 
   new CV.Input({
       style     : '',
@@ -374,4 +398,3 @@
   });
 
 </script>
-

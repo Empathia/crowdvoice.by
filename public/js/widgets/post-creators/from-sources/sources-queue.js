@@ -31,7 +31,7 @@ Class(CV, 'PostCreatorFromSourcesQueue').inherits(Widget).includes(BubblingSuppo
         _deleteFromQueue : function _deleteFromQueue(ev) {
             var childIndex = this.children.indexOf(ev.data.parent);
             if (childIndex >= 0) {
-                this.children[childIndex].destroy();
+                this.children[childIndex].unedit().destroy();
                 this._index--;
 
                 if (this._index === 0) {
@@ -69,7 +69,9 @@ Class(CV, 'PostCreatorFromSourcesQueue').inherits(Widget).includes(BubblingSuppo
             this.hideOnboarding();
             postData.name = 'post_' + this._index;
             this.appendChild(CV.EditablePost.create(postData)).render(this.list, this.list.firstChild);
-            this['post_' + this._index].edit();
+            this['post_' + this._index].edit({
+                appendCalendarTo : this.parent.el
+            });
             this['post_' + this._index].addRemoveButton();
             this.loader.deactivate();
 
