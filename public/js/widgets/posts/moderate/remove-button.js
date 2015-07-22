@@ -22,6 +22,15 @@ Class(CV, 'PostModerateRemoveButton').inherits(Widget).includes(BubblingSupport)
 
         _clickHandler : function _clickHandler() {
             this.dispatch('post:moderate:delete', {data: this});
+        },
+
+        destroy : function destroy() {
+            Widget.prototype.destroy.call(this);
+
+            this.el.removeEventListener('click', this._clickHandlerRef);
+            this._clickHandlerRef = null;
+
+            return null;
         }
     }
 });

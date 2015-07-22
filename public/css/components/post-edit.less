@@ -127,16 +127,24 @@
 }
 
 .post-moderate-vote-buttons {
-  left: -1px;
-  right: -1px;
-  bottom: -2px;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
 .post-moderate-allow-btn,
 .post-moderate-deny-btn {
   width: 50%;
+}
 
-  .-m0;
+.post-moderate-allow-btn {
+  color: @color-positive-dark;
+  fill: @color-positive-dark;
+}
+
+.post-moderate-deny-btn {
+  color: @color-negative;
+  fill: @color-negative;
 }
 
 .post-moderate-allow-btn {
