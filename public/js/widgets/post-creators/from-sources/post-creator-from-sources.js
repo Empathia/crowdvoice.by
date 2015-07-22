@@ -128,6 +128,8 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
                     Velocity(ev.data.el, 'slideDown', {duration : 400});
                 }
 
+                this.queuePanel.loader.deactivate();
+
                 return this._setErrorState({
                     message : response.status + ' - ' + response.statusText
                 }).enable();
