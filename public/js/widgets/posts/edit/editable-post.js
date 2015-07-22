@@ -234,7 +234,7 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
         addVoteButtons : function addVoteButtons() {
             this.appendChild(new CV.PostModerateVoteButtons({
                 name : 'voteButtons',
-                postId : this.id
+                post : this
             }));
             this.el.appendChild(this.voteButtons.el);
             this.el.classList.add('has-bottom-actions');
