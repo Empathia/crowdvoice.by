@@ -8,9 +8,9 @@ module.exports = {
      * VOICES
      *************************************************************************/
     /* Follow/Unfollow Voice.
-     * @arguments args.profileName <required> [String] the voice owner profileName
-     * @arguments args.voiceSlug <required> [String] the voice slug
-     * @arguments callback <required> [Function]
+     * @argument args.profileName <required> [String] the voice owner profileName
+     * @argument args.voiceSlug <required> [String] the voice slug
+     * @argument callback <required> [Function]
      */
     followVoice : function followVoice(args, callback) {
         if (!args.profileName || !args.voiceSlug || !callback) {
@@ -32,8 +32,8 @@ module.exports = {
     },
 
     /* Requests the data to create a Post preview on the current Voice.
-     * @arguments args.url <required> [String] absolute url of a page, image or video (youtube/vimeo)
-     * @arguments callback <required> [Function]
+     * @argument args.url <required> [String] absolute url of a page, image or video (youtube/vimeo)
+     * @argument callback <required> [Function]
      */
     postPreview : function postPreview(args, callback) {
         if (!args.url || !callback) {
@@ -57,9 +57,12 @@ module.exports = {
         });
     },
 
+    /**************************************************************************
+     * POSTS
+     *************************************************************************/
     /* Saves a Post on the current Voice.
-     * @arguments args.data <required> [Object] the post data
-     * @arguments callback <required> [Function]
+     * @argument args.data <required> [Object] the post data
+     * @argument callback <required> [Function]
      */
     postSave : function postSave(args, callback) {
         if (!args.data || !callback) {
@@ -81,15 +84,37 @@ module.exports = {
         });
     },
 
-    /**************************************************************************
-     * VOICES
-     *************************************************************************/
+    /* Allows a post to be voted up or down.
+     * @argument args.profileName <required> [String] the voice owner profileName
+     * @argument args.voiceSlug <required> [String] the voice slug
+     * @argument args.postId <required> [String] the post id to up/down vote
+     * @argument args.vote <required> [String] ("up" | "down") upvote or downvote
+     */
+    postVote : function postVote(args, callback) {
+        if (!args.profileName || !args.voiceSlug || !args.postId || !args.vote || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'GET',
+            dataType : 'json',
+            url : '/' + args.profileName + '/' + args.voiceSlug + '/' + args.postId + '/vote/' + args.vote,
+            headers : {'csrf-token' : this.token},
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
+    },
+
     /* Search for Posts in Sources
-     * @arguments args.profileName <required> [String] the voice owner profileName
-     * @arguments args.voiceSlug <required> [String] the voice slug
-     * @arguments args.source <required> [String] the source to search on ['googleNews', 'youtube']
-     * @arguments args.query <required> [String] the query string
-     * @arguments callback <required> [Function]
+     * @argument args.profileName <required> [String] the voice owner profileName
+     * @argument args.voiceSlug <required> [String] the voice slug
+     * @argument args.source <required> [String] the source to search on ['googleNews', 'youtube']
+     * @argument args.query <required> [String] the query string
+     * @argument callback <required> [Function]
      */
     searchPostsInSource : function searchPostsInSource(args, callback) {
         if (!args.profileName || !args.voiceSlug || !args.source || !args.query|| !callback) {
@@ -114,8 +139,8 @@ module.exports = {
      * ENTITIES
      *************************************************************************/
     /* Follow/Unfollow Entity
-     * @arguments args.profileName <required> [String] the entity profileName
-     * @arguments callback <required> [Function]
+     * @argument args.profileName <required> [String] the entity profileName
+     * @argument callback <required> [Function]
      */
     followEntity : function followEntity(args, callback) {
         if (!args.profileName || !callback) {
@@ -141,8 +166,8 @@ module.exports = {
      * SEARCH
      *************************************************************************/
     /* Get Voices, People and Organizations results from a specified query.
-     * @arguments args.query <required> [String] the query string
-     * @arguments callback <required> [Function]
+     * @argument args.query <required> [String] the query string
+     * @argument callback <required> [Function]
      */
     search : function search(args, callback) {
         if (!args.query || !callback) {

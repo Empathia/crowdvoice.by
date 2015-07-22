@@ -1,5 +1,7 @@
 var PostsPresenter = Module('PostsPresenter')({
-  build : function build(posts, callback) {
+  build : function build(posts, currentPerson, callback) {
+    var response = [];
+
     async.eachLimit(posts, 1, function(post, next) {
 
       var postInstance = new Post(post);
@@ -14,9 +16,31 @@ var PostsPresenter = Module('PostsPresenter')({
         post.imageHeight  = postInstance.image.meta('medium').height;
       }
 
-      next();
+      if (currentPerson) {
+        Vote.find({
+          'post_id' : postInstance.id,
+          'entity_id' : hashids.decode(currentPerson.id)[0]
+        }, function(err, result) {
+          if (err) {
+            return next(err);
+          }
+
+          post.voted = true;
+
+          if (result.length === 0) {
+            post.voted = false;
+          }
+
+          response.push(post);
+          return next();
+        });
+      } else {
+        post.voted = false;
+        response.push(post);
+        return next();
+      }
     }, function(err) {
-      callback(err, posts);
+      callback(err, response);
     });
   }
 });

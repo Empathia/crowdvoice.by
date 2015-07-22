@@ -23,6 +23,7 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
         inputWrapper : null,
 
         _currentSource : '',
+        _addedPostsCounter : 0,
         _inputKeyPressHandlerRef : null,
         _inputLastValue : null,
 
@@ -66,14 +67,14 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
 
             this.header.appendChild(this.inputWrapper);
 
-            this.appendChild(new CV.PostCreatorFromSourcesResults({
-                name : 'resultsPanel',
-                className : '-color-bg-white -full-height -float-left'
-            })).render(this.content);
-
             this.appendChild(new CV.PostCreatorFromSourcesQueue({
                 name : 'queuePanel',
-                className : '-color-bg-grey-lighter -color-border-grey-light -full-height -float-left'
+                className : '-color-bg-grey-lighter -color-border-grey-light -full-height -float-right'
+            })).render(this.content);
+
+            this.appendChild(new CV.PostCreatorFromSourcesResults({
+                name : 'resultsPanel',
+                className : '-color-bg-white -full-height -overflow-hidden'
             })).render(this.content);
 
             this._currentSource = this.sourcesDropdown.getSource();
@@ -97,33 +98,61 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
             this._addPostRef = this._addPost.bind(this);
             this.resultsPanel.bind('addPost', this._addPostRef);
 
+            this._postDeletedRef = this._postDeleted.bind(this);
+            this.bind('post:moderate:delete', this._postDeletedRef);
+
             return this;
         },
 
+        /* Listener handler for when a Post was removed from the queuePanel,
+         * decrement the post button couter label and disable the button if it
+         * has reach back to zero.
+         * @method _postDeleted <private>
+         */
+        _postDeleted : function _postDeleted(ev) {
+            this._addedPostsCounter--;
+            this.postButton.updateCounter(this._addedPostsCounter);
+            if (!this._addedPostsCounter) {
+                this._disablePostButton();
+            }
+        },
+
+        /* Calls the API to generate a preview.
+         * @method _addPost <private>
+         */
         _addPost : function _addPost(ev) {
             this.disable();
             this.queuePanel.setAddingPost();
 
             if (this.resultsPanel.children.indexOf(ev.data) >= 0) {
-                Velocity(ev.data.el, 'slideUp', {
-                    delay : 1000,
-                    duration : 400
-                });
+                Velocity(ev.data.el, 'slideUp', {delay: 500, duration : 400});
             }
 
             API.postPreview({
                 url : ev.data.sourceUrl
-            }, this._requestPreviewHandler.bind(this));
+            }, this._requestPreviewHandler.bind(this, ev));
         },
 
-        _requestPreviewHandler : function _requestPreviewHandler(err, response) {
+        /* API preview call response handler.
+         * Add the preview to the queue.
+         */
+        _requestPreviewHandler : function _requestPreviewHandler(ev, err, response) {
             if (err) {
                 console.log(response);
+
+                if (this.resultsPanel.children.indexOf(ev.data) >= 0) {
+                    Velocity(ev.data.el, 'slideDown', {duration : 400});
+                }
+
+                this.queuePanel.loader.deactivate();
+
                 return this._setErrorState({
                     message : response.status + ' - ' + response.statusText
                 }).enable();
             }
 
+            this._addedPostsCounter++;
+            this.postButton.updateCounter(this._addedPostsCounter);
             this.queuePanel.addPost(response);
             this.enable()._enabledPostButton();
         },
@@ -162,6 +191,8 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
             this.disable()._removeErrorState()._disablePostButton()._setSearching()._request(inputValue);
         },
 
+        /* Calls our search API endpoint to search for content on the current source.
+         */
         _request : function _request(query) {
             this._query = query;
 

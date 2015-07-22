@@ -30,7 +30,7 @@ Module(CV, 'PostsRegistry')({
      * @argument name <required> [String] e.g.: '2015-07'
      * @return this[name] || undefined
      */
-    get : function get() {
+    get : function get(name) {
         return this[name];
     },
 

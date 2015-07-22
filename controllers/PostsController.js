@@ -151,7 +151,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
                 return next(err);
               }
 
-              PostsPresenter.build([post], function(err, posts) {
+              PostsPresenter.build([post], req.currentPerson, function(err, posts) {
                 if (err) {
                   return next(err);
                 }
@@ -246,6 +246,10 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
       var url = req.body.url;
 
       request(url, function(err, response, body) {
+        if (err) {
+          return res.status(400).json({ status : 'Bad URL' })
+        }
+
         var longUrl = response.request.uri.href;
 
         if (err) {

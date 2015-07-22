@@ -1,10 +1,8 @@
-/* jshint multistr: true */
-
 var rome = require('rome');
 var moment = require('moment');
 var autosize = require('autosize');
 
-Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSupport)({
+Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSupport, BubblingSupport)({
 
     MAX_LENGTH_TITLE : 80,
     MAX_LENGTH_DESCRIPTION : 180,
@@ -61,6 +59,23 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
          * @method setup <protected> [Function]
          */
         setup : function setup() {
+            var parent = this.el.parentNode;
+            var wrapper = document.createElement('div');
+            var position = 0;
+            for (var i = 0; i < parent.childNodes.length; i++) {
+                if (parent.childNodes[i] === this.el) {
+                    position = i;
+                    break;
+                }
+            }
+            wrapper.className = 'post-editable -rel';
+            Object.keys(this.el.dataset).forEach(function(attr) {
+                wrapper.dataset[attr] = this.el.dataset[attr];
+            }, this);
+            wrapper.appendChild(this.el);
+            parent.insertBefore(wrapper, parent.childNodes[position]);
+            this.el = wrapper;
+
             if (this.images) {
                 this._imagesLen = this.images.length;
             }
@@ -92,7 +107,7 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
                 sourceUrl : this.sourceUrl,
 
                 // extra props
-                images : this.images,
+                images : this.images || [],
                 imagePath : this.imagePath,
             };
         },
@@ -192,7 +207,11 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
          * @method addRemoveButton <public> [Function]
          */
         addRemoveButton : function addRemoveButton() {
-            this.appendChild(new CV.PostModerateRemoveButton({name : 'removeButton'})).render(this.el);
+            this.appendChild(new CV.PostModerateRemoveButton({
+                name : 'removeButton',
+                postId : this.id
+            }));
+            this.el.appendChild(this.removeButton.el);
             return this;
         },
 
@@ -200,7 +219,11 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
          * @method addPublishButton <public> [Function]
          */
         addPublishButton : function addPublishButton() {
-            this.appendChild(new CV.PostModeratePublishButton({name : 'publishButton'})).render(this.el);
+            this.appendChild(new CV.PostModeratePublishButton({
+                name : 'publishButton',
+                postId : this.id
+            }));
+            this.el.appendChild(this.publishButton.el);
             this.el.classList.add('has-bottom-actions');
             return this;
         },
@@ -209,7 +232,11 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
          * @method addVoteButtons <public> [Function]
          */
         addVoteButtons : function addVoteButtons() {
-            this.appendChild(new CV.PostModerateVoteButtons({name : 'voteButtons'})).render(this.el);
+            this.appendChild(new CV.PostModerateVoteButtons({
+                name : 'voteButtons',
+                postId : this.id
+            }));
+            this.el.appendChild(this.voteButtons.el);
             this.el.classList.add('has-bottom-actions');
             return this;
         },
@@ -290,7 +317,7 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
             this._removeImageRef = this._removeImage.bind(this);
             this.imageControls.bind('removeImages', this._removeImageRef);
 
-            this.el.insertAdjacentHTML('beforebegin', this.constructor.HTML_ADD_COVER_BUTTON);
+            this.el.insertAdjacentHTML('afterbegin', this.constructor.HTML_ADD_COVER_BUTTON);
             this._showImageRef = this._showImage.bind(this);
             this.addCoverButton = this.el.parentNode.querySelector('.post-edit-add-cover-button');
             this.addCoverButton.addEventListener('click', this._showImageRef);
@@ -345,8 +372,10 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
          * @method _titleKeyPressHandler <private> [Function]
          */
         _titleKeyPressHandler : function _titleKeyPressHandler(ev) {
-            var charCode = (typeof ev.which == 'number') ? ev.which : ev.keyCode;
-            if (charCode === 13) ev.preventDefault();
+            var charCode = (typeof ev.which === 'number') ? ev.which : ev.keyCode;
+            if (charCode === 13) {
+                ev.preventDefault();
+            }
         },
 
         _pasteHandler : function _pasteHandler(ev) {

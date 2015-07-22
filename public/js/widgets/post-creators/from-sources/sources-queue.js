@@ -1,5 +1,5 @@
 /* jshint multistr: true */
-Class(CV, 'PostCreatorFromSourcesQueue').inherits(Widget)({
+Class(CV, 'PostCreatorFromSourcesQueue').inherits(Widget).includes(BubblingSupport)({
 
     ELEMENT_CLASS : 'from-sources-content-right',
 
@@ -9,11 +9,6 @@ Class(CV, 'PostCreatorFromSourcesQueue').inherits(Widget)({
                 <p>Add here the posts you want to include in this voice.<br/>You’ll be able to edit their title and description.</p>\
             </div>\
             <div class="from-sources-queue-list -text-center"></div>\
-            <div class="cv-loader -abs">\
-                <div class="ball-spin-fade-loader">\
-                    <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>\
-                </div>\
-            </div>\
         </div>\
     ',
 
@@ -26,7 +21,23 @@ Class(CV, 'PostCreatorFromSourcesQueue').inherits(Widget)({
             this.el = this.element[0];
             this.list = this.el.querySelector('.from-sources-queue-list');
             this.onboarding = this.el.querySelector('.from-sources-queue-onboarding');
-            this.loader = this.el.querySelector('.cv-loader');
+
+            this.loader = new CV.Loader().render(this.el);
+
+            this._deleteFromQueueRef = this._deleteFromQueue.bind(this);
+            this.bind('post:moderate:delete', this._deleteFromQueueRef);
+        },
+
+        _deleteFromQueue : function _deleteFromQueue(ev) {
+            var childIndex = this.children.indexOf(ev.data.parent);
+            if (childIndex >= 0) {
+                this.children[childIndex].destroy();
+                this._index--;
+
+                if (this._index === 0) {
+                    this.showOnboarding();
+                }
+            }
         },
 
         setSearchingState : function setSearchingState() {
@@ -36,7 +47,7 @@ Class(CV, 'PostCreatorFromSourcesQueue').inherits(Widget)({
 
         setAddingPost : function setAddingPost() {
             this.hideOnboarding();
-            this.loader.classList.add('active');
+            this.loader.activate();
             return this;
         },
 
@@ -56,13 +67,11 @@ Class(CV, 'PostCreatorFromSourcesQueue').inherits(Widget)({
 
         addPost : function addPost(postData) {
             this.hideOnboarding();
-
             postData.name = 'post_' + this._index;
-            this.appendChild(CV.EditablePost.create(postData));
-            this.list.insertAdjacentElement('afterbegin', this['post_' + this._index].el);
+            this.appendChild(CV.EditablePost.create(postData)).render(this.list, this.list.firstChild);
             this['post_' + this._index].edit();
-
-            this.loader.classList.remove('active');
+            this['post_' + this._index].addRemoveButton();
+            this.loader.deactivate();
 
             this._index++;
         }

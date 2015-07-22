@@ -18,11 +18,6 @@ Class(CV, 'PostCreatorFromSourcesResults').inherits(Widget).includes(CV.WidgetUt
             <div class="from-sources-no-results -color-grey-light -text-center">\
                 <p>We found no results for ‘<span data-query></span>’.<br/>Please refine your search and try again.</p>\
             </div>\
-            <div class="cv-loader -abs">\
-                <div class="ball-spin-fade-loader">\
-                    <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>\
-                </div>\
-            </div>\
         </div>\
     ',
 
@@ -39,7 +34,8 @@ Class(CV, 'PostCreatorFromSourcesResults').inherits(Widget).includes(CV.WidgetUt
 
             this.noResults = this.el.querySelector('.from-sources-no-results');
             this.noResultsQuery = this.noResults.querySelector('[data-query]');
-            this.loader = this.el.querySelector('.cv-loader');
+
+            this.loader = new CV.Loader().render(this.el);
 
             this._bindEvents();
         },
@@ -84,7 +80,7 @@ Class(CV, 'PostCreatorFromSourcesResults').inherits(Widget).includes(CV.WidgetUt
         },
 
         setSearchingState : function setSearchingState() {
-            this.loader.classList.add('active');
+            this.loader.activate();
             this.resultsWrapper.classList.remove('active');
             this.noResults.classList.remove('active');
             return this;
@@ -92,7 +88,7 @@ Class(CV, 'PostCreatorFromSourcesResults').inherits(Widget).includes(CV.WidgetUt
 
         setResultsState : function setResultsState() {
             this.resultsWrapper.classList.add('active');
-            this.loader.classList.remove('active');
+            this.loader.deactivate();
             this.noResults.classList.remove('active');
             return this;
         },
@@ -104,7 +100,7 @@ Class(CV, 'PostCreatorFromSourcesResults').inherits(Widget).includes(CV.WidgetUt
             );
             this.noResults.classList.add('active');
             this.resultsWrapper.classList.remove('active');
-            this.loader.classList.remove('active');
+            this.loader.deactivate();
             return this;
         }
     }
