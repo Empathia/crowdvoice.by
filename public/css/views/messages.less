@@ -16,7 +16,7 @@
 .profile-messages-intro{
 	padding: 35px 25px;
 	.profile-heading{
-		color: #666;
+		color: @color-menu-border;
 		margin-bottom: 0;
 	}
 	h1{
@@ -44,7 +44,7 @@
 .messages-sidebar{
 	height: 100%;
 	width: 340px;
-	border-right: 1px solid #D8D8D8;
+	border-right: 1px solid @color-menu-border;
 	float: left;
 	.profile-menu{
 		margin-left: 25px;
@@ -76,7 +76,7 @@
 	}
 }
 .message-side{
-	border-bottom: 1px solid #DFE4E6;
+	border-bottom: 1px solid @color-neutral-x-light;
 	padding: 10px 30px 10px 25px;
 	img{
 		width: 36px;
@@ -88,7 +88,7 @@
 	h3{
 		font-size: 13px;
 		margin: 0;
-		color: #454B4D;
+		color: @color-neutral-x-dark;
 		line-height: 18px;
 	}
 	span{
@@ -101,7 +101,7 @@
 		  line-height: 14px;
 		  height: 18px;
 		  padding-top: 5px;
-		  color: #A1B0B3;
+		  color: @color-neutral-mid;
 		  float: left;
 		  display: block;
 		  height: 100%;
@@ -114,8 +114,8 @@
 		float: right;
 		padding-top: 10px;
 		span{
-			background: #FF4040;
-			color: #fff;
+			background: @color-negative;
+			color: @color-white;
 			border-radius: 3px;
 			width: 18px;
 			height: 16px;
@@ -125,7 +125,7 @@
 		}
 	}
 	&.active{
-		background: rgba(255, 148, 0, .05);
+		background: @color-message-active;
 	}
 
 }
@@ -181,7 +181,7 @@
 	  	padding-top: 30%;
 	  	p{
 	  		font-size: 11px;
-	  		color: #A1B0B3;
+	  		color: @color-neutral-mid;
 	  		line-height: 15px;
 	  	}
 	}
@@ -197,7 +197,7 @@
 		padding: 10px 40px 0px 40px;
 		position: relative;
 		font-weight: bold;
-		border-bottom: 1px solid #DFE4E6;
+		border-bottom: 1px solid @color-neutral-x-light;
 		height: 53px;
 		z-index:1;
 		.conversation-title{
@@ -218,7 +218,7 @@
 		  	svg{
 		  		width: 10px;
 		  		height: 13px;
-		  		fill: #8A9699;
+		  		fill: @color-neutral-x-mid;
 		  	}
 		}
 		.m-action{
@@ -226,10 +226,10 @@
 			padding-top: 10px;
 			.conversation-title{
 				font-size: 13px;
-				color: #454B4D;
+				color: @color-neutral-x-dark;
 				span{
 					font-size: 11px;
-					color: #A1B0B3;
+					color: @color-neutral-mid;
 				}
 			}
 		}
@@ -246,10 +246,10 @@
 				display: none;
 				margin-top: -9px;
 				list-style: none;
-				background: #ffffff;
-				border: 1px solid rgba(0, 0, 0, 0.2);
+				background: @color-white;
+				border: 1px solid @color-transparent-border-dark;
 				border-radius: 3px;
-				box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
+				box-shadow: 0px 3px 6px @color-shadow-select-body;
 				padding: 7px 0px;
 				padding-top: 10px;
 				/*position: absolute;*/
@@ -261,16 +261,16 @@
 					padding: 7px 0px;
 					position: relative;
 					padding-left: 15px;
-					border-bottom: 1px solid #eee;
+					border-bottom: 1px solid @color-dropdown-item-border;
 					cursor: pointer;
-  					color: #454b4d;
+  					color: @color-neutral-x-dark;
   					font-weight: normal;
 				}
 				li:last-child{
 					border-bottom: 0;
 				}
 				li:hover{
-					background-color: #fffaf1;
+					background-color: @color-dropdown-item-background-hover;
 				}
 			}
 		}
@@ -308,7 +308,7 @@
 	}
 	h3{
 		font-size: 12px;
-		color: #454B4D;
+		color: @color-neutral-x-dark;
 		margin: 0;
 		line-height: 17px;
 		display: inline-block;
@@ -322,22 +322,22 @@
 	p{
 		font-size: 13px;
 		line-height: 22px;
-		color: #444444;
+		color: @color-message-text;
 	}
 	.data-message-date{
 		font-size: 11px;
-		color: #A1B0B3;
+		color: @color-neutral-mid;
 	}
 	.message-data{
 	}
 	.message-notification{
-		border-left: 4px solid #D8D8D8;
+		border-left: 4px solid @color-menu-border;
 		margin-top: 10px;
 		padding-left: 15px;
 		font-size: 11px;
 		margin-left: 60px;
 		p{
-			color: #A1B0B3;
+			color: @color-neutral-mid;
 			font-size: 11px;
 			line-height: 19px;
 		}
