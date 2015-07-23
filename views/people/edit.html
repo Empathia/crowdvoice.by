@@ -38,36 +38,38 @@
           <div class="form-field -inline-block">
               <label>Picture</label>
               <div class="form-profile-image">
-                <% if (currentPerson.image.exists('card')){ %>
-                  <img src="<%= currentPerson.image.url('card') %>">
-                <% }else{ %>
-                  <img src="/img/placeholder-image.png">
-                <% } %>
+                <div class="image-align">
+                  <% if (currentPerson.image.exists('card')){ %>
+                    <img src="<%= currentPerson.image.url('card') %>">
+                  <% }else{ %>
+                    <img src="/img/placeholder-image.png">
+                  <% } %>
+                </div>
               </div>
           </div>
 
           <div class="form-field -inline-block -rel form-field-image">
               <p class="image-input-label">Replace</p>
-              <input type="file" name="image" class="image-input cv-button tiny"\>
+              <input type="file" name="image" class="image-input image-upload image-upload-profile cv-button tiny"\>
               <label><span>JPG, GIF or PNG</span></label>
           </div>
-
-
 
           <div class="form-field -inline-block">
               <label>Background</label>
               <div class="form-profile-background">
-                <% if (currentPerson.background.exists('card')){ %>
-                  <img src="<%= currentPerson.background.url('card') %>">
-                <% }else{ %>
-                  <img src="/img/placeholder-background.png">
-                <% } %>
+                <div class="image-align">
+                  <% if (currentPerson.background.exists('card')){ %>
+                    <img src="<%= currentPerson.background.url('card') %>">
+                  <% }else{ %>
+                    <img src="/img/placeholder-background.png">
+                  <% } %>
+                </div>
               </div>
           </div>
 
           <div class="form-field -inline-block -rel form-field-image">
               <p class="image-input-label">Replace</p>
-              <input type="file" name="background" class="image-input cv-button tiny"\>
+              <input type="file" name="background" class="image-input image-upload image-upload-background cv-button tiny"\>
               <label><span>JPG, GIF or PNG</span></label>
           </div>
 
@@ -365,11 +367,43 @@
     }
   });
 
-
-
-
-
   $( document ).ready(function() {
+
+    // Image upload
+    $('.image-upload').bind("change", function(event) {
+
+      var files = event.target.files; //FileList object
+      var output;
+
+      if($(this).hasClass('image-upload-profile')){
+        output = $('.form-profile-image .image-align')[0];
+      } else if ($(this).hasClass('image-upload-background')){
+        output = $('.form-profile-background .image-align')[0];
+      }
+
+      for(var i = 0; i< files.length; i++) {
+        var file = files[i];
+        //Only pics
+        if(file.type.match('image.*')){
+            // continue;
+            var picReader = new FileReader();
+            picReader.addEventListener("load",function(event){
+              var picFile = event.target;
+              var div = document.createElement("div");
+              output.innerHTML = "<img class='thumbnail' src='" + picFile.result + "' title='preview image'/>";
+              //output.insertBefore(div,null);
+            });
+
+            //Read the image
+            //$('.clear-images').show();
+            picReader.readAsDataURL(file);
+        }else{
+          alert("Only images are allowed.");
+          //$(this).val("");
+        }
+      }
+    });
+
 
     formProfile = $('.form-profile');
     formProfile.find('.detect-location').on('click', function(el){
