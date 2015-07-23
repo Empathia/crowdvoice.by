@@ -118,51 +118,68 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           approved = true;
         }
 
-        var postData = {};
-        var body = req.body;
+        var posts = req.body;
 
-        postData.title = body.title;
-        postData.description = body.description;
-        postData.sourceUrl = body.sourceUrl;
-        postData.sourceService = body.sourceService;
-        postData.sourceType = body.sourceType;
-        postData.approved = approved;
-        postData.ownerId = req.currentPerson ? req.currentPerson.id : 0;
-        postData.voiceId = response.voice.id;
-        postData.publishedAt = body.publishedAt
+        if (body.constructor === Object) {
+          posts = [posts];
+        }
 
-        var post = new Post(postData);
+        var results = [];
 
-        post.save(function(err, result) {
-          if (err) {
-            return next(err);
-          }
+        async.each(posts, function(item, nextPost) {
+          var postData = {};
 
-          var imagePath = '';
-          if (body.imagePath !== '') {
-            imagePath = process.cwd() + '/public' + body.imagePath;
-          }
+          postData.title          = item.title;
+          postData.description    = item.description;
+          postData.sourceUrl      = item.sourceUrl;
+          postData.sourceService  = item.sourceService;
+          postData.sourceType     = item.sourceType;
+          postData.approved       = approved;
+          postData.ownerId        = req.currentPerson ? req.currentPerson.id : 0;
+          postData.voiceId        = response.voice.id;
+          postData.publishedAt    = body.publishedAt
 
-          post.uploadImage('image', imagePath, function() {
-            post.save(function(err, resave) {
-              if (err) {
-                return next(err);
-              }
+          var post = new Post(postData);
 
-              PostsPresenter.build([post], req.currentPerson, function(err, posts) {
+          post.save(function(err, result) {
+            if (err) {
+              return nextPost(err);
+            }
+
+            var imagePath = '';
+            if (item.imagePath !== '') {
+              imagePath = process.cwd() + '/public' + body.imagePath;
+            }
+
+            post.uploadImage('image', imagePath, function() {
+              post.save(function(err, resave) {
                 if (err) {
-                  return next(err);
+                  return nextPost(err);
                 }
 
-                req.body.images.forEach(function(image) {
+                item.images.forEach(function(image) {
                   fs.unlinkSync(process.cwd() + '/public' + image);
                   logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image);
-                })
+                });
 
-                return res.json(posts[0]);
-              })
-            })
-          })
+                results.push(post);
+
+                return nextPost();
+              });
+            });
+          });
+        }, function(err) {
+          PostsPresenter.build(results, req.currentPerson, function(err, result) {
+            if (err) {
+              return next(err);
+            }
+
+            if (result.length === 1) {
+              return res.json(result);
+            } else {
+              return res.json(result);
+            }
+          });
         });
       });
     },
