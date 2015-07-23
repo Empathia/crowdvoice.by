@@ -294,13 +294,13 @@
 
   //******* account ************
 
-
   new CV.Input({
       type      : '',
       name      : 'email',
       style     : 'small',
       hasTitle  : true,
       title     : "Email",
+      value     : '<%= currentUser.email %>'
   }).render($('.form-account .placeholder-email'));
 
   new CV.Button({
