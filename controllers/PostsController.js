@@ -234,7 +234,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
                   return next(err);
                 }
 
-                PostPresenter.build([post], function(err, posts) {
+                PostsPresenter.build([post], req.currentPerson, function(err, posts) {
                   if (err) {
                     return next(err);
                   }
