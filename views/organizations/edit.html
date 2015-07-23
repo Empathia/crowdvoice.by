@@ -21,10 +21,7 @@
      |||||||||||||||||||||||||||||||| -->
 
     <div class="active -menu-tab-content">
-      <% if (errors !== undefined && errors !== null) { %>
-          <%= errors %>
-          x
-      <% } %>
+
       <form action="/<%= organization.profileName %>?_method=PUT" method="POST" enctype="multipart/form-data" class="form-profile">
 
         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
@@ -75,12 +72,7 @@
 
           <div class="-col-12 placeholder-main">
 
-            <div class="cv-check">
-              <input type="checkbox" name="isAnonymous" value="true" <% if (organization.isAnonymous) { %>checked<% } %>>
-              <span class="label">Is it Anonymous?</span>
-            </div>
-            <br>
-            <br>
+
 
           </div>
 
@@ -175,16 +167,16 @@
       name      : 'name',
       style     : 'small -w-50',
       hasTitle  : true,
-      title     : "Your Name",
+      title     : "Organization\'s Name",
       value     : "<%= organization.name %>"
   }).render($('.form-profile .placeholder-main'));
 
   new CV.Input({
       style       : 'small -w-50',
-      name        : 'username',
+      name        : 'profileName',
       placeholder : 'http://www.crowdvoice.by/@',
       hasTitle    : true,
-      title       : "Username",
+      title       : "Organization\'s Profile Name",
       value     : "<%= organization.profileName %>"
   }).render($('.form-profile .placeholder-main'));
 
@@ -245,4 +237,3 @@
   });
 
 </script>
-

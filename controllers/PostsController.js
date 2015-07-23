@@ -118,53 +118,70 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           approved = true;
         }
 
-        var postData = {};
-        var body = req.body;
+        var posts = req.body;
 
-        console.log('published', body.publishedAt)
+        if (body.constructor === Object) {
+          posts = [posts];
+        }
 
-        postData.title = body.title;
-        postData.description = body.description;
-        postData.sourceUrl = body.sourceUrl;
-        postData.sourceService = body.sourceService;
-        postData.sourceType = body.sourceType;
-        postData.approved = approved;
-        postData.ownerId = req.currentPerson ? req.currentPerson.id : 0;
-        postData.voiceId = response.voice.id;
-        postData.publishedAt = body.publishedAt
+        var results = [];
 
-        var post = new Post(postData);
+        async.each(posts, function(item, nextPost) {
+          var postData = {};
 
-        post.save(function(err, result) {
-          if (err) {
-            return next(err);
-          }
+          postData.title          = item.title;
+          postData.description    = item.description;
+          postData.sourceUrl      = item.sourceUrl;
+          postData.sourceService  = item.sourceService;
+          postData.sourceType     = item.sourceType;
+          postData.approved       = approved;
+          postData.ownerId        = req.currentPerson ? req.currentPerson.id : 0;
+          postData.voiceId        = response.voice.id;
+          postData.publishedAt    = body.publishedAt;
 
-          var imagePath = '';
-          if (body.imagePath !== '') {
-            imagePath = process.cwd() + '/public' + body.imagePath;
-          }
+          var post = new Post(postData);
 
-          post.uploadImage('image', imagePath, function() {
-            post.save(function(err, resave) {
-              if (err) {
-                return next(err);
-              }
+          post.save(function(err, result) {
+            if (err) {
+              return nextPost(err);
+            }
 
-              PostsPresenter.build([post], req.currentPerson, function(err, posts) {
+            var imagePath = '';
+            if (item.imagePath !== '') {
+              imagePath = process.cwd() + '/public' + body.imagePath;
+            }
+
+            post.uploadImage('image', imagePath, function() {
+              post.save(function(err, resave) {
                 if (err) {
-                  return next(err);
+                  return nextPost(err);
                 }
 
-                req.body.images.forEach(function(image) {
-                  fs.unlinkSync(process.cwd() + '/public' + image);
-                  logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image);
-                })
+                if (body.images) {
+                  item.images.forEach(function(image) {
+                    fs.unlinkSync(process.cwd() + '/public' + image);
+                    logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image);
+                  });
+                }
 
-                return res.json(posts[0]);
-              })
-            })
-          })
+                results.push(post);
+
+                return nextPost();
+              });
+            });
+          });
+        }, function(err) {
+          PostsPresenter.build(results, req.currentPerson, function(err, result) {
+            if (err) {
+              return next(err);
+            }
+
+            if (result.length === 1) {
+              return res.json(result);
+            } else {
+              return res.json(result);
+            }
+          });
         });
       });
     },
@@ -173,7 +190,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
       res.render('posts/edit.html', {layout : false});
     },
 
-    update : function update(req, res) {
+    update : function update(req, res, next) {
       ACL.isAllowed('update', 'posts', req.role, {
         currentPerson : req.currentPerson,
         voiceSlug : req.params.voiceSlug,
@@ -190,52 +207,54 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         var postData = {};
         var body = req.body;
 
-        postData.id = hashids.decode(req.params.postId);
-        postData.title = body.title;
-        postData.description = body.description;
-        postData.sourceUrl = body.sourceUrl;
-        postData.sourceService = body.sourceService;
-        postData.sourceType = body.sourceType;
-        postData.approved = approved;
-        postData.ownerId = req.currentPerson ? req.currentPerson.id : 0;
-        postData.voiceId = response.voice.id;
-        postData.publishedAt = body.publishedAt
-
-        var post = new Post(postData);
-
-        post.save(function(err, result) {
+        Post.find({ id : hashids.decode(req.params.postId)[0] }, function(err, result) {
           if (err) {
             return next(err);
           }
 
-          var imagePath = '';
-          if (!body.imagePath !== '') {
-            imagePath = process.cwd() + '/public' + body.imagePath;
-          }
+          var post = new Post(result[0]);
 
-          post.uploadImage('image', imagePath, function() {
-            post.save(function(err, resave) {
-              if (err) {
-                return next(err);
-              }
+          post.title = body.title || post.title;
+          post.description = body.description || post.description;
+          post.sourceUrl = body.sourceUrl || post.sourceUrl;
+          post.approved = body.approved || post.approved;
+          post.publishedAt = new Date(body.publishedAt) || post.publishedAt
 
-              PostPresenter.build([post], function(err, posts) {
+          post.save(function(err, result) {
+            if (err) {
+              return next(err);
+            }
+
+            var imagePath = '';
+            if (!body.imagePath !== '') {
+              imagePath = process.cwd() + '/public' + body.imagePath;
+            }
+
+            post.uploadImage('image', imagePath, function() {
+              post.save(function(err, resave) {
                 if (err) {
                   return next(err);
                 }
 
-                body.images.forEach(function(image) {
-                  fs.unlinkSync(process.cwd() + '/public' + image)
-                  logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image);
+                PostsPresenter.build([post], req.currentPerson, function(err, posts) {
+                  if (err) {
+                    return next(err);
+                  }
+
+                  if (body.images) {
+                    body.images.forEach(function(image) {
+                      fs.unlinkSync(process.cwd() + '/public' + image)
+                      logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image);
+                    });
+                  }
 
                   return res.json(posts[0]);
-                })
-              })
-            })
-          })
-
-        })
-      })
+                });
+              });
+            });
+          });
+        });
+      });
     },
 
     destroy : function destroy(req, res) {
@@ -281,70 +300,76 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
     // Create reference for SavedPosts
     // NOTE: This is not the same as saving a post.
-    savePost : function savePost (req, res, next) {
-      var person = req.currentPerson;
+    savePost : function savePost(req, res, next) {
+      ACL.isAllowed('savePost', 'posts', req.role, {
+        currentPerson : req.currentPerson
+      }, function(err, response) {
+        if (err) {
+          return next(err)
+        }
 
-      var createSavedPost = function (personId) {
-        var sp = new SavedPost({
-          entityId: personId,
-          postId: req.params.postId
-        });
-        sp.save(function (err) {
-          if (err) { next(err); return; }
+        if (!response.isAllowed) {
+          return next(new ForbiddenError());
+        }
 
-          res.format({
-            'text/html': function () {
-              res.redirect('/posts');
-            },
-            'application/json': function () {
-              res.json({result: 'Ok'});
-            }
+        var person = req.currentPerson;
+
+        var createSavedPost = function(personId) {
+          var sp = new SavedPost({
+            entityId: personId,
+            postId: req.params.postId
           });
-        });
-      };
-
-      if (req.currentPerson.isAnonymous) {
-        req.currentPerson.owner(function (err, result) {
-          createSavedPost(result.id);
-        });
-      } else {
-        createSavedPost(hashids.decode(req.currentPerson.id)[0]);
-      }
-    },
-
-    unsavePost : function unsavePost (req, res, next) {
-      var person = req.currentPerson;
-
-      var unsavePost = function (personId) {
-        SavedPost.find({
-          entity_id: personId,
-          post_id: req.params.postId
-        }, function (err, result) {
-          if (err) { next(err); return; }
-          if (result.length === 0) { next(new Error('Not found')); }
-
-          var sp = new SavedPost(result[0]);
-          sp.destroy(function (err) {
+          sp.save(function(err) {
             if (err) { next(err); return; }
+
             res.format({
-              'text/html': function () {
-                res.redirect('/' + req.currentPerson.profileName + '/saved_posts');
-              },
-              'application/json': function () {
-                res.json({result: 'Ok'});
+              json : function() {
+                res.json({ status : 'saved' });
               }
             });
           });
-        });
-      };
+        };
 
-      if (req.currentPerson.isAnonymous) {
-        req.currentPerson.owner(function (err, result) {
-          unsavePost(result.id);
-        });
-      } else {
+        createSavedPost(hashids.decode(req.currentPerson.id)[0]);
+      });
+    },
+
+    unsavePost : function unsavePost(req, res, next) {
+      ACL.isAllowed('unsavePost', 'posts', req.role,  {
+        currentPerson : req.currentPerson
+      }, function(err, response) {
+        if (err) {
+          return next(err)
+        }
+
+        if (!response.isAllowed) {
+          return next(new ForbiddenError());
+        }
+
+        var person = req.currentPerson;
+
+        var unsavePost = function(personId) {
+          SavedPost.find({
+            'entity_id' : personId,
+            'post_id' : req.params.postId
+          }, function(err, result) {
+            if (err) { next(err); return; }
+            if (result.length === 0) { next(new Error('Not found')); }
+
+            var sp = new SavedPost(result[0]);
+            sp.destroy(function(err) {
+              if (err) { next(err); return; }
+              res.format({
+                json: function() {
+                  res.json({ status : 'removed' });
+                }
+              });
+            });
+          });
+        };
+
         unsavePost(hashids.decode(req.currentPerson.id)[0]);
-      }
+      });
     }
   }
 });

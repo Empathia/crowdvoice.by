@@ -100,6 +100,8 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
           return next(new ForbiddenError());
         }
 
+        res.locals.currentUser = req.user;
+
         res.render(inflection.pluralize(req.entityType) + '/edit.html');
       });
     },
@@ -168,6 +170,48 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
               res.redirect('/' + entity.profileName + '/edit');
             }
           });
+        });
+      });
+    },
+
+    updateUser : function updateUser(req, res, next) {
+      var entity = req.entity;
+
+      ACL.isAllowed('updateUser', 'entities', req.role, {
+        entity : entity,
+        currentPerson : req.currentPerson
+      }, function(err, response) {
+        if (err) {
+          return next(err);
+        }
+
+        if (!response.isAllowed) {
+          return next(new ForbiddenError());
+        }
+
+        var user = new User(req.user);
+
+        var email = req.body.email.toLowerCase().trim();
+        var password = req.body.password;
+
+        if (email && email !== '') {
+          user.email = email;
+        }
+
+        if (password && password !== '') {
+          user.password = password;
+        }
+
+        user.save(function(err, result) {
+          if (err) {
+            res.locals.errors = err;
+            req.errors = err;
+            logger.log(err);
+
+            res.render(inflection.pluralize(req.entityType) + '/edit.html');
+          } else {
+            res.redirect('/' + entity.profileName + '/edit');
+          }
         });
       });
     },
@@ -388,6 +432,36 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
             });
           }
         });
+      });
+    },
+
+    isEmailAvailable : function isEmailAvailable(req, res, next) {
+      ACL.isAllowed('isEmailAvailable', 'entities', req.role, {
+        currentPerson : req.currentPerson,
+        entity : req.entity
+      }, function(err, response) {
+        if (err) {
+          return next(err);
+        }
+
+        if (!isAllowed) {
+          return next(new ForbiddenError());
+        }
+
+        var value = req.body.value.toLowerCase().trim();
+        var currentUserId = req.user.id;
+
+        User.find(['email = ? AND id != ?', [value, currentUserId]], function(err, result) {
+          if (err) {
+            return next(err);
+          }
+
+          if (result.length > 0) {
+            return res.json({ status : 'taken' });
+          } else {
+            return res.json({ status : 'available' });
+          }
+        })
       });
     }
   }
