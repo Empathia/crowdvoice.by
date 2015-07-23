@@ -188,7 +188,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
       res.render('posts/edit.html', {layout : false});
     },
 
-    update : function update(req, res) {
+    update : function update(req, res, next) {
       ACL.isAllowed('update', 'posts', req.role, {
         currentPerson : req.currentPerson,
         voiceSlug : req.params.voiceSlug,
