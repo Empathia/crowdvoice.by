@@ -110,11 +110,19 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
         },
         function (done) {
           if (!req.files['image']) { return done(); }
-          entity.uploadImage('image', req.files['image'].path, done);
+          entity.uploadImage('image', req.files['image'].path, function (err) {
+            if (err) { return done(err); }
+
+            feed.entityUpdateAvatar(req, done);
+          });
         },
         function (done) {
           if (!req.files['background']) { return done(); }
-          entity.uploadImage('background', req.files['background'].path, done);
+          entity.uploadImage('background', req.files['background'].path, function (err) {
+            if (err) { return done(err); }
+
+            feed.entityUpdateBackground(req, done);
+          });
         },
         function (done) {
           entity.save(done);
@@ -167,7 +175,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
           follower.followEntity(entity, function (err, result) {
             if (err) { return next(err); }
 
-            feed.entityFollowsEntity(req, next, follower, result);
+            feed.entityFollowsEntity(req, next, result);
 
             res.format({
               html: function () {

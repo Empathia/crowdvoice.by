@@ -351,7 +351,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           follower.followVoice(req.activeVoice, function (err, result) {
             if (err) { return next(err); }
 
-            feed.entityFollowsVoice(req, next, follower, result);
+            feed.entityFollowsVoice(req, next, result);
 
             res.format({
               html: function () {
