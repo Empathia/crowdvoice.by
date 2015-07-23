@@ -275,70 +275,76 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
     // Create reference for SavedPosts
     // NOTE: This is not the same as saving a post.
-    savePost : function savePost (req, res, next) {
-      var person = req.currentPerson;
+    savePost : function savePost(req, res, next) {
+      ACL.isAllowed('savePost', 'posts', req.role, {
+        currentPerson : req.currentPerson
+      }, function(err, response) {
+        if (err) {
+          return next(err)
+        }
 
-      var createSavedPost = function (personId) {
-        var sp = new SavedPost({
-          entityId: personId,
-          postId: req.params.postId
-        });
-        sp.save(function (err) {
-          if (err) { next(err); return; }
+        if (!response.isAllowed) {
+          return next(new ForbiddenError());
+        }
 
-          res.format({
-            'text/html': function () {
-              res.redirect('/posts');
-            },
-            'application/json': function () {
-              res.json({result: 'Ok'});
-            }
+        var person = req.currentPerson;
+
+        var createSavedPost = function(personId) {
+          var sp = new SavedPost({
+            entityId: personId,
+            postId: req.params.postId
           });
-        });
-      };
-
-      if (req.currentPerson.isAnonymous) {
-        req.currentPerson.owner(function (err, result) {
-          createSavedPost(result.id);
-        });
-      } else {
-        createSavedPost(hashids.decode(req.currentPerson.id)[0]);
-      }
-    },
-
-    unsavePost : function unsavePost (req, res, next) {
-      var person = req.currentPerson;
-
-      var unsavePost = function (personId) {
-        SavedPost.find({
-          entity_id: personId,
-          post_id: req.params.postId
-        }, function (err, result) {
-          if (err) { next(err); return; }
-          if (result.length === 0) { next(new Error('Not found')); }
-
-          var sp = new SavedPost(result[0]);
-          sp.destroy(function (err) {
+          sp.save(function(err) {
             if (err) { next(err); return; }
+
             res.format({
-              'text/html': function () {
-                res.redirect('/' + req.currentPerson.profileName + '/saved_posts');
-              },
-              'application/json': function () {
-                res.json({result: 'Ok'});
+              json : function() {
+                res.json({ status : 'saved' });
               }
             });
           });
-        });
-      };
+        };
 
-      if (req.currentPerson.isAnonymous) {
-        req.currentPerson.owner(function (err, result) {
-          unsavePost(result.id);
-        });
-      } else {
+        createSavedPost(hashids.decode(req.currentPerson.id)[0]);
+      });
+    },
+
+    unsavePost : function unsavePost(req, res, next) {
+      ACL.isAllowed('unsavePost', 'posts', req.role,  {
+        currentPerson : req.currentPerson
+      }, function(err, response) {
+        if (err) {
+          return next(err)
+        }
+
+        if (!response.isAllowed) {
+          return next(new ForbiddenError());
+        }
+
+        var person = req.currentPerson;
+
+        var unsavePost = function(personId) {
+          SavedPost.find({
+            'entity_id' : personId,
+            'post_id' : req.params.postId
+          }, function(err, result) {
+            if (err) { next(err); return; }
+            if (result.length === 0) { next(new Error('Not found')); }
+
+            var sp = new SavedPost(result[0]);
+            sp.destroy(function(err) {
+              if (err) { next(err); return; }
+              res.format({
+                json: function() {
+                  res.json({ status : 'removed' });
+                }
+              });
+            });
+          });
+        };
+
         unsavePost(hashids.decode(req.currentPerson.id)[0]);
-      }
+      });
     }
   }
 });
