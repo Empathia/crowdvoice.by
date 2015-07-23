@@ -137,6 +137,12 @@ Class(CV, 'PostModerateVoteButtons').inherits(Widget).includes(CV.WidgetUtils)({
             console.log(response);
 
             if (err) {
+                if (response.status === 403) {
+                    this._updateStateToAlreadyVoted().enable();
+                    this.el.querySelector('.post-moderate-vote-already-cast-msg').classList.add('negative');
+                    return void 0;
+                }
+
                 this._updateStateError(response.status + ' - ' + response.statusText).enable();
                 return void 0;
             }
