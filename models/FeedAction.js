@@ -13,11 +13,17 @@ var FeedAction = Class('FeedAction').inherits(Argon.KnexModel)({
   })),
 
   prototype: {
+    // ID of action
     itemId: null,
+    // type of action, so we can find it with ID
     itemType: null,
+    // who did the action
     actionDoer: null,
+    // string of action done, 'created', 'deleted' etc.
     action: null,
+    // who is following it, defined by loop
     followerId: null,
+    // read it or not? (for notifications)
     read: null,
   }
 })

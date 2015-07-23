@@ -167,6 +167,8 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
           follower.followEntity(entity, function (err) {
             if (err) { return next(err); }
 
+            feed.entityFollowsEntity(req, next,)
+
             res.format({
               html: function () {
                 res.redirect('/' + entity.profileName);
