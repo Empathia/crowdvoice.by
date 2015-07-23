@@ -120,7 +120,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
         var posts = req.body;
 
-        if (body.constructor === Object) {
+        if (posts.constructor === Object) {
           posts = [posts];
         }
 
@@ -137,7 +137,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           postData.approved       = approved;
           postData.ownerId        = req.currentPerson ? req.currentPerson.id : 0;
           postData.voiceId        = response.voice.id;
-          postData.publishedAt    = body.publishedAt;
+          postData.publishedAt    = item.publishedAt;
 
           var post = new Post(postData);
 
@@ -148,7 +148,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
             var imagePath = '';
             if (item.imagePath !== '') {
-              imagePath = process.cwd() + '/public' + body.imagePath;
+              imagePath = process.cwd() + '/public' + item.imagePath;
             }
 
             post.uploadImage('image', imagePath, function() {
@@ -157,7 +157,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
                   return nextPost(err);
                 }
 
-                if (body.images) {
+                if (item.images) {
                   item.images.forEach(function(image) {
                     fs.unlinkSync(process.cwd() + '/public' + image);
                     logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image);
@@ -201,7 +201,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         }
 
         if (!response.isAllowed) {
-          return next(new ForbiddenError())
+          return next(new ForbiddenError());
         }
 
         var postData = {};
@@ -257,8 +257,39 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
       });
     },
 
-    destroy : function destroy(req, res) {
-      res.redirect('/posts');
+    destroy : function destroy(req, res, next) {
+      ACL.isAllowed('destroy', 'posts', req.role, {
+        currentPerson : req.currentPerson,
+        voiceSlug : req.params.voiceSlug
+      }, function(err, response) {
+        if (err) {
+          return next(err);
+        }
+
+        if (!response.isAllowed) {
+          return next(new ForbiddenError());
+        }
+
+        Post.find({ id : hashids.decode(req.params.postId)[0] }, function(err, result) {
+          if (err) {
+            return next(err);
+          }
+
+          if (result.length === 0) {
+            return next(new NotFoundError('Post not found'));
+          }
+
+          var post = new Post(result[0]);
+
+          post.destroy(function(err, result) {
+            if (err) {
+              return next(err);
+            }
+          });
+
+          res.json({ status : 'deteletd' });
+        })
+      });
     },
 
     preview : function preview(req, res, next) {
