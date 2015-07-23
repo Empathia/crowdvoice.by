@@ -242,6 +242,17 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
       voice.save(function(err) {
         if (err) { return next(err); }
+
+        // title updated
+        if (req.body.title) {
+          feed.voiceUpdateTitle(req, next);
+        }
+
+        // description updated
+        if (req.body.description) {
+          feed.voiceUpdateDescription(req, next);
+        }
+
         res.redirect('/voice/' + voice.id);
       });
     },
