@@ -115,7 +115,7 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
                 sourceService : postEditedData.sourceService,
                 sourceUrl : postEditedData.sourceUrl,
                 imagePath : postEditedData.imagePath,
-                images : postEditedData.images.map(function(item) {return item.path;}),
+                images : postEditedData.images,
                 publishedAt : postEditedData.publishedAt
             };
             console.log(saveData);

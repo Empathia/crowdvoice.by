@@ -28,25 +28,14 @@ Class(CV, 'PostModeratePublishButton').inherits(Widget)({
             this.disable();
 
             var postEditedData = this.parent.getEditedData();
-            var postData = {
-                title : postEditedData.title,
-                description : postEditedData.description,
-                sourceType : postEditedData.sourceType,
-                sourceService : postEditedData.sourceService,
-                sourceUrl : postEditedData.sourceUrl,
-                imagePath : postEditedData.image || postEditedData.imagePath,
-                images : postEditedData.images.map(function(item) {return item.path;}),
-                publishedAt : postEditedData.publishedAt,
-                /* the important bit */
-                approved : true
-            };
-            console.log(postData);
+            /* the important bit */
+            postEditedData.approved  = true;
 
             API.postUpdate({
                 profileName : App.Voice.owner.profileName,
                 voiceSlug : App.Voice.slug,
                 postId : this.postId,
-                data : postData
+                data : postEditedData
             }, this._publishPostResponse.bind(this));
         },
 
