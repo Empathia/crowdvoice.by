@@ -164,10 +164,10 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
           });
         } else {
           // follow
-          follower.followEntity(entity, function (err) {
+          follower.followEntity(entity, function (err, result) {
             if (err) { return next(err); }
 
-            feed.entityFollowsEntity(req, next,)
+            feed.entityFollowsEntity(req, next, follower, result)
 
             res.format({
               html: function () {
