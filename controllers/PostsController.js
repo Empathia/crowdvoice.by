@@ -205,48 +205,52 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         var postData = {};
         var body = req.body;
 
-        postData.id = hashids.decode(req.params.postId);
-        postData.title = body.title;
-        postData.description = body.description;
-        postData.sourceUrl = body.sourceUrl;
-        postData.approved = body.approved;
-        postData.publishedAt = body.publishedAt
-
-        var post = new Post(postData);
-
-        post.save(function(err, result) {
+        Post.find({ id : hashids.decode(req.params.postId) }, function(err, result) {
           if (err) {
             return next(err);
           }
 
-          var imagePath = '';
-          if (!body.imagePath !== '') {
-            imagePath = process.cwd() + '/public' + body.imagePath;
-          }
+          var post = new Post(result[0]);
 
-          post.uploadImage('image', imagePath, function() {
-            post.save(function(err, resave) {
-              if (err) {
-                return next(err);
-              }
+          post.title = body.title || post.title;
+          post.description = body.description || post.description;
+          post.sourceUrl = body.sourceUrl || post.sourceUrl;
+          post.approved = body.approved || post.approved;
+          post.publishedAt = body.publishedAt || post.publishedAt
 
-              PostPresenter.build([post], function(err, posts) {
+          post.save(function(err, result) {
+            if (err) {
+              return next(err);
+            }
+
+            var imagePath = '';
+            if (!body.imagePath !== '') {
+              imagePath = process.cwd() + '/public' + body.imagePath;
+            }
+
+            post.uploadImage('image', imagePath, function() {
+              post.save(function(err, resave) {
                 if (err) {
                   return next(err);
                 }
 
-                body.images.forEach(function(image) {
-                  fs.unlinkSync(process.cwd() + '/public' + image)
-                  logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image);
+                PostPresenter.build([post], function(err, posts) {
+                  if (err) {
+                    return next(err);
+                  }
 
-                  return res.json(posts[0]);
-                })
-              })
-            })
-          })
+                  body.images.forEach(function(image) {
+                    fs.unlinkSync(process.cwd() + '/public' + image)
+                    logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image);
 
-        })
-      })
+                    return res.json(posts[0]);
+                  });
+                });
+              });
+            });
+          });
+        });
+      });
     },
 
     destroy : function destroy(req, res) {
