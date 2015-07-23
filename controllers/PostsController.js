@@ -120,7 +120,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
         var posts = req.body;
 
-        if (body.constructor === Object) {
+        if (posts.constructor === Object) {
           posts = [posts];
         }
 
@@ -137,7 +137,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           postData.approved       = approved;
           postData.ownerId        = req.currentPerson ? req.currentPerson.id : 0;
           postData.voiceId        = response.voice.id;
-          postData.publishedAt    = body.publishedAt;
+          postData.publishedAt    = item.publishedAt;
 
           var post = new Post(postData);
 
@@ -148,7 +148,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
             var imagePath = '';
             if (item.imagePath !== '') {
-              imagePath = process.cwd() + '/public' + body.imagePath;
+              imagePath = process.cwd() + '/public' + item.imagePath;
             }
 
             post.uploadImage('image', imagePath, function() {
@@ -157,7 +157,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
                   return nextPost(err);
                 }
 
-                if (body.images) {
+                if (item.images) {
                   item.images.forEach(function(image) {
                     fs.unlinkSync(process.cwd() + '/public' + image);
                     logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image);
