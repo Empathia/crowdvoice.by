@@ -205,7 +205,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         var postData = {};
         var body = req.body;
 
-        Post.find({ id : hashids.decode(req.params.postId) }, function(err, result) {
+        Post.find({ id : hashids.decode(req.params.postId)[0] }, function(err, result) {
           if (err) {
             return next(err);
           }
