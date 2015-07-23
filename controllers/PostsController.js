@@ -209,7 +209,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         postData.title = body.title;
         postData.description = body.description;
         postData.sourceUrl = body.sourceUrl;
-        postData.approved = approved;
+        postData.approved = body.approved;
         postData.publishedAt = body.publishedAt
 
         var post = new Post(postData);
