@@ -348,8 +348,10 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           });
         } else {
           // follow
-          follower.followVoice(req.activeVoice, function(err) {
+          follower.followVoice(req.activeVoice, function (err, result) {
             if (err) { return next(err); }
+
+            feed.entityFollowsVoice(req, next, follower, result);
 
             res.format({
               html: function () {
