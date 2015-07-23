@@ -157,10 +157,12 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
                   return nextPost(err);
                 }
 
-                item.images.forEach(function(image) {
-                  fs.unlinkSync(process.cwd() + '/public' + image);
-                  logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image);
-                });
+                if (body.images) {
+                  item.images.forEach(function(image) {
+                    fs.unlinkSync(process.cwd() + '/public' + image);
+                    logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image);
+                  });
+                }
 
                 results.push(post);
 
@@ -239,12 +241,14 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
                     return next(err);
                   }
 
-                  body.images.forEach(function(image) {
-                    fs.unlinkSync(process.cwd() + '/public' + image)
-                    logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image);
+                  if (body.images) {
+                    body.images.forEach(function(image) {
+                      fs.unlinkSync(process.cwd() + '/public' + image)
+                      logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image);
+                    });
+                  }
 
-                    return res.json(posts[0]);
-                  });
+                  return res.json(posts[0]);
                 });
               });
             });
