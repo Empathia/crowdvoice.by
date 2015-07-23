@@ -137,7 +137,7 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
          * Add the preview to the queue.
          */
         _requestPreviewHandler : function _requestPreviewHandler(ev, err, response) {
-            if (err) {
+            if (err || response.error) {
                 console.log(response);
 
                 if (this.resultsPanel.children.indexOf(ev.data) >= 0) {
@@ -146,9 +146,15 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
 
                 this.queuePanel.loader.deactivate();
 
-                return this._setErrorState({
-                    message : response.status + ' - ' + response.statusText
-                }).enable();
+                if (response.responseJSON) {
+                    errorMessage = response.responseJSON.status;
+                } else if (typeof response.error === 'string') {
+                    errorMessage = response.error;
+                } else {
+                    errorMessage = response.status + ' - ' + response.statusText;
+                }
+
+                return this._setErrorState({message: errorMessage}).enable();
             }
 
             this._addedPostsCounter++;
