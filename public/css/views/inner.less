@@ -67,9 +67,9 @@
 }
 .topics-page{
 	&.category-list{
-		background: #f9f9f9;
+		background: @color-strip-background;
 		padding: 20px 40px 10px 40px;
-		box-shadow: inset 0px -6px 5px -5px rgba(0,0,0, .1);
+		box-shadow: inset 0px -6px 5px -5px @color-shadow-select-body;
 		position: relative;
 		z-index: 5;
 	}
@@ -80,8 +80,8 @@
 .browse-page .browse-element{
 	div{
 		margin: 0px 10px;
-		border: 1px solid #ccc;
-		box-shadow: 1px 1px 5px rgba(0,0,0, .15);
+		border: 1px solid @color-card-wrapper;
+		box-shadow: 1px 1px 5px @color-shadow-select-body;
 		border-radius: 5px;
 		padding: 20px 0px;
 	}
@@ -91,17 +91,17 @@
 	text-align: center;
 	a.element_link{
 		display: inline-block;
-		color: #2e3233;
+		color: @color-neutral-xx-dark;
 		svg{
 			width: 90px;
 			&.svg-trending{
-				fill: #de7c63;
+				fill: @color-trending;
 			}
 			&.svg-new{
-				fill: #87c4c9;
+				fill: @color-new;
 			}
 			&.svg-recommended{
-				fill: #aebd37;
+				fill: @color-recommended;
 			}
 		}
 	}
@@ -109,7 +109,7 @@
 		padding-top: 10px;
 		a{
 			font-size: 18px;
-	  	color: #2e3233;
+	  	color: @color-neutral-xx-dark;
 
 		}
 	}
