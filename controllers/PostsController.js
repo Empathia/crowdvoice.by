@@ -340,13 +340,15 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
             return next(err);
           }
 
+          info.path = 'public/posts_images/' + filename;
+
           var post = {
             sourceUrl : 'local_image',
             sourceType : 'image',
             sourceService : 'raw',
             title : 'No Title',
             description : 'No Description',
-            images : ['public/posts_images/' + filename]
+            images : [info]
           }
 
           res.json(post);
