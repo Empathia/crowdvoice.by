@@ -260,7 +260,8 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
     destroy : function destroy(req, res, next) {
       ACL.isAllowed('destroy', 'posts', req.role, {
         currentPerson : req.currentPerson,
-        voiceSlug : req.params.voiceSlug
+        voiceSlug : req.params.voiceSlug,
+        profileName : req.params.profileName
       }, function(err, response) {
         if (err) {
           return next(err);
@@ -292,6 +293,64 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
       });
     },
 
+    upload : function upload(req, res, next) {
+      ACL.isAllowed('upload', 'posts', req.role, {
+        currentPerson : req.currentPerson,
+        voiceSlug : req.params.voiceSlug,
+        profileName : req.params.profileName
+      }, function(err, response) {
+        if (err) {
+          return next(err);
+        }
+
+        if (!response.isAllowed) {
+          return next(new ForbiddenError());
+        }
+
+        if (!req.files.image) {
+          return res.status(400).json({ status : 'Missing Image' });
+        }
+
+        if (/.*\.(jpe?g|png|gif|tiff)[^\.]*$/.test(req.files.image.path) === false) {
+          return res.status(400).json({ status : 'Invalid Image Format' });
+        }
+
+        var transform = sharp(req.files.image.path)
+          .resize(340)
+          .interpolateWith(sharp.interpolator.nohalo)
+          .embed()
+          .progressive()
+          .flatten()
+          .background('#FFFFFF')
+          .quality(100);
+
+        var savePath = path.join(process.cwd(),  '/public/posts_images/');
+
+        var hrtime = process.hrtime();
+
+        var filename = 'upload_' + (hrtime[0] + hrtime[1] / 1000000) + '.jpg';
+
+        var toFile = sharp().toFile(savePath + filename, function(err, info) {
+          if (err) {
+            return next(err);
+          }
+
+          var post = {
+            sourceUrl : 'local_image',
+            sourceType : 'image',
+            sourceService : 'raw',
+            title : 'No Title',
+            description : 'No Description',
+            images : ['public/posts_images/' + filename]
+          }
+
+          res.json(post);
+        });
+
+        transform.pipe(toFile);
+      });
+    },
+
     preview : function preview(req, res, next) {
       var url = req.body.url;
 
@@ -304,29 +363,29 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
         if (err) {
           logger.error(err);
-          return res.status(400).json({status : "There was an error in the request", error : err});
+          return res.status(400).json({ status : 'There was an error in the request', error : err });
         }
 
-        Post.find(["source_url = ?", [longUrl]], function(err, posts) {
+        Post.find(['source_url = ?', [longUrl]], function(err, posts) {
           if (err) {
             logger.error(err);
-            return res.status(400).json({status : "There was an error in the request", error : err});
+            return res.status(400).json({ status : 'There was an error in the request', error : err });
           }
 
           if (posts.length > 0) {
-           return res.status(200).json({status : "The URL already exists", error : "The URL already exists"});
+           return res.status(200).json({ status : 'The URL already exists', error : 'The URL already exists' });
           }
 
-          Scrapper.processUrl(url, function (err, result) {
+          Scrapper.processUrl(url, function(err, result) {
             if (err) {
               logger.error(err);
-              return res.status(400).json({status : "There was an error in the request", error : err});
+              return res.status(400).json({ status : 'There was an error in the request', error : err });
             }
 
             return res.json(result);
           });
-        })
-      })
+        });
+      });
     },
 
     // Create reference for SavedPosts
