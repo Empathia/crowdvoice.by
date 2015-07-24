@@ -340,7 +340,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
             return next(err);
           }
 
-          info.path = 'public/posts_images/' + filename;
+          info.path = '/public/posts_images/' + filename;
 
           var post = {
             sourceUrl : 'local_image',
