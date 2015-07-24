@@ -1,4 +1,5 @@
 var Scrapper = require(process.cwd() + '/lib/cvscrapper');
+var feed = require(__dirname + '/../lib/feed.js');
 
 var PostsController = Class('PostsController').includes(BlackListFilter)({
   prototype : {
@@ -103,15 +104,14 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         voiceSlug : req.params.voiceSlug,
         profileName : req.params.profileName
       }, function(err, response) {
-
         if (err) {return next(err)}
 
-        if (!response.isAllowed) {return next(new ForbiddenError())}
+        if (!response.isAllowed) { return next(new ForbiddenError()) }
 
         var approved = false;
 
         if (req.role === 'Admin' ||
-          (response.currentPerson.id === response.voice.ownerId) ||
+          response.currentPerson.id === response.voice.ownerId ||
           response.isVoiceCollaborator ||
           response.isOrganizationMember) {
 
@@ -136,20 +136,18 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         var post = new Post(postData);
 
         post.save(function(err, result) {
-          if (err) {
-            return next(err);
-          }
+          if (err) { return next(err); }
 
           var imagePath = '';
           if (body.imagePath !== '') {
             imagePath = process.cwd() + '/public' + body.imagePath;
           }
 
-          post.uploadImage('image', imagePath, function() {
+          post.uploadImage('image', imagePath, function () {
             post.save(function(err, resave) {
-              if (err) {
-                return next(err);
-              }
+              if (err) { return next(err); }
+
+              feed.voiceNewPosts(req, next);
 
               PostsPresenter.build([post], req.currentPerson, function(err, posts) {
                 if (err) {
