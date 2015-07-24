@@ -316,7 +316,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           return res.status(400).json({ status : 'Missing Image' });
         }
 
-        if (/.*\.(jpe?g|png|gif|tiff)[^\.]*$/.test(req.files.image.path) === false) {
+        if (/.*\.(jpe?g|png|gif|tiff)[^\.]*$/i.test(req.files.image.path) === false) {
           return res.status(400).json({ status : 'Invalid Image Format' });
         }
 
@@ -340,7 +340,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
             return next(err);
           }
 
-          info.path = '/public/posts_images/' + filename;
+          info.path = '/posts_images/' + filename;
 
           var post = {
             sourceUrl : 'local_image',
