@@ -139,6 +139,11 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           postData.voiceId        = response.voice.id;
           postData.publishedAt    = item.publishedAt;
 
+          if (postData.sourceUrl === 'local_image') {
+            var hrtime = process.hrtime();
+            postData.sourceUrl = 'local_image_' + hashids.encode(parseInt(hrtime[0] + '' + hrtime[1], 10));
+          }
+
           var post = new Post(postData);
 
           post.save(function(err, result) {
