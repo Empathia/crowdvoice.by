@@ -1,18 +1,18 @@
-/* jshint multistr: true */
+var API = require('../../../lib/api');
+
 Class(CV, 'PostCreatorUploadFile').inherits(CV.PostCreator)({
-
     ELEMENT_CLASS : 'cv-post-creator post-creator-upload-file',
-
     HTML : '\
         <div>\
-            <header class="cv-post-creator__header -clearfix"></header>\
+            <header class="cv-post-creator__header -clearfix">\
+                <input type="file" name="image" class="image-input cv-button tiny"/>\
+            </header>\
             <div class="cv-post-creator__content -abs"></div>\
             <div class="cv-post-creator__disable"></div>\
         </div>\
     ',
 
     prototype : {
-
         el : null,
         header : null,
         content : null,
@@ -23,6 +23,7 @@ Class(CV, 'PostCreatorUploadFile').inherits(CV.PostCreator)({
             console.log('new PostCreatorUploadFile');
 
             this.el = this.element[0];
+            this.inputFile = this.el.querySelector('input[type="file"]');
             this.header = this.el.querySelector('.cv-post-creator__header');
             this.content = this.el.querySelector('.cv-post-creator__content');
 
@@ -61,7 +62,18 @@ Class(CV, 'PostCreatorUploadFile').inherits(CV.PostCreator)({
 
         _bindEvents : function _bindEvents() {
             CV.PostCreator.prototype._bindEvents.call(this);
+            this.inputFile.addEventListener('change', this._uploadFile.bind(this));
             return this;
+        },
+
+        _uploadFile : function _uploadFile(ev) {
+            var data = new FormData();
+            data.append('image',  this.inputFile.files[0]);
+
+            API.uploadPostImage(data, function(err, res) {
+                console.log(err);
+                console.log(res);
+            });
         },
 
         /* Sets the widget state as uploading.

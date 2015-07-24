@@ -47,19 +47,31 @@ module.exports = {
         var path = window.location.pathname;
         path += (/\/$/.test(path)) ? 'preview' : '/preview';
 
-        $.ajax({
-            type : "POST",
-            url : path,
-            headers : {'csrf-token' : this.token},
-            data : {url : args.url},
-            success: function success(data) { callback(false, data); },
-            error : function error(err) { callback(true, err); }
-        });
+        request.post(path)
+            .set('csrf-token', this.token)
+            .send({url: args.url})
+            .end(function(err, res) {
+                callback(err, (res.ok) ? res.body : res.text);
+            });
     },
 
     /**************************************************************************
      * POSTS
      *************************************************************************/
+    uploadPostImage : function uploadPostImage(args, callback) {
+        $.ajax({
+            type : 'POST',
+            url : window.location.pathname + 'upload',
+            headers : {'csrf-token' : this.token},
+            data : args,
+            cache : false,
+            contentType : false,
+            processData : false,
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        })
+    },
+
     /* Saves a Post on the current Voice.
      * @argument args.data <required> [Object] the post data
      * @argument callback <required> [Function]
