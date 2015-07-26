@@ -47,12 +47,14 @@ module.exports = {
         var path = window.location.pathname;
         path += (/\/$/.test(path)) ? 'preview' : '/preview';
 
-        request.post(path)
-            .set('csrf-token', this.token)
-            .send({url: args.url})
-            .end(function(err, res) {
-                callback(err, (res.ok) ? res.body : res.text);
-            });
+        $.ajax({
+            type : "POST",
+            url : path,
+            headers : {'csrf-token' : this.token},
+            data : {url : args.url},
+            success: function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
     },
 
     /**************************************************************************
