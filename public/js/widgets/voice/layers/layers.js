@@ -10,7 +10,7 @@
 var moment = require('moment');
 var Velocity = require('velocity-animate');
 
-Class(CV, 'VoicePostLayers').inherits(Widget)({
+Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
     HTML : '<section class="voice-posts -rel"></section>',
 
     prototype : {

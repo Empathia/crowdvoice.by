@@ -1,6 +1,6 @@
 var API = require('../../../lib/api');
 
-Class(CV, 'PostModeratePublishButton').inherits(Widget)({
+Class(CV, 'PostModeratePublishButton').inherits(Widget).includes(BubblingSupport)({
     HTML : '\
         <button class="post-moderate-publish-btn cv-button -abs">\
             <svg class="-s16">\
@@ -60,9 +60,7 @@ Class(CV, 'PostModeratePublishButton').inherits(Widget)({
 
         _setSuccessState : function _setSuccessState() {
             this.el.innerHTML = 'Published!';
-            window.setTimeout(function() {
-                window.location.reload();
-            }, 2000);
+            this.dispatch('post:moderate:publish');
         },
 
         _disable : function _disable() {
