@@ -21,6 +21,7 @@ Class(CV, 'PostCreatorFromSourcesQueue').inherits(Widget).includes(BubblingSuppo
             this.el = this.element[0];
             this.list = this.el.querySelector('.from-sources-queue-list');
             this.onboarding = this.el.querySelector('.from-sources-queue-onboarding');
+            this.success = this.el.querySelector('.from-sources-queue-success');
 
             this.loader = new CV.Loader().render(this.el);
 
@@ -76,6 +77,14 @@ Class(CV, 'PostCreatorFromSourcesQueue').inherits(Widget).includes(BubblingSuppo
             this.loader.deactivate();
 
             this._index++;
+        },
+
+        removePosts : function removePosts() {
+            while (this.children.length > 0) {
+                this.children[0].destroy();
+            }
+            this._index = 0;
+            this.showOnboarding();
         }
     }
 });

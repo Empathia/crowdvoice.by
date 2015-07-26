@@ -26,11 +26,10 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
         _addedPostsCounter : 0,
         _inputKeyPressHandlerRef : null,
         _inputLastValue : null,
+        _postsAdded : false,
 
         init : function init(config) {
             CV.PostCreator.prototype.init.call(this, config);
-
-            console.log('new PostCreatorFromSources');
 
             this.el = this.element[0];
             this.header = this.el.querySelector('.cv-post-creator__header');
@@ -101,6 +100,39 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
             this._postDeletedRef = this._postDeleted.bind(this);
             this.bind('post:moderate:delete', this._postDeletedRef);
 
+            this.postButton.bind('buttonClick', this._handlePostButtonClick.bind(this));
+
+            return this;
+        },
+
+        _handlePostButtonClick : function _handlePostButtonClick() {
+            this._disablePostButton().disable();
+            this.queuePanel.setAddingPost();
+
+            var posts = this.queuePanel.children.map(function(post) {
+                return post.getEditedData();
+            });
+            console.log(posts);
+            API.postSave({data: posts}, this._savePostResponse.bind(this));
+        },
+
+        _savePostResponse : function _savePostResponse(err, response) {
+            var errorMessage = '';
+            if (err) {
+                errorMessage = 'Error - ' + response.status;
+                return this._setErrorState({message: errorMessage}).enable();
+            }
+
+            this._setSuccessState();
+        },
+
+        _setSuccessState : function _setSuccessState() {
+            this.queuePanel.removePosts();
+            this.queuePanel.loader.deactivate();
+            this._addedPostsCounter = 0;
+            this.postButton.updateCounter(this._addedPostsCounter);
+            this.enable();
+            this._postsAdded = true;
             return this;
         },
 
@@ -109,7 +141,7 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
          * has reach back to zero.
          * @method _postDeleted <private>
          */
-        _postDeleted : function _postDeleted(ev) {
+        _postDeleted : function _postDeleted() {
             this._addedPostsCounter--;
             this.postButton.updateCounter(this._addedPostsCounter);
             if (!this._addedPostsCounter) {
@@ -140,18 +172,25 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
             if (err || response.error) {
                 console.log(response);
 
-                if (this.resultsPanel.children.indexOf(ev.data) >= 0) {
-                    Velocity(ev.data.el, 'slideDown', {duration : 400});
-                }
+                var revert = true;
 
                 this.queuePanel.loader.deactivate();
 
+                var errorMessage = '';
                 if (response.responseJSON) {
                     errorMessage = response.responseJSON.status;
                 } else if (typeof response.error === 'string') {
+                    // url already exists, no need to show the item back
                     errorMessage = response.error;
+                    revert = false;
                 } else {
                     errorMessage = response.status + ' - ' + response.statusText;
+                }
+
+                if (revert) {
+                    if (this.resultsPanel.children.indexOf(ev.data) >= 0) {
+                        Velocity(ev.data.el, 'slideDown', {duration : 400});
+                    }
                 }
 
                 return this._setErrorState({message: errorMessage}).enable();
@@ -240,6 +279,11 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
             return this;
         },
 
+        _hideContent : function _hideContent() {
+            this.content.classList.remove('active');
+            return this;
+        },
+
         _setSearching : function _setSearching() {
             this._showContent();
             this.resultsPanel.setSearchingState();
@@ -249,7 +293,6 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
 
         _setNoResultsState : function _setNoResultsState() {
             this._showContent();
-            console.log(this._query);
             this.resultsPanel.setNoResultsState(this._query);
             return this;
         },
@@ -312,16 +355,21 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
 
         _enable : function _enable() {
             Widget.prototype._enable.call(this);
-
             this.input.getElement().focus();
         },
 
         _disable  : function _disable() {
             Widget.prototype._disable.call(this);
-
             this.input.getElement().blur();
         },
 
+        _deactivate : function _deactivate() {
+            Widget.prototype._deactivate.call(this);
+
+            if (this._postsAdded) {
+                window.location.reload();
+            }
+        },
 
         destroy : function destroy() {
             this.input.getElement().removeEventListener('keypress', this._inputKeyPressHandlerRef);
