@@ -5,7 +5,7 @@ Class(CV, 'PostCreatorUploadFile').inherits(CV.PostCreator)({
     HTML : '\
         <div>\
             <header class="cv-post-creator__header -clearfix">\
-                <input type="file" name="image" class="image-input cv-button tiny"/>\
+                <input type="file" name="image" class="image-input cv-button tiny -hide"/>\
             </header>\
             <div class="cv-post-creator__content -abs"></div>\
             <div class="cv-post-creator__disable"></div>\
@@ -30,32 +30,33 @@ Class(CV, 'PostCreatorUploadFile').inherits(CV.PostCreator)({
             this.addCloseButton()._setup()._bindEvents()._disablePostButton();
         },
 
+        activate : function activate(ev) {
+            Widget.prototype.activate.call(this);
+            this.inputFile.click(ev);
+        },
+
         _setup : function _setup() {
-            this.appendChild(
-                new CV.PostCreatorUploadingTemplate({
-                    name : 'uploadingTemplate'
-                })
-            ).render(this.content);
+            this.appendChild(new CV.PostCreatorUploadingTemplate({
+                name : 'uploadingTemplate'
+            })).render(this.content);
 
-            this.appendChild(
-                new CV.PostCreatorErrorTemplate({
-                    name : 'errorTemplate'
-                })
-            ).render(this.content);
+            this.appendChild(new CV.PostCreatorErrorTemplate({
+                name : 'errorTemplate'
+            })).render(this.content);
 
-            this.appendChild(
-                new CV.PostCreatorPostButton({
-                    name : 'postButton',
-                    className : '-float-right -full-height -color-border-grey-light'
-                })
-            ).render(this.header);
+            this.appendChild(new CV.PostCreatorSuccessTemplate({
+                name : 'successTemplate'
+            })).render(this.content);
 
-            this.appendChild(
-                new CV.PostCreatorUploadFileHeaderMessages({
-                    name : 'headerStatus',
-                    className : '-overflow-hidden -full-height'
-                })
-            ).render(this.header);
+            this.appendChild(new CV.PostCreatorPostButton({
+                name : 'postButton',
+                className : '-float-right -full-height -color-border-grey-light'
+            })).render(this.header);
+
+            this.appendChild(new CV.PostCreatorUploadFileHeaderMessages({
+                name : 'headerStatus',
+                className : '-overflow-hidden -full-height'
+            })).render(this.header);
 
             return this;
         },
@@ -63,17 +64,80 @@ Class(CV, 'PostCreatorUploadFile').inherits(CV.PostCreator)({
         _bindEvents : function _bindEvents() {
             CV.PostCreator.prototype._bindEvents.call(this);
             this.inputFile.addEventListener('change', this._uploadFile.bind(this));
+            this.postButton.bind('buttonClick', this._handlePostButtonClick.bind(this));
             return this;
         },
 
-        _uploadFile : function _uploadFile(ev) {
+        _handlePostButtonClick : function _handlePostButtonClick() {
+            var postEditedData = this._previewPostWidget.getEditedData();
+            console.log(postEditedData);
+
+            API.postSave({data : postEditedData}, this._savePostResponse.bind(this));
+        },
+
+        _savePostResponse : function _savePostResponse(err, response) {
+            var errorMessage = '';
+
+            if (err) {
+                errorMessage = 'Error - ' + response.status;
+                return this._setErrorState({message: errorMessage}).enable();
+            }
+
+            this._setSuccessState();
+        },
+
+        /* Sets the error state.
+         * @method _setErrorState <private> [Function]
+         * @return [PostCreatorFromUrl]
+         */
+        _setErrorState : function _setErrorState(config) {
+            if (config && config.message) {
+                this.dom.updateText(this.errorMessage, config.message);
+            } else {
+                this.dom.updateText(this.errorMessage, this.constructor.DEFAULT_ERROR_MESSAGE);
+            }
+
+            if (this.el.classList.contains('has-error')) {
+                return this;
+            }
+
+            if (this._previewPostWidget) {
+                this._previewPostWidget.destroy();
+            }
+
+            this.el.classList.add('has-error');
+            this.errorTemplate.activate();
+
+            return this;
+        },
+
+        _setSuccessState : function _setSuccessState() {
+            this.el.classList.add('is-success');
+            this.successTemplate.activate();
+
+            window.setTimeout(function() {
+                window.location.reload();
+            }, 2000);
+
+            return this;
+        },
+
+        _uploadFile : function _uploadFile() {
+            this._statusUploading();
+
             var data = new FormData();
             data.append('image',  this.inputFile.files[0]);
 
             API.uploadPostImage(data, function(err, res) {
                 console.log(err);
                 console.log(res);
-            });
+
+                if (err) {
+                    return this._statusError();
+                }
+
+                this._statusImageUploaded(res);
+            }.bind(this));
         },
 
         /* Sets the widget state as uploading.
@@ -99,7 +163,7 @@ Class(CV, 'PostCreatorUploadFile').inherits(CV.PostCreator)({
         /* Sets the widget state as image uploaded.
          * @method _statusImageUploaded <private> [Function]
          */
-        _statusImageUploaded : function statusImageUploaded() {
+        _statusImageUploaded : function statusImageUploaded(postData) {
             this.headerStatus.uploadedImage();
             this.errorTemplate.deactivate();
             this.uploadingTemplate.deactivate();
@@ -108,12 +172,10 @@ Class(CV, 'PostCreatorUploadFile').inherits(CV.PostCreator)({
                 this._previewPostWidget.unedit().destroy();
             }
 
-            var posts = require('./../../../../demo-data/posts-preview.js');
-            var post = posts[Math.floor(Math.random() * posts.length)];
-            post.name = '_previewPostWidget';
+            postData.name = '_previewPostWidget';
+            this.appendChild(CV.EditablePost.create(postData)).edit().render(this.content);
 
-            this.appendChild(CV.EditablePost.create(post)).edit().render(this.content);
-
+            this._enabledPostButton();
             return this;
         },
 
