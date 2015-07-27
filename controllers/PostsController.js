@@ -118,7 +118,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           approved = true;
         }
 
-        var posts = req.body;
+        var posts = req.body.posts;
 
         if (posts.constructor === Object) {
           posts = [posts];
