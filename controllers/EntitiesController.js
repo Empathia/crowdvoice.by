@@ -100,9 +100,10 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
           return next(new ForbiddenError());
         }
 
+        res.locals.checkit = Checkit;
         res.locals.currentUser = req.user;
-
         res.render(inflection.pluralize(req.entityType) + '/edit.html');
+
       });
     },
 

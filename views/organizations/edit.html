@@ -21,7 +21,7 @@
      |||||||||||||||||||||||||||||||| -->
 
     <div class="active -menu-tab-content">
-
+      <div class="form-notifications"></div>
       <form action="/<%= organization.profileName %>?_method=PUT" method="POST" enctype="multipart/form-data" class="form-profile">
 
         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
@@ -169,14 +169,14 @@
   new CV.Input({
       type      : '',
       name      : 'name',
-      style     : 'small -w-50',
+      style     : 'small -w-50 form-name',
       hasTitle  : true,
       title     : "Organization\'s Name",
       value     : "<%= organization.name %>"
   }).render($('.form-profile .placeholder-main'));
 
-  new CV.Input({
-      style       : 'small -w-50',
+  var profileInput = new CV.Input({
+      style       : 'small -w-50 form-profile',
       name        : 'profileName',
       placeholder : 'http://www.crowdvoice.by/@',
       hasTitle    : true,
@@ -184,8 +184,8 @@
       value     : "<%= organization.profileName %>"
   }).render($('.form-profile .placeholder-main'));
 
-  new CV.Input({
-      style     : '',
+  var descriptionInput = new CV.Input({
+      style     : 'form-description',
       isArea    : true,
       hasTitle  : true,
       name      : 'description',
@@ -195,22 +195,124 @@
   }).render($('.form-profile .placeholder-main'));
 
   new CV.Input({
-      style     : 'small',
+      style     : 'small form-location',
       name      : 'location',
       hasTitle  : true,
       title     : "Location",
       value     : "<%= organization.location %>"
   }).render($('.form-profile .placeholder-location'));
 
-  new CV.Button({
+  var submitButton = new CV.Button({
       style   : 'primary small',
       type    : 'single',
       label   : 'Save Changes',
       name    : 'buttonSend'
   }).render($('.form-profile .placeholder-send'));
 
+  var formEl;
+  var alert = null;
+
+  submitButton.element.on("click",function(e){
+    e.preventDefault;
+
+    var formValidation = validate();
+
+    if (formValidation.isValid && isprofileValid) {
+      console.log('Valid');
+
+      formEl.submit();
+
+    } else {
+
+      var errorsString = '';
+
+      if (formValidation.errors){
+        for (var error in formValidation.errors.errors) {
+          var err = formValidation.errors.errors[error];
+          var errorStr = err.message.replace(err.key, '<b>'+ err.key +'</b>');
+          errorsString += '<p>' + errorStr + '</p>';
+        }
+      }
+
+      if (!isprofileValid){
+         errorsString += '<p>The <b>profilename</b> is in use.</p>';
+      }
+
+      if (!alert){
+        alert = new CV.Alert({
+          type: 'negative',
+          html: errorsString
+        }).render($('.form-notifications'));
+
+        $('form').prepend('<br>');
+      } else {
+        alert.update(null, errorsString)
+      }
+
+      return false;
+
+    }
+
+
+  });
+
+  var formUtils = new CV.FormUtils();
+  var isprofileValid = true;
+
+  function validate(){
+
+    var options = {
+      'name'        : 'required',
+      'profile'     : 'required',
+      'description' : 'required',
+      'location'    : 'required'
+    };
+
+    var body = {
+      'name'      : formEl.find('.form-name input').val(),
+      'profile'      : formEl.find('.form-profile input').val(),
+      'description'      : formEl.find('.form-description textarea').val(),
+      'location'      : formEl.find('.form-location input').val(),
+    };
+
+    var formValidation = formUtils.validate(options, body);
+    return formValidation;
+  }
+
+  descriptionInput.element.bind('keyup keydown paste', function() {
+    var descValue = $(this).find('textarea').val();
+    if (descValue.length > 140){
+      descValue = descValue.substring(0, 140);
+      $(this).find('textarea').val(descValue);
+    }
+  });
+
+  profileInput.element.bind('keyup', function() {
+      $.ajax({
+          method : 'POST',
+          url : '/<%= currentPerson.profileName %>/isProfileNameAvailable',
+          headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
+          data : {
+              value : profileInput.element.find('input').val()
+          },
+          success : function(data) {
+            // Data could be {status : 'taken'} || {status : available}
+              if(data.status == 'available'){
+                profileInput.element.find('.cv-input').removeClass('error');
+                profileInput.element.find('.cv-input').addClass('success');
+                isprofileValid = true;
+              } else {
+                profileInput.element.find('.cv-input').addClass('error');
+                profileInput.element.find('.cv-input').removeClass('success');
+                isprofileValid = false;
+              }
+          }
+      })
+  });
 
   $( document ).ready(function() {
+
+    formEl = $('form');
 
     // Image upload
     $('.image-upload').bind("change", function(event) {
