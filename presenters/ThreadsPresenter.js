@@ -1,3 +1,5 @@
+var EntitiesPresenter = require('./EntitiesPresenter.js');
+
 Module('ThreadsPresenter')({
   build : function build(req, threads, callback) {
     async.eachLimit(threads, 1, function(thread, next) {
@@ -30,23 +32,29 @@ Module('ThreadsPresenter')({
             return done(err);
           }
 
-          thread.senderPerson = new Entity(result[0]);
-          thread.senderPerson.id = hashids.encode(thread.senderPerson.id);
+          EntitiesPresenter.build(result, null, function(err, entities) {
+            if (err) {
+              return done(err);
+            }
 
-          done()
-        })
+            thread.senderPerson = new Entity(entities[0]);
+            done();
+          });
+        });
       }, function(done) {
         Entity.findById(thread.senderEntityId, function(err, result) {
           if (err) {
             return done(err);
           }
 
-          thread.senderEntity = new Entity(result[0]);
-          thread.senderEntity.id = hashids.encode(thread.senderEntity.id);
+          EntitiesPresenter.build(result, null, function(err, entities) {
+            if (err) {
+              return done(err);
+            }
 
-          delete thread.senderEntityId;
-
-          done();
+            thread.senderEntity = new Entity(entities[0]);
+            done();
+          });
         })
       }, function(done) {
         Entity.findById(thread.receiverEntityId, function(err, result) {
@@ -54,12 +62,16 @@ Module('ThreadsPresenter')({
             return done(err);
           }
 
-          thread.receiverEntity = new Entity(result[0]);
-          thread.receiverEntity.id = hashids.encode(thread.receiverEntity.id);
-          delete thread.receiverEntityId;
+          EntitiesPresenter.build(result, null, function(err, entities) {
+            if (err) {
+              return done(err);
+            }
 
-          done();
-        })
+            thread.receiverEntity = new Entity(entities[0]);
+
+            done();
+          });
+        });
       }, function(done) {
         Message.find(['thread_id = ? ORDER BY created_at ASC', [threadInstance.id]], function(err, messages) {
           if (err) {
