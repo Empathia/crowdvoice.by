@@ -74,11 +74,11 @@ module.exports = {
         })
     },
 
-    /* Saves a Post on the current Voice.
-     * @argument args.data <required> [Object] the post data
+    /* Creates a Post on the current Voice.
+     * @argument args.posts <required> [Array] each post data
      * @argument callback <required> [Function]
      */
-    postSave : function postSave(args, callback) {
+    postCreate : function postCreate(args, callback) {
         if (!args.posts || !callback) {
             throw new Error('Missing required params');
         }

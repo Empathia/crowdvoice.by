@@ -177,16 +177,16 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
             this._enabledPostButton().enable();
         },
 
-        /* PostButton click handler. Calls the `postSave` API to save the current Post displayed as preview.
+        /* PostButton click handler. Calls the `postCreate` API to save the current Post displayed as preview.
          * @method _handlePostButtonClick <private> [Function]
          */
         _handlePostButtonClick : function _handlePostButtonClick() {
             var postEditedData = this._previewPostWidget.getEditedData();
             console.log(postEditedData);
-            API.postSave({posts : [postEditedData]}, this._savePostResponse.bind(this));
+            API.postCreate({posts : [postEditedData]}, this._createPostResponse.bind(this));
         },
 
-        _savePostResponse : function _savePostResponse(err, response) {
+        _createPostResponse : function _createPostResponse(err, response) {
             // Object {ownerId: "", voiceId: "", id: ""}
             var errorMessage = '';
 
@@ -245,9 +245,9 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
             this.el.classList.add('is-success');
             this.successTemplate.activate();
 
-            // window.setTimeout(function() {
-            //     window.location.reload();
-            // }, 2000);
+            window.setTimeout(function() {
+                window.location.reload();
+            }, 2000);
 
             return this;
         },

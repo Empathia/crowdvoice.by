@@ -196,7 +196,7 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
             }
         },
 
-        /* PostButton click handler. Calls the `postSave` API to save the current Post displayed as preview.
+        /* PostButton click handler. Calls the `postCreate` API to save the current Post displayed as preview.
          * @method _handlePostButtonClick <private> [Function]
          */
         _handlePostButtonClick : function _handlePostButtonClick() {
@@ -207,10 +207,10 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
                 return post.getEditedData();
             });
             console.log(posts);
-            API.postSave({posts: posts}, this._savePostResponse.bind(this));
+            API.postCreate({posts: posts}, this._createPostResponse.bind(this));
         },
 
-        _savePostResponse : function _savePostResponse(err, response) {
+        _createPostResponse : function _createPostResponse(err, response) {
             var errorMessage = '';
             if (err) {
                 errorMessage = 'Error - ' + response.status;
