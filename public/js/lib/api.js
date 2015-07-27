@@ -60,6 +60,20 @@ module.exports = {
     /**************************************************************************
      * POSTS
      *************************************************************************/
+    uploadPostImage : function uploadPostImage(args, callback) {
+        $.ajax({
+            type : 'POST',
+            url : window.location.pathname + 'upload',
+            headers : {'csrf-token' : this.token},
+            data : args,
+            cache : false,
+            contentType : false,
+            processData : false,
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        })
+    },
+
     /* Saves a Post on the current Voice.
      * @argument args.data <required> [Object] the post data
      * @argument callback <required> [Function]

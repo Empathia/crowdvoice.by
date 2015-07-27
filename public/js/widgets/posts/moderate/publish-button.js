@@ -1,6 +1,6 @@
 var API = require('../../../lib/api');
 
-Class(CV, 'PostModeratePublishButton').inherits(Widget)({
+Class(CV, 'PostModeratePublishButton').inherits(Widget).includes(BubblingSupport)({
     HTML : '\
         <button class="post-moderate-publish-btn cv-button -abs">\
             <svg class="-s16">\
@@ -28,25 +28,14 @@ Class(CV, 'PostModeratePublishButton').inherits(Widget)({
             this.disable();
 
             var postEditedData = this.parent.getEditedData();
-            var postData = {
-                title : postEditedData.title,
-                description : postEditedData.description,
-                sourceType : postEditedData.sourceType,
-                sourceService : postEditedData.sourceService,
-                sourceUrl : postEditedData.sourceUrl,
-                imagePath : postEditedData.image || postEditedData.imagePath,
-                images : postEditedData.images.map(function(item) {return item.path;}),
-                publishedAt : postEditedData.publishedAt,
-                /* the important bit */
-                approved : true
-            };
-            console.log(postData);
+            /* the important bit */
+            postEditedData.approved  = true;
 
             API.postUpdate({
                 profileName : App.Voice.owner.profileName,
                 voiceSlug : App.Voice.slug,
                 postId : this.postId,
-                data : postData
+                data : postEditedData
             }, this._publishPostResponse.bind(this));
         },
 
@@ -71,9 +60,7 @@ Class(CV, 'PostModeratePublishButton').inherits(Widget)({
 
         _setSuccessState : function _setSuccessState() {
             this.el.innerHTML = 'Published!';
-            window.setTimeout(function() {
-                window.location.reload();
-            }, 2000);
+            this.dispatch('post:moderate:publish');
         },
 
         _disable : function _disable() {

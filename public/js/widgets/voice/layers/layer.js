@@ -2,7 +2,7 @@
 var moment = require('moment');
 var Waterfall = require('../../../lib/waterfall');
 
-Class(CV, 'VoicePostsLayer').inherits(Widget)({
+Class(CV, 'VoicePostsLayer').inherits(Widget).includes(BubblingSupport)({
     HTML : '\
         <div class="cv-voice-posts-layer">\
             <div class="cv-voice-posts-layer__detector"></div>\

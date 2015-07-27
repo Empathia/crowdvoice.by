@@ -24,6 +24,8 @@ Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
         _scrollTime : 250,
         LAYER_CLASSNAME : 'cv-voice-posts-layer__detector',
 
+        _publishedPosts : false,
+
         init : function init(config) {
             Widget.prototype.init.call(this, config);
 
@@ -64,6 +66,16 @@ Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
          * - ESC to close the widget
          */
         _bindEvents : function _bindEvents() {
+            this.bind('post:moderate:publish', function () {
+                this._publishedPosts = true;
+            }.bind(this));
+
+            this.bind('beforeDestroy', function beforeDestroy() {
+                if (this._publishedPosts) {
+                    window.location.reload();
+                }
+            }.bind(this));
+
             this.footer.bind('done', this.destroy.bind(this));
 
             this._scrollHandlerRef = this._scrollHandler.bind(this);
@@ -87,9 +99,13 @@ Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
             var y = 1;
             var el;
 
-            if (!this._listenScrollEvent) return;
+            if (!this._listenScrollEvent) {
+                return;
+            }
 
-            if (!scrollingUpwards) y = this.layersManager._windowInnerHeight - 1;
+            if (!scrollingUpwards) {
+                y = this.layersManager._windowInnerHeight - 1;
+            }
 
             el = document.elementFromPoint(0, y);
 
@@ -101,7 +117,9 @@ Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
 
             this._lastScrollTop = st;
 
-            if (this._scrollTimer) this._window.clearTimeout(this._scrollTimer);
+            if (this._scrollTimer) {
+                this._window.clearTimeout(this._scrollTimer);
+            }
 
             this._scrollTimer = this._window.setTimeout(function() {
                 this.layersManager.loadImagesVisibleOnViewport();
@@ -114,7 +132,9 @@ Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
         _resizeHandler : function _resizeHandler() {
             var _this = this;
 
-            if (this._resizeTimer) this._window.clearTimeout(this._resizeTimer);
+            if (this._resizeTimer) {
+                this._window.clearTimeout(this._resizeTimer);
+            }
 
             this._resizeTimer = this._window.setTimeout(function() {
                 _this.layersManager.update();
@@ -125,8 +145,10 @@ Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
          * @method _windowKeydownHandler <private> [Function]
          */
         _windowKeydownHandler : function _windowKeydownHandler(ev) {
-            var charCode = (typeof ev.which == 'number') ? ev.which : ev.keyCode;
-            if (charCode === 27) this.destroy();
+            var charCode = (typeof ev.which === 'number') ? ev.which : ev.keyCode;
+            if (charCode === 27) {
+                this.destroy();
+            }
         },
 
         loadLayer : function loadLayer(dateString, scrollDirection) {

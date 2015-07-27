@@ -78,6 +78,8 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
 
             if (this.images) {
                 this._imagesLen = this.images.length;
+            } else {
+                this.images = [];
             }
 
             if (this._imagesLen) {
@@ -107,8 +109,8 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
                 sourceUrl : this.sourceUrl,
 
                 // extra props
-                images : this.images || [],
-                imagePath : this.imagePath,
+                images : this.images.map(function(item) {return item.path;}),
+                imagePath : this.image || this.imagePath,
             };
         },
 

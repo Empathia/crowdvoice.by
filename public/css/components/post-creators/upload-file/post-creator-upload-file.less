@@ -2,6 +2,23 @@
  * Upload File
  * ========================================================================= */
 .post-creator-upload-file {
+  .post-card {
+    display: block;
+    width: 300px;
+    margin: 0 auto;
+    transform: scale(1);
+  }
+
+  &.is-success {
+    .cv-post-creator__header {
+      transform: translateY(-100%);
+    }
+
+    .post-card,
+    .cv-post-creator__close {
+      transform: scale(0);
+    }
+  }
 }
 
 .upload-file-msg-uploading,

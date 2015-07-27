@@ -193,6 +193,7 @@ require('./widgets/elements/input.js');
 require('./widgets/elements/input-button.js');
 require('./widgets/elements/select.js');
 require('./widgets/elements/select-account.js');
+require('./widgets/elements/alert.js');
 
 // threads and messages
 require('./widgets/messages/ThreadsContainer.js');
