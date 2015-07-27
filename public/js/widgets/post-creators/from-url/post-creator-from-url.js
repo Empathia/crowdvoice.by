@@ -105,37 +105,6 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
             return this;
         },
 
-        _handlePostButtonClick : function _handlePostButtonClick() {
-            var postEditedData = this._previewPostWidget.getEditedData();
-
-            var saveData = {
-                title : postEditedData.title,
-                description : postEditedData.description,
-                sourceType : postEditedData.sourceType,
-                sourceService : postEditedData.sourceService,
-                sourceUrl : postEditedData.sourceUrl,
-                imagePath : postEditedData.imagePath,
-                images : postEditedData.images,
-                publishedAt : postEditedData.publishedAt
-            };
-            console.log(saveData);
-
-            var args = { data : saveData };
-            API.postSave(args, this._savePostResponse.bind(this));
-        },
-
-        _savePostResponse : function _savePostResponse(err, response) {
-            // Object {ownerId: "", voiceId: "", id: ""}
-            var errorMessage = '';
-
-            if (err) {
-                errorMessage = 'Error - ' + response.status;
-                return this._setErrorState({message: errorMessage}).enable();
-            }
-
-            this._setSuccessState();
-        },
-
         /* Handles the keypress event on the input. We are only interested on the ENTER key.
          * @method _inputKeyPressHandler <private> [Function]
          */
@@ -165,7 +134,7 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
             this.disable()._removeErrorState()._requestPreview(checkitResponse[1].url);
         },
 
-        /* Make a call to the API for getting the preview data for creating a Post.
+        /* Make a call to the `postPreview` API for getting the preview data for creating a Post.
          * @method _requestPreview <private> [Function]
          */
         _requestPreview : function _requestPreview(url) {
@@ -173,7 +142,7 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
             API.postPreview(args, this._requestResponseHandler.bind(this));
         },
 
-        /* Handle the preview API call response (error or success).
+        /* Handle the `postPreview` API call response (handle the error or success).
          * @method _requestResponseHandler <private> [Function]
          */
         _requestResponseHandler : function _requestResponseHandler(err, response) {
@@ -206,6 +175,27 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
 
             this._activateIconType(post.sourceType);
             this._enabledPostButton().enable();
+        },
+
+        /* PostButton click handler. Calls the `postSave` API to save the current Post displayed as preview.
+         * @method _handlePostButtonClick <private> [Function]
+         */
+        _handlePostButtonClick : function _handlePostButtonClick() {
+            var postEditedData = this._previewPostWidget.getEditedData();
+            console.log(postEditedData);
+            API.postSave({posts : [postEditedData]}, this._savePostResponse.bind(this));
+        },
+
+        _savePostResponse : function _savePostResponse(err, response) {
+            // Object {ownerId: "", voiceId: "", id: ""}
+            var errorMessage = '';
+
+            if (err) {
+                errorMessage = 'Error - ' + response.status;
+                return this._setErrorState({message: errorMessage}).enable();
+            }
+
+            this._setSuccessState();
         },
 
         /* Enables the Post Button.
@@ -255,9 +245,9 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
             this.el.classList.add('is-success');
             this.successTemplate.activate();
 
-            window.setTimeout(function() {
-                window.location.reload();
-            }, 2000);
+            // window.setTimeout(function() {
+            //     window.location.reload();
+            // }, 2000);
 
             return this;
         },

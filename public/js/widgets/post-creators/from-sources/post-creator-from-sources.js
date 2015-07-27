@@ -105,51 +105,32 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
             return this;
         },
 
-        _handlePostButtonClick : function _handlePostButtonClick() {
-            this._disablePostButton().disable();
-            this.queuePanel.setAddingPost();
-
-            var posts = this.queuePanel.children.map(function(post) {
-                return post.getEditedData();
-            });
-            console.log(posts);
-            API.postSave({data: posts}, this._savePostResponse.bind(this));
-        },
-
-        _savePostResponse : function _savePostResponse(err, response) {
-            var errorMessage = '';
-            if (err) {
-                errorMessage = 'Error - ' + response.status;
-                return this._setErrorState({message: errorMessage}).enable();
-            }
-
-            this._setSuccessState();
-        },
-
-        _setSuccessState : function _setSuccessState() {
-            this.queuePanel.removePosts();
-            this.queuePanel.loader.deactivate();
-            this._addedPostsCounter = 0;
-            this.postButton.updateCounter(this._addedPostsCounter);
-            this.enable();
-            this._postsAdded = true;
-            return this;
-        },
-
-        /* Listener handler for when a Post was removed from the queuePanel,
-         * decrement the post button couter label and disable the button if it
-         * has reach back to zero.
-         * @method _postDeleted <private>
+        /* Handles the keypress event on the input. We are only interested on the ENTER key.
+         * @method _inputKeyPressHandler <private> [Function]
          */
-        _postDeleted : function _postDeleted() {
-            this._addedPostsCounter--;
-            this.postButton.updateCounter(this._addedPostsCounter);
-            if (!this._addedPostsCounter) {
-                this._disablePostButton();
+        _inputKeyPressHandler : function _inputKeyPressHandler(ev) {
+            var inputValue;
+
+            if (ev.keyCode !== 13) {
+                return void 0;
             }
+
+            inputValue = this.input.getValue();
+
+            if (inputValue.length <= 2) {
+                return void 0;
+            }
+
+            // if (inputValue === this._inputLastValue) {
+            //     return void 0;
+            // }
+
+            // this._inputLastValue = inputValue;
+
+            this.disable()._removeErrorState()._disablePostButton()._setSearching()._request(inputValue);
         },
 
-        /* Calls the API to generate a preview.
+        /* Calls the `postPreview` API to generate a preview.
          * @method _addPost <private>
          */
         _addPost : function _addPost(ev) {
@@ -165,7 +146,7 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
             }, this._requestPreviewHandler.bind(this, ev));
         },
 
-        /* API preview call response handler.
+        /* `postPreview` API preview call response handler.
          * Add the preview to the queue.
          */
         _requestPreviewHandler : function _requestPreviewHandler(ev, err, response) {
@@ -202,6 +183,53 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
             this.enable()._enabledPostButton();
         },
 
+        /* Listener handler for when a Post was removed from the queuePanel,
+         * decrement the post button couter label and disable the button if it
+         * has reach back to zero.
+         * @method _postDeleted <private>
+         */
+        _postDeleted : function _postDeleted() {
+            this._addedPostsCounter--;
+            this.postButton.updateCounter(this._addedPostsCounter);
+            if (!this._addedPostsCounter) {
+                this._disablePostButton();
+            }
+        },
+
+        /* PostButton click handler. Calls the `postSave` API to save the current Post displayed as preview.
+         * @method _handlePostButtonClick <private> [Function]
+         */
+        _handlePostButtonClick : function _handlePostButtonClick() {
+            this._disablePostButton().disable();
+            this.queuePanel.setAddingPost();
+
+            var posts = this.queuePanel.children.map(function(post) {
+                return post.getEditedData();
+            });
+            console.log(posts);
+            API.postSave({posts: posts}, this._savePostResponse.bind(this));
+        },
+
+        _savePostResponse : function _savePostResponse(err, response) {
+            var errorMessage = '';
+            if (err) {
+                errorMessage = 'Error - ' + response.status;
+                return this._setErrorState({message: errorMessage}).enable();
+            }
+
+            this._setSuccessState();
+        },
+
+        _setSuccessState : function _setSuccessState() {
+            this.queuePanel.removePosts();
+            this.queuePanel.loader.deactivate();
+            this._addedPostsCounter = 0;
+            this.postButton.updateCounter(this._addedPostsCounter);
+            this.enable();
+            this._postsAdded = true;
+            return this;
+        },
+
         _sourceChanged : function _sourceChanged(ev) {
             this._currentSource = ev.source;
 
@@ -209,31 +237,6 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
                 this.input.setValue(this._query);
                 this.disable()._disablePostButton()._setSearching()._request(this._query);
             }
-        },
-
-        /* Handles the keypress event on the input. We are only interested on the ENTER key.
-         * @method _inputKeyPressHandler <private> [Function]
-         */
-        _inputKeyPressHandler : function _inputKeyPressHandler(ev) {
-            var inputValue;
-
-            if (ev.keyCode !== 13) {
-                return void 0;
-            }
-
-            inputValue = this.input.getValue();
-
-            if (inputValue.length <= 2) {
-                return void 0;
-            }
-
-            // if (inputValue === this._inputLastValue) {
-            //     return void 0;
-            // }
-
-            // this._inputLastValue = inputValue;
-
-            this.disable()._removeErrorState()._disablePostButton()._setSearching()._request(inputValue);
         },
 
         /* Calls our search API endpoint to search for content on the current source.
