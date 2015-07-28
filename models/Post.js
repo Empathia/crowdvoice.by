@@ -134,19 +134,19 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
       // Add image attachment
       this.hasImage({
         propertyName: 'image',
-        small: function (readStream) {
-          return readStream.pipe(
-            sharp()
-              .resize(85)
-              .interpolateWith(sharp.interpolator.nohalo)
-              .embed()
-              .progressive()
-              .flatten()
-              .background('#FFFFFF')
-              .quality(100)
-          );
-        },
         versions: {
+          small: function (readStream) {
+            return readStream.pipe(
+              sharp()
+                .resize(85)
+                .interpolateWith(sharp.interpolator.nohalo)
+                .embed()
+                .progressive()
+                .flatten()
+                .background('#FFFFFF')
+                .quality(100)
+            );
+          },
           medium: function (readStream) {
             return readStream.pipe(
               sharp()
