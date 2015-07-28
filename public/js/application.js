@@ -173,6 +173,7 @@ require('./widgets/bubble.js');
 require('./widgets/bubble/voices-list.js');
 require('./widgets/modal.js');
 require('./widgets/login.js');
+require('./widgets/formUtils.js');
 require('./widgets/forms/send-message.js');
 require('./widgets/forms/request-to-contribute.js');
 require('./widgets/forms/create-voice.js');
