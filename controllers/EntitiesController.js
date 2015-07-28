@@ -1,13 +1,14 @@
 var BlackListFilter = require(__dirname + '/BlackListFilter');
 var VoicesPresenter = require(path.join(process.cwd(), '/presenters/VoicesPresenter.js'));
+var feed = require(__dirname + '/../lib/feed.js');
 
 var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
   prototype : {
-    getEntityByProfileName : function(req, res, next) {
+    getEntityByProfileName : function (req, res, next) {
       Entity.find({
-        'profile_name' : req.params['profile_name']
-      }, function(err, result) {
+        'profile_name' : req.params.profile_name
+      }, function (err, result) {
         if (err) { next(err); return; }
         if (result.length === 0) { next(new NotFoundError('Entity Not Found')); return; }
 
@@ -21,15 +22,14 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
           res.locals[req.entityType] = entities[0];
           next();
         })
-
       });
     },
 
-    getEntity : function getEntity(req, res, next) {
+    getEntity : function getEntity (req, res, next) {
       Entity.find({
         id: req.params.id,
         type: req.entityType
-      }, function(err, result) {
+      }, function (err, result) {
         if (err) { next(err); return; }
         if (result.length === 0) {
           next(new NotFoundError('Entity Not Found')); return;
@@ -43,7 +43,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
     },
 
     index : function index(req, res, next) {
-      Entity.find({ type:req.entityType }, function(err, result) {
+      Entity.find({ type:req.entityType }, function (err, result) {
         if (err) { next(err); return; }
 
         if (result.length === 0) {
@@ -51,22 +51,22 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
         }
 
         res.format({
-          'text/html': function() {
+          'text/html': function () {
             res.locals[inflection.pluralize(req.entityType)] = result;
             res.render(req.entityType + '/index.html', {});
           },
-          'application/json': function() {
+          'application/json': function () {
             res.json(result);
           }
         });
       });
     },
 
-    show : function show(req, res, next) {
+    show : function show (req, res, next) {
       res.render(inflection.pluralize(req.entityType) + '/show.html');
     },
 
-    new : function(req, res, next) {
+    new : function (req, res, next) {
       res.render(inflection.pluralize(req.entityType) + '/new.html', { errors: null });
     },
 
@@ -100,9 +100,10 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
           return next(new ForbiddenError());
         }
 
+        res.locals.checkit = Checkit;
         res.locals.currentUser = req.user;
-
         res.render(inflection.pluralize(req.entityType) + '/edit.html');
+
       });
     },
 
@@ -137,29 +138,29 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
           });
 
           async.series([
-            function(done) {
-              entity.save(function(err) {
-                done(err);
-              });
+            function (done) {
+              entity.save(done);
             },
-            function(done) {
+            function (done) {
               if (!req.files.image) { return done(); }
-              entity.uploadImage('image', req.files.image.path, function(err) {
-                done(err);
+              entity.uploadImage('image', req.files.image.path, function (err) {
+                if (err) { return done(err); }
+
+                feed.entityUpdateAvatar(req, done);
               });
             },
-            function(done) {
+            function (done) {
               if (!req.files.background) { return done(); }
-              entity.uploadImage('background', req.files.background.path, function(err) {
-                done(err);
+              entity.uploadImage('background', req.files.background.path, function (err) {
+                if (err) { return done(err); }
+
+                feed.entityUpdateBackground(req, done);
               });
             },
-            function(done) {
-              entity.save(function(err) {
-                done(err);
-              });
+            function (done) {
+              entity.save(done);
             }
-          ], function(err) {
+          ], function (err) {
             if (err) {
               res.locals.errors = err;
               req.errors = err;
@@ -180,7 +181,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
       ACL.isAllowed('updateUser', 'entities', req.role, {
         entity : entity,
         currentPerson : req.currentPerson
-      }, function(err, response) {
+      }, function (err, response) {
         if (err) {
           return next(err);
         }
@@ -248,10 +249,11 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
             });
           });
         } else {
-
           // follow
-          follower.followEntity(entity, function(err) {
+          follower.followEntity(entity, function (err, result) {
             if (err) { return next(err); }
+
+            feed.entityFollowsEntity(req, next, result);
 
             res.format({
               html: function() {
@@ -280,10 +282,10 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
           }
 
           res.format({
-            json: function() {
+            json: function () {
               res.send(voices);
             },
-            html: function() {
+            html: function () {
               next(new Error('Not found'));
             }
           });

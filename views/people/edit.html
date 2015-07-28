@@ -5,10 +5,10 @@
 
       <article role="article" class="profile-menu -row -rel">
         <div class="profile-tabs">
-          <div class="menu-item active -menu-tab -inline-block">
+          <div class="menu-item -menu-tab -inline-block">
             <p class="-font-bold">My Profile</p>
           </div>
-          <div class="menu-item -menu-tab -inline-block">
+          <div class="menu-item active -menu-tab -inline-block">
             <p class="-font-bold">Account</p>
           </div>
           <div class="menu-item -menu-tab -inline-block">
@@ -25,7 +25,9 @@
                 Profile
      |||||||||||||||||||||||||||||||| -->
 
-    <div class="active -menu-tab-content">
+    <div class="-menu-tab-content">
+      <div class="form-notifications"></div>
+
   <% if (currentPerson) { %>
       <form class="form-profile" action="/<%= currentPerson.profileName %>?_method=PUT" method="POST" enctype="multipart/form-data">
   <% } else { %>
@@ -38,36 +40,38 @@
           <div class="form-field -inline-block">
               <label>Picture</label>
               <div class="form-profile-image">
-                <% if (currentPerson.image.exists('card')){ %>
-                  <img src="<%= currentPerson.image.url('card') %>">
-                <% }else{ %>
-                  <img src="/img/placeholder-image.png">
-                <% } %>
+                <div class="image-align">
+                  <% if (currentPerson.image.exists('card')){ %>
+                    <img src="<%= currentPerson.image.url('card') %>">
+                  <% }else{ %>
+                    <img src="/img/placeholder-image.png">
+                  <% } %>
+                </div>
               </div>
           </div>
 
           <div class="form-field -inline-block -rel form-field-image">
               <p class="image-input-label">Replace</p>
-              <input type="file" name="image" class="image-input cv-button tiny"\>
+              <input type="file" name="image" class="image-input image-upload image-upload-profile cv-button tiny"\>
               <label><span>JPG, GIF or PNG</span></label>
           </div>
-
-
 
           <div class="form-field -inline-block">
               <label>Background</label>
               <div class="form-profile-background">
-                <% if (currentPerson.background.exists('card')){ %>
-                  <img src="<%= currentPerson.background.url('card') %>">
-                <% }else{ %>
-                  <img src="/img/placeholder-background.png">
-                <% } %>
+                <div class="image-align">
+                  <% if (currentPerson.background.exists('card')){ %>
+                    <img src="<%= currentPerson.background.url('card') %>">
+                  <% }else{ %>
+                    <img src="/img/placeholder-background.png">
+                  <% } %>
+                </div>
               </div>
           </div>
 
           <div class="form-field -inline-block -rel form-field-image">
               <p class="image-input-label">Replace</p>
-              <input type="file" name="background" class="image-input cv-button tiny"\>
+              <input type="file" name="background" class="image-input image-upload image-upload-background cv-button tiny"\>
               <label><span>JPG, GIF or PNG</span></label>
           </div>
 
@@ -99,27 +103,65 @@
                 Account
      |||||||||||||||||||||||||||||||| -->
 
-    <div class="-menu-tab-content">
-      <form class="form-account">
-        <div class="-width-50">
-          <div class="-col-7 -pr1 placeholder-email">
-          </div>
-          <div class="-col-5 placeholder-buttons">
-            <div class="form-field">
-              <label><span></span></label>
-            </div>
-          </div>
+    <div class="active -menu-tab-content">
 
-          <div class="-row">
-            <div class="-col-7 -pr1 placeholder-password">
-            </div>
-            <div class="-col-5 placeholder-pin">
-              <div class="form-field">
-                <label><span></span></label>
-                <div class="icon-text edit">Change</div>
+        <div class="-width-50">
+          <form class="form-account-email" action="/<%= currentPerson.profileName %>/updateUser?_method=PUT" method="POST">
+
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+            <div class="-row email-options">
+
+              <div class="-col-7 -pr1 placeholder-email"></div>
+
+              <div class="-col-5 placeholder-buttons" style="display: none;">
+                <div class="form-field">
+                  <label><span></span></label>
+                </div>
               </div>
+
+              <div class="-col-5 placeholder-pin">
+                <div class="form-field">
+                  <label><span></span></label>
+                  <div class="icon-text edit">Change</div>
+                </div>
+              </div>
+
             </div>
-          </div>
+
+          </form>
+
+          <form class="form-account-password" action="/<%= currentPerson.profileName %>?_method=PUT" method="POST">
+
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+            <div class="-row password-options">
+
+              <div class="-col-7 -pr1 placeholder-password"></div>
+
+              <div class="-col-5 placeholder-buttons" style="display: none;">
+                <div class="form-field">
+                  <label><span></span></label>
+                </div>
+              </div>
+
+              <div class="-col-5 placeholder-pin">
+                <div class="form-field">
+                  <label><span></span></label>
+                  <div class="icon-text edit">Change</div>
+                </div>
+              </div>
+
+              <div class="-col-12">
+                <div class="cv-check">
+                  <input type="checkbox" class="password-checkbox" name="showpassword" value="false">
+                  <span class="label">Show Password</span>
+                </div>
+              </div>
+
+            </div>
+
+          </form>
 
         </div>
 
@@ -143,7 +185,6 @@
 
         </div>
 
-      </form>
     </div>
 
     <!-- ||||||||||||||||||||||||||||||||
@@ -227,7 +268,7 @@
   new CV.Input({
       type      : '',
       name      : 'name',
-      style     : 'small -w-50',
+      style     : 'small -w-50 form-name',
       hasTitle  : true,
       title     : "Your Name",
       value     : "<%= currentPerson.name %>"
@@ -236,14 +277,14 @@
   new CV.Input({
       type      : '',
       name      : 'lastname',
-      style     : 'small -w-50',
+      style     : 'small -w-50 form-lastname',
       hasTitle  : true,
       title     : "Your Lastname",
       value     : "<%= currentPerson.lastname %>"
   }).render($('.form-profile .placeholder-main'));
 
-  var profileName = new CV.Input({
-      style       : 'small -w-50',
+  var profileInput = new CV.Input({
+      style       : 'small -w-50 form-profile',
       name        : 'profileName',
       placeholder : 'http://www.crowdvoice.by/@',
       hasTitle    : true,
@@ -251,23 +292,8 @@
       value     : "<%= currentPerson.profileName %>"
   }).render($('.form-profile .placeholder-main'));
 
-  profileName.inputEl.find('input').bind('keyup', function() {
-      $.ajax({
-          method : 'POST',
-          url : '/<%= currentPerson.profileName %>/isProfileNameAvailable',
-          headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
-          data : {
-              value : profileName.inputEl.find('input').val()
-          },
-          success : function(data) {
-            // Data could be {status : 'taken'} || {status : available}
-              console.log(data);
-          }
-      })
-  })
-
-  new CV.Input({
-      style     : '',
+  var descriptionInput = new CV.Input({
+      style     : 'form-description',
       isArea    : true,
       hasTitle  : true,
       name      : 'description',
@@ -277,14 +303,14 @@
   }).render($('.form-profile .placeholder-main'));
 
   new CV.Input({
-      style     : 'small',
+      style     : 'small form-location',
       name      : 'location',
       hasTitle  : true,
       title     : "Location",
       value     : "<%= currentPerson.location %>"
   }).render($('.form-profile .placeholder-location'));
 
-  new CV.Button({
+  var submitButtonProfile = new CV.Button({
       style   : 'primary small',
       type    : 'single',
       label   : 'Save Changes',
@@ -293,59 +319,108 @@
 
 
   //******* account ************
+  var emailOptions = $('.form-account-email .email-options');
+  var passwordOptions = $('.form-account-password .password-options');
+  //placeholder-pin
+  //placeholder-buttons
 
-  new CV.Input({
+  var inputEmail = new CV.Input({
       type      : '',
       name      : 'email',
-      style     : 'small',
+      style     : 'small disabled',
       hasTitle  : true,
       title     : "Email",
       value     : '<%= currentUser.email %>'
-  }).render($('.form-account .placeholder-email'));
+  }).render(emailOptions.find('.placeholder-email'));
 
-  new CV.Button({
+  var emailSaveButton = new CV.Button({
       style   : 'primary tiny',
       type    : 'single',
       label   : 'Save',
       name    : 'buttonSend'
-  }).render($('.form-account .placeholder-buttons .form-field'));
+  }).render(emailOptions.find('.placeholder-buttons .form-field'));
 
-  new CV.Button({
+  var emailCancelButton = new CV.Button({
       style   : 'tiny',
       type    : 'single',
       label   : 'Cancel',
       name    : 'buttonSend'
-  }).render($('.form-account .placeholder-buttons .form-field'));
+  }).render(emailOptions.find('.placeholder-buttons .form-field'));
 
-  new CV.Input({
+
+  var inputPassword = new CV.Input({
       name : 'password',
-      style   : 'small',
+      style   : 'small disabled',
       hasTitle  : true,
       title     : "Your Password",
-  }).render($('.form-account .placeholder-password'));
+  }).render(passwordOptions.find('.placeholder-password'));
+  inputPassword.element.find('input').attr('type', 'password');
 
-  new CV.Button({
+  var passwordSaveButton = new CV.Button({
+      style   : 'primary tiny',
+      type    : 'single',
+      label   : 'Save',
+      name    : 'buttonSend'
+  }).render(passwordOptions.find('.placeholder-buttons .form-field'));
+
+  var passwordCancelButton = new CV.Button({
       style   : 'tiny',
       type    : 'single',
-      label   : 'Set Account to be protected',
+      label   : 'Cancel',
       name    : 'buttonSend'
-  }).render($('.form-account .placeholder-main'));
+  }).render(passwordOptions.find('.placeholder-buttons .form-field'));
+
+  emailOptions.find('.placeholder-pin').on('click', function(){
+    emailOptions.find('.placeholder-pin').hide();
+    emailOptions.find('.placeholder-buttons').show();
+    emailOptions.find('.cv-input').removeClass('disabled');
+    emailOptions.find('.cv-input input')[0].focus();
+  });
+
+  emailCancelButton.element.on('click', function(e){
+    e.preventDefault;
+    emailOptions.find('.placeholder-pin').show();
+    emailOptions.find('.placeholder-buttons').hide();
+    emailOptions.find('.cv-input').addClass('disabled');
+    return false;
+  });
+
+  emailSaveButton.element.on('click', function(){
+
+  });
+
+  passwordOptions.find('.placeholder-pin').on('click', function(){
+    passwordOptions.find('.placeholder-pin').hide();
+    passwordOptions.find('.placeholder-buttons').show();
+    passwordOptions.find('.cv-input').removeClass('disabled');
+    passwordOptions.find('.cv-input input')[0].focus();
+  });
+
+  passwordCancelButton.element.on('click', function(e){
+    e.preventDefault;
+    passwordOptions.find('.placeholder-pin').show();
+    passwordOptions.find('.placeholder-buttons').hide();
+    passwordOptions.find('.cv-input').addClass('disabled');
+    passwordOptions.find('.cv-input input').val('');
+    return false;
+  });
+
+  passwordSaveButton.element.on('click', function(){
+
+  });
+
+  passwordOptions.find('.cv-check input').on('click', function(){
+
+    if ( this.checked ) {
+      passwordOptions.find('.cv-input input').attr('type', 'text');
+    } else {
+      passwordOptions.find('.cv-input input').attr('type', 'password');
+    }
+    passwordOptions.find('.cv-input input')[0].focus();
 
 
-  //******* notifications ************
+  });
 
-
-  //******* blocked ************
-
-  //new CV.UsersList({
-  //    type          : '',
-  //    name          : '',
-  //    style         : '',
-  //    hasButton     : true,
-  //    users         : users,
-  //    listTitle     : "{count} Blocked users",
-  //    dateTitle     : "Blocked on"
-  //}).render($('.placeholder-users'));
 
   //******* organizations ************
 
@@ -355,7 +430,6 @@
     headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
     data : {},
     success: function(data) {
-      console.log(data);
       new CV.UsersList({
           hasButton     : true,
           users         : data,
@@ -365,11 +439,148 @@
     }
   });
 
+  var formEl;
+  var alert = null;
+
+  submitButtonProfile.element.on("click",function(e){
+    e.preventDefault;
+
+    var formValidation = validate();
+
+    if (formValidation.isValid && isprofileValid) {
+      console.log('Valid');
+
+      formEl.submit();
+
+    } else {
+
+      var errorsString = '';
+
+      if (formValidation.errors){
+        for (var error in formValidation.errors.errors) {
+          var err = formValidation.errors.errors[error];
+          var errorStr = err.message.replace(err.key, '<b>'+ err.key +'</b>');
+          errorsString += '<p>' + errorStr + '</p>';
+        }
+      }
+
+      if (!isprofileValid){
+         errorsString += '<p>The <b>profilename</b> is in use.</p>';
+      }
+
+      if (!alert){
+        alert = new CV.Alert({
+          type: 'negative',
+          html: errorsString
+        }).render($('.form-notifications'));
+
+        $('form').prepend('<br>');
+      } else {
+        alert.update(null, errorsString)
+      }
+
+      return false;
+
+    }
 
 
+  });
 
+  var formUtils = new CV.FormUtils();
+  var isprofileValid = true;
+
+  function validate(){
+
+    var options = {
+      'name'        : 'required',
+      'lastname'    : 'required',
+      'profile'     : 'required',
+      'description' : 'required',
+      'location'    : 'required'
+    };
+
+    var body = {
+      'name'          : formEl.find('.form-name input').val(),
+      'lastname'      : formEl.find('.form-lastname input').val(),
+      'profile'       : formEl.find('.form-profile input').val(),
+      'description'   : formEl.find('.form-description textarea').val(),
+      'location'      : formEl.find('.form-location input').val(),
+    };
+
+    var formValidation = formUtils.validate(options, body);
+    return formValidation;
+  }
+
+  descriptionInput.element.bind('keyup keydown paste', function() {
+    var descValue = $(this).find('textarea').val();
+    if (descValue.length > 140){
+      descValue = descValue.substring(0, 140);
+      $(this).find('textarea').val(descValue);
+    }
+  });
+
+  profileInput.inputEl.find('input').bind('keyup', function() {
+      $.ajax({
+          method : 'POST',
+          url : '/<%= currentPerson.profileName %>/isProfileNameAvailable',
+          headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
+          data : {
+              value : profileInput.inputEl.find('input').val()
+          },
+          success : function(data) {
+            // Data could be {status : 'taken'} || {status : available}
+            if(data.status == 'available'){
+              profileInput.element.find('.cv-input').removeClass('error');
+              profileInput.element.find('.cv-input').addClass('success');
+              isprofileValid = true;
+            } else {
+              profileInput.element.find('.cv-input').addClass('error');
+              profileInput.element.find('.cv-input').removeClass('success');
+              isprofileValid = false;
+            }
+          }
+      });
+  });
 
   $( document ).ready(function() {
+
+    formEl = $('form.form-profile');
+
+    // Image upload
+    $('.image-upload').bind("change", function(event) {
+
+      var files = event.target.files; //FileList object
+      var output;
+
+      if($(this).hasClass('image-upload-profile')){
+        output = $('.form-profile-image .image-align')[0];
+      } else if ($(this).hasClass('image-upload-background')){
+        output = $('.form-profile-background .image-align')[0];
+      }
+
+      for(var i = 0; i< files.length; i++) {
+        var file = files[i];
+        //Only pics
+        if(file.type.match('image.*')){
+            // continue;
+            var picReader = new FileReader();
+            picReader.addEventListener("load",function(event){
+              var picFile = event.target;
+              var div = document.createElement("div");
+              output.innerHTML = "<img class='thumbnail' src='" + picFile.result + "' title='preview image'/>";
+              //output.insertBefore(div,null);
+            });
+
+            //Read the image
+            //$('.clear-images').show();
+            picReader.readAsDataURL(file);
+        }else{
+          alert("Only images are allowed.");
+          //$(this).val("");
+        }
+      }
+    });
+
 
     formProfile = $('.form-profile');
     formProfile.find('.detect-location').on('click', function(el){

@@ -25,6 +25,7 @@ Class(CV, 'Alert').inherits(Widget).includes(CV.WidgetUtils)({
          */
         type : 'info',
         text : '',
+        html : null,
 
         init : function init(config) {
             Widget.prototype.init.call(this, config);
@@ -34,7 +35,7 @@ Class(CV, 'Alert').inherits(Widget).includes(CV.WidgetUtils)({
             this.textElement = this.el.querySelector('.cv-alert__info-text');
             this.closeElement = this.el.querySelector('.cv-alert__close');
 
-            this._setup().update(this.text)._bindEvents();
+            this._setup().update(this.text, this.html)._bindEvents();
         },
 
         _setup : function _setup() {
@@ -59,8 +60,12 @@ Class(CV, 'Alert').inherits(Widget).includes(CV.WidgetUtils)({
         /* Updates the main text displayed.
          * @method update <public> [Function]
          */
-        update : function update(text) {
-            this.dom.updateText(this.textElement, text);
+        update : function update(text, html) {
+            if ( this.html ) {
+                this.textElement.innerHTML = html;
+            } else {
+                this.dom.updateText(this.textElement, text);
+            }
             return this;
         },
 

@@ -11,13 +11,11 @@ var HomeController = Class('HomeController')({
     index : function index(req, res, next) {
       // if the person is logged in, redirect to their feed
       if (req.currentPerson) {
-        res.redirect('/' + req.currentPerson.profileName + '/feed');
+        return res.redirect('/' + req.currentPerson.profileName + '/feed');
       }
 
       ACL.isAllowed('show', 'homepage', req.role, {}, function(err, isAllowed) {
-        if (err) {
-          return next(err);
-        }
+        if (err) { return next(err); }
 
         if (!isAllowed) {
           return next(new ForbiddenError());
@@ -27,23 +25,17 @@ var HomeController = Class('HomeController')({
           console.log('feat')
           // FeaturedVoices
           FeaturedVoice.all(function(err, result) {
-            if (err) {
-              return done(err);
-            }
+            if (err) { return done(err); }
 
             var featuredIds = result.map(function(item) {
               return item.voiceId;
             });
 
             Voice.whereIn('id', featuredIds, function(err, voicesResult) {
-              if (err) {
-                return done(err);
-              }
-              console.log(voicesResult)
+              if (err) { return done(err); }
+
               VoicesPresenter.build(voicesResult, req.currentPerson, function(err, voices) {
-                if (err) {
-                  return done(err);
-                }
+                if (err) { return done(err); }
 
                 res.locals.featuredVoices = voices;
 
@@ -71,14 +63,10 @@ var HomeController = Class('HomeController')({
         }, function(done) {
           console.log('orgs')
           Entity.find(['type = \'organization\' LIMIT 10', []], function(err, result) {
-            if (err) {
-              return done(err);
-            }
+            if (err) { return done(err); }
 
             EntitiesPresenter.build(result, req.currentPerson, function(err, organizations) {
-              if (err) {
-                return done(err);
-              }
+              if (err) { return done(err); }
 
               res.locals.mostActiveOrganizations = organizations;
 
@@ -86,15 +74,11 @@ var HomeController = Class('HomeController')({
             });
           });
         }], function(err) {
-          if (err) {
-            return next(err);
-          }
+          if (err) { return next(err); }
 
-          res.render('home/index.html', {
+          res.render('home/index', {
             layout : 'application',
-
             pageName : 'page-home',
-
             notifications : require('./../public/demo-data/notifications'),
 
             /* =========================================================================== *

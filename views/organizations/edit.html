@@ -21,7 +21,7 @@
      |||||||||||||||||||||||||||||||| -->
 
     <div class="active -menu-tab-content">
-
+      <div class="form-notifications"></div>
       <form action="/<%= organization.profileName %>?_method=PUT" method="POST" enctype="multipart/form-data" class="form-profile">
 
         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
@@ -31,17 +31,19 @@
           <div class="form-field -inline-block">
               <label>Picture</label>
               <div class="form-profile-image">
-                <% if (organization.image.exists('card')){ %>
-                  <img src="<%= organization.image.url('card') %>">
-                <% }else{ %>
-                  <img src="/img/placeholder-image.png">
-                <% } %>
+                <div class="image-align">
+                  <% if (organization.image.exists('card')){ %>
+                    <img src="<%= organization.image.url('card') %>">
+                  <% }else{ %>
+                    <img src="/img/placeholder-image.png">
+                  <% } %>
+                </div>
               </div>
           </div>
 
           <div class="form-field -inline-block -rel form-field-image">
               <p class="image-input-label">Replace</p>
-              <input type="file" name="image" class="image-input cv-button tiny"\>
+              <input type="file" name="image" class="image-input image-upload image-upload-profile cv-button tiny"\>
               <label><span>JPG, GIF or PNG</span></label>
           </div>
 
@@ -50,17 +52,19 @@
           <div class="form-field -inline-block">
               <label>Background</label>
               <div class="form-profile-background">
-                <% if (organization.background.exists('card')){ %>
-                  <img src="<%= organization.background.url('card') %>">
-                <% }else{ %>
-                  <img src="/img/placeholder-background.png">
-                <% } %>
+                <div class="image-align">
+                  <% if (organization.background.exists('card')){ %>
+                    <img src="<%= organization.background.url('card') %>">
+                  <% }else{ %>
+                    <img src="/img/placeholder-background.png">
+                  <% } %>
+                </div>
               </div>
           </div>
 
           <div class="form-field -inline-block -rel form-field-image">
               <p class="image-input-label">Replace</p>
-              <input type="file" name="background" class="image-input cv-button tiny"\>
+              <input type="file" name="background" class="image-input image-upload image-upload-background cv-button tiny"\>
               <label><span>JPG, GIF or PNG</span></label>
           </div>
 
@@ -165,14 +169,14 @@
   new CV.Input({
       type      : '',
       name      : 'name',
-      style     : 'small -w-50',
+      style     : 'small -w-50 form-name',
       hasTitle  : true,
       title     : "Organization\'s Name",
       value     : "<%= organization.name %>"
   }).render($('.form-profile .placeholder-main'));
 
-  new CV.Input({
-      style       : 'small -w-50',
+  var profileInput = new CV.Input({
+      style       : 'small -w-50 form-profile',
       name        : 'profileName',
       placeholder : 'http://www.crowdvoice.by/@',
       hasTitle    : true,
@@ -180,8 +184,8 @@
       value     : "<%= organization.profileName %>"
   }).render($('.form-profile .placeholder-main'));
 
-  new CV.Input({
-      style     : '',
+  var descriptionInput = new CV.Input({
+      style     : 'form-description',
       isArea    : true,
       hasTitle  : true,
       name      : 'description',
@@ -191,22 +195,159 @@
   }).render($('.form-profile .placeholder-main'));
 
   new CV.Input({
-      style     : 'small',
+      style     : 'small form-location',
       name      : 'location',
       hasTitle  : true,
       title     : "Location",
       value     : "<%= organization.location %>"
   }).render($('.form-profile .placeholder-location'));
 
-  new CV.Button({
+  var submitButton = new CV.Button({
       style   : 'primary small',
       type    : 'single',
       label   : 'Save Changes',
       name    : 'buttonSend'
   }).render($('.form-profile .placeholder-send'));
 
+  var formEl;
+  var alert = null;
+
+  submitButton.element.on("click",function(e){
+    e.preventDefault;
+
+    var formValidation = validate();
+
+    if (formValidation.isValid && isprofileValid) {
+      console.log('Valid');
+
+      formEl.submit();
+
+    } else {
+
+      var errorsString = '';
+
+      if (formValidation.errors){
+        for (var error in formValidation.errors.errors) {
+          var err = formValidation.errors.errors[error];
+          var errorStr = err.message.replace(err.key, '<b>'+ err.key +'</b>');
+          errorsString += '<p>' + errorStr + '</p>';
+        }
+      }
+
+      if (!isprofileValid){
+         errorsString += '<p>The <b>profilename</b> is in use.</p>';
+      }
+
+      if (!alert){
+        alert = new CV.Alert({
+          type: 'negative',
+          html: errorsString
+        }).render($('.form-notifications'));
+
+        $('form').prepend('<br>');
+      } else {
+        alert.update(null, errorsString)
+      }
+
+      return false;
+
+    }
+
+
+  });
+
+  var formUtils = new CV.FormUtils();
+  var isprofileValid = true;
+
+  function validate(){
+
+    var options = {
+      'name'        : 'required',
+      'profile'     : 'required',
+      'description' : 'required',
+      'location'    : 'required'
+    };
+
+    var body = {
+      'name'      : formEl.find('.form-name input').val(),
+      'profile'      : formEl.find('.form-profile input').val(),
+      'description'      : formEl.find('.form-description textarea').val(),
+      'location'      : formEl.find('.form-location input').val(),
+    };
+
+    var formValidation = formUtils.validate(options, body);
+    return formValidation;
+  }
+
+  descriptionInput.element.bind('keyup keydown paste', function() {
+    var descValue = $(this).find('textarea').val();
+    if (descValue.length > 140){
+      descValue = descValue.substring(0, 140);
+      $(this).find('textarea').val(descValue);
+    }
+  });
+
+  profileInput.element.bind('keyup', function() {
+      $.ajax({
+          method : 'POST',
+          url : '/<%= currentPerson.profileName %>/isProfileNameAvailable',
+          headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
+          data : {
+              value : profileInput.element.find('input').val()
+          },
+          success : function(data) {
+            // Data could be {status : 'taken'} || {status : available}
+              if(data.status == 'available'){
+                profileInput.element.find('.cv-input').removeClass('error');
+                profileInput.element.find('.cv-input').addClass('success');
+                isprofileValid = true;
+              } else {
+                profileInput.element.find('.cv-input').addClass('error');
+                profileInput.element.find('.cv-input').removeClass('success');
+                isprofileValid = false;
+              }
+          }
+      })
+  });
 
   $( document ).ready(function() {
+
+    formEl = $('form');
+
+    // Image upload
+    $('.image-upload').bind("change", function(event) {
+
+      var files = event.target.files; //FileList object
+      var output;
+
+      if($(this).hasClass('image-upload-profile')){
+        output = $('.form-profile-image .image-align')[0];
+      } else if ($(this).hasClass('image-upload-background')){
+        output = $('.form-profile-background .image-align')[0];
+      }
+
+      for(var i = 0; i< files.length; i++) {
+        var file = files[i];
+        //Only pics
+        if(file.type.match('image.*')){
+            // continue;
+            var picReader = new FileReader();
+            picReader.addEventListener("load",function(event){
+              var picFile = event.target;
+              var div = document.createElement("div");
+              output.innerHTML = "<img class='thumbnail' src='" + picFile.result + "' title='preview image'/>";
+              //output.insertBefore(div,null);
+            });
+
+            //Read the image
+            //$('.clear-images').show();
+            picReader.readAsDataURL(file);
+        }else{
+          alert("Only images are allowed.");
+          //$(this).val("");
+        }
+      }
+    });
 
     formProfile = $('.form-profile');
     formProfile.find('.detect-location').on('click', function(el){

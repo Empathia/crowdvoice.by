@@ -291,7 +291,10 @@ a.cv-button{
     width: 75%;
   }
 
-
+  &.disabled{
+    pointer-events: none;
+    opacity: .5;
+  }
 
   input{
     outline: none;
@@ -333,6 +336,10 @@ a.cv-button{
   &.error {
     border-color: @color-negative;
     background-color: tint(@color-negative, 97.5);
+  }
+  &.success {
+    border-color: @color-positive;
+    background-color: tint(@color-positive, 97.5);
   }
 }
 

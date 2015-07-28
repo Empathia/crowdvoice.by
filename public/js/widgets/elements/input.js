@@ -68,7 +68,7 @@ Class(CV, 'Input').inherits(Widget)({
                 input.inputEl.addClass('focused');
             });
             this.inputEl.find('input').on('blur', function(){
-                input.inputEl.removeClass('focused');
+                input.inputEl.removeClass('focused success');
             });
 
         }
