@@ -1,4 +1,5 @@
 var Scrapper = require(process.cwd() + '/lib/cvscrapper');
+var feed = require(__dirname + '/../lib/feed.js');
 
 var PostsController = Class('PostsController').includes(BlackListFilter)({
   prototype : {
@@ -103,15 +104,14 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         voiceSlug : req.params.voiceSlug,
         profileName : req.params.profileName
       }, function(err, response) {
-
         if (err) {return next(err)}
 
-        if (!response.isAllowed) {return next(new ForbiddenError())}
+        if (!response.isAllowed) { return next(new ForbiddenError()) }
 
         var approved = false;
 
         if (req.role === 'Admin' ||
-          (response.currentPerson.id === response.voice.ownerId) ||
+          response.currentPerson.id === response.voice.ownerId ||
           response.isVoiceCollaborator ||
           response.isOrganizationMember) {
 
@@ -158,9 +158,9 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
             post.uploadImage('image', imagePath, function() {
               post.save(function(err, resave) {
-                if (err) {
-                  return nextPost(err);
-                }
+                if (err) { return nextPost(err); }
+
+              feed.voiceNewPosts(req, next);
 
                 if (item.images) {
                   item.images.forEach(function(image) {
@@ -201,21 +201,15 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         voiceSlug : req.params.voiceSlug,
         profileName : req.params.profileName
       }, function(err, response) {
-        if (err) {
-          return next(err);
-        }
+        if (err) { return next(err); }
 
-        if (!response.isAllowed) {
-          return next(new ForbiddenError());
-        }
+        if (!response.isAllowed) { return next(new ForbiddenError()); }
 
         var postData = {};
         var body = req.body;
 
         Post.find({ id : hashids.decode(req.params.postId)[0] }, function(err, result) {
-          if (err) {
-            return next(err);
-          }
+          if (err) { return next(err); }
 
           var post = new Post(result[0]);
 
@@ -226,9 +220,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           post.publishedAt = new Date(body.publishedAt) || post.publishedAt
 
           post.save(function(err, result) {
-            if (err) {
-              return next(err);
-            }
+            if (err) { return next(err); }
 
             var imagePath = '';
             if (!body.imagePath !== '') {
@@ -237,14 +229,10 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
             post.uploadImage('image', imagePath, function() {
               post.save(function(err, resave) {
-                if (err) {
-                  return next(err);
-                }
+                if (err) { return next(err); }
 
                 PostsPresenter.build([post], req.currentPerson, function(err, posts) {
-                  if (err) {
-                    return next(err);
-                  }
+                  if (err) { return next(err); }
 
                   if (body.images) {
                     body.images.forEach(function(image) {
@@ -268,18 +256,12 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         voiceSlug : req.params.voiceSlug,
         profileName : req.params.profileName
       }, function(err, response) {
-        if (err) {
-          return next(err);
-        }
+        if (err) { return next(err); }
 
-        if (!response.isAllowed) {
-          return next(new ForbiddenError());
-        }
+        if (!response.isAllowed) { return next(new ForbiddenError()); }
 
         Post.find({ id : hashids.decode(req.params.postId)[0] }, function(err, result) {
-          if (err) {
-            return next(err);
-          }
+          if (err) { return next(err); }
 
           if (result.length === 0) {
             return next(new NotFoundError('Post not found'));
@@ -288,9 +270,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           var post = new Post(result[0]);
 
           post.destroy(function(err, result) {
-            if (err) {
-              return next(err);
-            }
+            if (err) { return next(err); }
           });
 
           res.json({ status : 'deteletd' });
@@ -304,13 +284,9 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         voiceSlug : req.params.voiceSlug,
         profileName : req.params.profileName
       }, function(err, response) {
-        if (err) {
-          return next(err);
-        }
+        if (err) { return next(err); }
 
-        if (!response.isAllowed) {
-          return next(new ForbiddenError());
-        }
+        if (!response.isAllowed) { return next(new ForbiddenError()); }
 
         if (!req.files.image) {
           return res.status(400).json({ status : 'Missing Image' });
@@ -401,13 +377,9 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
       ACL.isAllowed('savePost', 'posts', req.role, {
         currentPerson : req.currentPerson
       }, function(err, response) {
-        if (err) {
-          return next(err)
-        }
+        if (err) { return next(err) }
 
-        if (!response.isAllowed) {
-          return next(new ForbiddenError());
-        }
+        if (!response.isAllowed) { return next(new ForbiddenError()); }
 
         var person = req.currentPerson;
 
@@ -417,7 +389,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
             postId: req.params.postId
           });
           sp.save(function(err) {
-            if (err) { next(err); return; }
+            if (err) { return next(err); }
 
             res.format({
               json : function() {

@@ -106,7 +106,7 @@
     <div class="active -menu-tab-content">
 
         <div class="-width-50">
-          <form class="form-account-email" action="/<%= currentPerson.profileName %>?_method=PUT" method="POST">
+          <form class="form-account-email" action="/<%= currentPerson.profileName %>/updateUser?_method=PUT" method="POST">
 
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
