@@ -7,7 +7,8 @@
  */
 Class(CV, 'Post').inherits(Widget).includes(
     CV.WidgetUtils,
-    CV.PostModuleImages
+    CV.PostModuleImages,
+    BubblingSupport
 )({
     ACTIONS_HTML : '\
         <div class="post-card-actions">\

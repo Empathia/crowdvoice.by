@@ -1,8 +1,6 @@
 /* jshint multistr: true */
 var moment = require('moment');
 
-// <iframe width="560" height="315" src="https://www.youtube.com/embed/Opktm709TJo" frameborder="0" allowfullscreen></iframe>
-// <iframe src="https://player.vimeo.com/video/20729832?title=0&byline=0&portrait=0" width="500" height="272" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
 Class(CV, 'PostVideo').inherits(CV.Post)({
     HTML : '\
     <article class="post-card video">\
@@ -33,8 +31,7 @@ Class(CV, 'PostVideo').inherits(CV.Post)({
     ',
 
     ICON : '<svg class="post-card-meta-icon"><use xlink:href="#svg-play"></use></svg>',
-    reYT : new RegExp('v=((\\w+-?)+)'),
-    reV : new RegExp('[0-9]+'),
+
 
     prototype : {
         /* PRIVATE properties */
@@ -84,30 +81,13 @@ Class(CV, 'PostVideo').inherits(CV.Post)({
         },
 
         _bindEvents : function _bindEvents() {
-            this.addVideoHandler = this.addVideo.bind(this);
-            this.imageWrapperElement.addEventListener('click', this.addVideoHandler);
+            this._clickImageHandlerRef = this._clickImageHandler.bind(this);
+            this.imageWrapperElement.addEventListener('click', this._clickImageHandlerRef);
+            return this;
         },
 
-        addVideo : function() {
-            var id;
-
-            this.imageWrapperElement.removeEventListener('click', this.addVideoHandler);
-
-            var iframe = document.createElement('iframe');
-            this.dom.updateAttr('frameborder', iframe, 0);
-            this.dom.updateAttr('allowfullscreen', iframe, true);
-
-            if (this.sourceService === 'youtube') {
-                id = this.sourceUrl.match(this.constructor.reYT)[1];
-                this.dom.updateAttr('src', iframe, 'https://www.youtube.com/embed/' + id + '?autoplay=1');
-            }
-
-            if (this.sourceService === 'vimeo') {
-                id = this.sourceUrl.match(this.constructor.reV)[0];
-                this.dom.updateAttr('src', iframe, 'https://player.vimeo.com/video/' + id + '?autoplay=1');
-            }
-
-            this.imageWrapperElement.appendChild(iframe);
+        _clickImageHandler : function _bindEvents() {
+            this.dispatch('post:display:detail', {data: this});
         },
 
         /* Implementation for the destroy method.
@@ -115,8 +95,8 @@ Class(CV, 'PostVideo').inherits(CV.Post)({
          * @method __destroy <private> [Function]
          */
         __destroy : function __destroy() {
-            this.imageWrapperElement.removeEventListener('click', this.addVideoHandler);
-            this.addVideoHandler = null;
+            this.imageWrapperElement.removeEventListener('click', this._clickImageHandlerRef);
+            this._clickImageHandlerRef = null;
 
             this.el = null;
             this.imageWrapperElement = null;

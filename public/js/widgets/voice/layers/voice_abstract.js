@@ -23,7 +23,7 @@ Class(CV, 'VoicePostLayersVoiceAbstract').inherits(CV.VoicePostLayers)({
          * @method request <protected, abstract> [Function]
          */
         request : function request(id, dateString, scrollDirection) {
-            this._socket.emit('getMonthPosts', id, dateString, scrollDirection);
+            this._socket.emit('getApprovedMonthPosts', id, dateString, scrollDirection);
         },
 
         /* Implementation to add and render post to a layer.
@@ -66,7 +66,7 @@ Class(CV, 'VoicePostLayersVoiceAbstract').inherits(CV.VoicePostLayers)({
          * @method __bindEvents <protected, abstract> [Function]
          */
         __bindEvents : function __bindEvents() {
-            this._socket.on('monthPosts', this._loadLayerRef);
+            this._socket.on('approvedMonthPosts', this._loadLayerRef);
             return this;
         },
 
@@ -74,7 +74,7 @@ Class(CV, 'VoicePostLayersVoiceAbstract').inherits(CV.VoicePostLayers)({
          * @method __destroy <protected, abstract> [Function]
          */
         __destroy : function __destroy() {
-            this._socket.removeListener('monthPosts', this._loadLayerRef);
+            this._socket.removeListener('approvedMonthPosts', this._loadLayerRef);
         }
     }
 });

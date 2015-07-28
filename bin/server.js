@@ -20,7 +20,7 @@ io.use(function(socket, next) {
 });
 
 io.on('connection', function(socket) {
-  socket.on('getMonthPosts', function(voiceId, dateString, up) {
+  socket.on('getApprovedMonthPosts', function(voiceId, dateString, up) {
     var dateData = dateString.split('-');
 
     logger.log(voiceId, dateString, up);
@@ -30,15 +30,15 @@ io.on('connection', function(socket) {
 
       PostsPresenter.build(posts, socket.request.session.currentPerson, function(err, results) {
         if (err) {
-          return socket.emit('monthPosts', {'error': err}, dateString, up);
+          return socket.emit('approvedMonthPosts', {'error': err}, dateString, up);
         }
 
-        socket.emit('monthPosts', results, dateString, up);
+        socket.emit('approvedMonthPosts', results, dateString, up);
       });
     });
   });
 
-  socket.on('getMonthPostsModerate', function(voiceId, dateString, up) {
+  socket.on('getUnapprovedMonthPosts', function(voiceId, dateString, up) {
     var dateData = dateString.split('-');
 
     logger.log(voiceId, dateString, up);
@@ -48,10 +48,10 @@ io.on('connection', function(socket) {
 
       PostsPresenter.build(posts, socket.request.session.currentPerson, function(err, results) {
         if (err) {
-          return socket.emit('monthPostsModerate', {'error': err}, dateString, up);
+          return socket.emit('unapprovedMonthPosts', {'error': err}, dateString, up);
         }
 
-        socket.emit('monthPostsModerate', results, dateString, up);
+        socket.emit('unapprovedMonthPosts', results, dateString, up);
       });
     });
   });
