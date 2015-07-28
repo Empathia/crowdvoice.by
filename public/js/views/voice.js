@@ -199,6 +199,36 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
 
             this.layerManagerReadyRef = this._layerManagerReadyHandler.bind(this);
             this.voicePostLayersManager.bind('ready', this.layerManagerReadyRef);
+
+            this.bind('post:display:detail', function (ev) {
+                this.displayGallery(ev);
+            }.bind(this));
+        },
+
+        /* Renders the PostDetail Overlay
+         */
+        displayGallery : function displayGallery(ev) {
+            if (this.postDetailController) {
+                this.postDetailController = this.postDetailController.destroy();
+            }
+
+            if (ev.data.approved) {
+                this.postDetailController = new CV.PostDetailControllerApproved({
+                    _socket : this._socket,
+                    data : ev.data
+                });
+            }
+
+            if (ev.data.approved === false) {
+                this.postDetailController = new CV.PostDetailControllerUnapproved({
+                    _socket : this._socket,
+                    data : ev.data
+                });
+            }
+
+            this.postDetailController.widget.bind('deactivate', function() {
+                this.postDetailController = this.postDetailController.destroy();
+            }.bind(this));
         },
 
         loadLayer : function loadLayer(dateString, scrollDirection) {

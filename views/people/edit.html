@@ -152,6 +152,13 @@
                 </div>
               </div>
 
+              <div class="-col-12">
+                <div class="cv-check">
+                  <input type="checkbox" class="password-checkbox" name="showpassword" value="false">
+                  <span class="label">Show Password</span>
+                </div>
+              </div>
+
             </div>
 
           </form>
@@ -320,7 +327,7 @@
   var inputEmail = new CV.Input({
       type      : '',
       name      : 'email',
-      style     : 'small',
+      style     : 'small disabled',
       hasTitle  : true,
       title     : "Email",
       value     : '<%= currentUser.email %>'
@@ -343,10 +350,11 @@
 
   var inputPassword = new CV.Input({
       name : 'password',
-      style   : 'small',
+      style   : 'small disabled',
       hasTitle  : true,
       title     : "Your Password",
   }).render(passwordOptions.find('.placeholder-password'));
+  inputPassword.element.find('input').attr('type', 'password');
 
   var passwordSaveButton = new CV.Button({
       style   : 'primary tiny',
@@ -365,13 +373,18 @@
   emailOptions.find('.placeholder-pin').on('click', function(){
     emailOptions.find('.placeholder-pin').hide();
     emailOptions.find('.placeholder-buttons').show();
+    emailOptions.find('.cv-input').removeClass('disabled');
+    emailOptions.find('.cv-input input')[0].focus();
   });
+
   emailCancelButton.element.on('click', function(e){
     e.preventDefault;
     emailOptions.find('.placeholder-pin').show();
     emailOptions.find('.placeholder-buttons').hide();
+    emailOptions.find('.cv-input').addClass('disabled');
     return false;
   });
+
   emailSaveButton.element.on('click', function(){
 
   });
@@ -379,16 +392,36 @@
   passwordOptions.find('.placeholder-pin').on('click', function(){
     passwordOptions.find('.placeholder-pin').hide();
     passwordOptions.find('.placeholder-buttons').show();
+    passwordOptions.find('.cv-input').removeClass('disabled');
+    passwordOptions.find('.cv-input input')[0].focus();
   });
+
   passwordCancelButton.element.on('click', function(e){
     e.preventDefault;
     passwordOptions.find('.placeholder-pin').show();
     passwordOptions.find('.placeholder-buttons').hide();
+    passwordOptions.find('.cv-input').addClass('disabled');
+    passwordOptions.find('.cv-input input').val('');
     return false;
   });
+
   passwordSaveButton.element.on('click', function(){
 
   });
+
+  passwordOptions.find('.cv-check input').on('click', function(){
+
+    if ( this.checked ) {
+      passwordOptions.find('.cv-input input').attr('type', 'text');
+    } else {
+      passwordOptions.find('.cv-input input').attr('type', 'password');
+    }
+    passwordOptions.find('.cv-input input')[0].focus();
+
+
+  });
+
+
   //******* organizations ************
 
   $.ajax({

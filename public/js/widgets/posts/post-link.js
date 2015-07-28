@@ -73,6 +73,18 @@ Class(CV, 'PostLink').inherits(CV.Post)({
             this.dom.updateText(this.descriptionElement, this.description);
 
             this.dom.updateText(this.el.querySelector('.post-card-activity-saved .post-card-activity-label'), this.totalSaves);
+
+            this._bindEvents();
+        },
+
+        _bindEvents : function _bindEvents() {
+            this._clickImageHandlerRef = this._clickImageHandler.bind(this);
+            this.imageWrapperElement.addEventListener('click', this._clickImageHandlerRef);
+            return this;
+        },
+
+        _clickImageHandler : function _bindEvents() {
+            this.dispatch('post:display:detail', {data: this});
         },
 
         /* Implementation for the destroy method.
@@ -80,6 +92,9 @@ Class(CV, 'PostLink').inherits(CV.Post)({
          * @method __destroy <private> [Function]
          */
         __destroy : function __destroy() {
+            this.imageWrapperElement.removeEventListener('click', this._clickImageHandlerRef);
+            this._clickImageHandlerRef = null;
+
             this.el = null;
             this.imageWrapperElement = null;
             this.sourceElement = null;

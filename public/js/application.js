@@ -126,6 +126,20 @@ require('./widgets/posts/post-image');
 require('./widgets/posts/post-video');
 require('./widgets/posts/post-link');
 
+// post detail
+require('./widgets/post-details/controllers/approved');
+require('./widgets/post-details/controllers/unapproved');
+require('./widgets/post-details/navigation');
+require('./widgets/post-details/post-detail');
+// post detail link
+require('./widgets/post-details/link/post-detail-link');
+require('./widgets/post-details/link/header');
+require('./widgets/post-details/link/iframe');
+// post detail media
+require('./widgets/post-details/media/post-detail-media');
+require('./widgets/post-details/media/header');
+require('./widgets/post-details/media/info');
+
 // editable posts
 require('./widgets/posts/edit/editable-post.js');
 require('./widgets/posts/edit/editable-post-link.js');
