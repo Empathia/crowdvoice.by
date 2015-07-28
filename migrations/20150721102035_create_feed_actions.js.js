@@ -4,7 +4,7 @@ exports.up = function(knex, Promise) {
     knex.schema.createTable('FeedActions', function (t) {
       t.increments('id').primary();
       t.integer('item_id').index();
-      t.integer('item_type').index();
+      t.string('item_type').index();
       t.integer('action_doer').index(); // entity ID
       t.string('action');
       t.integer('follower_id').index();
