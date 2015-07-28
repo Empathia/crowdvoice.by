@@ -5,10 +5,10 @@
 
       <article role="article" class="profile-menu -row -rel">
         <div class="profile-tabs">
-          <div class="menu-item active -menu-tab -inline-block">
+          <div class="menu-item -menu-tab -inline-block">
             <p class="-font-bold">My Profile</p>
           </div>
-          <div class="menu-item -menu-tab -inline-block">
+          <div class="menu-item active -menu-tab -inline-block">
             <p class="-font-bold">Account</p>
           </div>
           <div class="menu-item -menu-tab -inline-block">
@@ -25,7 +25,7 @@
                 Profile
      |||||||||||||||||||||||||||||||| -->
 
-    <div class="active -menu-tab-content">
+    <div class="-menu-tab-content">
       <div class="form-notifications"></div>
 
   <% if (currentPerson) { %>
@@ -103,27 +103,58 @@
                 Account
      |||||||||||||||||||||||||||||||| -->
 
-    <div class="-menu-tab-content">
-      <form class="form-account">
-        <div class="-width-50">
-          <div class="-col-7 -pr1 placeholder-email">
-          </div>
-          <div class="-col-5 placeholder-buttons">
-            <div class="form-field">
-              <label><span></span></label>
-            </div>
-          </div>
+    <div class="active -menu-tab-content">
 
-          <div class="-row">
-            <div class="-col-7 -pr1 placeholder-password">
-            </div>
-            <div class="-col-5 placeholder-pin">
-              <div class="form-field">
-                <label><span></span></label>
-                <div class="icon-text edit">Change</div>
+        <div class="-width-50">
+          <form class="form-account-email" action="/<%= currentPerson.profileName %>?_method=PUT" method="POST">
+
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+            <div class="-row email-options">
+
+              <div class="-col-7 -pr1 placeholder-email"></div>
+
+              <div class="-col-5 placeholder-buttons" style="display: none;">
+                <div class="form-field">
+                  <label><span></span></label>
+                </div>
               </div>
+
+              <div class="-col-5 placeholder-pin">
+                <div class="form-field">
+                  <label><span></span></label>
+                  <div class="icon-text edit">Change</div>
+                </div>
+              </div>
+
             </div>
-          </div>
+
+          </form>
+
+          <form class="form-account-password" action="/<%= currentPerson.profileName %>?_method=PUT" method="POST">
+
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+            <div class="-row password-options">
+
+              <div class="-col-7 -pr1 placeholder-password"></div>
+
+              <div class="-col-5 placeholder-buttons" style="display: none;">
+                <div class="form-field">
+                  <label><span></span></label>
+                </div>
+              </div>
+
+              <div class="-col-5 placeholder-pin">
+                <div class="form-field">
+                  <label><span></span></label>
+                  <div class="icon-text edit">Change</div>
+                </div>
+              </div>
+
+            </div>
+
+          </form>
 
         </div>
 
@@ -147,7 +178,6 @@
 
         </div>
 
-      </form>
     </div>
 
     <!-- ||||||||||||||||||||||||||||||||
@@ -282,44 +312,83 @@
 
 
   //******* account ************
+  var emailOptions = $('.form-account-email .email-options');
+  var passwordOptions = $('.form-account-password .password-options');
+  //placeholder-pin
+  //placeholder-buttons
 
-  new CV.Input({
+  var inputEmail = new CV.Input({
       type      : '',
       name      : 'email',
       style     : 'small',
       hasTitle  : true,
       title     : "Email",
       value     : '<%= currentUser.email %>'
-  }).render($('.form-account .placeholder-email'));
+  }).render(emailOptions.find('.placeholder-email'));
 
-  new CV.Button({
+  var emailSaveButton = new CV.Button({
       style   : 'primary tiny',
       type    : 'single',
       label   : 'Save',
       name    : 'buttonSend'
-  }).render($('.form-account .placeholder-buttons .form-field'));
+  }).render(emailOptions.find('.placeholder-buttons .form-field'));
 
-  new CV.Button({
+  var emailCancelButton = new CV.Button({
       style   : 'tiny',
       type    : 'single',
       label   : 'Cancel',
       name    : 'buttonSend'
-  }).render($('.form-account .placeholder-buttons .form-field'));
+  }).render(emailOptions.find('.placeholder-buttons .form-field'));
 
-  new CV.Input({
+
+  var inputPassword = new CV.Input({
       name : 'password',
       style   : 'small',
       hasTitle  : true,
       title     : "Your Password",
-  }).render($('.form-account .placeholder-password'));
+  }).render(passwordOptions.find('.placeholder-password'));
 
-  new CV.Button({
+  var passwordSaveButton = new CV.Button({
+      style   : 'primary tiny',
+      type    : 'single',
+      label   : 'Save',
+      name    : 'buttonSend'
+  }).render(passwordOptions.find('.placeholder-buttons .form-field'));
+
+  var passwordCancelButton = new CV.Button({
       style   : 'tiny',
       type    : 'single',
-      label   : 'Set Account to be protected',
+      label   : 'Cancel',
       name    : 'buttonSend'
-  }).render($('.form-account .placeholder-main'));
+  }).render(passwordOptions.find('.placeholder-buttons .form-field'));
 
+  emailOptions.find('.placeholder-pin').on('click', function(){
+    emailOptions.find('.placeholder-pin').hide();
+    emailOptions.find('.placeholder-buttons').show();
+  });
+  emailCancelButton.element.on('click', function(e){
+    e.preventDefault;
+    emailOptions.find('.placeholder-pin').show();
+    emailOptions.find('.placeholder-buttons').hide();
+    return false;
+  });
+  emailSaveButton.element.on('click', function(){
+
+  });
+
+  passwordOptions.find('.placeholder-pin').on('click', function(){
+    passwordOptions.find('.placeholder-pin').hide();
+    passwordOptions.find('.placeholder-buttons').show();
+  });
+  passwordCancelButton.element.on('click', function(e){
+    e.preventDefault;
+    passwordOptions.find('.placeholder-pin').show();
+    passwordOptions.find('.placeholder-buttons').hide();
+    return false;
+  });
+  passwordSaveButton.element.on('click', function(){
+
+  });
   //******* organizations ************
 
   $.ajax({
@@ -328,7 +397,6 @@
     headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
     data : {},
     success: function(data) {
-      console.log(data);
       new CV.UsersList({
           hasButton     : true,
           users         : data,
