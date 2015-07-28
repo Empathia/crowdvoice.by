@@ -1,4 +1,5 @@
 require('./../presenters/ThreadsPresenter');
+var feeds = require(__dirname + '/../lib/feed.js');
 
 var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
   prototype : {
@@ -86,39 +87,56 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
         }
 
         var thread;
+        var invite;
 
-        async.series([function(done) {
-          MessageThread.findOrCreate({
-            senderPerson : response.senderPerson,
-            senderEntity : response.senderEntity,
-            receiverEntity : response.receiverEntity
-          }, function(err, result) {
-            if (err) {
-              return done(err)
+        async.series([
+          function(done) {
+            if (payload.type.search('invitation') !== -1) {
+              invite = new InvitationRequest({
+                invitatorEntityId: response.senderEntity.id,
+                invitedId: response.receiverEntity.id
+              });
+              invite.save(function (err) {
+                if (err) { return done(err); }
+
+                payload.invitationRequestId = invite.id;
+              });
+            } else {
+              done();
             }
+          },
+          function(done) {
+            MessageThread.findOrCreate({
+              senderPerson : response.senderPerson,
+              senderEntity : response.senderEntity,
+              receiverEntity : response.receiverEntity
+            }, function(err, result) {
+              if (err) {
+                return done(err);
+              }
 
-            thread = result;
+              thread = result;
 
-            done();
-          })
-        }, function(done) {
-          thread.createMessage({
-            senderPersonId : hashids.decode(req.currentPerson.id)[0],
-            type : payload.type,
-            invitationRequestId : payload.invitationRequestId,
-            voiceId : payload.voiceId,
-            organizationId : payload.organizationId,
-            message : payload.message,
-          }, function(err, result) {
-            if (err) {
-              return done(err)
-            }
+              done();
+            })
+          }, function(done) {
+            thread.createMessage({
+              senderPersonId : hashids.decode(req.currentPerson.id)[0],
+              type : payload.type,
+              invitationRequestId : payload.invitationRequestId,
+              voiceId : payload.voiceId,
+              organizationId : payload.organizationId,
+              message : payload.message,
+            }, function(err, result) {
+              if (err) {
+                return done(err);
+              }
 
-            done()
-          })
-        }], function(err) {
+              done();
+            });
+          }
+        ], function(err) {
           if (err) {
-            console.log(err.errors);
             return next(err);
           }
 
