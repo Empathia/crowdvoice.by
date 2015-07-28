@@ -192,15 +192,20 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
         var user = new User(req.user);
 
-        var email = req.body.email.toLowerCase().trim();
-        var password = req.body.password;
+        if (req.body.email){
+          var email = req.body.email.toLowerCase().trim();
 
-        if (email && email !== '') {
-          user.email = email;
+          if (email && email !== '') {
+            user.email = email;
+          }
         }
 
-        if (password && password !== '') {
-          user.password = password;
+        if (req.body.password) {
+          var password = req.body.password;
+
+          if (password && password !== '') {
+            user.password = password;
+          }
         }
 
         user.save(function(err, result) {

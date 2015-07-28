@@ -26,7 +26,7 @@
      |||||||||||||||||||||||||||||||| -->
 
     <div class="-menu-tab-content">
-      <div class="form-notifications"></div>
+      <div class="form-notifications-profile"></div>
 
   <% if (currentPerson) { %>
       <form class="form-profile" action="/<%= currentPerson.profileName %>?_method=PUT" method="POST" enctype="multipart/form-data">
@@ -105,6 +105,8 @@
 
     <div class="active -menu-tab-content">
 
+        <div class="form-notifications-account"></div>
+
         <div class="-width-50">
           <form class="form-account-email" action="/<%= currentPerson.profileName %>/updateUser?_method=PUT" method="POST">
 
@@ -131,7 +133,7 @@
 
           </form>
 
-          <form class="form-account-password" action="/<%= currentPerson.profileName %>?_method=PUT" method="POST">
+          <form class="form-account-password" action="/<%= currentPerson.profileName %>/updateUser?_method=PUT" method="POST">
 
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
@@ -421,6 +423,40 @@
 
   });
 
+  var accountErrors;
+
+  <% if (typeof errors !== 'undefined') { %>
+
+    accountErrors = <%= JSON.stringify(errors) %>;
+
+  <% } %>
+
+  var alertAccount = null;
+
+  if (accountErrors){
+
+    var errorType = Object.keys(accountErrors)[0];
+    var errorsString;
+
+    if (errorType == 'email'){
+      errorsString = '<b>Email</b> is already taken.'
+    }else{
+      errorsString = 'Could not change <b>Password</b>, must be 8 characters long.'
+    }
+
+    if (!alertAccount){
+      alertAccount = new CV.Alert({
+        type: 'negative',
+        html: errorsString
+      }).render($('.form-notifications-account'));
+
+      $('form.form-account').prepend('<br>');
+    } else {
+      alert.update(null, errorsString)
+    }
+
+  }
+
 
   //******* organizations ************
 
@@ -472,9 +508,9 @@
         alert = new CV.Alert({
           type: 'negative',
           html: errorsString
-        }).render($('.form-notifications'));
+        }).render($('.form-notifications-profile'));
 
-        $('form').prepend('<br>');
+        $('form.form-profile').prepend('<br>');
       } else {
         alert.update(null, errorsString)
       }
