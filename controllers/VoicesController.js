@@ -127,6 +127,30 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
               });
             });
           });
+        }, function(done) {
+
+          // RelatedVoices
+          RelatedVoice.find({ 'voice_id' : req.activeVoice.id }, function(err, result) {
+            if (err) {
+              return done(err);
+            }
+
+            var relatedIds = result.map(function(item) {
+              return item.relatedId;
+            });
+
+            Voice.whereIn('id', relatedIds, function(err, result) {
+              VoicesPresenter.build(result, req.currentPerson, function(err, relatedVoices) {
+                if (err) {
+                  return done(err);
+                }
+
+                res.locals.relatedVoices = relatedVoices;
+
+                done();
+              });
+            });
+          });
         }], next);
       });
     },
