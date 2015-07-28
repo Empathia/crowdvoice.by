@@ -9,6 +9,8 @@
 var moment = require('moment');
 
 Module(CV, 'ModeratePostsRegistry')({
+    _ : {},
+
     /* Register the empty `year-month` keys.
      * @method setup <public> [Function]
      * @argument unapprovedPostsData <required> [Array]
@@ -20,7 +22,7 @@ Module(CV, 'ModeratePostsRegistry')({
         unapprovedPostsData.forEach(function(yearItem) {
             yearItem.months.forEach(function(monthItem) {
                 var date = moment(yearItem.year + '-' + monthItem.month + '-01', 'YYYY-MM').format('YYYY-MM');
-                _this[date] = null;
+                _this._[date] = null;
             });
         });
     },
@@ -31,7 +33,7 @@ Module(CV, 'ModeratePostsRegistry')({
      * @return this[name] || undefined
      */
     get : function get(name) {
-        return this[name];
+        return this._[name];
     },
 
     /* Sets the posts data for the passed key.
@@ -41,6 +43,20 @@ Module(CV, 'ModeratePostsRegistry')({
      * @return undefined
      */
     set : function set(name, posts) {
-        this[name] = posts;
+        this._[name] = posts;
+    },
+
+    /* Returns all the cached object data.
+     */
+    getAll : function getAll() {
+        return this._;
+    },
+
+    /* Returns the keys ordered DESC.
+     */
+    getKeys : function getKeys() {
+        return Object.keys(this.getAll()).sort(function(a,b) {
+            return a < b;
+        });
     }
 });

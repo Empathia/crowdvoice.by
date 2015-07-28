@@ -312,6 +312,14 @@ Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
          * @return undefined
          */
         loadLayer : function loadLayer(postsData, dateString, scrollDirection) {
+            if (dateString !== this._currentMonthString) {
+                return void 0;
+            }
+
+            if (this['postsLayer_' + dateString].getPosts().length) {
+                return void 0;
+            }
+
             var currentLayer = this.getCurrentMonthLayer();
             var prev = currentLayer.getPreviousSibling();
             var next = currentLayer.getNextSibling();

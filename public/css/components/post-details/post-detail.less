@@ -1,0 +1,64 @@
+.cv-post-detail {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.85);
+  z-index: 2;
+}
+
+.cv-post-detail__header {
+  z-index: 1;
+  position: fixed;
+  top: 0;
+  left: 50px;
+  right: 50px;
+  height: 60px;
+  background-color: @color-white;
+  border-radius: 0 0 7px 7px;
+}
+
+.cv-post-detail__header-navigation {
+  border-left: 1px solid @color-neutral-light;
+
+  > button {
+    padding: 0 10px;
+    height: 60px;
+  }
+}
+
+.cv-post-detail__content {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 100px 50px 0;
+}
+
+/***********************************
+ * POST LINK
+ ************************************/
+.cv-post-detail-link .cv-post-detail__content {
+  transform: translate(0, 100%);
+  transition: transform 420ms ease-out;
+
+  &.active {
+    transform: translate(0, 0);
+  }
+}
+
+.cv-post-detail-link__iframe {
+  border-radius: 7px 7px 0 0;
+  > iframe {
+    border-radius: inherit;
+  }
+  .cv-loader {
+    display: none;
+    top: 50%;
+    left: 50%;
+    &.active {
+      display: block;
+    }
+  }
+}

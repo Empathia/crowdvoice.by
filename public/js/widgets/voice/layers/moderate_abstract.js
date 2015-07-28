@@ -24,7 +24,7 @@ Class(CV, 'VoicePostLayersModerateAbstract').inherits(CV.VoicePostLayers)({
          * @method request <protected, abstract> [Function]
          */
         request : function request(id, dateString, scrollDirection) {
-            this._socket.emit('getMonthPostsModerate', id, dateString, scrollDirection);
+            this._socket.emit('getUnapprovedMonthPosts', id, dateString, scrollDirection);
         },
 
         /* Implementation to add and render post to a layer.
@@ -102,7 +102,7 @@ Class(CV, 'VoicePostLayersModerateAbstract').inherits(CV.VoicePostLayers)({
          * @method __bindEvents <protected, abstract> [Function]
          */
         __bindEvents : function __bindEvents() {
-            this._socket.on('monthPostsModerate', this._loadLayerRef);
+            this._socket.on('unapprovedMonthPosts', this._loadLayerRef);
             return this;
         },
 
@@ -110,7 +110,7 @@ Class(CV, 'VoicePostLayersModerateAbstract').inherits(CV.VoicePostLayers)({
          * @method __destroy <protected, abstract> [Function]
          */
         __destroy : function __destroy() {
-            this._socket.removeListener('monthPostsModerate', this._loadLayerRef);
+            this._socket.removeListener('unapprovedMonthPosts', this._loadLayerRef);
         }
     }
 });
