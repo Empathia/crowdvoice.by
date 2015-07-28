@@ -134,6 +134,18 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
       // Add image attachment
       this.hasImage({
         propertyName: 'image',
+        medium: function (readStream) {
+          return readStream.pipe(
+            sharp()
+              .resize(85)
+              .interpolateWith(sharp.interpolator.nohalo)
+              .embed()
+              .progressive()
+              .flatten()
+              .background('#FFFFFF')
+              .quality(100)
+          );
+        },
         versions: {
           medium: function (readStream) {
             return readStream.pipe(
@@ -146,6 +158,18 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
                 .background('#FFFFFF')
                 .quality(100)
             );
+          },
+          large : function(readStream) {
+            return readStream.pipe(
+              sharp()
+                .resize(1020)
+                .interpolateWith(sharp.interpolator.nohalo)
+                .embed()
+                .progressive()
+                .flatten()
+                .background('#FFFFFF')
+                .quality(100)
+            )
           }
         },
         bucket: 'crowdvoice.by',

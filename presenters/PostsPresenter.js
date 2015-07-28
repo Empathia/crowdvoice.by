@@ -10,11 +10,16 @@ var PostsPresenter = Module('PostsPresenter')({
       post.voiceId      = hashids.encode(post.voiceId);
       post.ownerId      = hashids.encode(post.ownerId);
 
-      if (postInstance.image.meta('medium')) {
-        post.image        = postInstance.image.url('medium');
-        post.imageWidth   = postInstance.image.meta('medium').width;
-        post.imageHeight  = postInstance.image.meta('medium').height;
+      var images = {};
+
+      for (var version in postInstance.imageMeta) {
+        images[version] = {
+          url : postInstance.image.url(version),
+          meta : postInstance.image.meta(version)
+        };
       }
+
+      post.postImages = images;
 
       if (currentPerson) {
         Vote.find({
