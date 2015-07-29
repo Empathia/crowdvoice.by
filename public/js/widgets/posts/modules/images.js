@@ -1,3 +1,4 @@
+/* global ImageHalt */
 /* Module PostModuleImages
  * Methods to handle cover images.
  * Show/hide/set/update/load/abort current post cover image.
@@ -10,6 +11,10 @@ Module(CV, 'PostModuleImages')({
         /* PRIVATE properties */
         imageLoaded : false,
         haltImage : null,
+
+        hasCoverImage : function hasCoverImage() {
+            return this.postImages && this.postImages.medium && this.postImages.medium.url;
+        },
 
         /* Updates the cover image with the passed sourceString.
          * @method setCoverImage <public> [Function]
@@ -48,8 +53,7 @@ Module(CV, 'PostModuleImages')({
          * @return [CV.Post]
          */
         loadImage : function loadImage() {
-            if (!this.image) {return this;}
-
+            if (!this.hasCoverImage()) {return this;}
             if (this.imageLoaded === true) {return this;}
 
             if (this.haltImage) {
@@ -58,7 +62,7 @@ Module(CV, 'PostModuleImages')({
             }
 
             this._loadImageHandlerRef = this._loadImageHandler.bind(this);
-            this.haltImage = new ImageHalt(this.image, this._loadImageHandlerRef);
+            this.haltImage = new ImageHalt(this.postImages.medium.url, this._loadImageHandlerRef);
             this.haltImage.load();
 
             return this;
@@ -69,10 +73,8 @@ Module(CV, 'PostModuleImages')({
          * @return [CV.Post]
          */
         abortImage : function abortImage() {
-            if (!this.image) {return this;}
-
+            if (!this.hasCoverImage()) {return this;}
             if (!this.haltImage) {return this;}
-
             if (this.imageLoaded === true) {return this;}
 
             this.haltImage.abort();
