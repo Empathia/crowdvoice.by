@@ -107,7 +107,7 @@
 
         <div class="form-notifications-account"></div>
 
-        <div class="-width-50">
+        <div class="-width-50 -form-space">
           <form class="form-account-email" action="/<%= currentPerson.profileName %>/updateUser?_method=PUT" method="POST">
 
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
@@ -167,25 +167,6 @@
 
         </div>
 
-        <br>
-        <hr>
-        <br>
-
-        <div class="-width-50">
-
-          <div class="form-field">
-            <label>Deactivate Account<span></span></label>
-            <div class="text">
-              <p class="fade">Deactivating your account will remove it from CrowdVoice.by within a few minutes. You can sign back in whenever to reactivate your account and restore its content.</p>
-              <br>
-              <a href="#" class="no-style">Deactivate Account</a>
-              <br><br>
-              <span class="dim">If you want to permanently delete your account and remove your content, please send us a request. It will take a few days to process a full deletion.</span>
-
-            </div>
-          </div>
-
-        </div>
 
     </div>
 
@@ -387,8 +368,20 @@
     return false;
   });
 
-  emailSaveButton.element.on('click', function(){
+  emailSaveButton.element.on('click', function(e){
+    e.preventDefault;
 
+    var formAccountEmailEl = $('.form-account-email');
+
+    var formEmailOptions = {
+      'email' : ['required', 'email']
+    };
+    var formEmailBody = {
+      'email' : formAccountEmailEl.find('.placeholder-email input').val()
+    };
+
+    validateAccount(formAccountEmailEl, formEmailOptions, formEmailBody);
+    return false;
   });
 
   passwordOptions.find('.placeholder-pin').on('click', function(){
@@ -407,8 +400,22 @@
     return false;
   });
 
-  passwordSaveButton.element.on('click', function(){
+  passwordSaveButton.element.on('click', function(e){
+    e.preventDefault;
 
+    var formAccountPassEl = $('.form-account-password');
+
+    var formPassOptions = {
+      'password' : ['required', 'minLength:8']
+    };
+
+    var formPassBody = {
+      'password' : formAccountPassEl.find('.placeholder-password input').val()
+    };
+
+    validateAccount(formAccountPassEl, formPassOptions, formPassBody);
+
+    return false;
   });
 
   passwordOptions.find('.cv-check input').on('click', function(){
@@ -426,9 +433,7 @@
   var accountErrors;
 
   <% if (typeof errors !== 'undefined') { %>
-
     accountErrors = <%= JSON.stringify(errors) %>;
-
   <% } %>
 
   var alertAccount = null;
@@ -450,9 +455,46 @@
         html: errorsString
       }).render($('.form-notifications-account'));
 
-      $('form.form-account').prepend('<br>');
+      $('.form-account-email').parent().prepend('<br>');
     } else {
       alert.update(null, errorsString)
+    }
+
+  }
+
+  function validateAccount(formEl, options, body) {
+
+    var formAccountEl = formEl;
+
+    var formValidation = formUtils.validate(options, body);
+
+    if (formValidation.isValid) {
+      formAccountEl.submit();
+    } else {
+
+      var errorsString = '';
+
+      if (formValidation.errors){
+        for (var error in formValidation.errors.errors) {
+          var err = formValidation.errors.errors[error];
+          var errorStr = err.message.replace(err.key, '<b>'+ err.key +'</b>');
+          errorsString += '<p>' + errorStr + '</p>';
+        }
+      }
+
+      if (!alertAccount){
+        alertAccount = new CV.Alert({
+          type: 'negative',
+          html: errorsString
+        }).render($('.form-notifications-account'));
+
+        $('.-form-space').prepend('<br>');
+      } else {
+        alertAccount.update(null, errorsString)
+      }
+
+      return false;
+
     }
 
   }
