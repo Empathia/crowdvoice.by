@@ -4,6 +4,7 @@ Class(CV, 'PostCreatorUploadFile').inherits(CV.PostCreator)({
     ELEMENT_CLASS : 'cv-post-creator post-creator-upload-file',
     HTML : '\
         <div>\
+            <div class="input-error-message -on-error -abs -color-danger"></div>\
             <header class="cv-post-creator__header -clearfix">\
                 <input type="file" name="image" class="image-input cv-button tiny -hide"/>\
             </header>\
@@ -26,6 +27,7 @@ Class(CV, 'PostCreatorUploadFile').inherits(CV.PostCreator)({
             this.inputFile = this.el.querySelector('input[type="file"]');
             this.header = this.el.querySelector('.cv-post-creator__header');
             this.content = this.el.querySelector('.cv-post-creator__content');
+            this.errorMessage = this.el.querySelector('.input-error-message');
 
             this.addCloseButton()._setup()._bindEvents()._disablePostButton();
         },
@@ -72,7 +74,7 @@ Class(CV, 'PostCreatorUploadFile').inherits(CV.PostCreator)({
             var postEditedData = this._previewPostWidget.getEditedData();
             console.log(postEditedData);
 
-            API.postSave({data : postEditedData}, this._savePostResponse.bind(this));
+            API.postCreate({posts : [postEditedData]}, this._savePostResponse.bind(this));
         },
 
         _savePostResponse : function _savePostResponse(err, response) {

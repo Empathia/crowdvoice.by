@@ -110,7 +110,7 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
 
                 // extra props
                 images : this.images.map(function(item) {return item.path;}),
-                imagePath : this.image || this.imagePath,
+                imagePath : this.imagePath || (this.postImages.medium.url),
             };
         },
 

@@ -50,7 +50,7 @@ Class(CV, 'PostDetailMediaInfo').inherits(Widget).includes(CV.WidgetUtils)({
             this.mediaElement.innerHTML = '';
 
             if (data.sourceType === 'image') {
-                this.mediaElement.insertAdjacentHTML('afterbegin', '<img src="' + data.image + '"/>');
+                this.mediaElement.insertAdjacentHTML('afterbegin', '<img src="' + data.postImages.medium.url + '"/>');
             }
 
             if (data.sourceType === 'video') {

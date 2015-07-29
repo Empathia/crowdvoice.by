@@ -32,7 +32,6 @@ Class(CV, 'PostVideo').inherits(CV.Post)({
 
     ICON : '<svg class="post-card-meta-icon"><use xlink:href="#svg-play"></use></svg>',
 
-
     prototype : {
         /* PRIVATE properties */
         el : null,
@@ -52,7 +51,7 @@ Class(CV, 'PostVideo').inherits(CV.Post)({
             this.dateTimeElement = this.el.querySelector('.post-card-meta-date');
             this.imageWrapperElement = this.el.querySelector('.post-card-image-wrapper');
 
-            if (this.image) {
+            if (this.hasCoverImage()) {
                 this.setImageHeight(this.imageMeta.medium.height);
             } else {
                 this.imageLoaded = true;

@@ -160,7 +160,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
               post.save(function(err, resave) {
                 if (err) { return nextPost(err); }
 
-              feed.voiceNewPosts(req, next);
+                feed.voiceNewPosts(req, next);
 
                 if (item.images) {
                   item.images.forEach(function(image) {
