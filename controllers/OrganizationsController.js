@@ -1,3 +1,5 @@
+var EntitiesPresenter = require(path.join(process.cwd(), '/presenters/EntitiesPresenter.js'));
+
 var OrganizationsController = Class('OrganizationsController').inherits(EntitiesController)({
   prototype : {
     init : function () {
@@ -42,6 +44,34 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
 
       });
     },
+
+    members : function members(req, res, next) {
+      EntityMembership.find({
+        'entity_id' : hashids.decode(req.entity)[0]
+      }, function(err, result) {
+        if (err) {
+          return next(err);
+        }
+
+        var memberIds = result.map(function(item) {
+          return item.memberId;
+        });
+
+        Entity.whereIn('id', memberIds, function(err, result) {
+          if (err) {
+            return next(err);
+          }
+
+          EntitiesPresenter.build(result, req.currentPerson, function(err, members) {
+            if (err) {
+              return next(err);
+            }
+
+            res.json(members);
+          });
+        });
+      });
+    }
 
   }
 });
