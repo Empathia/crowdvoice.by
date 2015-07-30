@@ -5,10 +5,10 @@
 
       <article role="article" class="profile-menu -row -rel">
         <div class="profile-tabs">
-          <div class="menu-item -menu-tab -inline-block">
+          <div class="menu-item active -menu-tab -inline-block">
             <p class="-font-bold">My Profile</p>
           </div>
-          <div class="menu-item active -menu-tab -inline-block">
+          <div class="menu-item -menu-tab -inline-block">
             <p class="-font-bold">Account</p>
           </div>
           <div class="menu-item -menu-tab -inline-block">
@@ -25,7 +25,7 @@
                 Profile
      |||||||||||||||||||||||||||||||| -->
 
-    <div class="-menu-tab-content">
+    <div class="active -menu-tab-content">
       <div class="form-notifications-profile"></div>
 
   <% if (currentPerson) { %>
@@ -103,7 +103,7 @@
                 Account
      |||||||||||||||||||||||||||||||| -->
 
-    <div class="active -menu-tab-content">
+    <div class="-menu-tab-content">
 
         <div class="form-notifications-account"></div>
 
@@ -175,7 +175,7 @@
      |||||||||||||||||||||||||||||||| -->
 
     <div class="-menu-tab-content">
-      <div class="placeholder-organizations">
+      <div class="placeholder-organizations -col-11">
 
       </div>
     </div>
@@ -211,6 +211,7 @@
           console.log("Geolocation is not supported by this browser.");
       }
   }
+
   function showPosition(position) {
       formProfile.find('.detect-location').removeClass('looking');
 

@@ -8,6 +8,9 @@
           <div class="menu-item active -menu-tab -inline-block">
             <p class="-font-bold">Profile</p>
           </div>
+          <div class="menu-item -menu-tab -inline-block">
+            <p class="-font-bold">Members</p>
+          </div>
 
         </div>
       </article>
@@ -96,7 +99,15 @@
       </form>
     </div>
 
+    <!-- ||||||||||||||||||||||||||||||||
+                members
+     |||||||||||||||||||||||||||||||| -->
 
+    <div class="-menu-tab-content">
+      <div class="placeholder-members -col-11">
+
+      </div>
+    </div>
 
   </section>
 
@@ -208,6 +219,74 @@
       label   : 'Save Changes',
       name    : 'buttonSend'
   }).render($('.form-profile .placeholder-send'));
+
+  //******* members  ************
+
+
+  var searchInput = new CV.InputButton({
+      type      : '',
+      name      : '',
+      style     : 'primary',
+      hasTitle  : true,
+      placeholder : 'Search users...',
+      title     : "Invite users to join this organization",
+      buttonLabel : "Invite"
+  }).render($('.placeholder-members'));
+
+  new CV.Input({
+      type      : '',
+      name      : '',
+      style     : '',
+      isArea    : true,
+      hasTitle  : true,
+      title     : "Write a message"
+  }).render($('.placeholder-members'));
+
+  new CV.Button({
+      style   : 'primary full',
+      type    : 'single',
+      label   : 'Invite User',
+      name    : 'buttonSend'
+  }).render($('.placeholder-members'));
+
+  $('.placeholder-members').append('<br><br>');
+
+  //$.ajax({
+  //  type: "GET",
+  //  url:'/<%= organization.profileName %>/members',
+  //  headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
+  //  data : {},
+  //  success: function(data) {
+  //    new CV.UsersList({
+  //      type          : '',
+  //      name          : '',
+  //      style         : '',
+  //      hasButton     : true,
+  //      users         : [],
+  //      listTitle     : "{count} members of this organization",
+  //      dateTitle     : "Member since"
+  //    }).render($('.placeholder-members'));
+  //  }
+  //});
+
+  $.ajax({
+    type: "GET",
+    url:'/cersei-lannister/edit/getOrganizations',
+    headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
+    data : {},
+    success: function(data) {
+      new CV.UsersList({
+          hasButton     : true,
+          users         : data,
+          listTitle     : "{count} members of this organization",
+          dateTitle     : "Member since"
+      }).render($('.placeholder-members'));
+    }
+  });
+
+
+
+  //********************************
 
   var formEl;
   var alert = null;
