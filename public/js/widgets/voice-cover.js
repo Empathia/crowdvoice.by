@@ -29,33 +29,33 @@ Class(CV, 'VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
             <div class="voice-cover-main-image-wrapper">\
                 <div class="voice-cover-main-image -img-cover"></div>\
             </div>\
-            <a class="voice-cover-hover-overlay -tdn" data-voice-anchor href="{{voice-url}}">\
+            <a class="voice-cover-hover-overlay -tdn" data-voice-anchor href="">\
                 <button class="voice-cover-hover-overlay-button cv-button tiny -font-semi-bold">View Voice</button>\
             </a>\
         </div>\
         <div class="voice-content">\
             <div class="author">\
-                <a class="author-anchor" href="{{voice-owner-url}}">\
-                    <img class="author-avatar -rounded" src="{{voice-owner-avatar-small}}" alt="">\
+                <a class="author-anchor" href="">\
+                    <img class="author-avatar -rounded" src="" alt="">\
                 </a>\
-                by <a class="author-anchor" href="{{voice-owner-url}}">\
-                    <span class="author-username">{{voice-owner-name}}</span>\
+                by <a class="author-anchor" href="">\
+                    <span class="author-username"></span>\
                 </a>\
             </div>\
             <h2 class="voice-cover-title -font-bold">\
-                <a class="voice-cover-title-anchor -tdn" data-voice-anchor href="{{voice-url}}">{{voice-title}}</a>\
+                <a class="voice-cover-title-anchor -tdn" data-voice-anchor href=""></a>\
             </h2>\
-            <p class="voice-cover-description">{{voice-description}}</p>\
+            <p class="voice-cover-description"></p>\
             <div class="meta">\
-                <span class="voice-cover-followers">{{voice-followers}}</span> followers &middot;&nbsp;\
-                Updated <time class="voice-cover-datetime" datetime="{{voice-updated-at-iso}}">{{voice-updated-at-human}}</time>\
+                <span class="voice-cover-followers"></span> followers &middot;&nbsp;\
+                Updated <time class="voice-cover-datetime" datetime=""></time>\
             </div>\
         </div>\
     </article>',
 
     TAG_ITEM_HTML : '\
     <li class="cv-tags-list-item">\
-        <a class="cv-tags-tag" href="{{tag-url}}">{{tag-name}}</a>\
+        <a class="cv-tags-tag" href=""></a>\
     </li>',
 
     IS_NEW_BADGE_HTML : '\
