@@ -82,7 +82,7 @@ Class(CV, 'Login').inherits(Widget)({
               </div>\
               <div class="form-field">\
                 <div class="cv-input">\
-                  <input type="text" class="password" name="password" value="" placeholder="PASSWORD">\
+                  <input type="password" class="password" name="password" value="" placeholder="PASSWORD">\
                 </div>\
               </div>\
             </div>\
@@ -120,17 +120,17 @@ Class(CV, 'Login').inherits(Widget)({
 
     FORM_RESET_PASSWORD : '\
       <h1>Type in a new password.</h1>\
-      <p>This time make sure you choose something you will remember.\
+      <p>This time make sure you choose something you will remember.<br>\
       Actually, you might want to read <a href="#">this article</a>. It will help :)</p>\
       <br>\
       <form action="" method="post" accept-charset="utf-8">\
         <div class="form-field">\
           <div class="cv-input">\
-            <input type="text" class="password" placeholder="YOUR PASSWORD">\
+            <input type="password" class="password" placeholder="YOUR PASSWORD">\
           </div>\
         </div>\
         <div class="cv-check">\
-          <input type="checkbox">\
+          <input type="checkbox" class="input-checkbox">\
           <span class="label">Show your password to make sure you typed it correctly.</span>\
         </div>\
         <br><br>\
@@ -265,8 +265,15 @@ Class(CV, 'Login').inherits(Widget)({
             });
 
             this.checkEl.on('click', function(){
-              this.checked(this.checkEl);
-            }.bind(this));
+              if ( this.checked ) {
+                login.element.find('.cv-input input').attr('type', 'text');
+              } else {
+                login.element.find('.cv-input input').attr('type', 'password');
+              }
+              login.element.find('.cv-input input')[0].focus();
+            });
+
+
 
         },
 

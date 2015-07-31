@@ -198,25 +198,28 @@ var TopicsController = Class('TopicsController')({
       });
     },
 
-    index : function index (req, res) {
-      Topic.all(function (err, results) {
-        if (err) { next(err); return; }
+    index : function index (req, res, next) {
+      Topic.all(function(err, result) {
+        if (err) {
+          return done(err);
+        }
 
-        res.locals.topics = [];
-
-        results.forEach(function (result) {
-          res.locals.topics.push(new Topic(result));
-        });
-
-        res.format({
-          'text/html': function () {
-            res.render('topics/index.html', {});
-          },
-          'application/json': function () {
-            res.json(res.locals.topics);
+        TopicsPresenter.build(result, function(err, topics) {
+          if (err) {
+            return done(err);
           }
+
+          res.locals.topics = topics;
+          res.format({
+            'application/json': function () {
+              res.json(res.locals.topics);
+            }
+          });
+
         });
+
       });
+
     },
 
     show : function show (req, res) {

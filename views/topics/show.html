@@ -76,22 +76,36 @@
 	});
 	App.addInteractiveSidebar();
 
-	//var categories = <% //JSON.stringify(topics) %>;
+	$.ajax({
+		type: "GET",
+		url: '/topic/index',
+		headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
+		data : {},
+		dataType : 'json',
+		success: function(data) {
+			renderTopics(data);
+		}
+	});
 
-    //var cardsHolder = document.querySelector('.categories-cards-holder');
-    //var cardsList = cardsHolder.querySelector('.slider-list');
-	//
-    //categories.map(function(item) {
-    //    var card = new CategoryCover(item);
-    //    card.element[0].classList.add('slider-item');
-    //    return card.render(cardsList);
-    //});
-	//
-    //new CV.ResponsiveSlider({
-    //    element : cardsHolder,
-    //    dots : true,
-    //    minSlideWidth : 300
-    //});
+	function renderTopics(topics){
+		var categories = topics;
+
+	    var cardsHolder = document.querySelector('.categories-cards-holder');
+	    var cardsList = cardsHolder.querySelector('.slider-list');
+
+	    categories.map(function(item) {
+	        var card = new CategoryCover(item);
+	        card.element[0].classList.add('slider-item');
+	        return card.render(cardsList);
+	    });
+
+	    new CV.ResponsiveSlider({
+	        element : cardsHolder,
+	        dots : true,
+	        minSlideWidth : 300
+	    });
+	}
+
 
 	var responsives = {
     	'voices' 		: null,
@@ -102,21 +116,13 @@
 	var items = [];
 
 	function renderData(data, instance, className){
-		//data.forEach(function (item, index) {
-		//  var itemEl = $('<div class="-col-4 -pr1"></div>');
-		//  var newInstance = new instance(item).render( itemEl);
-		//  $('.discover-' + className + '-container').append(itemEl);
-		//  newInstance.element.addClass('id-' + item.id);
-		//  //console.log(item.createdAt);
-		//});
 
 		var itemsWrapper = document.querySelector('.discover-' + className + '-container');
         var itemsElements = [];
 
         data.forEach(function(item, index) {
-            var itemWidget = new instance(item).render(itemsWrapper);
+            var itemWidget = new instance({data:item}).render(itemsWrapper);
 			itemWidget.element.addClass('id-' + item.id);
-
             itemsElements.push(itemWidget.el);
         });
 
@@ -128,9 +134,31 @@
 
 	}
 
-
 	var voices = <%= JSON.stringify(voices) %>;
-	renderData(voices, VoiceCover, 'voices');
+	renderData(voices, CV.VoiceCover, 'voices');
+
+	$.ajax({
+		type: "GET",
+		url: '/topic/<%= currentTopic.slug %>/people',
+		headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
+		data : {},
+		dataType : 'json',
+		success: function(data) {
+			//console.log(data);
+			//renderData(data, CV.Card, 'people');
+		}
+	});
+	$.ajax({
+		type: "GET",
+		url: '/topic/<%= currentTopic.slug %>/organizations',
+		headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
+		data : {},
+		dataType : 'json',
+		success: function(data) {
+			//console.log(data);
+			//renderData(data, CV.Card, 'people');
+		}
+	});
 
 	var itemsContainer;
 	$( document ).ready(function() {

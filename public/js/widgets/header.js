@@ -52,12 +52,10 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
                 }
             }
 
-            this.appendChild(
-                new CV.SearchButton({
-                    name : 'searchButton',
-                    className : 'header-actions-button'
-                })
-            ).render(this.buttonActionsWrapper);
+            this.appendChild(new CV.SearchButton({
+                name : 'searchButton',
+                className : 'header-actions-button'
+            })).render(this.buttonActionsWrapper);
         },
 
         /* Append the ui for not logged in users
@@ -74,15 +72,13 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
                 '1' : {name: 'Logout', url: '/logout'}
             };
 
-            this.appendChild(
-                new CV.SelectAccount({
-                    label         : 'Multiple',
-                    name          : 'select',
-                    accountImage  : "/img/sample/avatars/org-00.jpg",
-                    accountName   : 'Anonymous',
-                    options       : allMulti
-                })
-            ).render(this.loginActionsWrapper);
+            this.appendChild(new CV.SelectAccount({
+                label         : 'Multiple',
+                name          : 'select',
+                accountImage  : "/img/sample/avatars/org-00.jpg",
+                accountName   : 'Anonymous',
+                options       : allMulti
+            })).render(this.loginActionsWrapper);
 
             this.appendChild(new CV.IncognitoButton({
                 name : 'incognitoButton'
@@ -123,31 +119,29 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
             itemCounter++;
             allMulti[itemCounter] = {name: 'Logout', url: '/logout'};
 
-            this.appendChild(
-                new CV.SelectAccount({
-                    label         : 'Multiple',
-                    name          : 'select',
-                    accountImage  : Person.get().images.small.url,
-                    accountName   : Person.get().name + ' ' + Person.get().lastname,
-                    options       : allMulti
-                })
-            ).render(this.loginActionsWrapper);
+            this.appendChild(new CV.SelectAccount({
+                label         : 'Multiple',
+                name          : 'select',
+                accountImage  : Person.get().images.small.url,
+                accountName   : Person.get().name + ' ' + Person.get().lastname,
+                options       : allMulti
+            })).render(this.loginActionsWrapper);
 
             // create new voice / organization dropdown
             var createOptions = {
-              "1": {label: 'Voice', name: 'voice'},
-              "2": {label: 'Organization', name: 'organization'}
+                "1": {label: 'Voice', name: 'voice'},
+                "2": {label: 'Organization', name: 'organization'}
             };
 
-            this.appendChild(
-                new CV.Select({
-                    className : 'header-create-dropdown -inline-block',
-                    style: 'primary small',
-                    label : 'Create New',
-                    name  : 'createSelect',
-                    options: createOptions
-                })
-            ).render(this.buttonActionsWrapper);
+            this.appendChild(new CV.Select({
+                className : 'header-create-dropdown -inline-block',
+                style: 'primary small',
+                label : 'Create New',
+                name  : 'createSelect',
+                options: createOptions
+            })).render(this.buttonActionsWrapper);
+            this.createSelect.voice[0].addEventListener('click', this._showCreateVoiceModal.bind(this));
+            this.createSelect.organization[0].addEventListener('click', this._showCreateOrganizationModal.bind(this));
 
             this.appendChild(new CV.IncognitoButton({
                 name : 'incognitoButton',
@@ -157,6 +151,30 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
             this.buttonActionsWrapper.insertAdjacentHTML('beforeend', this.constructor.BUTTON_ACTIONS_HTML);
 
             return this;
+        },
+
+        /* (for logged in users) Display the CreateVoiceModal.
+         * @method _showCreateVoiceModal <private> [Function]
+         */
+        _showCreateVoiceModal : function _showCreateVoiceModal() {
+            this.appendChild(new CV.Modal2({
+                title       : 'Create a Voice',
+                name        : 'createAVoiceModal',
+                action      : CV.CreateVoice,
+                width       : 960,
+            })).render(document.body);
+        },
+
+        /* (for logged in users) Display the CreateOrganizationModal.
+         * @method _showCreateOrganizationModal <private> [Function]
+         */
+        _showCreateOrganizationModal : function _showCreateOrganizationModal() {
+            this.appendChild(new CV.Modal2({
+                title       : 'Create an Organization',
+                name        : 'createAnOrganizationModal',
+                action      : CV.CreateOrganization,
+                width       : 540,
+            })).render(document.body);
         }
     }
 });

@@ -1,5 +1,6 @@
 var VoicesPresenter = require(path.join(process.cwd(), '/presenters/VoicesPresenter.js'));
 var PostsPresenter = require(path.join(process.cwd(), '/presenters/PostsPresenter.js'));
+var FeedPresenter = require(__dirname + '/../presenters/FeedPresenter.js');
 
 var PeopleController = Class('PeopleController').inherits(EntitiesController)({
   prototype : {
@@ -73,7 +74,24 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
           return next(new ForbiddenError());
         }
 
-        res.render('people/feed');
+        FeedAction.find({ follower_id: hashids.decode(req.currentPerson.id)[0] }, function (err, feed) {
+          if (err) { return next(err); }
+
+          FeedPresenter.build(feed, req.currentPerson, function (err, presentedFeed) {
+            if (err) { return next(err); }
+
+            res.format({
+              html: function () {
+                req.feed = presentedFeed;
+                res.locals.feed = presentedFeed;
+                res.render('people/feed');
+              },
+              json: function () {
+                res.json(presentedFeed);
+              }
+            });
+          });
+        });
       });
     },
 
