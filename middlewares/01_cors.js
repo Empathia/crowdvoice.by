@@ -1,7 +1,12 @@
 // *************************************************************************
 //                             CORS
 // *************************************************************************
-module.exports = function (req, res, next) {
+module.exports = function(req, res, next) {
+  if (fs.existsSync(path.join(process.cwd(), '/public/maintenance'))) {
+    console.log('exists')
+    return res.status(503).render('shared/503.html', { layout : 'systemStatus', message : 'Under maintenance. <br /> Will be right back!' });
+  }
+
   var hrtime = function() {
     var hrTime = process.hrtime();
     return (hrTime[0] + (hrTime[1] / 1000000));

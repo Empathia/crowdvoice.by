@@ -136,28 +136,36 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
         propertyName: 'image',
         versions: {
           small: function (readStream) {
-            return readStream.pipe(
-              sharp()
+            if (!useGM) {
+              return readStream.pipe(
+                sharp()
+                  .resize(85)
+                  .embed()
+                  .flatten()
+                  .background('#FFFFFF')
+                  .quality(80)
+              );
+            } else {
+              return gm(readStream)
                 .resize(85)
-                .interpolateWith(sharp.interpolator.nohalo)
-                .embed()
-                .progressive()
-                .flatten()
-                .background('#FFFFFF')
-                .quality(100)
-            );
+                .stream()
+            }
           },
           medium: function (readStream) {
-            return readStream.pipe(
-              sharp()
+            if (!useGM) {
+              return readStream.pipe(
+                sharp()
+                  .resize(340)
+                  .embed()
+                  .flatten()
+                  .background('#FFFFFF')
+                  .quality(80)
+              );
+            } else {
+              return gm(readStream)
                 .resize(340)
-                .interpolateWith(sharp.interpolator.nohalo)
-                .embed()
-                .progressive()
-                .flatten()
-                .background('#FFFFFF')
-                .quality(100)
-            );
+                .stream()
+            }
           }
         },
         bucket: 'crowdvoice.by',

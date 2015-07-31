@@ -1,3 +1,7 @@
+global.Admin = {};
+
+global.useGM = true;
+
 var application = require('neonode-core');
 
 // Load aws-sdk and S3
@@ -5,12 +9,11 @@ var AWS = require('aws-sdk');
 global.amazonS3 = new AWS.S3(CONFIG.s3);
 
 // Load image processors
-global.gm = require('gm').subClass({imageMagick: true});
 global.sharp = require('sharp');
+global.gm = require('gm');
+gm = gm.subClass({ imageMagick: true });
 
-var os = require('os');
-
-var cpuLength = 2;
+var cpuLength = 1;
 
 var casual = require('casual');
 
@@ -110,6 +113,7 @@ async.series([function(next) {
         lastname    : 'Lannister',
         profileName : 'tyrion-lannister',
         isAnonymous : false,
+        isAdmin     : true,
         description : 'Tyrion Lannister is a fictional character in the A Song of Ice and Fire series of fantasy novels by American author George R. R. Martin, and its television adaptation Game of Thrones',
         location : 'King\'s Landing'
       },
@@ -124,6 +128,7 @@ async.series([function(next) {
         lastname    : 'Lannister',
         profileName : 'cersei-lannister',
         isAnonymous : false,
+        isAdmin     : true,
         description : 'Cersei Lannister is the eldest child of Tywin and Joanna Lannister by mere moments, and the twin sister of Jaime Lannister.',
         location : 'King\'s Landing'
       },
@@ -1058,7 +1063,7 @@ async.series([function(next) {
         'https://www.youtube.com/watch?v=f4RGU2jXQiE'
       ];
 
-      async.timesLimit(250, cpuLength, function(id, nextPost) {
+      async.timesLimit(250, 1, function(id, nextPost) {
         var post =  new Post();
 
         var type = casual['random_element'](['image', 'video', 'link']);

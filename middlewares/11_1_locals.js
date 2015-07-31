@@ -74,6 +74,10 @@ module.exports = function(req, res, next) {
 
         person.id = hashids.decode(person.id)[0];
 
+        if (person.isAdmin === true) {
+          req.role = 'Admin';
+        }
+
         EntitiesPresenter.build([person], entity, function(err, presenterResult) {
           if (err) {
             return next(err);
