@@ -25,7 +25,19 @@ var NotificationsController = Class('NotificationsController')({
       })
     },
 
-    markAsRead: function (req, res, next) {},
+    markAsRead: function (req, res, next) {
+      FeedAction.find({ id: hashids.decode(req.body.notificationId)[0] }, function (err, action) {
+        if (err) { return next(err) }
+
+        var notif = new FeedAction(action[0])
+        notif.read = true
+        notif.save(function (err) {
+          if (err) { return next(err) }
+
+          res.json({ status: 'ok' })
+        })
+      })
+    },
   },
 })
 
