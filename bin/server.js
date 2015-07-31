@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
+// Admin namespace for Admin Controllers
+global.Admin = {};
+
 var application = require('neonode-core');
 
 // Load socket.io
