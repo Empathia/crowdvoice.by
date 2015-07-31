@@ -9,6 +9,12 @@ var FeedPresenter = Module('FeedPresenter')({
       var actionInst = new FeedAction(action)
 
       async.series([
+        // feed action ID
+        function (next) {
+          actionInst.id = hashids.encode(action.id)[0]
+          next()
+        },
+
         // itemType and itemId
         function (next) {
           if (action.itemType === 'voice') {
