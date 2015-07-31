@@ -177,31 +177,6 @@ module.exports = function(req, res, next) {
             next();
           });
         });
-
-        // var images = {};
-        //
-        // for (var version in person.imageMeta) {
-        //   images[version] = {
-        //     url : person.image.url(version),
-        //     meta : person.image.meta(version)
-        //   };
-        // }
-        //
-        // req.currentPerson.images = images;
-        // res.locals.currentPerson.images = images;
-        //
-        // var backgrounds = {};
-        //
-        // for (var version in person.backgroundMeta) {
-        //   backgrounds[version] = {
-        //     url : person.background.url(version),
-        //     meta : person.background.meta(version)
-        //   };
-        // }
-        //
-        // req.currentPerson.backgrounds = images;
-        // res.locals.currentPerson.backgrounds = images;
-        //
       });
     }
 
