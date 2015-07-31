@@ -187,6 +187,7 @@ require('./widgets/post-creators/write-article/cover-button');
 require('./widgets/bubble.js');
 require('./widgets/bubble/voices-list.js');
 require('./widgets/modal.js');
+require('./widgets/modal2.js');
 require('./widgets/login.js');
 require('./widgets/formUtils.js');
 require('./widgets/forms/send-message.js');
