@@ -214,14 +214,14 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
 
             if (ev.data.approved) {
                 this.postDetailController = new CV.PostDetailControllerApproved({
-                    _socket : this._socket,
+                    socket : this._socket,
                     data : ev.data
                 });
             }
 
             if (ev.data.approved === false) {
                 this.postDetailController = new CV.PostDetailControllerUnapproved({
-                    _socket : this._socket,
+                    socket : this._socket,
                     data : ev.data
                 });
             }
