@@ -1,9 +1,6 @@
 /* CurrentPerson Registry and Helper
  */
-
-var PLACEHOLDERS = {
-    profile : '/img/placeholder-image.png'
-};
+var PLACEHOLDERS = require('./placeholders');
 
 module.exports = {
     _ : null,

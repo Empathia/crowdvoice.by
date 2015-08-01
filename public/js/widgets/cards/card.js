@@ -27,6 +27,7 @@
  */
 
 var Person = require('./../../lib/currentPerson');
+var PLACEHOLDERS = require('./../../lib/placeholders');
 var moment = require('moment');
 
 Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
@@ -200,10 +201,18 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
          * @return Card [Object]
          */
         _setupDefaultElements : function _setupDefaultElements() {
-            this.dom.updateBgImage(this.profileCoverEl, this.data.backgrounds.card.url);
+            if (this.data.backgrounds.card) {
+                this.dom.updateBgImage(this.profileCoverEl, this.data.backgrounds.card.url);
+            } else {
+                this.profileCoverEl.classList.add('-colored-background');
+            }
 
-            this.dom.updateAttr('src', this.avatarEl, this.data.images.card.url);
-            this.dom.updateAttr('alt', this.avatarEl, this.data.profileName + "’s avatar image");
+            if (this.data.images.card) {
+                this.dom.updateAttr('src', this.avatarEl, this.data.images.card.url);
+                this.dom.updateAttr('alt', this.avatarEl, this.data.profileName + "’s avatar image");
+            } else {
+                this.dom.updateAttr('src', this.avatarEl, PLACEHOLDERS.profile);
+            }
 
             this.dom.updateText(this.usernameEl, "@" + this.data.profileName);
             this.dom.updateAttr('href', this.usernameEl, '/' + this.data.profileName);
@@ -211,9 +220,15 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
             var fullname = this.data.name + (this.data.lastname ? (' ' + this.data.lastname) : '');
             this.dom.updateText(this.fullNameEl, fullname);
 
-            var description = this.format.truncate(this.data.description, this.constructor.MAX_DESCRIPTION_LENGTH, true);
+            var description = this.format.truncate(this.data.description || '', this.constructor.MAX_DESCRIPTION_LENGTH, true);
             this.dom.updateText(this.descriptionEl, description);
-            this.dom.updateText(this.locationEl, this.data.location);
+
+            if (this.data.location) {
+                this.dom.updateText(this.locationEl, this.data.location);
+            } else {
+                this.locationEl.parentNode.classList.add('-hide');
+            }
+
             this.dom.updateText(this.joinedAtEl, moment(this.data.createdAt).format('MMM YYYY'));
 
             this.dom.updateText(this.statsWrapper.querySelector('.card_total-voices-text'), this.format.numberUS(this.data.voicesCount));
