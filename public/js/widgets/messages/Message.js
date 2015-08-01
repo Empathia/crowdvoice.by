@@ -1,7 +1,7 @@
 CV.Message = new Class(CV, 'Message').inherits(Widget)({
   HTML : '<div class="message-text">\
             <div class="message-info">\
-            <img class="" src="/img/sample/avatars/org-06.png" alt="">\
+            <img class="message-sender-image" src="/img/sample/avatars/org-06.png" alt="">\
             <div class="message-data">\
                 <h3 class="data-message-participant">Chu Vaca </h3>\
                 <span class="data-message-date">• May 5th, 2015 • 7:32 PM</span>\
@@ -38,16 +38,19 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
 
     setup : function setup() {
       var message = this;
+      console.log(this);
 
       var participant;
 
       if (message.data.senderEntity.id !== message.parent.parent.currentPerson.id) {
-        participant = message.data.senderEntity.name + " " + message.data.senderEntity.lastname
+        participant = message.data.senderEntity.name + " " + message.data.senderEntity.lastname;
       } else {
         participant = 'You';
       }
 
       message.element.find('.message-data .data-message-participant').text(participant);
+      message.element.find('.message-sender-image').attr('src', message.data.senderEntity.images.notification.url);
+
       message.element.find('.message-data .data-message-date').text(moment(new Date(message.data.createdAt).toISOString()).format('• MMMM Do, YYYY • h:mm a'));
       message.element.find('.message-data .data-message-text').text(message.data.message);
 

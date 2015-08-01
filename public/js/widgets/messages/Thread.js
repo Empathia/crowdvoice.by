@@ -24,7 +24,6 @@ CV.Thread = Class(CV, 'Thread').includes(Widget)({
     setup : function setup() {
       var thread = this;
 
-
       var senderOrReceiver = this.isSenderOrReceiver(thread.parent.currentPerson);
 
       this.unreadCount = thread.data.unreadCount;
@@ -47,6 +46,7 @@ CV.Thread = Class(CV, 'Thread').includes(Widget)({
       this.threadPartnerName = threadPartner.name + " " + threadPartner.lastname;
 
       this.element.find('h3').text(this.threadPartnerName);
+      this.element.find('img').attr('src', this.threadPartner.images.small.url);
 
       //console.log('setup ');
 
