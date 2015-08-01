@@ -122,7 +122,7 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
             this.appendChild(new CV.SelectAccount({
                 label         : 'Multiple',
                 name          : 'select',
-                accountImage  : Person.get().images.small.url,
+                accountImage  : Person.getImage('small'),
                 accountName   : Person.get().name + ' ' + Person.get().lastname,
                 options       : allMulti
             })).render(this.loginActionsWrapper);

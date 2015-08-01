@@ -1,6 +1,10 @@
 /* CurrentPerson Registry and Helper
  */
 
+var PLACEHOLDERS = {
+    profile : '/img/placeholder-image.png'
+};
+
 module.exports = {
     _ : null,
 
@@ -12,10 +16,17 @@ module.exports = {
         return this._;
     },
 
+    /* Checks if currentPerson has the same hashid as the passed one as param.
+     * @argument id <required> [String]
+     * @return [Boolean]
+     */
     is : function is(id) {
         return this.get().id === id;
     },
 
+    /* Checks if currentPerson is in anonymous mode.
+     * @return [Boolean]
+     */
     anon : function anon() {
         return this.get().isAnonymous;
     },
@@ -91,5 +102,15 @@ module.exports = {
         return (this.get().ownedOrganizations.some(function(organization) {
             return (entity.organizationIds.indexOf(organization.id) === -1);
         }));
+    },
+
+    getImage : function getImage(version) {
+        var images = this.get().images;
+
+        if (images[version]) {
+            return images[version].url;
+        }
+
+        return PLACEHOLDERS.profile;
     }
 };
