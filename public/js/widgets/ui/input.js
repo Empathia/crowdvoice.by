@@ -1,10 +1,10 @@
 var Events = require('./../../lib/events');
 
 Class(CV.UI, 'Input').inherits(Widget).includes(CV.WidgetUtils)({
-    ELEMENT_CLASS : 'ui-form-field -mb10px',
+    ELEMENT_CLASS : 'ui-form-field',
     HTML : '<div><div class="ui-input-wrapper"></div></div>',
     LABEL_HTML : '\
-        <label class="-block -pb5px">\
+        <label class="-block">\
             <span class="ui-input__label -upper -font-bold"></span>\
             <span class="cv-caption"></span>\
         </label>',
@@ -112,6 +112,9 @@ Class(CV.UI, 'Input').inherits(Widget).includes(CV.WidgetUtils)({
             return this;
         },
 
+        /* Removes the svg icon.
+         * @method _removeIcon <private>
+         */
         _removeIcon : function _removeIcon() {
             var icon = this.el.querySelector('.ui-input-svg');
             if (icon) {

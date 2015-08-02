@@ -1,3 +1,4 @@
+var Person = require('./../../lib/currentPerson');
 var Events = require('./../../lib/events');
 var Checkit = require('checkit');
 
@@ -40,6 +41,14 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
         },
 
         _setup : function _setup() {
+            if (Person.anon()) {
+                this.appendChild(new CV.Alert({
+                    type : 'warning',
+                    text : 'You are creating this Voice anonymously. If you wish to make it public then turn Anonymous Mode off.',
+                    className : '-mb2'
+                })).render(this.el, this.el.firstChild);
+            }
+
             this.appendChild(new CV.Image({
                 name : 'backgroundImage',
                 data: {title : "Background image"}
@@ -140,11 +149,13 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             })).render(this.element.find('.placeholder-rss'));
 
             //********** bottom ***********
-            this.appendChild(new CV.Check({
-                id          : 1,
-                label       : "Create Anonymously (?)",
-                name        : "checkAnon"
-            })).render(this.sendElement);
+            if (!Person.anon()) {
+                this.appendChild(new CV.Check({
+                    id          : 1,
+                    label       : "Create Anonymously (?)",
+                    name        : "checkAnon"
+                })).render(this.sendElement);
+            }
 
             this.appendChild(new CV.Button({
                 name : 'buttonSend',

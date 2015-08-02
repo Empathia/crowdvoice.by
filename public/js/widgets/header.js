@@ -80,6 +80,8 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
                 options       : allMulti
             })).render(this.loginActionsWrapper);
 
+            this._displayCreateNewDropdown();
+
             this.appendChild(new CV.IncognitoButton({
                 name : 'incognitoButton'
             })).render(this.buttonActionsWrapper);
@@ -127,21 +129,7 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
                 options       : allMulti
             })).render(this.loginActionsWrapper);
 
-            // create new voice / organization dropdown
-            var createOptions = {
-                "1": {label: 'Voice', name: 'voice'},
-                "2": {label: 'Organization', name: 'organization'}
-            };
-
-            this.appendChild(new CV.Select({
-                className : 'header-create-dropdown -inline-block',
-                style: 'primary small',
-                label : 'Create New',
-                name  : 'createSelect',
-                options: createOptions
-            })).render(this.buttonActionsWrapper);
-            this.createSelect.voice[0].addEventListener('click', this._showCreateVoiceModal.bind(this));
-            this.createSelect.organization[0].addEventListener('click', this._showCreateOrganizationModal.bind(this));
+            this._displayCreateNewDropdown();
 
             this.appendChild(new CV.IncognitoButton({
                 name : 'incognitoButton',
@@ -153,7 +141,24 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
             return this;
         },
 
-        /* (for logged in users) Display the CreateVoiceModal.
+        /* Displays the create new {voice,organization} dropdown
+         */
+        _displayCreateNewDropdown : function _displayCreateNewDropdown() {
+            this.appendChild(new CV.Select({
+                className : 'header-create-dropdown -inline-block',
+                style: 'primary small',
+                label : 'Create New',
+                name  : 'createSelect',
+                options: {
+                    "1": {label: 'Voice', name: 'voice'},
+                    "2": {label: 'Organization', name: 'organization'}
+                }
+            })).render(this.buttonActionsWrapper);
+            this.createSelect.voice[0].addEventListener('click', this._showCreateVoiceModal.bind(this));
+            this.createSelect.organization[0].addEventListener('click', this._showCreateOrganizationModal.bind(this));
+        },
+
+        /* Display the CreateVoiceModal.
          * @method _showCreateVoiceModal <private> [Function]
          */
         _showCreateVoiceModal : function _showCreateVoiceModal() {
@@ -165,7 +170,7 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
             })).render(document.body);
         },
 
-        /* (for logged in users) Display the CreateOrganizationModal.
+        /* Display the CreateOrganizationModal.
          * @method _showCreateOrganizationModal <private> [Function]
          */
         _showCreateOrganizationModal : function _showCreateOrganizationModal() {
