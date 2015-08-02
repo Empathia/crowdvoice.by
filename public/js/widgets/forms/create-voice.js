@@ -10,9 +10,14 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 <div class="-col-3 -pr1 placeholder-image"></div>\
                 <div class="-col-9 -pl1 placeholder-title placeholder-description"></div>\
             </div>\
-            <div class="-col-6 -pr1 placeholder-topics placeholder-twitter"></div>\
-            <div class="-col-6 -pl1 placeholder-rss">\
-                <div class="placeholder-voice-type"></div>\
+            <div class="-col-12">\
+                <div class="-col-6 -pr1 placeholder-topics"></div>\
+                <div class="-col-6 -pl1 placeholder-voice-type"></div>\
+            </div>\
+            <div class="-col-12">\
+                <div class="-col-6 -pr1 placeholder-twitter"></div>\
+                <div class="-col-6 -pl1 placeholder-rss">\
+            </div>\
             </div>\
             <div class="-col-12">\
                 <div class="-col-6 -pr1 placeholder-latitude"></div>\
@@ -81,22 +86,24 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 },
             })).render(this.element.find('.placeholder-description'));
 
-            //Checkbox
-            var allOptions = {
-                "1": {label: 'Myself'},
-                "2": {label: 'Organization 01'},
-                "3": {label: 'Organization 02'},
-                "4": {label: 'Organization 03'}
+            this.appendChild(new CV.UI.DropdownTopics({
+                name : 'voiceTopicDropdown'
+            })).render(this.el.querySelector('.placeholder-topics'));
+
+            //voice types
+            var allTypes = {
+                "1": {label: 'Public', name: 'public'},
+                "2": {label: 'Closed', name: 'closed'},
+                "3": {label: 'Pending', name : 'pending'}
             };
             new CV.Select({
-                type    	: 'check',
-                label 		: 'Select at least one',
-                name  		: 'selectFollow',
+                label 		: 'Select one',
+                name  		: 'select',
                 style 		: 'full',
-                options		: allOptions,
+                options 	: allTypes,
                 hasTitle 	: true,
-                title 		: "Voice topics (?)"
-            }).render(this.element.find('.placeholder-topics'));
+                title 		: "Voice type (?)"
+            }).render(this.element.find('.placeholder-voice-type'));
 
             this.appendChild(new CV.UI.Input({
                 name : 'voiceHashtags',
@@ -105,6 +112,15 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                     inputClassName : '-lg -block',
                 }
             })).render(this.element.find('.placeholder-twitter'));
+
+            this.appendChild(new CV.UI.Input({
+                name : 'voiceRssfeed',
+                data : {
+                    label : 'Content from rss feed',
+                    placeholder : '',
+                    inputClassName : '-lg -block'
+                }
+            })).render(this.element.find('.placeholder-rss'));
 
             this.appendChild(new CV.UI.Input({
                 name : 'voiceLatitude',
@@ -123,30 +139,6 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                     inputClassName : '-lg -block',
                 }
             })).render(this.element.find('.placeholder-longitude'));
-
-            //voice types
-            var allTypes = {
-                "1": {label: 'Public', name: 'public'},
-                "2": {label: 'Closed', name: 'closed'},
-                "3": {label: 'Pending', name : 'pending'}
-            };
-            new CV.Select({
-                label 		: 'Select one',
-                name  		: 'select',
-                style 		: 'full',
-                options 	: allTypes,
-                hasTitle 	: true,
-                title 		: "Voice type (?)"
-            }).render(this.element.find('.placeholder-voice-type'));
-
-            this.appendChild(new CV.UI.Input({
-                name : 'voiceRssfeed',
-                data : {
-                    label : 'Content from rss feed',
-                    placeholder : '',
-                    inputClassName : '-lg -block'
-                }
-            })).render(this.element.find('.placeholder-rss'));
 
             //********** bottom ***********
             if (!Person.anon()) {

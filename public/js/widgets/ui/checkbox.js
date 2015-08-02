@@ -8,14 +8,32 @@ Class(CV.UI, 'Checkbox').inherits(Widget).includes(CV.WidgetUtils)({
                         <use xlink:href="#svg-checkmark"></use>\
                     </svg>\
                 </span>\
-                <span class="ui-checkbox-label">Label</span>\
+                <span class="ui-checkbox-label"></span>\
             </label>\
         </div>',
 
     prototype : {
+        data : {
+            label : '',
+        },
+
         init : function init(config) {
             Widget.prototype.init.call(this, config);
             this.el = this.element[0];
+            this.checkbox = this.el.querySelector('.ui-checkbox-checkbox');
+            this.labelElement = this.el.querySelector('.ui-checkbox-label');
+            this._setup();
+        },
+
+        _setup : function _setup() {
+            if (this.data.label) {
+                this.dom.updateText(this.labelElement, this.data.label);
+            }
+            return this;
+        },
+
+        isChecked : function isChecked() {
+            return this.checkbox.checked;
         },
 
         destroy : function destroy() {
