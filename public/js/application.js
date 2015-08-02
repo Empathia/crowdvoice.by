@@ -26,7 +26,7 @@ window.moment = moment;
 // JS » Our stack, namespace, lib
 require('neon');
 require('neon/stdlib');
-window.CV = {};
+window.CV = {UI: {}};
 require('./lib/widget-utils.js');
 require('./lib/Widget.js');
 require('./lib/image-halt');
@@ -211,6 +211,8 @@ require('./widgets/elements/input-button.js');
 require('./widgets/elements/select.js');
 require('./widgets/elements/select-account.js');
 require('./widgets/elements/alert.js');
+
+require('./widgets/ui/input.js');
 
 // threads and messages
 require('./widgets/messages/ThreadsContainer.js');

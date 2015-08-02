@@ -34,6 +34,26 @@ Module(CV, 'WidgetUtils')({
                 element.insertAdjacentHTML('beforeend', htmlString);
             },
 
+            addClass : function addClass(el, classNames) {
+                if (el.classList) {
+                    return classNames.forEach(function(cl) {
+                        el.classList.add(cl);
+                    });
+                }
+
+                el.className += ' ' + classNames.join(' ');
+            },
+
+            removeClass : function removeClass(el, classNames) {
+                if (el.classList) {
+                    return classNames.forEach(function(cl) {
+                        el.classList.remove(cl);
+                    });
+                }
+
+                el.className = el.className.replace(new RegExp('(^|\\b)' + classNames.join('|') + '(\\b|$)', 'gi'), ' ');
+            },
+
             create: function(type) {
                 return document.createElement(type);
             },

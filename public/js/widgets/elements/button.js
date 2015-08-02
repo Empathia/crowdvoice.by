@@ -20,12 +20,13 @@ Class(CV, 'Button').inherits(Widget)({
 
         init : function(config){
             Widget.prototype.init.call(this, config);
+            this.el = this.element[0];
             var button = this;
 
             if (this.type == "single" || this.type == null){
                 if (this.style){
-                    this.element.addClass(this.style)
-                };
+                    this.element.addClass(this.style);
+                }
                 this.element.text(this.label);
             }
 

@@ -23,7 +23,6 @@
 
 
   /** ===== MODIFIERS ===== */
-
   &.error,
   @{ns}-input-wrapper.error & {
     background-color: lighten(@color-danger, 40%);
@@ -32,23 +31,17 @@
 }
 
 @{ns}-textarea {
-  height: auto;
+  height: auto !important;
   padding-top: 1em;
   padding-bottom: 1em;
 }
 
-
-
 /** ===== WRAPPER ====== **/
-
 @{ns}-input-wrapper {
   position: relative;
 }
 
-
-
 /** ===== GROUP ====== **/
-
 @{ns}-input-group {
   @{ns}-input-auto {
     overflow: hidden;
