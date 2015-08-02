@@ -60,9 +60,14 @@ Class(CV.UI, 'DropdownTopics').inherits(Widget)({
         },
 
         getSelection : function getSelection() {
-            this._options.filter(function(option) {
+            return this._options.filter(function(option) {
                 return (option.isChecked() === true);
             });
+        },
+
+        error : function error() {
+            this.dropdown.error();
+            return this;
         }
     }
 });

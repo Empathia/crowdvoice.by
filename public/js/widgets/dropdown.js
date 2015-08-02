@@ -12,8 +12,9 @@
  * To set the contents you can use the `setContent` method, which will replace the contents,
  * or you can append elements to it using the `addContent` method.
  */
-Class(CV, 'Dropdown').inherits(Widget)({
+var Events = require('./../lib/events');
 
+Class(CV, 'Dropdown').inherits(Widget).includes(CV.WidgetUtils)({
     HTML : '\
         <div class="ui-dropdown -rel">\
             <div class="ui-dropdown__head -full-height -clickable">\
@@ -81,7 +82,7 @@ Class(CV, 'Dropdown').inherits(Widget)({
 
         _bindEvents : function _bindEvents() {
             this._toggleRef = this.toggle.bind(this);
-            this.head.addEventListener('click', this._toggleRef);
+            Events.on(this.head, 'click', this._toggleRef);
         },
 
         /* Replace the label with the passed HTMLString, String, or HTMLElement(s).
@@ -93,9 +94,9 @@ Class(CV, 'Dropdown').inherits(Widget)({
             if ((typeof label).toLowerCase() === 'string') {
                 this.labelElement.insertAdjacentHTML('beforeend', label);
                 return this;
-            } else this.labelElement.appendChild(label);
+            }
 
-            this.label = null;
+            this.labelElement.appendChild(label);
             return this;
         },
 
@@ -107,9 +108,10 @@ Class(CV, 'Dropdown').inherits(Widget)({
 
             if ((typeof content).toLowerCase() === 'string') {
                 this.body.insertAdjacentHTML('beforeend', content);
-            } else this.body.appendChild(content);
+                return this;
+            }
 
-            content = null;
+            this.body.appendChild(content);
             return this;
         },
 
@@ -124,20 +126,30 @@ Class(CV, 'Dropdown').inherits(Widget)({
 
         toggle : function toggle() {
             this.el.classList.toggle('active');
+            this.clearState();
+            return this;
+        },
+
+        clearState : function clearState() {
+            this.dom.removeClass(this.el, ['-is-error']);
+            return this;
+        },
+
+        /* Sets error state.
+         * @method error <public>
+         */
+        error : function error() {
+            this.dom.addClass(this.el, ['-is-error']);
             return this;
         },
 
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
 
-            this.head.removeEventListener('click', this._toggleRef);
+            Events.off(this.head, 'click', this._toggleRef);
             this._toggleRef = null;
 
-            this.el = null;
-            this.head = null;
-            this.body = null;
-            this.labelElement = null;
-
+            this.el = this.head = this.body = this.labelElement = null;
             return null;
         }
     }

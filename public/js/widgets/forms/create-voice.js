@@ -36,6 +36,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             this.checkit = new Checkit({
                 title : 'required',
                 description : 'required',
+                topicsDropdown : ['array', 'minLength:1'],
                 hashtags : 'required',
                 rssfeed : 'required',
                 latitude : 'required',
@@ -87,7 +88,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             })).render(this.element.find('.placeholder-description'));
 
             this.appendChild(new CV.UI.DropdownTopics({
-                name : 'voiceTopicDropdown'
+                name : 'voiceTopicsDropdown'
             })).render(this.el.querySelector('.placeholder-topics'));
 
             //voice types
@@ -169,6 +170,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             var validate = this.checkit.validateSync({
                 title : this.voiceTitle.getValue(),
                 description : this.voiceDescription.getValue(),
+                topicsDropdown : this.voiceTopicsDropdown.getSelection(),
                 hashtags : this.voiceHashtags.getValue(),
                 rssfeed : this.voiceRssfeed.getValue(),
                 latitude : this.voiceLatitude.getValue(),
