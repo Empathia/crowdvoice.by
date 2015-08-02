@@ -212,7 +212,8 @@ require('./widgets/elements/select.js');
 require('./widgets/elements/select-account.js');
 require('./widgets/elements/alert.js');
 
-require('./widgets/ui/input.js');
+require('./widgets/ui/input');
+require('./widgets/ui/checkbox');
 
 // threads and messages
 require('./widgets/messages/ThreadsContainer.js');

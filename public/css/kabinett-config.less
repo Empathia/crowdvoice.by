@@ -168,3 +168,29 @@
 @{ns}-popover {
   border-color: rgba(0,0,0,.2);
 }
+
+/* =========================================================================== *
+  overrides :: checkbox
+ * =========================================================================== */
+@{ns}-checkbox {
+  &-checkbox:checked + @{ns}-checkbox-element {
+    border-color: @color-primary-dark;
+    background-color: @color-primary;
+    > svg {
+      stroke: @color-white;
+      fill: @color-white;
+    }
+  }
+
+  &-element {
+    border-color: @color-neutral-light;
+    background-color: @color-neutral-xx-light;
+    box-shadow: inset 0 2px 0 rgba(0,0,0,0.05);
+  }
+
+  &:hover {
+    @{ns}-checkbox-element {
+      border-color: @color-primary;
+    }
+  }
+}

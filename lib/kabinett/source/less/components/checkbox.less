@@ -23,29 +23,33 @@
   &-checkbox {
     display: none;
 
-    &:checked + @{ns}-checkbox-element::after {
-      color: inherit;
+    &:checked + @{ns}-checkbox-element > svg {
       display: block;
     }
   }
 
   &-element {
-    position: relative;
     display: inline-block;
     vertical-align: top;
-    top: 2px;
     width: @checkbox-size;
     height: @checkbox-size;
+    margin-right: 4px;
     border: 1px solid;
 
     border-color: currentColor;
     border-radius: 2px;
 
-    &:after {
+    > svg {
       display: none;
-      content: "✔";
-      font-size: .8em;
-      text-align: center;
+      margin: 2px 0 0 2px;
+      stroke-width: 2;
+      stroke: currentColor;
+      fill: currentColor;
     }
+  }
+
+  &-label {
+    font-size: 1rem;
+    line-height: @checkbox-size;
   }
 }
