@@ -160,18 +160,20 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
               post.save(function(err, resave) {
                 if (err) { return nextPost(err); }
 
-                feed.voiceNewPosts(req, next);
+                feed.voiceNewPosts(req, function (err) {
+                  if (err) { return nextPost(err); }
 
-                if (item.images) {
-                  item.images.forEach(function(image) {
-                    fs.unlinkSync(process.cwd() + '/public' + image);
-                    logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image);
-                  });
-                }
+                  if (item.images) {
+                    item.images.forEach(function(image) {
+                      fs.unlinkSync(process.cwd() + '/public' + image);
+                      logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image);
+                    });
+                  }
 
-                results.push(post);
+                  results.push(post);
 
-                return nextPost();
+                  return nextPost();
+                });
               });
             });
           });

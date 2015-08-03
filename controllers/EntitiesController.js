@@ -245,16 +245,18 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
           follower.followEntity(entity, function (err, result) {
             if (err) { return next(err); }
 
-            feed.entityFollowsEntity(req, next, result);
+            feed.entityFollowsEntity(req, result, function (err) {
+              if (err) { return next(err); }
 
-            res.format({
-              html: function() {
-                res.redirect('/' + entity.profileName);
-              },
-              json: function() {
-                res.json({ status: 'followed' });
-              }
-            })
+              res.format({
+                html: function() {
+                  res.redirect('/' + entity.profileName);
+                },
+                json: function() {
+                  res.json({ status: 'followed' });
+                }
+              });
+            });
           });
         }
       });
