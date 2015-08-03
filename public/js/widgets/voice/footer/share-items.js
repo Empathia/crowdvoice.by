@@ -49,7 +49,7 @@ Class(CV, 'VoiceFooterShareItems').inherits(Widget).includes(CV.WidgetUtils, Sha
 
             var url = location.href;
             this.dom.updateAttr('href', this.fa, this.facebook({u: url}));
-            this.dom.updateAttr('href', this.tw, this.twitter({url: url, text: voiceInfo.title}));
+            this.dom.updateAttr('href', this.tw, this.twitter({url: url, text: App.Voice.data.title}));
             this.dom.updateAttr('href', this.gp, this.googlePlus({url: url}));
 
             this._checkit = new Checkit({

@@ -22,7 +22,7 @@ Class(CV, 'PostDetailControllerApproved').inherits(CV.PostDetailController)({
             if (prevMonthString) {
                 prev = this.registry.get(prevMonthString);
                 if (!prev) {
-                    this.socket.emit('getApprovedMonthPosts', App.Voice.id, prevMonthString);
+                    this.socket.emit('getApprovedMonthPosts', App.Voice.data.id, prevMonthString);
                 } else {
                     console.log(this.keys.indexOf(prevMonthString))
                     this.updateValues(this.keys.indexOf(prevMonthString), prev);
@@ -32,7 +32,7 @@ Class(CV, 'PostDetailControllerApproved').inherits(CV.PostDetailController)({
             if (nextMonthString) {
                 next = this.registry.get(nextMonthString);
                 if (!next) {
-                    this.socket.emit('getApprovedMonthPosts', App.Voice.id, nextMonthString);
+                    this.socket.emit('getApprovedMonthPosts', App.Voice.data.id, nextMonthString);
                 } else {
                     this.updateValues(this.keys.indexOf(nextMonthString), next);
                 }

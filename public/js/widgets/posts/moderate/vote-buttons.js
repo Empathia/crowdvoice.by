@@ -106,8 +106,8 @@ Class(CV, 'PostModerateVoteButtons').inherits(Widget).includes(CV.WidgetUtils)({
             this.disable();
 
             var args = {
-                profileName : App.Voice.owner.profileName,
-                voiceSlug : App.Voice.slug,
+                profileName : App.Voice.data.owner.profileName,
+                voiceSlug : App.Voice.data.slug,
                 postId : this.post.id,
                 vote : 'up'
             };
@@ -122,8 +122,8 @@ Class(CV, 'PostModerateVoteButtons').inherits(Widget).includes(CV.WidgetUtils)({
             this.disable();
 
             var args = {
-                profileName : App.Voice.owner.profileName,
-                voiceSlug : App.Voice.slug,
+                profileName : App.Voice.data.owner.profileName,
+                voiceSlug : App.Voice.data.slug,
                 postId : this.post.id,
                 vote : 'down'
             };
