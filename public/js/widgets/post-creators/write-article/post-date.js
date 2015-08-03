@@ -18,14 +18,14 @@ Class(CV, 'PostCreatorWriteArticlePostDate').inherits(Widget)({
                 </div>\
                 <div class="write-article-post-date-wrapper -float-right">\
                     Post date\
-                    <div class="write-article-date-picker ui-input-group -inline-block">\
-                        <button class="post-date-picker-button ui-btn -primary -color-white -sm -float-right">\
-                            <svg class="post-edit-date-picker-calendar">\
+                    <div class="write-article-date-picker -inline-block">\
+                        <button class="post-date-picker-button cv-button primary tiny -m0 -float-right">\
+                            <svg class="post-edit-date-picker-calendar -color-white">\
                                 <use xlink:href="#svg-calendar"></use>\
                             </svg>\
                         </button>\
-                        <div class="ui-input-auto">\
-                            <input class="ui-input -sm">\
+                        <div class="-overflow-hidden">\
+                            <input class="cv-input tiny">\
                         </div>\
                     </div>\
                 </div>\
@@ -41,7 +41,7 @@ Class(CV, 'PostCreatorWriteArticlePostDate').inherits(Widget)({
             Widget.prototype.init.call(this, config);
 
             this.el = this.element[0];
-            this.timePickerInput = this.el.querySelector('.write-article-date-picker .ui-input');
+            this.timePickerInput = this.el.querySelector('.write-article-date-picker .cv-input');
             this.timePickerButton = this.el.querySelector('.post-date-picker-button');
 
             this._setup()._bindEvents();

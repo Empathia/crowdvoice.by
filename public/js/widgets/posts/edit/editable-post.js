@@ -8,14 +8,14 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
     MAX_LENGTH_DESCRIPTION : 180,
 
     HTML_DATE_PICKER : '\
-        <div class="post-edit-date-picker ui-input-group -inline-block">\
-            <button class="post-date-picker-button ui-btn -primary -color-white -sm -float-right">\
-                <svg class="post-edit-date-picker-calendar">\
+        <div class="post-edit-date-picker -inline-block">\
+            <button class="post-date-picker-button cv-button primary micro -m0 -float-right">\
+                <svg class="post-edit-date-picker-calendar -color-white">\
                     <use xlink:href="#svg-calendar"></use>\
                 <svg>\
             </button>\
-            <div class="ui-input-auto">\
-                <input class="ui-input -sm"/>\
+            <div class="-overflow-hidden">\
+                <input class="cv-input micro"/>\
             </div>\
         </div>',
 
@@ -157,7 +157,7 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
             // add the date picker
             this.dateTimeElement.style.display = 'none';
             this.dateTimeElement.parentNode.insertAdjacentHTML('beforeend', this.constructor.HTML_DATE_PICKER);
-            this.timePickerInput = this.dateTimeElement.parentNode.querySelector('.ui-input');
+            this.timePickerInput = this.dateTimeElement.parentNode.querySelector('.cv-input');
             this.timePickerButton = this.dateTimeElement.parentNode.querySelector('.post-date-picker-button');
 
             this.romeTime = rome(this.timePickerInput, {
