@@ -39,7 +39,8 @@ var TopicsController = Class('TopicsController')({
         },
 
         function (entities, callback) {
-          EntitiesPresenter.build(entities, req.currentPerson, callback)
+          var processed = Argon.Storage.Knex.processors[0](entities)
+          EntitiesPresenter.build(processed, req.currentPerson, callback)
         },
       ], function (err, result) {
         if (err) { return next(err) }
@@ -95,7 +96,8 @@ var TopicsController = Class('TopicsController')({
         },
 
         function (entities, callback) {
-          EntitiesPresenter.build(entities, req.currentPerson, callback)
+          var processed = Argon.Storage.Knex.processors[0](entities)
+          EntitiesPresenter.build(processed, req.currentPerson, callback)
         },
       ], function (err, result) {
         if (err) { return next(err) }
