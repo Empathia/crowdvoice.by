@@ -67,24 +67,11 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
     },
 
     new : function (req, res, next) {
-      res.render(inflection.pluralize(req.entityType) + '/new.html', { errors: null });
+      return next(new NotFoundError());
     },
 
     create : function create(req, res, next) {
-      var entity = new Entity({
-        name: req.body['name'],
-        lastname: req.body['lastname'],
-        profileName: req.body['profileName'],
-        isAnonymous: req.body['isAnonymous'] === "true" ? true : false
-      });
-      entity.type = req.entityType;
-      entity.save(function(err) {
-        if (err) {
-          res.render(req.entityType + '/new.html', { errors: err });
-        } else {
-          res.redirect('/' + entity.profileName);
-        }
-      });
+      return next(new NotFoundError());
     },
 
     edit : function edit(req, res, next) {

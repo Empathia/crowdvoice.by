@@ -22,13 +22,13 @@
 
       <article role="article" class="profile-menu -row -rel">
         <div class="profile-tabs">
-          <div class="menu-item active -menu-tab -inline-block">
+          <div class="menu-item active -menu-tab -inline-block tab-voices">
             <p class="-font-bold">Voices</p>
           </div>
-          <div class="menu-item -menu-tab -inline-block">
+          <div class="menu-item -menu-tab -inline-block tab-people">
             <p class="-font-bold">People</p>
           </div>
-          <div class="menu-item -menu-tab -inline-block">
+          <div class="menu-item -menu-tab -inline-block tab-organizations">
             <p class="-font-bold">Organizations</p>
           </div>
 
@@ -135,6 +135,9 @@
 	}
 
 	var voices = <%= JSON.stringify(voices) %>;
+	if (voices.length == 0){
+		$('.tab-voices').hide();
+	}
 	renderData(voices, CV.VoiceCover, 'voices');
 
 	$.ajax({
@@ -144,8 +147,11 @@
 		data : {},
 		dataType : 'json',
 		success: function(data) {
-			//console.log(data);
-			//renderData(data, CV.Card, 'people');
+			if (data.length == 0){
+				$('.tab-people').hide();
+			}
+			renderData(data, CV.Card, 'people');
+
 		}
 	});
 	$.ajax({
@@ -155,8 +161,11 @@
 		data : {},
 		dataType : 'json',
 		success: function(data) {
-			//console.log(data);
-			//renderData(data, CV.Card, 'people');
+			if (data.length == 0){
+				$('.tab-organizations').hide();
+			}
+			renderData(data, CV.Card, 'organizations');
+
 		}
 	});
 
@@ -188,5 +197,3 @@
 
 
 </script>
-
-
