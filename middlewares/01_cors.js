@@ -3,7 +3,6 @@
 // *************************************************************************
 module.exports = function(req, res, next) {
   if (fs.existsSync(path.join(process.cwd(), '/public/maintenance'))) {
-    console.log('exists')
     return res.status(503).render('shared/503.html', { layout : 'systemStatus', message : 'Under maintenance. <br /> Will be right back!' });
   }
 

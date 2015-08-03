@@ -1,5 +1,13 @@
 module.exports = function(err, req, res, next) {
 
+  logger.log('Route: ' + req.route.path);
+
+  req.route.stack.forEach(function(item) {
+    logger.log('Method: ' + item.method);
+    logger.log('Params: ' + item.params);
+    logger.log('-------------------------------' + "\n");
+  });
+
   logger.error(err.stack);
 
   res.format({

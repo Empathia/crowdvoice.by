@@ -235,35 +235,6 @@ var UsersController = Class('UsersController')({
       })
     },
 
-    destroy : function destroy(req, res, next) {
-      var userId = hashids.decode(req.params.id)[0];
-
-      ACL.isAllowed('destroy', 'users', req.role, {
-        userId : userId
-      }, function(err, isAllowed) {
-        if (err) {
-          return next(err);
-        }
-
-        if (!isAllowed) {
-          return next(new ForbiddenError());
-        }
-
-        User.findById(userId, function (err, user) {
-          if (err) { next(err); return; }
-          if (user.length === 0) { next(new NotFoundError('User Not found')); return; }
-
-          // Logic remove only
-          user.deleted = true;
-          user.save(function (err, result) {
-            if (err) { next(err); return; }
-
-            res.redirect('/users');
-          });
-        });
-      })
-    },
-
     checkUsername : function checkUsername(req, res, next) {
       var field = req.body.field;
       var value = req.body.value;

@@ -162,18 +162,7 @@ Admin.EntitiesController = Class(Admin, 'EntitiesController').inherits(RestfulCo
     },
 
     destroy : function destroy(req, res) {
-      ACL.isAllowed('destroy', 'admin.' + inflection.pluralize(req.entityType), req.role, {}, function(err, isAllowed) {
-        if (err) {
-          return next(err);
-        }
-
-        if (!isAllowed) {
-          return next(new ForbiddenError());
-        }
-
-
-
-      });
+      return next(new NotFoundError());
     }
   }
 });

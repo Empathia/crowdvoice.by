@@ -54,6 +54,7 @@ var User = Class('User').inherits(Argon.KnexModel)({
     username: null,
     password: null,
     token:    null,
+    deleted : false,
 
     init : function init(config) {
       Argon.KnexModel.prototype.init.call(this, config);
@@ -73,6 +74,16 @@ var User = Class('User').inherits(Argon.KnexModel)({
           delete model.password;
         }
       });
+    },
+
+    markAsDeleted : function markAsDeleted(callback) {
+      if (!this.id) {
+        return callback(new Error('Invalid ID'));
+      }
+
+      this.deleted = true;
+
+      this.save(callback);
     },
 
 
