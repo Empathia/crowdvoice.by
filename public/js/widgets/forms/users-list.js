@@ -15,6 +15,7 @@ Class(CV, 'UsersList').inherits(Widget)({
         listTitle       : null,
         dateTitle       : null,
         hasButton       : null,
+        actionLabel     : "Leave",
 
         init : function(config){
             Widget.prototype.init.call(this, config);
@@ -50,7 +51,7 @@ Class(CV, 'UsersList').inherits(Widget)({
                     new CV.Button({
                         style   : 'tiny',
                         type    : 'single',
-                        label   : 'Leave',
+                        label   : this.actionLabel,
                         name    : 'buttonLeave'
                     }).render(userEl.find('.action'));
                 }

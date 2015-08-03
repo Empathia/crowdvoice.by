@@ -271,7 +271,7 @@
 
   $.ajax({
     type: "GET",
-    url:'/cersei-lannister/edit/getOrganizations',
+    url:'/<%= organization.profileName %>/edit/getOrganizations',
     headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
     data : {},
     success: function(data) {
@@ -279,12 +279,11 @@
           hasButton     : true,
           users         : data,
           listTitle     : "{count} members of this organization",
+          actionLabel   : "Remove",
           dateTitle     : "Member since"
       }).render($('.placeholder-members'));
     }
   });
-
-
 
   //********************************
 
@@ -369,7 +368,7 @@
   profileInput.element.bind('keyup', function() {
       $.ajax({
           method : 'POST',
-          url : '/<%= currentPerson.profileName %>/isProfileNameAvailable',
+          url : '/<%= organization.profileName %>/isProfileNameAvailable',
           headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
           data : {
               value : profileInput.element.find('input').val()
