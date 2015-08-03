@@ -207,17 +207,19 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         rssUrl: req.body.rssUrl,
         latitude: req.body.latitude,
         longitude: req.body.longitude,
-      })
+      });
 
       voice.save(function(err) {
-        if (err) { return next(err) }
+        if (err) { return next(err); }
 
         voice.addSlug(function(err) {
-          if (err) { return next(err) }
+          if (err) { return next(err); }
 
-          feed.voiceCreated(req, next, model)
+          feed.voiceCreated(req, model, function (err) {
+            if (err) { return next(err); }
 
-          res.redirect(req.currentPerson.profileName + '/' + voice.getSlug())
+            res.redirect(req.currentPerson.profileName + '/' + voice.getSlug())
+          });
         });
       });
     },
@@ -245,12 +247,16 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
         // title updated
         if (req.body.title) {
-          feed.voiceUpdateTitle(req, next);
+          feed.voiceUpdateTitle(req, function (err) {
+            if (err) { return next(err); }
+          });
         }
 
         // description updated
         if (req.body.description) {
-          feed.voiceUpdateDescription(req, next);
+          feed.voiceUpdateDescription(req, function (err) {
+            if (err) { return next(err); }
+          });
         }
 
         res.redirect('/voice/' + voice.id);
@@ -362,16 +368,18 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           follower.followVoice(req.activeVoice, function (err, result) {
             if (err) { return next(err); }
 
-            feed.entityFollowsVoice(req, next, result);
+            feed.entityFollowsVoice(req, result, function (err) {
+              if (err) { return next(err); }
 
-            res.format({
-              html: function () {
-                res.redirect('/' + req.params.profileName + '/' + req.params.voice_slug)
-              },
-              json: function () {
-                res.json({ status: 'followed' });
-              }
-            })
+              res.format({
+                html: function () {
+                  res.redirect('/' + req.params.profileName + '/' + req.params.voice_slug)
+                },
+                json: function () {
+                  res.json({ status: 'followed' });
+                }
+              });
+            });
           });
         }
       });

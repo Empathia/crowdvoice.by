@@ -1,36 +1,11 @@
 Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, CustomEventSupport)({
-
     STATUS_DRAFT : 'STATUS_DRAFT',
     STATUS_UNLISTED : 'STATUS_UNLISTED',
     STATUS_PUBLISHED : 'STATUS_PUBLISHED',
-
     TYPE_PUBLIC : 'TYPE_PUBLIC',
     TYPE_CLOSED : 'TYPE_CLOSED',
 
     prototype : {
-        /* DEFAULT BASIC OPTIONS */
-        id : null,
-        title : '',
-        description : '',
-        /* images {big, bluredCard, card, original }*/
-        images : null,
-        latitude : '',
-        longitude : '',
-        locationName : '',
-        ownerId : null,
-        status : '',
-        type : '',
-        twitterSearch : '',
-        tweetLastFetchAt : '',
-        rssUrl : '',
-        rssLastFetchAt : '',
-        firstPostDate : '',
-        lastPostDate : '',
-        postCount : 0,
-        createdAt : '',
-        updatedAt : '',
-
-        /* OTHER OPTIONS */
         followerCount : 0,
         postCountElement : null,
         followersCountElement : null,
@@ -64,9 +39,6 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
         _socket : null,
 
         init : function init(config) {
-            this.status = CV.VoiceView.STATUS_DRAFT;
-            this.type = CV.VoiceView.TYPE_PUBLIC;
-
             Object.keys(config || {}).forEach(function(propertyName) {
                 this[propertyName] = config[propertyName];
             }, this);
@@ -87,7 +59,8 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
         setupVoiceWidgets : function setupVoiceWidgets() {
             this.appendChild(new CV.VoiceFooter({
                 name : 'voiceFooter',
-                voice : this
+                voice : this.data,
+                voiceScrollableArea : this.scrollableArea
             })).render(document.querySelector('.app-wrapper'));
 
             new CV.VoiceHeader({
@@ -104,10 +77,10 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
          * @return [CV.Voice]
          */
         updateVoiceInfo : function updateVoiceInfo() {
-            if (this.images.big.url) {
+            if (this.data.images.big.url) {
                 var image = document.createElement('img');
                 image.className = "voice-background-cover-image";
-                image.src = this.images.big.url;
+                image.src = this.data.images.big.url;
                 this.backgroundElement.appendChild(image);
             } else {
                 this.backgroundElement.className += ' -colored-background';
@@ -126,24 +99,19 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
          * @return undefined
          */
         _appendLayersManager : function _appendLayersManager() {
-            if (!this.firstPostDate || !this.lastPostDate) {
+            if (!this.data.firstPostDate || !this.data.lastPostDate) {
                 return console.warn('VoicePostLayersManager required firstPostDate or lastPostDate properties NOT to empty strings');
             }
 
-            this.appendChild(
-                new CV.VoicePostLayersVoiceAbstract({
-                    name : 'voicePostLayersManager',
-                    element : document.querySelector('.voice-posts'),
-                    id : this.id,
-                    description : this.description,
-                    postsCount : this.postsCountApproved,
-                    firstPostDate : this.firstPostDate,
-                    lastPostDate : this.lastPostDate,
-                    scrollableArea : this.scrollableArea,
-                    _socket : this._socket,
-                    allowPostEditing : this.allowPostEditing
-                })
-            ).render(document.querySelector('.cv-main-content'), document.querySelector('.voice-footer'));
+            this.appendChild(new CV.VoicePostLayersVoiceAbstract({
+                name : 'voicePostLayersManager',
+                id : this.data.id,
+                description : this.data.description,
+                postsCount : this.postsCountApproved,
+                scrollableArea : this.scrollableArea,
+                allowPostEditing : this.allowPostEditing,
+                _socket : this._socket
+            })).render(document.querySelector('.cv-main-content'), document.querySelector('.voice-footer'));
 
             this.voicePostLayersManager.setup();
 

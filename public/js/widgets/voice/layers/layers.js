@@ -17,8 +17,6 @@ Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
         /* DEFAULT BASIC OPTIONS */
         description : '',
         postsCount : null,
-        firstPostDate : '',
-        lastPostDate : '',
         averagePostTotal : 100,
         averagePostWidth : 300,
         averagePostHeight : 600,
@@ -430,8 +428,6 @@ Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
 
             this.description = null;
             this.postsCount = null;
-            this.firstPostDate = null;
-            this.lastPostDate = null;
             this.averagePostTotal = null;
             this.averagePostWidth = null;
             this.averagePostHeight = null;
