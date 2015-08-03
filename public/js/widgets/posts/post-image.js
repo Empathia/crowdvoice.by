@@ -1,5 +1,5 @@
-/* jshint multistr: true */
 var moment = require('moment');
+var Events = require('./../../lib/events');
 
 Class(CV, 'PostImage').inherits(CV.Post)({
     HTML : '\
@@ -43,12 +43,17 @@ Class(CV, 'PostImage').inherits(CV.Post)({
             Widget.prototype.init.call(this, config);
 
             this.el = this.element[0];
+            this.imageWrapperElement = this.el.querySelector('.post-card-image-wrapper');
+            this.infoWrapperElement = this.el.querySelector('.post-card-info');
             this.titleElement = this.el.querySelector('.post-card-title');
             this.descriptionElement = this.el.querySelector('.post-card-description');
-            this.imageWrapperElement = this.el.querySelector('.post-card-image-wrapper');
             this.sourceElement = this.el.querySelector('.post-card-meta-source');
             this.dateTimeElement = this.el.querySelector('.post-card-meta-date');
 
+            this._setup()._bindEvents();
+        },
+
+        _setup : function _setup() {
             if (this.hasCoverImage()) {
                 this.setImageHeight(this.imageMeta.medium.height);
             } else {
@@ -75,12 +80,13 @@ Class(CV, 'PostImage').inherits(CV.Post)({
 
             this.dom.updateText(this.el.querySelector('.post-card-activity-saved .post-card-activity-label'), this.totalSaves);
 
-            this._bindEvents();
+            return this;
         },
 
         _bindEvents : function _bindEvents() {
             this._clickImageHandlerRef = this._clickImageHandler.bind(this);
-            this.imageWrapperElement.addEventListener('click', this._clickImageHandlerRef);
+            Events.on(this.imageWrapperElement, 'click', this._clickImageHandlerRef);
+            Events.on(this.infoWrapperElement, 'click', this._clickImageHandlerRef);
             return this;
         },
 
@@ -93,7 +99,8 @@ Class(CV, 'PostImage').inherits(CV.Post)({
          * @method __destroy <private> [Function]
          */
         __destroy : function __destroy() {
-            this.imageWrapperElement.removeEventListener('click', this._clickImageHandlerRef);
+            Events.off(this.imageWrapperElement, 'click', this._clickImageHandlerRef);
+            Events.off(this.infoWrapperElement, 'click', this._clickImageHandlerRef);
             this._clickImageHandlerRef = null;
 
             this.el = null;
