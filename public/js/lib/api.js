@@ -71,7 +71,7 @@ module.exports = {
             processData : false,
             success : function success(data) { callback(false, data); },
             error : function error(err) { callback(true, err); }
-        })
+        });
     },
 
     /* Creates a Post on the current Voice.
@@ -204,6 +204,32 @@ module.exports = {
         });
     },
 
+    /**************************************************************************
+     * THREATS
+     *************************************************************************/
+     sendMessage : function sendMessage(args, callback) {
+        if (!args.profileName || !args.type || !args.senderEntityId || !args.receiverEntityId || !args.message || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'POST',
+            url : '/' + args.profileName + '/messages',
+            headers : {'csrf-token' : this.token},
+            data : {
+                type : args.type,
+                senderEntityId : args.senderEntityId,
+                receiverEntityId : args.receiverEntityId,
+                message : args.message
+            },
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+     },
 
     /**************************************************************************
      * SEARCH

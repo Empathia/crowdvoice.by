@@ -78,6 +78,11 @@ Class(CV.UI, 'Input').inherits(Widget).includes(CV.WidgetUtils)({
             return this._input.value;
         },
 
+        setValue : function setValue(value) {
+            this._input.value = value;
+            return this.getValue();
+        },
+
         clearState : function clearState() {
             this.dom.removeClass(this.inputWrapper, ['-is-error', '-is-success']);
             this._removeIcon();

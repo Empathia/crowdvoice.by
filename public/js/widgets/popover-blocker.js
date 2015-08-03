@@ -199,7 +199,6 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
             Widget.prototype._activate.call(this);
 
             this._placeElement();
-
             this.container.appendChild(this.backdropElement);
 
             requestAnimationFrame(function() {
@@ -225,7 +224,6 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
             Widget.prototype.render.call(this, element, beforeElement);
 
             this.parentElement = this.el.parentElement;
-
             this.parentElement.classList.add('ui-has-popover');
 
             return this;
@@ -250,22 +248,6 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
 
             this.backdropElement.removeEventListener('click', this._backdropClickHandlerRef);
             this._backdropClickHandlerRef = null;
-
-            this.toggler = null;
-            this.container = null;
-            this.placement = null;
-            this.title = null;
-            this.content = null;
-            this.showCloseButton = null;
-            this.hasScrollbar = null;
-
-            this.el = null;
-            this.headerElement = null;
-            this.titleElement = null;
-            this.closeButton = null;
-            this.contentElement = null;
-            this.backdropElement = null;
-            this.parentElement = null;
 
             return null;
         }

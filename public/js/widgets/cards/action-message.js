@@ -1,9 +1,8 @@
 var Person = require('./../../lib/currentPerson');
+var Events = require('./../../lib/events');
 
 Class(CV, 'CardActionMessage').inherits(Widget)({
-
     ELEMENT_CLASS : 'card-actions-item',
-
     HTML : '\
         <div>\
             <svg class="card-activity-svg -s16">\
@@ -13,35 +12,63 @@ Class(CV, 'CardActionMessage').inherits(Widget)({
         </div>',
 
     prototype : {
-
-        id      : null,
-        bubble  : null,
+        /* receiverEntityId */
+        id : null,
 
         init : function init(config) {
             Widget.prototype.init.call(this, config);
-            var button = this;
-            var bCreated = false;
+            this.el = this.element[0];
 
-            this.element.on('click', function(){
-
-                if (!bCreated){
-                    bCreated = true;
-                    button.bubble = new CV.Bubble({
-                        title       : 'Send Message',
-                        name        : 'sendMessageBubble',
-                        action      : CV.SendMessage,
-                        width       : 320,
-                        data        : {
-                          type : 'message',
-                          profileName : Person.get().profileName,
-                          senderEntityId : Person.get().id,
-                          receiverEntityId : button.id
-                        },
-                        anchorEl    : button.element
-                    }).show();
+            this.appendChild(new CV.SendMessage({
+                name : 'sendMessageContent',
+                data : {
+                    profileName : Person.get().profileName,
+                    senderEntityId : Person.get().id,
+                    receiverEntityId : this.id
                 }
-            });
+            }));
 
+            this.appendChild(new CV.PopoverBlocker({
+                name : 'sendMessagePopover',
+                title : 'Send Message',
+                showCloseButton : true,
+                className : 'card-send-message -text-left',
+                content : this.sendMessageContent.el
+            })).render(this.el);
+
+            this._bindEvents();
+        },
+
+        _bindEvents : function _bindEvents() {
+            this._closeRef = this._close.bind(this);
+            this.sendMessageContent.bind('close', this._closeRef);
+            this.sendMessagePopover.bind('activate', this.activate.bind(this));
+            this.sendMessagePopover.bind('deactivate', this.deactivate.bind(this));
+
+            this._clickHandlerRef = this._clickHandler.bind(this);
+            Events.on(this.el, 'click', this._clickHandlerRef);
+
+            return this;
+        },
+
+        /* Click Button Handler.
+         * @method _clickHandler <private> [Function]
+         */
+        _clickHandler : function _clickHandler() {
+            this.sendMessageContent.setInitState();
+            this.sendMessagePopover.activate();
+        },
+
+        _close : function _close() {
+            this.sendMessagePopover.deactivate();
+            this.deactivate();
+        },
+
+        destroy : function destroy() {
+            Widget.prototype.destroy.call(this);
+            Events.off(this.el, 'click', this._clickHandlerRef);
+            this._clickHandlerRef = null;
+            return null;
         }
     }
 });
