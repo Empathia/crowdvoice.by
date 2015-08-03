@@ -1,3 +1,5 @@
+var PLACEHOLDERS = require('./../../lib/placeholders');
+
 CV.Message = new Class(CV, 'Message').inherits(Widget)({
   HTML : '<div class="message-text">\
             <div class="message-info">\
@@ -49,7 +51,12 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
       }
 
       message.element.find('.message-data .data-message-participant').text(participant);
-      message.element.find('.message-sender-image').attr('src', message.data.senderEntity.images.notification.url);
+
+      if (message.data.senderEntity.images.notification) {
+        message.element.find('.message-sender-image').attr('src', message.data.senderEntity.images.notification.url);
+      } else {
+        message.element.find('.message-sender-image').attr('src', PLACEHOLDERS.profile);
+      }
 
       message.element.find('.message-data .data-message-date').text(moment(new Date(message.data.createdAt).toISOString()).format('• MMMM Do, YYYY • h:mm a'));
       message.element.find('.message-data .data-message-text').text(message.data.message);

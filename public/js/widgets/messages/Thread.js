@@ -1,3 +1,5 @@
+var PLACEHOLDERS = require('./../../lib/placeholders');
+
 CV.Thread = Class(CV, 'Thread').includes(Widget)({
   HTML : '<div class="message-side">\
             <div class="message-info">\
@@ -46,7 +48,12 @@ CV.Thread = Class(CV, 'Thread').includes(Widget)({
       this.threadPartnerName = threadPartner.name + " " + threadPartner.lastname;
 
       this.element.find('h3').text(this.threadPartnerName);
-      this.element.find('img').attr('src', this.threadPartner.images.small.url);
+
+      if (this.threadPartner.images.small) {
+        this.element.find('img').attr('src', this.threadPartner.images.small.url);
+      } else {
+        this.element.find('img').attr('src', PLACEHOLDERS.profile);
+      }
 
       //console.log('setup ');
 
