@@ -18,7 +18,7 @@ Class(CV, 'PostDetailLink').inherits(CV.PostDetail)({
             this.header = this.el.querySelector('header');
             this.content = this.el.querySelector('.cv-post-detail__content');
 
-            this._setup()._bindEvents();
+            this._setup().addCloseButton()._bindEvents();
         },
 
         _setup : function _setup() {
