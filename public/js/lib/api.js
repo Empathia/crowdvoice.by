@@ -48,7 +48,7 @@ module.exports = {
         path += (/\/$/.test(path)) ? 'preview' : '/preview';
 
         $.ajax({
-            type : "POST",
+            type : 'POST',
             url : path,
             headers : {'csrf-token' : this.token},
             data : {url : args.url},
@@ -152,6 +152,54 @@ module.exports = {
         });
     },
 
+    /* Saves a post (favotite).
+     * @argument args.profileName <required> [String] the voice owner profileName
+     * @argument args.voiceSlug <required> [String] the voice slug
+     * @argument args.postId <required> [String] the post id to up/down vote
+     */
+    postSave : function postSave(args, callback) {
+        if (!args.profileName || !args.voiceSlug || !args.postId || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'POST',
+            dataType : 'json',
+            url : '/' + args.profileName + '/' + args.voiceSlug + '/' + args.postId + '/savePost',
+            headers : {'csrf-token' : this.token},
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
+    },
+
+    /* Unsaves a post (un-favotite).
+     * @argument args.profileName <required> [String] the voice owner profileName
+     * @argument args.voiceSlug <required> [String] the voice slug
+     * @argument args.postId <required> [String] the post id to up/down vote
+     */
+    postUnsave : function postUnsave(args, callback) {
+        if (!args.profileName || !args.voiceSlug || !args.postId || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'POST',
+            dataType : 'json',
+            url : '/' + args.profileName + '/' + args.voiceSlug + '/' + args.postId + '/unsavePost',
+            headers : {'csrf-token' : this.token},
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
+    },
+
     /* Search for Posts in Sources
      * @argument args.profileName <required> [String] the voice owner profileName
      * @argument args.voiceSlug <required> [String] the voice slug
@@ -207,7 +255,15 @@ module.exports = {
     /**************************************************************************
      * THREATS
      *************************************************************************/
-     sendMessage : function sendMessage(args, callback) {
+    /* Creates a thread or insert a message in an existing thread.
+     * @argument args.profileName <required> [String] currentPerson profileName
+     * @argument args.type <required> [String] Message type ('message')
+     * @argument args.senderEntityId [String] currentPerson hashid
+     * @argument args.receiverEntityId [String] receriver Person hashid
+     * @argument args.message <required> [String] the text message
+     * @argument callback <required> [Function]
+     */
+    sendMessage : function sendMessage(args, callback) {
         if (!args.profileName || !args.type || !args.senderEntityId || !args.receiverEntityId || !args.message || !callback) {
             throw new Error('Missing required params');
         }

@@ -12,19 +12,7 @@ Class(CV, 'Post').inherits(Widget).includes(
 )({
     ACTIONS_HTML : '\
         <div class="post-card-actions">\
-            <div class="-row -full-height">\
-                <div class="post-card-actions-item -col-6">\
-                    <svg class="post-card-activity-svg">\
-                        <use xlink:href="#svg-save"></use>\
-                    </svg>\
-                    <p class="post-card-actions-label">Save</p>\
-                </div>\
-                <div class="post-card-actions-item -col-6">\
-                    <svg class="post-card-activity-svg">\
-                        <use xlink:href="#svg-share"></use>\
-                    </svg>\
-                    <p class="post-card-actions-label">Share</p>\
-                </div>\
+            <div class="-row -full-height" data-actions-row>\
             </div>\
         </div>\
     ',
@@ -65,6 +53,18 @@ Class(CV, 'Post').inherits(Widget).includes(
          */
         addActions : function addActions() {
             this.el.insertAdjacentHTML('beforeend', this.constructor.ACTIONS_HTML);
+            this.actionsRow = this.el.querySelector('[data-actions-row]');
+
+            this.appendChild(new CV.PostActionSave({
+                name : 'actionSave',
+                className : '-col-6',
+                entity : this
+            })).render(this.actionsRow);
+
+            this.appendChild(new CV.PostActionShare({
+                name : 'actionShare',
+                className : '-col-6'
+            })).render(this.actionsRow);
 
             return this;
         },
