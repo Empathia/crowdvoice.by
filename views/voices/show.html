@@ -36,10 +36,9 @@
   App.socketStart();
 
   // Voice
-  var profileInfo = <%= JSON.stringify(person) %>
-  var voiceInfo = <%= JSON.stringify(voice) %>;
-  var otherOptions = {
+  App.appendChild(new CV.VoiceView({
     name                  : 'Voice',
+    data                  : <%= JSON.stringify(voice) %>,
     _socket               : App.getSocket(),
     backgroundElement     : document.querySelector('.voice-background-cover'),
     followerCount         : <%= voice.followers.length %>,
@@ -50,15 +49,7 @@
     postsCount            : <%= JSON.stringify(postsCount) %>,
     allowPosting          : <%= allowPosting %>,
     allowPostEditing      : <%= allowPostEditing %>
-  };
-
-  for (var propertyName in otherOptions) {
-    voiceInfo[propertyName] = otherOptions[propertyName];
-  }
-
-  App.appendChild(
-    new CV.VoiceView( voiceInfo )
-  );
+  }));
 
   App.Voice.updateVoiceInfo();
   App.Voice.setupVoiceWidgets();

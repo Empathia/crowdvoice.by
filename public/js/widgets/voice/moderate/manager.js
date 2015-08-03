@@ -9,9 +9,6 @@ Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
         </div>',
 
     prototype : {
-        /* options */
-        allowPostEditing : false,
-
         el : null,
         layersManager : null,
         _window : null,
@@ -39,23 +36,19 @@ Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
         /* Public method to start the thing after being rendered.
          */
         setup : function setup() {
-           var data = {};
-            Object.keys(voiceInfo).forEach(function(propertyName) {
-                data[propertyName] = voiceInfo[propertyName];
-            });
-            data.name = 'layersManager';
-            data.scrollableArea = this.voicePostsWrapper;
-            data.postsCount = App.Voice.postsCountUnapproved;
-            data.postCount = this._getTotalPostCount(data.postsCount);
-            data.allowPostEditing = this.allowPostEditing;
-
-            this.appendChild(
-                new CV.VoicePostLayersModerateAbstract(data)
-            ).render(this.voicePostsWrapper).setup().loadDefaultLayer();
+            this.appendChild(new CV.VoicePostLayersModerateAbstract({
+                name : 'layersManager',
+                id : App.Voice.data.id,
+                postsCount : App.Voice.postsCountUnapproved,
+                postCount : this._getTotalPostCount(App.Voice.postsCountUnapproved),
+                scrollableArea : this.voicePostsWrapper,
+                allowPostEditing : App.Voice.allowPostEditing,
+                _socket : App.Voice._socket,
+            })).render(this.voicePostsWrapper).setup().loadDefaultLayer();
 
             this.appendChild(new CV.VoiceModerateFooter({
                 name : 'footer',
-                totalPosts : data.postCount
+                totalPosts : this._getTotalPostCount(App.Voice.postsCountUnapproved)
             })).render(this.el);
 
             return this._bindEvents();

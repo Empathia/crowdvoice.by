@@ -17,6 +17,7 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
     prototype : {
         /* OPTIONS */
         voice : null,
+        voiceScrollableArea : null,
 
         init : function init(config) {
             Widget.prototype.init.call(this, config);
@@ -34,16 +35,17 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
                 name : 'voiceTimelineFeedback',
                 firstPostDate : this.voice.firstPostDate,
                 lastPostDate : this.voice.lastPostDate,
-                scrollableArea : this.voice.scrollableArea
+                scrollableArea : this.voiceScrollableArea
             })).render(this.element);
 
             // @TODO:
             // add condition based on the user type and or privilegies (ACL)
             // and or based on the voice type (open|close)
 
-            if (this.voice.allowPosting) {
+            if (App.Voice.allowPosting) {
                 this.appendChild(new CV.VoiceAddContent({
-                    name : 'voiceAddContent'
+                    name : 'voiceAddContent',
+                    voice : this.voice
                 })).render(this.element);
             }
 
@@ -69,13 +71,11 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
                 name : 'shareButtons'
             })).render(this.actionsColumn);
 
-            if (this.voice.type !== CV.VoiceView.TYPE_CLOSED || this.voice.allowPostEditing) {
-                this.appendChild(
-                    new CV.VoiceModerate({
-                        name : 'voiceModerate',
-                        allowPostEditing : this.voice.allowPostEditing
-                    })
-                ).render(this.actionsColumn);
+            if (this.voice.type !== CV.VoiceView.TYPE_CLOSED || App.Voice.allowPostEditing) {
+                this.appendChild(new CV.VoiceModerate({
+                    name : 'voiceModerate',
+                    allowPostEditing : App.Voice.allowPostEditing
+                })).render(this.actionsColumn);
             }
         },
 

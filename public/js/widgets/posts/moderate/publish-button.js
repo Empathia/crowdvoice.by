@@ -32,8 +32,8 @@ Class(CV, 'PostModeratePublishButton').inherits(Widget).includes(BubblingSupport
             postEditedData.approved  = true;
 
             API.postUpdate({
-                profileName : App.Voice.owner.profileName,
-                voiceSlug : App.Voice.slug,
+                profileName : App.Voice.data.owner.profileName,
+                voiceSlug : App.Voice.data.slug,
                 postId : this.postId,
                 data : postEditedData
             }, this._publishPostResponse.bind(this));

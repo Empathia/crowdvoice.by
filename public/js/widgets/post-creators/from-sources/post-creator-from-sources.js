@@ -245,8 +245,8 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
             this._query = query;
 
             var args = {
-                profileName : App.Voice.owner.profileName,
-                voiceSlug : App.Voice.slug,
+                profileName : App.Voice.data.owner.profileName,
+                voiceSlug : App.Voice.data.slug,
                 source : this._currentSource,
                 query : this._query
             };

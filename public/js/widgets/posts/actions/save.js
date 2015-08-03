@@ -35,16 +35,16 @@ Class(CV, 'PostActionSave').inherits(Widget)({
 
         _save : function _save() {
             API.postSave({
-                profileName : App.Voice.owner.profileName,
-                voiceSlug : App.Voice.slug,
+                profileName : App.Voice.data.owner.profileName,
+                voiceSlug : App.Voice.data.slug,
                 postId : this.entity.id
             }, this._responseHandler.bind(this));
         },
 
         _unsave : function _unsave() {
             API.postUnsave({
-                profileName : App.Voice.owner.profileName,
-                voiceSlug : App.Voice.slug,
+                profileName : App.Voice.data.owner.profileName,
+                voiceSlug : App.Voice.data.slug,
                 postId : this.entity.id
             }, this._responseHandler.bind(this));
         },
