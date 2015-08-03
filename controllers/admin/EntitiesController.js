@@ -2,13 +2,17 @@ Admin.EntitiesController = Class(Admin, 'EntitiesController').inherits(RestfulCo
   prototype : {
     index : function index(req, res, next) {
       ACL.isAllowed('index', 'admin.' + inflection.pluralize(req.entityType), req.role, {}, function(err, isAllowed) {
+        if (err) {
+          return next(err);
+        }
+
+        if (!isAllowed) {
+          return next(new ForbiddenError());
+        }
+
         Entity.find(['type = \'' + req.entityType + '\' AND is_anonymous = false ORDER BY created_at ASC', []], function(err, result) {
           if (err) {
             return next(err);
-          }
-
-          if (!isAllowed) {
-            return next(new ForbiddenError());
           }
 
           EntitiesPresenter.build(result, req.currentPerson, function(err, entities) {
