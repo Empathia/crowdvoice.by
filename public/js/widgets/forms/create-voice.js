@@ -28,14 +28,17 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
     ',
 
     prototype : {
+        MAX_TITLE_LENGTH : 65,
+        MAX_DESCRIPTION_LENGTH : 140,
+
         init : function init(config){
             Widget.prototype.init.call(this, config);
             this.el = this.element[0];
-            this.sendElement = this.element.find('.send');
+            this.sendElement = this.el.querySelector('.send');
 
             this.checkit = new Checkit({
-                title : 'required',
-                description : 'required',
+                title : ['required', 'maxLength:' + this.MAX_TITLE_LENGTH],
+                description : ['required', 'maxLength:' + this.MAX_DESCRIPTION_LENGTH],
                 topicsDropdown : ['array', 'minLength:1'],
                 hashtags : 'required',
                 rssfeed : 'required',
@@ -58,16 +61,16 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             this.appendChild(new CV.Image({
                 name : 'backgroundImage',
                 data: {title : "Background image"}
-            })).render(this.element.find('.placeholder-image'));
+            })).render(this.el.querySelector('.placeholder-image'));
 
             this.appendChild(new CV.UI.Input({
                 name : 'voiceTitle',
                 data : {
-                    label : "Title",
-                    hint : "65 characters max",
+                    label : 'Title',
+                    hint : this.MAX_TITLE_LENGTH + ' characters max',
                     attr : {
                         type : 'text',
-                        maxlength: 65
+                        maxlength: this.MAX_TITLE_LENGTH
                     },
                     inputClassName : '-lg -block'
                 }
@@ -77,15 +80,15 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 name : 'voiceDescription',
                 data : {
                     isTextArea : true,
-                    label : "Description",
-                    hint : "140 characters max",
+                    label : 'Description',
+                    hint : '140 characters max',
                     inputClassName : '-lg -block',
                     attr : {
                         rows : 2,
-                        maxlength: 140
+                        maxlength: this.MAX_DESCRIPTION_LENGTH
                     }
                 },
-            })).render(this.element.find('.placeholder-description'));
+            })).render(this.el.querySelector('.placeholder-description'));
 
             this.appendChild(new CV.UI.DropdownTopics({
                 name : 'voiceTopicsDropdown'
@@ -104,7 +107,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 options 	: allTypes,
                 hasTitle 	: true,
                 title 		: "Voice type (?)"
-            }).render(this.element.find('.placeholder-voice-type'));
+            }).render(this.el.querySelector('.placeholder-voice-type'));
 
             this.appendChild(new CV.UI.Input({
                 name : 'voiceHashtags',
@@ -112,7 +115,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                     label : "Twitter hashtags",
                     inputClassName : '-lg -block',
                 }
-            })).render(this.element.find('.placeholder-twitter'));
+            })).render(this.el.querySelector('.placeholder-twitter'));
 
             this.appendChild(new CV.UI.Input({
                 name : 'voiceRssfeed',
@@ -121,7 +124,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                     placeholder : '',
                     inputClassName : '-lg -block'
                 }
-            })).render(this.element.find('.placeholder-rss'));
+            })).render(this.el.querySelector('.placeholder-rss'));
 
             this.appendChild(new CV.UI.Input({
                 name : 'voiceLatitude',
@@ -130,7 +133,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                     placeholder : 'Latitude',
                     inputClassName : '-lg -block'
                 }
-            })).render(this.element.find('.placeholder-latitude'));
+            })).render(this.el.querySelector('.placeholder-latitude'));
 
             this.appendChild(new CV.UI.Input({
                 name : 'voiceLongitude',
@@ -139,7 +142,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                     label : ' ',
                     inputClassName : '-lg -block',
                 }
-            })).render(this.element.find('.placeholder-longitude'));
+            })).render(this.el.querySelector('.placeholder-longitude'));
 
             //********** bottom ***********
             if (!Person.anon()) {
