@@ -94,28 +94,25 @@ Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
             throw new Error('VoicePostLayers.prototype.addPosts not implemented');
         },
 
-        /* Implementation of get scroll height.
-         * All Subclasses should include this method.
-         * @method getScrollHeight <private, abstract> [Function]
+        /* Gets the scroll height of the scrollable area.
+         * @method getScrollHeight <protected> [Function]
          */
         getScrollHeight : function getScrollHeight() {
-            throw new Error('VoicePostLayers.prototype.getScrollHeight not implemented');
+            return this.scrollableArea.scrollHeight;
         },
 
-        /* Implementation of get scroll top.
-         * All Subclasses should include this method.
-         * @method getScrollTop <private, abstract> [Function]
+        /* Gets the scroll top of the scrollable area.
+         * @method getScrollTop <protected> [Function]
          */
         getScrollTop : function getScrollTop() {
-            throw new Error('VoicePostLayers.prototype.getScrollTop not implemented');
+            return this.scrollableArea.scrollTop;
         },
 
-        /* Implementation of scroll to.
-         * All Subclasses should include this method.
-         * @method scrollTo <private, abstract> [Function]
+        /* Scroll to a y position of the scrollable area.
+         * @method getScrollTo <protected> [Function]
          */
-        scrollTo : function scrollTo() {
-            throw new Error('VoicePostLayers.prototype.scrollTo not implemented');
+        scrollTo : function scrollTo(y) {
+            this.scrollableArea.scrollTop = y;
         },
 
         /* Implementation of remove posts.
@@ -181,6 +178,7 @@ Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
             });
 
             Velocity(layer.el, 'scroll', {
+                container : _this.scrollableArea,
                 duration : 600,
                 easing : 'linear',
                 complete : function() {

@@ -77,12 +77,6 @@ Class(CV, 'Bubble').inherits(Widget)({
         position : function(){
             var bubble = this;
 
-            var bodyMaxheight = parseInt(this.bodyElement.css('max-height'));
-
-            if (this.bodyElement.height() < bodyMaxheight){
-                this.bodyElement.css('overflow-y', 'auto');
-            }
-
             var anchorPos = this.getOffset(this.anchorEl);
 
             var viewableOffsetTop = this.anchorEl.offset().top - $(window).scrollTop();
@@ -133,14 +127,12 @@ Class(CV, 'Bubble').inherits(Widget)({
         },
 
         show : function(){
-            $('body').css('overflow', 'hidden');
             this.element.show();
 
             this.position();
             console.log('show');
         },
         hide : function(){
-            $('body').css('overflow', '');
             this.element.hide();
         }
 

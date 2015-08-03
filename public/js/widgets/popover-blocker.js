@@ -1,6 +1,5 @@
 /* jshint multistr: true */
 /* @class CV.PopoverBlocker – Creates pop overs that when activated they will be placed on top of every content,
- * disabling interation and scrolling for the passed `container` element.
  *
  * @options
  * placement [String] (top) top|right|bottom|left
@@ -75,7 +74,9 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
         },
 
         _autoSetup : function _autoSetup() {
-            if (this.hasScrollbar) this.el.classList.add('has-scrollbar');
+            if (this.hasScrollbar) {
+                this.el.classList.add('has-scrollbar');
+            }
 
             this.backdropElement.classList.add('ui-popover-backdrop');
             this.el.classList.add('-' + this.placement);
@@ -95,7 +96,9 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
                 }
             }
 
-            if (this.content) this.setContent(this.content);
+            if (this.content) {
+                this.setContent(this.content);
+            }
 
             return this;
         },
@@ -116,7 +119,9 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
         },
 
         _backdropClickHandler : function _backdropClickHandlerRef(ev) {
-            if (ev.target !== this.backdropElement) return;
+            if (ev.target !== this.backdropElement) {
+                return void 0;
+            }
 
             this.deactivate();
         },
@@ -149,8 +154,11 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
          * @return this [CV.Popover]
          */
         toggle : function toggle() {
-            if (this.active) this.deactivate();
-            else this.activate();
+            if (this.active) {
+                this.deactivate();
+            } else {
+                this.activate();
+            }
 
             return this;
         },
@@ -190,7 +198,6 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
         _activate : function _activate() {
             Widget.prototype._activate.call(this);
 
-            this.container.style.overflow = 'hidden';
             this._placeElement();
 
             this.container.appendChild(this.backdropElement);
@@ -206,7 +213,6 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
         _deactivate : function _deactivate() {
             Widget.prototype._deactivate.call(this);
 
-            this.container.style.overflow = '';
             this._unplaceElement();
             this.backdropElement.classList.remove('active');
 
@@ -230,7 +236,6 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
 
             if (this.backdropElement.parentNode) {
                 this.backdropElement.parentNode.removeChild(this.backdropElement);
-                this.container.style.overflow = '';
             }
 
             if (this.closeButton) {

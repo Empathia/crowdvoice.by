@@ -188,7 +188,6 @@ require('./widgets/post-creators/write-article/cover-button');
 require('./widgets/bubble.js');
 require('./widgets/bubble/voices-list.js');
 require('./widgets/modal.js');
-require('./widgets/modal2.js');
 require('./widgets/login.js');
 require('./widgets/formUtils.js');
 require('./widgets/forms/send-message.js');
@@ -213,6 +212,7 @@ require('./widgets/elements/select.js');
 require('./widgets/elements/select-account.js');
 require('./widgets/elements/alert.js');
 
+require('./widgets/ui/modal');
 require('./widgets/ui/input');
 require('./widgets/ui/checkbox');
 

@@ -39,7 +39,6 @@ Class(CV, 'Search').inherits(Widget)({
             Widget.prototype.init.call(this, config);
 
             this.el = this.element[0];
-            this._body = document.body;
             this.inputWrapper = this.el.querySelector('.cv-search-overlay__input');
             this.closeElement = this.el.querySelector('.cv-search-overlay__close');
 
@@ -127,13 +126,7 @@ Class(CV, 'Search').inherits(Widget)({
 
         _activate : function _activate() {
             Widget.prototype._activate.call(this);
-            this._body.style.overflow = 'hidden';
             this.input.getElement().focus();
-        },
-
-        _deactivate : function _deactivate() {
-            Widget.prototype._deactivate.call(this);
-            this._body.style.overflow = '';
         },
 
         destroy : function destroy() {

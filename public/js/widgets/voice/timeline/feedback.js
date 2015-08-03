@@ -71,14 +71,12 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
         },
 
         createJumpToDateBubble : function createJumpToDateBubble(postsCount) {
-            this.appendChild(
-                new CV.VoiceTimelineJumpToDate({
-                    name : 'jumpToDate',
-                    postsCount : postsCount,
-                    clockElement : this.el,
-                    container : this.el
-                })
-            ).render(this.el);
+            this.appendChild(new CV.VoiceTimelineJumpToDate({
+                name : 'jumpToDate',
+                postsCount : postsCount,
+                clockElement : this.el,
+                container : this.el
+            })).render(this.el);
         },
 
         /* Subscribe and listen to events.
@@ -97,9 +95,11 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
          * @method _scrollHandler <private> [Function]
          */
         _scrollHandler : function _scrollHandler() {
-            this._lastScrollY = this.scrollableArea.scrollY;
+            this._lastScrollY = this.scrollableArea.scrollTop;
 
-            if (this._scheduledAnimationFrame) return;
+            if (this._scheduledAnimationFrame) {
+                return void 0;
+            }
 
             this._scheduledAnimationFrame = true;
             requestAnimationFrame(this.readAndUpdateRef);
@@ -113,7 +113,7 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
 
             scrollPercentage = 100 * this._lastScrollY / (this._totalHeight - this._clientHeight);
             scrollViewportPixels = scrollPercentage * this._clientHeight / 100;
-            elem = document.elementFromPoint(this._clientWidth - 10, scrollViewportPixels);
+            elem = document.elementFromPoint(this._clientWidth - 20, scrollViewportPixels);
 
             if (elem) {
                 if (elem.classList.contains(this.constructor.INDICATOR_CLASSNAME)) {

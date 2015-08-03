@@ -412,11 +412,9 @@ Class(CV, 'Login').inherits(Widget)({
 
         show : function(){
             this.element.addClass('active');
-            $('body').css('overflow', 'hidden');
         },
         hide : function(){
             this.element.removeClass('active');
-            $('body').css('overflow', 'auto');
         }
 
     }

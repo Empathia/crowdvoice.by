@@ -68,15 +68,13 @@ Class(CV, 'VoiceAddContent').inherits(Widget)({
         },
 
         _autoSetup : function _autoSetup() {
-            this.appendChild(
-                new CV.PopoverBlocker({
-                    name : 'addPostBubble',
-                    className : 'voice-add-content-bubble',
-                    placement : 'left',
-                    toggler : this.addPostButton,
-                    content : this.constructor.BUBBLE_OPTIONS
-                })
-            ).render(this.el);
+            this.appendChild(new CV.PopoverBlocker({
+                name : 'addPostBubble',
+                className : 'voice-add-content-bubble',
+                placement : 'left',
+                toggler : this.addPostButton,
+                content : this.constructor.BUBBLE_OPTIONS
+            })).render(this.el);
 
             this.addPostBubble.getContent().className += ' ui-vertical-list hoverable';
 
@@ -126,7 +124,7 @@ Class(CV, 'VoiceAddContent').inherits(Widget)({
 
             this.createPostModal = CV.PostCreator.create({type: type});
 
-            this.createPostModal.render(document.body).activate();
+            this.createPostModal.render(document.body);
 
             this.addPostBubble.deactivate();
 

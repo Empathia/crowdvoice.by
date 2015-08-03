@@ -17,14 +17,12 @@ Class(CV, 'PostCreator').inherits(Widget).includes(CV.WidgetUtils)({
 
     prototype : {
         _window : null,
-        _body : null,
         closeButton : null,
 
         init : function init(config) {
             Widget.prototype.init.call(this, config);
 
             this._window = window;
-            this._body = document.body;
         },
 
         /* Subscribe general events shared by any PostCreator.
@@ -54,7 +52,7 @@ Class(CV, 'PostCreator').inherits(Widget).includes(CV.WidgetUtils)({
         },
 
         _windowKeydownHandler : function _windowKeydownHandler(ev) {
-            var charCode = (typeof ev.which == 'number') ? ev.which : ev.keyCode;
+            var charCode = (typeof ev.which === 'number') ? ev.which : ev.keyCode;
 
             if (charCode === 27) { // ESC
                 this.deactivate();
@@ -66,24 +64,6 @@ Class(CV, 'PostCreator').inherits(Widget).includes(CV.WidgetUtils)({
          */
         _closeButtonClickHander : function _closeButtonClickHander() {
             this.deactivate();
-        },
-
-        /* Handle the actions when a PostCreator gets `activated`. Disabled the body scroll.
-         * @method _activate <private> [Function]
-         */
-        _activate : function _activate() {
-            Widget.prototype._activate.call(this);
-
-            this._body.style.overflow = 'hidden';
-        },
-
-        /* Handle the actions when a PostCreator gets `deactivated`. Enable the body scroll.
-         * @method _deactivate <private> [Function]
-         */
-        _deactivate : function _deactivate() {
-            Widget.prototype._deactivate.call(this);
-
-            this._body.style.overflow = '';
         },
 
         destroy : function destroy() {
@@ -98,7 +78,6 @@ Class(CV, 'PostCreator').inherits(Widget).includes(CV.WidgetUtils)({
             }
 
             this._window = null;
-            this._body = null;
             this.closeButton = null;
 
             return null;

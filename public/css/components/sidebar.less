@@ -2,7 +2,7 @@
 /* =========================================================================== *
  *  home page
  * =========================================================================== */
-body.page-home > .cv-main-sidebar {
+body.page-home .cv-main-sidebar {
   top: unit(74 + 20, px);
   left: 0;
 
@@ -44,7 +44,7 @@ body.page-home > .cv-main-sidebar {
 /* =========================================================================== *
  *  inner pages
  * =========================================================================== */
-body.page-inner > .cv-main-sidebar {
+body.page-inner .cv-main-sidebar {
   top: 0;
   left: -(@cv-sidebar-width - @cv-sidebar-collapsed-width);
   overflow: hidden;
@@ -84,7 +84,7 @@ body.page-inner > .cv-main-sidebar {
   .sidebar-link-badge {border-color: @color-neutral-xxx-dark}
 }
 
-body.page-inner > .cv-main-sidebar .cv-main-logo {
+body.page-inner .cv-main-sidebar .cv-main-logo {
   margin-bottom: 25px;
   background-color: @color-black;
 
@@ -92,7 +92,7 @@ body.page-inner > .cv-main-sidebar .cv-main-logo {
   .logo-type-by {color: @color-grey}
 }
 
-body.page-inner > .cv-main-sidebar.-is-expanded {
+body.page-inner .cv-main-sidebar.-is-expanded {
   .sidebar-nav {transform: translateX(0)}
 
   .cv-main-logo-type,
@@ -103,7 +103,7 @@ body.page-inner > .cv-main-sidebar.-is-expanded {
 /* =========================================================================== *
  *  globally shared
  * =========================================================================== */
-body > .cv-main-sidebar {
+.cv-main-sidebar {
   position: fixed;
   z-index: 2;
   width: @cv-sidebar-width;
@@ -113,7 +113,7 @@ body > .cv-main-sidebar {
   .cv-main-logo {height: @cv-header-height}
 }
 
-body > .cv-main-sidebar.-is-expanded {
+.cv-main-sidebar.-is-expanded {
   transform: translateX(@cv-sidebar-width - @cv-sidebar-collapsed-width) translateZ(0);
 }
 

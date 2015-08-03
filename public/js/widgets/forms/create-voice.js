@@ -143,10 +143,12 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
 
             //********** bottom ***********
             if (!Person.anon()) {
-                this.appendChild(new CV.Check({
-                    id          : 1,
-                    label       : "Create Anonymously (?)",
-                    name        : "checkAnon"
+                this.appendChild(new CV.UI.Checkbox({
+                    name : 'checkAnon',
+                    className : '-block -pt1 -pb1',
+                    data : {
+                        label : 'Create Anonymously'
+                    }
                 })).render(this.sendElement);
             }
 

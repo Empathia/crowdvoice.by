@@ -3,7 +3,10 @@
 /* Handles the modetate window ui. Uses VoicePostLayersManager to create the layers and fill them with posts.
  */
 Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
-    HTML : '<div class="voice-moderate-wrapper"></div>',
+    HTML : '\
+        <div class="voice-moderate-wrapper">\
+            <div class="voice-posts-wrapper"></div>\
+        </div>',
 
     prototype : {
         /* options */
@@ -12,7 +15,6 @@ Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
         el : null,
         layersManager : null,
         _window : null,
-        _body : null,
         /* socket io instance holder */
         _socket : null,
 
@@ -30,33 +32,31 @@ Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
             Widget.prototype.init.call(this, config);
 
             this.el = this.element[0];
+            this.voicePostsWrapper = this.el.querySelector('.voice-posts-wrapper');
             this._window = window;
-            this._body = document.body;
         },
 
         /* Public method to start the thing after being rendered.
          */
         setup : function setup() {
-            var data = {};
+           var data = {};
             Object.keys(voiceInfo).forEach(function(propertyName) {
                 data[propertyName] = voiceInfo[propertyName];
             });
             data.name = 'layersManager';
-            data.scrollableArea = this.el;
+            data.scrollableArea = this.voicePostsWrapper;
             data.postsCount = App.Voice.postsCountUnapproved;
             data.postCount = this._getTotalPostCount(data.postsCount);
             data.allowPostEditing = this.allowPostEditing;
 
             this.appendChild(
                 new CV.VoicePostLayersModerateAbstract(data)
-            ).render(this.el).setup().loadDefaultLayer();
+            ).render(this.voicePostsWrapper).setup().loadDefaultLayer();
 
-            this.appendChild(
-                new CV.VoiceModerateFooter({
-                    name : 'footer',
-                    totalPosts : data.postCount
-                })
-            ).render(this.el);
+            this.appendChild(new CV.VoiceModerateFooter({
+                name : 'footer',
+                totalPosts : data.postCount
+            })).render(this.el);
 
             return this._bindEvents();
         },
@@ -66,7 +66,7 @@ Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
          * - ESC to close the widget
          */
         _bindEvents : function _bindEvents() {
-            this.bind('post:moderate:publish', function () {
+            this.bind('post:moderate:published', function () {
                 this._publishedPosts = true;
             }.bind(this));
 
@@ -79,7 +79,7 @@ Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
             this.footer.bind('done', this.destroy.bind(this));
 
             this._scrollHandlerRef = this._scrollHandler.bind(this);
-            this.el.addEventListener('scroll', this._scrollHandlerRef);
+            this.voicePostsWrapper.addEventListener('scroll', this._scrollHandlerRef);
 
             this._resizeHandlerRef = this._resizeHandler.bind(this);
             this._window.addEventListener('resize', this._resizeHandlerRef);
@@ -94,13 +94,13 @@ Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
          * @method _scrollHandler <private> [Function]
          */
         _scrollHandler : function _scrollHandler() {
-            var st = this.el.scrollTop;
+            var st = this.voicePostsWrapper.scrollTop;
             var scrollingUpwards = (st < this._lastScrollTop);
             var y = 1;
             var el;
 
             if (!this._listenScrollEvent) {
-                return;
+                return void 0;
             }
 
             if (!scrollingUpwards) {
@@ -157,24 +157,10 @@ Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
             this._listenScrollEvent = true;
         },
 
-        /* Render method to remove scrollbars from body. It does not override Widget's render method.
-         * @method render <public> [Function]
-         * @return this
-         */
-        render : function render(element, beforeElement) {
-            Widget.prototype.render.call(this, element, beforeElement);
-
-            this._body.style.overflow = 'hidden';
-
-            return this;
-        },
-
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
 
-            this._body.style.overflow = '';
-
-            this.el.removeEventListener('scroll', this._scrollHandlerRef);
+            this.voicePostsWrapper.removeEventListener('scroll', this._scrollHandlerRef);
             this._scrollHandlerRef = null;
 
             this._window.removeEventListener('resize', this._resizeHandlerRef);
@@ -185,7 +171,6 @@ Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
 
             this.el = null;
             this._window = null;
-            this._body = null;
 
             return null;
         }

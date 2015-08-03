@@ -70,21 +70,14 @@ Class(CV, 'Modal').inherits(Widget)({
         },
 
         show : function(){
-            $('body').css('overflow', 'hidden');
             this.render('body');
             this.element.show();
             this.modalElement.css({
                 'margin-left': -1*(this.modalElement.width()/2),
                 //'margin-top': -1*(this.modalElement.height()/2)
             });
-
-            if (this.bodyElement.find('> div').height() > this.bodyElement.height()){
-                this.bodyElement.css('overflow-y', 'scroll');
-            }
-
         },
         hide : function(){
-            $('body').css('overflow', 'auto');
             this.element.hide();
         }
 

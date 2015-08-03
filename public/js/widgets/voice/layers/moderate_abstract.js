@@ -68,27 +68,6 @@ Class(CV, 'VoicePostLayersModerateAbstract').inherits(CV.VoicePostLayers)({
             return this;
         },
 
-        /* Implementation to get the scroll height of the scrollable area.
-         * @method getScrollHeight <protected, abstract> [Function]
-         */
-        getScrollHeight : function getScrollHeight() {
-            return this.scrollableArea.scrollHeight;
-        },
-
-        /* Implementation to get the scroll top of the scrollable area.
-         * @method getScrollTop <protected, abstract> [Function]
-         */
-        getScrollTop : function getScrollTop() {
-            return this.scrollableArea.scrollTop;
-        },
-
-        /* Implementation to scroll to a y position of the scrollable area.
-         * @method getScrollTo <protected, abstract> [Function]
-         */
-        scrollTo : function scrollTo(y) {
-            this.scrollableArea.scrollTop = y;
-        },
-
         /* dimensionsChanged custom event handler. Updates the posts position when
          * its dimentions has been changed. e.i. on edit mode » change the
          * description/title length

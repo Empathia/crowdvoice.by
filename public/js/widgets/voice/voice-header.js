@@ -1,3 +1,5 @@
+var Events = require('./../../lib/events');
+
 Class(CV, 'VoiceHeader').inherits(Widget)({
     prototype : {
 
@@ -25,8 +27,7 @@ Class(CV, 'VoiceHeader').inherits(Widget)({
          */
         _bindEvents : function _bindEvents() {
             this._scrollHandlerRef = this._scrollHandler.bind(this);
-            this.scrollableArea.addEventListener('scroll', this._scrollHandlerRef);
-
+            Events.on(this.scrollableArea, 'scroll', this._scrollHandlerRef);
             return this;
         },
 
@@ -34,11 +35,11 @@ Class(CV, 'VoiceHeader').inherits(Widget)({
          * @method _scrollHandler <private> [Function]
          */
         _scrollHandler : function _scrollHandler() {
-            var y = this.scrollableArea.scrollY;
+            var y = this.scrollableArea.scrollTop;
             var scrollingDown = (y > this._lastScrollTop);
 
             if (Math.abs(this._lastScrollTop - y) <= this.DELTA) {
-                return;
+                return void 0;
             }
 
             if (scrollingDown && y > this.HEADER_HEIGHT) {
@@ -65,9 +66,9 @@ Class(CV, 'VoiceHeader').inherits(Widget)({
 
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
-
-            this.scrollableArea.removeEventListener('scroll', this._scrollHandlerRef);
+            Events.off(this.scrollableArea, 'scroll', this._scrollHandlerRef);
             this._scrollHandlerRef = null;
+            return null;
         }
     }
 });

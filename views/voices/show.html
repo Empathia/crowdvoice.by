@@ -20,32 +20,6 @@
       <button class="voice-about-show-btn cv-button micro">About</button>
     </div>
   </section>
-
-  <footer class="voice-footer">
-    <div class="voice-footer-inner -clearfix">
-      <div class="voice-footer-meta-wrapper -float-left">
-        <div class="voice-footer-title -font-bold">
-          <%= voice.title %>
-        </div>
-        <div class="voice-footer-by -color-grey">
-          by <a href="/<%= owner.profileName %>" alt="<%= owner.name %> <% if (owner.lastname) { %><%= owner.lastname %><% } %>"><%= owner.name %> <% if (owner.lastname) { %><%= owner.lastname %><% } %></a>
-        </div>
-      </div>
-      <div class="voice-footer-right -float-right">
-        View
-        <div class="ui-select -sm -separator">
-          <svg class="ui-select-svg">
-            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-arrow-up-down"></use>
-          </svg>
-          <select class="ui-select-select">
-            <option value="">Option I</option>
-            <option value="">Option II</option>
-            <option value="">Option III</option>
-          </select>
-        </div>
-      </div
-    </div>
-  </footer>
 </main>
 
 <script>
@@ -72,7 +46,7 @@
     postCountElement      : document.querySelector('.voice-stats__post-count'),
     followersCountElement : document.querySelector('.voice-stats__followers'),
     aboutBoxButtonElement : document.querySelector('.voice-about-show-btn'),
-    scrollableArea        : window,
+    scrollableArea        : document.querySelector('.yield'),
     postsCount            : <%= JSON.stringify(postsCount) %>,
     allowPosting          : <%= allowPosting %>,
     allowPostEditing      : <%= allowPostEditing %>

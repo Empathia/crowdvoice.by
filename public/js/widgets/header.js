@@ -162,7 +162,7 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
          * @method _showCreateVoiceModal <private> [Function]
          */
         _showCreateVoiceModal : function _showCreateVoiceModal() {
-            this.appendChild(new CV.Modal2({
+            this.appendChild(new CV.UI.Modal({
                 title       : 'Create a Voice',
                 name        : 'createAVoiceModal',
                 action      : CV.CreateVoice,
@@ -174,7 +174,7 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
          * @method _showCreateOrganizationModal <private> [Function]
          */
         _showCreateOrganizationModal : function _showCreateOrganizationModal() {
-            this.appendChild(new CV.Modal2({
+            this.appendChild(new CV.UI.Modal({
                 title       : 'Create an Organization',
                 name        : 'createAnOrganizationModal',
                 action      : CV.CreateOrganization,

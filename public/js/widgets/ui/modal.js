@@ -1,4 +1,4 @@
-Class(CV, 'Modal2').inherits(Widget).includes(CV.WidgetUtils)({
+Class(CV.UI, 'Modal').inherits(Widget).includes(CV.WidgetUtils)({
     ELEMENT_CLASS : 'cv-modal-container',
 
     HTML : '\
@@ -31,12 +31,11 @@ Class(CV, 'Modal2').inherits(Widget).includes(CV.WidgetUtils)({
 
             this.modalElement = this.el.querySelector('.cv-modal');
             this.closeElement = this.el.querySelector('.close');
-            this.bodyElement = this.el.querySelector('.body');
 
             this.appendChild(new this.action({
                 data : this.data,
                 name : 'bubbleAction',
-            })).render(this.bodyElement);
+            })).render(this.el.querySelector('.body'));
 
             this._setup()._bindEvents();
         },
@@ -68,16 +67,14 @@ Class(CV, 'Modal2').inherits(Widget).includes(CV.WidgetUtils)({
         render : function render(element, beforeElement) {
             Widget.prototype.render.call(this, element, beforeElement);
             var w = this.width || getComputedStyle(this.modalElement).getPropertyValue('width');
-            this.bodyElement.style.overflow = 'hidden';
             this.modalElement.style.marginLeft = ((w/2) * -1) + 'px';
             return this;
         },
 
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
-            this.bodyElement.style.overflow = '';
             this.closeElement.removeEventListener('click', this._destroyRef);
-            this._destroyRef = this.bodyElement = this.closeElement = this.modalElement = this.el = null;
+            this._destroyRef = this.closeElement = this.modalElement = this.el = null;
             return false;
         }
     }

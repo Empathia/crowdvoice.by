@@ -85,18 +85,16 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
          * @return [CV.VoiceView]
          */
         setupVoiceWidgets : function setupVoiceWidgets() {
+            this.appendChild(new CV.VoiceFooter({
+                name : 'voiceFooter',
+                voice : this
+            })).render(document.querySelector('.app-wrapper'));
+
             new CV.VoiceHeader({
                 element : document.getElementsByClassName('cv-main-header')[0],
-                footerVoiceTitle : document.getElementsByClassName('voice-footer-meta-wrapper')[0]
+                footerVoiceTitle : document.getElementsByClassName('voice-footer-meta-wrapper')[0],
+                scrollableArea : document.querySelector('.yield')
             });
-
-            this.appendChild(
-                new CV.VoiceFooter({
-                    name : 'voiceFooter',
-                    element : $('.voice-footer'),
-                    voice : this
-                })
-            );
 
             return this;
         },

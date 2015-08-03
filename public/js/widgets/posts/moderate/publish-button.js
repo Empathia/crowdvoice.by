@@ -60,7 +60,7 @@ Class(CV, 'PostModeratePublishButton').inherits(Widget).includes(BubblingSupport
 
         _setSuccessState : function _setSuccessState() {
             this.el.innerHTML = 'Published!';
-            this.dispatch('post:moderate:publish');
+            this.dispatch('post:moderate:published');
         },
 
         _disable : function _disable() {
