@@ -51,7 +51,7 @@ var FeedPresenter = Module('FeedPresenter')({
           Entity.find(['id = ?', [action.actionDoer]], function (err, entity) {
             if (err) { return next(err) }
 
-            EntitiesPresenter.build(entity[0], currentPerson, function (err, presentedEntity) {
+            EntitiesPresenter.build(entity, currentPerson, function (err, presentedEntity) {
               if (err) { return next(err) }
 
               actionInst.actionDoer = presentedEntity[0]
@@ -66,10 +66,10 @@ var FeedPresenter = Module('FeedPresenter')({
           Entity.find(['id = ?', [action.followerId]], function (err, entity) {
             if (err) { return next(err) }
 
-            EntitiesPresenter.build(entity[0], currentPerson, function (err, presentedEntity) {
+            EntitiesPresenter.build(entity, currentPerson, function (err, presentedEntity) {
               if (err) { return next(err) }
 
-              actionInst.follower = PresentedEntity[0]
+              actionInst.follower = presentedEntity[0]
               actionInst.followerId = hashids.encode(action.followerId)[0]
 
               next()
@@ -80,6 +80,8 @@ var FeedPresenter = Module('FeedPresenter')({
         if (err) { return callback(err) }
 
         result.push(actionInst)
+
+        next()
       })
     }, function (err) {
       if (err) { return callback(err) }
