@@ -168,6 +168,10 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
                 action      : CV.CreateVoice,
                 width       : 960,
             })).render(document.body);
+
+            requestAnimationFrame(function() {
+                this.createAVoiceModal.activate();
+            }.bind(this));
         },
 
         /* Display the CreateOrganizationModal.
@@ -180,6 +184,10 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
                 action      : CV.CreateOrganization,
                 width       : 540,
             })).render(document.body);
+
+            requestAnimationFrame(function() {
+                this.createAnOrganizationModal.activate();
+            }.bind(this));
         }
     }
 });

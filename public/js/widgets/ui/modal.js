@@ -1,5 +1,7 @@
+var transitionEnd = require('./../../lib/ontransitionend');
+
 Class(CV.UI, 'Modal').inherits(Widget).includes(CV.WidgetUtils)({
-    ELEMENT_CLASS : 'cv-modal-container',
+    ELEMENT_CLASS : 'cv-modal-container ui-modal',
 
     HTML : '\
         <div>\
@@ -51,7 +53,7 @@ Class(CV.UI, 'Modal').inherits(Widget).includes(CV.WidgetUtils)({
 
         _bindEvents : function _bindEvents() {
             var modal = this;
-            this._destroyRef = this.destroy.bind(this);
+            this._destroyRef = this._beforeDestroyHandler.bind(this);
 
             this.closeElement.addEventListener('click', this._destroyRef);
             this.bubbleAction.bind('close', this._destroyRef);
@@ -60,15 +62,16 @@ Class(CV.UI, 'Modal').inherits(Widget).includes(CV.WidgetUtils)({
                 if (e.target !== this){
                     return;
                 }
-                modal.destroy();
+                modal._beforeDestroyHandler();
             });
         },
 
-        render : function render(element, beforeElement) {
-            Widget.prototype.render.call(this, element, beforeElement);
-            var w = this.width || getComputedStyle(this.modalElement).getPropertyValue('width');
-            this.modalElement.style.marginLeft = ((w/2) * -1) + 'px';
-            return this;
+        _beforeDestroyHandler : function _beforeDestroyHandler() {
+            this.deactivate();
+
+            transitionEnd(this.modalElement, function() {
+                this.destroy();
+            }.bind(this));
         },
 
         destroy : function destroy() {
