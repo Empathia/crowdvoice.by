@@ -222,7 +222,12 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
             this.dom.updateText(this.fullNameEl, fullname);
 
             var description = Autolinker.link(this.format.truncate(this.data.description || '', this.constructor.MAX_DESCRIPTION_LENGTH, true));
-            this.dom.updateHTML(this.descriptionEl, description);
+
+            if (description != null){
+                this.dom.updateHTML(this.descriptionEl, description);
+            } else {
+                this.dom.updateHTML(this.descriptionEl, "");
+            }
 
             if (this.data.location) {
                 this.dom.updateText(this.locationEl, this.data.location);
