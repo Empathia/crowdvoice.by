@@ -29,6 +29,7 @@
 var Person = require('./../../lib/currentPerson');
 var PLACEHOLDERS = require('./../../lib/placeholders');
 var moment = require('moment');
+var Autolinker = require( 'autolinker' );
 
 Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
     ELEMENT_CLASS : 'widget-card',
@@ -156,7 +157,7 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
             }
 
             if (!Person.ownerOf('organization', this.data.id)) {
-                this.appendChild( new CV.CardActionFollow({
+                this.appendChild(new CV.CardActionFollow({
                     name : 'followButton',
                     followed: this.data.followed,
                     profileName : this.data.profileName
@@ -220,8 +221,8 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
             var fullname = this.data.name + (this.data.lastname ? (' ' + this.data.lastname) : '');
             this.dom.updateText(this.fullNameEl, fullname);
 
-            var description = this.format.truncate(this.data.description || '', this.constructor.MAX_DESCRIPTION_LENGTH, true);
-            this.dom.updateText(this.descriptionEl, description);
+            var description = Autolinker.link(this.format.truncate(this.data.description || '', this.constructor.MAX_DESCRIPTION_LENGTH, true));
+            this.dom.updateHTML(this.descriptionEl, description);
 
             if (this.data.location) {
                 this.dom.updateText(this.locationEl, this.data.location);
