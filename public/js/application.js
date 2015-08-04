@@ -64,6 +64,7 @@ require('./widgets/dropdown.js');
 require('./widgets/dropdowns/topics');
 require('./widgets/dropdowns/voice-types');
 require('./widgets/dropdowns/voice-status');
+require('./widgets/dropdowns/voice-ownership');
 require('./widgets/tabs/manager');
 require('./widgets/tabs/tab');
 require('./widgets/tabs/tab-nav');

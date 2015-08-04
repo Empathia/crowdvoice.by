@@ -63,6 +63,10 @@ module.exports = {
         }
     },
 
+    ownsOrganizations : function ownsOrganizations() {
+        return this.get().ownedOrganizations.length;
+    },
+
     /* Checks if an Entity can be invited either to a voice or to an organization.
      * @argument entity <required> [Object] Entity's Model
      * @return [Boolean]

@@ -10,10 +10,10 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 <div data-background class="-col-3 -pr1"></div>\
                 <div data-title class="-col-9 -pl1"></div>\
             </div>\
-            <div class="-col-12">\
-                <div data-topics class="-col-4 -pr1"></div>\
-                <div data-type class="-col-4 -pl1"></div>\
-                <div data-status class="-col-4 -pl1"></div>\
+            <div data-row-voice-info class="-col-12">\
+                <div data-topics></div>\
+                <div data-type></div>\
+                <div data-status></div>\
             </div>\
             <div class="-col-12">\
                 <div class="-col-6 -pr1 placeholder-twitter"></div>\
@@ -37,7 +37,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             this.el = this.element[0];
             this.sendElement = this.el.querySelector('.send');
 
-            this.checkit = new Checkit({
+            this.checkitProps = {
                 title : ['required', 'maxLength:' + this.MAX_TITLE_LENGTH],
                 description : ['required', 'maxLength:' + this.MAX_DESCRIPTION_LENGTH],
                 topicsDropdown : ['array', 'minLength:1'],
@@ -47,9 +47,10 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 rssfeed : 'required',
                 latitude : 'required',
                 longitude : 'required'
-            });
+            };
 
-            this._setup()._bindEvents();
+            this._setup()._updateInfoRow()._bindEvents();
+            this.checkit = new Checkit(this.checkitProps);
         },
 
         _setup : function _setup() {
@@ -156,6 +157,34 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             return this;
         },
 
+        /* Checks if currentPerson has owned organization in which case an ownership
+         * dropdown is added to the form.
+         * @method _updateInfoRow <private>
+         */
+        _updateInfoRow : function _updateInfoRow() {
+            var row = this.el.querySelector('[data-row-voice-info]');
+
+            if (Person.ownsOrganizations()) {
+                var owncol = this.dom.create('div');
+                this.appendChild(new CV.UI.DropdownVoiceOwnership({
+                    name : 'voiceOwnershipDropdown'
+                })).setDefault(0).render(owncol);
+                row.appendChild(owncol);
+
+                this.checkitProps.ownershipDropdown = 'required';
+            }
+
+            var l = 12/row.childElementCount;
+            [].slice.call(row.children).forEach(function(col, index) {
+                var classSelectors = ['-col-' + l];
+                if (index >= 1) {
+                    classSelectors.push('-pl1');
+                }
+                this.dom.addClass(col, classSelectors);
+            }, this);
+            return this;
+        },
+
         _bindEvents : function _bindEvents() {
             this._sendFormHandlerRef = this._sendFormHandler.bind(this);
             Events.on(this.buttonSend.el, 'click', this._sendFormHandlerRef);
@@ -163,17 +192,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
         },
 
         _sendFormHandler : function _sendFormHandler() {
-            var validate = this.checkit.validateSync({
-                title : this.voiceTitle.getValue(),
-                description : this.voiceDescription.getValue(),
-                topicsDropdown : this.voiceTopicsDropdown.getSelection(),
-                typesDropdown : this.voiceTypesDropdown.getValue(),
-                statusDropdown : this.voiceStatusDropdown.getValue(),
-                hashtags : this.voiceHashtags.getValue(),
-                rssfeed : this.voiceRssfeed.getValue(),
-                latitude : this.voiceLatitude.getValue(),
-                longitude : this.voiceLongitude.getValue()
-            });
+            var validate = this.checkit.validateSync(this._getCurrentData());
 
             if (validate[0]) {
                 return this._displayErrors(validate[0].errors);
@@ -185,6 +204,26 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 var widget = 'voice' + this.format.capitalizeFirstLetter(propertyName);
                 this[widget].error();
             }, this);
+        },
+
+        _getCurrentData : function _getCurrentData() {
+            var body = {
+                title : this.voiceTitle.getValue(),
+                description : this.voiceDescription.getValue(),
+                topicsDropdown : this.voiceTopicsDropdown.getSelection(),
+                typesDropdown : this.voiceTypesDropdown.getValue(),
+                statusDropdown : this.voiceStatusDropdown.getValue(),
+                hashtags : this.voiceHashtags.getValue(),
+                rssfeed : this.voiceRssfeed.getValue(),
+                latitude : this.voiceLatitude.getValue(),
+                longitude : this.voiceLongitude.getValue()
+            };
+
+            if (this.voiceOwnershipDropdown) {
+                body.ownershipDropdown = this.voiceOwnershipDropdown.getValue();
+            }
+
+            return body;
         },
 
         destroy : function destroy() {
