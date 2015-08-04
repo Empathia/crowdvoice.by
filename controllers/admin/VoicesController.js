@@ -15,7 +15,7 @@ Admin.VoicesController = Class(Admin, 'VoicesController').inherits(RestfulContro
             return next(err);
           }
 
-          VoicesPresenter.build(result, function(err, voices) {
+          VoicesPresenter.build(result, req.currentPerson, function(err, voices) {
             if (err) {
               return next(err);
             }
@@ -47,12 +47,14 @@ Admin.VoicesController = Class(Admin, 'VoicesController').inherits(RestfulContro
             return next(new NotFoundError());
           }
 
-          VoicesPresenter.build(result, function(err, voices) {
+          VoicesPresenter.build(result, req.currentPerson, function(err, voices) {
             if (err) {
               return next(err);
             }
 
             res.locals.voice = voices[0];
+
+            res.render('admin/voices/show.html', { layout : 'admin' });
           });
         });
       });
@@ -109,6 +111,7 @@ Admin.VoicesController = Class(Admin, 'VoicesController').inherits(RestfulContro
           if (err) {
             res.locals.errors = err;
             logger.log(err);
+            return res.render('admin/voices/new.html', { layout : 'admin' });
           }
 
           VoicesPresenter.build([voice], req.currentPerson, function(err, voices) {
@@ -118,7 +121,7 @@ Admin.VoicesController = Class(Admin, 'VoicesController').inherits(RestfulContro
 
             res.locals.voice = voices[0];
 
-            res.render('admin/voices/new.html', { layout : 'admin' });
+            res.redirect('/admin/voices');
           });
         });
       });
@@ -143,7 +146,7 @@ Admin.VoicesController = Class(Admin, 'VoicesController').inherits(RestfulContro
             return next(new NotFoundError());
           }
 
-          VoicesPresenter.build(result, function(err, voices) {
+          VoicesPresenter.build(result, req.currentPerson, function(err, voices) {
             if (err) {
               return next(err);
             }
@@ -199,6 +202,8 @@ Admin.VoicesController = Class(Admin, 'VoicesController').inherits(RestfulContro
             if (err) {
               res.locals.errors = err;
               logger.log(err);
+
+              return res.render('admin/voices/edit.html', { layout : 'admin' });
             }
 
             VoicesPresenter.build([voice], req.currentPerson, function(err, voices) {
@@ -208,7 +213,7 @@ Admin.VoicesController = Class(Admin, 'VoicesController').inherits(RestfulContro
 
               res.locals.voice = voices[0];
 
-              res.render('admin/voices/' + voices[0].id + '/edit.html', { layout : 'admin' });
+              res.redirect('/admin/voices');
             });
           });
         });
@@ -245,9 +250,7 @@ Admin.VoicesController = Class(Admin, 'VoicesController').inherits(RestfulContro
 
             res.redirect('/admin/voices');
           });
-        })
-
-
+        });
       });
     }
   }
