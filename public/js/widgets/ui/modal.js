@@ -1,3 +1,4 @@
+var Events = require('./../../lib/events');
 var transitionEnd = require('./../../lib/ontransitionend');
 
 Class(CV.UI, 'Modal').inherits(Widget).includes(CV.WidgetUtils)({
@@ -5,6 +6,7 @@ Class(CV.UI, 'Modal').inherits(Widget).includes(CV.WidgetUtils)({
 
     HTML : '\
         <div>\
+            <div class="cv-modal__backdrop"></div>\
             <div class="cv-modal">\
                 <div class="header">\
                     <h3 class="title"></h3>\
@@ -17,8 +19,7 @@ Class(CV.UI, 'Modal').inherits(Widget).includes(CV.WidgetUtils)({
                     <div class="body -clear-after"></div>\
                 </div>\
             </div>\
-        </div>\
-    ',
+        </div>',
 
     prototype : {
         title : null,
@@ -31,6 +32,7 @@ Class(CV.UI, 'Modal').inherits(Widget).includes(CV.WidgetUtils)({
             Widget.prototype.init.call(this, config);
             this.el = this.element[0];
 
+            this.backdropElement = this.el.querySelector('.cv-modal__backdrop');
             this.modalElement = this.el.querySelector('.cv-modal');
             this.closeElement = this.el.querySelector('.close');
 
@@ -52,23 +54,16 @@ Class(CV.UI, 'Modal').inherits(Widget).includes(CV.WidgetUtils)({
         },
 
         _bindEvents : function _bindEvents() {
-            var modal = this;
             this._destroyRef = this._beforeDestroyHandler.bind(this);
 
-            this.closeElement.addEventListener('click', this._destroyRef);
             this.bubbleAction.bind('close', this._destroyRef);
-
-            this.element.bind('click', function(e) {
-                if (e.target !== this){
-                    return;
-                }
-                modal._beforeDestroyHandler();
-            });
+            Events.on(this.backdropElement, 'click', this._destroyRef);
+            Events.on(this.closeElement, 'click', this._destroyRef);
+            return this;
         },
 
         _beforeDestroyHandler : function _beforeDestroyHandler() {
             this.deactivate();
-
             transitionEnd(this.modalElement, function() {
                 this.destroy();
             }.bind(this));
@@ -76,7 +71,8 @@ Class(CV.UI, 'Modal').inherits(Widget).includes(CV.WidgetUtils)({
 
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
-            this.closeElement.removeEventListener('click', this._destroyRef);
+            Events.off(this.backdropElement, 'click', this._destroyRef);
+            Events.off(this.closeElement, 'click', this._destroyRef);
             this._destroyRef = this.closeElement = this.modalElement = this.el = null;
             return false;
         }
