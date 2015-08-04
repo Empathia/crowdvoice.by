@@ -16,15 +16,13 @@ Class(CV, 'PostCreatorFromSourcesDropdown').inherits(Widget)({
         },
 
         _setup : function _setup() {
-            this.appendChild(
-                new CV.Dropdown({
-                    name : 'dropdown',
-                    showArrow : true,
-                    className : 'from-sources-dropdown -full-height -color-border-grey-light',
-                    arrowClassName : '-s8 -color-grey',
-                    bodyClassName : 'ui-vertical-list hoverable'
-                })
-            ).render(this.el);
+            this.appendChild(new CV.Dropdown({
+                name : 'dropdown',
+                showArrow : true,
+                className : 'from-sources-dropdown -full-height -color-border-grey-light',
+                arrowClassName : '-s8 -color-grey',
+                bodyClassName : 'ui-vertical-list hoverable'
+            })).render(this.el);
 
             // this.appendChild(
             //     new CV.PostCreatorFromSourcesDropdownOption({
@@ -38,27 +36,23 @@ Class(CV, 'PostCreatorFromSourcesDropdown').inherits(Widget)({
             // this.dropdown.addContent(this.dropdownOptionTwitter.el);
             // this.dropdownOptions.push(this.dropdownOptionTwitter);
 
-            this.appendChild(
-                new CV.PostCreatorFromSourcesDropdownOption({
-                    name : 'dropdownOptionYoutube',
-                    source : 'youtube',
-                    iconID : 'video',
-                    label : 'Youtube',
-                    className : 'ui-vertical-list-item'
-                })
-            );
+            this.appendChild(new CV.PostCreatorFromSourcesDropdownOption({
+                name : 'dropdownOptionYoutube',
+                source : 'youtube',
+                iconID : 'video',
+                label : 'Youtube',
+                className : 'ui-vertical-list-item'
+            }));
             this.dropdown.addContent(this.dropdownOptionYoutube.el);
             this.dropdownOptions.push(this.dropdownOptionYoutube);
 
-            this.appendChild(
-                new CV.PostCreatorFromSourcesDropdownOption({
-                    name : 'dropdownOptionGoogleNews',
-                    source : 'googleNews',
-                    iconID : 'article',
-                    label : 'Google News',
-                    className : 'ui-vertical-list-item'
-                })
-            );
+            this.appendChild(new CV.PostCreatorFromSourcesDropdownOption({
+                name : 'dropdownOptionGoogleNews',
+                source : 'googleNews',
+                iconID : 'article',
+                label : 'Google News',
+                className : 'ui-vertical-list-item'
+            }));
             this.dropdown.addContent(this.dropdownOptionGoogleNews.el);
             this.dropdownOptions.push(this.dropdownOptionGoogleNews);
 

@@ -1,27 +1,38 @@
 @{ns}-modal {
-  opacity: 0;
-  visibility: hidden;
-  transition-property: all;
-  transition-duration: 150ms;
-  transition-timing-function: ease;
+  background-color: transparent;
+
+  .cv-modal__backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+
+    opacity: 0;
+    transition-property: opacity;
+    transition-duration: 150ms;
+    transition-timing-function: ease;
+  }
 
   .cv-modal {
-    left: 0;
-    margin: 0 auto;
-    transform: translateY(-50%);
-    transition-property: transform;
-    transition-duration: 120ms;
-    transition-timing-function: ease-out;
+    opacity: 0;
+    transform: translate(-50%, -5%);
+    transition-property: transform, opacity;
+    transition-duration: 200ms;
+    transition-timing-function: ease;
   }
 
   &.active {
-    opacity: 1;
-    visibility: visible;
-    transition-duration: 300ms;
+    .cv-modal__backdrop {
+      opacity: 1;
+      transition-duration: 300ms;
+    }
 
     .cv-modal {
-      transform: translateY(0);
-      transition-duration: 240ms;
+      opacity: 1;
+      transform: translate(-50%, 0%);
+      transition-duration: 260ms;
     }
   }
 }
