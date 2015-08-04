@@ -145,17 +145,10 @@ Admin.EntitiesController = Class(Admin, 'EntitiesController').inherits(RestfulCo
               res.locals.errors = err;
               req.errors = err;
               logger.log(err);
+              return res.render('admin/' + inflection.pluralize(req.entityType) + '/edit.html');
             }
 
-            EntitiesPresenter.build([entity], req.currentPerson, function(err, result) {
-              if (err) {
-                return next(err);
-              }
-
-              res.locals[req.entityType] = result[0];
-
-              res.render('admin/' + inflection.pluralize(req.entityType) + '/edit.html', { layout : 'admin' });
-            });
+            res.redirect('/admin/' + inflection.pluralize(req.entityType));
           });
         });
       });

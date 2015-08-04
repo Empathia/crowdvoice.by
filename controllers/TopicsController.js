@@ -235,42 +235,6 @@ var TopicsController = Class('TopicsController')({
       });
     },
 
-    new : function (req, res) {
-      res.render('topics/new.html');
-    },
-
-    create : function create (req, res) {
-      var topic = new Topic({
-        name: req.body.name
-      });
-
-      async.series([
-        function (done) {
-          topic.save(done);
-        },
-        function (done) {
-          if (!req.files['image']) { return done(); }
-          topic.uploadImage('image', req.files['image'].path, function (err) {
-            done(err);
-          });
-        },
-        function (done) {
-          topic.save(done);
-        }
-      ], function (err) {
-        if (err) {
-          res.locals.errors = err;
-          res.render('/topics/new.html');
-        } else {
-          res.redirect('/topics');
-        }
-      });
-    },
-
-    edit : function edit (req, res) {
-      res.render('topics/edit.html', {});
-    },
-
     update : function update (req, res) {
       var topic = res.locals.topic;
 
