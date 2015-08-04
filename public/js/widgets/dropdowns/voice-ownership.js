@@ -18,7 +18,7 @@ Class(CV.UI, 'DropdownVoiceOwnership').inherits(Widget).includes(CV.WidgetUtils)
 
             this.appendChild(new CV.Dropdown({
                 name : 'dropdown',
-                label : '- ownership',
+                label : '- Select voice ownership',
                 showArrow : true,
                 className : 'dropdown-topics ui-dropdown-styled -lg',
                 arrowClassName : '-s10 -color-grey',
@@ -28,7 +28,7 @@ Class(CV.UI, 'DropdownVoiceOwnership').inherits(Widget).includes(CV.WidgetUtils)
             this._setup()._bindEvents();
         },
 
-        setDefault : function setDefault(index) {
+        selectByIndex : function selectByIndex(index) {
             this._items[index].click();
             return this;
         },
