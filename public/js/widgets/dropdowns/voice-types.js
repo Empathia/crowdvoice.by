@@ -66,7 +66,7 @@ Class(CV.UI, 'DropdownVoiceTypes').inherits(Widget)({
         },
 
         destroy : function destroy() {
-            Widget.prototype.destroy.call();
+            Widget.prototype.destroy.call(this);
             this._items.forEach(function(item) {
                 Events.off(item, 'click', this._clickHandlerRef);
             }, this);
