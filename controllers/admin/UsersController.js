@@ -225,7 +225,9 @@ Admin.UsersController = Class(Admin, 'UsersController').inherits(RestfulControll
 
           user.save(function(err, result) {
             if (err) {
-              return next(err);
+              res.locals.errors = err;
+
+              return res.render('admin/users/edit.html', { layout : 'admin' });
             }
 
             req.flash('success', 'User updated');
