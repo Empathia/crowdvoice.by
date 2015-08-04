@@ -168,7 +168,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 var owncol = this.dom.create('div');
                 this.appendChild(new CV.UI.DropdownVoiceOwnership({
                     name : 'voiceOwnershipDropdown'
-                })).setDefault(0).render(owncol);
+                })).render(owncol);
                 row.appendChild(owncol);
 
                 this.checkitProps.ownershipDropdown = 'required';
