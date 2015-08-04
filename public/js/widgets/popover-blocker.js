@@ -134,14 +134,12 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
         setContent : function setContent(content) {
             this.contentElement.innerHTML = "";
 
-            if ((typeof this.content).toLowerCase() === 'string') {
+            if ((typeof content).toLowerCase() === 'string') {
                 this.contentElement.insertAdjacentHTML('afterbegin', content);
-
                 return this;
             }
 
             this.contentElement.appendChild(content);
-
             return this;
         },
 
@@ -159,7 +157,6 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
             } else {
                 this.activate();
             }
-
             return this;
         },
 
@@ -188,7 +185,6 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
             this.el.style.left = '';
             this.el.style.top = '';
             this.el.style.bottom = '';
-
             this.parentElement.appendChild(this.el);
         },
 

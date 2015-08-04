@@ -7,12 +7,13 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
     HTML : '\
         <div>\
             <div class="-col-12">\
-                <div class="-col-3 -pr1 placeholder-image"></div>\
-                <div class="-col-9 -pl1 placeholder-title placeholder-description"></div>\
+                <div data-background class="-col-3 -pr1"></div>\
+                <div data-title class="-col-9 -pl1"></div>\
             </div>\
             <div class="-col-12">\
-                <div class="-col-6 -pr1 placeholder-topics"></div>\
-                <div class="-col-6 -pl1 placeholder-voice-type"></div>\
+                <div data-topics class="-col-4 -pr1"></div>\
+                <div data-type class="-col-4 -pl1"></div>\
+                <div data-status class="-col-4 -pl1"></div>\
             </div>\
             <div class="-col-12">\
                 <div class="-col-6 -pr1 placeholder-twitter"></div>\
@@ -40,6 +41,8 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 title : ['required', 'maxLength:' + this.MAX_TITLE_LENGTH],
                 description : ['required', 'maxLength:' + this.MAX_DESCRIPTION_LENGTH],
                 topicsDropdown : ['array', 'minLength:1'],
+                typesDropdown : 'required',
+                statusDropdown : 'required',
                 hashtags : 'required',
                 rssfeed : 'required',
                 latitude : 'required',
@@ -56,12 +59,18 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                     text : 'You are creating this Voice anonymously. If you wish to make it public then turn Anonymous Mode off.',
                     className : '-mb2'
                 })).render(this.el, this.el.firstChild);
+            } else {
+                this.appendChild(new CV.UI.Checkbox({
+                    name : 'checkAnon',
+                    className : '-block -pt1 -pb1',
+                    data : {label : 'Create Anonymously' }
+                })).render(this.sendElement);
             }
 
             this.appendChild(new CV.Image({
                 name : 'backgroundImage',
                 data: {title : "Background image"}
-            })).render(this.el.querySelector('.placeholder-image'));
+            })).render(this.el.querySelector('[data-background]'));
 
             this.appendChild(new CV.UI.Input({
                 name : 'voiceTitle',
@@ -74,7 +83,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                     },
                     inputClassName : '-lg -block'
                 }
-            })).render(this.el.querySelector('.placeholder-title'));
+            })).render(this.el.querySelector('[data-title]'));
 
             this.appendChild(new CV.UI.Input({
                 name : 'voiceDescription',
@@ -88,26 +97,19 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                         maxlength: this.MAX_DESCRIPTION_LENGTH
                     }
                 },
-            })).render(this.el.querySelector('.placeholder-description'));
+            })).render(this.el.querySelector('[data-title]'));
 
             this.appendChild(new CV.UI.DropdownTopics({
                 name : 'voiceTopicsDropdown'
-            })).render(this.el.querySelector('.placeholder-topics'));
+            })).render(this.el.querySelector('[data-topics]'));
 
-            //voice types
-            var allTypes = {
-                "1": {label: 'Public', name: 'public'},
-                "2": {label: 'Closed', name: 'closed'},
-                "3": {label: 'Pending', name : 'pending'}
-            };
-            new CV.Select({
-                label 		: 'Select one',
-                name  		: 'select',
-                style 		: 'full',
-                options 	: allTypes,
-                hasTitle 	: true,
-                title 		: "Voice type (?)"
-            }).render(this.el.querySelector('.placeholder-voice-type'));
+            this.appendChild(new CV.UI.DropdownVoiceTypes({
+                name : 'voiceTypesDropdown'
+            })).render(this.el.querySelector('[data-type]'));
+
+            this.appendChild(new CV.UI.DropdownVoiceStatus({
+                name : 'voiceStatusDropdown'
+            })).render(this.el.querySelector('[data-status]'));
 
             this.appendChild(new CV.UI.Input({
                 name : 'voiceHashtags',
@@ -144,17 +146,6 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 }
             })).render(this.el.querySelector('.placeholder-longitude'));
 
-            //********** bottom ***********
-            if (!Person.anon()) {
-                this.appendChild(new CV.UI.Checkbox({
-                    name : 'checkAnon',
-                    className : '-block -pt1 -pb1',
-                    data : {
-                        label : 'Create Anonymously'
-                    }
-                })).render(this.sendElement);
-            }
-
             this.appendChild(new CV.Button({
                 name : 'buttonSend',
                 type : 'single',
@@ -176,6 +167,8 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 title : this.voiceTitle.getValue(),
                 description : this.voiceDescription.getValue(),
                 topicsDropdown : this.voiceTopicsDropdown.getSelection(),
+                typesDropdown : this.voiceTypesDropdown.getValue(),
+                statusDropdown : this.voiceStatusDropdown.getValue(),
                 hashtags : this.voiceHashtags.getValue(),
                 rssfeed : this.voiceRssfeed.getValue(),
                 latitude : this.voiceLatitude.getValue(),

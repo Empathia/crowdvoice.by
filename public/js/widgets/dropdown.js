@@ -22,16 +22,14 @@ Class(CV, 'Dropdown').inherits(Widget).includes(CV.WidgetUtils)({
             </div>\
             <div class="ui-dropdown__body -abs -color-border-grey-light">\
             </div>\
-        </div>\
-    ',
+        </div>',
 
     HTML_LABEL : '<span class="ui-dropdown-label"></span>',
 
     ARROW_HTML : '\
         <svg class="ui-dropdown-arrow">\
             <use xlink:href="#svg-arrow-down"></use>\
-        </svg>\
-    ',
+        </svg>',
 
     prototype : {
         /* options */
@@ -69,9 +67,7 @@ Class(CV, 'Dropdown').inherits(Widget).includes(CV.WidgetUtils)({
 
                 if (this.arrowClassName) {
                     this.arrowElement = this.head.querySelector('.ui-dropdown-arrow');
-                    this.arrowClassName.split(' ').forEach(function(className) {
-                        this.arrowElement.classList.add(className);
-                    }, this);
+                    this.dom.addClass(this.arrowElement, this.arrowClassName.split(/\s/));
                 }
             }
 
@@ -119,9 +115,17 @@ Class(CV, 'Dropdown').inherits(Widget).includes(CV.WidgetUtils)({
          * @method addContent <public> [Function]
          */
         addContent : function addContent(element) {
+            if ((typeof element).toLowerCase() === 'string') {
+                this.body.insertAdjacentHTML('beforeend', element);
+                return this;
+            }
+
             this.body.appendChild(element);
-            element = null;
             return this;
+        },
+
+        getContent : function getContent() {
+            return this.body.children;
         },
 
         toggle : function toggle() {
