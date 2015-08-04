@@ -251,30 +251,13 @@
 
   $('.placeholder-members').append('<br><br>');
 
-  //$.ajax({
-  //  type: "GET",
-  //  url:'/<%= organization.profileName %>/members',
-  //  headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
-  //  data : {},
-  //  success: function(data) {
-  //    new CV.UsersList({
-  //      type          : '',
-  //      name          : '',
-  //      style         : '',
-  //      hasButton     : true,
-  //      users         : [],
-  //      listTitle     : "{count} members of this organization",
-  //      dateTitle     : "Member since"
-  //    }).render($('.placeholder-members'));
-  //  }
-  //});
-
   $.ajax({
     type: "GET",
-    url:'/<%= organization.profileName %>/edit/getOrganizations',
+    url:'/<%= organization.profileName %>/members',
     headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
     data : {},
     success: function(data) {
+      console.log(data);
       new CV.UsersList({
           hasButton     : true,
           users         : data,
