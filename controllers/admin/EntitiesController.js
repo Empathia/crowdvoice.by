@@ -97,7 +97,7 @@ Admin.EntitiesController = Class(Admin, 'EntitiesController').inherits(RestfulCo
       });
     },
 
-    update : function update(req, res) {
+    update : function update(req, res, next) {
       ACL.isAllowed('update', 'admin.' + inflection.pluralize(req.entityType), req.role, {}, function(err, isAllowed) {
         if (err) {
           return next(err);
