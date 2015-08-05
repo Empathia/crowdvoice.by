@@ -12,7 +12,7 @@
 
 	  <section class="profile-body -rel">
 
-	    <div class="feed-item">
+	    <div class="feed-item" style="display: none;">
 	    	<div class="feed-item-time">3 hours</div>
 	    	<div class="feed-item-image">
 	    		<img class="voice-cover" width="48" height="48" src="/uploads/development/voice_6/image_small.jpeg">
@@ -67,57 +67,105 @@
 </main>
 
 <script>
-  	var ns = [];
-  	<% if (typeof notifications !== "undefined") { %>
-    	ns = <%= JSON.stringify(notifications) %>;
-  	<% } %>
-  	var App = new CV.App({
-    	notifications : ns,
-    	currentPerson : currentPerson
-  	});
-  	App.addInteractiveSidebar();
 
-  	var feedItems = <%= JSON.stringify(feed) %>;
+	var ns = [];
+	<% if (typeof notifications !== "undefined") { %>
+  	ns = <%= JSON.stringify(notifications) %>;
+	<% } %>
+	var App = new CV.App({
+  	notifications : ns,
+  	currentPerson : currentPerson
+	});
+	App.addInteractiveSidebar();
 
-  	var feedItemEl = '\
-  		<div class="feed-item">\
-	    	<div class="feed-item-time"></div>\
-	    	<div class="feed-item-image">\
-	    		<img class="voice-cover" width="48" height="48" src="">\
-	    	</div>\
-	    	<div class="feed-item-content">\
-	    		<div class="feed-item-title">\
-		    		<a href="#"><b></b></a> <span></span>.\
-		  		</div>\
-	    		<div class="feed-item-list"></div>\
-	    	</div>\
-	    </div>\
-  	';
+	var feedItems = <%= JSON.stringify(feed) %>;
 
-  	var numVoices = document.querySelector(".stat-voices .stat-num");
-		numVoices.textContent = currentPerson.voicesCount;
+	var feedItemEl = '\
+		<div class="feed-item">\
+    	<div class="feed-item-time"></div>\
+    	<div class="feed-item-image">\
+    		<img class="voice-cover" width="48" height="48" src="">\
+    	</div>\
+    	<div class="feed-item-content">\
+    		<div class="feed-item-title">\
+	    		<a href="#"><b></b></a> <span></span>.\
+	  		</div>\
+    		<div class="feed-item-list"></div>\
+    	</div>\
+    </div>\
+	';
 
-		var numOrgs = document.querySelector(".stat-organizations .stat-num");
-		numOrgs.textContent = currentPerson.organizations.length;
+	var numVoices = document.querySelector(".stat-voices .stat-num");
+	numVoices.textContent = currentPerson.voicesCount;
 
-  	//console.log(feedItems);
-  	feedItems.forEach(function(feed){
-  		//console.log(feed.action);
-  		//console.log(feed.createdAt);
-  		var timeElapsed = moment(feed.createdAt).from(moment());
-  		var feedEl = $(feedItemEl);
-  		feedEl.find('.feed-item-image img').attr('src', feed.actionDoer.images.small.url);
-  		feedEl.find('.feed-item-time').text( moment(feed.createdAt).from(moment()) );
-  		feedEl.find('.feed-item-title > a > b').text(feed.actionDoer.name + ' ' + feed.actionDoer.lastname);
-  		feedEl.find('.feed-item-title > span').text(feed.action);
-  		feedEl.find('.feed-item-title > a').attr('href', '/' + feed.actionDoer.profileName);
+	var numOrgs = document.querySelector(".stat-organizations .stat-num");
+	numOrgs.textContent = currentPerson.organizations.length;
 
 
-  		$('.profile-body').append(feedEl);
-  		//baseElement.querySelector(selectors);
-     	//console.log( moment(new Date(feed.createdAt).toISOString()).format('• MMMM Do, YYYY • h:mm a') );
+  var sortedFeedItems = feedItems.sort(this.compare).reverse();
 
-  	});
+	console.log(sortedFeedItems);
+
+	if ( sortedFeedItems.length > 0 ){
+
+	  sortedFeedItems.forEach(function(feed){
+
+			var timeElapsed = moment(feed.createdAt).from(moment());
+			var feedEl = $(feedItemEl);
+
+			feedEl.find('.feed-item-image img').attr('src', feed.actionDoer.images.small.url);
+			feedEl.find('.feed-item-time').text( moment(feed.createdAt).from(moment()) );
+			feedEl.find('.feed-item-title > a > b').text(feed.actionDoer.name + ' ' + feed.actionDoer.lastname);
+			feedEl.find('.feed-item-title > a').attr('href', '/' + feed.actionDoer.profileName);
+
+			var typeWidget;
+
+			switch (feed.action) {
+	      case 'followed':
+	      	if(feed.itemType == 'entity'){
+						feedEl.find('.feed-item-title > span').text(feed.action + ' ' + feed.entity.type + 's');
+		  			typeWidget = new CV.CardMini({data:feed.entity}).render(feedEl.find('.feed-item-list'));
+		  		} else if (feed.itemType == 'voice'){
+		  			feedEl.find('.feed-item-title > span').text(feed.action + ' ' + feed.itemType + 's');
+		  			typeWidget = new CV.VoiceCoverMini({data:feed.voice}).render(feedEl.find('.feed-item-list'));
+		  		}
+	        typeWidget.showMeta();
+	        break;
+	      case 'changed avatar':
+					feedEl.find('.feed-item-title > span').text(feed.action);
+	        break;
+	      case 'changed background':
+					feedEl.find('.feed-item-title > span').text(feed.action);
+	        break;
+	      default:
+	        // \_||_/
+	    }
+
+			$('.profile-body').append(feedEl);
+
+	  });
+
+	}else{
+
+		var onboarding = '\
+		<section class="profile-onboarding -mid-height -rel">\
+	    <h1>Nothing to show yet</h1>\
+	    <p>Follow voices, users and organzations to view all their recent activity. This will also help you discover more of them to contact, contribute, join and follow.</p>\
+	    <br>\
+	    <a href="/discover/browse"><button class="cv-button primary small">Explore and Discover!</button></a>\
+	  </section>';
+
+	  $('.profile-body').html(onboarding);
+
+	}
+
+  function compare(a,b) {
+    if (a.createdAt < b.createdAt)
+      return -1;
+    if (a.createdAt > b.createdAt)
+      return 1;
+    return 0;
+  }
 
   var allTimes = {
 		"1": {label: 'Jesus', name: 'thisweek', active : true},
@@ -134,12 +182,6 @@
 	}).render($('.profile-select-options'));
 
 	var isFeed = true;
-	var onboarding = '\
-		<section class="profile-onboarding -mid-height -rel">\
-	    <h1>Nothing to show yet</h1>\
-	    <p>Follow voices, users and organzations to view all their recent activity. This will also help you discover more of them to contact, contribute, join and follow.</p>\
-	    <br>\
-	  </section>';
 
 	if (!isFeed){
 		var contentWrapper = document.querySelector('.profile-body');
@@ -181,29 +223,11 @@
 		data : {},
 		dataType : 'json',
 		success: function(data) {
-			console.log(data);
-		  renderData(data.slice(0,2), CV.VoiceCoverMini, 'voices-list', false);
-		  renderData(data.slice(0,2), CV.VoiceCoverMini, 'feed-item-list1', true);
+		  renderData(data.slice(0,6), CV.VoiceCoverMini, 'voices-list', false);
+		  //renderData(data.slice(0,2), CV.VoiceCoverMini, 'feed-item-list1', true);
 
 		}
 	});
-
-	//function getData(url, instance, className){
-	//	$.ajax({
-	//		type: "GET",
-	//		url: url,
-	//		headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
-	//		data : {},
-	//		dataType : 'json',
-	//		success: function(data) {
-	//			console.log('New '+ className);
-	//		  	console.log(data);
-	//		  	renderData(data, instance, className)
-	//		}
-	//	});
-	//}
-	//
-  //getData('/discover/trending/voices', CV.VoiceCover, 'voices');
 
 	var buttonDiscover = new CV.Button({
 		style   : 'primary small full',

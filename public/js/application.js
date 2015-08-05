@@ -64,6 +64,7 @@ require('./widgets/dropdown.js');
 require('./widgets/dropdowns/topics');
 require('./widgets/dropdowns/voice-types');
 require('./widgets/dropdowns/voice-status');
+require('./widgets/dropdowns/voice-ownership');
 require('./widgets/tabs/manager');
 require('./widgets/tabs/tab');
 require('./widgets/tabs/tab-nav');
@@ -215,6 +216,7 @@ require('./widgets/elements/input-button.js');
 require('./widgets/elements/select.js');
 require('./widgets/elements/select-account.js');
 require('./widgets/elements/alert.js');
+require('./widgets/elements/detect-location.js');
 
 require('./widgets/ui/modal');
 require('./widgets/ui/input');

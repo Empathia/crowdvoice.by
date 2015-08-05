@@ -198,7 +198,7 @@ Admin.UsersController = Class(Admin, 'UsersController').inherits(RestfulControll
       });
     },
 
-    update : function update(req, res) {
+    update : function update(req, res, next) {
       ACL.isAllowed('update', 'admin.users', req.role, {}, function(err, isAllowed) {
         if (err) {
           return next(err);
@@ -225,7 +225,9 @@ Admin.UsersController = Class(Admin, 'UsersController').inherits(RestfulControll
 
           user.save(function(err, result) {
             if (err) {
-              return next(err);
+              res.locals.errors = err;
+
+              return res.render('admin/users/edit.html', { layout : 'admin' });
             }
 
             req.flash('success', 'User updated');

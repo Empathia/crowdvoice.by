@@ -203,7 +203,8 @@ hr{
 			.feed-item-list,
 			.feed-item-list1,
 			.feed-item-list2{
-				.cv-voice-cover{
+				.cv-voice-cover,
+				.card-mini{
 					padding: 15px;
 					margin-bottom: 10px;
 					border: 1px solid @color-menu-border;
@@ -608,10 +609,6 @@ form{
 		  font-size: 11px;
 	}
 
-	@keyframes pulse {
-	  50% { opacity: .5 }
-	}
-
 	.icon-text{
 		color: @color-neutral-mid;
 		font-size: 11px;
@@ -627,7 +624,7 @@ form{
 	  		background: transparent url('/img/ico-edit.png') center left no-repeat;
 	  	}
 	  	&.looking {
-		  animation: pulse .75s ease-out 20;
+		  animation: ui-pulse .75s ease-out 20;
 		}
 	}
 

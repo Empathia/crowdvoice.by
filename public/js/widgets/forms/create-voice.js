@@ -10,19 +10,20 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 <div data-background class="-col-3 -pr1"></div>\
                 <div data-title class="-col-9 -pl1"></div>\
             </div>\
-            <div class="-col-12">\
-                <div data-topics class="-col-4 -pr1"></div>\
-                <div data-type class="-col-4 -pl1"></div>\
-                <div data-status class="-col-4 -pl1"></div>\
+            <div data-row-voice-info class="-col-12">\
+                <div data-topics></div>\
+                <div data-type></div>\
+                <div data-status></div>\
             </div>\
             <div class="-col-12">\
-                <div class="-col-6 -pr1 placeholder-twitter"></div>\
-                <div class="-col-6 -pl1 placeholder-rss">\
+                <div data-twitter class="-col-6"></div>\
+                <div data-rss class="-col-6 -pl1">\
             </div>\
             </div>\
-            <div class="-col-12">\
-                <div class="-col-6 -pr1 placeholder-latitude"></div>\
-                <div class="-col-6 -pl1 placeholder-longitude"></div>\
+            <div data-location-wrapper class="-col-12 -rel">\
+                <div data-location class="-col-4"></div>\
+                <div data-latitude class="-col-4 -pl1"></div>\
+                <div data-longitude class="-col-4 -pl1"></div>\
             </div>\
             <div class="send -col-12 -text-center"></div>\
         </div>\
@@ -37,21 +38,23 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             this.el = this.element[0];
             this.sendElement = this.el.querySelector('.send');
 
-            this.checkit = new Checkit({
+            this.checkitProps = {
                 title : ['required', 'maxLength:' + this.MAX_TITLE_LENGTH],
                 description : ['required', 'maxLength:' + this.MAX_DESCRIPTION_LENGTH],
                 topicsDropdown : ['array', 'minLength:1'],
                 typesDropdown : 'required',
                 statusDropdown : 'required',
                 hashtags : 'required',
-                rssfeed : 'required',
-                latitude : 'required',
-                longitude : 'required'
-            });
+                rssfeed : 'required'
+            };
 
-            this._setup()._bindEvents();
+            this._setup()._updateInfoRow()._bindEvents();
+            this.checkit = new Checkit(this.checkitProps);
         },
 
+        /* Create and append the form element widgets.
+         * @method _setup <private>
+         */
         _setup : function _setup() {
             if (Person.anon()) {
                 this.appendChild(new CV.Alert({
@@ -117,7 +120,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                     label : "Twitter hashtags",
                     inputClassName : '-lg -block',
                 }
-            })).render(this.el.querySelector('.placeholder-twitter'));
+            })).render(this.el.querySelector('[data-twitter]'));
 
             this.appendChild(new CV.UI.Input({
                 name : 'voiceRssfeed',
@@ -126,25 +129,39 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                     placeholder : '',
                     inputClassName : '-lg -block'
                 }
-            })).render(this.el.querySelector('.placeholder-rss'));
+            })).render(this.el.querySelector('[data-rss]'));
+
+            this.appendChild(new CV.DetectLocation({
+                name : 'detectLocation',
+                requireGoogleMaps : true
+            })).render(this.el.querySelector('[data-location-wrapper]'));
+
+            this.appendChild(new CV.UI.Input({
+                name : 'voiceLocation',
+                data: {
+                    label : 'Location Name',
+                    placeholder : 'Location name',
+                    inputClassName : '-lg -block'
+                }
+            })).render(this.el.querySelector('[data-location]'));
 
             this.appendChild(new CV.UI.Input({
                 name : 'voiceLatitude',
                 data: {
-                    label : 'Location',
+                    label : 'Latitude',
                     placeholder : 'Latitude',
                     inputClassName : '-lg -block'
                 }
-            })).render(this.el.querySelector('.placeholder-latitude'));
+            })).render(this.el.querySelector('[data-latitude]'));
 
             this.appendChild(new CV.UI.Input({
                 name : 'voiceLongitude',
                 data : {
+                    label : 'Longitude',
                     placeholder : 'Longitude',
-                    label : ' ',
                     inputClassName : '-lg -block',
                 }
-            })).render(this.el.querySelector('.placeholder-longitude'));
+            })).render(this.el.querySelector('[data-longitude]'));
 
             this.appendChild(new CV.Button({
                 name : 'buttonSend',
@@ -156,24 +173,83 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             return this;
         },
 
+        /* Checks if currentPerson has owned organization in which case an ownership
+         * dropdown is added to the form.
+         * @method _updateInfoRow <private>
+         */
+        _updateInfoRow : function _updateInfoRow() {
+            var row = this.el.querySelector('[data-row-voice-info]');
+
+            if (!Person.anon() && Person.ownsOrganizations()) {
+                var owncol = this.dom.create('div');
+                this.appendChild(new CV.UI.DropdownVoiceOwnership({
+                    name : 'voiceOwnershipDropdown'
+                })).render(owncol);
+                row.appendChild(owncol);
+
+                this.checkitProps.ownershipDropdown = 'required';
+            }
+
+            var l = 12/row.childElementCount;
+            [].slice.call(row.children).forEach(function(col, index) {
+                var classSelectors = ['-col-' + l];
+                if (index >= 1) {
+                    classSelectors.push('-pl1');
+                }
+                this.dom.addClass(col, classSelectors);
+            }, this);
+            return this;
+        },
+
         _bindEvents : function _bindEvents() {
+            this._getGeocodingRef = this._getGeocoding.bind(this);
+            this._getLocationRef = this._getLocation.bind(this);
+            this.detectLocation.bind('location', this._getLocationRef);
+
             this._sendFormHandlerRef = this._sendFormHandler.bind(this);
             Events.on(this.buttonSend.el, 'click', this._sendFormHandlerRef);
             return this;
         },
 
-        _sendFormHandler : function _sendFormHandler() {
-            var validate = this.checkit.validateSync({
-                title : this.voiceTitle.getValue(),
-                description : this.voiceDescription.getValue(),
-                topicsDropdown : this.voiceTopicsDropdown.getSelection(),
-                typesDropdown : this.voiceTypesDropdown.getValue(),
-                statusDropdown : this.voiceStatusDropdown.getValue(),
-                hashtags : this.voiceHashtags.getValue(),
-                rssfeed : this.voiceRssfeed.getValue(),
-                latitude : this.voiceLatitude.getValue(),
-                longitude : this.voiceLongitude.getValue()
+        _getLocation : function _getLocation(ev) {
+            this.voiceLatitude.setValue(ev.data.coords.latitude);
+            this.voiceLongitude.setValue(ev.data.coords.longitude);
+            this.detectLocation.getGeocoding(ev.data.coords.latitude, ev.data.coords.longitude, this._getGeocodingRef);
+        },
+
+        _getGeocoding : function _getGeocoding(err, res) {
+            if (err) {
+                // @TODO: handle error
+                console.log(err);
+                return void 0;
+            }
+
+            if (!res[0]) {
+                // @TODO: handle case
+                console.log('asjfas');
+                return void 0;
+            }
+
+            var r = res[0];
+            var address = [];
+
+            r.address_components.forEach(function(c) {
+                if (
+                    (c.types[0] === "locality") ||
+                    (c.types[0] === "administrative_area_level_1") ||
+                    (c.types[0] === "country")
+                ) {
+                    address.push(c.long_name);
+                }
             });
+
+            this.voiceLocation.setValue(address.join(', ') + '.');
+            this.voiceLatitude.setValue(r.geometry.location.G);
+            this.voiceLongitude.setValue(r.geometry.location.K);
+        },
+
+        _sendFormHandler : function _sendFormHandler() {
+            var validate = this.checkit.validateSync(this._getCurrentData());
 
             if (validate[0]) {
                 return this._displayErrors(validate[0].errors);
@@ -185,6 +261,24 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 var widget = 'voice' + this.format.capitalizeFirstLetter(propertyName);
                 this[widget].error();
             }, this);
+        },
+
+        _getCurrentData : function _getCurrentData() {
+            var body = {
+                title : this.voiceTitle.getValue(),
+                description : this.voiceDescription.getValue(),
+                topicsDropdown : this.voiceTopicsDropdown.getSelection(),
+                typesDropdown : this.voiceTypesDropdown.getValue(),
+                statusDropdown : this.voiceStatusDropdown.getValue(),
+                hashtags : this.voiceHashtags.getValue(),
+                rssfeed : this.voiceRssfeed.getValue()
+            };
+
+            if (this.voiceOwnershipDropdown) {
+                body.ownershipDropdown = this.voiceOwnershipDropdown.getValue();
+            }
+
+            return body;
         },
 
         destroy : function destroy() {
