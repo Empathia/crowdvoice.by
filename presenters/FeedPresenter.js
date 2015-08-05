@@ -1,3 +1,5 @@
+'use strict'
+
 var EntitiesPresenter = require('./EntitiesPresenter.js')
 var VoicesPresenter = require('./VoicesPresenter.js')
 
