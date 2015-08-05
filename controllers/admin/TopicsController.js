@@ -1,4 +1,4 @@
-Admin.TopicsController = Class(Admin, 'TopicsController').inherits(RestfulController)({
+Admin.TopicsController = Class(Admin, 'TopicsController')({
   prototype : {
     index : function index(req, res, next) {
       ACL.isAllowed('index', 'admin.topics', req.role, {}, function(err, isAllowed) {
