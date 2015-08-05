@@ -1,5 +1,5 @@
 var Scrapper = require(process.cwd() + '/lib/cvscrapper');
-var feed = require(__dirname + '/../lib/feed.js');
+var feed = require(__dirname + '/../lib/feedInject.js');
 
 var PostsController = Class('PostsController').includes(BlackListFilter)({
   prototype : {

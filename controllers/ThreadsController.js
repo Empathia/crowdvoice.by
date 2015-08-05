@@ -1,5 +1,5 @@
 require('./../presenters/ThreadsPresenter');
-var feeds = require(__dirname + '/../lib/feed.js');
+var feeds = require(__dirname + '/../lib/feedInject.js');
 
 var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
   prototype : {

@@ -74,21 +74,23 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
           return next(new ForbiddenError());
         }
 
-        FeedAction.find({ follower_id: hashids.decode(req.currentPerson.id)[0] }, function (err, feed) {
-          if (err) { return next(err); }
+        Notification.find({ follower_id: hashids.decode(req.currentPerson.id)[0] }, function (err, notifications) {
+          var actionIds = notifications.map(function (val) { return val.actionId; });
 
-          FeedPresenter.build(feed, req.currentPerson, function (err, presentedFeed) {
-            if (err) { return next(err); }
+          FeedAction.whereIn('id', actionIds, function (err, actions) {
+            FeedPresenter.build(actions, req.currentPerson, function (err, presentedFeed) {
+              if (err) { return next(err); }
 
-            res.format({
-              html: function () {
-                req.feed = presentedFeed;
-                res.locals.feed = presentedFeed;
-                res.render('people/feed');
-              },
-              json: function () {
-                res.json(presentedFeed);
-              }
+              res.format({
+                html: function () {
+                  req.feed = presentedFeed;
+                  res.locals.feed = presentedFeed;
+                  res.render('people/feed');
+                },
+                json: function () {
+                  res.json(presentedFeed);
+                }
+              });
             });
           });
         });

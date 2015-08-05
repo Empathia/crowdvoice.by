@@ -1,3 +1,5 @@
+'use strict'
+
 var EntitiesPresenter = require('./EntitiesPresenter.js')
 var VoicesPresenter = require('./VoicesPresenter.js')
 
@@ -12,7 +14,8 @@ var FeedPresenter = Module('FeedPresenter')({
         // feed action ID
         function (next) {
           actionInst.id = hashids.encode(action.id)[0]
-          next()
+
+          return next()
         },
 
         // itemType and itemId
@@ -26,7 +29,7 @@ var FeedPresenter = Module('FeedPresenter')({
 
                 actionInst.voice = presentedVoice[0]
 
-                next()
+                return next()
               })
             })
           } else if (action.itemType === 'entity') {
@@ -38,7 +41,7 @@ var FeedPresenter = Module('FeedPresenter')({
 
                 actionInst.entity = presentedEntity[0]
 
-                next()
+                return next()
               })
             })
           }
@@ -48,7 +51,7 @@ var FeedPresenter = Module('FeedPresenter')({
 
         // actionDoer
         function (next) {
-          Entity.find(['id = ?', [action.actionDoer]], function (err, entity) {
+          Entity.find(['id = ?', [action.who]], function (err, entity) {
             if (err) { return next(err) }
 
             EntitiesPresenter.build(entity, currentPerson, function (err, presentedEntity) {
@@ -56,23 +59,7 @@ var FeedPresenter = Module('FeedPresenter')({
 
               actionInst.actionDoer = presentedEntity[0]
 
-              next()
-            })
-          })
-        },
-
-        // followerId
-        function (next) {
-          Entity.find(['id = ?', [action.followerId]], function (err, entity) {
-            if (err) { return next(err) }
-
-            EntitiesPresenter.build(entity, currentPerson, function (err, presentedEntity) {
-              if (err) { return next(err) }
-
-              actionInst.follower = presentedEntity[0]
-              actionInst.followerId = hashids.encode(action.followerId)[0]
-
-              next()
+              return next()
             })
           })
         },
@@ -81,12 +68,12 @@ var FeedPresenter = Module('FeedPresenter')({
 
         result.push(actionInst)
 
-        next()
+        return next()
       })
     }, function (err) {
       if (err) { return callback(err) }
 
-      callback(null, result)
+      return callback(null, result)
     })
   },
 })
