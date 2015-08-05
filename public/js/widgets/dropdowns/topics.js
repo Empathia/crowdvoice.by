@@ -1,3 +1,5 @@
+var Topics = require('./../../lib/registers/topics');
+
 Class(CV.UI, 'DropdownTopics').inherits(Widget)({
     HTML : '\
         <div class="ui-form-field">\
@@ -23,26 +25,16 @@ Class(CV.UI, 'DropdownTopics').inherits(Widget)({
                 bodyClassName : 'ui-vertical-list hoverable -col-12'
             })).render(this.el);
 
-            this.dropdown.addContent(this.appendChild(new CV.UI.Checkbox({
-                name : 'check01',
-                className : 'ui-vertical-list-item -col-6 -p0',
-                data : {label : 'Label I'}
-            })).el);
-            this._options.push(this.check01);
+            Topics.get().forEach(function(topic) {
+                this.dropdown.addContent(this.appendChild(new CV.UI.Checkbox({
+                    name : topic.slug,
+                    id : topic.id,
+                    className : 'ui-vertical-list-item -col-6 -p0',
+                    data : {label : topic.name}
+                })).el);
 
-            this.dropdown.addContent(this.appendChild(new CV.UI.Checkbox({
-            name : 'check02',
-                className : 'ui-vertical-list-item -col-6 -p0',
-                data : {label : 'Label II'}
-            })).el);
-            this._options.push(this.check02);
-
-            this.dropdown.addContent(this.appendChild(new CV.UI.Checkbox({
-                name : 'check03',
-                className : 'ui-vertical-list-item -col-6 -p0',
-                data : {label : 'Label III'}
-            })).el);
-            this._options.push(this.check03);
+                this._options.push(this[topic.slug]);
+            }, this);
         },
 
         /* Returns the checkbox widgets that are checked
