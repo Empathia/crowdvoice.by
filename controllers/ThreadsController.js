@@ -94,7 +94,7 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
             if (payload.type.search('invitation') !== -1) {
               invite = new InvitationRequest({
                 invitatorEntityId: response.senderEntity.id,
-                invitedId: response.receiverEntity.id
+                invitedEntityId: response.receiverEntity.id
               });
               invite.save(function (err) {
                 if (err) { return done(err); }

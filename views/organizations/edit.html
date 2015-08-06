@@ -333,6 +333,7 @@
 
   searchInput.buttonEl.on('click', function(){
 
+
     var orgID = '<%= organization.id %>';
     var invitationText = messageInput.element.find('textarea').val();
 
@@ -342,6 +343,7 @@
       headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
       data : {
         type : 'invitation_organization',
+        senderEntityId : currentPerson.id,
         receiverEntityId : selectedUserID,
         organizationId : orgID,
         message : invitationText
