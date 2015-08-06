@@ -100,6 +100,8 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
                 if (err) { return done(err); }
 
                 payload.invitationRequestId = invite.id;
+
+                done();
               });
             } else {
               done();
