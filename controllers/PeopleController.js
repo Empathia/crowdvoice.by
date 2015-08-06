@@ -78,7 +78,7 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
           var actionIds = notifications.map(function (val) { return val.actionId; });
 
           FeedAction.whereIn('id', actionIds, function (err, actions) {
-            FeedPresenter.build(actions, req.currentPerson, function (err, presentedFeed) {
+            FeedPresenter.build(actions, req.currentPerson, false, function (err, presentedFeed) {
               if (err) { return next(err); }
 
               res.format({
