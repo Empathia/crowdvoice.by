@@ -7,6 +7,7 @@ Class(CV, 'InputButton').inherits(Widget)({
             <label><span></span></label>\
             <div class="-clear-after -rel ib-container">\
             </div>\
+            <div class="search-results"></div>\
         </div>\
     ',
 
@@ -72,6 +73,16 @@ Class(CV, 'InputButton').inherits(Widget)({
             }.bind(this), 0);
 
 
+        },
+
+        disableButton : function(){
+            this.buttonEl.addClass('disabled');
+            this.buttonEl.attr('disabled', true);
+        },
+
+        enableButton : function(){
+            this.buttonEl.removeClass('disabled');
+            this.buttonEl.attr('disabled', false);
         },
 
         recalculate : function(){
