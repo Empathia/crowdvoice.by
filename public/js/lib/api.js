@@ -1,3 +1,5 @@
+/* Collection of available endpoints we are allowed to use to communicate with the server.
+ */
 module.exports = {
     /* Holds the page token, used for the server to accept our requests.
      * @property token <private>
@@ -307,6 +309,26 @@ module.exports = {
             type : 'GET',
             url : '/search/' + args.query,
             dataType : 'json',
+            headers : {'csrf-token' : this.token},
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
+    /**************************************************************************
+     * MISC
+     *************************************************************************/
+    /* Returns the registered topics. [Array]
+     * @argument callback <required> [Function]
+     */
+    getTopics : function getTopics(callback) {
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'GET',
+            url : '/topics',
             headers : {'csrf-token' : this.token},
             success : function success(data) {callback(false, data);},
             error : function error(err) {callback(true, err);}
