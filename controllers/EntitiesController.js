@@ -459,6 +459,36 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
           }
         })
       });
+    },
+
+    isVoiceSlugAvailable : function isVoiceSlugAvailable(req, res, next) {
+      ACL.isAllowed('isVoiceSlugAvailable', 'entities', req.role, {}, function(err, isAllowed) {
+        if (err) {
+          return next(err);
+        }
+
+        if (!isAllowed) {
+          return next(new ForbiddenError());
+        }
+
+        var value = req.body.value.toLowerCase().trim();
+
+        if (value.search(' ') !== -1) {
+          return res.json({ 'status' : 'taken' });
+        }
+
+        Slug.find({ url : value }, function(err, result) {
+          if (err) {
+            return next(err);
+          }
+
+          if (result.length === 0) {
+            return res.json({ 'status' : 'available' });
+          } else {
+            return res.json({ 'status' : 'taken' });
+          }
+        })
+      })
     }
   }
 });
