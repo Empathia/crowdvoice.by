@@ -20,11 +20,38 @@ Class(CV, 'Image').inherits(Widget).includes(CV.WidgetUtils)({
         init : function init(config) {
             Widget.prototype.init.call(this, config);
             this.el = this.element[0];
+            this.imageWrapper = this.el.querySelector('.cv-image');
             this.backgroundImage = this.el.querySelector('.placeholder');
             this.uploadBgButton = this.el.getElementsByClassName('button')[0];
             this.uploadFile = this.el.querySelector('[name="upload"]');
 
             this._setup()._bindEvents();
+        },
+
+        /* Sets error state feedback.
+         * @method error <public>
+         */
+        error : function error() {
+            this.imageWrapper.classList.add('-is-error');
+            return this;
+        },
+
+        getFile : function getFile() {
+            return this.uploadFile.files[0];
+        },
+
+        getFormData : function getFormData(as) {
+            var data = new FormData();
+            data.append(as || 'image',  this.getFile());
+            return data;
+        },
+
+        /* Clear feedback states.
+         * @method clearState <public>
+         */
+        clearState : function clearState() {
+            this.dom.removeClass(this.imageWrapper, ['-is-error']);
+            return this;
         },
 
         _setup : function _setup() {
@@ -55,15 +82,22 @@ Class(CV, 'Image').inherits(Widget).includes(CV.WidgetUtils)({
         /* Background input file change listener callback.
          * Creates a preview of the image to be uploaded.
          */
-        _previewImage : function _previewImage(ev) {
-            var f = ev.target.files[0];
+        _previewImage : function _previewImage() {
+            var f = this.getFile();
             var r = new FileReader();
-            r.onload = function(e) {
-                this.backgroundImage.classList.add('-img-contain');
-                this.dom.updateBgImage(this.backgroundImage, e.target.result);
-                r.onload = null;
-            }.bind(this);
-            r.readAsDataURL(f);
+
+            this.clearState();
+
+            if (f.type.match('image.*')) {
+                r.onload = function(e) {
+                    this.backgroundImage.classList.add('-img-contain');
+                    this.dom.updateBgImage(this.backgroundImage, e.target.result);
+                    r.onload = null;
+                }.bind(this);
+                return r.readAsDataURL(f);
+            }
+
+            this.error();
         },
 
         destroy : function destroy() {

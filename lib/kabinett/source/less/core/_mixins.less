@@ -4,17 +4,16 @@
 
 .mixin-color(@color, @name) {
   .-color-@{name} {
-    color: @color;
-    fill: @color;
+    color: @color !important;
+    fill: @color !important;
   }
 
   .-color-bg-@{name} {
-    background-color: @color;
-    // border-color: transparent;
+    background-color: @color !important;
   }
 
   .-color-border-@{name} {
-    border-color: @color;
+    border-color: @color !important;
   }
 }
 

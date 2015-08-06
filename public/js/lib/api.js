@@ -9,6 +9,32 @@ module.exports = {
     /**************************************************************************
      * VOICES
      *************************************************************************/
+    /* Creates a new Voice.
+     * @argument args.data <required> [Object]
+     * @argument callback <required> [Function]
+     */
+    voiceCreate : function voiceCreate(args, callback) {
+        if (!args.data || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'POST',
+            url : '/voice',
+            headers : {'csrf-token' : this.token},
+            cache : false,
+            contentType : false,
+            processData : false,
+            data : args.data,
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
+    },
+
     /* Follow/Unfollow Voice.
      * @argument args.profileName <required> [String] the voice owner profileName
      * @argument args.voiceSlug <required> [String] the voice slug
@@ -88,8 +114,6 @@ module.exports = {
         if ((typeof callback).toLowerCase() !== "function") {
             throw new Error('Callback should be a function');
         }
-
-        console.log(args.posts);
 
         $.ajax({
             type : 'POST',
@@ -247,6 +271,30 @@ module.exports = {
         $.ajax({
             type : 'GET',
             url : '/' + args.profileName + '/follow',
+            dataType : 'json',
+            headers : {'csrf-token' : this.token},
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
+    /* Checks if a voiceSlug exists
+     * @argument args.profileName <required> [String] the entity profileName
+     * @argument callback <required> [Function]
+     */
+    isSlugAvailable : function isSlugAvailable(args, callback) {
+        if (!args.profileName || !args.slug || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'POST',
+            url : '/' + args.profileName + '/isVoiceSlugAvailable',
+            data : {value: args.slug},
             dataType : 'json',
             headers : {'csrf-token' : this.token},
             success : function success(data) {callback(false, data);},
