@@ -23,10 +23,10 @@ var PostsPresenter = Module('PostsPresenter')({
 
       post.postImages = images;
 
-      if (currentPerson) {
-        async.series([
-          // votes
-          function (next) {
+      async.series([
+        // votes
+        function (next) {
+          if (currentPerson) {
             Vote.find({
               entity_id : hashids.decode(currentPerson.id)[0],
               post_id : postInstance.id
@@ -42,10 +42,15 @@ var PostsPresenter = Module('PostsPresenter')({
               response.push(post);
               return next();
             });
-          },
+          } else {
+            post.voted = false;
+            return next();
+          }
+        },
 
-          // saved/favorited
-          function (next) {
+        // saved
+        function (next) {
+          if (currentPerson) {
             SavedPost.find({
               entity_id: hashids.decode(currentPerson.id)[0],
               post_id: postInstance.id
@@ -60,15 +65,31 @@ var PostsPresenter = Module('PostsPresenter')({
 
               return next();
             });
+          } else {
+            post.saved = false;
+            return next();
           }
-        ], next);
-      } else {
-        post.voted = false;
-        post.saved = false;
+        },
+
+        // totalSaves
+        function (next) {
+          SavedPost.find({
+            post_id: postInstance.id
+          }, function (err, result) {
+            if (err) { return next(err); }
+
+            post.totalSaves = result.length
+
+            return next();
+          });
+        }
+      ], function (err) {
+        if (err) { return next(err); }
+
         response.push(post);
         return next();
-      }
-    }, function(err) {
+      });
+    }, function (err) {
       callback(err, response);
     });
   }
