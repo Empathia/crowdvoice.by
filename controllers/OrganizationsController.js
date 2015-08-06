@@ -26,14 +26,14 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
 
     removeEntity : function (req, res, next) {
       ACL.isAllowed('removeEntityFromOrg', 'entities', req.role, {
-        orgId: req.entity.id,
+        orgId: req.body.orgId,
         currentPersonId: req.currentPerson.id
       }, function (err, response) {
         if (err) { return next(err); }
         if (response.isAllowed) { return next(new ForbiddenError()); }
 
         EntityMembership.find({
-          entity_id: hashids.decode(req.entity.id)[0],
+          entity_id: hashids.decode(req.body.orgId)[0],
           member_id: hashids.decode(req.body.entityId)[0]
         }, function (err, result) {
           var membership = new EntityMembership(result[0]);
@@ -41,9 +41,7 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
           membership.destroy(function (err) {
             if (err) { return next(err); }
 
-            res.json({
-              status: 'removed'
-            });
+            res.json({ status: 'removed' });
           });
         });
       });
