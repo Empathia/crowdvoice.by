@@ -147,6 +147,7 @@ Class(CV, 'Login').inherits(Widget)({
         formEl      : null,
         errorsEl    : null,
         buttonEl    : null,
+        loginError  : null,
 
         init : function(config){
             Widget.prototype.init.call(this, config);
@@ -154,28 +155,32 @@ Class(CV, 'Login').inherits(Widget)({
             var closeEl = this.element.find('.close-login');
             this.errorsEl = this.element.find('.form-errors');
 
-            var formEl;
+
+            if (this.loginError.error){
+              login.errorsEl.show();
+              login.errorsEl.append('<p>' + this.loginError.error + '</p>');
+            }
+
+            var formElem;
 
             switch(this.formType) {
                 case 'signup':
-                    var formEl = this.constructor.FORM_SIGNUP;
+                    formElem = this.constructor.FORM_SIGNUP;
                     break;
                 case 'login':
-                    var formEl = this.constructor.FORM_LOGIN;
+                    formElem = this.constructor.FORM_LOGIN;
                     break;
                 case 'forgot-password':
-                    var formEl = this.constructor.FORM_FORGOT_PASSWORD;
+                    formElem = this.constructor.FORM_FORGOT_PASSWORD;
                     break;
                 case 'reset-password':
-                    var formEl = this.constructor.FORM_RESET_PASSWORD;
+                    formElem = this.constructor.FORM_RESET_PASSWORD;
                     break;
                 default:
                     //¯\_(ツ)_/¯
             }
 
-
-
-            this.element.find('.form-container').append(formEl);
+            this.element.find('.form-container').append(formElem);
             this.element.find('form').attr('action', this.formAction);
             this.element.find('.form-token').attr('value', this.formToken);
 
@@ -243,6 +248,7 @@ Class(CV, 'Login').inherits(Widget)({
             });
 
             this.buttonEl.on("click",function(e){
+                e.preventDefault();
                 var formValidation = login.validate();
                 var validForm = formValidation[1];
                 var formErrors = formValidation[0];
@@ -259,7 +265,7 @@ Class(CV, 'Login').inherits(Widget)({
                   return false;
                   e.preventDefault;
                 }else{
-                  formEl.submit();
+                  login.formEl.submit();
                 }
 
             });
@@ -355,8 +361,8 @@ Class(CV, 'Login').inherits(Widget)({
                     message : 'Email is not valid'
                   }],
                   'Password'      : [{
-                    rule: 'required',
-                    message: 'Password is required',
+                    rule: ['required', 'minLength:8'],
+                    message: 'Password is required, minimum 8 characters.',
                   }]
                 });
 
@@ -373,7 +379,7 @@ Class(CV, 'Login').inherits(Widget)({
               case 'login':
                 checkit = new Checkit({
                     'Username'      : 'required',
-                    'Password'      : 'required'
+                    'Password'      : ['required', 'minLength:8']
                   });
 
                   body = {
@@ -394,7 +400,7 @@ Class(CV, 'Login').inherits(Widget)({
 
               case 'forgot-password':
                 checkit = new Checkit({
-                    'Password'      : 'required',
+                    'Password'      : ['required', 'minLength:8'],
                   });
 
                   body = {

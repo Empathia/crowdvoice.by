@@ -385,7 +385,7 @@ a.cv-button{
 }
 
 .cv-input-search{
-
+  position: relative;
   .cv-input{
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
@@ -403,7 +403,29 @@ a.cv-button{
     top: 0;
     right: 0;
   }
-
+  .search-results{
+    display: none;
+    position: absolute;
+    border: 1px solid @color-neutral-light;
+    border-top: 0px;
+    background-color: @color-white;
+    width: 100%;
+    border-radius: 3px;
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+    div{
+      color: @color-neutral-dark;
+      padding: 5px 5px 5px 15px;
+      border-bottom: 1px solid @color-neutral-x-light;
+      &:last-child{
+        border-bottom: none
+      }
+      &:hover{
+        cursor: pointer;
+        color: @color-neutral-dark;
+        background: @color-neutral-xx-light;
+      }
+    }
+  }
 }
 
 /*******************************************

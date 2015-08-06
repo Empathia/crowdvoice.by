@@ -23,7 +23,7 @@
                 Profile
      |||||||||||||||||||||||||||||||| -->
 
-    <div class="active -menu-tab-content">
+    <div class="-menu-tab-content active">
       <div class="form-notifications"></div>
       <form action="/<%= organization.profileName %>?_method=PUT" method="POST" enctype="multipart/form-data" class="form-profile">
 
@@ -114,7 +114,7 @@
 </main>
 
 <script type="text/javascript"
-      src="https://maps.googleapis.com/maps/api/js?region=MX&v=3.exp&libraries=places">
+      src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places">
   </script>
 
 <script>
@@ -232,8 +232,9 @@
       title     : "Invite users to join this organization",
       buttonLabel : "Invite"
   }).render($('.placeholder-members'));
+  searchInput.disableButton();
 
-  new CV.Input({
+  var messageInput = new CV.Input({
       type      : '',
       name      : '',
       style     : '',
@@ -242,14 +243,14 @@
       title     : "Write a message"
   }).render($('.placeholder-members'));
 
-  new CV.Button({
-      style   : 'primary full',
-      type    : 'single',
-      label   : 'Invite User',
-      name    : 'buttonSend'
-  }).render($('.placeholder-members'));
+  //new CV.Button({
+  //    style   : 'primary full',
+  //    type    : 'single',
+  //    label   : 'Invite User',
+  //    name    : 'buttonSend'
+  //}).render($('.placeholder-members'));
 
-  $('.placeholder-members').append('<br><br>');
+  $('.placeholder-members').append('<br>');
 
   $.ajax({
     type: "GET",
@@ -257,7 +258,6 @@
     headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
     data : {},
     success: function(data) {
-      console.log(data);
       new CV.UsersList({
           hasButton     : true,
           users         : data,
@@ -266,6 +266,91 @@
           dateTitle     : "Member since"
       }).render($('.placeholder-members'));
     }
+  });
+
+  var personElBase = $('<div class="person" id=""></div>');
+
+  searchInput.inputEl.find('input').on('keyup', function(){
+    var searchStr = $(this).val().toLowerCase();
+    var inputSearch = $(this);
+
+    if (searchStr == ""){
+      searchInput.element.find('.search-results').hide();
+      return false;
+    }
+
+    $.ajax({
+      type: "POST",
+      url:'/' + currentPerson.profileName + '/messages/searchPeople',
+      headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
+      data : {value : searchStr},
+      success: function(data) {
+        if (data.length > 0){
+
+          searchInput.element.find('.search-results').show();
+          showUsers(data);
+
+        } else {
+
+          searchInput.element.find('.search-results').hide();
+          if ( inputSearch.val() != "" ){
+            searchInput.disableButton();
+          }
+
+        }
+      }
+    });
+
+  });
+
+  var selectedUserID;
+
+  function showUsers(persons){
+
+    searchInput.element.find('.search-results').empty();
+
+    persons.forEach(function(person){
+      var personEl = personElBase.clone();
+      personEl.attr('id', person.id);
+      personEl.attr('profilename', person.profileName);
+      personEl.text(person.name + ' ' + person.lastname);
+      personEl.on('click', function(){
+        setSelectedUser( this.getAttribute("id"), this.getAttribute("profilename") );
+      });
+      searchInput.element.find('.search-results').append(personEl);
+    });
+
+  }
+
+  function setSelectedUser(uID, profileName){
+    searchInput.enableButton();
+    selectedUserID = uID;
+    selectedUserProfile = profileName;
+    searchInput.inputEl.find('input').val( searchInput.element.find('.search-results').find('#'+uID).text() );
+    searchInput.element.find('.search-results').empty();
+    searchInput.element.find('.search-results').hide();
+  }
+
+  searchInput.buttonEl.on('click', function(){
+
+    var orgID = '<%= organization.id %>';
+    var invitationText = messageInput.element.find('textarea').val();
+
+    $.ajax({
+      type: "POST",
+      url:'/' + currentPerson.profileName + '/messages',
+      headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
+      data : {
+        type : 'invitation_organization',
+        receiverEntityId : selectedUserID,
+        organizationId : orgID,
+        message : invitationText
+      },
+      success: function(data) {
+        console.log('invitation sent');
+      }
+    });
+
   });
 
   //********************************

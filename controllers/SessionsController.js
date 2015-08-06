@@ -86,7 +86,7 @@ var SessionsController = Class('SessionsController')({
         }
 
         if (!user) {
-          req.flash('error', 'Invalid Email/Username or Password!');
+          req.flash('error', 'Invalid Username or Password!');
           return res.redirect('/login');
         }
 
@@ -126,7 +126,7 @@ var SessionsController = Class('SessionsController')({
         }
 
         if (!user) {
-          req.flash('error', 'Invalid Email/Username or Password!');
+          req.flash('error', 'Invalid Username or Password!');
           return res.redirect('/login');
         }
 
