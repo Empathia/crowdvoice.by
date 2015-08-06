@@ -254,6 +254,30 @@ module.exports = {
         });
     },
 
+    /* Checks if a voiceSlug exists
+     * @argument args.profileName <required> [String] the entity profileName
+     * @argument callback <required> [Function]
+     */
+    isSlugAvailable : function isSlugAvailable(args, callback) {
+        if (!args.profileName || !args.slug || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'POST',
+            url : '/' + args.profileName + '/isVoiceSlugAvailable',
+            data : {value: args.slug},
+            dataType : 'json',
+            headers : {'csrf-token' : this.token},
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
     /**************************************************************************
      * THREATS
      *************************************************************************/

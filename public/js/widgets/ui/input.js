@@ -80,7 +80,31 @@ Class(CV.UI, 'Input').inherits(Widget).includes(CV.WidgetUtils)({
 
         setValue : function setValue(value) {
             this._input.value = value;
-            return this.getValue();
+            this.getValue();
+            return this;
+        },
+
+        getInput : function getInput() {
+            return this._input;
+        },
+
+        /* Updates the hint text. Optionally you can also add new class selector names to the element too.
+         * If no param is passed it will default to the hint text passed as config.
+         * @method updateHint <public> [Function]
+         * @argument data <optional> [Object]
+         * @argument data.hint [String] the new hint text
+         * @argument data.className [String] class selector names to add
+         */
+        updateHint : function updateHint(data) {
+            if (!data) {
+                this.dom.updateText(this.hintElement, this.data.hint);
+                this.hintElement.className = 'cv-caption';
+                return this;
+            }
+
+            this.dom.updateText(this.hintElement, data.hint);
+            this.dom.addClass(this.hintElement, [data.className.split(/\s/)]);
+            return this;
         },
 
         clearState : function clearState() {
