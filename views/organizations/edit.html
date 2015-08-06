@@ -243,14 +243,25 @@
       title     : "Write a message"
   }).render($('.placeholder-members'));
 
-  //new CV.Button({
-  //    style   : 'primary full',
-  //    type    : 'single',
-  //    label   : 'Invite User',
-  //    name    : 'buttonSend'
-  //}).render($('.placeholder-members'));
-
   $('.placeholder-members').append('<br>');
+
+  var removeAction = function(entityID){
+    var orgID = '<%= organization.id %>';
+
+    $.ajax({
+      type: "POST",
+      url:'/<%= organization.profileName %>/removeEntity',
+      headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
+      data : {
+        orgId : orgID,
+        entityId : entityID
+      },
+      success: function(data) {
+        //console.log(data);
+      }
+    });
+
+  }
 
   $.ajax({
     type: "GET",
@@ -263,6 +274,7 @@
           users         : data,
           listTitle     : "{count} members of this organization",
           actionLabel   : "Remove",
+          action        : removeAction,
           dateTitle     : "Member since"
       }).render($('.placeholder-members'));
     }
