@@ -1,5 +1,13 @@
-/* CurrentPerson Registry and Helper
+/* CurrentPerson Registry and Helper.
+ * get() => returns the whole currentPerson object
+ * anon() => returns {true|false} depending if currentPerson is browsing in anonnymous mode
+ * is(id) => returns {true|false} if personId matched with the passed id
+ * ownerOf('organization', organizationID) => returns {true|false} if person is owner of the passed organization
+ * memberOf('organization', organizationID) => returns {true|false} if person is either a member or owner of the passed organization
+ * memberOf('voice', voiceID) => returns {true|false} if person is a member of the passed voice
+ * ownedOrganizations() => returns {true|false} if person is owner of at least 1 organization
  */
+
 var PLACEHOLDERS = require('./placeholders');
 
 module.exports = {
@@ -105,6 +113,11 @@ module.exports = {
         }));
     },
 
+    /* Tries to retrieves a specific version of the person images,
+     * if not found it will return a placeholder instead so we do get errors
+     * or empty images
+     * @return [String] image path
+     */
     getImage : function getImage(version) {
         var images = this.get().images;
 

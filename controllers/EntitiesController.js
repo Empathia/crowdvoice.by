@@ -1,6 +1,6 @@
 var BlackListFilter = require(__dirname + '/BlackListFilter');
 var VoicesPresenter = require(path.join(process.cwd(), '/presenters/VoicesPresenter.js'));
-var feed = require(__dirname + '/../lib/feed.js');
+var feed = require(__dirname + '/../lib/feedInject.js');
 
 var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 

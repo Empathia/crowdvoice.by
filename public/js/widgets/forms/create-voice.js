@@ -20,7 +20,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 <div data-rss class="-col-6 -pl1">\
             </div>\
             </div>\
-            <div class="-col-12">\
+            <div data-location-wrapper class="-col-12 -rel">\
                 <div data-location class="-col-4"></div>\
                 <div data-latitude class="-col-4 -pl1"></div>\
                 <div data-longitude class="-col-4 -pl1"></div>\
@@ -45,16 +45,16 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 typesDropdown : 'required',
                 statusDropdown : 'required',
                 hashtags : 'required',
-                rssfeed : 'required',
-                location : 'required',
-                latitude : 'required',
-                longitude : 'required'
+                rssfeed : 'required'
             };
 
             this._setup()._updateInfoRow()._bindEvents();
             this.checkit = new Checkit(this.checkitProps);
         },
 
+        /* Create and append the form element widgets.
+         * @method _setup <private>
+         */
         _setup : function _setup() {
             if (Person.anon()) {
                 this.appendChild(new CV.Alert({
@@ -131,10 +131,15 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 }
             })).render(this.el.querySelector('[data-rss]'));
 
+            this.appendChild(new CV.DetectLocation({
+                name : 'detectLocation',
+                requireGoogleMaps : true
+            })).render(this.el.querySelector('[data-location-wrapper]'));
+
             this.appendChild(new CV.UI.Input({
                 name : 'voiceLocation',
                 data: {
-                    label : 'Location',
+                    label : 'Location Name',
                     placeholder : 'Location name',
                     inputClassName : '-lg -block'
                 }
@@ -143,7 +148,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             this.appendChild(new CV.UI.Input({
                 name : 'voiceLatitude',
                 data: {
-                    label : ' ',
+                    label : 'Latitude',
                     placeholder : 'Latitude',
                     inputClassName : '-lg -block'
                 }
@@ -152,8 +157,8 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             this.appendChild(new CV.UI.Input({
                 name : 'voiceLongitude',
                 data : {
+                    label : 'Longitude',
                     placeholder : 'Longitude',
-                    label : ' ',
                     inputClassName : '-lg -block',
                 }
             })).render(this.el.querySelector('[data-longitude]'));
@@ -197,9 +202,50 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
         },
 
         _bindEvents : function _bindEvents() {
+            this._getGeocodingRef = this._getGeocoding.bind(this);
+            this._getLocationRef = this._getLocation.bind(this);
+            this.detectLocation.bind('location', this._getLocationRef);
+
             this._sendFormHandlerRef = this._sendFormHandler.bind(this);
             Events.on(this.buttonSend.el, 'click', this._sendFormHandlerRef);
             return this;
+        },
+
+        _getLocation : function _getLocation(ev) {
+            this.voiceLatitude.setValue(ev.data.coords.latitude);
+            this.voiceLongitude.setValue(ev.data.coords.longitude);
+            this.detectLocation.getGeocoding(ev.data.coords.latitude, ev.data.coords.longitude, this._getGeocodingRef);
+        },
+
+        _getGeocoding : function _getGeocoding(err, res) {
+            if (err) {
+                // @TODO: handle error
+                console.log(err);
+                return void 0;
+            }
+
+            if (!res[0]) {
+                // @TODO: handle case
+                console.log('asjfas');
+                return void 0;
+            }
+
+            var r = res[0];
+            var address = [];
+
+            r.address_components.forEach(function(c) {
+                if (
+                    (c.types[0] === "locality") ||
+                    (c.types[0] === "administrative_area_level_1") ||
+                    (c.types[0] === "country")
+                ) {
+                    address.push(c.long_name);
+                }
+            });
+
+            this.voiceLocation.setValue(address.join(', ') + '.');
+            this.voiceLatitude.setValue(r.geometry.location.G);
+            this.voiceLongitude.setValue(r.geometry.location.K);
         },
 
         _sendFormHandler : function _sendFormHandler() {
@@ -225,10 +271,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 typesDropdown : this.voiceTypesDropdown.getValue(),
                 statusDropdown : this.voiceStatusDropdown.getValue(),
                 hashtags : this.voiceHashtags.getValue(),
-                rssfeed : this.voiceRssfeed.getValue(),
-                location : this.voiceLocation.getValue(),
-                latitude : this.voiceLatitude.getValue(),
-                longitude : this.voiceLongitude.getValue()
+                rssfeed : this.voiceRssfeed.getValue()
             };
 
             if (this.voiceOwnershipDropdown) {

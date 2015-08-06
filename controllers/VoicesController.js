@@ -1,6 +1,6 @@
 var BlackListFilter = require(__dirname + '/BlackListFilter');
 var EntitiesPresenter = require(path.join(process.cwd(), '/presenters/EntitiesPresenter.js'));
-var feed = require(__dirname + '/../lib/feed.js');
+var feed = require(__dirname + '/../lib/feedInject.js');
 
 var VoicesController = Class('VoicesController').includes(BlackListFilter)({
   prototype : {
@@ -197,29 +197,57 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
     },
 
     create: function (req, res, next) {
-      var voice = new Voice({
-        title: req.body.title,
-        status: req.body.status,
-        description: req.body.description,
-        type: req.body.type,
-        ownerId: hashids.decode(req.currentPerson.id)[0],
-        twitterSearch: req.body.twitterSearch,
-        rssUrl: req.body.rssUrl,
-        latitude: req.body.latitude,
-        longitude: req.body.longitude,
-      });
+      ACL.isAllowed('create', 'voices', req.role, {
+        currentPerson : req.currentPerson,
+        ownerId : req.params.ownerId
+      }, function(err, response) {
+        if (err) {
+          return next(err);
+        }
 
-      voice.save(function(err) {
-        if (err) { return next(err); }
+        if (!response.isAllowed) {
+          return next(new ForbiddenError());
+        }
 
-        voice.addSlug(function(err) {
-          if (err) { return next(err); }
+        var voice = new Voice({
+          title: req.body.title,
+          status: req.body.status,
+          description: req.body.description,
+          type: req.body.type,
+          ownerId: hashids.decode(req.body.ownerId)[0],
+          twitterSearch: req.body.twitterSearch,
+          rssUrl: req.body.rssUrl,
+          latitude: req.body.latitude,
+          longitude: req.body.longitude
+        });
 
-          feed.voiceCreated(req, model, function (err) {
-            if (err) { return next(err); }
+        async.series([function(done) {
+          voice.save(done);
+        }, function(done) {
+          voice.addSlug(req.body.slug, function(err) {
+            if (err) {
+              return done(err);
+            }
 
-            res.redirect(req.currentPerson.profileName + '/' + voice.getSlug())
+            done();
           });
+        }, function(done) {
+          feed.voiceCreated(req, model, done);
+        }, function(done) {
+          if (!req.files.image) {
+            return done();
+          }
+
+          voice.uploadImage('image', req.files.image.path, done);
+        }, function(done) {
+          voice.save(done);
+        }], function(err) {
+          if (err) {
+            logger.error(err);
+            return;
+          }
+
+          res.redirect(req.currentPerson.profileName + '/' + voice.getSlug());
         });
       });
     },

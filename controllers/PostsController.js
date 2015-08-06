@@ -1,5 +1,5 @@
 var Scrapper = require(process.cwd() + '/lib/cvscrapper');
-var feed = require(__dirname + '/../lib/feed.js');
+var feed = require(__dirname + '/../lib/feedInject.js');
 
 var PostsController = Class('PostsController').includes(BlackListFilter)({
   prototype : {
@@ -388,7 +388,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         var createSavedPost = function(personId) {
           var sp = new SavedPost({
             entityId: personId,
-            postId: req.params.postId
+            postId: hashids.decode(req.params.postId)[0]
           });
           sp.save(function(err) {
             if (err) { return next(err); }
@@ -422,7 +422,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         var unsavePost = function(personId) {
           SavedPost.find({
             'entity_id' : personId,
-            'post_id' : req.params.postId
+            'post_id' : hashids.decode(req.params.postId)[0]
           }, function(err, result) {
             if (err) { next(err); return; }
             if (result.length === 0) { next(new Error('Not found')); }
