@@ -1,14 +1,16 @@
+'use strict'
+
 var PostsPresenter = Module('PostsPresenter')({
   build : function build(posts, currentPerson, callback) {
     var response = [];
 
-    async.eachLimit(posts, 1, function(post, next) {
+    async.each(posts, function(post, next) {
 
       var postInstance = new Post(post);
 
-      post.id           = hashids.encode(post.id);
-      post.voiceId      = hashids.encode(post.voiceId);
-      post.ownerId      = hashids.encode(post.ownerId);
+      post.id = hashids.encode(post.id);
+      post.voiceId = hashids.encode(post.voiceId);
+      post.ownerId = hashids.encode(post.ownerId);
 
       var images = {};
 
@@ -22,25 +24,47 @@ var PostsPresenter = Module('PostsPresenter')({
       post.postImages = images;
 
       if (currentPerson) {
-        Vote.find({
-          'post_id' : postInstance.id,
-          'entity_id' : hashids.decode(currentPerson.id)[0]
-        }, function(err, result) {
-          if (err) {
-            return next(err);
+        async.series([
+          // votes
+          function (next) {
+            Vote.find({
+              entity_id : hashids.decode(currentPerson.id)[0],
+              post_id : postInstance.id
+            }, function(err, result) {
+              if (err) { return next(err); }
+
+              post.voted = true;
+
+              if (result.length === 0) {
+                post.voted = false;
+              }
+
+              response.push(post);
+              return next();
+            });
+          },
+
+          // saved/favorited
+          function (next) {
+            SavedPost.find({
+              entity_id: hashids.decode(currentPerson.id)[0],
+              post_id: postInstance.id
+            }, function (err, result) {
+              if (err) { return next(err); }
+
+              if (result.length > 0) {
+                post.saved = true;
+              } else {
+                post.saved = false;
+              }
+
+              return next();
+            });
           }
-
-          post.voted = true;
-
-          if (result.length === 0) {
-            post.voted = false;
-          }
-
-          response.push(post);
-          return next();
-        });
+        ], next);
       } else {
         post.voted = false;
+        post.saved = false;
         response.push(post);
         return next();
       }

@@ -57,6 +57,8 @@ var FeedPresenter = Module('FeedPresenter')({
             EntitiesPresenter.build(entity, currentPerson, function (err, presentedEntity) {
               if (err) { return next(err) }
 
+              // it is `actionDoer` and not `who` because the frontend already
+              // implemented functionality for this using `actionDoer`
               actionInst.actionDoer = presentedEntity[0]
 
               return next()
