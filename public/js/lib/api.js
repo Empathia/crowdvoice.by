@@ -24,9 +24,11 @@ module.exports = {
 
         $.ajax({
             type : 'POST',
-            dataType : 'json',
             url : '/voice',
             headers : {'csrf-token' : this.token},
+            cache : false,
+            contentType : false,
+            processData : false,
             data : args.data,
             success : function success(data) { callback(false, data); },
             error : function error(err) { callback(true, err); }
