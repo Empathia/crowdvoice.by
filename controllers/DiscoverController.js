@@ -242,7 +242,244 @@ var DiscoverController = Class('DiscoverController')({
     },
 
     recommendedIndex: function (req, res, next) {
-      res.render('discover/recommended')
+
+      var items    = [];
+      var voices   = [];
+      var entities = [];
+
+      async.series([function(done) {
+        // Get the voices that the currentPerson is following
+        VoiceFollower.find({ 'entity_id' : hashids.decode(req.currentPerson.id)[0] }, function(err, result) {
+          if (err) {
+            return done(err);
+          }
+
+          var voiceIds = result.map(function(item) {
+            return item.voiceId;
+          });
+
+          Voice.whereIn('id', voiceIds, function(err, result) {
+            if (err) {
+              return done(err);
+            }
+
+            VoicesPresenter.build(result, req.currentPerson, function(err, result) {
+              if (err) {
+                return next(err);
+              }
+
+              voices = result;
+
+              done();
+            });
+          });
+        });
+      }, function(done) {
+        // Get the owners of the voices
+        async.each(voices, function(voice, nextVoice) {
+          Entity.find({ id : hashids.decode(voice.owner.id)[0] }, function(err, result) {
+            if (err) {
+              return nextVoice(err);
+            }
+
+            EntitiesPresenter.build(result, req.currentPerson, function(err, owners) {
+              if (err) {
+                return nextVoice(err);
+              }
+
+              var exists = items.filter(function(item) {
+                if (item.owner.id === owners[0].id) {
+                  return true;
+                }
+              });
+
+              if (exists.length > 0) {
+                return nextVoice();
+              }
+
+              items.push({
+                type : 'voice',
+                voice : voice,
+                owner : owners[0],
+                voices : [],
+                people : [],
+                organizations : []
+              });
+
+              nextVoice();
+            });
+          });
+        }, done);
+      }, function(done) {
+        // Get entities that the currentPerson follows
+        EntityFollower.find({ 'follower_id' : hashids.decode(req.currentPerson.id)[0] }, function(err, result) {
+          if (err) {
+            return done(err);
+          }
+
+          var entityIds = result.map(function(item) {
+            return item.followedId;
+          });
+
+          Entity.whereIn('id', entityIds, function(err, result) {
+            if (err) {
+              return done(err);
+            }
+
+            EntitiesPresenter.build(result, req.currentPerson, function(err, result) {
+              if (err) {
+                return done(err);
+              }
+
+              entities = result;
+
+              done();
+            });
+          });
+        });
+      }, function(done) {
+        // Organzie the entities
+        async.each(entities, function(entity, nextEntity) {
+          var obj = {
+            type : entity.type,
+            data : entity,
+            voices : [],
+            people : [],
+            organizations : []
+          }
+
+          if (entity.type === 'person') {
+
+            var exists = items.filter(function(item) {
+              if (item.owner.id === entity.id) {
+                return true;
+              }
+            });
+
+            if (exists.length > 0) {
+              return nextEntity();
+            }
+
+            obj.owner = entity;
+            items.push(obj);
+
+            return nextEntity();
+          } else {
+            EntityOwner.find({ 'owned_id' : hashids.decode(entity.id)[0] }, function(err, result) {
+              if (err) {
+                return nextEntity(err);
+              }
+
+              Entity.find({ id : result[0].ownerId }, function(err, result) {
+                if (err) {
+                  return nextEntity(err);
+                }
+
+                EntitiesPresenter.build(result, req.currentPerson, function(err, owners) {
+                  if (err) {
+                    return nextEntity(err);
+                  }
+
+                  var exists = items.filter(function(item) {
+                    if (item.owner.id === owners[0].id) {
+                      return true;
+                    }
+                  });
+
+                  if (exists.length > 0) {
+                    return nextEntity();
+                  }
+
+                  obj.owner = owners[0];
+
+                  items.push(obj);
+
+                  return nextEntity();
+                });
+              });
+            });
+          }
+        }, done);
+      }, function(done) {
+        // Get the voices followed by each owner of items array
+        async.each(items, function(item, nextItem) {
+          VoiceFollower.find({ 'entity_id' : hashids.decode(item.owner.id)[0] }, function(err, result) {
+            if (err) {
+              return nextItem(err);
+            }
+
+            var voiceIds = result.map(function(voiceFollower) {
+              return voiceFollower.voiceId;
+            });
+
+            Voice.whereIn('id', voiceIds, function(err, result) {
+              if (err) {
+                return nextItem(err);
+              }
+
+              VoicesPresenter.build(result, req.currentPerson, function(err, voices) {
+                if (err) {
+                  return nextItem(err);
+                }
+
+                item.voices = result;
+
+                nextItem();
+              });
+            });
+          });
+        }, done);
+      }, function(done) {
+        // Get the entities followed by each owner of the items array
+
+        async.each(items, function(item, nextItem) {
+          EntityFollower.find({ 'follower_id' : hashids.decode(item.owner.id)[0] }, function(err, result) {
+            if (err) {
+              return nextItem(err);
+            }
+
+            var entityIds = result.map(function(entity) {
+              return entity.followedId;
+            });
+
+            Entity.whereIn('id', entityIds, function(err, result) {
+              if (err) {
+                return nextItem(err);
+              }
+
+              EntitiesPresenter.build(result, req.currentPerson, function(err, entities) {
+                if (err) {
+                  return nextItem(err);
+                }
+
+                entities.forEach(function(entity) {
+                  if (entity.type === 'person') {
+                    item.people.push(entity);
+                  } else {
+                    item.organizations.push(entity);
+                  }
+                });
+
+                nextItem();
+              });
+            });
+          });
+        }, done);
+      }], function(err) {
+        if (err) {
+          return next(err);
+        }
+
+        items = items.filter(function(item) {
+          if (item.voices.length !== 0 && item.people.length !== 0 && item.organizations !== 0) {
+            return true;
+          }
+        });
+
+        res.locals.recommended = items;
+
+        res.render('discover/recommended')
+      });
     },
 
     updatedVoices: function (req, res, next) {
