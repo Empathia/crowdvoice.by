@@ -304,6 +304,7 @@
   });
 
   var selectedUserID;
+  var alertInvite = null;
 
   function showUsers(persons){
 
@@ -312,20 +313,18 @@
     persons.forEach(function(person){
       var personEl = personElBase.clone();
       personEl.attr('id', person.id);
-      personEl.attr('profilename', person.profileName);
       personEl.text(person.name + ' ' + person.lastname);
       personEl.on('click', function(){
-        setSelectedUser( this.getAttribute("id"), this.getAttribute("profilename") );
+        setSelectedUser( this.getAttribute("id") );
       });
       searchInput.element.find('.search-results').append(personEl);
     });
 
   }
 
-  function setSelectedUser(uID, profileName){
+  function setSelectedUser(uID){
     searchInput.enableButton();
     selectedUserID = uID;
-    selectedUserProfile = profileName;
     searchInput.inputEl.find('input').val( searchInput.element.find('.search-results').find('#'+uID).text() );
     searchInput.element.find('.search-results').empty();
     searchInput.element.find('.search-results').hide();
@@ -335,6 +334,7 @@
 
     var orgID = '<%= organization.id %>';
     var invitationText = messageInput.element.find('textarea').val();
+    if ( !invitationText ) { invitationText = " " };
 
     $.ajax({
       type: "POST",
@@ -342,12 +342,38 @@
       headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
       data : {
         type : 'invitation_organization',
+        senderEntityId : currentPerson.id,
         receiverEntityId : selectedUserID,
         organizationId : orgID,
         message : invitationText
       },
       success: function(data) {
-        console.log('invitation sent');
+
+        if(!alertInvite){
+
+          alertInvite = new CV.Alert({
+            type: 'positive',
+            html: 'Invitation was sent, the user will see it on the messages inbox.'
+          }).render( $('.placeholders-members'), $('.cv-input-search') );
+
+          alertInvite.bind('destroyed', function(){
+            alertInvite = null;
+            $('.cv-input-search .inv-space').remove();
+          });
+
+          $('.cv-input-search').prepend('<br class="inv-space">');
+
+        } else {
+
+          alertInvite.html ='Invitation was sent, the user will see it on the messages inbox.';
+
+        }
+
+        selectedUserID = null;
+        searchInput.disableButton();
+        messageInput.element.find('textarea').val("");
+        searchInput.inputEl.find('input').val("");
+
       }
     });
 

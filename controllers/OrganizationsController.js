@@ -10,7 +10,7 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
       var org = req.entity, entity;
       Entity.find({id: req.body.entityId}, function (err, result) {
         if (err) { return next(err); }
-        if (result.length === 0) { next(new NotFoundError('Entity Not found')); return; }
+        if (result.length === 0) { return next(new NotFoundError('Entity Not found')); }
 
         var user = new User(req.user);
         entity = result[0];
@@ -19,6 +19,31 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
           org.inviteEntity(entity, function (err) {
             if (err) { return next(err); }
             res.redirect('/' + org.profileName);
+          });
+        });
+      });
+    },
+
+    removeEntity : function (req, res, next) {
+      ACL.isAllowed('removeEntityFromOrg', 'entities', req.role, {
+        orgId: req.entity.id,
+        currentPersonId: req.currentPerson.id
+      }, function (err, response) {
+        if (err) { return next(err); }
+        if (response.isAllowed) { return next(new ForbiddenError()); }
+
+        EntityMembership.find({
+          entity_id: hashids.decode(req.entity.id)[0],
+          member_id: hashids.decode(req.body.entityId)[0]
+        }, function (err, result) {
+          var membership = new EntityMembership(result[0]);
+
+          membership.destroy(function (err) {
+            if (err) { return next(err); }
+
+            res.json({
+              status: 'removed'
+            });
           });
         });
       });

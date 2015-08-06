@@ -73,12 +73,12 @@ Class(CV, 'Alert').inherits(Widget).includes(CV.WidgetUtils)({
          * Clicking that icon will call the destroy method of the widget.
          */
         _clickHandler : function _clickHandler() {
+            this.dispatch('destroyed');
             this.destroy();
         },
 
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
-
             this.closeElement.removeEventListener('click', this._clickHandlerRef);
             this._clickHandlerRef = null;
 
