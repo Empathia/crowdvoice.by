@@ -16,14 +16,18 @@ Class(CV, 'UsersList').inherits(Widget)({
         dateTitle       : null,
         hasButton       : null,
         actionLabel     : "Leave",
+        action          : null,
 
         init : function(config){
             Widget.prototype.init.call(this, config);
 
             var usersList = this;
-            this.element.find('.voice-title').text( this.listTitle.replace('{count}', this.users.length) );
+            var baseTitle = this.listTitle.replace('{count}', this.users.length)
+            this.element.find('.voice-title').text( baseTitle );
 
             var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+            var usersRemoved = 0;
 
             this.users.forEach(function(user){
                 //new userMini( user ).render( this.element );
@@ -48,12 +52,22 @@ Class(CV, 'UsersList').inherits(Widget)({
                 var userEl = $(userDOM);
 
                 if(this.hasButton){
-                    new CV.Button({
+
+                    var actionButton = new CV.Button({
                         style   : 'tiny',
                         type    : 'single',
                         label   : this.actionLabel,
                         name    : 'buttonLeave'
                     }).render(userEl.find('.action'));
+
+                    actionButton.element.on('click', function(){
+                      usersList.action(user.id);
+                      $(this).closest('.cv-user').remove();
+                      usersRemoved++;
+                      baseTitle = usersList.listTitle.replace('{count}', usersList.users.length - usersRemoved);
+                      usersList.element.find('.voice-title').text( baseTitle );
+                    });
+
                 }
 
                 this.element.append(userEl);
