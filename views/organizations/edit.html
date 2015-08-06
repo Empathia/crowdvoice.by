@@ -23,7 +23,7 @@
                 Profile
      |||||||||||||||||||||||||||||||| -->
 
-    <div class="-menu-tab-content">
+    <div class="-menu-tab-content active">
       <div class="form-notifications"></div>
       <form action="/<%= organization.profileName %>?_method=PUT" method="POST" enctype="multipart/form-data" class="form-profile">
 
@@ -103,7 +103,7 @@
                 members
      |||||||||||||||||||||||||||||||| -->
 
-    <div class="-menu-tab-content active">
+    <div class="-menu-tab-content">
       <div class="placeholder-members -col-11">
 
       </div>
@@ -332,8 +332,6 @@
   }
 
   searchInput.buttonEl.on('click', function(){
-    console.log('/' + selectedUserProfile + '/messages');
-    console.log(selectedUserID);
 
     var orgID = '<%= organization.id %>';
     var invitationText = messageInput.element.find('textarea').val();
@@ -354,17 +352,6 @@
     });
 
   });
-
-  //POST /:profileName/messages
-  //
-  //params:
-  //
-  //{
-  //  type : '<Message.type>' // 'invitation_voice' or 'invitation_organization'
-  //  receiverEntityId : '<Hashids id String>', // must be person
-  //  voiceId | organizationId : '<Hashids id String>',
-  //  message : '<Text>'
-  //}
 
   //********************************
 
