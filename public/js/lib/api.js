@@ -9,6 +9,30 @@ module.exports = {
     /**************************************************************************
      * VOICES
      *************************************************************************/
+    /* Creates a new Voice.
+     * @argument args.data <required> [Object]
+     * @argument callback <required> [Function]
+     */
+    voiceCreate : function voiceCreate(args, callback) {
+        if (!args.data || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'POST',
+            dataType : 'json',
+            url : '/voice',
+            headers : {'csrf-token' : this.token},
+            data : args.data,
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
+    },
+
     /* Follow/Unfollow Voice.
      * @argument args.profileName <required> [String] the voice owner profileName
      * @argument args.voiceSlug <required> [String] the voice slug
@@ -88,8 +112,6 @@ module.exports = {
         if ((typeof callback).toLowerCase() !== "function") {
             throw new Error('Callback should be a function');
         }
-
-        console.log(args.posts);
 
         $.ajax({
             type : 'POST',
