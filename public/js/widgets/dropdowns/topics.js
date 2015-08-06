@@ -22,14 +22,14 @@ Class(CV.UI, 'DropdownTopics').inherits(Widget)({
                 showArrow : true,
                 className : 'dropdown-topics ui-dropdown-styled -lg',
                 arrowClassName : '-s10 -color-grey',
-                bodyClassName : 'ui-vertical-list hoverable -col-12'
+                bodyClassName : 'ui-vertical-list hoverable -full-width'
             })).render(this.el);
 
             Topics.get().forEach(function(topic) {
                 this.dropdown.addContent(this.appendChild(new CV.UI.Checkbox({
                     name : topic.slug,
                     id : topic.id,
-                    className : 'ui-vertical-list-item -col-6 -p0',
+                    className : 'ui-vertical-list-item -block -p0',
                     data : {label : topic.name}
                 })).el);
 

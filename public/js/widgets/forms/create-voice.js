@@ -229,18 +229,15 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
         },
 
         _bindEvents : function _bindEvents() {
-            this._getGeocodingRef = this._getGeocoding.bind(this);
-            this._getLocationRef = this._getLocation.bind(this);
+            this._getLocationRef = this._getLocationHandler.bind(this);
             this.detectLocation.bind('location', this._getLocationRef);
 
             this._sendFormHandlerRef = this._sendFormHandler.bind(this);
             Events.on(this.buttonSend.el, 'click', this._sendFormHandlerRef);
 
-            this._slugAvailabilityHandlerRef = this._slugAvailabilityHandler.bind(this);
-
             if (this._autoGenerateSlug) {
-                this._generateSlugRef = this._generateSlug.bind(this);
-                Events.on(this.voiceTitle.getInput(), 'keyup', this._generateSlugRef);
+                this._generateSlughandlerRef = this._generateSlugHandler.bind(this);
+                Events.on(this.voiceTitle.getInput(), 'keyup', this._generateSlughandlerRef);
 
                 this._letFreeSlugRef = this._letFreeSlug.bind(this);
                 Events.on(this.voiceSlug.getInput(), 'keyup', this._letFreeSlugRef);
@@ -249,12 +246,20 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             return this;
         },
 
-        _generateSlug : function _generateSlug() {
+        /* Watch the voiceTitle input change event, auto-generates a valid slug
+         * and updates the voiceSlug input with the genereted slug string
+         * @method _generateSlugHandler <private>
+         */
+        _generateSlugHandler : function _generateSlugHandler() {
             var slug = Slug(this.voiceTitle.getValue());
             this.voiceSlug.setValue(slug);
             this._checkSlugAvailability(slug);
         },
 
+        /* Calls the API isSlugAvailable endpoint to validate if the current
+         * slug is available or taken.
+         * @method _checkSlugAvailability <private>
+         */
         _checkSlugAvailability : function _checkSlugAvailability(slug) {
             this.voiceSlug.clearState().updateHint();
 
@@ -265,9 +270,12 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             API.isSlugAvailable({
                 profileName : Person.get().profileName,
                 slug : slug
-            }, this._slugAvailabilityHandlerRef);
+            }, this._slugAvailabilityHandler.bind(this));
         },
 
+        /* API's isSlugAvailable response handler
+         * @method _slugAvailabilityHandler <private>
+         */
         _slugAvailabilityHandler : function _slugAvailabilityHandler(err, res) {
             if (err) {
                 return void 0;
@@ -284,12 +292,19 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             this.voiceSlug.clearState().success();
         },
 
+        /* When the user changes the voiceSlug input value manually we have to
+         * stop `watching` the voiceTitle input change event, so we do not auto
+         * generate the slug anymore but let the user enter whatever slug she
+         * wants.
+         * This method checks if we should stop watching the title input.
+         * @method _letFreeSlug <private>
+         */
         _letFreeSlug : function _letFreeSlug() {
             if (Slug(this.voiceTitle.getValue()) !== this.voiceSlug.getValue()) {
                 this._autoGenerateSlug = false;
 
-                Events.off(this.voiceTitle.getInput(), 'keyup', this._generateSlugRef);
-                this._generateSlugRef = null;
+                Events.off(this.voiceTitle.getInput(), 'keyup', this._generateSlughandlerRef);
+                this._generateSlughandlerRef = null;
 
                 Events.off(this.voiceSlug.getInput(), 'keyup', this._letFreeSlugRef);
                 this._letFreeSlugRef = this._sanitizeSlugHandler.bind(this);
@@ -298,6 +313,11 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             }
         },
 
+        /* voiceSlug input keyup handler.
+         * Validates that only alpa-numeric values and dashes can be entered on
+         * the voiceSlug input manually.
+         * @method _sanitizeSlugHandler <private>
+         */
         _sanitizeSlugHandler : function _sanitizeSlugHandler() {
             var slug = this.voiceSlug.getValue();
 
@@ -309,12 +329,20 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             }
         },
 
-        _getLocation : function _getLocation(ev) {
+        /* Listens to detectLocation widget 'location' custom event.
+         * Updates the latitude and longitude with the response and calls the
+         * getGeocoding method on it.
+         */
+        _getLocationHandler : function _getLocationHandler(ev) {
             this.voiceLatitude.setValue(ev.data.coords.latitude);
             this.voiceLongitude.setValue(ev.data.coords.longitude);
-            this.detectLocation.getGeocoding(ev.data.coords.latitude, ev.data.coords.longitude, this._getGeocodingRef);
+            this.detectLocation.getGeocoding(ev.data.coords.latitude, ev.data.coords.longitude, this._getGeocoding.bind(this));
         },
 
+        /* detectLocation.getGeocoding method callback
+         * Updates the locationName input field
+         * @method _getGeocoding <private>
+         */
         _getGeocoding : function _getGeocoding(err, res) {
             if (err) {
                 // @TODO: handle error
@@ -352,6 +380,13 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             if (validate[0]) {
                 return this._displayErrors(validate[0].errors);
             }
+
+            API.voiceCreate({data: this._dataPresenter()}, this._createVoiceHandler.bind(this));
+        },
+
+        _createVoiceHandler : function _createVoiceHandler(err, res) {
+            console.log(err);
+            console.log(res);
         },
 
         _displayErrors : function _displayErrors(errors) {
@@ -361,6 +396,9 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             }, this);
         },
 
+        /* Returns the data to be validated using Checkit module
+         * @method _getCurrentData <private>
+         */
         _getCurrentData : function _getCurrentData() {
             var body = {
                 title : this.voiceTitle.getValue().trim(),
@@ -380,13 +418,46 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             return body;
         },
 
+        /* Returns the data to be sent to server to create a new Voice.
+         * @method _dataPresenter <private> [Function]
+         */
+        _dataPresenter : function _dataPresenter() {
+            var data = {
+                title : this.voiceTitle.getValue().trim(),
+                slug : this.voiceSlug.getValue().trim(),
+                description : this.voiceDescription.getValue().trim(),
+                topics : this.voiceTopicsDropdown.getSelection().map(function(topic) {return topic.id}),
+                type : this.voiceTypesDropdown.getValue(),
+                status : this.voiceStatusDropdown.getValue(),
+                twitterSearch : this.voiceHashtags.getValue().trim(),
+                rssUrl : this.voiceRssfeed.getValue().trim(),
+                locationName : this.voiceLocation.getValue().trim(),
+                latitude : this.voiceLatitude.getValue().trim(),
+                longitude : this.voiceLongitude.getValue().trim()
+            };
+
+            if (Person.anon()) {
+                data.anonymously = true;
+            } else {
+                data.anonymously = this.checkAnon.isChecked();
+            }
+
+            if (this.voiceOwnershipDropdown) {
+                data.ownerEntityId = this.voiceOwnershipDropdown.getValue();
+            } else {
+                data.ownerEntityId = Person.get().id;
+            }
+
+            return data;
+        },
+
         destroy : function destroy() {
             Events.off(this.buttonSend.el, 'click', this._sendFormHandlerRef);
             this._sendFormHandlerRef = null;
 
             if (this._autoGenerateSlug) {
-                Events.off(this.voiceTitle.getInput(), 'keyup', this._generateSlugRef);
-                this._generateSlugRef = null;
+                Events.off(this.voiceTitle.getInput(), 'keyup', this._generateSlughandlerRef);
+                this._generateSlughandlerRef = null;
 
                 Events.off(this.voiceSlug.getInput(), 'keyup', this._letFreeSlugRef);
                 this._letFreeSlugRef = null;
