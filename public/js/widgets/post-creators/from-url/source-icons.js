@@ -5,7 +5,7 @@ Class(CV, 'PostCreatorFromUrlSourceIcons').inherits(Widget)({
 
     HTML : '\
         <div>\
-            <svg class="input-error-icon -on-error -abs -color-danger">\
+            <svg class="input-error-icon -on-error -abs -color-negative">\
                 <use xlink:href="#svg-circle-x"></use>\
             </svg>\
             <div class="from-url-type image ui-has-tooltip" data-type="image">\
