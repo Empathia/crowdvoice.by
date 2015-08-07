@@ -255,6 +255,7 @@ var TopicsController = Class('TopicsController')({
           res.locals.topic = topic;
           res.render('topics/edit.html');
         } else {
+          req.flash('success', 'Topic has been updated successfully.');
           res.redirect('/topics');
         }
       });
@@ -265,6 +266,8 @@ var TopicsController = Class('TopicsController')({
 
       topic.destroy(function (err) {
         if (err) { return next(err); }
+
+        req.flash('success', 'Deleted topic successfully.');
         res.redirect('/topics');
       });
     }

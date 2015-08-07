@@ -229,6 +229,8 @@ var UsersController = Class('UsersController')({
 
           user.save(function (err, result) {
             if (err) { next(err); return; }
+
+            req.flash('success', 'Updated user info successfully.');
             res.redirect('/user/' + req.params.id);
           });
         });
