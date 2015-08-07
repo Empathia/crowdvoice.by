@@ -247,6 +247,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
             return;
           }
 
+          req.flash('success', 'Voice has been created successfully.');
           res.redirect(req.currentPerson.profileName + '/' + voice.getSlug());
         });
       });
@@ -287,6 +288,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           });
         }
 
+        req.flash('success', 'Voice has been updated successfully.');
         res.redirect('/voice/' + voice.id);
       });
     },
@@ -357,6 +359,8 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
       voice.deleted = true;
       voice.save(function(err) {
         if (err) { return next(err); }
+
+        req.flash('success', 'Voice has been deleted successfully.');
         res.redirect('/voices');
       });
     },
@@ -384,6 +388,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
             res.format({
               html: function () {
+                req.flash('success', 'Voice has been unfollowed successfully.');
                 res.redirect('/' + req.params.profileName + '/' + req.params.voice_slug)
               },
               json: function () {
@@ -401,6 +406,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
               res.format({
                 html: function () {
+                  req.flash('success', 'Voice has been followed successfully.');
                   res.redirect('/' + req.params.profileName + '/' + req.params.voice_slug)
                 },
                 json: function () {
