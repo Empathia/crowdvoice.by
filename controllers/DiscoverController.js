@@ -299,7 +299,7 @@ var DiscoverController = Class('DiscoverController')({
 
               items.push({
                 type : 'voice',
-                voice : voice,
+                data : voice,
                 owner : owners[0],
                 voices : [],
                 people : [],
