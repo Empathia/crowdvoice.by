@@ -131,6 +131,7 @@ require('./widgets/posts/post-video');
 require('./widgets/posts/post-link');
 require('./widgets/posts/actions/save');
 require('./widgets/posts/actions/share');
+require('./widgets/posts/actions/popover-unsave');
 
 // post detail
 require('./widgets/post-details/controllers/base');
