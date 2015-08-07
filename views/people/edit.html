@@ -500,10 +500,9 @@
 
   }
 
-
   //******* organizations ************
 
-  var removeAction = function(entityID){
+  var removeAction = function(orgID){
     var userID = currentPerson.id;
     $.ajax({
       type: "POST",
@@ -511,7 +510,7 @@
       headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
       data : {
         entityId : userID,
-        orgId : entityID
+        orgId : orgID
       },
       success: function(data) {
         console.log(data);
