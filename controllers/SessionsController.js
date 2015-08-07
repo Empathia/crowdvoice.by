@@ -106,7 +106,6 @@ var SessionsController = Class('SessionsController')({
               req.flash('success', 'Welcome to CrowdVoice.by.');
               return res.render('session/resetPassword', {layout : 'login'});
             } else {
-
               req.flash('success', 'Welcome to CrowdVoice.by.');
               return res.redirect('/');
             }
@@ -131,7 +130,7 @@ var SessionsController = Class('SessionsController')({
         }
 
         if (user.token !== null) {
-          req.flash('error', 'You need to activate your Account first');
+          req.flash('error', 'You need to activate your Account first.');
         }
 
         req.logIn(user, function (err) {
@@ -165,12 +164,11 @@ var SessionsController = Class('SessionsController')({
 
     switchPerson : function switchPerson(req, res, next) {
       if (!req.currentPerson) {
-        req.flash('info', 'You must be logged in to perform the previous action');
+        req.flash('info', 'You must be logged in to perform the previous action.');
         return res.redirect('/');
       }
 
       if (!req.currentPerson.isAnonymous) {
-        console.log('is not anonymous')
         req.session.isAnonymous = true;
       } else {
         req.session.isAnonymous = false;
