@@ -94,6 +94,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
       });
     },
 
+    // update profile (as opposed to user account)
     update : function update(req, res, next) {
       ACL.isAllowed('update', 'entities', req.role, {
         entity : req.entity,
@@ -155,6 +156,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
               res.render(inflection.pluralize(req.entityType) + '/edit.html');
             } else {
+              req.flash('success', 'Your profile has been updated successfully.');
               res.redirect('/' + entity.profileName + '/edit');
             }
           });
@@ -162,6 +164,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
       });
     },
 
+    // update user account (as opposed to profile)
     updateUser : function updateUser(req, res, next) {
       var entity = req.entity;
 
@@ -203,6 +206,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
             res.render(inflection.pluralize(req.entityType) + '/edit.html');
           } else {
+            req.flash('success', 'Your account details have been updated successfully.');
             res.redirect('/' + entity.profileName + '/edit');
           }
         });
@@ -233,6 +237,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
             res.format({
               html: function() {
+                req.flash('success', 'Unfollowed successfully.');
                 res.redirect('/' + entity.profileName);
               },
               json: function() {
@@ -250,6 +255,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
               res.format({
                 html: function() {
+                  req.flash('success', 'Followed successfully.');
                   res.redirect('/' + entity.profileName);
                 },
                 json: function() {
