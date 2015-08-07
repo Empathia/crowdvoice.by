@@ -1,4 +1,4 @@
-Admin.VoicesController = Class(Admin, 'VoicesController').inherits(RestfulController)({
+Admin.VoicesController = Class(Admin, 'VoicesController')({
   prototype : {
     index : function index(req, res, next) {
       ACL.isAllowed('index', 'admin.voices', req.role, {}, function(err, isAllowed) {

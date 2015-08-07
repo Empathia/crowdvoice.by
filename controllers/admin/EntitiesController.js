@@ -1,4 +1,4 @@
-Admin.EntitiesController = Class(Admin, 'EntitiesController').inherits(RestfulController)({
+Admin.EntitiesController = Class(Admin, 'EntitiesController')({
   prototype : {
     index : function index(req, res, next) {
       ACL.isAllowed('index', 'admin.' + inflection.pluralize(req.entityType), req.role, {}, function(err, isAllowed) {

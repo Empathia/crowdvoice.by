@@ -283,7 +283,7 @@
       name      : 'description',
       title     : "Short Bio",
       subTitle  : "140 characters max",
-      value     : "<%= currentPerson.description %>"
+      value     : '<%= currentPerson.description %>'
   }).render($('.form-profile .placeholder-main'));
 
   new CV.Input({
@@ -500,8 +500,24 @@
 
   }
 
-
   //******* organizations ************
+
+  var removeAction = function(orgID){
+    var userID = currentPerson.id;
+    $.ajax({
+      type: "POST",
+      url:'/'+currentPerson.profileName+'/leaveOrganization',
+      headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
+      data : {
+        entityId : userID,
+        orgId : orgID
+      },
+      success: function(data) {
+        console.log(data);
+      }
+    });
+
+  }
 
   $.ajax({
     type: "GET",
@@ -514,6 +530,7 @@
           users         : data,
           listTitle     : "You own and / or belong to {count} organizations",
           actionLabel   : "Leave",
+          action        : removeAction,
           dateTitle     : "Member since"
       }).render($('.placeholder-organizations'));
     }
