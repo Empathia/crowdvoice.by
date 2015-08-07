@@ -11,6 +11,8 @@ var HomeController = Class('HomeController')({
     index : function index(req, res, next) {
       // if the person is logged in, redirect to their feed
       if (req.currentPerson) {
+        // TODOFLASH: should this go here or in the sessions controller?
+        req.flash('success', 'Logged in to your account successfully.');
         return res.redirect('/' + req.currentPerson.profileName + '/feed');
       }
 
