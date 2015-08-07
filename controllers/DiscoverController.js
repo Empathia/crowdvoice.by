@@ -422,7 +422,7 @@ var DiscoverController = Class('DiscoverController')({
                   return nextItem(err);
                 }
 
-                item.voices = result;
+                item.voices = voices;
 
                 nextItem();
               });
