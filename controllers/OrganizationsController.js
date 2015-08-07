@@ -54,7 +54,7 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
     leaveOrganization : function (req, res, next) {
       // req.body = { orgId, entityId }
 
-      ACL.isAllowed('leaveOrg', 'entities', req.role, {
+      ACL.isAllowed('leaveOrganization', 'entities', req.role, {
         currentPersonId: req.currentPerson.id,
         orgId: req.body.orgId,
         entityId: req.body.entityId
