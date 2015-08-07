@@ -23,7 +23,7 @@ Class(CV, 'CreateOrganization').inherits(Widget).includes(CV.WidgetUtils)({
 
     prototype : {
         MAX_TITLE_LENGTH : 65,
-        MAX_DESCRIPTION_LENGTH : 140,
+        MAX_DESCRIPTION_LENGTH : 180,
 
         init : function(config){
             Widget.prototype.init.call(this, config);

@@ -42,12 +42,27 @@ Class(CV.UI, 'DropdownVoiceTypes').inherits(Widget)({
         },
 
         _clickHandler : function _clickHandler(ev) {
-            this._value = ev.target.dataset.value;
+            this.selectByElement(ev.target);
+        },
+
+        selectByElement : function selectByElement(element) {
+            this._value = element.dataset.value;
             this._items.forEach(function(item) {
                 item.classList.remove('active');
             });
-            ev.target.classList.add('active');
-            this.dropdown.setLabel(ev.target.innerText).deactivate();
+            element.classList.add('active');
+            this.dropdown.setLabel(element.innerText).deactivate();
+            return this;
+        },
+
+        selectByValue : function selectByValue(value) {
+            this._items.some(function(i) {
+                if (i.getAttribute('data-value') === value) {
+                    this.selectByElement(i);
+                    return true;
+                }
+            }, this);
+            return this;
         },
 
         /* Returns the data-value of the current selected option

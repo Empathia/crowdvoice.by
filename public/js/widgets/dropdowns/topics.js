@@ -11,6 +11,7 @@ Class(CV.UI, 'DropdownTopics').inherits(Widget)({
 
     prototype : {
         _options : null,
+
         init : function init(config) {
             Widget.prototype.init.call(this, config);
             this.el = this.element[0];
@@ -35,6 +36,20 @@ Class(CV.UI, 'DropdownTopics').inherits(Widget)({
 
                 this._options.push(this[topic.slug]);
             }, this);
+        },
+
+        selectValues : function selectValues(topics) {
+            var topicsIds = topics.map(function(topic) {
+                return topic.id;
+            });
+
+            this._options.forEach(function(topic) {
+                if (topicsIds.indexOf(topic.id) !== -1) {
+                    topic.check();
+                }
+            });
+
+            return this;
         },
 
         /* Returns the checkbox widgets that are checked

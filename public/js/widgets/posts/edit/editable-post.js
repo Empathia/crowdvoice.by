@@ -4,7 +4,7 @@ var autosize = require('autosize');
 
 Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSupport, BubblingSupport)({
 
-    MAX_LENGTH_TITLE : 80,
+    MAX_LENGTH_TITLE : 65,
     MAX_LENGTH_DESCRIPTION : 180,
 
     HTML_DATE_PICKER : '\

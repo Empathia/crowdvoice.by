@@ -36,6 +36,10 @@ Class(CV.UI, 'Checkbox').inherits(Widget).includes(CV.WidgetUtils)({
             return this.checkbox.checked;
         },
 
+        check : function check() {
+            this.checkbox.checked = true;
+        },
+
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
         }
