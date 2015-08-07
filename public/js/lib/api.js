@@ -35,6 +35,34 @@ module.exports = {
         });
     },
 
+    /* Updates an existing Voice.
+     * @argument args.profileName <required> [String] the voice owner profileName
+     * @argument args.voiceSlug <required> [String] the voice slug
+     * @argument args.data <required> [Object]
+     * @argument callback <required> [Function]
+     */
+    voiceEdit : function voiceEdit(args, callback) {
+        if (!args.profileName || !args.voiceSlug || !args.data || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'PUT',
+            url : '/' + args.profileName + '/' + args.voiceSlug,
+            headers : {'csrf-token' : this.token},
+            cache : false,
+            contentType : false,
+            processData : false,
+            data : args.data,
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
+    },
+
     /* Follow/Unfollow Voice.
      * @argument args.profileName <required> [String] the voice owner profileName
      * @argument args.voiceSlug <required> [String] the voice slug

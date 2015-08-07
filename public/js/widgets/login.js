@@ -156,7 +156,7 @@ Class(CV, 'Login').inherits(Widget)({
             this.errorsEl = this.element.find('.form-errors');
 
 
-            if (this.loginError.error){
+            if (this.loginError && this.loginError.error){
               login.errorsEl.show();
               login.errorsEl.append('<p>' + this.loginError.error + '</p>');
             }
@@ -195,9 +195,9 @@ Class(CV, 'Login').inherits(Widget)({
               this.element.find("input.name, input.lastname").blur(function() {
                   if ($("input.name").val() != "" && $("input.lastname").val() != ""){
                     if ($("input.profileName").val() == ""){
-                      var profileName = $("input.name").val() +"_"+ $("input.lastname").val();
+                      var profileName = $("input.name").val() +"-"+ $("input.lastname").val();
                       //profileName = profileName.replace(/ /g, "_");
-                      $("input.profileName").val(profileName.toLowerCase().replace(/ /g, "_")).change();
+                      $("input.profileName").val(profileName.toLowerCase().replace(/ /g, "-")).change();
                     }
                   }
               });

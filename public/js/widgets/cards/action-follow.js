@@ -3,8 +3,6 @@ Class(CV, 'CardActionFollow').inherits(Widget)({
 
     ELEMENT_CLASS : 'card-actions-item card-actions-follow-button',
 
-    HTML : '<div></div>',
-
     HTML_FOLLOW : '\
         <svg class="card-activity-svg -s16">\
             <use xlink:href="#svg-user-follow"></use>\
@@ -88,11 +86,11 @@ Class(CV, 'CardActionFollow').inherits(Widget)({
             this.followed = false;
 
             if (this.unfollowPopover) {
-                this.unfollowPopover.destroy();
+                this.unfollowPopover = this.unfollowPopover.destroy();
             }
 
             if (this.unfollowPopoverContent) {
-                this.unfollowPopoverContent.destroy();
+                this.unfollowPopoverContent = this.unfollowPopoverContent.destroy();
             }
 
             this.el.innerHTML = '';

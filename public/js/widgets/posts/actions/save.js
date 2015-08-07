@@ -2,12 +2,26 @@ var API = require('./../../../lib/api');
 var Events = require('./../../../lib/events');
 
 Class(CV, 'PostActionSave').inherits(Widget)({
-    HTML : '\
-        <div class="post-card-actions-item -col-6">\
+    ELEMENT_CLASS : 'post-card-actions-item -col6',
+
+    HTML_SAVE : '\
+        <svg class="post-card-activity-svg">\
+            <use xlink:href="#svg-save"></use>\
+        </svg>\
+        <p class="post-card-actions-label">Save</p>',
+
+    HTML_SAVED : '\
+        <div class="saved-button -color-positive">\
             <svg class="post-card-activity-svg">\
-                <use xlink:href="#svg-save"></use>\
+                <use xlink:href="#svg-saved-posts"></use>\
             </svg>\
-            <p class="post-card-actions-label">Save</p>\
+            <p class="post-card-actions-label">Saved</p>\
+        </div>\
+        <div class="unsave-button -color-negative">\
+            <svg class="post-card-activity-svg">\
+                <use xlink:href="#svg-save-outline"></use>\
+            </svg>\
+            <p class="post-card-actions-label">Unsave</p>\
         </div>',
 
     prototype : {
@@ -16,6 +30,13 @@ Class(CV, 'PostActionSave').inherits(Widget)({
         init : function init (config) {
             Widget.prototype.init.call(this, config);
             this.el = this.element[0];
+
+            if (this.entity.saved) {
+                this._setIsSaved();
+            } else {
+                this._setIsNotSaved();
+            }
+
             this._bindEvents();
         },
 
@@ -25,39 +46,121 @@ Class(CV, 'PostActionSave').inherits(Widget)({
             return this;
         },
 
-        _clickHandler : function _clickHandler() {
-            if (this.entity.saved) {
-                return this._unsave();
-            }
+        /* Sets the button state as if currentPerson has saved this Post
+         * @method _setIsSaved <private>
+         */
+        _setIsSaved : function _setIsSaved() {
+            this.entity.saved = true;
 
-            this._save();
+            this.el.innerHTML = '';
+            this.el.insertAdjacentHTML('beforeend', this.constructor.HTML_SAVED);
+
+            this.appendChild(new CV.PostActionUnsavePopover({
+                name : 'unsavePopoverContent'
+            }));
+
+            this.appendChild(new CV.PopoverBlocker({
+                name : 'unsavePopover',
+                className : 'unfollow-popover',
+                placement : 'top',
+                content : this.unsavePopoverContent.el
+            })).render(this.el);
+
+            this.unsavePopoverContent.bind('unsave', this._unsaveHandler.bind(this));
+            this.unsavePopoverContent.bind('cancel', this._cancelHandler.bind(this));
+
+            this.unsavePopover.bind('activate', this.activate.bind(this));
+            this.unsavePopover.bind('deactivate', this.deactivate.bind(this));
+            this.unsavePopover.bind('destroy', this.deactivate.bind(this));
+
+            return this;
         },
 
-        _save : function _save() {
+        /* Sets the button state as if currentPerson has not saved this Post.
+         * @method _setIsNotSaved <private>
+         */
+        _setIsNotSaved : function _setIsNotSaved() {
+            this.entity.saved = false;
+
+            if (this.unsavePopover) {
+                this.unsavePopover = this.unsavePopover.destroy();
+            }
+
+            if (this.unsavePopoverContent) {
+                this.unsavePopoverContent = this.unsavePopoverContent.destroy();
+            }
+
+            this.el.innerHTML = '';
+            this.el.insertAdjacentHTML('beforeend', this.constructor.HTML_SAVE);
+            return this;
+        },
+
+       /* Click button handler. Is in charge of deciding which API endpoint to call.
+        * @method _clickHandler <private>
+        */
+        _clickHandler : function _clickHandler() {
+            if (this.entity.saved) {
+                // wants to unsave? you need to confirm first.
+                this.unsavePopover.activate();
+                return void 0;
+            }
+
+            this._saveHandler();
+        },
+
+        /* Sets the button state as saved plus calling the API to save the post.
+         * @method _saveHandler <private>
+         */
+        _saveHandler : function _saveHandler() {
+            this._setIsSaved()._cancelHoverState();
+
             API.postSave({
                 profileName : App.Voice.data.owner.profileName,
                 voiceSlug : App.Voice.data.slug,
                 postId : this.entity.id
-            }, this._responseHandler.bind(this));
+            }, function(err) {
+                if (err) {
+                    this._setIsNotSaved();
+                }
+            }.bind(this));
         },
 
-        _unsave : function _unsave() {
+        /* Sets the button state as not saved plus calling the API to unsave.
+         * @method _unsaveHandler <private>
+         */
+        _unsaveHandler : function _unsaveHandler() {
+            this._setIsNotSaved();
+
             API.postUnsave({
                 profileName : App.Voice.data.owner.profileName,
                 voiceSlug : App.Voice.data.slug,
                 postId : this.entity.id
-            }, this._responseHandler.bind(this));
+            }, function(err) {
+                if (err) {
+                    this._setIsSaved();
+                }
+            }.bind(this));
         },
 
-        _responseHandler : function _responseHandler(err, res) {
-            console.log(err);
-            console.log(res);
+        _cancelHandler : function _cancelHandler() {
+            this.unsavePopover.deactivate();
+        },
 
-            if (res.status === 'saved') {
-                this.entity.saved = true;
-            } else if (res.status === 'removed') {
-                this.entity.saved = false;
-            }
+        /* Adds a class selector that prevent the hover effect for this particular button via CSS.
+         * This is important for UX, because when a user has just followed this Entity we should NOT shown the 'unfollow' state of the button on hover over.
+         * When the user move the mouse out of the button this class selector is removed, so when she hover over the button again then we can show the 'unfollow' button state.
+         */
+        _cancelHoverState : function _cancelHoverState() {
+            var _this = this;
+
+            this.el.classList.add('cancel-hover-state');
+
+            var mouseLeave = function mouseLeave() {
+                _this.el.classList.remove('cancel-hover-state');
+                _this.el.removeEventListener('mouseleave', mouseLeave);
+            };
+
+            this.el.addEventListener('mouseleave', mouseLeave);
         },
 
         destroy : function destroy() {

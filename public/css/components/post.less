@@ -315,32 +315,41 @@
   padding-top: 1rem;
   border-right: 1px solid @color-grey-lighter;
   cursor: pointer;
+  color: @color-grey-light;
+  fill: @color-grey-light;
   transition: background-color 140ms ease, box-shadow 140ms ease;
 
   &:last-child {border-right: 0}
 
   .post-card-activity-svg {
-    fill: @color-grey-light;
     transition: fill 240ms ease;
   }
 
   &:hover {
-    .post-card-activity-svg,
-    .post-card-actions-label {
-      color: @color-primary;
-      fill: @color-primary;
-    }
+    color: @color-primary;
+    fill: @color-primary;
   }
 
-  &:active {
+  &:active,
+  &.active {
     background-color: tint(@color-grey-lighter, 50);
     box-shadow: inset 0 3px 0 @color-grey-lighter;
+  }
+
+  .unsave-button {
+    display: none;
+  }
+
+  &:hover:not(.cancel-hover-state),
+  &:active,
+  &.active {
+    .saved-button {display: none}
+    .unsave-button {display: block}
   }
 }
 
 .post-card-actions-label {
   font-size: 11px;
-  color: @color-grey-light;
   transition: color 240ms ease;
 }
 

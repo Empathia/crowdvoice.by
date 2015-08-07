@@ -33,6 +33,18 @@ Class(CV.UI, 'DropdownVoiceOwnership').inherits(Widget).includes(CV.WidgetUtils)
             return this;
         },
 
+        selectByEntity : function selectByEntity(entity) {
+            this._items.some(function(i) {
+                console.log(i.getAttribute('data-value'))
+                console.log(entity.id)
+                if (i.getAttribute('data-value') === entity.id) {
+                    this.selectByElement(i);
+                    return true;
+                }
+            }, this);
+            return this;
+        },
+
         _setup : function _setup() {
             this._createItem((Person.get().name + ' ' + Person.get().lastname).trim(), Person.get().id);
 
@@ -62,12 +74,16 @@ Class(CV.UI, 'DropdownVoiceOwnership').inherits(Widget).includes(CV.WidgetUtils)
         },
 
         _clickHandler : function _clickHandler(ev) {
-            this._value = ev.target.dataset.value;
+            this.selectByElement(ev.target);
+        },
+
+        selectByElement : function selectByElement(element) {
+            this._value = element.dataset.value;
             this._items.forEach(function(item) {
                 item.classList.remove('active');
             });
-            ev.target.classList.add('active');
-            this.dropdown.setLabel(ev.target.innerText).deactivate();
+            element.classList.add('active');
+            this.dropdown.setLabel(element.innerText).deactivate();
         },
 
         /* Returns the data-value of the current selected option

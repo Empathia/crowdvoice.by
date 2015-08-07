@@ -28,6 +28,12 @@ Class(CV, 'Image').inherits(Widget).includes(CV.WidgetUtils)({
             this._setup()._bindEvents();
         },
 
+        setImage : function setImage(path) {
+            this.backgroundImage.classList.add('-img-contain');
+            this.dom.updateBgImage(this.backgroundImage, path);
+            return this;
+        },
+
         /* Sets error state feedback.
          * @method error <public>
          */
@@ -90,8 +96,7 @@ Class(CV, 'Image').inherits(Widget).includes(CV.WidgetUtils)({
 
             if (f.type.match('image.*')) {
                 r.onload = function(e) {
-                    this.backgroundImage.classList.add('-img-contain');
-                    this.dom.updateBgImage(this.backgroundImage, e.target.result);
+                    this.setImage(e.target.result);
                     r.onload = null;
                 }.bind(this);
                 return r.readAsDataURL(f);
