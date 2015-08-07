@@ -18,6 +18,8 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
           if (err) { return next(err); }
           org.inviteEntity(entity, function (err) {
             if (err) { return next(err); }
+
+            req.flash('success', 'User has been invited to organization successfully.')
             res.redirect('/' + org.profileName);
           });
         });
