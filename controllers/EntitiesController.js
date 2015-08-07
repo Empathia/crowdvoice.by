@@ -156,7 +156,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
               res.render(inflection.pluralize(req.entityType) + '/edit.html');
             } else {
-              req.flash('success', 'Your profile has been updated successfully.');
+              req.flash('success', 'Your profile has been updated.');
               res.redirect('/' + entity.profileName + '/edit');
             }
           });
@@ -206,7 +206,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
             res.render(inflection.pluralize(req.entityType) + '/edit.html');
           } else {
-            req.flash('success', 'Your account details have been updated successfully.');
+            req.flash('success', 'Your account details have been updated.');
             res.redirect('/' + entity.profileName + '/edit');
           }
         });

@@ -164,7 +164,7 @@ var SessionsController = Class('SessionsController')({
 
     switchPerson : function switchPerson(req, res, next) {
       if (!req.currentPerson) {
-        req.flash('info', 'You must be logged in to perform the previous action.');
+        req.flash('info', 'You must be logged in in order to perform the previous action.');
         return res.redirect('/');
       }
 

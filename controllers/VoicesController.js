@@ -247,7 +247,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
             return;
           }
 
-          req.flash('success', 'Voice has been created successfully.');
+          req.flash('success', 'Voice has been created.');
           res.redirect(req.currentPerson.profileName + '/' + voice.getSlug());
         });
       });
@@ -288,7 +288,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           });
         }
 
-        req.flash('success', 'Voice has been updated successfully.');
+        req.flash('success', 'Voice has been updated.');
         res.redirect('/voice/' + voice.id);
       });
     },
@@ -360,7 +360,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
       voice.save(function(err) {
         if (err) { return next(err); }
 
-        req.flash('success', 'Voice has been deleted successfully.');
+        req.flash('success', 'Voice has been deleted.');
         res.redirect('/voices');
       });
     },
@@ -388,7 +388,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
             res.format({
               html: function () {
-                req.flash('success', 'Voice has been unfollowed successfully.');
+                req.flash('success', 'Voice has been unfollowed.');
                 res.redirect('/' + req.params.profileName + '/' + req.params.voice_slug)
               },
               json: function () {
@@ -406,7 +406,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
               res.format({
                 html: function () {
-                  req.flash('success', 'Voice has been followed successfully.');
+                  req.flash('success', 'Voice has been followed.');
                   res.redirect('/' + req.params.profileName + '/' + req.params.voice_slug)
                 },
                 json: function () {
