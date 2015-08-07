@@ -127,6 +127,17 @@ Class(CV, 'CreateOrganization').inherits(Widget).includes(CV.WidgetUtils)({
                 return void 0;
             }
 
+            var validate = this.checkitProps.validateSync({
+                handler : value
+            });
+
+            if (validate[0] && validate[0].errors.handler) {
+                return this.orgHandler.clearState().error().updateHint({
+                    hint: validate[0].errors.handler.message,
+                    className : '-color-negative'
+                });
+            }
+
             API.isProfileNameAvailable({
                 profileName : Person.get().profileName,
                 value : value
