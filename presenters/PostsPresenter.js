@@ -4,7 +4,7 @@ var PostsPresenter = Module('PostsPresenter')({
   build : function build(posts, currentPerson, callback) {
     var response = [];
 
-    async.each(posts, function(post, next) {
+    async.eachLimit(posts, 1, function(post, next) {
 
       var postInstance = new Post(post);
 
@@ -25,13 +25,13 @@ var PostsPresenter = Module('PostsPresenter')({
 
       async.series([
         // votes
-        function (next) {
+        function (done) {
           if (currentPerson) {
             Vote.find({
-              entity_id : hashids.decode(currentPerson.id)[0],
-              post_id : postInstance.id
+              'entity_id' : hashids.decode(currentPerson.id)[0],
+              'post_id' : postInstance.id
             }, function(err, result) {
-              if (err) { return next(err); }
+              if (err) { return done(err); }
 
               post.voted = true;
 
@@ -39,23 +39,23 @@ var PostsPresenter = Module('PostsPresenter')({
                 post.voted = false;
               }
 
-              response.push(post);
-              return next();
+              // response.push(post);
+              return done();
             });
           } else {
             post.voted = false;
-            return next();
+            return done();
           }
         },
 
         // saved
-        function (next) {
+        function (done) {
           if (currentPerson) {
             SavedPost.find({
               entity_id: hashids.decode(currentPerson.id)[0],
               post_id: postInstance.id
             }, function (err, result) {
-              if (err) { return next(err); }
+              if (err) { return done(err); }
 
               if (result.length > 0) {
                 post.saved = true;
@@ -63,24 +63,24 @@ var PostsPresenter = Module('PostsPresenter')({
                 post.saved = false;
               }
 
-              return next();
+              return done();
             });
           } else {
             post.saved = false;
-            return next();
+            return done();
           }
         },
 
         // totalSaves
-        function (next) {
+        function(done) {
           SavedPost.find({
             post_id: postInstance.id
           }, function (err, result) {
-            if (err) { return next(err); }
+            if (err) { return done(err); }
 
             post.totalSaves = result.length
 
-            return next();
+            return done();
           });
         }
       ], function (err) {

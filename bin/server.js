@@ -36,6 +36,8 @@ io.on('connection', function(socket) {
           return socket.emit('approvedMonthPosts', {'error': err}, dateString, up);
         }
 
+        logger.log(posts.length, results.length);
+
         socket.emit('approvedMonthPosts', results, dateString, up);
       });
     });
