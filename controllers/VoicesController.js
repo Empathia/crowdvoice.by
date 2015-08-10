@@ -240,6 +240,15 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           voice.uploadImage('image', req.files.image.path, done);
         }, function(done) {
           voice.save(done);
+        }, function(done) {
+          async.each(req.body.topics, function(topic, nextTopic) {
+            var voiceTopic = new VoiceTopic({
+              voiceId : voice.id,
+              topicId : hashids.decode(topic)[0]
+            });
+
+            topic.save(nextTopic);
+          }, done);
         }], function(err) {
           if (err) {
             logger.error(err);
@@ -309,6 +318,23 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           voice.addSlug(req.body.slug, done);
         }, function(done) {
           voice.save(done);
+        }, function(done) {
+          db('VoiceTopic').where({
+            'voice_id' : voice.id
+          }).del(function(err, result) {
+            if (err) {
+              return done(err);
+            }
+
+            async.each(req.body.topics, function(topic, nextTopic) {
+              var voiceTopic = new VoiceTopic({
+                voiceId : voice.id,
+                topicId : hashids.decode(topic)[0]
+              });
+
+              topic.save(nextTopic);
+            }, done);
+          });
         }, function(done) {
           if (req.body.title !== oldTitle) {
             feed.voiceUpdateTitle(req, done);
