@@ -16,3 +16,41 @@
   }).render($('.login-container'));
 
 </script>
+
+<!--
+checkit = new Checkit({
+    'Username'      : [{
+      rule: 'required',
+      message: 'Username is required',
+    }],
+    'Name'          : [{
+      rule: 'required',
+      message: 'Name is required',
+    }],
+    'Lastname'      : [{
+      rule: 'required',
+      message: 'Lastname is required',
+    }],
+    'ProfileName'  : ['required',
+      {
+        rule: function (val) {
+          if (val.match(/[^a-zA-Z0-9_-]/)) {
+            throw new Checkit.FieldError('Profile Name should only contain letters, numbers and dashes.')
+          }
+        },
+        message : 'Profile Name should only contain letters, numbers and dashes.'
+      }
+    ],
+    'Email'         : [{
+      rule: 'required',
+      message: 'Email is required',
+    }, {
+      rule : 'email',
+      message : 'Email is not valid'
+    }],
+    'Password'      : [{
+      rule: ['required', 'minLength:8'],
+      message: 'Password is required, minimum 8 characters.',
+    }]
+  });
+  -->

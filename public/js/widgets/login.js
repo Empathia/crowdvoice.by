@@ -250,6 +250,7 @@ Class(CV, 'Login').inherits(Widget)({
             this.buttonEl.on("click",function(e){
                 e.preventDefault();
                 var formValidation = login.validate();
+                console.log(formValidation);
                 var validForm = formValidation[1];
                 var formErrors = formValidation[0];
 
@@ -331,46 +332,19 @@ Class(CV, 'Login').inherits(Widget)({
           switch(this.formType) {
               case 'signup':
                 checkit = new Checkit({
-                  'Username'      : [{
-                    rule: 'required',
-                    message: 'Username is required',
-                  }],
-                  'Name'          : [{
-                    rule: 'required',
-                    message: 'Name is required',
-                  }],
-                  'Lastname'      : [{
-                    rule: 'required',
-                    message: 'Lastname is required',
-                  }],
-                  'Profile Name'  : ['required',
-                    {
-                      rule: function (val) {
-                        if (val.match(/[^a-zA-Z0-9_-]/)) {
-                          throw new Checkit.FieldError('Profile Name should only contain letters, numbers and dashes.')
-                        }
-                      },
-                      message : 'Profile Name should only contain letters, numbers and dashes.'
-                    }
-                  ],
-                  'Email'         : [{
-                    rule: 'required',
-                    message: 'Email is required',
-                  }, {
-                    rule : 'email',
-                    message : 'Email is not valid'
-                  }],
-                  'Password'      : [{
-                    rule: ['required', 'minLength:8'],
-                    message: 'Password is required, minimum 8 characters.',
-                  }]
+                  'Username'     : 'required',
+                  'Name'         : 'required',
+                  'Lastname'     : 'required',
+                  'ProfileName'  : 'required',
+                  'Email'         : ['required','email'],
+                  'Password'      : ['required', 'minLength:8']
                 });
 
                 body = {
                   'Username'      : this.formEl.find('.username').val(),
                   'Name'          : this.formEl.find('.name').val(),
                   'Lastname'      : this.formEl.find('.lastname').val(),
-                  'Profile Name'  : this.formEl.find('.profileName').val(),
+                  'ProfileName'  : this.formEl.find('.profileName').val(),
                   'Email'         : this.formEl.find('.email').val(),
                   'Password'      : this.formEl.find('.password').val(),
                 };

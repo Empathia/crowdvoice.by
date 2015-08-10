@@ -15,11 +15,22 @@ var Voice = Class('Voice').inherits(Argon.KnexModel).includes(ImageUploader)({
       'required',
       {
         rule: function (val) {
-          if (val && val.length > 512) {
-            throw new Checkit.FieldError('The title must be less than 512 characters.')
+          if (val && val.length > 65) {
+            throw new Checkit.FieldError('The title must be less than 65 characters.')
           }
         },
-        message: 'The title must be less than 512 characters.'
+        message: 'The title must be less than 65 characters.'
+      }
+    ],
+    description : [
+      'required',
+      {
+        rule : function(val) {
+          if (val && val.length > 180) {
+            throw new Checkit.FieldError('The description must be less than 180 characters');
+          }
+        },
+        message : 'The description must be less than 180 characters'
       }
     ],
     twitterSearch : [
