@@ -1,3 +1,4 @@
+/* globals App */
 var Person = require('./../lib/currentPerson');
 
 Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
@@ -142,6 +143,7 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
         },
 
         /* Displays the create new {voice,organization} dropdown
+         * @method _displayCreateNewDropdown <private> [Function]
          */
         _displayCreateNewDropdown : function _displayCreateNewDropdown() {
             this.appendChild(new CV.Select({
@@ -154,40 +156,14 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
                     "2": {label: 'Organization', name: 'organization'}
                 }
             })).render(this.buttonActionsWrapper);
-            this.createSelect.voice[0].addEventListener('click', this._showCreateVoiceModal.bind(this));
-            this.createSelect.organization[0].addEventListener('click', this._showCreateOrganizationModal.bind(this));
-        },
 
-        /* Display the CreateVoiceModal.
-         * @method _showCreateVoiceModal <private> [Function]
-         */
-        _showCreateVoiceModal : function _showCreateVoiceModal() {
-            this.appendChild(new CV.UI.Modal({
-                title       : 'Create a Voice',
-                name        : 'createAVoiceModal',
-                action      : CV.CreateVoice,
-                width       : 960,
-            })).render(document.body);
+            this.createSelect.voice[0].addEventListener('click', function() {
+                App.showCreateVoiceModal();
+            });
 
-            requestAnimationFrame(function() {
-                this.createAVoiceModal.activate();
-            }.bind(this));
-        },
-
-        /* Display the CreateOrganizationModal.
-         * @method _showCreateOrganizationModal <private> [Function]
-         */
-        _showCreateOrganizationModal : function _showCreateOrganizationModal() {
-            this.appendChild(new CV.UI.Modal({
-                title       : 'Create an Organization',
-                name        : 'createAnOrganizationModal',
-                action      : CV.CreateOrganization,
-                width       : 540,
-            })).render(document.body);
-
-            requestAnimationFrame(function() {
-                this.createAnOrganizationModal.activate();
-            }.bind(this));
+            this.createSelect.organization[0].addEventListener('click', function() {
+                App.showCreateOrganizationModal();
+            });
         }
     }
 });

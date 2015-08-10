@@ -68,12 +68,53 @@ Class(CV, 'App').includes(NodeSupport)({
         },
 
         /* Make the sidebar interactive, expand on :hover.
-         * @method addInteractiveSidebar <punlic> [Function]
+         * @method addInteractiveSidebar <public> [Function]
          * @return CV.App [Object]
          */
         addInteractiveSidebar : function addInteractiveSidebar() {
             this.sidebar.enableInteraction();
             return this;
+        },
+
+        /* Display the CreateVoiceModal.
+         * @method showCreateVoiceModal <public> [Function]
+         */
+        showCreateVoiceModal : function showCreateVoiceModal(voiceEntity) {
+            if (!Person.get()) {
+                throw new Error('Not autorized to perform this action.');
+            }
+
+            this.appendChild(new CV.UI.Modal({
+                title : 'Create a Voice',
+                name : 'createAVoiceModal',
+                action : CV.CreateVoice,
+                width : 960,
+                data : voiceEntity
+            })).render(document.body);
+
+            requestAnimationFrame(function() {
+                this.createAVoiceModal.activate();
+            }.bind(this));
+        },
+
+        /* Display the CreateOrganizationModal.
+         * @method showCreateOrganizationModal <public> [Function]
+         */
+        showCreateOrganizationModal : function showCreateOrganizationModal() {
+            if (!Person.get()) {
+                throw new Error('Not autorized to perform this action.');
+            }
+
+            this.appendChild(new CV.UI.Modal({
+                title : 'Create an Organization',
+                name : 'createAnOrganizationModal',
+                action : CV.CreateOrganization,
+                width : 540,
+            })).render(document.body);
+
+            requestAnimationFrame(function() {
+                this.createAnOrganizationModal.activate();
+            }.bind(this));
         }
     }
 });
