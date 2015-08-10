@@ -232,8 +232,6 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
             done();
           });
         }, function(done) {
-          feed.voiceCreated(req, model, done);
-        }, function(done) {
           if (!req.files.image) {
             return done();
           }
@@ -244,11 +242,29 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         }], function(err) {
           if (err) {
             logger.error(err);
-            return;
+
+            return voice.destroy(function() {
+              Slug.find({ 'voice_id' : voice.id }, function(error, result) {
+                var slug = new Slug(result[0]);
+                slug.destroy(function() {
+                  return next(err);
+                });
+              });
+            });
           }
 
-          req.flash('success', 'Voice has been created.');
-          res.redirect(req.currentPerson.profileName + '/' + voice.getSlug());
+          VoicesPresenter.build([voice], req.currentPerson, function(err, voices) {
+            if (err) {
+              return next(err);
+            }
+
+            feed.voiceCreated(req, voice, function() {
+              req.flash('success', 'Voice has been created.');
+              res.json(voices[0]);
+            });
+
+          });
+
         });
       });
     },
