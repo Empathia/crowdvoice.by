@@ -1,3 +1,4 @@
+/* globals App */
 var API = require('../../../lib/api');
 
 Class(CV, 'PostCreatorUploadFile').inherits(CV.PostCreator)({
@@ -130,7 +131,11 @@ Class(CV, 'PostCreatorUploadFile').inherits(CV.PostCreator)({
             var data = new FormData();
             data.append('image',  this.inputFile.files[0]);
 
-            API.uploadPostImage(data, function(err, res) {
+            API.uploadPostImage({
+                profileName : App.Voice.data.owner.profileName,
+                voiceSlug : App.Voice.data.slug,
+                data : data
+            }, function(err, res) {
                 console.log(err);
                 console.log(res);
 

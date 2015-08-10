@@ -116,12 +116,26 @@ module.exports = {
     /**************************************************************************
      * POSTS
      *************************************************************************/
+    /* Upload a photo to be added into a specific voice.
+     * @argument args.profileName <required> [String] the voice owner profileName
+     * @argument args.voiceSlug <required> [String] the voice slug
+     * @argument args.data <required> [FormData] the image as FormData
+     * @argument callback <required> [Function]
+     */
     uploadPostImage : function uploadPostImage(args, callback) {
+        if (!args.profileName || !args.voiceSlug || !args.data || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
         $.ajax({
             type : 'POST',
-            url : window.location.pathname + 'upload',
+            url : '/' + args.profileName + '/' + args.voiceSlug + '/upload',
             headers : {'csrf-token' : this.token},
-            data : args,
+            data : args.data,
             cache : false,
             contentType : false,
             processData : false,
