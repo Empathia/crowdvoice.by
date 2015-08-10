@@ -50,8 +50,10 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
             this.postsCountUnapproved = this._formatPostsCountObject(this.postsCount.unapproved);
             this.postCount = this._getTotalPostCount(this.postsCountApproved);
 
-            this._appendLayersManager()._checkInitialHash();
-            this._bindEvents();
+            if (this._appendLayersManager()) {
+                this._checkInitialHash();
+                this._bindEvents();
+            }
         },
 
         /* Instantiate Widgets that give special behaviour to VoiceView, such as the AutoHide Header, Expandable Sidebar, Voice Footer, etc.
@@ -79,7 +81,7 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
          * @return [CV.Voice]
          */
         updateVoiceInfo : function updateVoiceInfo() {
-            if (this.data.images.big.url) {
+            if (this.data.images.big && this.data.images.big.url) {
                 var image = document.createElement('img');
                 image.className = "voice-background-cover-image";
                 image.src = this.data.images.big.url;

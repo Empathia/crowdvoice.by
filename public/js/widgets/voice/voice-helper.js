@@ -12,7 +12,7 @@ Module(CV, 'VoiceHelper')({
          * @method _formatPostsCountObject <private> [Function]
          */
         _formatPostsCountObject : function _formatPostsCountObject(data) {
-            var desc, i, j, total, years, yearsLen, year, months, monthLen, month, _tempMonths,
+            var desc, i, j, total, years, yearsLen, year, months, monthsLen, month, _tempMonths,
                 result = [];
 
             desc = function desc(a, b) {return b - a;};
@@ -31,10 +31,14 @@ Module(CV, 'VoiceHelper')({
                 for (j = 0; j < monthsLen; j++) {
                     month = months[j];
                     total = data[year][month];
-                    if (total > 0) _tempMonths.push({month: ~~month, total: ~~total});
+                    if (total > 0) {
+                        _tempMonths.push({month: ~~month, total: ~~total});
+                    }
                 }
 
-                if (_tempMonths.length > 0) result.push({year: ~~year, months: _tempMonths});
+                if (_tempMonths.length > 0) {
+                    result.push({year: ~~year, months: _tempMonths});
+                }
             }
 
             return result;
@@ -53,6 +57,10 @@ Module(CV, 'VoiceHelper')({
                     return month.total;
                 });
             }));
+
+            if (totals.length === 0) {
+                return 0;
+            }
 
             result = totals.reduce(function(prev, curr) {
                 return prev + curr;
