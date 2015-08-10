@@ -309,6 +309,8 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
           voice.uploadImage('image', req.files.image.path, done);
         }, function(done) {
+          voice.addSlug(req.body.slug, done);
+        }, function(done) {
           voice.save(done);
         }, function(done) {
           if (req.body.title !== oldTitle) {
