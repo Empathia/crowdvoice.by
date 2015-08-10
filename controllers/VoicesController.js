@@ -260,12 +260,9 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
             }
 
             feed.voiceCreated(req, voice, function() {
-              req.flash('success', 'Voice has been created.');
               res.json(voices[0]);
             });
-
           });
-
         });
       });
     },

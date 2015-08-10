@@ -4,7 +4,7 @@ var PostsPresenter = Module('PostsPresenter')({
   build : function build(posts, currentPerson, callback) {
     var response = [];
 
-    async.each(posts, function(post, next) {
+    async.eachLimit(posts, 1, function(post, next) {
 
       var postInstance = new Post(post);
 
