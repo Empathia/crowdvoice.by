@@ -35,8 +35,6 @@ Class(CV.UI, 'DropdownVoiceOwnership').inherits(Widget).includes(CV.WidgetUtils)
 
         selectByEntity : function selectByEntity(entity) {
             this._items.some(function(i) {
-                console.log(i.getAttribute('data-value'))
-                console.log(entity.id)
                 if (i.getAttribute('data-value') === entity.id) {
                     this.selectByElement(i);
                     return true;

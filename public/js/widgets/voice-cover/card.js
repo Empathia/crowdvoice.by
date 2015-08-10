@@ -19,50 +19,51 @@
  * updatedAt    {String} ISO date string
  */
 
+var Person = require('./../../lib/currentPerson');
 var moment = require('moment');
 
 Class(CV, 'VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
     HTML : '\
-    <article class="cv-voice-cover" role="article">\
-        <ul class="cv-tags -list-horizontal"></ul>\
-        <div class="voice-cover">\
-            <div class="voice-cover-main-image-wrapper">\
-                <div class="voice-cover-main-image -img-cover"></div>\
-            </div>\
-            <a class="voice-cover-hover-overlay -tdn" data-voice-anchor href="">\
-                <button class="voice-cover-hover-overlay-button cv-button tiny -font-semi-bold">View Voice</button>\
-            </a>\
-        </div>\
-        <div class="voice-content">\
-            <div class="author">\
-                <a class="author-anchor" href="">\
-                    <img class="author-avatar -rounded" src="" alt="">\
-                </a>\
-                by <a class="author-anchor" href="">\
-                    <span class="author-username"></span>\
+        <article class="cv-voice-cover" role="article">\
+            <ul class="cv-tags -list-horizontal"></ul>\
+            <div class="voice-cover">\
+                <div class="voice-cover-main-image-wrapper">\
+                    <div class="voice-cover-main-image -img-cover"></div>\
+                </div>\
+                <a class="voice-cover-hover-overlay -tdn" data-voice-anchor href="">\
+                    <button class="voice-cover-hover-overlay-button cv-button tiny -font-semi-bold">View Voice</button>\
                 </a>\
             </div>\
-            <h2 class="voice-cover-title -font-bold">\
-                <a class="voice-cover-title-anchor -tdn" data-voice-anchor href=""></a>\
-            </h2>\
-            <p class="voice-cover-description"></p>\
-            <div class="meta">\
-                <span class="voice-cover-followers"></span> followers &middot;&nbsp;\
-                Updated <time class="voice-cover-datetime" datetime=""></time>\
+            <div class="voice-content">\
+                <div class="author">\
+                    <a class="author-anchor" href="">\
+                        <img class="author-avatar -rounded" src="" alt="">\
+                    </a>\
+                    by <a class="author-anchor" href="">\
+                        <span class="author-username"></span>\
+                    </a>\
+                </div>\
+                <h2 class="voice-cover-title -font-bold">\
+                    <a class="voice-cover-title-anchor -tdn" data-voice-anchor href=""></a>\
+                </h2>\
+                <p class="voice-cover-description"></p>\
+                <div class="meta">\
+                    <span class="voice-cover-followers"></span> followers &middot;&nbsp;\
+                    Updated <time class="voice-cover-datetime" datetime=""></time>\
+                </div>\
             </div>\
-        </div>\
-    </article>',
+        </article>',
 
     TAG_ITEM_HTML : '\
-    <li class="cv-tags-list-item">\
-        <a class="cv-tags-tag" href=""></a>\
-    </li>',
+        <li class="cv-tags-list-item">\
+            <a class="cv-tags-tag" href=""></a>\
+        </li>',
 
     IS_NEW_BADGE_HTML : '\
-    <svg class="voice-cover-badge-new">\
-        <use xlink:href="#svg-badge"></use>\
-        <text x="50%" y="50%" dy=".3em" class="-font-bold">NEW</text>\
-    </svg>',
+        <svg class="voice-cover-badge-new">\
+            <use xlink:href="#svg-badge"></use>\
+            <text x="50%" y="50%" dy=".3em" class="-font-bold">NEW</text>\
+        </svg>',
 
     MAX_DESCRIPTION_LENGTH : 180,
 
@@ -78,7 +79,7 @@ Class(CV, 'VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
             this.voiceAnchors = [].slice.call(this.el.querySelectorAll('[data-voice-anchor]'), 0);
             this.authorAnchors = [].slice.call(this.el.querySelectorAll('.author-anchor'), 0);
 
-            this._updateValues();
+            this._updateValues()._addActions();
 
             // is new? no older than 21 days == 3 weeks
             if (moment().diff(moment(this.data.updatedAt), 'days') <= 21) {
@@ -88,6 +89,7 @@ Class(CV, 'VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
 
         /* Update the widget's elements values with the received config
          * @method _updateValues <private> [Function]
+         * @return [CV.VoiceCover]
          */
         _updateValues : function _updateValues() {
             this.voiceAnchors.forEach(function(anchor) {
@@ -95,7 +97,11 @@ Class(CV, 'VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
                 this.dom.updateAttr('title', anchor, this.data.title + ' voice');
             }, this);
 
-            this.dom.updateBgImage(this.el.querySelector('.voice-cover-main-image'), this.data.images.card.url);
+            if (this.data.images.card) {
+                this.dom.updateBgImage(this.el.querySelector('.voice-cover-main-image'), this.data.images.card.url);
+            } else {
+                this.el.querySelector('.voice-cover-main-image').classList.add('-colored-background');
+            }
 
             if (this.data.topics.length) {
                 this.createTopics(this.data.topics);
@@ -117,6 +123,26 @@ Class(CV, 'VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
             this.dom.updateText(this.el.querySelector('.voice-cover-followers'), this.format.numberUS(this.data.followers.length));
             this.dom.updateText(this.dateTimeElement, moment(this.data.updatedAt).fromNow());
             this.dom.updateAttr('datetime', this.dateTimeElement, this.data.updatedAt);
+
+            return this;
+        },
+
+        /* Adds the actions buttons is Person is owner of this voice.
+         * @return CV.VoiceCover
+         */
+        _addActions : function _addActions() {
+            if (!Person.get()) {
+                return void 0;
+            }
+
+            if (Person.memberOf('voice', this.data.id)) {
+                this.appendChild(new CV.VoiceCoverActions({
+                    name : 'actions',
+                    voiceEntity : this.data
+                })).render(this.el.querySelector('.voice-content'));
+            }
+
+            return this;
         },
 
         /**

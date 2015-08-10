@@ -37,12 +37,16 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 <div data-longitude class="-col-4 -pl1"></div>\
             </div>\
             <div class="send -col-12 -text-center"></div>\
-        </div>\
-    ',
+        </div>',
 
     prototype : {
+        /* Voice data for Edit. Is null it assumes you are creating a new Voice,
+         * if other than null assumes you are editing an existing Voice.
+         */
+        data : null,
+
         MAX_TITLE_LENGTH : 65,
-        MAX_DESCRIPTION_LENGTH : 140,
+        MAX_DESCRIPTION_LENGTH : 180,
         _autoGenerateSlug : true,
 
         init : function init(config){
@@ -56,13 +60,43 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 description : ['required', 'maxLength:' + this.MAX_DESCRIPTION_LENGTH],
                 topicsDropdown : ['array', 'minLength:1'],
                 typesDropdown : 'required',
-                statusDropdown : 'required',
-                hashtags : 'required',
-                rssfeed : 'required'
+                statusDropdown : 'required'
             };
 
-            this._setup()._updateInfoRow()._bindEvents();
+            this._setup()._updateInfoRow();
+
+            // Edit voice
+            if (this.data) {
+                this._autoGenerateSlug = false;
+                this._fillForm(this.data);
+            }
+
+            this._bindEvents();
             this.checkit = new Checkit(this.checkitProps);
+        },
+
+        /* Fills the form using this.data values (Edit Voice).
+         * Whem this.data prop is passed (truthy) it should contain the voice
+         * entity data to be edited.
+         */
+        _fillForm : function _fillForm(voice) {
+            if (voice.images.card) {
+                this.voiceBgImage.setImage(voice.images.card.url);
+            }
+            this.voiceTitle.setValue(voice.title);
+            this.voiceSlug.setValue(voice.slug);
+            this.voiceDescription.setValue(
+                this.format.truncate(voice.description, this.MAX_DESCRIPTION_LENGTH)
+            );
+            this.voiceTopicsDropdown.selectValues(voice.topics);
+            this.voiceTypesDropdown.selectByValue(voice.type);
+            this.voiceStatusDropdown.selectByValue(voice.status);
+            this.voiceOwnershipDropdown.selectByEntity(voice.owner);
+            this.voiceHashtags.setValue(voice.twitterSearch);
+            this.voiceRssfeed.setValue(voice.rssUrl);
+            this.voiceLocation.setValue(voice.locationName);
+            this.voiceLatitude.setValue(voice.latitude);
+            this.voiceLongitude.setValue(voice.longitude);
         },
 
         /* Create and append the form element widgets.
@@ -135,10 +169,12 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             this.appendChild(new CV.UI.DropdownVoiceTypes({
                 name : 'voiceTypesDropdown'
             })).render(this.el.querySelector('[data-type]'));
+            this.voiceTypesDropdown.selectByValue(CV.VoiceView.TYPE_PUBLIC);
 
             this.appendChild(new CV.UI.DropdownVoiceStatus({
                 name : 'voiceStatusDropdown'
             })).render(this.el.querySelector('[data-status]'));
+            this.voiceStatusDropdown.selectByValue(CV.VoiceView.STATUS_DRAFT);
 
             this.appendChild(new CV.UI.Input({
                 name : 'voiceHashtags',
@@ -212,6 +248,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 this.appendChild(new CV.UI.DropdownVoiceOwnership({
                     name : 'voiceOwnershipDropdown'
                 })).render(owncol);
+                this.voiceOwnershipDropdown.selectByEntity(Person.get());
                 row.appendChild(owncol);
 
                 this.checkitProps.ownershipDropdown = 'required';
@@ -381,12 +418,33 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 return this._displayErrors(validate[0].errors);
             }
 
-            API.voiceCreate({data: this._dataPresenter()}, this._createVoiceHandler.bind(this));
+            // Edit
+            if (this.data) {
+                var profileName;
+                if (Person.anon() || this.checkAnon.isChecked()) {
+                    profileName = 'anonymous';
+                } else {
+                    profileName = this.data.owner.profileName;
+                }
+
+                API.voiceEdit({
+                    profileName : profileName,
+                    voiceSlug : this.data.slug,
+                    data : this._dataPresenter()
+                }, this._createVoiceHandler.bind(this));
+
+                return void 0;
+            }
+
+            // Create
+            API.voiceCreate({
+                data: this._dataPresenter()
+            }, this._createVoiceHandler.bind(this));
         },
 
         _createVoiceHandler : function _createVoiceHandler(err, res) {
             console.log(err);
-            console.log(res)
+            console.log(res);
             window.location = '/' + res.owner.profileName + '/' + res.slug;
         },
 
@@ -407,9 +465,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 description : this.voiceDescription.getValue().trim(),
                 topicsDropdown : this.voiceTopicsDropdown.getSelection(),
                 typesDropdown : this.voiceTypesDropdown.getValue(),
-                statusDropdown : this.voiceStatusDropdown.getValue(),
-                hashtags : this.voiceHashtags.getValue().trim(),
-                rssfeed : this.voiceRssfeed.getValue().trim()
+                statusDropdown : this.voiceStatusDropdown.getValue()
             };
 
             if (this.voiceOwnershipDropdown) {
