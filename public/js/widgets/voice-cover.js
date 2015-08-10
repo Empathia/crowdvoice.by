@@ -95,7 +95,11 @@ Class(CV, 'VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
                 this.dom.updateAttr('title', anchor, this.data.title + ' voice');
             }, this);
 
-            this.dom.updateBgImage(this.el.querySelector('.voice-cover-main-image'), this.data.images.card.url);
+            if (this.data.images.card) {
+                this.dom.updateBgImage(this.el.querySelector('.voice-cover-main-image'), this.data.images.card.url);
+            } else {
+                this.el.querySelector('.voice-cover-main-image').classList.add('-colored-background');
+            }
 
             if (this.data.topics.length) {
                 this.createTopics(this.data.topics);
