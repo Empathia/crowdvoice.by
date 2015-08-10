@@ -308,6 +308,7 @@ module.exports = {
 
     /* Checks if a voiceSlug exists
      * @argument args.profileName <required> [String] the entity profileName
+     * @argument args.value <required> [String]
      * @argument callback <required> [Function]
      */
     isSlugAvailable : function isSlugAvailable(args, callback) {
@@ -325,6 +326,30 @@ module.exports = {
             data : {value: args.slug},
             dataType : 'json',
             headers : {'csrf-token' : this.token},
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
+    /* Checks if a profileName is available
+     * @argument args.profileName <required> [String] the entity profileName
+     * @argument args.value <required> [String]
+     * @argument callback <required> [Function]
+     */
+    isProfileNameAvailable : function isProfileNameAvailable(args, callback) {
+        if (!args.profileName || !args.value || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            method : 'POST',
+            url : '/' + args.profileName + '/isProfileNameAvailable',
+            headers : {'csrf-token' : this.token},
+            data : {value: args.value},
             success : function success(data) {callback(false, data);},
             error : function error(err) {callback(true, err);}
         });

@@ -96,14 +96,17 @@ Class(CV.UI, 'Input').inherits(Widget).includes(CV.WidgetUtils)({
          * @argument data.className [String] class selector names to add
          */
         updateHint : function updateHint(data) {
+            this.hintElement.className = 'cv-caption';
+
             if (!data) {
                 this.dom.updateText(this.hintElement, this.data.hint);
-                this.hintElement.className = 'cv-caption';
                 return this;
             }
 
             this.dom.updateText(this.hintElement, data.hint);
-            this.dom.addClass(this.hintElement, [data.className.split(/\s/)]);
+            if (data.className) {
+                this.dom.addClass(this.hintElement, [data.className.split(/\s/)]);
+            }
             return this;
         },
 

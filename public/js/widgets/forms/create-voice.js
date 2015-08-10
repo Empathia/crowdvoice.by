@@ -37,16 +37,12 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 <div data-longitude class="-col-4 -pl1"></div>\
             </div>\
             <div class="send -col-12 -text-center"></div>\
-        </div>',
+        </div>\
+    ',
 
     prototype : {
-        /* Voice data for Edit. Is null it assumes you are creating a new Voice,
-         * if other than null assumes you are editing an existing Voice.
-         */
-        data : null,
-
         MAX_TITLE_LENGTH : 65,
-        MAX_DESCRIPTION_LENGTH : 180,
+        MAX_DESCRIPTION_LENGTH : 140,
         _autoGenerateSlug : true,
 
         init : function init(config){
@@ -65,36 +61,8 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 rssfeed : 'required'
             };
 
-            this._setup()._updateInfoRow();
-
-            // Editing voice
-            if (this.data) {
-                this._autoGenerateSlug = false;
-                this._fillForm(this.data);
-            }
-
-            this._bindEvents();
+            this._setup()._updateInfoRow()._bindEvents();
             this.checkit = new Checkit(this.checkitProps);
-        },
-
-        _fillForm : function _fillForm(voice) {
-            if (voice.images.card) {
-                this.voiceBgImage.setImage(voice.images.card.url);
-            }
-            this.voiceTitle.setValue(voice.title);
-            this.voiceSlug.setValue(voice.slug);
-            this.voiceDescription.setValue(
-                this.format.truncate(voice.description, this.MAX_DESCRIPTION_LENGTH)
-            );
-            this.voiceTopicsDropdown.selectValues(voice.topics);
-            this.voiceTypesDropdown.selectByValue(voice.type);
-            this.voiceStatusDropdown.selectByValue(voice.status);
-            this.voiceOwnershipDropdown.selectByEntity(voice.owner);
-            this.voiceHashtags.setValue(voice.twitterSearch);
-            this.voiceRssfeed.setValue(voice.rssUrl);
-            this.voiceLocation.setValue(voice.locationName);
-            this.voiceLatitude.setValue(voice.latitude);
-            this.voiceLongitude.setValue(voice.longitude);
         },
 
         /* Create and append the form element widgets.
@@ -129,7 +97,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                         type : 'text',
                         maxlength: this.MAX_TITLE_LENGTH
                     },
-                    inputClassName : '-lg -block',
+                    inputClassName : '-lg -block'
                 }
             })).render(this.el.querySelector('[data-title]'));
 
@@ -317,7 +285,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 this.voiceSlug.clearState().error();
                 return this.voiceSlug.updateHint({
                     hint : '(slug is already taken)',
-                    className : '-color-danger'
+                    className : '-color-negative'
                 });
             }
 
@@ -413,29 +381,13 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 return this._displayErrors(validate[0].errors);
             }
 
-            if (this.data) {
-                var profileName;
-                if (Person.anon() || this.checkAnon.isChecked()) {
-                    profileName = 'anonymous';
-                } else {
-                    this.data.owner.profileName;
-                }
-
-                API.voiceEdit({
-                    profileName : profileName,
-                    voiceSlug : this.data.slug,
-                    data : this._dataPresenter()
-                }, this._createVoiceHandler.bind(this));
-
-                return void 0;
-            }
-
             API.voiceCreate({data: this._dataPresenter()}, this._createVoiceHandler.bind(this));
         },
 
         _createVoiceHandler : function _createVoiceHandler(err, res) {
             console.log(err);
-            console.log(res);
+            console.log(res)
+            window.location = '/' + res.owner.profileName + '/' + res.slug;
         },
 
         _displayErrors : function _displayErrors(errors) {
@@ -494,9 +446,9 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             }
 
             if (this.voiceOwnershipDropdown) {
-                data.append('ownerEntityId', this.voiceOwnershipDropdown.getValue());
+                data.append('ownerId', this.voiceOwnershipDropdown.getValue());
             } else {
-                data.append('ownerEntityId', Person.get().id);
+                data.append('ownerId', Person.get().id);
             }
 
             return data;

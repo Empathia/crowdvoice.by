@@ -1,3 +1,5 @@
+var Person = require('./../../lib/currentPerson');
+var API = require('./../../lib/api');
 var Events = require('./../../lib/events');
 var Checkit = require('checkit');
 
@@ -26,9 +28,8 @@ Class(CV, 'CreateOrganization').inherits(Widget).includes(CV.WidgetUtils)({
 
             this.checkitProps = new Checkit({
                 name : ['required', 'maxLength:' + this.MAX_TITLE_LENGTH],
-                handler : 'required',
-                description : ['required', 'maxLength:' + this.MAX_DESCRIPTION_LENGTH],
-                location : 'required'
+                handler : ['required', 'alphaDash'],
+                description : ['required', 'maxLength:' + this.MAX_DESCRIPTION_LENGTH]
             });
 
             this._setup()._bindEvents();
@@ -51,8 +52,8 @@ Class(CV, 'CreateOrganization').inherits(Widget).includes(CV.WidgetUtils)({
             this.appendChild(new CV.UI.Input({
                 name : 'orgHandler',
                 data : {
-                    placeholder : 'http://www.crowdvoice.by/@',
-                    label : 'Handler',
+                    label : 'Profile Name (Handler)',
+                    hint : 'crowdvoice.by/you-profile-name',
                     inputClassName : '-lg -block'
                 }
             })).render(this.el.querySelector('.placeholder-main'));
@@ -109,9 +110,56 @@ Class(CV, 'CreateOrganization').inherits(Widget).includes(CV.WidgetUtils)({
             this._getLocationRef = this._getLocationHandler.bind(this);
             this.detectLocation.bind('location', this._getLocationRef);
 
+            this._validateProfileNameHandlerRef = this._validateProfileNameHandler.bind(this);
+            Events.on(this.orgHandler.getInput(), 'keyup', this._validateProfileNameHandlerRef);
+
             this._sendFormHandlerRef = this._sendFormHandler.bind(this);
             Events.on(this.buttonSend.el, 'click', this._sendFormHandlerRef);
             return this;
+        },
+
+        _validateProfileNameHandler : function _validateProfileNameHandler() {
+            var value = this.orgHandler.getValue().trim();
+
+            this.orgHandler.clearState().updateHint();
+
+            if (!value) {
+                return void 0;
+            }
+
+            var validate = this.checkitProps.validateSync({
+                handler : value
+            });
+
+            if (validate[0] && validate[0].errors.handler) {
+                return this.orgHandler.clearState().error().updateHint({
+                    hint: validate[0].errors.handler.message,
+                    className : '-color-negative'
+                });
+            }
+
+            API.isProfileNameAvailable({
+                profileName : Person.get().profileName,
+                value : value
+            }, this._profileNameAvailabilityHandler.bind(this));
+        },
+
+        _profileNameAvailabilityHandler : function _profileNameAvailabilityHandler(err, res) {
+            if (err) {
+                return void 0;
+            }
+
+            if (res.status === "taken") {
+                return this.orgHandler.clearState().error().updateHint({
+                    hint : '(profile name already taken)',
+                    className : '-color-negative'
+                });
+            }
+
+            this.orgHandler.clearState().success().updateHint({
+                hint : 'crowdvoice.by/' + this.orgHandler.getValue(),
+                className : '-color-positive'
+            });
         },
 
         /* Listens to detectLocation widget 'location' custom event.
@@ -159,8 +207,7 @@ Class(CV, 'CreateOrganization').inherits(Widget).includes(CV.WidgetUtils)({
             var validate = this.checkitProps.validateSync({
                 name : this.orgName.getValue(),
                 handler : this.orgHandler.getValue(),
-                description : this.orgDescription.getValue(),
-                location : this.orgLocation.getValue()
+                description : this.orgDescription.getValue()
             });
 
             if (validate[0]) {

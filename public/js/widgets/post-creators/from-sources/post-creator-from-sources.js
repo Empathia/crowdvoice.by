@@ -7,7 +7,7 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
 
     HTML : '\
     <div>\
-        <div class="input-error-message -on-error -abs -color-danger"></div>\
+        <div class="input-error-message -on-error -abs -color-negative"></div>\
         <header class="cv-post-creator__header -clearfix"></header>\
         <div class="cv-post-creator__content -abs"></div>\
         <div class="cv-post-creator__disable"></div>\

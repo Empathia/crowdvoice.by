@@ -283,7 +283,7 @@ var Voice = Class('Voice').inherits(Argon.KnexModel).includes(ImageUploader)({
     },
 
     getSlug : function () {
-      return this.title.toLowerCase().replace(/ /g, '_');
+      return this.url;
     },
 
     /* Add slug for a voice.
