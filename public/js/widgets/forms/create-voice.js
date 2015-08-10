@@ -285,7 +285,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 this.voiceSlug.clearState().error();
                 return this.voiceSlug.updateHint({
                     hint : '(slug is already taken)',
-                    className : '-color-danger'
+                    className : '-color-negative'
                 });
             }
 

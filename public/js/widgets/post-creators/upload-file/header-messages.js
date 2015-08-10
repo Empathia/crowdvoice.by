@@ -6,7 +6,7 @@ Class(CV, 'PostCreatorUploadFileHeaderMessages').inherits(Widget)({
                 Hold on. We’re uploading your file. It might take a few mins.\
             </div>\
             <div class="upload-file-msg-error -font-bold">\
-                <svg class="-s20 -color-danger">\
+                <svg class="-s20 -color-negative">\
                     <use xlink:href="#svg-warning"></use>\
                 </svg>\
                 There was a problem uploading your file. Check that the file is not corrupt.\
