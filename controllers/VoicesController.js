@@ -217,6 +217,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           ownerId: hashids.decode(req.body.ownerId)[0],
           twitterSearch: req.body.twitterSearch,
           rssUrl: req.body.rssUrl,
+          locationName : req.body.locationName,
           latitude: req.body.latitude,
           longitude: req.body.longitude
         });
@@ -274,38 +275,63 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
     },
 
     update : function update(req, res, next) {
-      var voice = req.activeVoice;
-      voice.setProperties({
-        title: req.body.title || voice.title,
-        status: req.body.status || voice.status,
-        description: req.body.description || voice.description,
-        type: req.body.type || voice.type,
-        ownerId: req.body.ownerId || voice.ownerId,
-        twitterSearch: req.body.twitterSearch || voice.twitterSearch,
-        rssUrl: req.body.rssUrl || voice.rssUrl,
-        latitude: req.body.latitude || voice.latitude,
-        longitude: req.body.longitude || voice.longitude
-      });
-
-      voice.save(function(err) {
-        if (err) { return next(err); }
-
-        // title updated
-        if (req.body.title) {
-          feed.voiceUpdateTitle(req, function (err) {
-            if (err) { return next(err); }
-          });
+      ACL.isAllowed('update', 'voices', req.role, {}, function(err, response) {
+        if (err) {
+          return next(err);
         }
 
-        // description updated
-        if (req.body.description) {
-          feed.voiceUpdateDescription(req, function (err) {
-            if (err) { return next(err); }
-          });
+        if (!response.isAllowed) {
+          return next(new ForbiddenError());
         }
 
-        req.flash('success', 'Voice has been updated.');
-        res.redirect('/voice/' + voice.id);
+        var voice = req.activeVoice;
+
+        var oldTitle = voice.title;
+        var oldDescription = voice.description;
+
+        voice.setProperties({
+          title: req.body.title || voice.title,
+          status: req.body.status || voice.status,
+          description: req.body.description || voice.description,
+          type: req.body.type || voice.type,
+          ownerId: req.body.ownerId || voice.ownerId,
+          twitterSearch: req.body.twitterSearch || voice.twitterSearch,
+          rssUrl: req.body.rssUrl || voice.rssUrl,
+          locationName: req.body.locationName || voice.locationName,
+          latitude: req.body.latitude || voice.latitude,
+          longitude: req.body.longitude || voice.longitude
+        });
+
+        async.series([function(done) {
+          if (!req.files.image) {
+            return done();
+          }
+
+          voice.uploadImage('image', req.files.image.path, done);
+        }, function(done) {
+          voice.addSlug(req.body.slug, done);
+        }, function(done) {
+          voice.save(done);
+        }, function(done) {
+          if (req.body.title !== oldTitle) {
+            feed.voiceUpdateTitle(req, done);
+          } else {
+            done();
+          }
+        }, function(done) {
+          if (req.body.description !== oldDescription) {
+            feed.voiceUpdateDescription(req, done);
+          } else {
+            done();
+          }
+        }], function(err) {
+          if (err) {
+            return next(err);
+          }
+
+          req.flash('success', 'Voice has been updated.');
+          res.json(voice);
+        });
       });
     },
 
