@@ -39,7 +39,6 @@ var PostsPresenter = Module('PostsPresenter')({
                 post.voted = false;
               }
 
-              // response.push(post);
               return done();
             });
           } else {
