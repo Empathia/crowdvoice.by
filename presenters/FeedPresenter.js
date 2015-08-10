@@ -37,7 +37,7 @@ var FeedPresenter = Module('FeedPresenter')({
     ], function (err) {
       if (err) { return callback(err) }
 
-      async.each(feedActions, function (action, next) {
+      async.eachLimit(feedActions, 1, function (action, next) {
         var actionInst = new FeedAction(action)
 
         async.series([

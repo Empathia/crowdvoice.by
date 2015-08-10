@@ -75,6 +75,10 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             this.checkit = new Checkit(this.checkitProps);
         },
 
+        /* Fills the form using this.data values (Edit Voice).
+         * Whem this.data prop is passed (truthy) it should contain the voice
+         * entity data to be edited.
+         */
         _fillForm : function _fillForm(voice) {
             if (voice.images.card) {
                 this.voiceBgImage.setImage(voice.images.card.url);
@@ -165,10 +169,12 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             this.appendChild(new CV.UI.DropdownVoiceTypes({
                 name : 'voiceTypesDropdown'
             })).render(this.el.querySelector('[data-type]'));
+            this.voiceTypesDropdown.selectByValue(CV.VoiceView.TYPE_PUBLIC);
 
             this.appendChild(new CV.UI.DropdownVoiceStatus({
                 name : 'voiceStatusDropdown'
             })).render(this.el.querySelector('[data-status]'));
+            this.voiceStatusDropdown.selectByValue(CV.VoiceView.STATUS_DRAFT);
 
             this.appendChild(new CV.UI.Input({
                 name : 'voiceHashtags',
@@ -242,6 +248,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 this.appendChild(new CV.UI.DropdownVoiceOwnership({
                     name : 'voiceOwnershipDropdown'
                 })).render(owncol);
+                this.voiceOwnershipDropdown.selectByEntity(Person.get());
                 row.appendChild(owncol);
 
                 this.checkitProps.ownershipDropdown = 'required';

@@ -136,7 +136,6 @@ Class(CV, 'VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
             }
 
             if (Person.memberOf('voice', this.data.id)) {
-                console.log(Person.get().profileName, ' is owner/member or voice ', this.data.slug);
                 this.appendChild(new CV.VoiceCoverActions({
                     name : 'actions',
                     voiceEntity : this.data
