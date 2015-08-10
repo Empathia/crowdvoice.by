@@ -1,4 +1,4 @@
-Admin.UsersController = Class(Admin, 'UsersController').inherits(RestfulController)({
+Admin.UsersController = Class(Admin, 'UsersController')({
   prototype : {
     index : function index(req, res, next) {
       ACL.isAllowed('index', 'admin.users', req.role, {}, function(err, isAllowed) {
