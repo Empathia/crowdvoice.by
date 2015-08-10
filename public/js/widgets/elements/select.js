@@ -118,6 +118,7 @@ Class(CV, 'Select').inherits(Widget)({
                         default:
                         //console.log(this.options[key].label);
                             var optionEl = $('<li><div data-id="'+ key +'" class="option">'+this.options[key].label+'</div></li>');
+                            optionEl.attr('name', this.options[key].name);
                             this[this.options[key].name] = optionEl;
 
                     }

@@ -167,19 +167,30 @@
     return 0;
   }
 
-  var allTimes = {
-		"1": {label: 'Jesus', name: 'thisweek', active : true},
-		"2": {label: 'Maria', name: 'lastweek'},
-		"3": {label: 'Y', name: 'twoweeks'},
-		"4": {label: 'Jose', name: 'threeweeks'}
-	};
+  if(currentPerson.ownedOrganizations.length > 0){
 
-	var selectTime = new CV.Select({
-		style : 'tiny',
-		label : 'Showing All',
-		name  : 'selectTime',
-		options: allTimes
-	}).render($('.profile-select-options'));
+	  var feedOptions = {
+			"1": {label: currentPerson.name+"\'s feed", name: currentPerson.profileName, active : true}
+		};
+
+		currentPerson.ownedOrganizations.forEach(function(org, index){
+			feedOptions[index+2] = {label: org.name+"\'s feed", name: org.profileName};
+		});
+
+		var feedSelect = new CV.Select({
+			style : 'tiny',
+			label : 'All feeds',
+			name  : 'feedSelect',
+			options: feedOptions
+		}).render($('.profile-select-options'));
+
+		for (feed in feedOptions){
+			feedSelect[feedOptions[feed].name].on('click', function(){
+				window.location = '/' + $(this).attr('name') + '/feed';
+			});
+		}
+
+	}
 
 	var isFeed = true;
 
