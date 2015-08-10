@@ -2,58 +2,9 @@
 
   <section class="profile-voices-intro">
       <h1 class="profile-heading -inline-block -font-bold -m0">Recommended</h1>
-
-      <article role="article" class="profile-menu -row -rel">
-        <div class="profile-tabs">
-          <div class="menu-item active -menu-tab -inline-block">
-            <p class="-font-bold">Voices</p>
-          </div>
-          <div class="menu-item -menu-tab -inline-block">
-            <p class="-font-bold">People</p>
-          </div>
-          <div class="menu-item -menu-tab -inline-block">
-            <p class="-font-bold">Organizations</p>
-          </div>
-
-        </div>
-
-      </article>
-
   </section>
 
   <section class="profile-body has-subtitle profile-menu-content -rel">
-
-    <div class="active -menu-tab-content">
-		<div class="profile-title-note">Because you followed
-	    	<a href="#"><b>Continued Effects of the Fukushima Disaster</b></a> by <a href="#">The Guardian</a>
-	  	</div>
-	  	<br>
-		<div class="-row discover-voices-container">
-			<!-- voices -->
-		</div>
-    </div>
-
-    <div class="-menu-tab-content">
-    	<div class="profile-title-note">Because you followed
-	    	<a href="#"><b>Esra'a Al Shafei</b></a>
-	  	</div>
-      <br>
-	  	<br>
-    	<div class="-row discover-people-container">
-        	<!-- people -->
-      	</div>
-    </div>
-
-    <div class="-menu-tab-content">
-    	<div class="profile-title-note">Because you followed
-	    	<a href="#"><b>House Lanister</b></a>
-	  	</div>
-      <br>
-	  	<br>
-    	<div class="-row discover-organizations-container">
-        	<!-- organizations -->
-      	</div>
-    </div>
 
 
   </section>
@@ -73,6 +24,158 @@
 	});
 	App.addInteractiveSidebar();
 
+  var recommended = <%= JSON.stringify(recommended) %>;
+
+  console.log(recommended);
+
+  var recommendedEl = $('\
+    <div class="">\
+      <div class="profile-title-note">\
+        <h3><span><b>Because you followed</b></span> <a href="#"><b></b></a></h3>\
+      </div>\
+      <div class="voices-container">\
+        <article role="article" class="profile-menu -row -rel">\
+          <div class="profile-tabs">\
+            <div class="menu-item active -menu-tab -inline-block"><p class="-font-bold">Voices</p></div>\
+          </div>\
+        </article>\
+        <br>\
+        <div class="-row recommended-container">\
+          <div class="-row voices-cards-holder widget-responsive-slider">\
+            <div class="slider-list-wrapper">\
+              <div class="slider-list"></div>\
+            </div>\
+            <button class="slider-arrow slider-prev">\
+              <svg class="slider-arrow-svg"><use xlink:href="#svg-arrow-left"></use></svg>\
+            </button>\
+            <button class="slider-arrow slider-next">\
+              <svg class="slider-arrow-svg"><use xlink:href="#svg-arrow-right"></use></svg>\
+            </button>\
+            <div class="slider-dots"></div>\
+          </div>\
+        </div>\
+      </div>\
+      <div class="people-container">\
+        <article role="article" class="profile-menu -row -rel">\
+          <div class="profile-tabs">\
+            <div class="menu-item active -menu-tab -inline-block"><p class="-font-bold">People</p></div>\
+          </div>\
+        </article>\
+        <br>\
+        <div class="-row recommended-container">\
+          <div class="-row people-cards-holder widget-responsive-slider">\
+            <div class="slider-list-wrapper">\
+              <div class="slider-list"></div>\
+            </div>\
+            <button class="slider-arrow slider-prev">\
+              <svg class="slider-arrow-svg"><use xlink:href="#svg-arrow-left"></use></svg>\
+            </button>\
+            <button class="slider-arrow slider-next">\
+              <svg class="slider-arrow-svg"><use xlink:href="#svg-arrow-right"></use></svg>\
+            </button>\
+            <div class="slider-dots"></div>\
+          </div>\
+        </div>\
+      </div>\
+      <div class="organizations-container">\
+        <article role="article" class="profile-menu -row -rel">\
+          <div class="profile-tabs">\
+            <div class="menu-item active -menu-tab -inline-block"><p class="-font-bold">Organizations</p></div>\
+          </div>\
+        </article>\
+        <br>\
+        <div class="-row recommended-container">\
+          <div class="-row organizations-cards-holder widget-responsive-slider">\
+            <div class="slider-list-wrapper">\
+              <div class="slider-list"></div>\
+            </div>\
+            <button class="slider-arrow slider-prev">\
+              <svg class="slider-arrow-svg"><use xlink:href="#svg-arrow-left"></use></svg>\
+            </button>\
+            <button class="slider-arrow slider-next">\
+              <svg class="slider-arrow-svg"><use xlink:href="#svg-arrow-right"></use></svg>\
+            </button>\
+            <div class="slider-dots"></div>\
+          </div>\
+        </div>\
+      </div>\
+    </div>\
+    <br>\
+  ');
+
+  var recommendedTitleEl = $('');
+
+  var recommendedContainer = $('.profile-body');
+
+  recommended.forEach(function(item){
+    var rEl = recommendedEl.clone();
+    recommendedContainer.append(rEl);
+
+    rEl.find('.profile-title-note a').attr('href', '/' + item.owner.profileName);
+    rEl.find('.profile-title-note a b').text(item.owner.name + ' ' + item.owner.lastname);
+
+    if (item.voices.length > 0){
+      var cardsHolder = rEl[0].querySelector('.voices-cards-holder');
+      var cardsList = cardsHolder.querySelector('.slider-list');
+
+      item.voices.forEach(function(voice){
+        var newVoice = new CV.VoiceCover({data: voice}).render( cardsList );
+        newVoice.element[0].classList.add('slider-item');
+      });
+
+      new CV.ResponsiveSlider({
+          element : cardsHolder,
+          dots : true,
+          minSlideWidth : 300
+      });
+
+    } else {
+      rEl.find('.voices-container').remove();
+    }
+
+    if (item.people.length > 0){
+
+      var cardsHolder = rEl[0].querySelector('.people-cards-holder');
+      var cardsList = cardsHolder.querySelector('.slider-list');
+
+      item.people.forEach(function(person){
+        var newPerson = new CV.Card({data: person}).render( cardsList );
+        newPerson.element[0].classList.add('slider-item');
+      });
+
+      new CV.ResponsiveSlider({
+          element : cardsHolder,
+          dots : true,
+          minSlideWidth : 300
+      });
+
+    } else {
+      rEl.find('.people-container').remove();
+    }
+
+    if (item.organizations.length > 1){
+
+      var cardsHolder = rEl[0].querySelector('.organizations-cards-holder');
+      var cardsList = cardsHolder.querySelector('.slider-list');
+
+      item.organizations.forEach(function(organization){
+        var newOrganization = new CV.Card({data: organization}).render( cardsList );
+        newOrganization.element[0].classList.add('slider-item');
+      });
+
+      new CV.ResponsiveSlider({
+          element : cardsHolder,
+          dots : true,
+          minSlideWidth : 300
+      });
+
+    } else {
+      rEl.find('.organizations-container').remove();
+    }
+
+
+  });
+
   var responsives = {
     'voices'    : null,
     'people'    : null,
@@ -80,11 +183,7 @@
   }
 
 	function renderData(data, instance, className){
-		//data.forEach(function (item, index) {
-		//  var itemEl = $('<div class="-col-4 -pr1"></div>');
-		//  new instance(item).render( itemEl);
-		//  $('.discover-' + className + '-container').append(itemEl);
-		//});
+
     var itemsWrapper = document.querySelector('.discover-' + className + '-container');
     var itemsElements = [];
 
@@ -110,9 +209,9 @@
 			data : {},
 			dataType : 'json',
 			success: function(data) {
-				console.log('New '+ className);
-			  	console.log(data);
-			  	renderData(data, instance, className)
+				//console.log('New '+ className);
+			  //console.log(data);
+			  //renderData(data, instance, className)
 			}
 		});
 	}
@@ -147,10 +246,5 @@
 
 
   });
-
-
-  window.recommended = <%= JSON.stringify(recommended) %>;
-
-
 
 </script>
