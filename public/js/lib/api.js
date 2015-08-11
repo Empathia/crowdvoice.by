@@ -88,24 +88,22 @@ module.exports = {
     },
 
     /* Requests the data to create a Post preview on the current Voice.
+     * @argument args.profileName <required> [String] the voice owner profileName
+     * @argument args.voiceSlug <required> [String] the voice slug
      * @argument args.url <required> [String] absolute url of a page, image or video (youtube/vimeo)
      * @argument callback <required> [Function]
      */
     postPreview : function postPreview(args, callback) {
-        if (!args.url || !callback) {
+        if (!args.profileName || !args.voiceSlug || !args.url || !callback) {
             throw new Error('Missing required params');
         }
 
         if ((typeof callback).toLowerCase() !== "function") {
             throw new Error('Callback should be a function');
         }
-
-        var path = window.location.pathname;
-        path += (/\/$/.test(path)) ? 'preview' : '/preview';
-
         $.ajax({
             type : 'POST',
-            url : path,
+            url : '/' + args.profileName + '/' + args.voiceSlug + '/preview',
             headers : {'csrf-token' : this.token},
             data : {url : args.url},
             success: function success(data) { callback(false, data); },
@@ -145,11 +143,13 @@ module.exports = {
     },
 
     /* Creates a Post on the current Voice.
+     * @argument args.profileName <required> [String] the voice owner profileName
+     * @argument args.voiceSlug <required> [String] the voice slug
      * @argument args.posts <required> [Array] each post data
      * @argument callback <required> [Function]
      */
     postCreate : function postCreate(args, callback) {
-        if (!args.posts || !callback) {
+        if (!args.profileName || !args.voiceSlug || !args.posts || !callback) {
             throw new Error('Missing required params');
         }
 
@@ -160,7 +160,7 @@ module.exports = {
         $.ajax({
             type : 'POST',
             dataType : 'json',
-            url : window.location.pathname,
+            url : '/' + args.profileName + '/' + args.voiceSlug,
             headers : {'csrf-token' : this.token},
             data : {posts: args.posts},
             success : function success(data) { callback(false, data); },

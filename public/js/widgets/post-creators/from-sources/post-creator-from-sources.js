@@ -1,3 +1,4 @@
+/* globals App */
 var API = require('../../../lib/api');
 var Velocity = require('velocity-animate');
 
@@ -142,6 +143,8 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
             }
 
             API.postPreview({
+                profileName : App.Voice.data.owner.profileName,
+                voiceSlug : App.Voice.data.slug,
                 url : ev.data.sourceUrl
             }, this._requestPreviewHandler.bind(this, ev));
         },
@@ -207,7 +210,11 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
                 return post.getEditedData();
             });
             console.log(posts);
-            API.postCreate({posts: posts}, this._createPostResponse.bind(this));
+            API.postCreate({
+                profileName : App.Voice.data.owner.profileName,
+                voiceSlug : App.Voice.data.slug,
+                posts : posts
+            }, this._createPostResponse.bind(this));
         },
 
         _createPostResponse : function _createPostResponse(err, response) {

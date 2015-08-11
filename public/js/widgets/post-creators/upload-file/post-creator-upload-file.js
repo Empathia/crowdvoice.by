@@ -75,7 +75,11 @@ Class(CV, 'PostCreatorUploadFile').inherits(CV.PostCreator)({
             var postEditedData = this._previewPostWidget.getEditedData();
             console.log(postEditedData);
 
-            API.postCreate({posts : [postEditedData]}, this._savePostResponse.bind(this));
+            API.postCreate({
+                profileName : App.Voice.data.owner.profileName,
+                voiceSlug : App.Voice.data.slug,
+                posts : [postEditedData]
+            }, this._savePostResponse.bind(this));
         },
 
         _savePostResponse : function _savePostResponse(err, response) {

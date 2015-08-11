@@ -1,3 +1,4 @@
+/* globals App */
 var API = require('../../../lib/api');
 var Checkit = require('checkit');
 
@@ -138,7 +139,11 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
          * @method _requestPreview <private> [Function]
          */
         _requestPreview : function _requestPreview(url) {
-            var args = { url : url };
+            var args = {
+                profileName : App.Voice.data.owner.profileName,
+                voiceSlug : App.Voice.data.slug,
+                url : url
+            };
             API.postPreview(args, this._requestResponseHandler.bind(this));
         },
 
@@ -183,7 +188,11 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
         _handlePostButtonClick : function _handlePostButtonClick() {
             var postEditedData = this._previewPostWidget.getEditedData();
             console.log(postEditedData);
-            API.postCreate({posts : [postEditedData]}, this._createPostResponse.bind(this));
+            API.postCreate({
+                profileName : App.Voice.data.owner.profileName,
+                voiceSlug : App.Voice.data.slug,
+                posts : [postEditedData]
+            }, this._createPostResponse.bind(this));
         },
 
         _createPostResponse : function _createPostResponse(err, response) {
