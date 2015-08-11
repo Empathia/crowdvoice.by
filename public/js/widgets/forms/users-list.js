@@ -17,6 +17,7 @@ Class(CV, 'UsersList').inherits(Widget)({
         hasButton       : null,
         actionLabel     : "Leave",
         action          : null,
+        isOwner         : null,
 
         init : function(config){
             Widget.prototype.init.call(this, config);
@@ -29,20 +30,28 @@ Class(CV, 'UsersList').inherits(Widget)({
 
             var usersRemoved = 0;
 
-            this.users.forEach(function(user){
-                //new userMini( user ).render( this.element );
-                var userDate = new Date(user.createdAt);
+            this.users.forEach(function(entity){
+                var renderButton = true;
+
+                if (usersList.isOwner){
+                  currentPerson.ownedOrganizations.forEach(function(org){
+                    if (org.id == entity.id){
+                      renderButton = false;
+                    }
+                  });
+                }
+                var userDate = new Date(entity.createdAt);
 
                 var prettyDate = months[userDate.getUTCMonth()] + ', ' + userDate.getUTCFullYear();
 
                 var userDOM = '\
                     <div class="cv-user">\
                         <div class="img">\
-                            <img src="' + user.images.card.url + '">\
+                            <img src="' + entity.images.card.url + '">\
                         </div>\
                         <div class="info">\
-                            <span class="name">' + user.name + '</span><br>\
-                            <span class="username">@' + user.profileName + '</span>\
+                            <span class="name">' + entity.name + '</span><br>\
+                            <span class="username">@' + entity.profileName + '</span>\
                         </div>\
                         <div class="action">\
                         </div>\
@@ -51,7 +60,7 @@ Class(CV, 'UsersList').inherits(Widget)({
 
                 var userEl = $(userDOM);
 
-                if(this.hasButton){
+                if(this.hasButton && renderButton){
 
                     var actionButton = new CV.Button({
                         style   : 'tiny',
@@ -61,7 +70,7 @@ Class(CV, 'UsersList').inherits(Widget)({
                     }).render(userEl.find('.action'));
 
                     actionButton.element.on('click', function(){
-                      usersList.action(user.id);
+                      usersList.action(entity.id);
                       $(this).closest('.cv-user').remove();
                       usersRemoved++;
                       baseTitle = usersList.listTitle.replace('{count}', usersList.users.length - usersRemoved);
