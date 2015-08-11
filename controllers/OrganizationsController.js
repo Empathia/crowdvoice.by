@@ -59,6 +59,8 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
         orgId: req.body.orgId,
         entityId: req.body.entityId
       }, function (err, isAllowed) {
+        if (err) { return next(err); }
+
         if (!isAllowed) { return next(new ForbiddenError()); }
 
         EntityMembership.find({
