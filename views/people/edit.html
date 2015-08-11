@@ -283,7 +283,7 @@
       name      : 'description',
       title     : "Short Bio",
       subTitle  : "140 characters max",
-      value     : '<%= currentPerson.description %>'
+      value     : "<%= currentPerson.description %>"
   }).render($('.form-profile .placeholder-main'));
 
   new CV.Input({
@@ -504,6 +504,7 @@
 
   var removeAction = function(orgID){
     var userID = currentPerson.id;
+
     $.ajax({
       type: "POST",
       url:'/'+currentPerson.profileName+'/leaveOrganization',
@@ -531,7 +532,8 @@
           listTitle     : "You own and / or belong to {count} organizations",
           actionLabel   : "Leave",
           action        : removeAction,
-          dateTitle     : "Member since"
+          dateTitle     : "Member since",
+          isOwner       : true
       }).render($('.placeholder-organizations'));
     }
   });
