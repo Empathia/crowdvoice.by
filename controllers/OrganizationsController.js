@@ -76,6 +76,61 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
       });
     },
 
+    requestMembership : function (req, res, next) {
+      ACL.isAllowed('requestMembership', 'entities', req.role, {
+        currentPersonId: req.currentPerson.id,
+        orgId: req.body.orgId
+      }, function (err, isAllowed) {
+        if (err) { return next(err); }
+
+        if (!isAllowed) { return next(new ForbiddenError()); }
+
+        var thread;
+
+        async.series([
+          function (next) {
+            var currentPerson = req.currentPerson;
+            currentPerson.id = hashids.decode(currentPerson.id)[0];
+
+            MessageThread.findOrCreate({
+              senderPerson: currentPerson,
+              senderEntity: currentPerson,
+              receiverEntity: hashids.decode(req.body.orgId)[0]
+            }, function (err, result) {
+              if (err) { return next(err); }
+
+              thread = result;
+
+              next();
+            });
+          },
+
+          function (next) {
+            thread.createMessage({
+              type: 'request_organization',
+              senderPersonId: hashids.decode(req.currentPerson.id)[0],
+              senderEntityId: hashids.decode(req.currentPerson.id)[0],
+              receiverEntityId: hashids.deocde(req.body.orgId)[0],
+              organizationId: hashids.deocde(req.body.orgId)[0],
+              message: req.body.message
+            }, function (err, result) {
+              if (err) { return next(err); }
+
+              next();
+            });
+          }
+        ], function (err) {
+          if (err) { return next(err); }
+
+          ThreadsPresenter.build(req, [thread], function (err, result) {
+            if (err) { return next(err); }
+
+            res.json(result[0]);
+          });
+        });
+      });
+    },
+
     voices : function voices (req, res, next) {
       Voice.find({owner_id: req.entity.id}, function (err, result) {
         if (err) { return next(err); }
