@@ -195,6 +195,31 @@ module.exports = {
         });
     },
 
+    /* Deletes a Post.
+     * @argument args.profileName <required> [String] the voice owner profileName
+     * @argument args.voiceSlug <required> [String] the voice slug
+     * @argument args.postId <required> [String] the post id to up/down vote
+     * @argument args.data <required> [Object] the post data
+     * @argument callback <required> [Function]
+     */
+    postDelete : function postDelete(args, callback) {
+        if (!args.profileName || !args.voiceSlug || !args.postId || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'POST',
+            url : '/' + args.profileName + '/' + args.voiceSlug + '/' + args.postId + '?_method=DELETE',
+            headers : {'csrf-token' : this.token},
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
+    },
+
     /* Allows a post to be voted up or down.
      * @argument args.profileName <required> [String] the voice owner profileName
      * @argument args.voiceSlug <required> [String] the voice slug
