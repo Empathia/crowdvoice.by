@@ -275,10 +275,10 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             if (this._autoGenerateSlug) {
                 this._generateSlughandlerRef = this._generateSlugHandler.bind(this);
                 Events.on(this.voiceTitle.getInput(), 'keyup', this._generateSlughandlerRef);
-
-                this._letFreeSlugRef = this._letFreeSlug.bind(this);
-                Events.on(this.voiceSlug.getInput(), 'keyup', this._letFreeSlugRef);
             }
+
+            this._letFreeSlugRef = this._letFreeSlug.bind(this);
+            Events.on(this.voiceSlug.getInput(), 'keyup', this._letFreeSlugRef);
 
             return this;
         },
