@@ -91,19 +91,21 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
 
         async.series([
           function (next) {
-            var currentPerson = req.currentPerson;
-            currentPerson.id = hashids.decode(currentPerson.id)[0];
+            EntityOwner.find({ owned_id: hashids.decode(req.body.orgId)[0] }, function (err, result) {
+              var sender = new Entity({ id: hashids.decode(req.currentPerson.id)[0] });
+              var receiverEntity = new Entity({ id: result[0].ownerId });
 
-            MessageThread.findOrCreate({
-              senderPerson: currentPerson,
-              senderEntity: currentPerson,
-              receiverEntity: hashids.decode(req.body.orgId)[0]
-            }, function (err, result) {
-              if (err) { return next(err); }
+              MessageThread.findOrCreate({
+                senderPerson: sender,
+                senderEntity: sender,
+                receiverEntity: receiverEntity
+              }, function (err, result) {
+                if (err) { return next(err); }
 
-              thread = result;
+                thread = result;
 
-              next();
+                next();
+              });
             });
           },
 
@@ -112,8 +114,8 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
               type: 'request_organization',
               senderPersonId: hashids.decode(req.currentPerson.id)[0],
               senderEntityId: hashids.decode(req.currentPerson.id)[0],
-              receiverEntityId: hashids.deocde(req.body.orgId)[0],
-              organizationId: hashids.deocde(req.body.orgId)[0],
+              receiverEntityId: hashids.decode(req.body.orgId)[0],
+              organizationId: hashids.decode(req.body.orgId)[0],
               message: req.body.message
             }, function (err, result) {
               if (err) { return next(err); }

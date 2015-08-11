@@ -496,6 +496,10 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
         })
       })
     }
+  },
+
+  reportEntity : function (req, res, next) {
+    //
   }
 });
 
