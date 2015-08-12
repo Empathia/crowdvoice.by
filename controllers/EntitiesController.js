@@ -511,7 +511,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
       if (!isAllowed) { return next(new ForbiddenError()); }
 
-      var threads,
+      var threads = [],
         admins;
 
       async.series([
