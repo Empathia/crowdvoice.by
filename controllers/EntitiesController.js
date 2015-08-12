@@ -500,6 +500,10 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
   reportEntity : function (req, res, next) {
     //
+    Entitiy.find({ is_admin: true }, function (err, result) {
+      ACL.isAllowed('reportEntity', 'entities', req.role, {}, function (err, isAllowed) {
+      });
+    });
   }
 });
 
