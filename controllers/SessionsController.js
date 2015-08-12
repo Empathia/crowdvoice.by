@@ -4,10 +4,6 @@ require(__dirname + '/../mailers/UserMailer.js');
 
 var SessionsController = Class('SessionsController')({
   prototype : {
-    init : function () {
-      return this;
-    },
-
     /* Render login form for user
      * @method: login
      */
@@ -161,7 +157,6 @@ var SessionsController = Class('SessionsController')({
     /* Switch between person and anonymous and viceversa
      * @method switchPerson
      */
-
     switchPerson : function switchPerson(req, res, next) {
       if (!req.currentPerson) {
         req.flash('info', 'You must be logged in in order to perform the previous action.');
