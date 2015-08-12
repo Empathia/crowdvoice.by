@@ -131,8 +131,21 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                 });
               });
             });
-          }
-        ], next);
+          }, function(done) {
+            Slug.find(['voice_id = ? ORDER BY created_at DESC LIMIT 1', [req.activeVoice.id]], function(err, result) {
+              if (err) {
+                return done(err);
+              }
+
+              if (result.length === 0) {
+                return done(new NotFoundError('Slug not found'));
+              }
+
+              req.voiceSlug = result[0];
+
+              done();
+            });
+          }], next);
       });
     },
 
@@ -241,14 +254,17 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         }, function(done) {
           voice.save(done);
         }, function(done) {
+          req.body.topics = req.body.topics.split(',');
+
           async.each(req.body.topics, function(topic, nextTopic) {
             var voiceTopic = new VoiceTopic({
               voiceId : voice.id,
               topicId : hashids.decode(topic)[0]
             });
 
-            topic.save(nextTopic);
+            voiceTopic.save(nextTopic);
           }, done);
+
         }], function(err) {
           if (err) {
             logger.error(err);
@@ -300,7 +316,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           status: req.body.status || voice.status,
           description: req.body.description || voice.description,
           type: req.body.type || voice.type,
-          ownerId: req.body.ownerId || voice.ownerId,
+          ownerId: hashids.decode(req.body.ownerId)[0] || voice.ownerId,
           twitterSearch: req.body.twitterSearch || voice.twitterSearch,
           rssUrl: req.body.rssUrl || voice.rssUrl,
           locationName: req.body.locationName || voice.locationName,
@@ -315,13 +331,25 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
           voice.uploadImage('image', req.files.image.path, done);
         }, function(done) {
+          if (req.body.slug === req.voiceSlug.url) {
+            return done();
+          }
+
           voice.addSlug(req.body.slug, done);
         }, function(done) {
-          voice.save(done);
+          voice.save(function(err, result) {
+            if (err) {
+              return done(err)
+            }
+
+            done();
+          });
         }, function(done) {
+          req.body.topics = req.body.topics.split(',');
+
           db('VoiceTopic').where({
             'voice_id' : voice.id
-          }).del(function(err, result) {
+          }).del().exec(function(err, result) {
             if (err) {
               return done(err);
             }
@@ -332,7 +360,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                 topicId : hashids.decode(topic)[0]
               });
 
-              topic.save(nextTopic);
+              voiceTopic.save(nextTopic);
             }, done);
           });
         }, function(done) {
@@ -481,6 +509,41 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
             });
           });
         }
+      });
+    },
+
+    isVoiceSlugAvailable : function isVoiceSlugAvailable(req, res, next) {
+      ACL.isAllowed('isVoiceSlugAvailable', 'voices', req.role, {
+        currentPerson : req.currentPerson,
+        voice : req.activeVoice
+      }, function(err, response) {
+        if (err) {
+          return next(err);
+        }
+
+        if (!response.isAllowed) {
+          return next(new ForbiddenError());
+        }
+
+        var value = req.body.value.toLowerCase().trim();
+
+        if (value.search(' ') !== -1) {
+          return res.json({ 'status' : 'taken' });
+        }
+
+        console.log('voice', req.activeVoice);
+        Slug.find(['url = ? AND voice_id != ?', [value, req.activeVoice.id]], function(err, result) {
+          if (err) {
+            return next(err);
+          }
+
+          if (result.length === 0) {
+            return res.json({ 'status' : 'available' });
+          } else {
+            return res.json({ 'status' : 'taken' });
+          }
+        });
+
       });
     }
   }
