@@ -226,8 +226,6 @@ var HomeController = Class('HomeController')({
       isProfileNameAvailable(req.body.profileName, function (err, result) {
         if (err) { return next(err); }
 
-        console.log(req.body.profileName, 'IS AVAILABLE?', result)
-
         if (result) {
           return res.json({ status: 'available' });
         } else {
