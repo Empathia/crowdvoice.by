@@ -52,6 +52,10 @@ Class(CV, 'PostDetailLink').inherits(CV.PostDetail)({
             this.iframe.update('').update(data.sourceUrl);
         },
 
+        updatedPosts : function updatedPosts() {
+            // silence
+        },
+
         destroy : function destroy() {
             CV.PostDetail.prototype.destroy.call(this);
             return null;

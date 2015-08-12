@@ -83,17 +83,20 @@ Class(CV, 'PostDetailController').includes(NodeSupport, CustomEventSupport)({
             if (this._values[index].length === 0) {
                 this._requestSiblings(index);
             }
+
+            this.widget.updatedPosts(this._values[index]);
         },
 
         update : function update() {
-            var post = this._getCurrent();
-            this.widget.update(post);
+            this.widget.update(this._getCurrentPost());
         },
 
         /* Prev button click handler.
          * @method prevHandler <protected> [Function]
          */
-        prevHandler : function _revHandler() {
+        prevHandler : function prevHandler(ev) {
+            ev.stopPropagation();
+
             if (this._currentIndex === 0) {
                 if (this._currentMonthIndex === 0) {
                     // disable prev button
@@ -120,7 +123,9 @@ Class(CV, 'PostDetailController').includes(NodeSupport, CustomEventSupport)({
         /* Next button click handler.
          * @method nextHandler <protected> [Function]
          */
-        nextHandler : function nextHandler() {
+        nextHandler : function nextHandler(ev) {
+            ev.stopPropagation();
+
             if (this._currentIndex === this._values[this._currentMonthIndex].length - 1) {
                 if (this._currentMonthIndex === (this._totalMonthsLen - 1)) {
                     // disable next button
@@ -142,7 +147,7 @@ Class(CV, 'PostDetailController').includes(NodeSupport, CustomEventSupport)({
             this.update();
         },
 
-        _getCurrent : function _getCurrent() {
+        _getCurrentPost : function _getCurrentPost() {
             return this._values[this._currentMonthIndex][this._currentIndex];
         }
     }

@@ -40,13 +40,28 @@ Class(CV, 'PostDetailMedia').inherits(CV.PostDetail)({
 
         _bindEvents : function _bindEvents() {
             CV.PostDetail.prototype._bindEvents.call(this);
+            this.postDetailHeader.bind('media:gallery:thumb:click', function(ev) {
+                ev.stopPropagation();
+                this.update(ev.data);
+            }.bind(this));
         },
 
-        /* Update the UI.
-         * @argumetn data <required> [PostEntity]
+        /* Update the UI with a new image/video.
+        * @argumentt data <required> [PostEntity]
          */
         update : function update(data) {
             this.postDetailInfo.update(data);
+            this.postDetailHeader.activateThumb(data);
+        },
+
+        updatedPosts : function updatedPosts(posts) {
+            console.log(posts);
+            this.postDetailHeader.addThumbs(posts);
+        },
+
+        _activate : function _activate() {
+            Widget.prototype._activate.call(this);
+            this.postDetailHeader.scrollbar.update();
         },
 
         destroy : function destroy() {
