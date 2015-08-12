@@ -448,6 +448,9 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             window.location = '/' + res.owner.profileName + '/' + res.slug;
         },
 
+        /* Display the current form errors.
+         * @method _displayErrors
+         */
         _displayErrors : function _displayErrors(errors) {
             Object.keys(errors).forEach(function(propertyName) {
                 var widget = 'voice' + this.format.capitalizeFirstLetter(propertyName);

@@ -118,6 +118,9 @@ Class(CV, 'CreateOrganization').inherits(Widget).includes(CV.WidgetUtils)({
             return this;
         },
 
+        /* Checks if a profileName is available. Uses API's isProfileNameAvailable endpoint.
+         * @method _validateProfileNameHandler <private>
+         */
         _validateProfileNameHandler : function _validateProfileNameHandler() {
             var value = this.orgHandler.getValue().trim();
 
@@ -144,6 +147,9 @@ Class(CV, 'CreateOrganization').inherits(Widget).includes(CV.WidgetUtils)({
             }, this._profileNameAvailabilityHandler.bind(this));
         },
 
+        /* API's isProfileNameAvailable response handler.
+         * @method _profileNameAvailabilityHandler <private>
+         */
         _profileNameAvailabilityHandler : function _profileNameAvailabilityHandler(err, res) {
             if (err) {
                 return void 0;
@@ -213,13 +219,39 @@ Class(CV, 'CreateOrganization').inherits(Widget).includes(CV.WidgetUtils)({
             if (validate[0]) {
                 return this._displayErrors(validate[0].errors);
             }
+
+            API.createOrganization({
+                data : this._dataPresenter()
+            }, this._createOrganizationHandler.bind(this));
         },
 
+        _createOrganizationHandler : function _createOrganizationHandler(err, res) {
+            console.log(err);
+            console.log(res);
+        },
+
+        /* Display the current form errors.
+         * @method _displayErrors
+         */
         _displayErrors : function _displayErrors(errors) {
             Object.keys(errors).forEach(function(propertyName) {
                 var widget = 'org' + this.format.capitalizeFirstLetter(propertyName);
                 this[widget].error();
             }, this);
+        },
+
+        /* Returns the data to be sent to server to create a new Organization.
+         * @method _dataPresenter <private> [Function]
+         */
+        _dataPresenter : function _dataPresenter() {
+            var data = new FormData();
+            data.append('title', this.orgName.getValue().trim());
+            data.append('profileName', this.orgHandler.getValue().trim());
+            data.append('description', this.orgDescription.getValue().trim());
+            data.append('locationName', this.orgLocation.getValue().trim());
+            data.append('imageLogo', this.orgLogoImage.getFile());
+            data.append('imageBackground', this.orgBackgroundImage.getFile());
+            return data;
         },
 
         destroy : function destroy() {

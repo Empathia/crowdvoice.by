@@ -394,6 +394,30 @@ module.exports = {
         });
     },
 
+    createOrganization : function createOrganization(args, callback) {
+        if (!args.data || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        throw new Error('API.createOrganization endpoint not implemented.');
+
+        // $.ajax({
+        //     type : 'POST',
+        //     url : '/',
+        //     headers : {'csrf-token' : this.token},
+        //     cache : false,
+        //     contentType : false,
+        //     processData : false,
+        //     data : args.data,
+        //     success : function success(data) { callback(false, data); },
+        //     error : function error(err) { callback(true, err); }
+        // });
+    },
+
     /**************************************************************************
      * THREATS
      *************************************************************************/
