@@ -2,6 +2,8 @@ var BlackListFilter = require(__dirname + '/BlackListFilter');
 var VoicesPresenter = require(path.join(process.cwd(), '/presenters/VoicesPresenter.js'));
 var feed = require(__dirname + '/../lib/feedInject.js');
 
+var isProfileNameAvailable = require(__dirname + '/../lib/util/isProfileNameAvailable.js');
+
 var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
   prototype : {
@@ -579,6 +581,18 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
           res.json(result);
         });
       });
+    });
+  },
+
+  isProfileNameAvailable : function(req, res, next) {
+    isProfileNameAvailable(req.body.profileName, function (err, result) {
+      if (err) { return next(err); }
+
+      if (result) {
+        return res.json({ status: 'available' });
+      } else {
+        return res.json({ status: 'taken' });
+      }
     });
   }
 });
