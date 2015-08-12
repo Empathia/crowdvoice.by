@@ -2,6 +2,8 @@ var BlackListFilter = require(__dirname + '/BlackListFilter');
 var VoicesPresenter = require(path.join(process.cwd(), '/presenters/VoicesPresenter.js'));
 var feed = require(__dirname + '/../lib/feedInject.js');
 
+var isProfileNameAvailable = require(__dirname + '/../lib/util/isProfileNameAvailable.js');
+
 var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
   prototype : {
@@ -511,7 +513,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
       if (!isAllowed) { return next(new ForbiddenError()); }
 
-      var threads,
+      var threads = [],
         admins;
 
       async.series([
@@ -552,8 +554,8 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
         // go over threads and create a message for each admin
         function (next) {
-          var senderId = hashids.decode(req.currentPerson.id),
-            receiverId = hashids.decode(thread.receiverEntityId)
+          var senderId = hashids.decode(req.currentPerson.id)[0],
+            receiverId = hashids.decode(thread.receiverEntityId)[0]
 
           // go over the threads and create a message for each one
           async.each(threads, function (thread, next) {
@@ -570,6 +572,19 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
             next();
           });
         },
+
+        function (next) {
+          var report = new Report({
+            reporterId: hashids.decode(req.currentPerson.id)[0],
+            reportedId: hashids.decode(req.entity.id)[0]
+          });
+
+          report.save(function (err) {
+            if (err) { return next(err); }
+
+            next();
+          });
+        }
       ], function (err) { // async.series
         if (err) { return next(err); }
 
@@ -579,6 +594,18 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
           res.json(result);
         });
       });
+    });
+  },
+
+  isProfileNameAvailable : function(req, res, next) {
+    isProfileNameAvailable(req.body.profileName, function (err, result) {
+      if (err) { return next(err); }
+
+      if (result) {
+        return res.json({ status: 'available' });
+      } else {
+        return res.json({ status: 'taken' });
+      }
     });
   }
 });
