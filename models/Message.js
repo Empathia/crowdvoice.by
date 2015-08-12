@@ -11,7 +11,7 @@ var Message = Class('Message').inherits(Argon.KnexModel)({
       'required',
       {
         rule :function(val) {
-          if (!val.match(/(message|request_(voice|organization)|invitation_(voice|organization))/)) {
+          if (!val.match(/(report|message|request_(voice|organization)|invitation_(voice|organization))/)) {
             throw new Checkit.FieldError("Message type is invalid")
           }
         },
