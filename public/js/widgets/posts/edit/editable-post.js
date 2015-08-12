@@ -6,6 +6,7 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
 
     MAX_LENGTH_TITLE : 65,
     MAX_LENGTH_DESCRIPTION : 180,
+    MAX_IMAGE_WIDTH : 300,
 
     HTML_DATE_PICKER : '\
         <div class="post-edit-date-picker -inline-block">\
@@ -274,12 +275,17 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
          */
         _updatePostImage : function _updatePostImage() {
             var current = this.images[this._currentImageIndex];
+            var height = this.imageHeight;
 
             this.imagePath = current.path;
             this.imageWidth = current.width;
             this.imageHeight = current.height;
 
-            this.setImageHeight(this.imageHeight);
+            if (this.imageWidth > this.constructor.MAX_IMAGE_WIDTH) {
+                height = this.imageHeight / this.imageWidth * this.constructor.MAX_IMAGE_WIDTH;
+            }
+
+            this.setImageHeight(height);
             this.setCoverImage(this.imagePath);
 
             return this;
