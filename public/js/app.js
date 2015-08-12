@@ -84,8 +84,14 @@ Class(CV, 'App').includes(NodeSupport)({
                 throw new Error('Not autorized to perform this action.');
             }
 
+            var modalLabel = 'Create a Voice';
+
+            if (voiceEntity) {
+              modalLabel = 'Update Voice';
+            }
+
             this.appendChild(new CV.UI.Modal({
-                title : 'Create a Voice',
+                title : modalLabel,
                 name : 'createAVoiceModal',
                 action : CV.CreateVoice,
                 width : 960,

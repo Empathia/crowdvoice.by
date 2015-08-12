@@ -297,7 +297,10 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
     },
 
     update : function update(req, res, next) {
-      ACL.isAllowed('update', 'voices', req.role, {}, function(err, response) {
+      ACL.isAllowed('update', 'voices', req.role, {
+        currentPerson : req.currentPerson,
+        voice : req.activeVoice
+      }, function(err, response) {
         if (err) {
           return next(err);
         }

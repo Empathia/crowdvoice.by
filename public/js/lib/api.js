@@ -359,9 +359,15 @@ module.exports = {
             throw new Error('Callback should be a function');
         }
 
+        var url = '/' + args.profileName + '/isVoiceSlugAvailable';
+
+        if (args.voiceSlug) {
+          url = '/' + args.profileName + '/' + args.voiceSlug + '/isVoiceSlugAvailable';
+        }
+
         $.ajax({
             type : 'POST',
-            url : '/' + args.profileName + '/isVoiceSlugAvailable',
+            url : url,
             data : {value: args.slug},
             dataType : 'json',
             headers : {'csrf-token' : this.token},

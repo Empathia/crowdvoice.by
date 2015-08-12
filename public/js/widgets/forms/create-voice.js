@@ -226,10 +226,16 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 }
             })).render(this.el.querySelector('[data-longitude]'));
 
+            var buttonLabel = 'Create Voice';
+
+            if (this.data) {
+              buttonLabel = 'Update Voice';
+            }
+
             this.appendChild(new CV.Button({
                 name : 'buttonSend',
                 type : 'single',
-                label : 'Create Voice',
+                label : buttonLabel,
                 className : 'primary full'
             })).render(this.sendElement);
 
@@ -304,10 +310,16 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 return void 0;
             }
 
-            API.isSlugAvailable({
+            var options = {
                 profileName : Person.get().profileName,
                 slug : slug
-            }, this._slugAvailabilityHandler.bind(this));
+            }
+
+            if (this.data) {
+              options.voiceSlug = this.data.slug;
+            }
+
+            API.isSlugAvailable(options, this._slugAvailabilityHandler.bind(this));
         },
 
         /* API's isSlugAvailable response handler
