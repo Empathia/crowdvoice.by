@@ -209,7 +209,7 @@ Class(CV, 'Login').inherits(Widget)({
 
 
 
-              this.formEl.find('.username').on('keyup', function(e) {
+              this.formEl.find('.username').on('propertychange change click keyup input paste', function(e) {
                 $.ajax({
                   type: "POST",
                   url: '/signup/check-username',
@@ -223,11 +223,13 @@ Class(CV, 'Login').inherits(Widget)({
               });
 
               this.formEl.find('.profileName').on('propertychange change click keyup input paste', function(e) {
+                var profileNameText = ($(e.target).val()).trim();
+                console.log(profileNameText);
                 $.ajax({
                   type: "POST",
-                  url: '/signup/check-username',
+                  url: '/signup/isProfileNameAvailable',
                   headers: { 'csrf-token': login.formToken },
-                  data: { field : 'profileName' , value : ($(e.target).val()).trim()},
+                  data: { profileName : profileNameText },
                   success: function(data) {
                     login.validateFields(data, 'profileName', '<p><b>Profilename</b> is already taken.</p>');
                   },
@@ -290,15 +292,38 @@ Class(CV, 'Login').inherits(Widget)({
             username: "<p><b>Username</b> is already taken.</p>",
             profileName : "<p><b>Profilename</b> is already taken.</p>"
           }
-          if (data && data[fieldType] === 'unavailable') {
+          if (data && (data[fieldType] === 'unavailable' || data[fieldType] === 'taken') ) {
+
             this.errors[fieldType] = true;
 
             login.errorsEl.empty();
+
             for (error in this.errors){
               login.errorsEl.append(messages[error]);
             }
+
             login.errorsEl.show();
             this.buttonEl.attr('disabled', true);
+            this.buttonEl.addClass('disabled');
+
+
+            //var formValidation = login.validate();
+            //var validForm = formValidation[1];
+            //var formErrors = formValidation[0];
+            //
+            //if (!validForm){
+            //  login.errorsEl.empty();
+            //  login.errorsEl.show();
+            //
+            //  for (var error in formErrors.errors) {
+            //      var replaceStr = error;
+            //      var errorStr = formErrors.errors[error].message.replace(replaceStr, '<b>'+replaceStr+'</b>');
+            //      login.errorsEl.append('<p>' + errorStr + '</p>')
+            //  }
+            //  return false;
+            //  e.preventDefault;
+            //}
+
           } else {
             delete(this.errors[fieldType]);
 
@@ -306,6 +331,7 @@ Class(CV, 'Login').inherits(Widget)({
               login.errorsEl.empty();
               login.errorsEl.hide();
               this.buttonEl.attr('disabled', false);
+              this.buttonEl.removeClass('disabled');
             } else {
               login.errorsEl.empty();
               for (error in this.errors){
@@ -313,6 +339,7 @@ Class(CV, 'Login').inherits(Widget)({
               }
               login.errorsEl.show();
             }
+
           }
         },
 
@@ -332,10 +359,10 @@ Class(CV, 'Login').inherits(Widget)({
           switch(this.formType) {
               case 'signup':
                 checkit = new Checkit({
-                  'Username'     : 'required',
-                  'Name'         : 'required',
-                  'Lastname'     : 'required',
-                  'ProfileName'  : 'required',
+                  'Username'      : 'required',
+                  'Name'          : 'required',
+                  'Lastname'      : 'required',
+                  'ProfileName'   : 'required',
                   'Email'         : ['required','email'],
                   'Password'      : ['required', 'minLength:8']
                 });
@@ -344,7 +371,7 @@ Class(CV, 'Login').inherits(Widget)({
                   'Username'      : this.formEl.find('.username').val(),
                   'Name'          : this.formEl.find('.name').val(),
                   'Lastname'      : this.formEl.find('.lastname').val(),
-                  'ProfileName'  : this.formEl.find('.profileName').val(),
+                  'ProfileName'   : this.formEl.find('.profileName').val(),
                   'Email'         : this.formEl.find('.email').val(),
                   'Password'      : this.formEl.find('.password').val(),
                 };

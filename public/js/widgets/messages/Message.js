@@ -14,6 +14,7 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
               </div>\
             </div>\
           </div>',
+
   INVITATION_ORGANIZATION_HTML : '<p>You were invited to become a member of {organizationName}.\
     Accepting this invitation will grant you privilege of posting and moderating content on all the Voices by <a href="{url}">{organizationName}</a.</p>',
 
@@ -21,10 +22,10 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
     Accepting this invitation will grant you privilege of posting and moderating content on the Voices <a href="{url}">{organizationName}</a.</p>',
 
   REQUEST_ORGANIZATION_HTML : '<p>{name} has requested to become a member of {organizationName}. \
-    If you grant access, {name} will be able to post and moderate content on all the Voices of {organizationName}. <a href="{url}">Go to this Voice\'s settings ›</a></p>',
+    If you grant access, {name} will be able to post and moderate content on all the Voices of {organizationName}.<br><a href="{url}">Go to this Voice\'s settings ›</a></p>',
 
   REQUEST_VOICE_HTML : '<p>{name} has requested to become a contributor for {organizationName}. \
-    If you grant access, {name} will be able to post and moderate content of this Voice. <a href="{url}">Go to this Voice\'s settings ›</a></p>',
+    If you grant access, {name} will be able to post and moderate content of this Voice.<br><a href="{url}">Go to this Voice\'s settings ›</a></p>',
 
   prototype : {
     data : {},
@@ -80,66 +81,70 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
               break;
             case 'request_organization':
               text = text
-                      .replace('{name}', message.data.senderEntity.name + ' ' + message.data.senderEntity.lastname)
-                      .replace('{organizationName}', message.data.organization.name + ' ' + message.data.organization.lastname)
-                      .replace('{url}', '/' + message.data.organization.profileName)
+                      .replace(/{name}/g, message.data.senderEntity.name + ' ' + message.data.senderEntity.lastname)
+                      .replace(/{organizationName}/g, message.data.organization.name + ' ' + message.data.organization.lastname)
+                      .replace(/{url}/, '/' + message.data.organization.profileName + '/edit')
               break;
             case 'request_voice':
               text = text
-                      .replace('{name}', message.data.senderEntity.name + ' ' + message.data.senderEntity.lastname)
-                      .replace('{organizationName}', message.data.voice.title)
-                      .replace('{url}', '/' + message.data.voice.slug)
+                      .replace(/{name}/g, message.data.senderEntity.name + ' ' + message.data.senderEntity.lastname)
+                      .replace(/{organizationName}/g, message.data.voice.title)
+                      .replace(/{url}/g, '/' + message.data.voice.slug)
               break;
           }
 
-          var btnMultipleOptions = {
-            "1": {label: 'Accept', name: 'accept'},
-            "2": {label: 'Accept as an Anonymous Member', name: 'anonymous'},
-            "3": {label: 'Refuse', name: 'refuse'}
-          };
+          if (message.type != "request_organization"){
 
-          var messageActions = new CV.Button({
-            style   : 'tiny',
-            type    : 'multiple',
-            name    : 'buttonMultiple',
-            options : btnMultipleOptions
-          }).render(message.element.find('.message-notification-actions'));
+            var btnMultipleOptions = {
+              "1": {label: 'Accept', name: 'accept'},
+              "2": {label: 'Accept as an Anonymous Member', name: 'anonymous'},
+              "3": {label: 'Refuse', name: 'refuse'}
+            };
 
-          // ************   Message button actions *******************
+            var messageActions = new CV.Button({
+              style   : 'tiny',
+              type    : 'multiple',
+              name    : 'buttonMultiple',
+              options : btnMultipleOptions
+            }).render(message.element.find('.message-notification-actions'));
 
-          messageActions.accept.on('click', function(){
-            var url = '/' + message.threadContainer.currentPerson.profileName + '/messages/' + message.data.threadId + '/' + message.id  +'/acceptInvite';
+            // ************   Message button actions *******************
 
-            $.ajax({
-                method : 'GET',
-                url : url,
-                contentType : 'json',
-                succes : function(data) {
-                    console.log(data)
-                },
-                error : function(err) {
-                    console.error(err);
-                }
-            })
-            console.log('-- Accept --');
-            console.log('message Id: ' + message.data.id);
-            console.log('thread Id: ' + message.data.threadId);
-            console.log('message Type: ' + message.data.type);
-          });
+            messageActions.accept.on('click', function(){
+              var url = '/' + message.threadContainer.currentPerson.profileName + '/messages/' + message.data.threadId + '/' + message.id  +'/acceptInvite';
 
-          messageActions.anonymous.on('click', function(){
-            console.log('-- Accept as an Anonymous Member --');
-            console.log('message Id: ' + message.data.id);
-            console.log('thread Id: ' + message.data.threadId);
-            console.log('message Type: ' + message.data.type);
-          });
+              $.ajax({
+                  method : 'GET',
+                  url : url,
+                  contentType : 'json',
+                  succes : function(data) {
+                      console.log(data)
+                  },
+                  error : function(err) {
+                      console.error(err);
+                  }
+              })
+              console.log('-- Accept --');
+              console.log('message Id: ' + message.data.id);
+              console.log('thread Id: ' + message.data.threadId);
+              console.log('message Type: ' + message.data.type);
+            });
 
-          messageActions.refuse.on('click', function(){
-            console.log('-- Refuse --');
-            console.log('message Id: ' + message.data.id);
-            console.log('thread Id: ' + message.data.threadId);
-            console.log('message Type: ' + message.data.type);
-          });
+            messageActions.anonymous.on('click', function(){
+              console.log('-- Accept as an Anonymous Member --');
+              console.log('message Id: ' + message.data.id);
+              console.log('thread Id: ' + message.data.threadId);
+              console.log('message Type: ' + message.data.type);
+            });
+
+            messageActions.refuse.on('click', function(){
+              console.log('-- Refuse --');
+              console.log('message Id: ' + message.data.id);
+              console.log('thread Id: ' + message.data.threadId);
+              console.log('message Type: ' + message.data.type);
+            });
+
+          }
 
         } else {
           switch(message.type) {
