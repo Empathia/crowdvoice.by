@@ -499,9 +499,85 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
   },
 
   reportEntity : function (req, res, next) {
-    //
-    Entitiy.find({ is_admin: true }, function (err, result) {
-      ACL.isAllowed('reportEntity', 'entities', req.role, {}, function (err, isAllowed) {
+    // data.body = {
+    //   message: <String>
+    // }
+
+    ACL.isAllowed('reportEntity', 'entities', req.role, {
+      currentEntityId: req.currentEntity.id,
+      currentPersonId: req.currentPerson.id
+    }, function (err, isAllowed) {
+      if (err) { return next(err); }
+
+      if (!isAllowed) { return next(new ForbiddenError()); }
+
+      var threads,
+        admins;
+
+      async.series([
+        // get the admins
+        function (next) {
+          Entitiy.find({ is_admin: true }, function (err, result) {
+            if (err) { return next(err); }
+
+            admins = result;
+
+            next();
+          });
+        },
+
+        // create or find message thread for all admins
+        function (next) {
+          var sender = new Entity({ id: hashids.decode(req.currentPerson.id)[0] });
+
+          // iterate over admins
+          async.each(admins, function (admin, next) {
+            MessageThread.findOrCreate({
+              senderPerson: sender,
+              senderEntity: sender,
+              receiverEntity: admin
+            }, function (err, result) {
+              if (err) { return next(err); }
+
+              threads.push(result);
+
+              next();
+            });
+          }, function (err) { // async.each
+            if (err) { return next(err); }
+
+            next();
+          });
+        },
+
+        // go over threads and create a message for each admin
+        function (next) {
+          var senderId = hashids.decode(req.currentPerson.id),
+            receiverId = hashids.decode(thread.receiverEntityId)
+
+          // go over the threads and create a message for each one
+          async.each(threads, function (thread, next) {
+            thread.createMessage({
+              type: 'report',
+              senderPersonId: senderId,
+              senderEntityId: senderId,
+              receiverEntityId: thread.receiverEntityId,
+              message: req.body.message
+            });
+          }, function (err) { // async.each
+            if (err) { return next(err); }
+
+            next();
+          });
+        },
+      ], function (err) { // async.series
+        if (err) { return next(err); }
+
+        ThreadsPresenter.build(req, threads, function (err, result) {
+          if (err) { return next(err); }
+
+          res.json(result);
+        });
       });
     });
   }
