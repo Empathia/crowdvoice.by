@@ -554,8 +554,8 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
         // go over threads and create a message for each admin
         function (next) {
-          var senderId = hashids.decode(req.currentPerson.id),
-            receiverId = hashids.decode(thread.receiverEntityId)
+          var senderId = hashids.decode(req.currentPerson.id)[0],
+            receiverId = hashids.decode(thread.receiverEntityId)[0]
 
           // go over the threads and create a message for each one
           async.each(threads, function (thread, next) {
@@ -572,6 +572,19 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
             next();
           });
         },
+
+        function (next) {
+          var report = new Report({
+            reporterId: hashids.decode(req.currentPerson.id)[0],
+            reportedId: hashids.decode(req.entity.id)[0]
+          });
+
+          report.save(function (err) {
+            if (err) { return next(err); }
+
+            next();
+          });
+        }
       ], function (err) { // async.series
         if (err) { return next(err); }
 
