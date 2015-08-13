@@ -216,7 +216,8 @@ Class(CV, 'Login').inherits(Widget)({
                   headers: { 'csrf-token': login.formToken },
                   data: { field : 'username' , value : ($(e.target).val()).trim()},
                   success: function(data) {
-                    login.validateFields(data, 'username', '<p><b>Username</b> is already taken.</p>');
+                    //{username: "available/unavailable"}
+                    login.validateFields(data.username, 'username', '<p><b>Username</b> is already taken.</p>');
                   },
                   dataType: 'json',
                 });
@@ -224,14 +225,14 @@ Class(CV, 'Login').inherits(Widget)({
 
               this.formEl.find('.profileName').on('propertychange change click keyup input paste', function(e) {
                 var profileNameText = ($(e.target).val()).trim();
-                console.log(profileNameText);
                 $.ajax({
                   type: "POST",
                   url: '/signup/isProfileNameAvailable',
                   headers: { 'csrf-token': login.formToken },
                   data: { profileName : profileNameText },
                   success: function(data) {
-                    login.validateFields(data, 'profileName', '<p><b>Profilename</b> is already taken.</p>');
+                    //{status: "available/taken"}
+                    login.validateFields(data.status, 'profileName', '<p><b>Profilename</b> is already taken.</p>');
                   },
                   dataType: 'json',
                 });
@@ -243,9 +244,7 @@ Class(CV, 'Login').inherits(Widget)({
                 login.show();
             }, 0);
 
-
             closeEl.on('click', function(){
-              //login.hide();
               window.location.href = '/';
             });
 
@@ -286,13 +285,13 @@ Class(CV, 'Login').inherits(Widget)({
 
         },
 
-        validateFields : function(data, fieldType, message){
+        validateFields : function(status, fieldType, message){
           var login = this;
           var messages = {
             username: "<p><b>Username</b> is already taken.</p>",
             profileName : "<p><b>Profilename</b> is already taken.</p>"
           }
-          if (data && (data[fieldType] === 'unavailable' || data[fieldType] === 'taken') ) {
+          if (status != 'available'){
 
             this.errors[fieldType] = true;
 
