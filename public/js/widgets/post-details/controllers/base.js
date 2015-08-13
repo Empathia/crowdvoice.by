@@ -84,11 +84,19 @@ Class(CV, 'PostDetailController').includes(NodeSupport, CustomEventSupport)({
                 this._requestSiblings(index);
             }
 
-            this.widget.updatedPosts(this._values[index]);
+            this.widget.updatedPosts(this._values.reduce(function(p, n) {
+                return p.concat(n);
+            }));
         },
 
         update : function update() {
-            this.widget.update(this._getCurrentPost());
+            var current = this._getCurrentPost();
+
+            if (!current) {
+                return;
+            }
+
+            this.widget.update(current);
         },
 
         /* Prev button click handler.
@@ -100,7 +108,7 @@ Class(CV, 'PostDetailController').includes(NodeSupport, CustomEventSupport)({
             if (this._currentIndex === 0) {
                 if (this._currentMonthIndex === 0) {
                     // disable prev button
-                    return void 0;
+                    return;
                 }
 
                 this._currentMonthIndex--;
@@ -129,7 +137,7 @@ Class(CV, 'PostDetailController').includes(NodeSupport, CustomEventSupport)({
             if (this._currentIndex === this._values[this._currentMonthIndex].length - 1) {
                 if (this._currentMonthIndex === (this._totalMonthsLen - 1)) {
                     // disable next button
-                    return void 0;
+                    return;
                 }
 
                 this._currentMonthIndex++;

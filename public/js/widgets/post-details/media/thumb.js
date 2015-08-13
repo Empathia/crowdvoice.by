@@ -21,6 +21,7 @@ Class(CV, 'PostDetailMediaThumb').inherits(Widget).includes(CV.WidgetUtils)({
             Widget.prototype.init.call(this, config);
             this.el = this.element[0];
             this.imageElement = this.el.querySelector('img');
+            this._image = new Image();
 
             this.dom.updateAttr('src', this.imageElement, this.data.postImages.small.url);
             this.dom.updateAttr('width', this.imageElement, this.data.imageMeta.small.width);
@@ -31,21 +32,33 @@ Class(CV, 'PostDetailMediaThumb').inherits(Widget).includes(CV.WidgetUtils)({
             }
 
             this._bindEvents();
+            this.dom.updateAttr('src', this._image, this.imageElement.src);
         },
 
         _bindEvents : function _bindEvents() {
             this._clickHandlerRef = this._clickHandler.bind(this);
             Events.on(this.el, 'click', this._clickHandlerRef);
+
+            this._imageLoadHandlerRef = this._imageLoadHandler.bind(this);
+            Events.on(this._image, 'load', this._imageLoadHandlerRef);
+            Events.on(this._image, 'error', this._imageLoadHandlerRef);
         },
 
         _clickHandler : function _clickHandler() {
             this.dispatch('click', {data: this.data});
         },
 
+        _imageLoadHandler : function _imageLoadHandler() {
+            this.dispatch('image:loaded');
+        },
+
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
-            this._clickHandlerRef = this._clickHandler.bind(this);
             Events.on(this.el, 'click', this._clickHandlerRef);
+            this._clickHandlerRef = null;
+            Events.off(this._image, 'load', this._imageLoadHandlerRef);
+            Events.off(this._image, 'error', this._imageLoadHandlerRef);
+            this._imageLoadHandlerRef = null;
             return null;
         }
     }

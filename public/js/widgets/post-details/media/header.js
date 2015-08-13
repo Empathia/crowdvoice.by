@@ -1,4 +1,5 @@
 var Gemini = require('gemini-scrollbar');
+var Velocity = require('velocity-animate');
 
 Class(CV, 'PostDetailMediaHeader').inherits(Widget).includes(CV.WidgetUtils)({
     ELEMENT_CLASS : 'cv-post-detail-media__header -rel',
@@ -26,35 +27,75 @@ Class(CV, 'PostDetailMediaHeader').inherits(Widget).includes(CV.WidgetUtils)({
             }).create();
 
             this._thumbClickHandlerRef = this._thumbClickHandler.bind(this);
+            this._updateScrollbarRef = this._updateScrollbar.bind(this);
+        },
+
+        /* Destroys any thumb children and creates them using the new posts
+         * array passed. This allow us to keep the order of thumbs intact and
+         * updated everytime we get new posts fetched from the server.
+         * @method updateThumbs <public>
+         */
+        updateThumbs : function update(posts) {
+            while(this.children.length > 0) {
+                this.children[0].destroy();
+            }
+
+            posts.forEach(function(post) {
+                this.appendChild(new CV.PostDetailMediaThumb({
+                    name : 'thumb_' + post.id,
+                    data : post
+                })).render(this.scrollbar.getViewElement());
+                this['thumb_' + post.id].bind('image:loaded', this._updateScrollbarRef);
+                this['thumb_' + post.id].bind('click', this._thumbClickHandlerRef);
+            }, this);
+
+            this._updateScrollbar();
+        },
+
+        /* Iterate over all items and deactivate them, activates the one passed
+         * as currently active and scrollsInto the activate thumb.
+         * @method activateThumb <public>
+         */
+        activateThumb : function activateThumb(thumb) {
+            this._activatedThumb = null;
+
+            this.children.forEach(function(post) {
+                post.deactivate();
+
+                if (post.data === thumb) {
+                    this._activatedThumb = post.activate();
+                }
+            }, this);
+
+            this._scrollToActiveThumb();
         },
 
         _thumbClickHandler : function _thumbClickHandler(ev) {
             this.dispatch('media:gallery:thumb:click', {data: ev.data});
         },
 
-        addThumbs : function addThumbs(posts) {
-            posts.forEach(function(post) {
-                this.appendChild(new CV.PostDetailMediaThumb({
-                    name : 'thumb_' + post.id,
-                    data : post
-                })).render(this.scrollbar.getViewElement());
-                this['thumb_' + post.id].bind('click', this._thumbClickHandlerRef);
-            }, this);
-
+        /* Updates the custom scrollbars and scrollsInto the active thumb.
+         * @method _updateScrollbar <private>
+         */
+        _updateScrollbar : function _updateScrollbar() {
             this.scrollbar.update();
+            this._scrollToActiveThumb();
         },
 
-        activateThumb : function activateThumb(thumb) {
-            if (this._activatedThumb) {
-                this._activatedThumb.deactivate();
+        /* ScrollsInto the active thumb.
+         * @method _scrollToActiveThumb <private>
+         */
+        _scrollToActiveThumb : function _scrollToActiveThumb() {
+            if (!this._activatedThumb) {
+                return;
             }
 
-            this.children.some(function(post) {
-                if (post.data === thumb) {
-                    this._activatedThumb = post.activate();
-                    return true;
-                }
-            }, this);
+            Velocity(this._activatedThumb.el, 'scroll', {
+                container : this.scrollbar.getViewElement(),
+                axis : 'x',
+                duration : 200,
+                easing : 'linear'
+            });
         }
     }
 });
