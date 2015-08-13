@@ -1,5 +1,7 @@
 var EntitiesPresenter = require(path.join(process.cwd(), '/presenters/EntitiesPresenter.js'));
 
+var isProfileNameAvailable = require(__dirname + '/../lib/util/isProfileNameAvailable.js');
+
 var OrganizationsController = Class('OrganizationsController').inherits(EntitiesController)({
   prototype : {
     inviteEntity : function inviteEntity (req, res, next) {
@@ -140,10 +142,13 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
       //   imageBackground: 'undefined', // goes somewhere else if defined
       //   imageLogo: 'undefined', // goes somewhere else if defined
       // }
+      // req.files = {
+      //   imageLogo,
+      //   imageBackground,
+      // }
 
-      // check if provided profile name is taken
-
-      console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', req.body)
+      //console.log('??????????????????????????', req.files)
+      //console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', req.body)
 
       ACL.isAllowed('createOrganization', 'entities', req.role, {}, function (err, isAllowed) {
         if (err) { return next(err); }
@@ -152,7 +157,67 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
           return next(new ForbiddenError());
         }
 
-        next();
+        // check if provided profile name is taken
+        isProfileNameAvailable(req.body.profileName, function (err, isAvailable) {
+          if (!isAvailable) {
+            res.locals.errors = err;
+            req.errors = err;
+            logger.log(err);
+
+            return next();
+          }
+
+          // TODO check that no fields are empty
+
+          var org = new Entity({
+            type: 'organization',
+            name: req.body.title,
+            lastname: null,
+            profileName: req.body.profileName,
+            isAnonymous: false,
+            isAdmin: false,
+            description: req.body.description,
+            location: req.body.locationName
+          });
+
+          async.series([
+            // create org
+            function (next) {
+              org.save(next);
+            },
+
+            // add logo/avatar
+            function (next) {
+              if (!req.files.imageLogo) { return next(); }
+
+              org.uploadImage('image', req.files.imageLogo.path, next);
+            },
+
+            // add background
+            function (next) {
+              if (!req.files.imageBackground) { return next(); }
+
+              org.uploadImage('image', req.files.imageBackground.path, next);
+            },
+
+            // save new changes
+            function (next) {
+              org.save(next);
+            }
+          ], function (err) {
+            if (err) {
+              res.locals.errors = err;
+              req.errors = err;
+              logger.log(err);
+
+              next();
+            } else {
+              // success
+              req.flash('success', 'Created new organization.');
+              res.redirect('/' + req.body.profileName);
+            }
+          });
+        });
       });
     },
 
