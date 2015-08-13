@@ -28,9 +28,7 @@ Class(CV, 'RequestMembership').inherits(Widget)({
 
         init : function(config){
             Widget.prototype.init.call(this, config);
-
 			this.setup();
-			console.log(currentOrganization);
         },
 
         setup : function (){

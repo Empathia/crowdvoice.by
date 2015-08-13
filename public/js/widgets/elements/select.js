@@ -126,6 +126,7 @@ Class(CV, 'Select').inherits(Widget)({
                     if (this.options[key].active){
                         optionEl.addClass('selected');
                         this.labelEl.text(this.options[key].label);
+                        this.optionSelected = this.options[key];
                     }
 
                     if(this.options[key].sub){
@@ -151,7 +152,6 @@ Class(CV, 'Select').inherits(Widget)({
                 this.optionsEl.find('li.default').css({ 'width' : '100%'});
                 this.optionsEl.find('li .check').css({ 'margin' : '4px auto'});
             }
-
         },
 
         bindActions : function(){
@@ -171,7 +171,8 @@ Class(CV, 'Select').inherits(Widget)({
             switch(this.type) {
                 case 'icon':
                     this.element.find('li').bind('click', function(el){
-                        that.optionSelected = $(this).find('> div').attr('data-id');
+                        //that.optionSelected = $(this).find('> div').attr('data-id');
+                        that.optionSelected = that.options[ $(this).find('> div').attr('data-id') ];
                         that.close();
                     });
                 break;
@@ -179,7 +180,8 @@ Class(CV, 'Select').inherits(Widget)({
                 default:
                     this.element.find('li').bind('click', function(el){
                         that.element.find('li').removeClass('selected');
-                        that.optionSelected = $(this).find('> div').attr('data-id');
+                        //that.optionSelected = $(this).find('> div').attr('data-id');
+                        that.optionSelected = that.options[ $(this).find('> div').attr('data-id') ];
                         that.labelEl.text($(this).find('> div').text());
                         $(this).addClass('selected');
                         that.close();
