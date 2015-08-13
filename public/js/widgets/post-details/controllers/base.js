@@ -39,8 +39,12 @@ Class(CV, 'PostDetailController').includes(NodeSupport, CustomEventSupport)({
             }).indexOf(this.widget.data.id);
 
             this.update();
-            this.widget.render(document.body).activate();
+            this.widget.render(document.body);
             this._requestSiblings(this._currentMonthIndex);
+
+            requestAnimationFrame(function() {
+                this.widget.activate();
+            }.bind(this));
         },
 
         _bindEvents : function _bindEvents() {
