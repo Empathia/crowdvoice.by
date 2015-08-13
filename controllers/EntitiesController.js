@@ -503,7 +503,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
       // }
 
       ACL.isAllowed('reportEntity', 'entities', req.role, {
-        currentEntityId: req.currentEntity.id,
+        currentEntityId: req.entity.id,
         currentPersonId: req.currentPerson.id
       }, function (err, isAllowed) {
         if (err) { return next(err); }
@@ -516,7 +516,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
         async.series([
           // get the admins
           function (next) {
-            Entitiy.find({ is_admin: true }, function (err, result) {
+            Entity.find({ is_admin: true }, function (err, result) {
               if (err) { return next(err); }
 
               admins = result;
@@ -552,17 +552,19 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
           // go over threads and create a message for each admin
           function (next) {
             var senderId = hashids.decode(req.currentPerson.id)[0],
-              receiverId = hashids.decode(thread.receiverEntityId)[0]
+              receiverId;
 
             // go over the threads and create a message for each one
             async.each(threads, function (thread, next) {
+              receiverId = hashids.decode(thread.receiverEntityId)[0];
+
               thread.createMessage({
                 type: 'report',
                 senderPersonId: senderId,
                 senderEntityId: senderId,
-                receiverEntityId: thread.receiverEntityId,
+                receiverEntityId: receiverId,
                 message: req.body.message
-              });
+              }, next);
             }, function (err) { // async.each
               if (err) { return next(err); }
 
