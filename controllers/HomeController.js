@@ -205,8 +205,6 @@ var HomeController = Class('HomeController')({
       });
     },
 
-
-
     ui : function(req, res) {
       var demoVoices = require('./../public/demo-data/voices.js');
       var demoUsers = require('./../public/demo-data/users.js');

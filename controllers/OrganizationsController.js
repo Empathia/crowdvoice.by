@@ -2,10 +2,6 @@ var EntitiesPresenter = require(path.join(process.cwd(), '/presenters/EntitiesPr
 
 var OrganizationsController = Class('OrganizationsController').inherits(EntitiesController)({
   prototype : {
-    init : function () {
-      return this;
-    },
-
     inviteEntity : function inviteEntity (req, res, next) {
       var org = req.entity, entity;
       Entity.find({id: req.body.entityId}, function (err, result) {
@@ -132,6 +128,23 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
             res.json(result[0]);
           });
         });
+      });
+    },
+
+    create: function (req, res, next) {
+      // check if provided profile name is taken
+      //
+      // data = {
+      //   organizationName: <String>,
+      //   profileName: <String>,
+      //   description: <String>,
+      //   location: <String>,
+      // }
+
+      console.log(req.body)
+
+      ACL.isAllowed('createOrganization', 'entities', req.role, {}, function (err, isAllowed) {
+        //
       });
     },
 
