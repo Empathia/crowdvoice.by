@@ -415,7 +415,7 @@ module.exports = {
 
         $.ajax({
             type : 'POST',
-            url : '/organization',
+            url : '/' + args.profileName + '/newOrganization',
             headers : {'csrf-token' : this.token},
             cache : false,
             contentType : false,
