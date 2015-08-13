@@ -1,11 +1,9 @@
 var EntitiesPresenter = require(path.join(process.cwd(), '/presenters/EntitiesPresenter.js'));
 
+var isProfileNameAvailable = require(__dirname + '/../lib/util/isProfileNameAvailable.js');
+
 var OrganizationsController = Class('OrganizationsController').inherits(EntitiesController)({
   prototype : {
-    init : function () {
-      return this;
-    },
-
     inviteEntity : function inviteEntity (req, res, next) {
       var org = req.entity, entity;
       Entity.find({id: req.body.entityId}, function (err, result) {
@@ -130,6 +128,94 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
             if (err) { return next(err); }
 
             res.json(result[0]);
+          });
+        });
+      });
+    },
+
+    create: function (req, res, next) {
+      // req.body = {
+      //   title: '1234', // organization name
+      //   profileName: '1234',
+      //   description: '1234',
+      //   locationName: 'Guadalajara, Jalisco, Mexico.',
+      //   imageBackground: 'undefined', // goes somewhere else if defined
+      //   imageLogo: 'undefined', // goes somewhere else if defined
+      // }
+      // req.files = {
+      //   imageLogo,
+      //   imageBackground,
+      // }
+
+      //console.log('??????????????????????????', req.files)
+      //console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', req.body)
+
+      ACL.isAllowed('createOrganization', 'entities', req.role, {}, function (err, isAllowed) {
+        if (err) { return next(err); }
+
+        if (!isAllowed) {
+          return next(new ForbiddenError());
+        }
+
+        // check if provided profile name is taken
+        isProfileNameAvailable(req.body.profileName, function (err, isAvailable) {
+          if (!isAvailable) {
+            res.locals.errors = err;
+            req.errors = err;
+            logger.log(err);
+
+            return next();
+          }
+
+          // TODO check that no fields are empty
+
+          var org = new Entity({
+            type: 'organization',
+            name: req.body.title,
+            lastname: null,
+            profileName: req.body.profileName,
+            isAnonymous: false,
+            isAdmin: false,
+            description: req.body.description,
+            location: req.body.locationName
+          });
+
+          async.series([
+            // create org
+            function (next) {
+              org.save(next);
+            },
+
+            // add logo/avatar
+            function (next) {
+              if (!req.files.imageLogo) { return next(); }
+
+              org.uploadImage('image', req.files.imageLogo.path, next);
+            },
+
+            // add background
+            function (next) {
+              if (!req.files.imageBackground) { return next(); }
+
+              org.uploadImage('image', req.files.imageBackground.path, next);
+            },
+
+            // save new changes
+            function (next) {
+              org.save(next);
+            }
+          ], function (err) {
+            if (err) {
+              res.locals.errors = err;
+              req.errors = err;
+              logger.log(err);
+
+              next();
+            } else {
+              // success
+              req.flash('success', 'Created new organization.');
+              res.redirect('/' + req.body.profileName);
+            }
           });
         });
       });

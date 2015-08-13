@@ -149,6 +149,7 @@ require('./widgets/post-details/link/iframe');
 // post detail media
 require('./widgets/post-details/media/post-detail-media');
 require('./widgets/post-details/media/header');
+require('./widgets/post-details/media/thumb');
 require('./widgets/post-details/media/info');
 
 // editable posts

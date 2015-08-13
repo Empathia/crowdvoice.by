@@ -1,3 +1,4 @@
+/* globals App */
 Class(CV, 'PostDetailControllerApproved').inherits(CV.PostDetailController)({
     prototype : {
        registry : CV.PostsRegistry,
@@ -24,7 +25,6 @@ Class(CV, 'PostDetailControllerApproved').inherits(CV.PostDetailController)({
                 if (!prev) {
                     this.socket.emit('getApprovedMonthPosts', App.Voice.data.id, prevMonthString);
                 } else {
-                    console.log(this.keys.indexOf(prevMonthString))
                     this.updateValues(this.keys.indexOf(prevMonthString), prev);
                 }
             }

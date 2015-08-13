@@ -102,7 +102,6 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
           voice : voice,
           organization : organization
         }, function(err, isAllowed) {
-          console.log('isallowed', isAllowed, err)
           if (err) {
             return next(err);
           }

@@ -39,8 +39,12 @@ Class(CV, 'PostDetailController').includes(NodeSupport, CustomEventSupport)({
             }).indexOf(this.widget.data.id);
 
             this.update();
-            this.widget.render(document.body).activate();
+            this.widget.render(document.body);
             this._requestSiblings(this._currentMonthIndex);
+
+            requestAnimationFrame(function() {
+                this.widget.activate();
+            }.bind(this));
         },
 
         _bindEvents : function _bindEvents() {
@@ -83,21 +87,32 @@ Class(CV, 'PostDetailController').includes(NodeSupport, CustomEventSupport)({
             if (this._values[index].length === 0) {
                 this._requestSiblings(index);
             }
+
+            this.widget.updatedPosts(this._values.reduce(function(p, n) {
+                return p.concat(n);
+            }));
         },
 
         update : function update() {
-            var post = this._getCurrent();
-            this.widget.update(post);
+            var current = this._getCurrentPost();
+
+            if (!current) {
+                return;
+            }
+
+            this.widget.update(current);
         },
 
         /* Prev button click handler.
          * @method prevHandler <protected> [Function]
          */
-        prevHandler : function _revHandler() {
+        prevHandler : function prevHandler(ev) {
+            ev.stopPropagation();
+
             if (this._currentIndex === 0) {
                 if (this._currentMonthIndex === 0) {
                     // disable prev button
-                    return void 0;
+                    return;
                 }
 
                 this._currentMonthIndex--;
@@ -120,11 +135,13 @@ Class(CV, 'PostDetailController').includes(NodeSupport, CustomEventSupport)({
         /* Next button click handler.
          * @method nextHandler <protected> [Function]
          */
-        nextHandler : function nextHandler() {
+        nextHandler : function nextHandler(ev) {
+            ev.stopPropagation();
+
             if (this._currentIndex === this._values[this._currentMonthIndex].length - 1) {
                 if (this._currentMonthIndex === (this._totalMonthsLen - 1)) {
                     // disable next button
-                    return void 0;
+                    return;
                 }
 
                 this._currentMonthIndex++;
@@ -142,7 +159,7 @@ Class(CV, 'PostDetailController').includes(NodeSupport, CustomEventSupport)({
             this.update();
         },
 
-        _getCurrent : function _getCurrent() {
+        _getCurrentPost : function _getCurrentPost() {
             return this._values[this._currentMonthIndex][this._currentIndex];
         }
     }

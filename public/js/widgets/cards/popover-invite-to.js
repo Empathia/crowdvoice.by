@@ -14,6 +14,8 @@ Class(CV, 'CardInviteToPopover').inherits(Widget)({
     HTML_ORGANIZATION_ITEM : '<li class="ui-vertical-list-item -nw" data-action="member">Become a member of&hellip;</li>',
 
     prototype : {
+        /* Entity Model
+         */
         entity : null,
 
         el : null,
@@ -21,12 +23,12 @@ Class(CV, 'CardInviteToPopover').inherits(Widget)({
         /* indicates if currentPerson has voices [Boolean] */
         _hasVoices : false,
         contributeItem : null,
-        _toVoiceClickHandlerRef : null,
+        _inviteToVoiceClickHandlerRef : null,
 
         /* indicates if currentPerson own at least one organization */
         _ownOrganizations : false,
         memberButton : null,
-        _toOrgClickHandlerRef : null,
+        _inviteToOrgClickHandlerRef : null,
 
         init : function init(config) {
             Widget.prototype.init.call(this, config);
@@ -52,16 +54,8 @@ Class(CV, 'CardInviteToPopover').inherits(Widget)({
             this.el.insertAdjacentHTML('beforeend', this.constructor.HTML_VOICE_ITEM);
             this.contributeItem = this.el.querySelector('[data-action="contribute"]');
 
-            this.appendChild(new CV.Modal({
-                title       : 'Invite to Contribute',
-                name        : 'inviteToContributeModal',
-                action      : CV.InviteToContribute,
-                width       : 650,
-                anchorEl    : $(this.contributeItem)
-            }));
-
-            this._toVoiceClickHandlerRef = this._toVoiceClickHandler.bind(this);
-            this.contributeItem.addEventListener('click', this._toVoiceClickHandlerRef);
+            this._inviteToVoiceClickHandlerRef = this._inviteToVoiceClickHandler.bind(this);
+            this.contributeItem.addEventListener('click', this._inviteToVoiceClickHandlerRef);
         },
 
         /* Sets the 'Become a member of' item on the ui, instantiate its modal
@@ -72,30 +66,42 @@ Class(CV, 'CardInviteToPopover').inherits(Widget)({
             this.el.insertAdjacentHTML('beforeend', this.constructor.HTML_ORGANIZATION_ITEM);
             this.memberButton = this.el.querySelector('[data-action="member"]');
 
-            this.appendChild(new CV.Modal({
-                title       : 'Invite to Organization',
-                name        : 'inviteToOrganizationModal',
-                action      : CV.InviteToOrganization,
-                width       : 650,
-                anchorEl    : $(this.memberButton)
-            }));
-
-            this._toOrgClickHandlerRef = this._toOrgClickHandler.bind(this);
-            this.memberButton.addEventListener('click', this._toOrgClickHandlerRef);
+            this._inviteToOrgClickHandlerRef = this._inviteToOrgClickHandler.bind(this);
+            this.memberButton.addEventListener('click', this._inviteToOrgClickHandlerRef);
         },
 
         /* Render the inviteToContributeModal
-         * @method _toVoiceClickHandler <private> [Function]
+         * @method _inviteToVoiceClickHandler <private> [Function]
          */
-        _toVoiceClickHandler : function _contributecioVoteer() {
-            this.inviteToContributeModal.show();
+        _inviteToVoiceClickHandler : function _TetivnitVoiceClickHandler() {
+            this.appendChild(new CV.UI.Modal({
+                title : 'Invite to Contribute',
+                name : 'inviteToContributeModal',
+                action : CV.InviteToContribute,
+                width : 650,
+                data : this.entity
+            })).render(document.body);
+
+            requestAnimationFrame(function() {
+                this.inviteToContributeModal.activate();
+            }.bind(this));
         },
 
         /* Render the inviteToOrganizationModal
-         * @method _toOrgClickHandler <private> [Function]
+         * @method _inviteToOrgClickHandler <private> [Function]
          */
-        _toOrgClickHandler : function _toOrgClickHandler() {
-            this.inviteToOrganizationModal.show();
+        _inviteToOrgClickHandler : function _inviteToOrgClickHandler() {
+            this.appendChild(new CV.UI.Modal({
+                title : 'Invite to Organization',
+                name : 'inviteToOrganizationModal',
+                action : CV.InviteToOrganization,
+                width : 650,
+                data : this.entity
+            })).render(document.body);
+
+            requestAnimationFrame(function() {
+                this.inviteToOrganizationModal.activate();
+            }.bind(this));
         },
 
         destroy : function destroy() {
@@ -106,15 +112,15 @@ Class(CV, 'CardInviteToPopover').inherits(Widget)({
             if (this._hasVoices) {
                 this._hasVoices = null;
                 this.contributeItem = null;
-                this.contributeItem.removeEventListener('click', this._toVoiceClickHandlerRef);
-                this._toVoiceClickHandlerRef = null;
+                this.contributeItem.removeEventListener('click', this._inviteToVoiceClickHandlerRef);
+                this._inviteToVoiceClickHandlerRef = null;
             }
 
             if (this._ownOrganizations) {
                 this._ownOrganizations = null;
                 this.memberButton = null;
-                this.memberButton.removeEventListener('click', this._toOrgClickHandlerRef);
-                this._toOrgClickHandlerRef = null;
+                this.memberButton.removeEventListener('click', this._inviteToOrgClickHandlerRef);
+                this._inviteToOrgClickHandlerRef = null;
             }
 
             return null;

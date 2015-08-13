@@ -1,3 +1,4 @@
+/* globals App */
 Class(CV, 'PostDetailControllerUnapproved').includes(CV.PostDetailController)({
     prototype : {
         registry : CV.ModeratePostsRegistry,

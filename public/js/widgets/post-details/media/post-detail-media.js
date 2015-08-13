@@ -40,13 +40,32 @@ Class(CV, 'PostDetailMedia').inherits(CV.PostDetail)({
 
         _bindEvents : function _bindEvents() {
             CV.PostDetail.prototype._bindEvents.call(this);
+
+            this._thumbClickHandlerRef = this._thumbClickHandler.bind(this);
+            this.postDetailHeader.bind('media:gallery:thumb:click', this._thumbClickHandlerRef);
         },
 
-        /* Update the UI.
-         * @argumetn data <required> [PostEntity]
+        /* Update the UI with a new image/video.
+         * @argument data <required> [PostEntity]
          */
         update : function update(data) {
             this.postDetailInfo.update(data);
+            this.postDetailHeader.activateThumb(data);
+        },
+
+        /* Receives the new registered posts Array every time it gets updated
+         * asynchronously via socket. This is useful, in this case, to keep
+         * the thumbnail list update everytime more posts gets fetched.
+         * @method updatedPosts <public>
+         */
+        updatedPosts : function updatedPosts(posts) {
+            this.postDetailHeader.updateThumbs(posts);
+            this.parent.update();
+        },
+
+        _thumbClickHandler : function _thumbClickHandler(ev) {
+            ev.stopPropagation();
+            this.update(ev.data);
         },
 
         destroy : function destroy() {

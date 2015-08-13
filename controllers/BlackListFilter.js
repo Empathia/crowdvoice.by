@@ -17,7 +17,7 @@ var BlackListFilter = Module('BlackListFilter')({
     filterAction : function filterAction (controller, action) {
       return function (req, res, next) {
         if (BlackListFilter.isBlackListed(req.path)) {
-        return  next(new ForbiddenError());
+          return  next(new ForbiddenError());
         } else {
           controller.prototype[action](req, res, next);
         }

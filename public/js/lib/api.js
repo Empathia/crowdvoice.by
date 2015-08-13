@@ -400,6 +400,10 @@ module.exports = {
         });
     },
 
+    /* Creates a new Organization.
+     * @argument args.data <required> [Object] organization data
+     * @argument callback <required> [Function]
+     */
     createOrganization : function createOrganization(args, callback) {
         if (!args.data || !callback) {
             throw new Error('Missing required params');
@@ -409,19 +413,17 @@ module.exports = {
             throw new Error('Callback should be a function');
         }
 
-        throw new Error('API.createOrganization endpoint not implemented.');
-
-        // $.ajax({
-        //     type : 'POST',
-        //     url : '/',
-        //     headers : {'csrf-token' : this.token},
-        //     cache : false,
-        //     contentType : false,
-        //     processData : false,
-        //     data : args.data,
-        //     success : function success(data) { callback(false, data); },
-        //     error : function error(err) { callback(true, err); }
-        // });
+        $.ajax({
+            type : 'POST',
+            url : '/' + args.profileName + '/newOrganization',
+            headers : {'csrf-token' : this.token},
+            cache : false,
+            contentType : false,
+            processData : false,
+            data : args.data,
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
     },
 
     /**************************************************************************

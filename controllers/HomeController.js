@@ -1,10 +1,10 @@
 /* jshint multistr: true */
 
 var VoicesPresenter = require(path.join(process.cwd(), '/presenters/VoicesPresenter'));
-
 var TopicsPresenter = require(path.join(process.cwd(), '/presenters/TopicsPresenter'));
-
 var EntitiesPresenter = require(path.join(process.cwd(), '/presenters/EntitiesPresenter'));
+
+var isProfileNameAvailable = require(__dirname + '/../lib/util/isProfileNameAvailable.js');
 
 var HomeController = Class('HomeController')({
   prototype : {
@@ -205,8 +205,6 @@ var HomeController = Class('HomeController')({
       });
     },
 
-
-
     ui : function(req, res) {
       var demoVoices = require('./../public/demo-data/voices.js');
       var demoUsers = require('./../public/demo-data/users.js');
@@ -220,6 +218,18 @@ var HomeController = Class('HomeController')({
 
     kabinett : function(req, res) {
         res.render('test/index.html', {layout: 'application'});
+    },
+
+    signupIsProfileNameAvailable : function(req, res, next) {
+      isProfileNameAvailable(req.body.profileName, function (err, result) {
+        if (err) { return next(err); }
+
+        if (result) {
+          return res.json({ status: 'available' });
+        } else {
+          return res.json({ status: 'taken' });
+        }
+      });
     }
   }
 });

@@ -1,23 +1,21 @@
 var moment = require('moment');
 
 Class(CV, 'PostDetailMediaInfo').inherits(Widget).includes(CV.WidgetUtils)({
-    ELEMENT_CLASS : 'cv-post-detail-media__info',
+    ELEMENT_CLASS : 'cv-post-detail-media__info -full-height -pt5 -pb5 -text-center',
     HTML : '\
         <div>\
             <div class="cv-post-detail-media__info-media"></div>\
-            <div class="cv-post-detail-media__info-text">\
-                <p>\
+            <div class="cv-post-detail-media__info-text -text-left -pl3">\
+                <p class="cv-post-detail-media__info-meta">\
                     <span>on <time data-date datetime></time></span>\
                 </p>\
-                <p data-title>title</p>\
-                <p data-description>description</p>\
-                <div>\
-                    <div class="-inline-block">\
-                        <svg class="-s16">\
-                            <use xlink:href="#svg-save-outline"></use>\
-                            <span data-saved></span>\
-                        </svg>\
-                    </div>\
+                <p data-title class="cv-post-detail-media__info-title -color-white -font-bold">title</p>\
+                <p data-description class="cv-post-detail-media__info-desc -mb1">description</p>\
+                <div class="cv-post-detail-media__info-activity">\
+                    <svg class="-s16">\
+                        <use xlink:href="#svg-save-outline"></use>\
+                        <span data-saved></span>\
+                    </svg>\
                 </div>\
             </div>\
         </div>\
@@ -44,30 +42,43 @@ Class(CV, 'PostDetailMediaInfo').inherits(Widget).includes(CV.WidgetUtils)({
             this.dom.updateText(this.descriptionElement, data.description);
             this.dom.updateText(this.savedElement, data.totalSaves || 0);
 
-            // @TODO : refactor this part, e.g. move to a widget to handle this
-            // <iframe width="560" height="315" src="https://www.youtube.com/embed/Opktm709TJo" frameborder="0" allowfullscreen></iframe>
-            // <iframe src="https://player.vimeo.com/video/20729832?title=0&byline=0&portrait=0" width="500" height="272" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
             this.mediaElement.innerHTML = '';
 
             if (data.sourceType === 'image') {
-                this.mediaElement.insertAdjacentHTML('afterbegin', '<img src="' + data.postImages.medium.url + '"/>');
+                this._appendImage(data);
             }
 
             if (data.sourceType === 'video') {
-                var id = '';
-                this.mediaElement.insertAdjacentHTML('afterbegin', '<iframe frameborder="0" allowfullscreen="true"></iframe>');
-                var iframe = this.mediaElement.querySelector('iframe');
-
-                if (data.sourceService === 'youtube') {
-                    id = data.sourceUrl.match(this.constructor.reYT)[1];
-                    this.dom.updateAttr('src', iframe, 'https://www.youtube.com/embed/' + id + '?autoplay=1');
-                }
-
-                if (this.sourceService === 'vimeo') {
-                    id = data.sourceUrl.match(this.constructor.reV)[0];
-                    this.dom.updateAttr('src', iframe, 'https://player.vimeo.com/video/' + id + '?autoplay=1');
-                }
+                this._appendVideo(data);
             }
+        },
+
+        _appendImage : function _appendImage(data) {
+            this.mediaElement.insertAdjacentHTML('afterbegin', '<img class="-fit" src="' + data.postImages.original.url + '"/>');
+        },
+
+        _appendVideo : function _appendVideo(data) {
+            var id, iframe;
+            var iframeString = '<div class="cv-post-detail-media__info-media-iframe-wrapper -rel">\
+                    <iframe class="cv-post-detail-media__info-media-iframe -abs -full-width -full-height" frameborder="0" allowfullscreen="true"></iframe>\
+                </div>';
+
+            this.mediaElement.insertAdjacentHTML('afterbegin', iframeString);
+            iframe = this.mediaElement.querySelector('iframe');
+
+            if (data.sourceService === 'youtube') {
+                // <iframe width="560" height="315" src="https://www.youtube.com/embed/Opktm709TJo" frameborder="0" allowfullscreen></iframe>
+                id = data.sourceUrl.match(this.constructor.reYT)[1];
+                this.dom.updateAttr('src', iframe, 'https://www.youtube.com/embed/' + id + '?autoplay=1');
+            }
+
+            if (this.sourceService === 'vimeo') {
+                id = data.sourceUrl.match(this.constructor.reV)[0];
+                // <iframe src="https://player.vimeo.com/video/20729832?title=0&byline=0&portrait=0" width="500" height="272" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+                this.dom.updateAttr('src', iframe, 'https://player.vimeo.com/video/' + id + '?autoplay=1');
+            }
+
+            id = iframe = iframeString = null;
         }
     }
 });

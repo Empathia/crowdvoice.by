@@ -2,12 +2,12 @@ Class(CV, 'PostDetailNavigation').inherits(Widget).includes(CV.WidgetUtils, Bubb
     ELEMENT_CLASS : 'cv-post-detail__header-navigation',
     HTML : '\
         <div>\
-            <button data-prev class="-clickable">\
+            <button data-prev class="cv-post-detail__header-navigation-button -clickable">\
                 <svg class="-s20">\
                     <use xlink:href="#svg-arrow-left"></use>\
                 </svg>\
             </button>\
-            <button data-next class="-clickable">\
+            <button data-next class="cv-post-detail__header-navigation-button -clickable">\
                 <svg class="-s20">\
                     <use xlink:href="#svg-arrow-right"></use>\
                 </svg>\
