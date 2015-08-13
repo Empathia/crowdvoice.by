@@ -215,7 +215,10 @@ var EntitiesPresenter = Module('EntitiesPresenter')({
             }
 
             voiceIds = result.map(function(item) {
-              return item.id;
+              return {
+                id : item.id,
+                title : item.title
+              }
             });
 
             doneVoice();
@@ -230,11 +233,24 @@ var EntitiesPresenter = Module('EntitiesPresenter')({
               return doneVoice(err);
             }
 
-            voiceIds = voiceIds.concat(result.map(function(item) {
+            var ids = result.map(function(item) {
               return item.voiceId;
-            }));
+            });
 
-            doneVoice();
+            Voice.whereIn('id', ids, function(err, result) {
+              if (err) {
+                return done(err);
+              }
+
+              voiceIds = voiceIds.concat(result.map(function(item) {
+                return {
+                  id : item.id,
+                  title : item.title
+                };
+              }));
+
+              doneVoice();
+            });
           });
         }], function(err) {
           if (err) {
