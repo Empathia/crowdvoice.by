@@ -461,6 +461,33 @@ module.exports = {
         });
      },
 
+    /* Invite user to become part of organization or contributor of voice.
+     * @argument args.profileName <required> [String] currentPerson profileName
+     * @argument args.data.type <required> [String] Message type ['invitation_voice', 'invitation_organization']
+     * @argument args.data.receiverEntityId [String] receriver Person hashid
+     * @argument args.data.voiceId | args.data.organizationId [String]
+     * @argument args.data.message <required> [String] the text message
+     * @argument callback <required> [Function]
+     */
+    sendInvitation : function sendInvitation(args, callback) {
+        if (!args.profileName || !args.data.type || (!args.data.voiceId && !args.data.organizationId) || !args.data.receiverEntityId || !args.data.message || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'POST',
+            url : '/' + args.profileName + '/messages',
+            headers : {'csrf-token' : this.token},
+            data : args.data,
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+     },
+
     /**************************************************************************
      * SEARCH
      *************************************************************************/

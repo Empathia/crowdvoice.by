@@ -61,6 +61,7 @@ require('./widgets/responsive-slider.js');
 require('./widgets/input-clearable.js');
 require('./widgets/input-counter.js');
 require('./widgets/dropdown.js');
+require('./widgets/dropdowns/regular');
 require('./widgets/dropdowns/topics');
 require('./widgets/dropdowns/voice-types');
 require('./widgets/dropdowns/voice-status');

@@ -1,25 +1,29 @@
 var Person = require('./../../lib/currentPerson');
+var API = require('./../../lib/api');
 var Events = require('./../../lib/events');
 var Checkit = require('checkit');
 
 Class(CV, 'InviteToOrganization').inherits(Widget).includes(CV.WidgetUtils)({
-    ELEMENT_CLASS : 'cv-form-invite-to-organization -clearfix',
+    ELEMENT_CLASS : 'cv-form-invite-to-organization',
     HTML : '\
         <div>\
-            <div class="-col-12 placeholder-main"></div>\
-            <div class="-col-12 placeholder-send"></div>\
+            <div class="placeholder-main"></div>\
+            <div class="placeholder-send"></div>\
         </div>',
 
     prototype : {
         /* Entity Model to invite */
         data : null,
 
+        _flashMessage : null,
+
         init : function(config){
             Widget.prototype.init.call(this, config);
             this.el = this.element[0];
 
             this.checkit = new Checkit({
-                message : ['required']
+                message : ['required'],
+                organizationDropdown : ['required']
             });
 
             this._setup()._bindEvents();
@@ -29,22 +33,24 @@ Class(CV, 'InviteToOrganization').inherits(Widget).includes(CV.WidgetUtils)({
          * @method _setup <private>
          */
         _setup : function _setup() {
-            var allOrgs = {};
-
+            var allOrgs = [];
             Person.get().ownedOrganizations.forEach(function(org, index) {
                 if (this.data.organizationIds.indexOf(org.id) === -1) {
-                    allOrgs[index] = {label : org.name, name : 'org_' + index};
+                    allOrgs.push({
+                        name : 'org_' + index,
+                        label : org.name,
+                        value : org.id
+                    });
                 }
             }, this);
 
-            new CV.Select({
-                label : 'Select one',
-                name  : 'select',
-                style : 'full',
-                options : allOrgs,
-                hasTitle : true,
-                title : "To which of your organizations would you like to invite this user to?"
-            }).render(this.element.find('.placeholder-main'));
+            this.appendChild(new CV.UI.DropdownRegular({
+                name : 'inviteOrganizationDropdown',
+                data : {
+                    label : 'To which of your organizations would you like to invite this user to?',
+                    options : allOrgs
+                }
+            })).render(this.element.find('.placeholder-main')).selectByIndex(0);
 
             this.appendChild(new CV.UI.Input({
                 name : 'inviteMessage',
@@ -59,10 +65,10 @@ Class(CV, 'InviteToOrganization').inherits(Widget).includes(CV.WidgetUtils)({
             })).render(this.element.find('.placeholder-main'));
 
             this.appendChild(new CV.Button({
-                name    : 'buttonSend',
-                style   : 'primary full',
-                type    : 'single',
-                label   : 'Invite Esra\'a Al Shafei'
+                name : 'buttonSend',
+                style : 'primary -font-bold -full-width -m0',
+                type : 'single',
+                label : 'Invite ' + this.data.name + ' ' + (this.data.lastname || '')
             })).render(this.element.find('.placeholder-send'));
 
             return this;
@@ -79,12 +85,32 @@ Class(CV, 'InviteToOrganization').inherits(Widget).includes(CV.WidgetUtils)({
          */
         _sendClickHandler : function _sendClickHandler() {
             var validate = this.checkit.validateSync({
-                message : this.inviteMessage.getValue()
+                message : this.inviteMessage.getValue(),
+                organizationDropdown : this.inviteOrganizationDropdown.getValue()
             });
 
             if (validate[0]) {
                 return this._displayErrors(validate[0].errors);
             }
+
+            this._setSendingState();
+
+            API.sendInvitation({
+                profileName : Person.get().profileName,
+                data : this._dataPresenter()
+            }, this._sendMessageResponse.bind(this));
+        },
+
+        /* Handles the API call response.
+         * @method _sendMessageResponse <private>
+         */
+        _sendMessageResponse : function _sendMessageResponse(err, res) {
+            if (err) {
+                this._setErrorState(res.status + ': ' + res.statusText);
+                return;
+            }
+
+            this._setSuccessState()._clearForm();
         },
 
         /* Display the current form errors.
@@ -95,6 +121,71 @@ Class(CV, 'InviteToOrganization').inherits(Widget).includes(CV.WidgetUtils)({
                 var widget = 'invite' + this.format.capitalizeFirstLetter(propertyName);
                 this[widget].error();
             }, this);
+        },
+
+        _setSendingState : function _setSendingState() {
+            this.buttonSend.disable();
+            return this;
+        },
+
+        /* Sets the success state of the form.
+         * @method _setSuccessState <private>
+         */
+        _setSuccessState : function _setSuccessState() {
+            this.buttonSend.enable();
+
+            if (this._flashMessage) {
+                this._flashMessage = this._flashMessage.destroy();
+            }
+
+            this.appendChild(new CV.Alert({
+                name : '_flashMessage',
+                type : 'positive',
+                text : 'Invitation to ' + this.data.name + ' ' + (this.data.lastname || '') + ' has been sent.',
+                className : '-mb1'
+            })).render(this.el, this.el.firstElementChild);
+
+            return this;
+        },
+
+        /* Sets the error state of the form.
+         * @method _setErrorState <private>
+         */
+        _setErrorState : function _setErrorState(msg) {
+            this.buttonSend.enable();
+
+            if (this._flashMessage) {
+                this._flashMessage = this._flashMessage.destroy();
+            }
+
+            this.appendChild(new CV.Alert({
+                name : '_flashMessage',
+                type : 'negative',
+                text : msg || 'There was an error sending your invitation to ' + this.data.name + ' ' + (this.data.lastname || ''),
+                className : '-mb1'
+            })).render(this.el, this.el.firstElementChild);
+
+            return this;
+        },
+
+        /* Clears the form.
+         * @message _clearForm <private>
+         */
+        _clearForm : function _clearForm() {
+            this.inviteMessage.setValue('');
+            return this;
+        },
+
+        /* Returns the data to be sent to server to create a new Voice.
+         * @method _dataPresenter <private> [Function]
+         */
+        _dataPresenter : function _dataPresenter() {
+            return {
+                type : 'invitation_organization',
+                receiverEntityId : this.data.id,
+                organizationId : this.inviteOrganizationDropdown.getValue(),
+                message : this.inviteMessage.getValue()
+            };
         },
 
         destroy : function destroy() {
