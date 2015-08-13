@@ -132,19 +132,27 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
     },
 
     create: function (req, res, next) {
-      // check if provided profile name is taken
-      //
-      // data = {
-      //   organizationName: <String>,
-      //   profileName: <String>,
-      //   description: <String>,
-      //   location: <String>,
+      // req.body = {
+      //   title: '1234', // organization name
+      //   profileName: '1234',
+      //   description: '1234',
+      //   locationName: 'Guadalajara, Jalisco, Mexico.',
+      //   imageBackground: 'undefined', // goes somewhere else if defined
+      //   imageLogo: 'undefined', // goes somewhere else if defined
       // }
 
-      console.log(req.body)
+      // check if provided profile name is taken
+
+      console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', req.body)
 
       ACL.isAllowed('createOrganization', 'entities', req.role, {}, function (err, isAllowed) {
-        //
+        if (err) { return next(err); }
+
+        if (!isAllowed) {
+          return next(new ForbiddenError());
+        }
+
+        next();
       });
     },
 

@@ -221,7 +221,8 @@ Class(CV, 'CreateOrganization').inherits(Widget).includes(CV.WidgetUtils)({
             }
 
             API.createOrganization({
-                data : this._dataPresenter()
+                data : this._dataPresenter(),
+                profileName : Person.get().profileName
             }, this._createOrganizationHandler.bind(this));
         },
 
