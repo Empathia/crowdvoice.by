@@ -276,7 +276,17 @@
       });
       // select actions
       profileSettings.organization.on('click', function(){
-        inviteToOrganizationModal.show();
+        var inviteToOrganizationModal = new CV.UI.Modal({
+          title : 'Invite to Organization',
+          name : 'inviteToOrganizationModal',
+          action : CV.InviteToOrganization,
+          width : 650,
+          data : <%= JSON.stringify(person) %>
+        }).render(document.body);
+
+        requestAnimationFrame(function() {
+          inviteToOrganizationModal.activate();
+        });
       });
       profileSettings.contribute.on('click', function(){
         inviteToContributeModal.show();
@@ -321,13 +331,6 @@
       title       : 'Invite to Contribute',
       name        : 'inviteToContributeModal',
       action      : CV.InviteToContribute,
-      width       : 650,
-    });
-
-    var inviteToOrganizationModal = new CV.Modal({
-      title       : 'Invite to Organization',
-      name        : 'inviteToOrganizationModal',
-      action      : CV.InviteToOrganization,
       width       : 650,
     });
 
