@@ -143,7 +143,7 @@ async.series([function(next) {
         lastname    : 'Lannister',
         profileName : 'jamie-lannister',
         isAnonymous : false,
-        description : 'Ser Jaime Lannister, known as the Kingslayer, is a knight from House Lannister. He is the second child and first-born son of Lord Tywin Lannister of Casterly Rock and his wife Lady Joanna, also of House Lannister. He is the twin brother of Queen Cersei Lannister.',
+        description : 'Ser Jaime Lannister, known as the Kingslayer, is a knight from House Lannister.',
         location : 'King\'s Landing'
       },
       user : data.users.jamie,
@@ -157,7 +157,7 @@ async.series([function(next) {
         lastname    : 'Targaryen',
         profileName : 'daenerys-targaryen',
         isAnonymous : false,
-        description : 'Daenerys Targaryen, known as Daenerys Stormborn and Dany, is one of the last confirmed members of House Targaryen, along with her brother Viserys, and she is one of the major POV characters in A Song of Ice and Fire. ',
+        description : 'Daenerys Targaryen, known as Daenerys Stormborn and Dany, is one of the last confirmed members of House Targaryen.',
         location : 'Meereen'
       },
       user : data.users.daenerys,
@@ -171,7 +171,7 @@ async.series([function(next) {
         lastname    : 'Snow',
         profileName : 'jon-snow',
         isAnonymous : false,
-        description : 'Jon Snow is the bastard son of Eddard Stark, by a mother whose identity is a source of speculation.[2][3] He was raised by his father alongside his true-born half-siblings, but joins the Night\'s Watch when he nears adulthood. ',
+        description : 'Jon Snow is the bastard son of Eddard Stark, by a mother whose identity is a source of speculation.',
         location : 'The Wall'
       },
       user : data.users.jon,
@@ -185,7 +185,7 @@ async.series([function(next) {
         lastname    : 'Stark',
         profileName : 'arya-stark',
         isAnonymous : false,
-        description : 'Arya Stark is the third child and second daughter of Lord Eddard Stark and Lady Catelyn Tully. A member of House Stark, she has five siblings: brothers Robb, Bran, Rickon, half-brother Jon Snow, and older sister Sansa.',
+        description : 'Arya Stark is the third child and second daughter of Lord Eddard Stark and Lady Catelyn Tully.',
         location : 'Winterfell'
       },
       user : data.users.arya,
@@ -199,7 +199,7 @@ async.series([function(next) {
         lastname    : 'Stark',
         profileName : 'eddard-stark',
         isAnonymous : false,
-        description : 'Eddard Stark, also affectionately called "Ned", is the head of House Stark, Lord of Winterfell, and Warden of the North.',
+        description : 'Eddard Stark, also affectionately called "Ned", is the head of House Stark, Lord of Winterfell.',
         location : 'Winterfell'
       },
       user : data.users.eddard,
@@ -213,7 +213,7 @@ async.series([function(next) {
         lastname    : 'Baratheon',
         profileName : 'stannis-baratheon',
         isAnonymous : false,
-        description : 'Stannis Baratheon is the head of House Baratheon of Dragonstone and the Lord of Dragonstone. He is the elder of King Robert I Baratheon\'s two younger brothers, the youngest being Lord Renly Baratheon.',
+        description : 'Stannis Baratheon is the head of House Baratheon of Dragonstone and the Lord of Dragonstone.',
         location : 'Dragonstone'
       },
       user : data.users.stannis,
@@ -321,7 +321,7 @@ async.series([function(next) {
         lastname    : null,
         profileName : 'house-stark',
         isAnonymous : false,
-        description : 'House Stark was one of the Great Houses of Westeros, ruling over the vast region known as the North from their seat in Winterfell. It is by far one of the oldest lines of Westerosi nobility',
+        description : 'House Stark was one of the Great Houses of Westeros, ruling over the vast region known as the North from their seat in Winterfell.',
         location : 'Winterfell'
       },
       owner : data.entities['eddard-stark'],
@@ -336,7 +336,7 @@ async.series([function(next) {
         lastname    : null,
         profileName : 'house-lannister',
         isAnonymous : false,
-        description : 'House Lannister of Casterly Rock is one of the Great Houses of Westeros, one of its richest and most powerful families and oldest dynasties.',
+        description : 'House Lannister of Casterly Rock is one of the Great Houses of Westeros.',
         location : 'Casterly Rock'
       },
       owner : data.entities['cersei-lannister'],
@@ -351,7 +351,7 @@ async.series([function(next) {
         lastname    : null,
         profileName : 'house-targaryen',
         isAnonymous : false,
-        description : 'House Targaryen is one of the former Great Houses of Westeros and the previous ruling royal house of the Seven Kingdoms, before House Baratheon took the Iron Throne, and the few surviving Targaryens fled into exile. House Targaryen\'s symbol is a three-headed red dragon on a black background and their motto is "Fire and Blood".',
+        description : 'House Targaryen is one of the former Great Houses of Westeros and the previous ruling royal house of the Seven Kingdoms.',
         location : 'Valyria'
       },
       owner : data.entities['daenerys-targaryen'],
@@ -366,7 +366,7 @@ async.series([function(next) {
         lastname    : null,
         profileName : 'house-baratheon',
         isAnonymous : false,
-        description : 'House Baratheon is one of the Great Houses of Westeros, although also one of the youngest. It is the current royal house.',
+        description : 'House Baratheon is one of the Great Houses of Westeros, although also one of the youngest.',
         location : 'King\'s Landing'
       },
       owner : data.entities['robert-baratheon'],
@@ -497,7 +497,7 @@ async.series([function(next) {
     {
       data : {
         title         : 'The Battle of the Blackwater',
-        description   : 'The Battle of the Blackwater is the largest battle in the War of the Five Kings. The battle is fought between forces loyal to Stannis Baratheon and those loyal to Joffrey Baratheon. Stannis\'s army is on the verge of winning a decisive victory by defeating the rather large garrison of King\'s Landing, but is taken by surprise and all but annihilated by the joint forces of Tywin Lannister and the Tyrells.',
+        description   : 'The Battle of the Blackwater is the largest battle in the War of the Five Kings.',
         ownerId       : data.entities['tyrion-lannister'].id,
         status        : Voice.STATUS_PUBLISHED,
         type          : Voice.TYPE_PUBLIC,
@@ -512,7 +512,7 @@ async.series([function(next) {
     {
       data : {
         title         : 'Second Trial by Combat',
-        description   : 'The Second Trial by Combat of Tyrion Lannister is an event in the War of the Five Kings. As a result of the farce of a trial Tyrion Lannister is put through, he demands trial by combat to defend his innocence and ruin his father\'s plans to exile him to the Wall.',
+        description   : 'The Second Trial by Combat of Tyrion Lannister is an event in the War of the Five Kings.',
         ownerId       : data.entities['tyrion-lannister'].id,
         status        : Voice.STATUS_PUBLISHED,
         type          : Voice.TYPE_PUBLIC,
@@ -527,7 +527,7 @@ async.series([function(next) {
     {
       data : {
         title         : 'War of the Five Kings',
-        description   : 'The War of the Five Kings is a large, multi-theater conflict fought in the Seven Kingdoms from 298 AC until 300 AC, though some hostilities have resumed as a new claimant to the Iron Throne has arisen as well as a new King of the Iron Islands. As the name implies, over the course of the war five men claim the title of king: Joffrey Baratheon, Stannis Baratheon, and Renly Baratheon all claim the Iron Throne, whilst the separatists Robb Stark and Balon Greyjoy attempt to secede their lands from the rule of the Iron Throne, with Robb claiming the titles of King in the North and King of the Trident and Balon claiming to be King of the Isles and the North.',
+        description   : 'The War of the Five Kings is a large, multi-theater conflict fought in the Seven Kingdoms.',
         ownerId       : data.entities['tyrion-lannister'].id,
         status        : Voice.STATUS_PUBLISHED,
         type          : Voice.TYPE_CLOSED,
@@ -542,7 +542,7 @@ async.series([function(next) {
     {
       data : {
         title         : 'Valyrian roads',
-        description   : 'Valyrian roads are broad stone highways built when the Valyrian Freehold dominated Essos. They are straight and usually ran from one economic center to another, allowing swift transport of goods.[1] They are also known as dragon roads.',
+        description   : 'Valyrian roads are broad stone highways built when the Valyrian Freehold dominated Essos.',
         ownerId       : data.entities['tyrion-lannister'].id,
         status        : Voice.STATUS_DRAFT,
         type          : Voice.TYPE_CLOSED,
@@ -557,7 +557,7 @@ async.series([function(next) {
     {
       data : {
         title         : 'The Second Siege of Meereen',
-        description   : 'Yunkai and her allies march on Meereen in order to cast down Queen Daenerys Targaryen and reinstall the government of the Great Masters as well as slavery.',
+        description   : 'Yunkai and her allies march on Meereen in order to cast down Queen Daenerys Targaryen.',
         ownerId       : data.entities['tyrion-lannister'].id,
         status        : Voice.STATUS_UNLISTED,
         type          : Voice.TYPE_CLOSED,
@@ -574,7 +574,7 @@ async.series([function(next) {
     {
       data : {
         title         : 'Walk of atonement',
-        description   : 'A walk of atonement[1] is a punishment in the Seven Kingdoms usually reserved to punish, humiliate and shame a woman publicly for either adultery or whoring. The custom is usually performed as both a punishment and a way to degrade a woman and rob her of her pride and power.',
+        description   : 'A walk of atonement is a punishment in the Seven Kingdoms usually reserved to punish.',
         ownerId       : data.entities['cersei-lannister'].id,
         status        : Voice.STATUS_PUBLISHED,
         type          : Voice.TYPE_PUBLIC,
@@ -589,7 +589,7 @@ async.series([function(next) {
     {
       data : {
         title         : 'The dead of Jon Arryn',
-        description   : 'Lord Jon Arryn was the head of House Arryn, whose titles included Lord of the Eyrie, Defender of the Vale, and Warden of the East. He served as Hand of the King to Robert Baratheon from 283 AC until his unexpected death in 298 AC.',
+        description   : 'Lord Jon Arryn was the head of House Arryn, whose titles included Lord of the Eyrie.',
         ownerId       : data.entities['cersei-lannister'].id,
         status        : Voice.STATUS_PUBLISHED,
         type          : Voice.TYPE_CLOSED,
@@ -606,7 +606,7 @@ async.series([function(next) {
     {
       data : {
         title         : 'Robert\'s Rebellion',
-        description   : 'Robert\'s Rebellion, also known as the War of the Usurper,[1] was a rebellion against House Targaryen, primarily instigated by Eddard Stark, Jon Arryn, and Robert Baratheon, for whom it is named. It lasted "close to a year"[2] and resulted in the end of the Targaryen dynasty in the Seven Kingdoms and the beginning of Robert Baratheon\'s reign.',
+        description   : 'Robert\'s Rebellion, also known as the War of the Usurper.',
         ownerId       : data.entities['jamie-lannister'].id,
         status        : Voice.STATUS_PUBLISHED,
         type          : Voice.TYPE_PUBLIC,
@@ -623,7 +623,7 @@ async.series([function(next) {
     {
       data : {
         title         : 'Siege of Meereen',
-        description   : 'The siege of Meereen occurs in 299 AC when Daenerys Targaryen marches on Meereen, the last and the largest of the greatest slaver cities of Slaver\'s Bay.',
+        description   : 'The siege of Meereen occurs in 299 AC when Daenerys Targaryen marches on Meereen.',
         ownerId       : data.entities['daenerys-targaryen'].id,
         status        : Voice.STATUS_PUBLISHED,
         type          : Voice.TYPE_PUBLIC,
@@ -638,7 +638,7 @@ async.series([function(next) {
     {
       data : {
         title         : 'A Dance with Dragons',
-        description   : 'Dany struggles as ruler of Meereen, mainly due to the constant threats surrounding her. A portion of Meereen\'s former slaving families who call themselves the Sons of the Harpy fight a shadow war with her followers, attacking lone freedmen or Unsullied in the black of night and drawing a harpy nearby with the man\'s blood. The sons have also scrawled graffiti on the walls of Meereen in blood promising a death to the families of any who serve the Dragon Queen.',
+        description   : 'Dany struggles as ruler of Meereen, mainly due to the constant threats surrounding her.',
         ownerId       : data.entities['daenerys-targaryen'].id,
         status        : Voice.STATUS_PUBLISHED,
         type          : Voice.TYPE_PUBLIC,
@@ -655,7 +655,7 @@ async.series([function(next) {
     {
       data : {
         title         : 'Battle of Castle Black',
-        description   : 'The Battle of Castle Black takes place during the War of the Five Kings at Castle Black along the Wall in the North. The free folk or wildling masses under the command of the King-Beyond-the-Wall, Mance Rayder, attack the Night\'s Watch, who are originally under the command of a blacksmith, Donal Noye, and later under the command of a steward, Jon Snow. The Night\'s Watch is also joined by a host under the command of the King in the Narrow Sea, Stannis Baratheon.',
+        description   : 'The Battle of Castle Black takes place during the War of the Five Kings at Castle Black along the Wall in the North.',
         ownerId       : data.entities['jon-snow'].id,
         status        : Voice.STATUS_PUBLISHED,
         type          : Voice.TYPE_PUBLIC,
@@ -739,7 +739,7 @@ async.series([function(next) {
     {
       data : {
         title         : 'Winterfell',
-        description   : 'Winterfell is the seat of House Bolton (formerly House Stark). It is a very large castle located at the center of the North, from where the head of House Stark rules over his people. A small Godswood is enclosed within the walls. It is the capital of the North under King Robb Stark.',
+        description   : 'Winterfell is the seat of House Bolton (formerly House Stark).',
         ownerId       : data.organizations['house-stark'].id,
         status        : Voice.STATUS_PUBLISHED,
         type          : Voice.TYPE_PUBLIC,
@@ -754,7 +754,7 @@ async.series([function(next) {
     {
       data : {
         title         : 'Bran the Builder',
-        description   : 'Brandon Stark, also known as Brandon the Builder and Bran the Builder, was the legendary founder[1] of House Stark who is said to have lived during the Age of Heroes.',
+        description   : 'Brandon Stark, also known as Brandon the Builder and Bran the Builder.',
         ownerId       : data.organizations['house-stark'].id,
         status        : Voice.STATUS_PUBLISHED,
         type          : Voice.TYPE_PUBLIC,
@@ -769,7 +769,7 @@ async.series([function(next) {
     {
       data : {
         title         : 'Casterly Rock',
-        description   : 'Casterly Rock, nicknamed the Rock, is a fortress and the seat of House Lannister. The capital of the Westerlands, it overlooks the harbor of Lannisport and the Sunset Sea. Nearby strongholds include Kayce and Feastfires to the west, Sarsfield to the north, and Cornfield and Clegane\'s Keep to the south.',
+        description   : 'Casterly Rock, nicknamed the Rock, is a fortress and the seat of House Lannister.',
         ownerId       : data.organizations['house-lannister'].id,
         status        : Voice.STATUS_PUBLISHED,
         type          : Voice.TYPE_PUBLIC,
@@ -784,7 +784,7 @@ async.series([function(next) {
     {
       data : {
         title         : 'King\'s Landing',
-        description   : 'King\'s Landing is the capital of the Seven Kingdoms. It is located on the east coast of Westeros in the Crownlands, overlooking Blackwater Bay. It is the site of the Iron Throne and the Red Keep, the seat of the King of the Andals and the First Men. ',
+        description   : 'King\'s Landing is the capital of the Seven Kingdoms. It is located on the east coast of Westeros in the Crownlands.',
         ownerId       : data.organizations['house-baratheon'].id,
         status        : Voice.STATUS_PUBLISHED,
         type          : Voice.TYPE_PUBLIC,
