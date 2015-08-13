@@ -14,8 +14,8 @@ Class(CV, 'RequestMembership').inherits(Widget)({
 
     SENT : '\
         <div class="sent-form">\
-        <h2>Thanks for the interest to help out!</h2>\
-        <p>We will review your request as soon as possible and may contact you to get some more information or directly with a response.</p>\
+        <h2>Thanks for the interest to be a member!</h2>\
+        <p>We will review your request as soon as possible and may contact with a response.</p>\
         <br>\
         <button class="cv-button ok small">Ok</button>\
         </div>\
