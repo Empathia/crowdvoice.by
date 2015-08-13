@@ -180,6 +180,8 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
             location: req.body.locationName
           });
 
+          var owner;
+
           async.series([
             // create org
             function (next) {
@@ -203,19 +205,33 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
             // save new changes
             function (next) {
               org.save(next);
+            },
+
+            // ownership
+            function (next) {
+              owner = new EntityOwner({
+                ownerId: hashids.decode(req.currentPerson.id)[0],
+                ownedId: org.id
+              });
+
+              owner.save(next);
             }
           ], function (err) {
             if (err) {
-              res.locals.errors = err;
-              req.errors = err;
-              logger.log(err);
+              logger.error(err);
 
-              next();
-            } else {
-              // success
-              req.flash('success', 'Created new organization.');
-              res.redirect('/' + req.body.profileName);
+              // destroy org
+              return org.destroy(function () {
+                // destroy ownership
+                owner.destroy(next);
+              });
             }
+
+            EntitiesPresenter.build([org], req.currentPerson, function (err, orgs) {
+              if (err) { return next(err); }
+
+              res.json(orgs[0]);
+            });
           });
         });
       });
