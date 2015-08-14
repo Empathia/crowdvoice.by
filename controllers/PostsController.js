@@ -361,7 +361,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
            return res.status(200).json({ status : 'The URL already exists', error : 'The URL already exists' });
           }
 
-          Scrapper.processUrl(url, response, function(err, result) {
+          Scrapper.processUrl(longUrl, response, function(err, result) {
             if (err) {
               logger.error(err);
               return res.status(400).json({ status : 'There was an error in the request', error : err });
