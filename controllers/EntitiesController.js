@@ -505,7 +505,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
       ACL.isAllowed('reportEntity', 'entities', req.role, {
         currentEntityId: req.entity.id,
         currentPersonId: req.currentPerson.id
-      }, function (err, isAllowed) {
+      }, function (err, response) {
         if (err) { return next(err); }
 
         if (!response.isAllowed) { return res.json(response.status); }
