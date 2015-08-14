@@ -209,7 +209,7 @@ Class(CV, 'Login').inherits(Widget)({
 
 
 
-              this.formEl.find('.username').on('propertychange change click keyup input paste', function(e) {
+              this.formEl.find('.username').on('keyup input paste', function(e) {
                 $.ajax({
                   type: "POST",
                   url: '/signup/check-username',
@@ -223,7 +223,7 @@ Class(CV, 'Login').inherits(Widget)({
                 });
               });
 
-              this.formEl.find('.profileName').on('propertychange change click keyup input paste', function(e) {
+              this.formEl.find('.profileName').on('keyup input paste', function(e) {
                 var profileNameText = ($(e.target).val()).trim();
                 $.ajax({
                   type: "POST",
@@ -251,11 +251,13 @@ Class(CV, 'Login').inherits(Widget)({
             this.buttonEl.on("click",function(e){
                 e.preventDefault();
                 var formValidation = login.validate();
+                console.log('form');
                 console.log(formValidation);
                 var validForm = formValidation[1];
                 var formErrors = formValidation[0];
 
                 if (!validForm){
+
                   login.errorsEl.empty();
                   login.errorsEl.show();
 
@@ -264,8 +266,10 @@ Class(CV, 'Login').inherits(Widget)({
                       var errorStr = formErrors.errors[error].message.replace(replaceStr, '<b>'+replaceStr+'</b>');
                       login.errorsEl.append('<p>' + errorStr + '</p>')
                   }
+
                   return false;
                   e.preventDefault;
+
                 }else{
                   login.formEl.submit();
                 }
@@ -286,6 +290,7 @@ Class(CV, 'Login').inherits(Widget)({
         },
 
         validateFields : function(status, fieldType, message){
+          console.log('fields');
           var login = this;
           var messages = {
             username: "<p><b>Username</b> is already taken.</p>",
