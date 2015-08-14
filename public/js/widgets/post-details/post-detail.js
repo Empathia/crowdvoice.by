@@ -26,11 +26,14 @@ Class(CV, 'PostDetail').inherits(Widget).includes(CV.WidgetUtils, BubblingSuppor
          * @return [PostCreator]
          */
         addCloseButton : function addCloseButton() {
-            this.el.insertAdjacentHTML('afterbegin', '<svg class="cv-post-creator__close -clickable"><use xlink:href="#svg-close"></use></svg>');
-            this.closeButton = this.el.getElementsByClassName('cv-post-creator__close')[0];
+            this.appendChild(new CV.UI.Close({
+                name : 'closeButton',
+                className : 'ui-close-button__overlays -abs',
+                svgClassName : '-s18 -color-white'
+            })).render(this.el, this.el.firstElementChild);
 
             this._closeButtonClickHanderRef = this._closeButtonClickHander.bind(this);
-            Events.on(this.closeButton, 'click', this._closeButtonClickHanderRef);
+            this.closeButton.bind('click', this._closeButtonClickHanderRef);
 
             return this;
         },
@@ -55,9 +58,7 @@ Class(CV, 'PostDetail').inherits(Widget).includes(CV.WidgetUtils, BubblingSuppor
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
             Events.off(this._window, 'keydown', this._windowKeydownHandlerRef);
-            Events.off(this.closeButton, 'click', this._closeButtonClickHanderRef);
             this._windowKeydownHandlerRef = null;
-            this._closeButtonClickHanderRef = null;
             return null;
         }
     }
