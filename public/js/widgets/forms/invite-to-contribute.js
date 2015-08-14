@@ -182,7 +182,7 @@ Class(CV, 'InviteToContribute').inherits(Widget).includes(CV.WidgetUtils)({
             return {
                 type : 'invitation_voice',
                 receiverEntityId : this.data.id,
-                organizationId : this.inviteVoicesDropdown.getValue(),
+                voiceId : this.inviteVoicesDropdown.getValue(),
                 message : this.inviteMessage.getValue()
             };
         },
