@@ -161,7 +161,10 @@ module.exports = function(req, res, next) {
               if (err) { return done(err); }
 
               async.map(voices, function (voice, next) {
-                next(null, voice.title);
+                next(null, {
+                  id: hashids.encode(voice.id),
+                  name: voice.title
+                });
               }, function (err, voiceTitles) {
                 if (err) { return done(err); }
 
