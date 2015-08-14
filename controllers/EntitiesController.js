@@ -508,7 +508,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
       }, function (err, isAllowed) {
         if (err) { return next(err); }
 
-        if (!isAllowed) { return next(new ForbiddenError()); }
+        if (!response.isAllowed) { return res.json(response.status); }
 
         var threads = [],
           admins;
@@ -590,7 +590,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
           ThreadsPresenter.build(req, threads, function (err, result) {
             if (err) { return next(err); }
 
-            res.json({ status: 'reported' });
+            res.json({ status: 'ok' });
           });
         });
       });
