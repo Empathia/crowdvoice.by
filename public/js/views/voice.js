@@ -50,7 +50,10 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
             this.postsCountUnapproved = this._formatPostsCountObject(this.postsCount.unapproved);
             this.postCount = this._getTotalPostCount(this.postsCountApproved);
 
-            if (this._appendLayersManager()) {
+            if (this.postCount === 0) {
+                this._showOnboarding();
+            } else {
+                this._appendLayersManager();
                 this._checkInitialHash();
                 this._bindEvents();
             }
@@ -94,6 +97,16 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
             this.dom.updateText(this.followersCountElement, this.format.numberUS(this.followerCount));
 
             return this;
+        },
+
+        /* Show the onboarding message.
+         * @method _showOnboarding <private>
+         */
+        _showOnboarding : function _showOnboarding() {
+            this.appendChild(new CV.VoiceOboarding({
+                name : 'onboarding',
+                className : '-fixed -text-center'
+            })).render(document.querySelector('.cv-main-content'));
         },
 
         /* Checks if we have provided the information required before
