@@ -51,7 +51,7 @@ Class(CV.UI, 'DropdownVoiceTypes').inherits(Widget)({
                 item.classList.remove('active');
             });
             element.classList.add('active');
-            this.dropdown.setLabel(element.innerText).deactivate();
+            this.dropdown.setLabel(element.textContent).deactivate();
             return this;
         },
 

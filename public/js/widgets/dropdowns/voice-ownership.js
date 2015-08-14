@@ -81,7 +81,7 @@ Class(CV.UI, 'DropdownVoiceOwnership').inherits(Widget).includes(CV.WidgetUtils)
                 item.classList.remove('active');
             });
             element.classList.add('active');
-            this.dropdown.setLabel(element.innerText).deactivate();
+            this.dropdown.setLabel(element.textContent).deactivate();
         },
 
         /* Returns the data-value of the current selected option

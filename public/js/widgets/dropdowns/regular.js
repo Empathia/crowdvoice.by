@@ -104,7 +104,7 @@ Class(CV.UI, 'DropdownRegular').inherits(Widget).includes(CV.WidgetUtils)({
                 item.classList.remove('active');
             });
             element.classList.add('active');
-            this.dropdown.setLabel(element.innerText).deactivate();
+            this.dropdown.setLabel(element.textContent).deactivate();
         },
 
         selectByIndex : function selectByIndex(index) {
