@@ -1,6 +1,14 @@
 #!/usr/bin/env node
 
+global.Admin = {};
+
 var application = require('neonode-core');
+
+CONFIG.database.logQueries = false;
+
+var moment = require('moment');
+
+var Scrapper = require(process.cwd() + '/lib/cvscrapper');
 
 var LOCK_FILE = '/tmp/fetching_tweets';
 
@@ -30,12 +38,12 @@ fs.closeSync(fs.openSync(LOCK_FILE, 'w'));
 
 Voice.find(["twitter_search IS NOT null AND (tweet_last_fetch_at IS null OR tweet_last_fetch_at <  '"  + moment(new Date(Date.now() - (3600 * 6)).toISOString()).format() +  "')", []], function(err, voices) {
 
-  async.each(voices, function(voice, next) {
+  async.eachLimit(voices, 1, function(voice, next) {
 
     logger.log("\n\n");
     logger.log(new Date(Date.now()));
-    logger.log("Last: "+ voice.tweet_last_fetch_at + "in Voice " + voice.id);
-    logger.log("Search term: " +  voice.twitter_search);
+    logger.log("Last: "+ voice.tweetLastFetchAt + "in Voice " + voice.id);
+    logger.log("Search term: " +  voice.twitterSearch);
 
     client.get('search/tweets', {q: voice.twitterSearch + ' exclude:retweets exclude:replies', result_type: 'recent', count : 100}, function(err, tweets, response) {
       if (err) {
@@ -46,67 +54,125 @@ Voice.find(["twitter_search IS NOT null AND (tweet_last_fetch_at IS null OR twee
       logger.log("Processing " + tweets.statuses.length + " results.");
 
 
-      async.each(tweets.statuses, function(tweet, nextTweet) {
+      async.eachLimit(tweets.statuses, 1, function(tweet, nextTweet) {
 
         logger.log("Tweet date: " +  tweet.created_at)
-        logger.log("Tweet: " +  tweet.text);
+        // logger.log("Tweet: " +  tweet.text);
 
 
 
-        async.each(tweet.entities.urls, function(url, nextUrl) {
-          unshortener.expand(url.url, function(err, unshortered) {
+        async.eachLimit(tweet.entities.urls, 1, function(url, nextUrl) {
+          request(url, function(err, res, body) {
             if (err) {
-              logger.error(err)
-              logger.error(url.url)
-              return nextUrl(err);
+              logger.error(err);
+              return nextUrl();
             }
 
-            console.log('TODO: Save the link!')
-            console.log(unshortered.href)
-            nextUrl()
-          })
+            var longURL = res.request.uri.href;
+
+            Post.find(['source_url = ?', [longURL]], function(err, posts) {
+              if (err) {
+                logger.error(err);
+
+                return nextUrl();
+              }
+
+              if (posts.length > 0) {
+                logger.log('URL exists');
+                return nextUrl();
+              }
+
+              Scrapper.processUrl(longURL, res, function(err, result) {
+                if (err) {
+                  logger.log('Scrapper Error');
+                  logger.error(err.stack);
+                  return nextUrl();
+                }
+
+                var data = {
+                  sourceUrl : result.sourceUrl,
+                  sourceType : result.sourceType,
+                  sourceService : result.sourceService,
+                  title : result.title.substr(0, 65),
+                  description : result.description.substr(0, 180),
+                  voiceId : voice.id,
+                  ownerId : voice.ownerId,
+                  approved : false
+                }
+
+                var post = new Post(data);
+
+                post.save(function(err, postResult) {
+                  if (err) {
+                    logger.error(err);
+                    logger.error(err.stack);
+                    return nextUrl();
+                  }
+
+                  if (result.images.length > 0) {
+
+                    logger.log(result.images[0].path);
+
+                    var imagePath = process.cwd() + '/public' + result.images[0].path;
+
+                    post.uploadImage('image', imagePath, function(err) {
+                      if (err) {
+                        logger.error(err);
+                        logger.error(err.stack);
+                      }
+
+                      post.save(function(err, result) {
+                        return nextUrl();
+                      });
+                    });
+                  } else {
+                    return nextUrl();
+                  };
+                });
+              });
+            });
+          });
+
         }, function(err) {
           if (err) {
-            logger.error(err);
             return nextTweet(err);
           }
 
-          tweet = new Tweet({
+          var tweetInstance = new Tweet({
             idStr : tweet.id_str,
             voiceId : voice.id,
             text : tweet.text
           });
 
-          tweet.save(function(err, result) {
-            logger.log('Saved ' + tweet.idStr);
+          tweetInstance.save(function(err, result) {
+            logger.log('Saved ' + tweetInstance.idStr);
             nextTweet(err);
           });
-
         });
       }, function(err) {
         if (err) {
           logger.error(err);
+          console.log(err.stack)
         }
 
-        voice = new Voice(voice);
+        var voiceInstance = new Voice(voice);
 
-        voice.tweetLastFetchAt = new Date(Date.now());
+        voiceInstance.tweetLastFetchAt = new Date(Date.now());
 
-        voice.save(function(err, result) {
+        voiceInstance.save(function(err, result) {
           logger.log('Updated Voice.tweetLastFetchAt');
           next();
-        })
+        });
       });
     });
   }, function(err) {
     if (err) {
-      logger.error(err)
+      logger.error(err);
+      console.log(err.stack)
     }
 
     fs.unlinkSync(LOCK_FILE);
 
     process.exit(0);
-  })
-})
-
-
+  });
+});
