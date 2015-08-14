@@ -98,7 +98,8 @@ require('./widgets/search-view/users-tab');
 require('./widgets/search-view/organizations-tab');
 
 require('./widgets/voice/posts-registry');
-require('./widgets/voice/voice-header.js');
+require('./widgets/voice/onboarding');
+require('./widgets/voice/voice-header');
 require('./widgets/voice/voice-footer');
 require('./widgets/voice/footer/share-buttons-group');
 require('./widgets/voice/footer/share-button');
