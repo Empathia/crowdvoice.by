@@ -590,7 +590,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
           ThreadsPresenter.build(req, threads, function (err, result) {
             if (err) { return next(err); }
 
-            res.json(result);
+            res.json({ status: 'reported' });
           });
         });
       });
