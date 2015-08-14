@@ -153,6 +153,26 @@ module.exports = function(req, res, next) {
 
           }, function(done) {
 
+            // Get the names of the voices owned and published
+            Voice.find({
+              owner_id: person.id,
+              status: Voice.STATUS_PUBLISHED
+            }, function (err, voices) {
+              if (err) { return done(err); }
+
+              async.map(voices, function (voice, next) {
+                next(null, voice.title);
+              }, function (err, voiceTitles) {
+                if (err) { return done(err); }
+
+                res.locals.currentPerson.voiceNames = voiceTitles;
+                req.currentPerson.voiceNames = voiceTitles;
+
+                done();
+              });
+            });
+          }, function(done) {
+
             // Get Organizations owned by currentUser
 
             person.ownedOrganizations(function(err, organizations) {
