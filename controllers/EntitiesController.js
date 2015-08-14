@@ -594,7 +594,42 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
           });
         });
       });
-    }
+    },
+
+    feed : function (req, res, next) {
+      ACL.isAllowed('feed', 'entities', req.role, {
+        entityProfileName: req.entity.profileName,
+        currentPerson: req.currentPerson
+      }, function (err, response) {
+        if (err) { return next(err); }
+
+        if (!response.isAllowed) {
+          return next(new ForbiddenError());
+        }
+
+        Notification.find({ follower_id: response.follower.id }, function (err, notifications) {
+          var actionIds = notifications.map(function (val) { return val.actionId; });
+
+          FeedAction.whereIn('id', actionIds, function (err, actions) {
+            FeedPresenter.build(actions, response.follower, false, function (err, presentedFeed) {
+              if (err) { return next(err); }
+
+              res.format({
+                html: function () {
+                  req.feed = presentedFeed;
+                  res.locals.feed = presentedFeed;
+                  res.render('people/feed');
+                },
+                json: function () {
+                  res.json(presentedFeed);
+                }
+              });
+            });
+          });
+        });
+      });
+    },
+
   }
 });
 

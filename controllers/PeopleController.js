@@ -63,40 +63,6 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
       });
     },
 
-    feed: function (req, res, next) {
-      ACL.isAllowed('feed', 'entities', req.role, {
-        currentEntity: req.entity,
-        currentPerson: req.currentPerson
-      }, function (err, response) {
-        if (err) { return next(err); }
-
-        if (!response.isAllowed) {
-          return next(new ForbiddenError());
-        }
-
-        Notification.find({ follower_id: hashids.decode(req.currentPerson.id)[0] }, function (err, notifications) {
-          var actionIds = notifications.map(function (val) { return val.actionId; });
-
-          FeedAction.whereIn('id', actionIds, function (err, actions) {
-            FeedPresenter.build(actions, req.currentPerson, false, function (err, presentedFeed) {
-              if (err) { return next(err); }
-
-              res.format({
-                html: function () {
-                  req.feed = presentedFeed;
-                  res.locals.feed = presentedFeed;
-                  res.render('people/feed');
-                },
-                json: function () {
-                  res.json(presentedFeed);
-                }
-              });
-            });
-          });
-        });
-      });
-    },
-
     savedPosts : function savedPosts(req, res, next) {
       ACL.isAllowed('savedPosts', 'entities', req.role, {
         currentEntity : req.entity,
