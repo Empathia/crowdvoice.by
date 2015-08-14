@@ -41,7 +41,7 @@ Class(CV, 'Report').inherits(Widget)({
             var allVoices = {
 			  "1": {label: 'This Organization is not authorized/official.', name: 'report1', active: true},
 			  "2": {label: 'I am the owner of this organization.', name: 'report2'},
-			  "3": {label: 'Unemployment in Detroit', name: 'report3'}
+			  "3": {label: 'This same organization already exists.', name: 'report3'}
 			};
 
 			var reportOptions = new CV.Select({

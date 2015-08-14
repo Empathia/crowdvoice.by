@@ -80,6 +80,12 @@
 
 	var feedItems = <%= JSON.stringify(feed) %>;
 
+	var currentOrganization;
+
+  <% if (typeof organization !== "undefined") { %>
+    currentOrganization = <%= JSON.stringify(organization) %>;
+  <% } %>
+
 	var feedItemEl = '\
 		<div class="feed-item">\
     	<div class="feed-item-time"></div>\
@@ -169,13 +175,32 @@
 
   if(currentPerson.ownedOrganizations.length > 0){
 
-	  var feedOptions = {
-			"1": {label: currentPerson.name+"\'s feed", name: currentPerson.profileName, active : true}
-		};
+  	if (currentOrganization) {
 
-		currentPerson.ownedOrganizations.forEach(function(org, index){
-			feedOptions[index+2] = {label: org.name+"\'s feed", name: org.profileName};
-		});
+  		var feedOptions = {
+				"1": {label: currentPerson.name+"\'s feed", name: currentPerson.profileName}
+			};
+
+			currentPerson.ownedOrganizations.forEach(function(org, index){
+				var isActive = false;
+				if(currentOrganization.id == org.id){
+					isActive = true;
+				}
+				feedOptions[index+2] = {label: org.name+"\'s feed", name: org.profileName, active : isActive};
+
+			});
+
+  	} else {
+
+		  var feedOptions = {
+				"1": {label: currentPerson.name+"\'s feed", name: currentPerson.profileName, active : true}
+			};
+
+			currentPerson.ownedOrganizations.forEach(function(org, index){
+				feedOptions[index+2] = {label: org.name+"\'s feed", name: org.profileName};
+			});
+
+		}
 
 		var feedSelect = new CV.Select({
 			style : 'tiny',
