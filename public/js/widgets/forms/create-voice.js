@@ -44,6 +44,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
          * if other than null assumes you are editing an existing Voice.
          */
         data : null,
+        _flashMessage : null,
 
         MAX_TITLE_LENGTH : 65,
         MAX_DESCRIPTION_LENGTH : 180,
@@ -313,7 +314,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             var options = {
                 profileName : Person.get().profileName,
                 slug : slug
-            }
+            };
 
             if (this.data) {
               options.voiceSlug = this.data.slug;
@@ -430,6 +431,8 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 return this._displayErrors(validate[0].errors);
             }
 
+            this._setSendingState();
+
             // Edit
             if (this.data) {
                 var profileName;
@@ -455,9 +458,12 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
         },
 
         _createVoiceHandler : function _createVoiceHandler(err, res) {
-            console.log(err);
-            console.log(res);
-            window.location = '/' + res.owner.profileName + '/' + res.slug;
+            if (err) {
+                this._setErrorState(res.status + ': ' + res.statusText);
+                return;
+            }
+
+            this._setSuccessState(res);
         },
 
         /* Display the current form errors.
@@ -468,6 +474,42 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 var widget = 'voice' + this.format.capitalizeFirstLetter(propertyName);
                 this[widget].error();
             }, this);
+        },
+
+        _setSendingState : function _setSendingState() {
+            this.buttonSend.disable();
+            return this;
+        },
+
+        /* Sets the success state of the form.
+         * @method _setSuccessState <private>
+         */
+        _setSuccessState : function _setSuccessState(res) {
+            var message;
+
+            if (this._flashMessage) {
+                this._flashMessage = this._flashMessage.destroy();
+            }
+
+            if (this.data) {
+                message = "“" + res.title + '” was updated!';
+                this.buttonSend.enable();
+            } else {
+                message = "“" + res.title + '” was created! You will be redirected to its profile in a couple of seconds.';
+
+                window.setTimeout(function() {
+                    window.location.replace('/' + res.owner.profileName + '/' + res.slug);
+                }, 4000);
+            }
+
+            this.appendChild(new CV.Alert({
+                name : '_flashMessage',
+                type : 'positive',
+                text : message,
+                className : '-mb1'
+            })).render(this.el, this.el.firstElementChild);
+
+            return this;
         },
 
         /* Returns the data to be validated using Checkit module

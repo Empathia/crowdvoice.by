@@ -227,6 +227,7 @@ require('./widgets/elements/detect-location.js');
 require('./widgets/ui/modal');
 require('./widgets/ui/input');
 require('./widgets/ui/checkbox');
+require('./widgets/ui/close-button');
 
 // threads and messages
 require('./widgets/messages/ThreadsContainer.js');

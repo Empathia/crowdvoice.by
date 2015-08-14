@@ -1,3 +1,5 @@
+var Events = require('./../../lib/events');
+
 Class(CV, 'PostCreator').inherits(Widget).includes(CV.WidgetUtils)({
 
     /* Creates a new instance of a specific PostCreator using the `type` prop passed.
@@ -17,7 +19,6 @@ Class(CV, 'PostCreator').inherits(Widget).includes(CV.WidgetUtils)({
 
     prototype : {
         _window : null,
-        closeButton : null,
 
         init : function init(config) {
             Widget.prototype.init.call(this, config);
@@ -32,7 +33,7 @@ Class(CV, 'PostCreator').inherits(Widget).includes(CV.WidgetUtils)({
          */
         _bindEvents : function _bindEvents() {
             this._windowKeydownHandlerRef = this._windowKeydownHandler.bind(this);
-            this._window.addEventListener('keydown', this._windowKeydownHandlerRef);
+            Events.on(this._window, 'keydown', this._windowKeydownHandlerRef);
 
             return this;
         },
@@ -42,11 +43,14 @@ Class(CV, 'PostCreator').inherits(Widget).includes(CV.WidgetUtils)({
          * @return [PostCreator]
          */
         addCloseButton : function addCloseButton() {
-            this.el.insertAdjacentHTML('afterbegin', '<svg class="cv-post-creator__close -clickable"><use xlink:href="#svg-close"></use></svg>');
-            this.closeButton = this.el.getElementsByClassName('cv-post-creator__close')[0];
+            this.appendChild(new CV.UI.Close({
+                name : 'closeButton',
+                className : 'ui-close-button__overlays -abs',
+                svgClassName : '-s18 -color-white'
+            })).render(this.el, this.el.firstElementChild);
 
             this._closeButtonClickHanderRef = this._closeButtonClickHander.bind(this);
-            this.closeButton.addEventListener('click', this._closeButtonClickHanderRef);
+            this.closeButton.bind('click', this._closeButtonClickHanderRef);
 
             return this;
         },
@@ -69,16 +73,10 @@ Class(CV, 'PostCreator').inherits(Widget).includes(CV.WidgetUtils)({
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
 
-            this._window.removeEventListener('keydown', this._windowKeydownHandlerRef);
+            Events.off(this._window, 'keydown', this._windowKeydownHandlerRef);
             this._windowKeydownHandlerRef = null;
 
-            if (this.closeButton) {
-                this.closeButton.removeEventListener('click', this._closeButtonClickHanderRef);
-                this._closeButtonClickHanderRef = null;
-            }
-
             this._window = null;
-            this.closeButton = null;
 
             return null;
         }

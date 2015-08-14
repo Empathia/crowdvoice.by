@@ -14,9 +14,7 @@ Class(CV, 'InviteToOrganization').inherits(Widget).includes(CV.WidgetUtils)({
     prototype : {
         /* Entity Model to invite */
         data : null,
-
         _flashMessage : null,
-
         init : function(config){
             Widget.prototype.init.call(this, config);
             this.el = this.element[0];
@@ -34,10 +32,9 @@ Class(CV, 'InviteToOrganization').inherits(Widget).includes(CV.WidgetUtils)({
          */
         _setup : function _setup() {
             var allOrgs = [];
-            Person.get().ownedOrganizations.forEach(function(org, index) {
+            Person.get().ownedOrganizations.forEach(function(org) {
                 if (this.data.organizationIds.indexOf(org.id) === -1) {
                     allOrgs.push({
-                        name : 'org_' + index,
                         label : org.name,
                         value : org.id
                     });
@@ -66,7 +63,7 @@ Class(CV, 'InviteToOrganization').inherits(Widget).includes(CV.WidgetUtils)({
 
             this.appendChild(new CV.Button({
                 name : 'buttonSend',
-                style : 'primary -font-bold -full-width -m0',
+                className : 'primary -font-bold -full-width -m0',
                 type : 'single',
                 label : 'Invite ' + this.data.name + ' ' + (this.data.lastname || '')
             })).render(this.element.find('.placeholder-send'));

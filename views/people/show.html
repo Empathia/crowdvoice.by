@@ -289,7 +289,17 @@
         });
       });
       profileSettings.contribute.on('click', function(){
-        inviteToContributeModal.show();
+        var inviteToContributeModal = new CV.UI.Modal({
+          title : 'Invite to Contribute',
+          name : 'inviteToContributeModal',
+          action : CV.InviteToContribute,
+          width : 650,
+          data : <%= JSON.stringify(person) %>
+        }).render(document.body);
+
+        requestAnimationFrame(function() {
+          inviteToContributeModal.activate();
+        });
       });
     }
 
@@ -325,13 +335,6 @@
                       receiverEntityId : '<%= person.id %>'
                     },
       width       : 650
-    });
-
-    var inviteToContributeModal = new CV.Modal({
-      title       : 'Invite to Contribute',
-      name        : 'inviteToContributeModal',
-      action      : CV.InviteToContribute,
-      width       : 650,
     });
 
   } //createControls
