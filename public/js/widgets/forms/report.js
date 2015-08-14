@@ -21,6 +21,15 @@ Class(CV, 'Report').inherits(Widget)({
         </div>\
     ',
 
+    REPORTED : '\
+        <div class="sent-form">\
+        <h2>This organization has been already reported.</h2>\
+        <p>Please wait until the report is reviewed and you may get a response.</p>\
+        <br>\
+        <button class="cv-button ok small">Ok</button>\
+        </div>\
+    ',
+
     prototype        : {
         type            : null,
         style           : null,
@@ -104,7 +113,11 @@ Class(CV, 'Report').inherits(Widget)({
                 success : function(data) {
                 	console.log(data);
                     sendmessage.element.find('form').remove();
-                    sendmessage.element.append(sendmessage.constructor.SENT);
+                    if (data.status == 'ok'){
+                    	sendmessage.element.append(sendmessage.constructor.SENT);
+                	}else {
+                    	sendmessage.element.append(sendmessage.constructor.REPORTED);
+                	}
                     sendmessage.element.find('button').on('click', function(){
                         sendmessage.dispatch('close');
                         sendmessage.setup();
