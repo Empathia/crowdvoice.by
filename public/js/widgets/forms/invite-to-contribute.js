@@ -32,11 +32,11 @@ Class(CV, 'InviteToContribute').inherits(Widget).includes(CV.WidgetUtils)({
          */
         _setup : function _setup() {
             var allVoices = [];
-            Person.get().voiceIds.filter(function(id) {
-                if (this.data.voiceIds.indexOf(id) === -1) {
+            Person.get().voiceNames.forEach(function(voice) {
+                if (this.data.voiceIds.indexOf(voice.id) === -1) {
                     allVoices.push({
-                        label : id,
-                        value : id
+                        label : voice.name,
+                        value : voice.id
                     });
                 }
             }, this);
@@ -92,7 +92,7 @@ Class(CV, 'InviteToContribute').inherits(Widget).includes(CV.WidgetUtils)({
 
             this._setSendingState();
 
-            console.log(this._dataPresenter())
+            console.log(this._dataPresenter());
 
             API.sendInvitation({
                 profileName : Person.get().profileName,
