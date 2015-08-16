@@ -4,8 +4,8 @@ Class(CV, 'PostDetailLinkHeader').inherits(Widget).includes(CV.WidgetUtils)({
     ELEMENT_CLASS : 'cv-post-detail-link__header',
     HTML : '\
         <div>\
-            <div class="cv-post-detail-link__header-actions -float-right">\
-                <a class="header-actions-view-original-btn cv-button tiny -m0" target="_blank">View Original</a>\
+            <div class="cv-post-detail-link__header-actions cv-post-detail-actions -float-right">\
+                <a class="header-actions-view-original-btn ui-btn -sm -mr1" target="_blank">View Original</a>\
             </div>\
             <div class="-overflow-hidden">\
                 <p data-title class="cv-post-detail-link__header-title -font-bold -ellipsis"></p>\
@@ -29,14 +29,27 @@ Class(CV, 'PostDetailLinkHeader').inherits(Widget).includes(CV.WidgetUtils)({
             this.dateElement = this.el.querySelector('[data-date]');
             this.savedElement = this.el.querySelector('[data-saved]');
             this.viewOriginalBtn = this.el.querySelector('.header-actions-view-original-btn');
+
+            this.appendChild(new CV.PostDetailActionsSave({
+                name : 'actionSave',
+                tooltipPostition : 'bottom'
+            })).render(this.el.querySelector('.cv-post-detail-actions'));
         },
 
         update : function update(data) {
             this.dom.updateText(this.titleElement, data.title);
             this.dom.updateText(this.dateElement, moment(data.publishedAt).format('MMM DD, YYYY'));
             this.dom.updateAttr('datetime', this.dateElement, data.publishedAt);
-            this.dom.updateText(this.savedElement, data.totalSaves || 0);
             this.dom.updateAttr('href', this.viewOriginalBtn, data.sourceUrl);
+            this.updateSaves(data);
+            this.actionSave.update(data);
+
+            return this;
+        },
+
+        updateSaves : function updateSaves(data) {
+            this.dom.updateText(this.savedElement, data.totalSaves || 0);
+            return this;
         }
     }
 });

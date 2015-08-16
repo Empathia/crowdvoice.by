@@ -48,10 +48,23 @@
 
   &@{-}top @{ns}-popover__arrow,
   &@{-}top-right @{ns}-popover__arrow {
-    &::before {border-top-color: inherit}
+    &::before {border-top-color: currentColor}
     &::after {
       margin-top: -1px;
       border-top-color: @color-white;
+    }
+  }
+
+  /* bottom */
+  &@{-}bottom @{ns}-popover__arrow {
+    bottom: 100%;
+    left: 50%;
+    margin-left: unit(-@popover-arrow-size, px);
+
+    &::before {border-bottom-color: currentColor}
+    &::after {
+      margin-bottom: -1px;
+      border-bottom-color: @color-white;
     }
   }
 
@@ -151,6 +164,12 @@
       right: 0;
       bottom: 100%;
       transform: translate(15px,-15px);
+    }
+
+    &@{-}bottom {
+      left: 50%;
+      top: 100%;
+      transform: translate(-50%, 15px);
     }
 
     &@{-}left {

@@ -83,8 +83,18 @@
 }
 
 @{ns}-btn {
-  border-color: transparent;
+  border-color: @color-neutral-light;
+  background-color: @color-white;
+  color: @color-neutral-dark;
+  fill: @color-neutral-dark;
+  box-shadow: inset 0px -3px 0px @color-inner-shadow;
   transition: background-color 240ms ease;
+
+  &:hover:enabled {
+    color: @color-neutral-x-dark;
+    fill: @color-neutral-x-dark;
+    border-color: @color-primary-dark;
+  }
 
   &:active, &.-is-active {transition-duration: 0}
 

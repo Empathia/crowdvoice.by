@@ -32,6 +32,7 @@ Class(CV, 'PostDetailActionsSave').inherits(Widget).includes(CV.WidgetUtils)({
     prototype : {
         /* PostEntity data */
         data : null,
+        tooltipPostition : 'top',
 
         init : function init (config) {
             Widget.prototype.init.call(this, config);
@@ -71,7 +72,7 @@ Class(CV, 'PostDetailActionsSave').inherits(Widget).includes(CV.WidgetUtils)({
             this.appendChild(new CV.PopoverBlocker({
                 name : 'unsavePopover',
                 className : 'unfollow-popover',
-                placement : 'top',
+                placement : this.tooltipPostition,
                 content : this.unsavePopoverContent.el
             })).render(this.el);
 

@@ -59,10 +59,13 @@ Class(CV, 'PostDetailMediaInfo').inherits(Widget).includes(CV.WidgetUtils)({
             if (data.sourceType === 'video') {
                 this._appendVideo(data);
             }
+
+            return this;
         },
 
         updateSaves : function updateSaves(data) {
             this.dom.updateText(this.savedElement, data.totalSaves || 0);
+            return this;
         },
 
         _appendImage : function _appendImage(data) {
