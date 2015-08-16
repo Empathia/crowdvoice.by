@@ -128,6 +128,9 @@ require('./widgets/voice/moderate/footer.js');
 
 require('./widgets/voice/add-content/');
 
+// popovers
+require('./widgets/popovers/unsave');
+
 // posts
 require('./widgets/posts/modules/images');
 require('./widgets/posts/post');
@@ -136,7 +139,6 @@ require('./widgets/posts/post-video');
 require('./widgets/posts/post-link');
 require('./widgets/posts/actions/save');
 require('./widgets/posts/actions/share');
-require('./widgets/posts/actions/popover-unsave');
 
 // post detail
 require('./widgets/post-details/controllers/base');
@@ -144,6 +146,7 @@ require('./widgets/post-details/controllers/approved');
 require('./widgets/post-details/controllers/unapproved');
 require('./widgets/post-details/navigation');
 require('./widgets/post-details/post-detail');
+require('./widgets/post-details/actions/save');
 // post detail link
 require('./widgets/post-details/link/post-detail-link');
 require('./widgets/post-details/link/header');

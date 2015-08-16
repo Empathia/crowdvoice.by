@@ -1,44 +1,52 @@
 /* globals App */
+/* Handles the save/unsave post actions for PostDetails.
+ * update(entity) => updates the button using the EntityData passed as param
+ */
 var API = require('./../../../lib/api');
 var Events = require('./../../../lib/events');
 
-Class(CV, 'PostActionSave').inherits(Widget)({
-    ELEMENT_CLASS : 'post-card-actions-item -col6',
+Class(CV, 'PostDetailActionsSave').inherits(Widget).includes(CV.WidgetUtils)({
+    ELEMENT_CLASS : 'post-detail-action-item cv-button tiny -m0 p0',
+    HTML : '<button></button>',
 
     HTML_SAVE : '\
-        <svg class="post-card-activity-svg">\
+        <svg class="-s14">\
             <use xlink:href="#svg-save"></use>\
         </svg>\
-        <p class="post-card-actions-label">Save</p>',
+        <span class="post-card-actions-label">Save</span>',
 
     HTML_SAVED : '\
         <div class="saved-button -color-positive">\
-            <svg class="post-card-activity-svg">\
+            <svg class="-s14">\
                 <use xlink:href="#svg-saved-posts"></use>\
             </svg>\
-            <p class="post-card-actions-label">Saved</p>\
+            <span class="post-card-actions-label">Saved</span>\
         </div>\
         <div class="unsave-button -color-negative">\
-            <svg class="post-card-activity-svg">\
+            <svg class="-s14">\
                 <use xlink:href="#svg-save-outline"></use>\
             </svg>\
-            <p class="post-card-actions-label">Unsave</p>\
+            <span class="post-card-actions-label">Unsave</span>\
         </div>',
 
     prototype : {
-        entity : null,
+        /* PostEntity data */
+        data : null,
 
         init : function init (config) {
             Widget.prototype.init.call(this, config);
             this.el = this.element[0];
+            this._bindEvents();
+        },
 
-            if (this.entity.saved) {
+        update : function update(data) {
+            this.data = data;
+
+            if (data.saved) {
                 this._setIsSaved();
             } else {
                 this._setIsNotSaved();
             }
-
-            this._bindEvents();
         },
 
         _bindEvents : function _bindEvents() {
@@ -51,7 +59,7 @@ Class(CV, 'PostActionSave').inherits(Widget)({
          * @method _setIsSaved <private>
          */
         _setIsSaved : function _setIsSaved() {
-            this.entity.saved = true;
+            this.data.saved = true;
 
             this.el.innerHTML = '';
             this.el.insertAdjacentHTML('beforeend', this.constructor.HTML_SAVED);
@@ -81,7 +89,7 @@ Class(CV, 'PostActionSave').inherits(Widget)({
          * @method _setIsNotSaved <private>
          */
         _setIsNotSaved : function _setIsNotSaved() {
-            this.entity.saved = false;
+            this.data.saved = false;
 
             if (this.unsavePopover) {
                 this.unsavePopover = this.unsavePopover.destroy();
@@ -100,10 +108,10 @@ Class(CV, 'PostActionSave').inherits(Widget)({
         * @method _clickHandler <private>
         */
         _clickHandler : function _clickHandler() {
-            if (this.entity.saved) {
+            if (this.data.saved) {
                 // wants to unsave? you need to confirm first.
                 this.unsavePopover.activate();
-                return void 0;
+                return;
             }
 
             this._saveHandler();
@@ -113,31 +121,40 @@ Class(CV, 'PostActionSave').inherits(Widget)({
          * @method _saveHandler <private>
          */
         _saveHandler : function _saveHandler() {
+            this.data.totalSaves++;
+            this.parent.updateSaves(this.data);
             this._setIsSaved()._cancelHoverState();
 
             API.postSave({
                 profileName : App.Voice.data.owner.profileName,
                 voiceSlug : App.Voice.data.slug,
-                postId : this.entity.id
+                postId : this.data.id
             }, function(err) {
                 if (err) {
+                    this.data.totalSaves--;
+                    this.parent.updateSaves(this.data);
                     this._setIsNotSaved();
                 }
             }.bind(this));
         },
 
+
         /* Sets the button state as not saved plus calling the API to unsave.
          * @method _unsaveHandler <private>
          */
         _unsaveHandler : function _unsaveHandler() {
+            this.data.totalSaves--;
+            this.parent.updateSaves(this.data);
             this._setIsNotSaved();
 
             API.postUnsave({
                 profileName : App.Voice.data.owner.profileName,
                 voiceSlug : App.Voice.data.slug,
-                postId : this.entity.id
+                postId : this.data.id
             }, function(err) {
                 if (err) {
+                    this.data.totalSaves++;
+                    this.parent.updateSaves(this.data);
                     this._setIsSaved();
                 }
             }.bind(this));
@@ -171,3 +188,4 @@ Class(CV, 'PostActionSave').inherits(Widget)({
         }
     }
 });
+
