@@ -42,12 +42,6 @@ Class(CV, 'Post').inherits(Widget).includes(
         totalSaves: 0,
         publishedAt: '',
 
-        _repostIntent : function _repostIntent() {},
-        _repost : function _repost() {},
-
-        shareIntent : function shareIntent() {},
-        _share : function _share() {},
-
         /* Adds the Re-post, save and share buttons
          * @method addActions <public> [Function]
          */
@@ -63,7 +57,8 @@ Class(CV, 'Post').inherits(Widget).includes(
 
             this.appendChild(new CV.PostActionShare({
                 name : 'actionShare',
-                className : '-col-6'
+                className : '-col-6',
+                entity : this
             })).render(this.actionsRow);
 
             return this;

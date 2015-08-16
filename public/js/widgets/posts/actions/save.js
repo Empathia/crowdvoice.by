@@ -3,7 +3,7 @@ var API = require('./../../../lib/api');
 var Events = require('./../../../lib/events');
 
 Class(CV, 'PostActionSave').inherits(Widget)({
-    ELEMENT_CLASS : 'post-card-actions-item -col6',
+    ELEMENT_CLASS : 'post-card-actions-item -col6 -clickable',
 
     HTML_SAVE : '\
         <svg class="post-card-activity-svg">\

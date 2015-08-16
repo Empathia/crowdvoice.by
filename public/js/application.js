@@ -31,7 +31,6 @@ require('./lib/widget-utils.js');
 require('./lib/Widget.js');
 require('./lib/image-halt');
 require('./lib/responsive-width');
-require('share-url/neon');
 require('./app');
 
 // Global Widgets
@@ -103,7 +102,6 @@ require('./widgets/voice/voice-header');
 require('./widgets/voice/voice-footer');
 require('./widgets/voice/footer/share-buttons-group');
 require('./widgets/voice/footer/share-button');
-require('./widgets/voice/footer/share-items');
 require('./widgets/voice/footer/embed-button');
 require('./widgets/voice/voice-follow-button.js');
 require('./widgets/voice/voice-related-voices.js');
@@ -130,6 +128,7 @@ require('./widgets/voice/add-content/');
 
 // popovers
 require('./widgets/popovers/unsave');
+require('./widgets/popovers/share');
 
 // posts
 require('./widgets/posts/modules/images');

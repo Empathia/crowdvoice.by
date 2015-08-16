@@ -1,6 +1,8 @@
+var Events = require('./../../lib/events');
 var Checkit = require('checkit');
+var ShareUrl = require('share-url');
 
-Class(CV, 'VoiceFooterShareItems').inherits(Widget).includes(CV.WidgetUtils, ShareUrl)({
+Class(CV, 'PopoverShare').inherits(Widget).includes(CV.WidgetUtils)({
     HTML : '\
         <div class="ui-vertical-list hoverable">\
             <a class="ui-vertical-list-item -block -tdn" target="_blank" data-type="twitter" title="Share on Twitter">\
@@ -34,6 +36,11 @@ Class(CV, 'VoiceFooterShareItems').inherits(Widget).includes(CV.WidgetUtils, Sha
     ',
 
     prototype : {
+        data : {
+            url : null,
+            title : ''
+        },
+
         _checkit : null,
 
         init : function init(config) {
@@ -47,10 +54,9 @@ Class(CV, 'VoiceFooterShareItems').inherits(Widget).includes(CV.WidgetUtils, Sha
             this.emailInput = this.el.querySelector('[data-input="email"]');
             this.sendEmailButton = this.el.querySelector('[data-button="send-email"]');
 
-            var url = location.href;
-            this.dom.updateAttr('href', this.fa, this.facebook({u: url}));
-            this.dom.updateAttr('href', this.tw, this.twitter({url: url, text: App.Voice.data.title}));
-            this.dom.updateAttr('href', this.gp, this.googlePlus({url: url}));
+            this.dom.updateAttr('href', this.fa, ShareUrl.facebook({u: this.data.url}));
+            this.dom.updateAttr('href', this.tw, ShareUrl.twitter({url: this.data.url, text: this.data.title}));
+            this.dom.updateAttr('href', this.gp, ShareUrl.googlePlus({url: this.data.url}));
 
             this._checkit = new Checkit({
                 email : ['required', 'email']
@@ -61,25 +67,27 @@ Class(CV, 'VoiceFooterShareItems').inherits(Widget).includes(CV.WidgetUtils, Sha
 
         _bindEvents : function _bindEvents() {
             this._beforeEmailSendRef = this._beforeEmailSend.bind(this);
-            this.sendEmailButton.addEventListener('click', this._beforeEmailSendRef);
+            Events.on(this.sendEmailButton, 'click', this._beforeEmailSendRef);
 
             this._keyupHandlerRef = this._keyupHandler.bind(this);
-            this.emailInput.addEventListener('keyup', this._keyupHandlerRef);
+            Events.on(this.emailInput, 'keyup', this._keyupHandlerRef);
 
             return this;
         },
 
         _beforeEmailSend : function _beforeEmailSend() {
-            var checkResult = this._checkit.runSync({email : this.emailInput.value});
+            var checkResult = this._checkit.runSync({
+                email : this.emailInput.value
+            });
 
             if (checkResult[0]) {
                 return this.emailInputWrapper.classList.add('error');
             }
 
-            var emailUrlString = this.email({
+            var emailUrlString = ShareUrl.email({
                 to : this.emailInput.value,
-                subject : 'Check out this page',
-                body : window.location
+                subject : 'Check out this at crowdvoice.by',
+                body : this.data.title + '\n' + this.data.url
             });
 
             window.location = emailUrlString;
@@ -92,10 +100,10 @@ Class(CV, 'VoiceFooterShareItems').inherits(Widget).includes(CV.WidgetUtils, Sha
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
 
-            this.sendEmailButton.removeEventListener('click', this._beforeEmailSendRef);
+            Events.off(this.sendEmailButton, 'click', this._beforeEmailSendRef);
             this._beforeEmailSendRef = null;
 
-            this.emailInput.removeEventListener('keyup', this._keyupHandlerRef);
+            Events.off(this.emailInput, 'keyup', this._keyupHandlerRef);
             this._keyupHandlerRef = null;
 
             return null;

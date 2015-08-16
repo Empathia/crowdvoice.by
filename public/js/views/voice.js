@@ -143,19 +143,27 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
          */
         _checkInitialHash : function _checkInitialHash() {
             var hash = window.location.hash.replace(/^#!/, '');
+            var matches = hash.match(/(^\d{4}-\d{2})(\/\w+)?/);
 
-            if (hash !== "" && /^\d{4}-\d{2}$/.test(hash)) {
+            if (!hash || !matches) {
+                return this.voicePostLayersManager.loadDefaultLayer();
+            }
+
+            var month = matches[1];
+            // var postId = matches[2];
+
+            if (month && /^\d{4}-\d{2}/.test(month)) {
                 // if is the very first layer, do not scrollTo, just load it
-                if (hash === this.voicePostLayersManager._layers[0].dateString) {
+                if (month === this.voicePostLayersManager._layers[0].dateString) {
                     return this.voicePostLayersManager.loadDefaultLayer();
                 }
 
                 // otherwise, animate the scrolling
                 this.voicePostLayersManager._jumpToHandlerRef({
-                    dateString: hash
+                    dateString: month
                 });
 
-                return undefined;
+                return;
             }
 
             this.voicePostLayersManager.loadDefaultLayer();
