@@ -146,6 +146,7 @@ require('./widgets/post-details/controllers/unapproved');
 require('./widgets/post-details/navigation');
 require('./widgets/post-details/post-detail');
 require('./widgets/post-details/actions/save');
+require('./widgets/post-details/actions/share');
 // post detail link
 require('./widgets/post-details/link/post-detail-link');
 require('./widgets/post-details/link/header');

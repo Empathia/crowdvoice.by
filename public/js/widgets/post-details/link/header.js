@@ -6,6 +6,8 @@ Class(CV, 'PostDetailLinkHeader').inherits(Widget).includes(CV.WidgetUtils)({
         <div>\
             <div class="cv-post-detail-link__header-actions cv-post-detail-actions -float-right">\
                 <a class="header-actions-view-original-btn ui-btn -sm -mr1" target="_blank">View Original</a>\
+                <div data-actions-group class="cv-button-group multiple">\
+                </div>\
             </div>\
             <div class="-overflow-hidden">\
                 <p data-title class="cv-post-detail-link__header-title -font-bold -ellipsis"></p>\
@@ -29,11 +31,17 @@ Class(CV, 'PostDetailLinkHeader').inherits(Widget).includes(CV.WidgetUtils)({
             this.dateElement = this.el.querySelector('[data-date]');
             this.savedElement = this.el.querySelector('[data-saved]');
             this.viewOriginalBtn = this.el.querySelector('.header-actions-view-original-btn');
+            this.actionsGroup = this.el.querySelector('[data-actions-group]');
 
             this.appendChild(new CV.PostDetailActionsSave({
                 name : 'actionSave',
                 tooltipPostition : 'bottom'
-            })).render(this.el.querySelector('.cv-post-detail-actions'));
+            })).render(this.actionsGroup);
+
+            this.appendChild(new CV.PostDetailActionsShare({
+                name : 'actionShare',
+                tooltipPostition : 'bottom'
+            })).render(this.actionsGroup);
         },
 
         update : function update(data) {
@@ -43,6 +51,7 @@ Class(CV, 'PostDetailLinkHeader').inherits(Widget).includes(CV.WidgetUtils)({
             this.dom.updateAttr('href', this.viewOriginalBtn, data.sourceUrl);
             this.updateSaves(data);
             this.actionSave.update(data);
+            this.actionShare.update(data);
 
             return this;
         },

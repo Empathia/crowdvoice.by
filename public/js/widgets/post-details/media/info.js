@@ -17,7 +17,7 @@ Class(CV, 'PostDetailMediaInfo').inherits(Widget).includes(CV.WidgetUtils)({
                         <span data-saved></span>\
                     </svg>\
                 </div>\
-                <div class="cv-post-detail-actions">\
+                <div class="cv-post-detail-actions cv-button-group multiple">\
                 </div>\
             </div>\
         </div>\
@@ -35,10 +35,16 @@ Class(CV, 'PostDetailMediaInfo').inherits(Widget).includes(CV.WidgetUtils)({
             this.titleElement = this.el.querySelector('[data-title]');
             this.descriptionElement = this.el.querySelector('[data-description]');
             this.savedElement = this.el.querySelector('[data-saved]');
+            this.actionsGroup = this.el.querySelector('.cv-post-detail-actions');
 
             this.appendChild(new CV.PostDetailActionsSave({
                 name : 'actionSave'
-            })).render(this.el.querySelector('.cv-post-detail-actions'));
+            })).render(this.actionsGroup);
+
+            this.appendChild(new CV.PostDetailActionsShare({
+                name : 'actionShare',
+                tooltipPostition : 'top'
+            })).render(this.actionsGroup);
         },
 
         update : function update(data) {
@@ -49,6 +55,7 @@ Class(CV, 'PostDetailMediaInfo').inherits(Widget).includes(CV.WidgetUtils)({
             this.updateSaves(data);
 
             this.actionSave.update(data);
+            this.actionShare.update(data);
 
             this.mediaElement.innerHTML = '';
 

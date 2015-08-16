@@ -6,7 +6,7 @@ var API = require('./../../../lib/api');
 var Events = require('./../../../lib/events');
 
 Class(CV, 'PostDetailActionsSave').inherits(Widget).includes(CV.WidgetUtils)({
-    ELEMENT_CLASS : 'post-detail-action-item cv-button tiny -m0 p0',
+    ELEMENT_CLASS : 'post-detail-action-item cv-button tiny',
     HTML : '<button></button>',
 
     HTML_SAVE : '\

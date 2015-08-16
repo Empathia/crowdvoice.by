@@ -54,15 +54,19 @@ Class(CV, 'PopoverShare').inherits(Widget).includes(CV.WidgetUtils)({
             this.emailInput = this.el.querySelector('[data-input="email"]');
             this.sendEmailButton = this.el.querySelector('[data-button="send-email"]');
 
-            this.dom.updateAttr('href', this.fa, ShareUrl.facebook({u: this.data.url}));
-            this.dom.updateAttr('href', this.tw, ShareUrl.twitter({url: this.data.url, text: this.data.title}));
-            this.dom.updateAttr('href', this.gp, ShareUrl.googlePlus({url: this.data.url}));
-
             this._checkit = new Checkit({
                 email : ['required', 'email']
             });
 
-            this._bindEvents();
+            this.update(this.data)._bindEvents();
+        },
+
+        update : function update(data) {
+            this.data = data;
+            this.dom.updateAttr('href', this.fa, ShareUrl.facebook({u: this.data.url}));
+            this.dom.updateAttr('href', this.tw, ShareUrl.twitter({url: this.data.url, text: this.data.title}));
+            this.dom.updateAttr('href', this.gp, ShareUrl.googlePlus({url: this.data.url}));
+            return this;
         },
 
         _bindEvents : function _bindEvents() {
