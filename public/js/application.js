@@ -96,6 +96,7 @@ require('./widgets/search-view/voices-tab');
 require('./widgets/search-view/users-tab');
 require('./widgets/search-view/organizations-tab');
 require('./views/savedPosts');
+require('./widgets/saved-posts/onboarding');
 require('./widgets/saved-posts/manager');
 
 require('./widgets/voice/posts-registry');

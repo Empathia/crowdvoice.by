@@ -6,6 +6,19 @@ Class(CV, 'SavedPosts').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport
                 this[propertyName] = config[propertyName];
             }, this);
 
+            if (this.posts.length) {
+                return this._addManager();
+            }
+
+            this._showOnboarding();
+        },
+
+        _addManager : function _addManager() {
+            this.container.insertAdjacentHTML('afterbegin', '\
+                <div class="saved-posts-intro">\
+                    <h1 class="-font-bold -m0">Saved Posts</h1>\
+                </div>');
+
             this.appendChild(new CV.SavedPostsManager({
                 name : 'manager',
                 data : {
@@ -14,6 +27,12 @@ Class(CV, 'SavedPosts').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport
             })).render(this.container);
 
             this.manager.layout();
+        },
+
+        _showOnboarding : function _showOnboarding() {
+            this.appendChild(new CV.SavedPostsOnboarding({
+                name : 'onboarding'
+            })).render(this.container);
         }
     }
 });
