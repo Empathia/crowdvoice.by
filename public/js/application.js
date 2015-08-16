@@ -95,6 +95,8 @@ require('./views/search');
 require('./widgets/search-view/voices-tab');
 require('./widgets/search-view/users-tab');
 require('./widgets/search-view/organizations-tab');
+require('./views/savedPosts');
+require('./widgets/saved-posts/manager');
 
 require('./widgets/voice/posts-registry');
 require('./widgets/voice/onboarding');
@@ -143,6 +145,7 @@ require('./widgets/posts/actions/share');
 require('./widgets/post-details/controllers/base');
 require('./widgets/post-details/controllers/approved');
 require('./widgets/post-details/controllers/unapproved');
+require('./widgets/post-details/controllers/saved');
 require('./widgets/post-details/navigation');
 require('./widgets/post-details/post-detail');
 require('./widgets/post-details/actions/save');
