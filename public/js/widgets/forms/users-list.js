@@ -23,7 +23,7 @@ Class(CV, 'UsersList').inherits(Widget)({
             Widget.prototype.init.call(this, config);
 
             var usersList = this;
-            var baseTitle = this.listTitle.replace('{count}', this.users.length)
+            var baseTitle = this.listTitle.replace('{count}', this.users.length);
             this.element.find('.voice-title').text( baseTitle );
 
             var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -41,13 +41,13 @@ Class(CV, 'UsersList').inherits(Widget)({
                   });
                 }
                 var userDate = new Date(entity.createdAt);
-
                 var prettyDate = months[userDate.getUTCMonth()] + ', ' + userDate.getUTCFullYear();
+                var image = (entity.images.card && entity.images.card.url) || '/img/placeholder-image.png';
 
                 var userDOM = '\
                     <div class="cv-user">\
                         <div class="img">\
-                            <img src="' + entity.images.card.url + '">\
+                            <img src="' + image + '">\
                         </div>\
                         <div class="info">\
                             <span class="name">' + entity.name + '</span><br>\
