@@ -1,20 +1,6 @@
 @{ns}-modal {
   background-color: transparent;
 
-  .cv-modal__backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-
-    opacity: 0;
-    transition-property: opacity;
-    transition-duration: 150ms;
-    transition-timing-function: ease;
-  }
-
   .cv-modal {
     opacity: 0;
     transform: translate(-50%, -5%);
@@ -35,4 +21,21 @@
       transition-duration: 260ms;
     }
   }
+}
+
+.cv-modal__backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+
+  opacity: 0;
+  transition-property: opacity;
+  transition-duration: 150ms;
+  transition-timing-function: ease;
+}
+
+.cv-modal__inner {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  overflow: auto;
 }

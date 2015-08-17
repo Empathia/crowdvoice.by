@@ -22,6 +22,8 @@ Class(CV, 'CreateOrganization').inherits(Widget).includes(CV.WidgetUtils)({
         MAX_TITLE_LENGTH : 65,
         MAX_DESCRIPTION_LENGTH : 180,
 
+        _flashMessage : null,
+
         init : function(config){
             Widget.prototype.init.call(this, config);
             this.el = this.element[0];
@@ -209,6 +211,10 @@ Class(CV, 'CreateOrganization').inherits(Widget).includes(CV.WidgetUtils)({
             this.orgLocation.setValue(address.join(', ') + '.');
         },
 
+        /* Checks if the form should be sent. Otherwise it gets prevented and
+         * display the errors feedback.
+         * @method _sendFormHandler <private>
+         */
         _sendFormHandler : function _sendFormHandler() {
             var validate = this.checkitProps.validateSync({
                 name : this.orgName.getValue(),
@@ -220,15 +226,31 @@ Class(CV, 'CreateOrganization').inherits(Widget).includes(CV.WidgetUtils)({
                 return this._displayErrors(validate[0].errors);
             }
 
+            if (this.orgHandler.hasError) {
+                return;
+            }
+
+            this._setSendingState();
+
             API.createOrganization({
                 data : this._dataPresenter(),
                 profileName : Person.get().profileName
             }, this._createOrganizationHandler.bind(this));
         },
 
+        /* CreateOrganization's API method response handler.
+         * @method _createOrganizationHandler <private>
+         */
         _createOrganizationHandler : function _createOrganizationHandler(err, res) {
             console.log(err);
             console.log(res);
+
+            if (err) {
+                this._setErrorState(res.status + ': ' + res.statusText);
+                return;
+            }
+
+            this._setSuccessState(res);
         },
 
         /* Display the current form errors.
@@ -239,6 +261,63 @@ Class(CV, 'CreateOrganization').inherits(Widget).includes(CV.WidgetUtils)({
                 var widget = 'org' + this.format.capitalizeFirstLetter(propertyName);
                 this[widget].error();
             }, this);
+        },
+
+        /* Sending state, disable the send button.
+         * @message _setSendingState <private>
+         */
+        _setSendingState : function _setSendingState() {
+            this.buttonSend.disable();
+            return this;
+        },
+
+        /* Sets the error state of the form.
+         * @method _setErrorState <private>
+         */
+        _setErrorState : function _setErrorState(message) {
+            this.buttonSend.enable();
+
+            if (this._flashMessage) {
+                this._flashMessage = this._flashMessage.destroy();
+            }
+
+            this.appendChild(new CV.Alert({
+                name : '_flashMessage',
+                type : 'negative',
+                text : message,
+                className : '-mb1'
+            })).render(this.el, this.el.firstElementChild);
+        },
+
+        /* Sets the success state of the form.
+         * @method _setSuccessState <private>
+         */
+        _setSuccessState : function _setSuccessState(res) {
+            this.buttonSend.enable();
+            this._clearForm();
+
+            if (this._flashMessage) {
+                this._flashMessage = this._flashMessage.destroy();
+            }
+
+            this.appendChild(new CV.Alert({
+                name : '_flashMessage',
+                type : 'positive',
+                text : "Your new organization “" + res.name + '” was created!',
+                className : '-mb1'
+            })).render(this.el, this.el.firstElementChild);
+
+            return this;
+        },
+
+        _clearForm : function _clearForm() {
+            this.orgName.setValue('');
+            this.orgHandler.setValue('').clearState().updateHint();
+            this.orgDescription.setValue('');
+            this.orgLocation.setValue('');
+            this.orgLogoImage.reset();
+            this.orgBackgroundImage.reset();
+            return this;
         },
 
         /* Returns the data to be sent to server to create a new Organization.

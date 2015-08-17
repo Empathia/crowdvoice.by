@@ -7,7 +7,7 @@
       name      : "cv.by 0",
       script    : "bin/server.js",
       env: {
-        "NODE_ENV": "staging",
+        "NODE_ENV": "production",
         "PORT" : "3000"
       }
     },
@@ -16,7 +16,7 @@
       name      : "cv.by 1",
       script    : "bin/server.js",
       env: {
-        "NODE_ENV": "staging",
+        "NODE_ENV": "production",
         "PORT" : "3001"
       }
     },
@@ -25,7 +25,7 @@
       name      : "cv.by 2",
       script    : "bin/server.js",
       env: {
-        "NODE_ENV": "staging",
+        "NODE_ENV": "production",
         "PORT" : "3002"
       }
     },
@@ -34,7 +34,7 @@
       name      : "cv.by 3",
       script    : "bin/server.js",
       env: {
-        "NODE_ENV": "staging",
+        "NODE_ENV": "production",
         "PORT" : "3003"
       }
     },
@@ -43,7 +43,7 @@
       name      : "cv.by 4",
       script    : "bin/server.js",
       env: {
-        "NODE_ENV": "staging",
+        "NODE_ENV": "production",
         "PORT" : "3004"
       }
     },
@@ -52,7 +52,7 @@
       name      : "cv.by 5",
       script    : "bin/server.js",
       env: {
-        "NODE_ENV": "staging",
+        "NODE_ENV": "production",
         "PORT" : "3005"
       }
     },
@@ -61,7 +61,7 @@
       name      : "cv.by 6",
       script    : "bin/server.js",
       env: {
-        "NODE_ENV": "staging",
+        "NODE_ENV": "production",
         "PORT" : "3006"
       }
     },
@@ -70,17 +70,10 @@
       name      : "cv.by 7",
       script    : "bin/server.js",
       env: {
-        "NODE_ENV": "staging",
+        "NODE_ENV": "production",
         "PORT" : "3007"
       }
     },
-    {
-      name : "Twitter Fetcher Worker",
-      script : "bin/twitter_fetcher.js",
-      env : {
-        "NODE_ENV" : "staging"
-      }
-    }
   ],
 
 
@@ -90,13 +83,13 @@
    * https://github.com/Unitech/PM2/blob/master/ADVANCED_README.md#deployment-pm2--090
    */
   deploy : {
-    staging : {
+    production : {
       user : "deploy",
-      host : "uberthing.net",
-      ref  : "origin/development",
+      host : "104.239.193.165",
+      ref  : "origin/master",
       repo : "git@github.com:Empathya/crowdvoice.by.git",
-      path : "/home/deploy/cb.by",
-      "post-deploy" : "npm install && npm install webpack knex -g && webpack -p -c --progress && cp ../shared/config.js ./config/config.js && cp ../shared/knexfile.js ./knexfile.js && NODE_ENV=staging knex migrate:latest && pm2 startOrRestart ecosystem.json --env staging"
+      path : "/home/deploy/cv.by",
+      "post-deploy" : "npm install && npm install webpack knex -g && webpack -p -c --progress && cp ../shared/config.js ./config/config.js && cp ../shared/knexfile.js ./knexfile.js && NODE_ENV=production knex migrate:latest && pm2 startOrRestart production.json --env production"
     }
   }
 }

@@ -7,16 +7,18 @@ Class(CV.UI, 'Modal').inherits(Widget).includes(CV.WidgetUtils)({
     HTML : '\
         <div>\
             <div class="cv-modal__backdrop"></div>\
-            <div class="cv-modal">\
-                <div class="header">\
-                    <h3 class="title"></h3>\
-                    <div class="line"></div>\
-                    <svg class="close">\
-                        <use xlink:href="#svg-close"></use>\
-                    </svg>\
-                </div>\
-                <div class="body-wrapper">\
-                    <div class="body -clear-after"></div>\
+            <div class="cv-modal__inner">\
+                <div class="cv-modal">\
+                    <div class="header">\
+                        <h3 class="title"></h3>\
+                        <div class="line"></div>\
+                        <svg class="close">\
+                            <use xlink:href="#svg-close"></use>\
+                        </svg>\
+                    </div>\
+                    <div class="body-wrapper">\
+                        <div class="body -clear-after"></div>\
+                    </div>\
                 </div>\
             </div>\
         </div>',
@@ -32,7 +34,7 @@ Class(CV.UI, 'Modal').inherits(Widget).includes(CV.WidgetUtils)({
             Widget.prototype.init.call(this, config);
             this.el = this.element[0];
 
-            this.backdropElement = this.el.querySelector('.cv-modal__backdrop');
+            this.innerElement = this.el.querySelector('.cv-modal__inner');
             this.modalElement = this.el.querySelector('.cv-modal');
             this.closeElement = this.el.querySelector('.close');
 
@@ -55,11 +57,18 @@ Class(CV.UI, 'Modal').inherits(Widget).includes(CV.WidgetUtils)({
 
         _bindEvents : function _bindEvents() {
             this._destroyRef = this._beforeDestroyHandler.bind(this);
+            this._clickHandlerRef = this._clickHandler.bind(this);
 
             this.bubbleAction.bind('close', this._destroyRef);
-            Events.on(this.backdropElement, 'click', this._destroyRef);
+            Events.on(this.innerElement, 'click', this._clickHandlerRef);
             Events.on(this.closeElement, 'click', this._destroyRef);
             return this;
+        },
+
+        _clickHandler : function _clickHandler(ev) {
+            if (ev.target === this.innerElement) {
+                return this._beforeDestroyHandler();
+            }
         },
 
         _beforeDestroyHandler : function _beforeDestroyHandler() {
@@ -71,7 +80,7 @@ Class(CV.UI, 'Modal').inherits(Widget).includes(CV.WidgetUtils)({
 
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
-            Events.off(this.backdropElement, 'click', this._destroyRef);
+            Events.off(this.innerElement, 'click', this._clickHandlerRef);
             Events.off(this.closeElement, 'click', this._destroyRef);
             this._destroyRef = this.closeElement = this.modalElement = this.el = null;
             return false;
