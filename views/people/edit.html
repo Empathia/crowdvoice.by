@@ -276,6 +276,9 @@
       value     : "<%= currentPerson.profileName %>"
   }).render($('.form-profile .placeholder-main'));
 
+  var descriptionText = "<%= currentPerson.description %>";
+  if (!descriptionText){ descriptionText = ""};
+
   var descriptionInput = new CV.Input({
       style     : 'form-description',
       isArea    : true,
