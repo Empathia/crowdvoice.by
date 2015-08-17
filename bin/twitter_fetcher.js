@@ -73,6 +73,8 @@ var job = new CronJob({
 
                 var longURL = res.request.uri.href;
 
+                logger.log('Will process ' + longURL);
+
                 Post.find(['source_url = ?', [longURL]], function(err, posts) {
                   if (err) {
                     logger.error(err);
