@@ -29,10 +29,6 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
           ThreadsPresenter.build(req, threads, function(err, threads) {
             if (err) { return next(err); }
 
-            if (threads.length === 0) {
-              return next();
-            }
-
             // TODO: make this a MessagesPresenter
             async.eachLimit(threads, 1, function (thread, next) {
 
