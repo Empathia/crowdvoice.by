@@ -1,0 +1,46 @@
+/***********************************
+ * LINK (raw)
+ ************************************/
+.cv-post-detail-link .cv-post-detail__content {
+  transform: translate(0, 100%);
+  transition: transform 400ms ease-out;
+
+  &.active {
+    transform: translate(0, 0);
+  }
+}
+
+.cv-post-detail-link__header-title {
+  padding: .8em 1rem 0;
+}
+
+.cv-post-detail-link__header-meta {
+  font-size: .8rem;
+  padding: 0 1rem;
+  color: @color-neutral-mid;
+  fill: @color-neutral-mid;
+}
+
+.cv-post-detail-link__header-actions {
+  padding: 1.2em 1.2em 0;
+}
+
+.cv-post-detail-link__iframe {
+  display: none;
+  border-radius: 7px 7px 0 0;
+  &.active {display: block}
+
+  > iframe {
+    border-radius: inherit;
+  }
+}
+
+.cv-post-detail-link__non-compatible {
+  border-radius: 7px 7px 0 0;
+}
+
+.non-compatible__icon {
+  display: none;
+  fill: @color-neutral-dark;
+  &.active {display: block}
+}

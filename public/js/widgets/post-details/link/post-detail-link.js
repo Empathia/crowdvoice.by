@@ -8,15 +8,16 @@ Class(CV, 'PostDetailLink').inherits(CV.PostDetail)({
     ',
 
     prototype : {
-        _posts : null,
-        _ids : null,
-        _currentIndex : null,
+        _reHTTPS : new RegExp("^https:"),
+        _isHTTPS : false,
 
         init : function init(config) {
             CV.PostDetail.prototype.init.call(this, config);
             this.el = this.element[0];
             this.header = this.el.querySelector('header');
             this.content = this.el.querySelector('.cv-post-detail__content');
+
+            this._isHTTPS = this._reHTTPS.test(window.location.protocol);
 
             this._setup().addCloseButton()._bindEvents();
         },
@@ -36,6 +37,16 @@ Class(CV, 'PostDetailLink').inherits(CV.PostDetail)({
                 name : 'iframe',
                 className : '-full-height -color-bg-white'
             })).render(this.content);
+
+            this.appendChild(new CV.PostDetailLinkNonCompatible({
+                name : 'noncompatible',
+                className : '-full-height -color-bg-black -color-white'
+            })).render(this.content);
+
+            requestAnimationFrame(function() {
+                this.content.classList.add('active');
+            }.bind(this));
+
             return this;
         },
 
@@ -48,12 +59,30 @@ Class(CV, 'PostDetailLink').inherits(CV.PostDetail)({
          */
         update : function update(data) {
             this.postDetailHeader.update(data);
-            this.content.classList.add('active');
-            this.iframe.update('').update(data.sourceUrl);
+
+            if (this._isProtocolCompatible(data.sourceUrl)) {
+                this.iframe.activate().update(data.sourceUrl);
+                this.noncompatible.deactivate();
+            } else {
+                this.noncompatible.activate().update(data.sourceUrl);
+                this.iframe.deactivate().update('');
+            }
         },
 
         updatedPosts : function updatedPosts() {
             // silence
+        },
+
+        _isProtocolCompatible : function _isProtocolCompatible(url) {
+            if (this._isHTTPS === false) {
+                return true;
+            }
+
+            if (this._reHTTPS.test(url) === false) {
+                return false;
+            }
+
+            return true;
         },
 
         destroy : function destroy() {
