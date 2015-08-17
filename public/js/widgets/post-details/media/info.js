@@ -11,11 +11,13 @@ Class(CV, 'PostDetailMediaInfo').inherits(Widget).includes(CV.WidgetUtils)({
                 </p>\
                 <p data-title class="cv-post-detail-media__info-title -color-white -font-bold">title</p>\
                 <p data-description class="cv-post-detail-media__info-desc -mb1">description</p>\
-                <div class="cv-post-detail-media__info-activity">\
+                <div class="cv-post-detail-media__info-activity -mb1">\
                     <svg class="-s16">\
                         <use xlink:href="#svg-save-outline"></use>\
                         <span data-saved></span>\
                     </svg>\
+                </div>\
+                <div class="cv-post-detail-actions cv-button-group multiple">\
                 </div>\
             </div>\
         </div>\
@@ -33,6 +35,16 @@ Class(CV, 'PostDetailMediaInfo').inherits(Widget).includes(CV.WidgetUtils)({
             this.titleElement = this.el.querySelector('[data-title]');
             this.descriptionElement = this.el.querySelector('[data-description]');
             this.savedElement = this.el.querySelector('[data-saved]');
+            this.actionsGroup = this.el.querySelector('.cv-post-detail-actions');
+
+            this.appendChild(new CV.PostDetailActionsSave({
+                name : 'actionSave'
+            })).render(this.actionsGroup);
+
+            this.appendChild(new CV.PostDetailActionsShare({
+                name : 'actionShare',
+                tooltipPostition : 'top'
+            })).render(this.actionsGroup);
         },
 
         update : function update(data) {
@@ -40,7 +52,10 @@ Class(CV, 'PostDetailMediaInfo').inherits(Widget).includes(CV.WidgetUtils)({
             this.dom.updateAttr('datetime', this.dateElement, data.publishedAt);
             this.dom.updateText(this.titleElement, data.title);
             this.dom.updateText(this.descriptionElement, data.description);
-            this.dom.updateText(this.savedElement, data.totalSaves || 0);
+            this.updateSaves(data);
+
+            this.actionSave.update(data);
+            this.actionShare.update(data);
 
             this.mediaElement.innerHTML = '';
 
@@ -51,6 +66,13 @@ Class(CV, 'PostDetailMediaInfo').inherits(Widget).includes(CV.WidgetUtils)({
             if (data.sourceType === 'video') {
                 this._appendVideo(data);
             }
+
+            return this;
+        },
+
+        updateSaves : function updateSaves(data) {
+            this.dom.updateText(this.savedElement, data.totalSaves || 0);
+            return this;
         },
 
         _appendImage : function _appendImage(data) {

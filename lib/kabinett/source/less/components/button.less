@@ -23,57 +23,20 @@
   cursor: pointer;
   outline: none;
 
-
-
-  /** ===== STATES ===== */
-
-  &:active,
-  &.-is-active {
-    line-height: @btn-default-height + 1;
-  }
-
-
-
-  /** ===== SIZES  ===== **/
-
   &@{-}sm {
-    // line-height: @btn-sm-height;
-    // border-radius: @btn-sm-radius;
-
-    &:active,
-    &.-is-active {line-height: @btn-sm-height + 2;}
+    line-height: @btn-sm-height;
   }
 
   &@{-}md {
-    // line-height: @btn-md-height;
-    // border-radius: @btn-md-radius;
-
-    &:active,
-    &.-is-active {line-height: @btn-md-height + 2;}
+    line-height: @btn-md-height;
   }
 
   &@{-}lg {
-    // line-height: @btn-lg-height;
-    // border-radius: @btn-lg-radius;
-
-    &:active,
-    &.-is-active {line-height: @btn-lg-height + 2;}
+    line-height: @btn-lg-height;
   }
 
   &@{-}xl {
-    // line-height: @btn-xl-height;
-    // border-radius: @btn-xl-radius;
-
-    &:active,
-    &.-is-active {line-height: @btn-xl-height + 2;}
-  }
-
-  &@{-}free-size {
-    height: auto;
-    line-height: 1;
-
-    &:active,
-    &.-is-active {line-height: 1}
+    line-height: @btn-xl-height;
   }
 }
 

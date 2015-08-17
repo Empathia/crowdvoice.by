@@ -8,10 +8,6 @@ Class(CV, 'PostDetailMedia').inherits(CV.PostDetail)({
     ',
 
     prototype : {
-        _posts : null,
-        _ids : null,
-        _currentIndex : null,
-
         init : function init(config) {
             CV.PostDetail.prototype.init.call(this, config);
             this.el = this.element[0];

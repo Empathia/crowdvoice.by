@@ -1,5 +1,4 @@
-/* jshint multistr: true */
-
+/* globals App */
 /* Handles the modetate window ui. Uses VoicePostLayersManager to create the layers and fill them with posts.
  */
 Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({

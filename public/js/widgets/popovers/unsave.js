@@ -1,4 +1,4 @@
-Class(CV, 'PostActionUnsavePopover').inherits(Widget)({
+Class(CV, 'PopoverUnsave').inherits(Widget)({
     HTML : '\
         <ul class="ui-vertical-list hoverable -list-clean">\
             <li class="ui-vertical-list-item -color-negative" data-action="unsave">Unsave</li>\

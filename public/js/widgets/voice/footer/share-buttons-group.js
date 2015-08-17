@@ -14,11 +14,9 @@ Class(CV, 'VoiceFooterShareButtonsGroup').inherits(Widget)({
 
             // this.appendChild(new CV.VoiceFooterEmbedButton({name: 'embedButton'})).render(this.groupElement)
 
-            this.appendChild(
-                new CV.VoiceFooterShareButton({
-                    name : 'shareButton'
-                })
-            ).render(this.groupElement).setup();
+            this.appendChild(new CV.VoiceFooterShareButton({
+                name : 'shareButton'
+            })).render(this.groupElement).setup();
         }
     }
 });

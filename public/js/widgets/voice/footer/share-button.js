@@ -1,4 +1,6 @@
-/* jshint multistr: true */
+/* globals App */
+var origin = require('get-location-origin');
+
 Class(CV, 'VoiceFooterShareButton').inherits(Widget)({
     HTML : '\
         <button class="cv-button tiny">\
@@ -10,32 +12,25 @@ Class(CV, 'VoiceFooterShareButton').inherits(Widget)({
     prototype : {
         init : function init(config) {
             Widget.prototype.init.call(this, config);
-
             this.el = this.element[0];
 
-            this.appendChild(
-                new CV.VoiceFooterShareItems({
-                    name : 'shareItems'
-                })
-            );
+            this.appendChild(new CV.PopoverShare({
+                name : 'shareItems',
+                data : {
+                    url : origin + '/' + App.Voice.data.owner.profileName + '/' + App.Voice.data.slug + '/',
+                    title : App.Voice.data.title
+                }
+            }));
         },
 
         setup : function setup() {
-            this.appendChild(
-                new CV.PopoverBlocker({
-                    name : 'popover',
-                    className : 'voice-share-popover',
-                    placement : 'top-right',
-                    toggler : this.el,
-                    content : this.shareItems.el
-                })
-            ).render(this.parent.el);
-        },
-
-        destroy : function destroy() {
-            Widget.prototype.destroy.call(this);
-
-            return null;
+            this.appendChild(new CV.PopoverBlocker({
+                name : 'popover',
+                className : 'voice-share-popover share-popover',
+                placement : 'top-right',
+                toggler : this.el,
+                content : this.shareItems.el
+            })).render(this.parent.el);
         }
     }
 });
