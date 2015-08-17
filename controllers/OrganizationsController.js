@@ -202,7 +202,7 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
             function (next) {
               if (!req.files.imageBackground) { return next(); }
 
-              org.uploadImage('image', req.files.imageBackground.path, next);
+              org.uploadImage('background', req.files.imageBackground.path, next);
             },
 
             // save new changes
