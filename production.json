@@ -85,7 +85,7 @@
   deploy : {
     production : {
       user : "deploy",
-      host : "uberthing.net",
+      host : "104.239.193.165",
       ref  : "origin/master",
       repo : "git@github.com:Empathya/crowdvoice.by.git",
       path : "/home/deploy/cv.by",
