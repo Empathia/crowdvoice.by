@@ -10,6 +10,8 @@
 }
 @{-}inline {display: inline}
 @{-}inline-block {display: inline-block}
+@{-}table{display: table}
+@{-}table-cell {display: table-cell}
 
 @{-}float-left {float: left}
 @{-}float-right {float: right}
@@ -20,10 +22,10 @@
 }
 
 @{-}full-width {width: 100%}
-@{-}fit {max-width: 100%}
 @{-}full-height {height: 100%}
+@{-}fit {max-width: 100%}
 
-@icon-sizes: 6, 8, 9, 10, 12, 14, 16, 17, 18, 19, 20;
+@icon-sizes: 6, 8, 9, 10, 12, 14, 16, 17, 18, 19, 20, 80;
 .createiconsizes(@i:1) when(@i <= length(@icon-sizes)) {
     @value: extract(@icon-sizes, @i);
     &@{value} {
@@ -35,14 +37,9 @@
 @{-}s {.createiconsizes();}
 
 @{-}bw0 {border-width: 0}
-
-@{-}overflow-hidden {
-  overflow: hidden;
-}
-
-@{-}nw {
-  white-space: nowrap;
-}
+@{-}overflow-hidden {overflow: hidden}
+@{-}nw {white-space: nowrap}
+@{-}vam {vertical-align: middle}
 
 @{-}ellipsis {
   white-space: nowrap;

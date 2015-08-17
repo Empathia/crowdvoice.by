@@ -74,21 +74,17 @@
 // @author Noel Delgado
 // @param {Color} @bg-color
 // @param {Color} @text-color
-.mixin-kabinett-button(@bg-color, @text-color) {
+// @param {Color} @border-color
+.mixin-kabinett-button(@bg-color, @text-color, @border-color) {
   background-color: @bg-color;
   color: @text-color;
-
-  &:hover, &.-is-hover    {background-color: saturate(@bg-color, 20%)}
-  &:active, &.-is-active  {background-color: desaturate(@bg-color, 20%)}
+  fill: @text-color;
+  border-color: @border-color;
 }
 
 @{ns}-btn {
-  border-color: @color-neutral-light;
-  background-color: @color-white;
-  color: @color-neutral-dark;
-  fill: @color-neutral-dark;
+  .mixin-kabinett-button(@color-white, @color-neutral-dark, @color-neutral-light);
   box-shadow: inset 0px -3px 0px @color-inner-shadow;
-  transition: background-color 240ms ease;
 
   &:hover:enabled {
     color: @color-neutral-x-dark;
@@ -96,18 +92,21 @@
     border-color: @color-primary-dark;
   }
 
-  &:active, &.-is-active {transition-duration: 0}
-
   &.-primary {
-    .mixin-kabinett-button(@color-primary, @color-white);
-    box-shadow: inset 0 -3px 0 fade(@color-black, 15%);
+    .mixin-kabinett-button(@color-primary, @color-white, @color-primary-dark);
+
+    &:hover:enabled{
+      color: @color-white;
+      background-color: @color-primary-light;
+      box-shadow: inset 0 -3px 0 @color-inner-shadow-primary;
+    }
   }
 
   &.-outline {border-color: currentColor}
 
   &.-overlay {
-    .mixin-kabinett-button(fade(@color-black, 50%), @color-white);
-    border: 2px solid @color-grey;
+    .mixin-kabinett-button(fade(@color-black, 50%), @color-white, @color-grey);
+    border-width: 2px;
   }
 }
 

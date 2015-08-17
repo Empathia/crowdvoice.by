@@ -27,6 +27,8 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
   REQUEST_VOICE_HTML : '<p>{name} has requested to become a contributor for {organizationName}. \
     If you grant access, {name} will be able to post and moderate content of this Voice.<br><a href="{url}">Go to this Voice\'s settings ›</a></p>',
 
+  REPORT : '<p>This is an organization report for <a href="{url}">{organizationName} ›</a>.</p>',
+
   prototype : {
     data : {},
     init : function init(config) {
@@ -62,8 +64,31 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
       message.element.find('.message-data .data-message-date').text(moment(new Date(message.data.createdAt).toISOString()).format('• MMMM Do, YYYY • h:mm a'));
       message.element.find('.message-data .data-message-text').text(message.data.message);
 
-      if (message.type !== 'message') {
-        var messageNotificationElement = $(message.constructor[message.type.toUpperCase() + '_HTML'])
+      //console.log('type: ' +message.type);
+
+      if ( message.type == 'report') {
+
+        var messageNotificationElement = $(message.constructor.REPORT);
+        var text = messageNotificationElement.html();
+
+        if (this.data.organization === 'undefined'){
+          text = text
+                .replace('{organizationName}', message.data.organization.name + ' ' + message.data.organization.lastname)
+                .replace('{url}', '/' + message.data.organization.profileName);
+        } else {
+          text = text
+                .replace('{organizationName}', 'Not Listed Organization')
+                .replace('{url}', '/' + '');
+        }
+
+        messageNotificationElement.html(text);
+
+        this.element.find('.message-data .message-notification').prepend(messageNotificationElement);
+
+      }
+
+      if (message.type != 'message' && message.type != 'report') {
+        var messageNotificationElement = $(message.constructor[message.type.toUpperCase() + '_HTML']);
 
         var text = messageNotificationElement.html();
 
@@ -93,7 +118,11 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
               break;
           }
 
-          if (message.type != "request_organization"){
+          //console.log('type: ' +message.type);
+
+          if (message.type != "request_organization" && message.type != "request_voice"){
+
+            //console.log('in');
 
             var btnMultipleOptions = {
               "1": {label: 'Accept', name: 'accept'},

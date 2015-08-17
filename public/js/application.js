@@ -155,6 +155,7 @@ require('./widgets/post-details/actions/share');
 require('./widgets/post-details/link/post-detail-link');
 require('./widgets/post-details/link/header');
 require('./widgets/post-details/link/iframe');
+require('./widgets/post-details/link/noncompatible');
 // post detail media
 require('./widgets/post-details/media/post-detail-media');
 require('./widgets/post-details/media/header');
