@@ -25,6 +25,7 @@ Class(CV.UI, 'Input').inherits(Widget).includes(CV.WidgetUtils)({
         _input : null,
         labelElement : null,
         hintElement : null,
+        hasError : false,
 
         init : function init(config) {
             Widget.prototype.init.call(this, config);
@@ -80,7 +81,6 @@ Class(CV.UI, 'Input').inherits(Widget).includes(CV.WidgetUtils)({
 
         setValue : function setValue(value) {
             this._input.value = value;
-            this.getValue();
             return this;
         },
 
@@ -111,6 +111,7 @@ Class(CV.UI, 'Input').inherits(Widget).includes(CV.WidgetUtils)({
         },
 
         clearState : function clearState() {
+            this.hasError = false;
             this.dom.removeClass(this.inputWrapper, ['-is-error', '-is-success']);
             this._removeIcon();
             return this;
@@ -120,6 +121,7 @@ Class(CV.UI, 'Input').inherits(Widget).includes(CV.WidgetUtils)({
          * @method error <public>
          */
         error : function error() {
+            this.hasError = true;
             this._setIcon('warning');
             this.inputWrapper.classList.add('-is-error');
             return this;
@@ -129,6 +131,7 @@ Class(CV.UI, 'Input').inherits(Widget).includes(CV.WidgetUtils)({
          * @method success <public>
          */
         success : function success() {
+            this.hasError = false;
             this._setIcon('checkmark');
             this.inputWrapper.classList.add('-is-success');
             return this;

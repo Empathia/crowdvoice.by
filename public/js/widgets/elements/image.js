@@ -52,6 +52,16 @@ Class(CV, 'Image').inherits(Widget).includes(CV.WidgetUtils)({
             return data;
         },
 
+        /* Resets the uploadedFile and removes the preview background image.
+         * @method reset <public>
+         */
+        reset : function reset() {
+            this.uploadFile.value = '';
+            this.backgroundImage.classList.remove('-img-contain');
+            this.backgroundImage.removeAttribute('style');
+            return this;
+         },
+
         /* Clear feedback states.
          * @method clearState <public>
          */

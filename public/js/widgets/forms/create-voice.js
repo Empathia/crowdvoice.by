@@ -476,9 +476,30 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             }, this);
         },
 
+        /* Sending state, disable the send button.
+         * @message _setSendingState <private>
+         */
         _setSendingState : function _setSendingState() {
             this.buttonSend.disable();
             return this;
+        },
+
+        /* Sets the error state of the form.
+         * @method _setErrorState <private>
+         */
+        _setErrorState : function _setErrorState(message) {
+            this.buttonSend.enable();
+
+            if (this._flashMessage) {
+                this._flashMessage = this._flashMessage.destroy();
+            }
+
+            this.appendChild(new CV.Alert({
+                name : '_flashMessage',
+                type : 'negative',
+                text : message,
+                className : '-mb1'
+            })).render(this.el, this.el.firstElementChild);
         },
 
         /* Sets the success state of the form.
