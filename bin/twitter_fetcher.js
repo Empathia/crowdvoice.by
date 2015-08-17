@@ -24,7 +24,7 @@ var client = new Twitter({
 
 var CronJob = require('cron').CronJob;
 var job = new CronJob({
-  cronTime: '0 */0 * * * *',
+  cronTime: '0 0 * * * *',
   onTick: function() {
     var fetching = false;
 
