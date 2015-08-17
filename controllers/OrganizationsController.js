@@ -154,23 +154,18 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
         if (err) { return next(err); }
 
         if (!isAllowed) {
-          return next(new ForbiddenError());
+          return next(new ForbiddenError('not allowed to create new organization'));
         }
 
         // check if provided profile name is taken
         isProfileNameAvailable(req.body.profileName, function (err, isAvailable) {
-          if (err) {
-            res.locals.errors = err;
-            req.errors = err;
-            logger.log(err);
-            return next();
-          }
+          if (err) { return next(err); }
 
           if (!isAvailable) {
-            return res.json({ status: 'profile name taken' });
+            return res.status(200).json({ error: new Error('profile name not available') });
           }
 
-          // TODO check that no fields are empty
+          // TODO check that no required fields are empty (title, profileName, description)
 
           var org = new Entity({
             type: 'organization',
@@ -202,7 +197,7 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
             function (next) {
               if (!req.files.imageBackground) { return next(); }
 
-              org.uploadImage('image', req.files.imageBackground.path, next);
+              org.uploadImage('background', req.files.imageBackground.path, next);
             },
 
             // save new changes
