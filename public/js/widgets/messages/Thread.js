@@ -122,7 +122,7 @@ CV.Thread = Class(CV, 'Thread').includes(Widget)({
         url: updateThreadUrl,
         headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
         success: function(data) {
-          console.log('Thread updated');
+          //console.log('Thread updated');
           if (!thread.element.hasClass('updated')){
             thread.element.addClass('updated');
           }
