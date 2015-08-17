@@ -1,3 +1,4 @@
+/* globals App */
 var Person = require('./../../lib/currentPerson');
 
 Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
@@ -37,10 +38,6 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
                 lastPostDate : this.voice.lastPostDate,
                 scrollableArea : this.voiceScrollableArea
             })).render(this.element);
-
-            // @TODO:
-            // add condition based on the user type and or privilegies (ACL)
-            // and or based on the voice type (open|close)
 
             if (App.Voice.allowPosting) {
                 this.appendChild(new CV.VoiceAddContent({

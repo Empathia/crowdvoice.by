@@ -1,6 +1,5 @@
-/* jshint multistr: true */
-Class(CV, 'VoiceModerate').inherits(Widget)({
-
+/* globals App */
+Class(CV, 'VoiceModerate').inherits(Widget).includes(CV.WidgetUtils)({
     HTML : '\
     <button class="cv-button tiny ui-has-tooltip">\
         <svg class="voice-footer-svg">\
@@ -15,10 +14,13 @@ Class(CV, 'VoiceModerate').inherits(Widget)({
 
         init : function init(config) {
             Widget.prototype.init.call(this, config);
-
             this.el = this.element[0];
 
-            this._bindEvents();
+            if (App.Voice.postsCountUnapproved.length) {
+                this._bindEvents();
+            } else {
+                this.disable();
+            }
         },
 
         /* Subscribes to the button click event
@@ -35,15 +37,19 @@ Class(CV, 'VoiceModerate').inherits(Widget)({
          */
         _clickHandler : function _clickHandler() {
             if (this.moderateManager) {
-                this.moderateManager.destroy();
+                this.moderateManager = this.moderateManager.destroy();
             }
 
-            this.appendChild(
-                new CV.VoiceModerateManager({
-                    name : 'moderateManager',
-                    allowPostEditing : this.allowPostEditing
-                })
-            ).render(document.body).setup();
+            this.appendChild(new CV.VoiceModerateManager({
+                name : 'moderateManager',
+                allowPostEditing : this.allowPostEditing
+            })).render(document.body).setup();
+        },
+
+        disable : function(){
+            Widget.prototype.disable.call(this);
+            this.dom.updateAttr('disabled', this.el, true);
+            return this;
         },
 
         destroy : function destroy() {

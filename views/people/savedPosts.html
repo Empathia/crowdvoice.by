@@ -1,14 +1,21 @@
-<% savedPosts.forEach(function (post) { %>
-  <p>
-      <form action="/post/<%= post.id %>/unsave_post" method="POST">
-          <%= post.title %>
-          <input type="submit" value="remove" \>
-          <input name="_csrf" type="hidden" value="<%= csrfToken %>" \>
-      </form>
-  </p>
-<% }); %>
+<main role="main" class="cv-main-content -rel">
+</main>
 
 <script>
-	var savedPosts = <%= JSON.stringify(savedPosts) %>;
-	console.log(savedPosts);
+  // App
+  var ns = [];
+  <% if (typeof notifications !== "undefined") { %>
+    ns = <%= JSON.stringify(notifications) %>;
+  <% } %>
+  var App = new CV.App({
+    notifications : ns,
+    currentPerson : currentPerson
+  });
+  App.addInteractiveSidebar();
+
+  App.appendChild(new CV.SavedPosts({
+    name : 'savedPosts',
+    posts : <%= JSON.stringify(savedPosts) %>,
+    container : document.querySelector('.cv-main-content')
+  }));
 </script>

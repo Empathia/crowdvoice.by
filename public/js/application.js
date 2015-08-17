@@ -31,7 +31,6 @@ require('./lib/widget-utils.js');
 require('./lib/Widget.js');
 require('./lib/image-halt');
 require('./lib/responsive-width');
-require('share-url/neon');
 require('./app');
 
 // Global Widgets
@@ -96,6 +95,9 @@ require('./views/search');
 require('./widgets/search-view/voices-tab');
 require('./widgets/search-view/users-tab');
 require('./widgets/search-view/organizations-tab');
+require('./views/savedPosts');
+require('./widgets/saved-posts/onboarding');
+require('./widgets/saved-posts/manager');
 
 require('./widgets/voice/posts-registry');
 require('./widgets/voice/onboarding');
@@ -103,7 +105,6 @@ require('./widgets/voice/voice-header');
 require('./widgets/voice/voice-footer');
 require('./widgets/voice/footer/share-buttons-group');
 require('./widgets/voice/footer/share-button');
-require('./widgets/voice/footer/share-items');
 require('./widgets/voice/footer/embed-button');
 require('./widgets/voice/voice-follow-button.js');
 require('./widgets/voice/voice-related-voices.js');
@@ -128,6 +129,10 @@ require('./widgets/voice/moderate/footer.js');
 
 require('./widgets/voice/add-content/');
 
+// popovers
+require('./widgets/popovers/unsave');
+require('./widgets/popovers/share');
+
 // posts
 require('./widgets/posts/modules/images');
 require('./widgets/posts/post');
@@ -136,14 +141,16 @@ require('./widgets/posts/post-video');
 require('./widgets/posts/post-link');
 require('./widgets/posts/actions/save');
 require('./widgets/posts/actions/share');
-require('./widgets/posts/actions/popover-unsave');
 
 // post detail
 require('./widgets/post-details/controllers/base');
 require('./widgets/post-details/controllers/approved');
 require('./widgets/post-details/controllers/unapproved');
+require('./widgets/post-details/controllers/saved');
 require('./widgets/post-details/navigation');
 require('./widgets/post-details/post-detail');
+require('./widgets/post-details/actions/save');
+require('./widgets/post-details/actions/share');
 // post detail link
 require('./widgets/post-details/link/post-detail-link');
 require('./widgets/post-details/link/header');
