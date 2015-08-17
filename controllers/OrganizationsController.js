@@ -159,12 +159,15 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
 
         // check if provided profile name is taken
         isProfileNameAvailable(req.body.profileName, function (err, isAvailable) {
-          if (!isAvailable) {
+          if (err) {
             res.locals.errors = err;
             req.errors = err;
             logger.log(err);
-
             return next();
+          }
+
+          if (!isAvailable) {
+            return res.json({ status: 'profile name taken' });
           }
 
           // TODO check that no fields are empty
