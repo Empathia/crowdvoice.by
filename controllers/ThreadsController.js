@@ -29,61 +29,13 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
           ThreadsPresenter.build(req, threads, function(err, threads) {
             if (err) { return next(err); }
 
-            // TODO: make this a MessagesPresenter
-            async.eachLimit(threads, 1, function (thread, next) {
-
-              async.series([
-                function (next) {
-
-                  if (!thread.messages) {
-                    return next();
-                  }
-
-                  async.mapLimit(thread.messages, 1, function (message, next) {
-                    if (message.type === 'report') {
-                      Report.find({ id: message.reportId }, function (err, report) {
-                        if (err) { return next(err); }
-
-                        message.reportId = hashids.encode(message.reportId);
-
-                        var org = new Entity({ id: report[0].reportedId });
-
-                        EntitiesPresenter.build([org], req.currentPerson, function (err, presentedOrg) {
-                          if (err) { return next(err); }
-
-                          message.organization = presentedOrg[0];
-                          next(null, message);
-                        });
-                      });
-                    } else {
-                      next(null, message);
-                    }
-                  }, function (err, newMessages) { // async.mapLimit
-                    if (err) { return next(err); }
-
-                    thread.messages = newMessages;
-
-                    next();
-                  });
-
-                }
-              ], function (err) { // async.series
-                if (err) { return next(err); }
-
-                next();
-              });
-
-            }, function (err) { // async.eachLimit
-              if (err) { return next(err); }
-
-              res.format({
-                html : function() {
-                  return res.render('threads/index.html', {layout : 'application', threads : threads});
-                },
-                json : function() {
-                  return res.json(result);
-                }
-              });
+            res.format({
+              html : function() {
+                return res.render('threads/index.html', {layout : 'application', threads : threads});
+              },
+              json : function() {
+                return res.json(result);
+              }
             });
           });
         });
