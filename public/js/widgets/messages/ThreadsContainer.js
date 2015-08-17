@@ -184,7 +184,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
     addThread : function addThread(threadData) {
       var container = this;
 
-      console.log(threadData);
+      //console.log(threadData);
 
       var thread = new CV.Thread({
         name : 'thread_' + threadData.id,
