@@ -44,20 +44,20 @@
 	  	<br>
 	  	<div class="voices-stats">
 
-			<div class="-col-6">
-				<div class="profile-stat stat-voices">
-					<div class="stat-num"></div>
-					<p>Voices</p>
-					<span>you created or are contributing on</span>
+				<div class="-col-6">
+					<div class="profile-stat stat-voices">
+						<div class="stat-num"></div>
+						<p>Voices</p>
+						<span>you created or are contributing on</span>
+					</div>
 				</div>
-			</div>
-			<div class="-col-6">
-				<div class="profile-stat stat-organizations">
-					<div class="stat-num"></div>
-					<p>Organizations</p>
-					<span>that you own or are a member of</span>
+				<div class="-col-6">
+					<div class="profile-stat stat-organizations">
+						<div class="stat-num"></div>
+						<p>Organizations</p>
+						<span>that you own or are a member of</span>
+					</div>
 				</div>
-			</div>
 
 	  	</div>
 
@@ -101,68 +101,88 @@
     </div>\
 	';
 
-	var numVoices = document.querySelector(".stat-voices .stat-num");
-	numVoices.textContent = currentPerson.voicesCount;
-
-	var numOrgs = document.querySelector(".stat-organizations .stat-num");
-	numOrgs.textContent = currentPerson.organizations.length;
 
 
   var sortedFeedItems = feedItems.sort(this.compare).reverse();
 
-	console.log(sortedFeedItems);
+	if (currentPerson.isAnonymous == true){
 
-	if ( sortedFeedItems.length > 0 ){
-
-	  sortedFeedItems.forEach(function(feed){
-
-			var timeElapsed = moment(feed.createdAt).from(moment());
-			var feedEl = $(feedItemEl);
-
-			feedEl.find('.feed-item-image img').attr('src', feed.actionDoer.images.small.url);
-			feedEl.find('.feed-item-time').text( moment(feed.createdAt).from(moment()) );
-			feedEl.find('.feed-item-title > a > b').text(feed.actionDoer.name + ' ' + feed.actionDoer.lastname);
-			feedEl.find('.feed-item-title > a').attr('href', '/' + feed.actionDoer.profileName);
-
-			var typeWidget;
-
-			switch (feed.action) {
-	      case 'followed':
-	      	if(feed.itemType == 'entity'){
-						feedEl.find('.feed-item-title > span').text(feed.action + ' ' + feed.entity.type + 's');
-		  			typeWidget = new CV.CardMini({data:feed.entity}).render(feedEl.find('.feed-item-list'));
-		  		} else if (feed.itemType == 'voice'){
-		  			feedEl.find('.feed-item-title > span').text(feed.action + ' ' + feed.itemType + 's');
-		  			typeWidget = new CV.VoiceCoverMini({data:feed.voice}).render(feedEl.find('.feed-item-list'));
-		  		}
-	        typeWidget.showMeta();
-	        break;
-	      case 'changed avatar':
-					feedEl.find('.feed-item-title > span').text(feed.action);
-	        break;
-	      case 'changed background':
-					feedEl.find('.feed-item-title > span').text(feed.action);
-	        break;
-	      default:
-	        // \_||_/
-	    }
-
-			$('.profile-body').append(feedEl);
-
-	  });
-
-	}else{
+		$('.voices-stats').remove();
 
 		var onboarding = '\
-		<section class="profile-onboarding -mid-height -rel">\
-	    <h1>Nothing to show yet</h1>\
-	    <p>Follow voices, users and organzations to view all their recent activity. This will also help you discover more of them to contact, contribute, join and follow.</p>\
-	    <br>\
-	    <a href="/discover/browse"><button class="cv-button primary small">Explore and Discover!</button></a>\
-	  </section>';
+			<section class="profile-onboarding -mid-height -rel">\
+		    <h1>You can\'t preview your feed in anonymous mode.</h1>\
+		    <p>Please disable anonymous mode to follow voices, users and organzations and view all their recent activity. This will also help you discover more of them to contact, contribute, join and follow.</p>\
+		    <br>\
+		  </section>';
 
-	  $('.profile-body').html(onboarding);
+		  $('.profile-body').html(onboarding);
 
+	} else {
+
+		var numVoices = document.querySelector(".stat-voices .stat-num");
+		numVoices.textContent = currentPerson.voicesCount;
+
+		var numOrgs = document.querySelector(".stat-organizations .stat-num");
+
+		if (currentPerson.organizations == null){
+			numOrgs.textContent = '0';
+		} else {
+			numOrgs.textContent = currentPerson.organizations.length;
+		}
+
+		if ( sortedFeedItems.length > 0 ){
+
+		  sortedFeedItems.forEach(function(feed){
+
+				var timeElapsed = moment(feed.createdAt).from(moment());
+				var feedEl = $(feedItemEl);
+
+				feedEl.find('.feed-item-image img').attr('src', feed.actionDoer.images.small.url);
+				feedEl.find('.feed-item-time').text( moment(feed.createdAt).from(moment()) );
+				feedEl.find('.feed-item-title > a > b').text(feed.actionDoer.name + ' ' + feed.actionDoer.lastname);
+				feedEl.find('.feed-item-title > a').attr('href', '/' + feed.actionDoer.profileName);
+
+				var typeWidget;
+
+				switch (feed.action) {
+		      case 'followed':
+		      	if(feed.itemType == 'entity'){
+							feedEl.find('.feed-item-title > span').text(feed.action + ' ' + feed.entity.type + 's');
+			  			typeWidget = new CV.CardMini({data:feed.entity}).render(feedEl.find('.feed-item-list'));
+			  		} else if (feed.itemType == 'voice'){
+			  			feedEl.find('.feed-item-title > span').text(feed.action + ' ' + feed.itemType + 's');
+			  			typeWidget = new CV.VoiceCoverMini({data:feed.voice}).render(feedEl.find('.feed-item-list'));
+			  		}
+		        typeWidget.showMeta();
+		        break;
+		      case 'changed avatar':
+						feedEl.find('.feed-item-title > span').text(feed.action);
+		        break;
+		      case 'changed background':
+						feedEl.find('.feed-item-title > span').text(feed.action);
+		        break;
+		      default:
+		        // \_||_/
+		    }
+
+				$('.profile-body').append(feedEl);
+
+		  });
+
+		}else{
+
+			var onboarding = '\
+			<section class="profile-onboarding -mid-height -rel">\
+		    <h1>Nothing to show yet</h1>\
+		    <p>Follow voices, users and organzations to view all their recent activity. This will also help you discover more of them to contact, contribute, join and follow.</p>\
+		    <br>\
+		    <a href="/discover/browse"><button class="cv-button primary small">Explore and Discover!</button></a>\
+		  </section>';
+
+		  $('.profile-body').html(onboarding);
+
+		}
 	}
 
   function compare(a,b) {
@@ -173,7 +193,7 @@
     return 0;
   }
 
-  if(currentPerson.ownedOrganizations.length > 0){
+  if(currentPerson.ownedOrganizations != null && currentPerson.ownedOrganizations.length > 0){
 
   	if (currentOrganization) {
 
