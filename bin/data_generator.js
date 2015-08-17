@@ -2,7 +2,7 @@ global.Admin = {};
 
 var application = require('neonode-core');
 
-global.useGM = true;
+global.useGM = false;
 
 // Load aws-sdk and S3
 var AWS = require('aws-sdk');
