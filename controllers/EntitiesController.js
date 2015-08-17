@@ -511,7 +511,8 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
         if (!response.isAllowed) { return res.json(response.status); }
 
         var threads = [],
-          admins;
+          admins,
+          report;
 
         async.series([
           // get the admins
@@ -549,6 +550,15 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
             });
           },
 
+          function (next) {
+            report = new Report({
+              reporterId: hashids.decode(req.currentPerson.id)[0],
+              reportedId: hashids.decode(req.entity.id)[0]
+            });
+
+            report.save(next);
+          },
+
           // go over threads and create a message for each admin
           function (next) {
             var senderId = hashids.decode(req.currentPerson.id)[0],
@@ -563,22 +573,10 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
                 senderPersonId: senderId,
                 senderEntityId: senderId,
                 receiverEntityId: receiverId,
-                message: req.body.message
+                message: req.body.message,
+                reportId: report.id
               }, next);
             }, function (err) { // async.each
-              if (err) { return next(err); }
-
-              next();
-            });
-          },
-
-          function (next) {
-            var report = new Report({
-              reporterId: hashids.decode(req.currentPerson.id)[0],
-              reportedId: hashids.decode(req.entity.id)[0]
-            });
-
-            report.save(function (err) {
               if (err) { return next(err); }
 
               next();

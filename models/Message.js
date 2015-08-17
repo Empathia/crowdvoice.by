@@ -7,6 +7,8 @@ var sanitizerOptions = {
 var Message = Class('Message').inherits(Argon.KnexModel)({
 
   validations : {
+    reportId: [], // TODO make required if type == report
+
     type : [
       'required',
       {

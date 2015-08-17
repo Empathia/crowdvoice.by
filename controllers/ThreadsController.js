@@ -24,26 +24,67 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
         };
 
         MessageThread.find(['sender_person_id = ? OR receiver_entity_id = ?', [hashids.decode(req.currentPerson.id)[0], hashids.decode(req.currentPerson.id)[0]]], function(err, threads) {
-          if (err) {
-            return next(err);
-          }
+          if (err) { return next(err); }
 
-          ThreadsPresenter.build(req, threads, function(err, result) {
-            if (err) {
-              return next(err);
-            }
+          ThreadsPresenter.build(req, threads, function(err, threads) {
+            if (err) { return next(err); }
 
-            res.format({
+            // TODO: make this a MessagesPresenter
+            async.eachLimit(threads, 1, function (thread, next) {
 
-              html : function() {
+              async.series([
+                function (next) {
 
-                return res.render('threads/index.html', {layout : 'application', threads : result});
-              },
-              json : function() {
-                return res.json(result);
-              }
+                  if (!thread.messages) {
+                    return next();
+                  }
+
+                  async.mapLimit(thread.messages, 1, function (message, next) {
+                    if (message.type === 'report') {
+                      Report.find({ id: message.reportId }, function (err, report) {
+                        if (err) { return next(err); }
+
+                        message.reportId = hashids.encode(message.reportId);
+
+                        var org = new Entity({ id: report[0].reportedId });
+
+                        EntitiesPresenter.build([org], req.currentPerson, function (err, presentedOrg) {
+                          if (err) { return next(err); }
+
+                          message.organization = presentedOrg[0];
+                          next(null, message);
+                        });
+                      });
+                    } else {
+                      next(null, message);
+                    }
+                  }, function (err, newMessages) { // async.mapLimit
+                    if (err) { return next(err); }
+
+                    thread.messages = newMessages;
+
+                    next();
+                  });
+
+                }
+              ], function (err) { // async.series
+                if (err) { return next(err); }
+
+                next();
+              });
+
+            }, function (err) { // async.eachLimit
+              if (err) { return next(err); }
+
+              res.format({
+                html : function() {
+                  return res.render('threads/index.html', {layout : 'application', threads : threads});
+                },
+                json : function() {
+                  return res.json(result);
+                }
+              });
             });
-
           });
         });
       });
