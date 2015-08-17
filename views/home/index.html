@@ -13,24 +13,10 @@
       </p>
     </div>
 
-    <article role="article" class="stats -row">
-      <div class="stats-col -inline-block">
-        <p class="stats-number -font-bold"><%= globalStats.countries %></p>
-        <p class="stats-label">Countries</p>
-      </div>
-      <div class="stats-col -inline-block">
-        <p class="stats-number -font-bold"><%= globalStats.organizations %></p>
-        <p class="stats-label">Organizations</p>
-      </div>
-      <div class="stats-col -inline-block">
-        <p class="stats-number -font-bold"><%= globalStats.voices %></p>
-        <p class="stats-label">Voices created</p>
-      </div>
-      <div class="stats-col -inline-block">
-        <p class="stats-number -font-bold"><%= globalStats.posts %></p>
-        <p class="stats-label">Posts published</p>
-      </div>
-    </article>
+    <!-- Stats -->
+    <div class="stats">
+
+    </div>
 
     <div class="-clearfix">
       <div class="-float-left -mr1">
@@ -98,6 +84,7 @@
   <% if (typeof notifications !== "undefined") { %>
     ns = <%= JSON.stringify(notifications) %>;
   <% } %>
+
   var App = new CV.App({
     notifications : ns,
     currentPerson : currentPerson
@@ -113,4 +100,14 @@
       categoriesData : <%= JSON.stringify(topics) %>
     })
   );
+
+  window.stats = new HomepageStats({
+      name : 'stats',
+      data : {
+          cities : 0,
+          organizations : 0,
+          voices : 0,
+          posts : 0
+      }
+  });
 </script>
