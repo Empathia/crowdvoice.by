@@ -49,6 +49,7 @@ require('./widgets/search/results-group');
 require('./widgets/search/results-view-all-button');
 // other
 require('./widgets/sidebar.js');
+require('./widgets/NotificationBell.js');
 require('./widgets/header.js');
 require('./widgets/incognito/button');
 require('./widgets/loader');

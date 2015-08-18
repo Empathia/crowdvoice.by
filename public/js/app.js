@@ -38,6 +38,8 @@ Class(CV, 'App').includes(NodeSupport)({
                 element : document.getElementsByClassName('cv-main-sidebar')[0]
             }));
 
+            this.header.setup();
+
             new CV.NotificationsManager({
                 notifications : this.notifications
             }).render(document.body);
