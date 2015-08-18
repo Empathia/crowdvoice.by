@@ -71,15 +71,9 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
         var messageNotificationElement = $(message.constructor.REPORT);
         var text = messageNotificationElement.html();
 
-        //if (this.data.organization !== 'undefined'){
-          text = text
-                .replace('{organizationName}', message.data.organization.name + ' ' + message.data.organization.lastname)
-                .replace('{url}', '/' + message.data.organization.profileName);
-        //} else {
-        //  text = text
-                //.replace('{organizationName}', 'Not Listed Organization')
-                //.replace('{url}', '/' + '');
-        //}
+        text = text
+            .replace('{organizationName}', message.data.organization.name)
+            .replace('{url}', '/' + message.data.organization.profileName);
 
         messageNotificationElement.html(text);
 
@@ -149,15 +143,15 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
               console.log('message Type: ' + message.data.type);
 
               $.ajax({
-                  method : 'POST',
+                  type : 'POST',
                   headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
                   url : url,
-                  contentType : 'json',
+                  dataType : 'json',
                   data : {
                     action : 'accept'
                   },
                   success : function(data) {
-                      console.log(data)
+                      console.log(data);
                   },
                   error : function(err) {
                       console.error(err);
@@ -176,15 +170,15 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
               console.log('message Type: ' + message.data.type);
 
               $.ajax({
-                  method : 'POST',
+                  type : 'POST',
                   headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
                   url : url,
-                  contentType : 'json',
+                  dataType : 'json',
                   data : {
                     action : 'acceptAsAnonymous'
                   },
                   success : function(data) {
-                      console.log(data)
+                      console.log(data);
                   },
                   error : function(err) {
                       console.error(err);
@@ -203,15 +197,15 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
               console.log('message Type: ' + message.data.type);
 
               $.ajax({
-                  method : 'POST',
+                  type : 'POST',
                   headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
                   url : url,
-                  contentType : 'json',
+                  dataType : 'json',
                   data : {
                     action : 'ignore'
                   },
                   success : function(data) {
-                      console.log(data)
+                      console.log(data);
                   },
                   error : function(err) {
                       console.error(err);
@@ -225,13 +219,13 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
         } else {
           switch(message.type) {
             case 'invitation_organization':
-              text = 'You have invited this user to become member of ' + message.data.organization.name + ' ' + message.data.organization.lastname;
+              text = 'You have invited this user to become member of ' + message.data.organization.name;
               break;
             case 'invitation_voice':
               text = 'You have invited this user to become contributor of ' + message.data.voice.title;
               break;
             case 'request_organization':
-              text = 'You have requested to be a member of ' + message.data.organization.name + ' ' + message.data.organization.lastname;
+              text = 'You have requested to be a member of ' + message.data.organization.name;
               break;
             case 'request_voice':
               text = 'You have requested to be a contributor of ' + message.data.voice.title;
