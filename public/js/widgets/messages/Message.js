@@ -150,12 +150,13 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
 
               $.ajax({
                   method : 'POST',
+                  headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
                   url : url,
                   contentType : 'json',
                   data : {
                     action : 'accept'
                   },
-                  succes : function(data) {
+                  success : function(data) {
                       console.log(data)
                   },
                   error : function(err) {
@@ -176,12 +177,13 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
 
               $.ajax({
                   method : 'POST',
+                  headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
                   url : url,
                   contentType : 'json',
                   data : {
                     action : 'acceptAsAnonymous'
                   },
-                  succes : function(data) {
+                  success : function(data) {
                       console.log(data)
                   },
                   error : function(err) {
@@ -202,12 +204,13 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
 
               $.ajax({
                   method : 'POST',
+                  headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
                   url : url,
                   contentType : 'json',
                   data : {
                     action : 'ignore'
                   },
-                  succes : function(data) {
+                  success : function(data) {
                       console.log(data)
                   },
                   error : function(err) {

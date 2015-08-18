@@ -7,11 +7,13 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
     },
 
     answerInvite : function (req, res, next) {
-      var thread;
-      var message;
-      var invitationRequest = null;
-      var voice = null;
-      var organization = null;
+      var thread,
+        message,
+        invitationRequest = null,
+        voice = null,
+        organization = null,
+        inviteToOrg = false,
+        inviteToVoice = false;
 
       async.series([
         // find thread
@@ -52,7 +54,7 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
           })
         },
 
-        // find invitation in message
+        // find invitation request in message
         function(done) {
           InvitationRequest.find({id: message.invitationRequestId}, function(err, result) {
             if (err) {
@@ -86,6 +88,8 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
 
             voice = result[0];
 
+            inviteToVoice = true;
+
             done();
           })
         },
@@ -106,6 +110,10 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
             }
 
             organization = result[0];
+
+            inviteToOrg = true;
+
+            done();
           })
         }
       ], function (err) {
@@ -117,13 +125,13 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
           voice : voice,
           organization : organization
         }, function(err, isAllowed) {
-          if (err) {
-            return next(err);
-          }
+          if (err) { return next(err); }
 
           if (!isAllowed) {
             return next(new ForbiddenError('Unauthorized.'))
           }
+
+          console.log('!!!!!!!!!!!', req.body);
 
           async.series([
             // accept
@@ -152,9 +160,11 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
 
               done();
             }
-          ]);
+          ], function (err) {
+            if (err) { return next(err); }
 
-          res.json({status : 'accepted'})
+            res.json({})
+          });
         })
       })
     },
