@@ -39,6 +39,8 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             <div class="send -col-12 -text-center"></div>\
         </div>',
 
+    REDIRECT_DELAY : 4000,
+
     prototype : {
         /* Voice data for Edit. Is null it assumes you are creating a new Voice,
          * if other than null assumes you are editing an existing Voice.
@@ -513,14 +515,17 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             }
 
             if (this.data) {
-                message = "“" + res.title + '” was updated!';
-                this.buttonSend.enable();
+                message = "“" + res.title + '” was updated! You will be redirected to your profile in a couple of seconds.';
+
+                window.setTimeout(function() {
+                    window.location = '/';
+                }, this.constructor.REDIRECT_DELAY);
             } else {
                 message = "“" + res.title + '” was created! You will be redirected to its profile in a couple of seconds.';
 
                 window.setTimeout(function() {
                     window.location.replace('/' + res.owner.profileName + '/' + res.slug);
-                }, 4000);
+                }, this.constructor.REDIRECT_DELAY);
             }
 
             this.appendChild(new CV.Alert({
