@@ -286,7 +286,7 @@
       value     : ""
   }).render($('.form-profile .placeholder-main'));
 
-  descriptionInput.element.find('textarea').val("<%= currentPerson.description || '' %>");
+  descriptionInput.element.find('textarea').val('<%= currentPerson.description.replace(/(\r\n|\n|\r)/gm," ") || "" %>');
 
   new CV.Input({
       style     : 'small form-location',
