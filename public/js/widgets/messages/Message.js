@@ -43,7 +43,7 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
 
     setup : function setup() {
       var message = this;
-      console.log(this);
+      //console.log(this);
 
       var participant;
 
@@ -96,13 +96,13 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
           switch(message.type) {
             case 'invitation_organization':
               text = text
-                      .replace('{organizationName}', message.data.organization.name + ' ' + message.data.organization.lastname)
-                      .replace('{url}', '/' + message.data.organization.profileName)
+                      .replace(/{organizationName}/g, message.data.organization.name)
+                      .replace(/{url}/, '/' + message.data.organization.profileName)
               break;
             case 'invitation_voice':
               text = text
-                      .replace('{organizationName}', message.data.voice.title)
-                      .replace('{url}', '/' + message.data.voice.slug)
+                      .replace(/{organizationName}/g, message.data.voice.title)
+                      .replace(/{url}/, '/' + message.data.voice.slug)
               break;
             case 'request_organization':
               text = text

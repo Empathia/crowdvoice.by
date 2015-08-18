@@ -245,3 +245,7 @@ require('./widgets/messages/Message.js');
 
 
 require('./widgets/audio.js');
+
+require('neowidget');
+
+require('./widgets/HomepageStats.js');
