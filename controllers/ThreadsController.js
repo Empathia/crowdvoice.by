@@ -49,7 +49,12 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
       payload.type = payload.type || 'message';
 
       // Decode HashIds data
-      payload.senderEntityId = hashids.decode(payload.senderEntityId)[0];
+      if (payload.senderEntityId) {
+        payload.senderEntityId = hashids.decode(payload.senderEntityId)[0];
+      } else {
+        payload.senderEntityId = hashids.decode(req.currentPerson.id)[0];
+      }
+
       payload.receiverEntityId = hashids.decode(payload.receiverEntityId)[0];
 
       if (payload.invitationRequestId) {
