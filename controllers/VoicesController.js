@@ -410,7 +410,6 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
             req.flash('success', 'Voice has been updated.');
             res.json(voice);
           });
-
         });
       });
     },
