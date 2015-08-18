@@ -2,6 +2,8 @@
 /* Subclass of VoicePostLayers
  * Declares the required abstract methods to handle the Voice Posts on Moderation Mode
  */
+var API = require('../../../lib/api');
+
 Class(CV, 'VoicePostLayersModerateAbstract').inherits(CV.VoicePostLayers)({
 
     prototype : {
@@ -82,6 +84,22 @@ Class(CV, 'VoicePostLayersModerateAbstract').inherits(CV.VoicePostLayers)({
          */
         __bindEvents : function __bindEvents() {
             this._socket.on('unapprovedMonthPosts', this._loadLayerRef);
+
+            this.bind('post:moderate:delete', function (ev) {
+                debugger;
+                API.postDelete({
+                    profileName : App.Voice.data.owner.profileName,
+                    voiceSlug : App.Voice.data.slug,
+                    postId : ev.data.parent.id
+                }, function(err, res) {
+                    console.log(err);
+                    console.log(res);
+                    debugger
+                    // this._reLayoutLayer({layer: ev.data.parent.parent});
+                    // ev.data.parent.parent.reLayout()
+                });
+            }.bind(this));
+
             return this;
         },
 

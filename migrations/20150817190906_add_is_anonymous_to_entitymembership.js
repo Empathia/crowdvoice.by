@@ -2,7 +2,7 @@
 exports.up = function(knex, Promise) {
   return Promise.all([
     knex.schema.table('EntityMembership', function (t) {
-      t.boolean('is_anonymous').index();
+      t.boolean('is_anonymous').defaultTo(false);
     })
   ]);
 };
