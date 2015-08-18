@@ -133,8 +133,6 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
 
           console.log('!!!!!!!!!!!', req.body);
 
-          if (message.organization) {}
-
           async.series([
             // accept
             function (done) {

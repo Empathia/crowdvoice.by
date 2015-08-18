@@ -156,7 +156,7 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
                   data : {
                     action : 'accept'
                   },
-                  succes : function(data) {
+                  success : function(data) {
                       console.log(data)
                   },
                   error : function(err) {
@@ -183,7 +183,7 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
                   data : {
                     action : 'acceptAsAnonymous'
                   },
-                  succes : function(data) {
+                  success : function(data) {
                       console.log(data)
                   },
                   error : function(err) {
@@ -210,7 +210,7 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
                   data : {
                     action : 'ignore'
                   },
-                  succes : function(data) {
+                  success : function(data) {
                       console.log(data)
                   },
                   error : function(err) {
