@@ -6,94 +6,109 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
       return this;
     },
 
-    acceptInvite : function acceptInvite(req, res, next) {
+    answerInvite : function (req, res, next) {
       var thread;
       var message;
       var invitationRequest = null;
       var voice = null;
       var organization = null;
 
-      async.series([function(done) {
-        MessageThread.find({id : hashids.decode(req.params.threadId)[0]}, function(err, result) {
-          if (err) {
-            return done(err);
+      async.series([
+        // find thread
+        function(done) {
+          MessageThread.find({id : hashids.decode(req.params.threadId)[0]}, function(err, result) {
+            if (err) {
+              return done(err);
+            }
+
+            if (result.length === 0) {
+              return done(new NotFoundError('Thread Not Found.'))
+            }
+
+            var messageThread = new MessageThread(result[0]);
+
+            thread = messageThread;
+
+            done();
+          })
+        },
+
+        // find message
+        function(done) {
+          Message.find({id : hashids.decode(req.params.messageId)[0]}, function(err, result) {
+            if (err) {
+              return done(err);
+            }
+
+            if (result.length === 0) {
+              return done(new NotFoundError('Thread Not Found.'))
+            }
+
+            var messageInstance = new Message(result[0]);
+
+            message = messageInstance;
+
+            done();
+          })
+        },
+
+        // find invitation in message
+        function(done) {
+          InvitationRequest.find({id: message.invitationRequestId}, function(err, result) {
+            if (err) {
+              return done(err);
+            }
+
+            if (result.length === 0) {
+              return done(new NotFoundError('Thread Not Found.'))
+            }
+
+            invitationRequest = result[0];
+
+            done();
+          })
+        },
+
+        // voice ID?
+        function(done) {
+          if (!message.voiceId) {
+            return done();
           }
 
-          if (result.length === 0) {
-            return done(new NotFoundError('Thread Not Found.'))
+          Voice.find({id : hashids.decode(message.voiceId)[0]}, function(err, result) {
+            if (err) {
+              return done(err);
+            }
+
+            if (result.length === 0) {
+              return done(new NotFoundError('Thread Not Found.'))
+            }
+
+            voice = result[0];
+
+            done();
+          })
+        },
+
+        // organization ID?
+        function(done) {
+          if (!message.organizationId) {
+            return done();
           }
 
-          var messageThread = new MessageThread(result[0]);
+          Entity.find({id : hashids.decode(message.organizationId)[0]}, function(err, result) {
+            if (err) {
+              return done(err);
+            }
 
-          thread = messageThread;
+            if (result.length === 0) {
+              return done(new NotFoundError('Thread Not Found.'))
+            }
 
-          done();
-        })
-      }, function(done) {
-        Message.find({id : hashids.decode(req.params.messageId)[0]}, function(err, result) {
-          if (err) {
-            return done(err);
-          }
-
-          if (result.length === 0) {
-            return done(new NotFoundError('Thread Not Found.'))
-          }
-
-          var messageInstance = new Message(result[0]);
-
-          message = messageInstance;
-
-          done();
-        })
-      }, function(done) {
-        InvitationRequest.find({id: message.invitationRequestId}, function(err, result) {
-          if (err) {
-            return done(err);
-          }
-
-          if (result.length === 0) {
-            return done(new NotFoundError('Thread Not Found.'))
-          }
-
-          invitationRequest = result[0];
-
-          done();
-        })
-      }, function(done) {
-        if (!message.voiceId) {
-          return done();
+            organization = result[0];
+          })
         }
-
-        Voice.find({id : hashids.decode(message.voiceId)[0]}, function(err, result) {
-          if (err) {
-            return done(err);
-          }
-
-          if (result.length === 0) {
-            return done(new NotFoundError('Thread Not Found.'))
-          }
-
-          voice = result[0];
-
-          done();
-        })
-      }, function(done) {
-        if (!message.organizationId) {
-          return done();
-        }
-
-        Entity.find({id : hashids.decode(message.organizationId)[0]}, function(err, result) {
-          if (err) {
-            return done(err);
-          }
-
-          if (result.length === 0) {
-            return done(new NotFoundError('Thread Not Found.'))
-          }
-
-          organization = result[0];
-        })
-      }], function(err) {
+      ], function (err) {
         ACL.isAllowed('acceptInvite', 'messages', req.role,  {
           currentPerson : req.currentPerson,
           thread : thread,
@@ -109,6 +124,35 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
           if (!isAllowed) {
             return next(new ForbiddenError('Unauthorized.'))
           }
+
+          async.series([
+            // accept
+            function (done) {
+              if (req.body.action !== 'accept') {
+                return done();
+              }
+
+              done();
+            },
+
+            // acceptAsAnonymous
+            function (done) {
+              if (req.body.action !== 'acceptAsAnonymous') {
+                return done();
+              }
+
+              done();
+            },
+
+            // ignore
+            function (done) {
+              if (req.body.action !== 'ignore') {
+                return done();
+              }
+
+              done();
+            }
+          ]);
 
           res.json({status : 'accepted'})
         })

@@ -426,6 +426,31 @@ module.exports = {
         });
     },
 
+    /* Request invitation for membership of organization.
+     * @argument args.profileName <required> [String] profileName of organization
+     * @argument args.data.orgId <required> [hashid] entity ID of organization tp request membership of
+     * @argument args.data.message <required> [Text] the message to send to the organizaiton
+     * @argument callback <required> [Function]
+     */
+    requestMembership : function requestMembership(args, callback) {
+        if (!args.profileName || !args.data.orgId || !args.data.message || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'POST',
+            url : '/' + args.profileName + '/requestMembership',
+            headers : {'csrf-token' : this.token},
+            data : args.data,
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
+    },
+
     /**************************************************************************
      * THREATS
      *************************************************************************/
