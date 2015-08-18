@@ -407,30 +407,30 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
     createThread : function createThread() {
       var container = this;
       console.log(container);
-      //var postMessageUrl = '/'+ container.currentPerson.profileName + '/messages';
-      //console.log('postMessageUrl: ' + postMessageUrl);
-      //console.log('senderEntityId: ' + container.senderEntityId);
-      //console.log('receiverEntityId: ' + container.receiverEntityId);
-      //$.ajax({
-      //  type: "POST",
-      //  url: postMessageUrl,
-      //  headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
-      //  data: {
-      //    message : container.element.find('.message-create textarea').val(),
-      //    senderEntityId : container.senderEntityId,
-      //    receiverEntityId : container.receiverEntityId
-      //  },
-      //  success: function(data) {
-      //    container.element.find('.message-create textarea').value = "";
-      //    container.currentThreadId = data.id;
-      //    container.addThread(data);
-      //    container.showSideBar();
-      //    //postMessage();
-      //    threadListEl.find("[id='" + container.currentThreadId + "']").click();
-//
-      //    //console.log(data);
-      //  }
-      //});
+      var postMessageUrl = '/'+ container.currentPerson.profileName + '/messages';
+      console.log('postMessageUrl: ' + postMessageUrl);
+      console.log('senderEntityId: ' + container.senderEntityId);
+      console.log('receiverEntityId: ' + container.receiverEntityId);
+      $.ajax({
+        type: "POST",
+        url: postMessageUrl,
+        headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
+        data: {
+          message : container.element.find('.message-create textarea').val(),
+          senderEntityId : container.senderEntityId,
+          receiverEntityId : container.receiverEntityId
+        },
+        success: function(data) {
+          container.element.find('.message-create textarea').value = "";
+          container.currentThreadId = data.id;
+          container.addThread(data);
+          container.showSideBar();
+          //postMessage();
+          threadListEl.find("[id='" + container.currentThreadId + "']").click();
+
+          //console.log(data);
+        }
+      });
     },
 
     postMessage : function postMessage(){

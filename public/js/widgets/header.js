@@ -43,20 +43,23 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
             this.loginActionsWrapper = this.el.querySelector('.header-login-actions');
             this.buttonActionsWrapper = this.el.querySelector('.header-actions');
 
-            if (!Person.get()) {
-                this._setupVisitor();
-            } else {
-                if (Person.anon()) {
-                    this._setupAnonymous();
-                } else {
-                    this._setupForCurrentPerson();
-                }
-            }
 
             this.appendChild(new CV.SearchButton({
                 name : 'searchButton',
                 className : 'header-actions-button'
             })).render(this.buttonActionsWrapper);
+        },
+
+        setup : function setup() {
+          if (!Person.get()) {
+              this._setupVisitor();
+          } else {
+              if (Person.anon()) {
+                  this._setupAnonymous();
+              } else {
+                  this._setupForCurrentPerson();
+              }
+          }
         },
 
         /* Append the ui for not logged in users
@@ -137,7 +140,16 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
             })).render(this.buttonActionsWrapper);
 
             // alerts buttons
-            this.buttonActionsWrapper.insertAdjacentHTML('beforeend', this.constructor.BUTTON_ACTIONS_HTML);
+            window.bell = new NotificationBell({
+              name : 'bell',
+              data : { count : 0 }
+            });
+
+            this.appendChild(window.bell);
+
+            window.bell.setup();
+
+            this.buttonActionsWrapper.insertAdjacentElement('beforeend', bell.element[0]);
 
             return this;
         },

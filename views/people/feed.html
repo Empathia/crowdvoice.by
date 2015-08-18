@@ -146,6 +146,16 @@
 				var typeWidget;
 
 				switch (feed.action) {
+		      case 'created':
+		      	if(feed.itemType == 'entity'){
+							feedEl.find('.feed-item-title > span').text(feed.action + ' ' + feed.entity.type + 's');
+			  			typeWidget = new CV.CardMini({data:feed.entity}).render(feedEl.find('.feed-item-list'));
+			  		} else if (feed.itemType == 'voice'){
+			  			feedEl.find('.feed-item-title > span').text(feed.action + ' ' + feed.itemType + 's');
+			  			typeWidget = new CV.VoiceCoverMini({data:feed.voice}).render(feedEl.find('.feed-item-list'));
+			  		}
+		        typeWidget.showMeta();
+		        break;
 		      case 'followed':
 		      	if(feed.itemType == 'entity'){
 							feedEl.find('.feed-item-title > span').text(feed.action + ' ' + feed.entity.type + 's');
@@ -161,6 +171,27 @@
 		        break;
 		      case 'changed background':
 						feedEl.find('.feed-item-title > span').text(feed.action);
+		        break;
+		      case 'new posts':
+		      	if (feed.itemType == 'voice'){
+			  			feedEl.find('.feed-item-title > span').text(feed.action + ' in ' + feed.itemType);
+			  			typeWidget = new CV.VoiceCoverMini({data:feed.voice}).render(feedEl.find('.feed-item-list'));
+			  		}
+		        typeWidget.showMeta();
+		        break;
+		      case 'changed title':
+		      	if (feed.itemType == 'voice'){
+			  			feedEl.find('.feed-item-title > span').text(feed.action + ' in ' + feed.itemType);
+			  			typeWidget = new CV.VoiceCoverMini({data:feed.voice}).render(feedEl.find('.feed-item-list'));
+			  		}
+		        typeWidget.showMeta();
+		        break;
+		      case 'changed description':
+		      	if (feed.itemType == 'voice'){
+			  			feedEl.find('.feed-item-title > span').text(feed.action + ' in ' + feed.itemType);
+			  			typeWidget = new CV.VoiceCoverMini({data:feed.voice}).render(feedEl.find('.feed-item-list'));
+			  		}
+		        typeWidget.showMeta();
 		        break;
 		      default:
 		        // \_||_/

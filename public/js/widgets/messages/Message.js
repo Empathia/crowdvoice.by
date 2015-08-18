@@ -67,19 +67,19 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
       //console.log('type: ' +message.type);
 
       if ( message.type == 'report') {
-
+        console.log(this);
         var messageNotificationElement = $(message.constructor.REPORT);
         var text = messageNotificationElement.html();
 
-        if (this.data.organization === 'undefined'){
+        //if (this.data.organization !== 'undefined'){
           text = text
                 .replace('{organizationName}', message.data.organization.name + ' ' + message.data.organization.lastname)
                 .replace('{url}', '/' + message.data.organization.profileName);
-        } else {
-          text = text
-                .replace('{organizationName}', 'Not Listed Organization')
-                .replace('{url}', '/' + '');
-        }
+        //} else {
+        //  text = text
+                //.replace('{organizationName}', 'Not Listed Organization')
+                //.replace('{url}', '/' + '');
+        //}
 
         messageNotificationElement.html(text);
 
@@ -140,12 +140,21 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
             // ************   Message button actions *******************
 
             messageActions.accept.on('click', function(){
-              var url = '/' + message.threadContainer.currentPerson.profileName + '/messages/' + message.data.threadId + '/' + message.id  +'/acceptInvite';
+              var url = '/' + message.threadContainer.currentPerson.profileName + '/messages/' + message.data.threadId + '/' + message.data.id  +'/answerInvite';
+
+              console.log('-- Accept --');
+              console.log('url: ' + url);
+              console.log('message Id: ' + message.data.id);
+              console.log('thread Id: ' + message.data.threadId);
+              console.log('message Type: ' + message.data.type);
 
               $.ajax({
-                  method : 'GET',
+                  method : 'POST',
                   url : url,
                   contentType : 'json',
+                  data : {
+                    action : 'accept'
+                  },
                   succes : function(data) {
                       console.log(data)
                   },
@@ -153,24 +162,59 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
                       console.error(err);
                   }
               })
-              console.log('-- Accept --');
-              console.log('message Id: ' + message.data.id);
-              console.log('thread Id: ' + message.data.threadId);
-              console.log('message Type: ' + message.data.type);
+
             });
 
             messageActions.anonymous.on('click', function(){
+              var url = '/' + message.threadContainer.currentPerson.profileName + '/messages/' + message.data.threadId + '/' + message.data.id  +'/answerInvite';
+
               console.log('-- Accept as an Anonymous Member --');
+              console.log('url: ' + url);
               console.log('message Id: ' + message.data.id);
               console.log('thread Id: ' + message.data.threadId);
               console.log('message Type: ' + message.data.type);
+
+              $.ajax({
+                  method : 'POST',
+                  url : url,
+                  contentType : 'json',
+                  data : {
+                    action : 'acceptAsAnonymous'
+                  },
+                  succes : function(data) {
+                      console.log(data)
+                  },
+                  error : function(err) {
+                      console.error(err);
+                  }
+              })
+
             });
 
             messageActions.refuse.on('click', function(){
+              var url = '/' + message.threadContainer.currentPerson.profileName + '/messages/' + message.data.threadId + '/' + message.data.id  +'/answerInvite';
+
               console.log('-- Refuse --');
+              console.log('url: ' + url);
               console.log('message Id: ' + message.data.id);
               console.log('thread Id: ' + message.data.threadId);
               console.log('message Type: ' + message.data.type);
+
+              $.ajax({
+                  method : 'POST',
+                  url : url,
+                  contentType : 'json',
+                  data : {
+                    action : 'ignore'
+                  },
+                  succes : function(data) {
+                      console.log(data)
+                  },
+                  error : function(err) {
+                      console.error(err);
+                  }
+              })
+
             });
 
           }

@@ -192,13 +192,14 @@ Module('ThreadsPresenter')({
 
                 message.reportId = hashids.encode(message.reportId);
 
-                var org = new Entity({ id: report[0].reportedId });
+                Entity.find({ id: report[0].reportedId }, function (err, org) {
+                  EntitiesPresenter.build(org, req.currentPerson, function (err, presentedOrg) {
+                    if (err) { return doneMessageInfo(err); }
 
-                EntitiesPresenter.build([org], req.currentPerson, function (err, presentedOrg) {
-                  if (err) { return doneMessageInfo(err); }
+                    message.organization = presentedOrg[0];
 
-                  message.organization = presentedOrg[0];
-                  doneMessageInfo();
+                    doneMessageInfo();
+                  });
                 });
               });
 

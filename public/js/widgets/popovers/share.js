@@ -90,7 +90,7 @@ Class(CV, 'PopoverShare').inherits(Widget).includes(CV.WidgetUtils)({
 
             var emailUrlString = ShareUrl.email({
                 to : this.emailInput.value,
-                subject : 'Check out this at crowdvoice.by',
+                subject : 'Check out this at CrowdVoice.by',
                 body : this.data.title + '\n' + this.data.url
             });
 
