@@ -263,8 +263,8 @@
       name      : 'lastname',
       style     : 'small -w-50 form-lastname',
       hasTitle  : true,
-      title     : "Your Lastname",
-      value     : "<%= currentPerson.lastname %>"
+      title     : "Your Last Name",
+      value     : "<%= currentPerson.lastname || '' %>"
   }).render($('.form-profile .placeholder-main'));
 
   var profileInput = new CV.Input({
@@ -276,9 +276,6 @@
       value     : "<%= currentPerson.profileName %>"
   }).render($('.form-profile .placeholder-main'));
 
-  var descriptionText = "<%= currentPerson.description %>";
-  if (!descriptionText){ descriptionText = ""};
-
   var descriptionInput = new CV.Input({
       style     : 'form-description',
       isArea    : true,
@@ -286,15 +283,17 @@
       name      : 'description',
       title     : "Short Bio",
       subTitle  : "140 characters max",
-      value     : "<%= currentPerson.description %>"
+      value     : ""
   }).render($('.form-profile .placeholder-main'));
+
+  descriptionInput.element.find('textarea').val('<%= currentPerson.description.replace(/(\r\n|\n|\r)/gm," ") || "" %>');
 
   new CV.Input({
       style     : 'small form-location',
       name      : 'location',
       hasTitle  : true,
       title     : "Location",
-      value     : "<%= currentPerson.location %>"
+      value     : "<%= currentPerson.location || '' %>"
   }).render($('.form-profile .placeholder-location'));
 
   var submitButtonProfile = new CV.Button({
