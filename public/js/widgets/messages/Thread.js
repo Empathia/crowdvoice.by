@@ -69,6 +69,7 @@ CV.Thread = Class(CV, 'Thread').includes(Widget)({
           +'<b>)');
       }
 
+      //console.log(this.data);
 
       if (thread.data.unreadCount > 0) {
         this.element.find('.actions span').text(thread.data.unreadCount);
