@@ -54,13 +54,13 @@ Module(CV, 'WidgetUtils')({
                 el.className = el.className.replace(new RegExp('(^|\\b)' + classNames.join('|') + '(\\b|$)', 'gi'), ' ');
             },
 
-            create: function(type) {
-                return document.createElement(type);
-            },
-
-            show: function(element) {
-                element.style.display = "block";
-                return element;
+            isChildOf : function isChildOf(e, p) {
+                if (!e) {return false;}
+                var el = e.target||e.srcElement||e||false;
+                while (el && el !== p) {
+                    el = el.parentNode||false;
+                }
+                return (el!==false);
             }
         },
 

@@ -253,7 +253,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             var row = this.el.querySelector('[data-row-voice-info]');
 
             if (!Person.anon() && Person.ownsOrganizations()) {
-                var owncol = this.dom.create('div');
+                var owncol = document.createElement('div');
                 this.appendChild(new CV.UI.DropdownVoiceOwnership({
                     name : 'voiceOwnershipDropdown'
                 })).render(owncol);

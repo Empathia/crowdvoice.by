@@ -86,7 +86,7 @@ Class(CV, 'PostAudio').inherits(CV.Post)({
             }
 
             if (this.sourceUrl && this.sourceService) {
-                var a = this.dom.create('a');
+                var a = document.createElement('a');
                 this.dom.updateAttr('href', a, this.sourceUrl);
                 this.dom.updateText(a, this.sourceService + " ");
                 this.dom.updateText(this.sourceElement, 'from ');

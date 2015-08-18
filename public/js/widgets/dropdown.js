@@ -53,6 +53,7 @@ Class(CV, 'Dropdown').inherits(Widget).includes(CV.WidgetUtils)({
             this.head = this.el.querySelector('.ui-dropdown__head');
             this.body = this.el.querySelector('.ui-dropdown__body');
             this.labelElement = this.el.querySelector('.ui-dropdown-label');
+            this._document = document;
 
             this._setup()._bindEvents();
         },
@@ -78,6 +79,7 @@ Class(CV, 'Dropdown').inherits(Widget).includes(CV.WidgetUtils)({
 
         _bindEvents : function _bindEvents() {
             this._toggleRef = this.toggle.bind(this);
+            this._documentClickHandlerRef = this._documentClickHandler.bind(this);
             Events.on(this.head, 'click', this._toggleRef);
         },
 
@@ -129,7 +131,12 @@ Class(CV, 'Dropdown').inherits(Widget).includes(CV.WidgetUtils)({
         },
 
         toggle : function toggle() {
-            this.el.classList.toggle('active');
+            if (this.active) {
+                this.deactivate();
+            } else {
+                this.activate();
+            }
+
             this.clearState();
             return this;
         },
@@ -147,11 +154,28 @@ Class(CV, 'Dropdown').inherits(Widget).includes(CV.WidgetUtils)({
             return this;
         },
 
+        _activate : function _activate() {
+            Widget.prototype._activate.call(this);
+            Events.on(this._document, 'click', this._documentClickHandlerRef);
+        },
+
+        _deactivate : function _deactivate() {
+            Widget.prototype._deactivate.call(this);
+            Events.off(this._document, 'click', this._documentClickHandlerRef);
+        },
+
+        _documentClickHandler : function _documentClickHandler(ev) {
+            if (this.dom.isChildOf(ev.target, this.el) === false) {
+                this.deactivate();
+            }
+        },
+
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
 
             Events.off(this.head, 'click', this._toggleRef);
-            this._toggleRef = null;
+            Events.off(this._document, 'click', this._documentClickHandlerRef);
+            this._toggleRef = this._documentClickHandlerRef = null;
 
             this.el = this.head = this.body = this.labelElement = null;
             return null;

@@ -67,7 +67,7 @@ Class(CV.UI, 'DropdownRegular').inherits(Widget).includes(CV.WidgetUtils)({
          * @method _createOption <private>
          */
         _createOption : function _createOption(label, value) {
-            var item = this.dom.create('div');
+            var item = document.createElement('div');
             item.className = 'ui-vertical-list-item';
             this.dom.updateText(item, label);
             this.dom.updateAttr('data-value', item, value);

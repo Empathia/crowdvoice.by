@@ -56,7 +56,7 @@ Class(CV.UI, 'DropdownVoiceOwnership').inherits(Widget).includes(CV.WidgetUtils)
         },
 
         _createItem : function _createItem(label, value) {
-            var item = this.dom.create('div');
+            var item = document.createElement('div');
             item.className = 'ui-vertical-list-item';
             this.dom.updateText(item, label);
             this.dom.updateAttr('data-value', item, value);
