@@ -148,7 +148,7 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
 
             bell.setup();
 
-            this.buttonActionsWrapper.insertAdjacentElement('beforeend', bell.element[0]);
+            this.buttonActionsWrapper.appendChild(bell.element[0]);
 
             return this;
         },
