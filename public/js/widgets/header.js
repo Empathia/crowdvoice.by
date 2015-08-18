@@ -42,12 +42,6 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
             this.el = this.element[0];
             this.loginActionsWrapper = this.el.querySelector('.header-login-actions');
             this.buttonActionsWrapper = this.el.querySelector('.header-actions');
-
-
-            this.appendChild(new CV.SearchButton({
-                name : 'searchButton',
-                className : 'header-actions-button'
-            })).render(this.buttonActionsWrapper);
         },
 
         setup : function setup() {
@@ -60,6 +54,11 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
                   this._setupForCurrentPerson();
               }
           }
+
+          this.appendChild(new CV.SearchButton({
+              name : 'searchButton',
+              className : 'header-actions-button'
+          })).render(this.buttonActionsWrapper);
         },
 
         /* Append the ui for not logged in users
