@@ -274,8 +274,22 @@
       });
       // select actions
       profileSettings.request.on('click', function(){
-        requestMembershipModal.show();
+        var requestMembershipModal = new CV.UI.Modal({
+          title : 'Request Membership',
+          name : 'requestMembershipModal',
+          action : CV.RequestMembership,
+          width : 650,
+          data : {
+            orgId : currentOrganization.id,
+            profileName : currentOrganization.profileName
+          }
+        }).render(document.body);
+
+        requestAnimationFrame(function() {
+          requestMembershipModal.activate();
+        });
       });
+
       profileSettings.report.on('click', function(){
         reportModal.show();
       });
@@ -308,15 +322,6 @@
       title       : 'Report/Claim',
       name        : 'reportModal',
       action      : CV.Report,
-      width       : 650,
-    });
-
-    var requestMembershipModal = new CV.Modal({
-      style       : '',
-      type        : '',
-      title       : 'Request Membership',
-      name        : 'requestMembershipModal',
-      action      : CV.RequestMembership,
       width       : 650,
     });
 

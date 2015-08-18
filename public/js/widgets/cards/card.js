@@ -173,7 +173,10 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
 
             if (this.data.type === "organization") {
                 if (!Person.memberOf('organization', this.data.id)) {
-                    this.appendChild(new CV.CardActionJoin({name : 'joinButton'})).render(this.actionsEl);
+                    this.appendChild(new CV.CardActionJoin({
+                        name : 'joinButton',
+                        entity : this.data
+                    })).render(this.actionsEl);
                     this._totalCountActions++;
                 }
             } else {
