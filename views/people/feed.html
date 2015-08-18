@@ -101,7 +101,180 @@
     </div>\
 	';
 
+	//action: "changed avatar"
+	//actionDoer: {}
+	//createdAt: "2015-08-18T02:54:03.208Z"
+	//entity/voice: {}
+	//itemType: "entity/voice"
 
+	//************* tmp **********************
+	var tmpVoices, tmpPeople, tmpOrganizations;
+	var tmpFeed = [];
+
+	function getData(url, type){
+		$.ajax({
+			type: "GET",
+			url: url,
+			headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
+			data : {},
+			dataType : 'json',
+			success: function(data) {
+					if (type == 'voices'){
+						tmpVoices = data;
+					} else if (type == 'people'){
+						tmpPeople = data;
+					} else if (type == 'organizations'){
+						tmpOrganizations = data;
+					}
+
+					if (tmpVoices && tmpPeople && tmpOrganizations){
+						console.log('ready');
+						createFeed();
+					}
+			  	//items = items.concat(data);
+			  	//renderData(data, instance, className);
+
+			}
+		});
+	}
+
+	function createFeed(){
+
+		//action: "changed avatar"
+		//actionDoer: {}
+		//createdAt: "2015-08-18T02:54:03.208Z"
+		//entity/voice: {}
+		//itemType: "entity/voice"
+
+		var tmpFeedItem = {
+			action: "changed description",
+			actionDoer: tmpPeople[ Math.floor(Math.random()*tmpPeople.length) ],
+			createdAt: "2015-08-18T02:54:03.208Z",
+			voice: tmpVoices[Math.floor(Math.random()*tmpVoices.length)],
+			itemType: "voice"
+		};tmpFeed.push(tmpFeedItem);
+
+		var tmpFeedItem = {
+			action: "changed title",
+			actionDoer: tmpPeople[ Math.floor(Math.random()*tmpPeople.length) ],
+			createdAt: "2015-08-18T02:54:03.208Z",
+			voice: tmpVoices[Math.floor(Math.random()*tmpVoices.length)],
+			itemType: "voice"
+		};tmpFeed.push(tmpFeedItem);
+
+		var tmpFeedItem = {
+			action: "new posts",
+			actionDoer: tmpPeople[ Math.floor(Math.random()*tmpPeople.length) ],
+			createdAt: "2015-08-18T02:54:03.208Z",
+			voice: tmpVoices[Math.floor(Math.random()*tmpVoices.length)],
+			itemType: "voice"
+		};tmpFeed.push(tmpFeedItem);
+
+		var tmpFeedItem = {
+			action: "created",
+			actionDoer: tmpPeople[ Math.floor(Math.random()*tmpPeople.length) ],
+			createdAt: "2015-08-18T02:54:03.208Z",
+			voice: tmpVoices[Math.floor(Math.random()*tmpVoices.length)],
+			itemType: "voice"
+		};tmpFeed.push(tmpFeedItem);
+
+		var tmpFeedItem = {
+			action: "created",
+			actionDoer: tmpPeople[ Math.floor(Math.random()*tmpPeople.length) ],
+			createdAt: "2015-08-18T02:54:03.208Z",
+			entity: tmpOrganizations[Math.floor(Math.random()*tmpOrganizations.length)],
+			itemType: "entity"
+		};tmpFeed.push(tmpFeedItem);
+
+		var tmpFeedItem = {
+			action: "followed",
+			actionDoer: tmpPeople[ Math.floor(Math.random()*tmpPeople.length) ],
+			createdAt: "2015-08-18T02:54:03.208Z",
+			entity: tmpPeople[Math.floor(Math.random()*tmpPeople.length)],
+			itemType: "entity"
+		};tmpFeed.push(tmpFeedItem);
+
+		var tmpFeedItem = {
+			action: "followed",
+			actionDoer: tmpPeople[ Math.floor(Math.random()*tmpPeople.length) ],
+			createdAt: "2015-08-18T02:54:03.208Z",
+			entity: tmpOrganizations[Math.floor(Math.random()*tmpOrganizations.length)],
+			itemType: "entity"
+		};tmpFeed.push(tmpFeedItem);
+
+		var tmpFeedItem = {
+			action: "followed",
+			actionDoer: tmpPeople[ Math.floor(Math.random()*tmpPeople.length) ],
+			createdAt: "2015-08-18T02:54:03.208Z",
+			voice: tmpVoices[Math.floor(Math.random()*tmpVoices.length)],
+			itemType: "voice"
+		};tmpFeed.push(tmpFeedItem);
+
+		var tmpFeedItem = {
+			action: "changed avatar",
+			actionDoer: tmpPeople[ Math.floor(Math.random()*tmpPeople.length) ],
+			createdAt: "2015-08-18T02:54:03.208Z",
+			entity: tmpPeople[Math.floor(Math.random()*tmpPeople.length)],
+			itemType: "entity"
+		};tmpFeed.push(tmpFeedItem);
+
+		var tmpFeedItem = {
+			action: "changed background",
+			actionDoer: tmpPeople[ Math.floor(Math.random()*tmpPeople.length) ],
+			createdAt: "2015-08-18T02:54:03.208Z",
+			entity: tmpPeople[Math.floor(Math.random()*tmpPeople.length)],
+			itemType: "entity"
+		};tmpFeed.push(tmpFeedItem);
+
+		var tmpFeedShuffled = shuffle(tmpFeed);
+
+		var tmpStartHour = 7;
+		var tmpStartMinute = 37;
+		tmpFeedShuffled.forEach(function (item, index){
+
+			if (tmpStartMinute < 10 ) {tmpStartMinute = '0' + tmpStartMinute}
+
+			if (isEven(index)){
+				tmpStartHour--;
+				if (tmpStartHour < 10 ) {tmpStartHour = '0' + tmpStartHour}
+			}
+			item.createdAt = '2015-08-18T' + tmpStartHour + ':'+ tmpStartMinute +':03.208Z';
+			tmpStartMinute--;
+
+		});
+
+		addFeedItems(tmpFeedShuffled);
+	}
+
+	getData('/discover/new/voices', 'voices');
+	getData('/discover/new/people', 'people');
+	getData('/discover/new/organizations', 'organizations');
+
+	function isEven(n) {
+	  n = Number(n);
+	  return n === 0 || !!(n && !(n%2));
+	}
+
+	function shuffle(array) {
+	  var currentIndex = array.length, temporaryValue, randomIndex ;
+
+	  // While there remain elements to shuffle...
+	  while (0 !== currentIndex) {
+
+	    // Pick a remaining element...
+	    randomIndex = Math.floor(Math.random() * currentIndex);
+	    currentIndex -= 1;
+
+	    // And swap it with the current element.
+	    temporaryValue = array[currentIndex];
+	    array[currentIndex] = array[randomIndex];
+	    array[randomIndex] = temporaryValue;
+	  }
+
+	  return array;
+	}
+
+	//****************************************
 
   var sortedFeedItems = feedItems.sort(this.compare).reverse();
 
@@ -131,89 +304,98 @@
 			numOrgs.textContent = currentPerson.organizations.length;
 		}
 
-		if ( sortedFeedItems.length > 0 ){
+		console.log(sortedFeedItems);
 
-		  sortedFeedItems.forEach(function(feed){
+		if ( sortedFeedItems.length > 1000 ){
 
-				var timeElapsed = moment(feed.createdAt).from(moment());
-				var feedEl = $(feedItemEl);
-
-				feedEl.find('.feed-item-image img').attr('src', feed.actionDoer.images.small.url);
-				feedEl.find('.feed-item-time').text( moment(feed.createdAt).from(moment()) );
-				feedEl.find('.feed-item-title > a > b').text(feed.actionDoer.name + ' ' + feed.actionDoer.lastname);
-				feedEl.find('.feed-item-title > a').attr('href', '/' + feed.actionDoer.profileName);
-
-				var typeWidget;
-
-				switch (feed.action) {
-		      case 'created':
-		      	if(feed.itemType == 'entity'){
-							feedEl.find('.feed-item-title > span').text(feed.action + ' ' + feed.entity.type + 's');
-			  			typeWidget = new CV.CardMini({data:feed.entity}).render(feedEl.find('.feed-item-list'));
-			  		} else if (feed.itemType == 'voice'){
-			  			feedEl.find('.feed-item-title > span').text(feed.action + ' ' + feed.itemType + 's');
-			  			typeWidget = new CV.VoiceCoverMini({data:feed.voice}).render(feedEl.find('.feed-item-list'));
-			  		}
-		        typeWidget.showMeta();
-		        break;
-		      case 'followed':
-		      	if(feed.itemType == 'entity'){
-							feedEl.find('.feed-item-title > span').text(feed.action + ' ' + feed.entity.type + 's');
-			  			typeWidget = new CV.CardMini({data:feed.entity}).render(feedEl.find('.feed-item-list'));
-			  		} else if (feed.itemType == 'voice'){
-			  			feedEl.find('.feed-item-title > span').text(feed.action + ' ' + feed.itemType + 's');
-			  			typeWidget = new CV.VoiceCoverMini({data:feed.voice}).render(feedEl.find('.feed-item-list'));
-			  		}
-		        typeWidget.showMeta();
-		        break;
-		      case 'changed avatar':
-						feedEl.find('.feed-item-title > span').text(feed.action);
-		        break;
-		      case 'changed background':
-						feedEl.find('.feed-item-title > span').text(feed.action);
-		        break;
-		      case 'new posts':
-		      	if (feed.itemType == 'voice'){
-			  			feedEl.find('.feed-item-title > span').text(feed.action + ' in ' + feed.itemType);
-			  			typeWidget = new CV.VoiceCoverMini({data:feed.voice}).render(feedEl.find('.feed-item-list'));
-			  		}
-		        typeWidget.showMeta();
-		        break;
-		      case 'changed title':
-		      	if (feed.itemType == 'voice'){
-			  			feedEl.find('.feed-item-title > span').text(feed.action + ' in ' + feed.itemType);
-			  			typeWidget = new CV.VoiceCoverMini({data:feed.voice}).render(feedEl.find('.feed-item-list'));
-			  		}
-		        typeWidget.showMeta();
-		        break;
-		      case 'changed description':
-		      	if (feed.itemType == 'voice'){
-			  			feedEl.find('.feed-item-title > span').text(feed.action + ' in ' + feed.itemType);
-			  			typeWidget = new CV.VoiceCoverMini({data:feed.voice}).render(feedEl.find('.feed-item-list'));
-			  		}
-		        typeWidget.showMeta();
-		        break;
-		      default:
-		        // \_||_/
-		    }
-
-				$('.profile-body').append(feedEl);
-
-		  });
+		  addFeedItems(sortedFeedItems);
 
 		}else{
 
-			var onboarding = '\
-			<section class="profile-onboarding -mid-height -rel">\
-		    <h1>Nothing to show yet</h1>\
-		    <p>Follow voices, users and organzations to view all their recent activity. This will also help you discover more of them to contact, contribute, join and follow.</p>\
-		    <br>\
-		    <a href="/discover/browse"><button class="cv-button primary small">Explore and Discover!</button></a>\
-		  </section>';
-
-		  $('.profile-body').html(onboarding);
+			//var onboarding = '\
+			//<section class="profile-onboarding -mid-height -rel">\
+		  //  <h1>Nothing to show yet</h1>\
+		  //  <p>Follow voices, users and organzations to view all their recent activity.\
+		  //  This will also help you discover more of them to contact, contribute, join and follow.</p>\
+		  //  <br>\
+		  //  <a href="/discover/browse"><button class="cv-button primary small">Explore and Discover!</button></a>\
+		  //</section>';
+			//
+		  //$('.profile-body').html(onboarding);
 
 		}
+	}
+
+	function addFeedItems(feedItems){
+
+		feedItems.forEach(function(feed){
+
+			var timeElapsed = moment(feed.createdAt).from(moment());
+			var feedEl = $(feedItemEl);
+
+			feedEl.find('.feed-item-image img').attr('src', feed.actionDoer.images.small.url);
+			feedEl.find('.feed-item-time').text( moment(feed.createdAt).from(moment()) );
+			feedEl.find('.feed-item-title > a > b').text(feed.actionDoer.name + ' ' + feed.actionDoer.lastname);
+			feedEl.find('.feed-item-title > a').attr('href', '/' + feed.actionDoer.profileName);
+
+			var typeWidget;
+
+			switch (feed.action) {
+	      case 'created':
+	      	if(feed.itemType == 'entity'){
+						feedEl.find('.feed-item-title > span').text(feed.action + ' ' + feed.entity.type + 's');
+		  			typeWidget = new CV.CardMini({data:feed.entity}).render(feedEl.find('.feed-item-list'));
+		  		} else if (feed.itemType == 'voice'){
+		  			feedEl.find('.feed-item-title > span').text(feed.action + ' ' + feed.itemType + 's');
+		  			typeWidget = new CV.VoiceCoverMini({data:feed.voice}).render(feedEl.find('.feed-item-list'));
+		  		}
+	        typeWidget.showMeta();
+	        break;
+	      //xxx
+	      case 'followed':
+	      	if(feed.itemType == 'entity'){
+						feedEl.find('.feed-item-title > span').text(feed.action + ' ' + feed.entity.type + 's');
+		  			typeWidget = new CV.CardMini({data:feed.entity}).render(feedEl.find('.feed-item-list'));
+		  		} else if (feed.itemType == 'voice'){
+		  			feedEl.find('.feed-item-title > span').text(feed.action + ' ' + feed.itemType + 's');
+		  			typeWidget = new CV.VoiceCoverMini({data:feed.voice}).render(feedEl.find('.feed-item-list'));
+		  		}
+	        typeWidget.showMeta();
+	        break;
+	      case 'changed avatar':
+					feedEl.find('.feed-item-title > span').text(feed.action);
+	        break;
+	      case 'changed background':
+					feedEl.find('.feed-item-title > span').text(feed.action);
+	        break;
+	      case 'new posts':
+	      	if (feed.itemType == 'voice'){
+		  			feedEl.find('.feed-item-title > span').text('added ' + feed.action + ' to ' + feed.itemType);
+		  			typeWidget = new CV.VoiceCoverMini({data:feed.voice}).render(feedEl.find('.feed-item-list'));
+		  		}
+	        typeWidget.showMeta();
+	        break;
+	      case 'changed title':
+	      	if (feed.itemType == 'voice'){
+		  			feedEl.find('.feed-item-title > span').text(feed.action + ' to a ' + feed.itemType);
+		  			typeWidget = new CV.VoiceCoverMini({data:feed.voice}).render(feedEl.find('.feed-item-list'));
+		  		}
+	        typeWidget.showMeta();
+	        break;
+	      case 'changed description':
+	      	if (feed.itemType == 'voice'){
+		  			feedEl.find('.feed-item-title > span').text(feed.action + ' to a ' + feed.itemType);
+		  			typeWidget = new CV.VoiceCoverMini({data:feed.voice}).render(feedEl.find('.feed-item-list'));
+		  		}
+	        typeWidget.showMeta();
+	        break;
+	      default:
+	        // \_||_/
+	    }
+
+			$('.profile-body').append(feedEl);
+
+	  });
 	}
 
   function compare(a,b) {
