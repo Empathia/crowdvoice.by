@@ -202,8 +202,10 @@
       name      : 'description',
       title     : "Short Bio",
       subTitle  : "140 characters max",
-      value     : "<%= organization.description %>"
+      value     : ""
   }).render($('.form-profile .placeholder-main'));
+
+  descriptionInput.element.find('textarea').val('<%= organization.description.replace(/(\r\n|\n|\r)/gm," ") || "" %>');
 
   new CV.Input({
       style     : 'small form-location',
