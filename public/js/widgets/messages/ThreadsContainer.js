@@ -15,6 +15,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
 
 
     init : function init(config) {
+
       Widget.prototype.init.call(this, config);
 
       var container = this;
@@ -33,7 +34,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
         name : 'searchField',
         type    : 'search',
         style     : 'small',
-        placeholder : 'Search...'
+        placeholder : 'Filter'
       }).render(this.element.find('.messages-search'));
 
       this.replyButton = new CV.InputButton({
@@ -58,8 +59,8 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
 
         this.currentPerson.organizations.forEach(function(organization) {
           container.newConversationOptions[organization.id] = {
-            label : organization.name + ' ' + organization.lastname,
-            name : organization.name + organization.lastname
+            label : organization.name,
+            name : organization.profileName
           }
         })
 
@@ -119,6 +120,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
         if (container.currentThreadId) {
           container.postMessage();
         } else {
+          //console.log('createThread');
           container.createThread();
         }
       });
@@ -252,28 +254,37 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
       this.messagesBodyContainerEl.addClass('active');
       this.messagesBodyHeaderEl.find('.m-action').hide();
       this.messagesBodyHeaderEl.find('.m-new').show();
-      this.messagesBodyHeaderEl.find('.m-new').find('input').focus();
+      this.messagesBodyHeaderEl.find('.m-new').find('textarea').focus();
       this.messageListEl.empty();
       this.refresh();
     },
 
     hideSideBar : function hideSideBar() {
+
+      var container = this;
+
       this.element.addClass('no-sidebar');
 
       var messageText = 'To contact a user, message them on their profile card when rolling over their avatar or message them from their profile page. You can also <a href="#" class="new-message">compose a new message here</a> and search for the user you wish to contact.'
 
       this.noMessagesEl.prepend('<h1>No messages</h1>');
       this.noMessagesEl.find('p').html(messageText);
+
+      this.noMessagesEl.find('a.new-message').on('click', function(){
+        container.newMessageAs();
+      });
+
     },
 
     showSideBar : function showSideBar(){
+      var container = this;
       var messageText = 'Please select a thread from the list on the left or <a href="#" class="new-message">compose a new message</a>.'
 
       this.noMessagesEl.find('h1').remove();
       this.noMessagesEl.find('p').html(messageText);
 
       this.element.find('a.new-message').on('click', function(){
-        container.newMessage();
+        container.newMessageAs();
       });
 
       this.element.removeClass('no-sidebar');
@@ -395,7 +406,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
 
     createThread : function createThread() {
       var container = this;
-
+      console.log(container);
       var postMessageUrl = '/'+ container.currentPerson.profileName + '/messages';
       console.log('postMessageUrl: ' + postMessageUrl);
       console.log('senderEntityId: ' + container.senderEntityId);

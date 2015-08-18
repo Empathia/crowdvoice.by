@@ -177,6 +177,32 @@ Module('ThreadsPresenter')({
 
                 doneMessageInfo();
               })
+            }, function (doneMessageInfo) {
+              if (message.type !== 'report') {
+                return doneMessageInfo();
+              }
+
+              // for reports before update
+              if (!message.reportId) {
+                return doneMessageInfo();
+              }
+
+              Report.find({ id: message.reportId }, function (err, report) {
+                if (err) { return doneMessageInfo(err); }
+
+                message.reportId = hashids.encode(message.reportId);
+
+                Entity.find({ id: report[0].reportedId }, function (err, org) {
+                  EntitiesPresenter.build(org, req.currentPerson, function (err, presentedOrg) {
+                    if (err) { return doneMessageInfo(err); }
+
+                    message.organization = presentedOrg[0];
+
+                    doneMessageInfo();
+                  });
+                });
+              });
+
             }], function(err) {
               if (err) {
                 return nextMessage(err)

@@ -4,7 +4,7 @@ Class(CV, 'PostDetailLinkNonCompatible').inherits(Widget).includes(CV.WidgetUtil
         <div>\
             <div class="-table -full-width -full-height -text-center">\
                 <div class="-table-cell -vam">\
-                    <svg class="non-compatible__iconon-compatible__icon -s80 -mb2">\
+                    <svg class="non-compatible__icon -s80 -mb2">\
                         <use xlink:href="#svg-sad-face"></use>\
                     </svg>\
                     <p class="-font-bold">\
