@@ -140,14 +140,14 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
             })).render(this.buttonActionsWrapper);
 
             // alerts buttons
-            window.bell = new NotificationBell({
+            var bell = new NotificationBell({
               name : 'bell',
               data : { count : 0 }
             });
 
-            this.appendChild(window.bell);
+            this.appendChild(bell);
 
-            window.bell.setup();
+            bell.setup();
 
             this.buttonActionsWrapper.insertAdjacentElement('beforeend', bell.element[0]);
 
