@@ -11,7 +11,8 @@ var EntityMembership = Class('EntityMembership').inherits(Argon.KnexModel)({
 
   prototype : {
     entityId : null,
-    memberId : null
+    memberId : null,
+    isAnonymous : false
   }
 });
 

@@ -13,7 +13,7 @@ var Message = Class('Message').inherits(Argon.KnexModel)({
       'required',
       {
         rule :function(val) {
-          if (!val.match(/(report|message|request_(voice|organization)|invitation_(voice|organization))/)) {
+          if (!val.match(/(report|message|request_(voice|organization)|invitation_(voice|organization|accepted_voice|accepted_organization|rejected_voice|rejected_organization))/)) {
             throw new Checkit.FieldError("Message type is invalid")
           }
         },
@@ -282,22 +282,6 @@ var Message = Class('Message').inherits(Argon.KnexModel)({
           }
         },
         message : "invitationRequestId is requiered for message of type invitation_(voice|organization)"
-      },
-      {
-        rule : function(val) {
-          var rule = this;
-
-          return db('InvitationRequest').where({
-            id : val,
-            'invitator_entity_id' : rule.target.senderEntityId,
-            'invited_entity_id' : rule.target.receiverEntityId
-          }).then(function(invitationRequest) {
-            if (invitationRequest.length === 0) {
-              throw new Checkit.FieldError("invitationRequest doesn't exists")
-            }
-          })
-        },
-        message : "invitationRequest doesn't exists"
       }
     ],
 
@@ -386,6 +370,10 @@ var Message = Class('Message').inherits(Argon.KnexModel)({
   TYPE_REQUEST_ORGANIZATION     : 'request_organization',
   TYPE_INVITATION_VOICE         : 'invitation_voice',
   TYPE_INVITATION_ORGANIZATION  : 'invitation_organization',
+  TYPE_INVITATION_ACCEPT_VOICE         : 'invitation_accept_voice',
+  TYPE_INVITATION_ACCEPT_ORGANIZATION  : 'invitation_accept_organization',
+  TYPE_INVITATION_REJECT_VOICE         : 'invitation_reject_voice',
+  TYPE_INVITATION_REJECT_ORGANIZATION  : 'invitation_reject_organization',
 
   prototype : {
     type : 'message',

@@ -1,10 +1,5 @@
 var MessagesController = Class('MessagesController').includes(BlackListFilter)({
   prototype : {
-    init : function (config){
-      this.name = this.constructor.className.replace('Controller', '')
-
-      return this;
-    },
 
     answerInvite : function (req, res, next) {
       var thread,
@@ -24,7 +19,7 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
             }
 
             if (result.length === 0) {
-              return done(new NotFoundError('Thread Not Found.'))
+              return done(new NotFoundError('Thread Not Found.'));
             }
 
             var messageThread = new MessageThread(result[0]);
@@ -43,12 +38,17 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
             }
 
             if (result.length === 0) {
-              return done(new NotFoundError('Thread Not Found.'))
+              return done(new NotFoundError('Message Not Found.'));
             }
 
             var messageInstance = new Message(result[0]);
 
             message = messageInstance;
+
+            console.log("\n\n")
+            console.log('***************************')
+
+            console.log('message', message)
 
             done();
           })
@@ -62,10 +62,11 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
             }
 
             if (result.length === 0) {
-              return done(new NotFoundError('Thread Not Found.'))
+              return done(new NotFoundError('Invitation Request Not Found.'));
             }
 
-            invitationRequest = result[0];
+            invitationRequest = new InvitationRequest(result[0]);
+            console.log('invitationRequest', invitationRequest)
 
             done();
           })
@@ -77,16 +78,18 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
             return done();
           }
 
-          Voice.find({id : hashids.decode(message.voiceId)[0]}, function(err, result) {
+          Voice.find({id : message.voiceId}, function(err, result) {
             if (err) {
               return done(err);
             }
 
             if (result.length === 0) {
-              return done(new NotFoundError('Thread Not Found.'))
+              return done(new NotFoundError('Voice Not Found.'));
             }
 
             voice = result[0];
+
+            console.log('voice', voice)
 
             inviteToVoice = true;
 
@@ -100,21 +103,23 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
             return done();
           }
 
-          Entity.find({id : hashids.decode(message.organizationId)[0]}, function(err, result) {
+          Entity.find({id : message.organizationId}, function(err, result) {
             if (err) {
               return done(err);
             }
 
             if (result.length === 0) {
-              return done(new NotFoundError('Thread Not Found.'))
+              return done(new NotFoundError('Organization Not Found.'))
             }
 
             organization = result[0];
 
+            console.log('organization', organization)
+
             inviteToOrg = true;
 
             done();
-          })
+          });
         }
       ], function (err) {
         ACL.isAllowed('acceptInvite', 'messages', req.role,  {
@@ -136,34 +141,101 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
           async.series([
             // accept
             function (done) {
-              if (req.body.action !== 'accept') {
+              if (req.body.action == 'accept') {
+
+                async.series([function(doneSeries) {
+                  if (!voice) {
+                    return doneSeries();
+                  }
+
+                  var voiceCollaborator = new VoiceCollaborator({
+                    voiceId : voice.id,
+                    collaboratorId : req.currentPerson.id
+                  });
+
+                  if (req.body.anonymous) {
+                    voiceCollaborator.isAnonymous = true;
+                  }
+
+                  voiceCollaborator.save(function(err, result) {
+                    if (err) {
+                      return doneSeries(err);
+                    }
+
+                    message.type = 'invitation_rejected_voice';
+
+                    message.save(function(err, response) {
+                      if (err) {
+                        return doneSeries(err);
+                      }
+
+                      invitationRequest.destroy(doneSeries);
+                    });
+                  });
+                }, function(doneSeries) {
+                  if (!organization) {
+                    return doneSeries();
+                  }
+
+                  var entityMembership = new EntityMembership({
+                    entityId : organization.id,
+                    memberId : req.currentPerson.id
+                  });
+
+                  if (req.body.anonymous) {
+                    entityMembership.isAnonymous = true;
+                  }
+
+                  entityMembership.save(function(err, result) {
+                    if (err) {
+                      return doneSeries(err);
+                    }
+
+                    message.type = 'invitation_accepted_organization';
+
+                    message.save(function(err, response) {
+                      if (err) {
+                        return doneSeries(err);
+                      }
+
+                      invitationRequest.destroy(doneSeries);
+                    });
+                  });
+
+                }], done);
+              } else {
                 return done();
               }
-
-              done();
-            },
-
-            // acceptAsAnonymous
-            function (done) {
-              if (req.body.action !== 'acceptAsAnonymous') {
-                return done();
-              }
-
-              done();
             },
 
             // ignore
             function (done) {
-              if (req.body.action !== 'ignore') {
-                return done();
-              }
+              if (req.body.action === 'ignore') {
+                if (voice) {
+                  message.type = 'invitation_rejected_voice';
+                } else {
+                  message.type = 'invitation_rejected_organization';
+                }
 
-              done();
+                message.save(function(err, response) {
+                  if (err) {
+                    return done(err);
+                  }
+
+                  invitationRequest.destroy(done);
+                });
+              } else {
+                done();
+              }
             }
           ], function (err) {
-            if (err) { return next(err); }
+            if (err) {
+              logger.log(err);
+              logger.log(err.stack);
+              return res.status(400).json({ error : err });
+            }
 
-            res.json({})
+            res.json({ status : 'done' });
           });
         })
       })

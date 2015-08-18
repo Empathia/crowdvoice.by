@@ -29,6 +29,14 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
 
   REPORT : '<p>This is an organization report for <a href="{url}">{organizationName} ›</a>.</p>',
 
+  INVITATION_ACCEPTED_VOICE_HTML : '<p></p>',
+
+  INVITATION_ACCEPTED_ORGANIZATION_HTML : '<p></p>',
+
+  INVITATION_REJECTED_VOICE_HTML : '<p></p>',
+
+  INVITATION_REJECTED_ORGANIZATION_HTML : '<p></p>',
+
   prototype : {
     data : {},
     init : function init(config) {
@@ -110,11 +118,26 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
                       .replace(/{organizationName}/g, message.data.voice.title)
                       .replace(/{url}/g, '/' + message.data.voice.slug)
               break;
+            case 'invitation_accepted_voice':
+              text = 'Invitation to ' + message.data.voice.title + ' accepted';
+              break;
+
+            case 'invitation_accepted_organization':
+              text = 'Invitation to ' + message.data.organization.name + ' accepted';
+              break;
+
+            case 'invitation_rejected_voice':
+              text = 'Invitation to ' + message.data.voice.title + ' rejected';
+              break;
+
+            case 'invitation_rejected_organization':
+              text = 'Invitation to ' + message.data.organization.name + ' rejected';
+              break;
           }
 
           //console.log('type: ' +message.type);
 
-          if (message.type != "request_organization" && message.type != "request_voice"){
+          if (message.type === "invitation_organization" || message.type === "invitation_voice") {
 
             //console.log('in');
 
@@ -151,19 +174,20 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
                     action : 'accept'
                   },
                   success : function(data) {
-                      console.log(data);
+                      messageActions.element.hide();
+                      message.element.find('.message-notification > p').html('Invitation Accepted.');
                   },
                   error : function(err) {
                       console.error(err);
                   }
-              })
+              });
 
             });
 
             messageActions.anonymous.on('click', function(){
               var url = '/' + message.threadContainer.currentPerson.profileName + '/messages/' + message.data.threadId + '/' + message.data.id  +'/answerInvite';
 
-              console.log('-- Accept as an Anonymous Member --');
+              console.log('-- Accept As anon --');
               console.log('url: ' + url);
               console.log('message Id: ' + message.data.id);
               console.log('thread Id: ' + message.data.threadId);
@@ -175,16 +199,17 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
                   url : url,
                   dataType : 'json',
                   data : {
-                    action : 'acceptAsAnonymous'
+                    action : 'accept',
+                    anonymous : true
                   },
                   success : function(data) {
-                      console.log(data);
+                      messageActions.element.hide();
+                      message.element.find('.message-notification > p').html('Invitation Accepted.');
                   },
                   error : function(err) {
                       console.error(err);
                   }
-              })
-
+              });
             });
 
             messageActions.refuse.on('click', function(){
@@ -205,7 +230,8 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
                     action : 'ignore'
                   },
                   success : function(data) {
-                      console.log(data);
+                      messageActions.element.hide();
+                      message.element.find('.message-notification > p').html('Invitation rejected.');
                   },
                   error : function(err) {
                       console.error(err);
