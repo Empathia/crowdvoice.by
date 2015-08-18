@@ -24,26 +24,19 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
         };
 
         MessageThread.find(['sender_person_id = ? OR receiver_entity_id = ?', [hashids.decode(req.currentPerson.id)[0], hashids.decode(req.currentPerson.id)[0]]], function(err, threads) {
-          if (err) {
-            return next(err);
-          }
+          if (err) { return next(err); }
 
-          ThreadsPresenter.build(req, threads, function(err, result) {
-            if (err) {
-              return next(err);
-            }
+          ThreadsPresenter.build(req, threads, function(err, threads) {
+            if (err) { return next(err); }
 
             res.format({
-
               html : function() {
-
-                return res.render('threads/index.html', {layout : 'application', threads : result});
+                return res.render('threads/index.html', {layout : 'application', threads : threads});
               },
               json : function() {
                 return res.json(result);
               }
             });
-
           });
         });
       });
