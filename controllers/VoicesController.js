@@ -284,17 +284,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
               return next(err);
             }
 
-            async.series([
-              // check if voice published, for feed
-              // we shouldn't create a feed entry if not published
-              function (done) {
-                if (voice.status !== Voice.STATUS_PUBLISHED) {
-                  return done();
-                }
-
-                feed.voiceCreated(req, voice, done);
-              }
-            ], function (err) {
+            feed.voiceCreated(req, voice, function (err) {
               if (err) { return next(err); }
 
               res.json(voices[0]);
@@ -395,16 +385,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
             return next(err);
           }
 
-          // if old version of voice was not published but new one is
-          async.series([
-            function (done) {
-              if (req.activeVoice.status !== Voice.STATUS_PUBLISHED && voice.status === Voice.STATUS_PUBLISHED) {
-                return feed.voiceCreated(req, voice, done);
-              }
-
-              done();
-            }
-          ], function (err) {
+          feed.voiceCreated(req, voice, function (err) {
             if (err) { return next(err); }
 
             req.flash('success', 'Voice has been updated.');
