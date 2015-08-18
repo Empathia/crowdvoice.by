@@ -53,7 +53,7 @@ Class(CV, 'CardMini').inherits(Widget).includes(CV.WidgetUtils)({
                 this.dom.updateAttr('title', anchor, this.data.profileName + '’s profile');
             }, this);
 
-            this.dom.updateAttr('src', this.avatarElement, this.data.images.small.url);
+            this.dom.updateAttr('src', this.avatarElement, this.data.images && this.data.images.small && this.data.images.small.url);
 
             var fullname = this.data.name + (this.data.lastname ? (' ' + this.data.lastname) : '');
             this.dom.updateAttr('alt', this.avatarElement, this.data.profileName + "’s avatar image");
@@ -84,4 +84,3 @@ Class(CV, 'CardMini').inherits(Widget).includes(CV.WidgetUtils)({
         }
     }
 });
-
