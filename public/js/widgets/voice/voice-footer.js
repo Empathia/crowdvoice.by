@@ -26,11 +26,16 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
             this.el = this.element[0];
             this.actionsColumn = this.el.querySelector('.voice-footer-right');
             this.byAnchor = this.el.querySelector('.voice-footer-by > a');
+            console.log(this.voice.owner);
 
             this.dom.updateText(this.el.querySelector('.voice-footer-title'), this.voice.title);
             this.dom.updateAttr('href', this.byAnchor, '/' + this.voice.owner.profileName);
             this.dom.updateAttr('alt', this.byAnchor, this.voice.owner.name + ' ' + this.voice.owner.lastname + '’s profile page');
-            this.dom.updateText(this.byAnchor, this.voice.owner.name + ' ' + this.voice.owner.lastname);
+            if (this.voice.owner.type == 'organization'){
+                this.dom.updateText(this.byAnchor, this.voice.owner.name);
+            } else {
+                this.dom.updateText(this.byAnchor, this.voice.owner.name + ' ' + this.voice.owner.lastname);
+            }
 
             this.appendChild(new CV.VoiceTimelineFeedback({
                 name : 'voiceTimelineFeedback',
