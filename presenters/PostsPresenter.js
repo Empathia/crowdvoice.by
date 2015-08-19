@@ -85,7 +85,7 @@ var PostsPresenter = Module('PostsPresenter')({
         }, function(done) {
 
           // voice
-          Voice.find({ 'voice_id' : postInstance.voiceId }, function(err, result) {
+          Voice.find({ 'id' : postInstance.voiceId }, function(err, result) {
             if (err) {
               return done(err);
             }
