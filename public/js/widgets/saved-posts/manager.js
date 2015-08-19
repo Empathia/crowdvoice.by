@@ -72,8 +72,7 @@ Class(CV, 'SavedPostsManager').inherits(Widget)({
                 posts[i].name = 'post_' + i;
 
                 post = CV.Post.create(posts[i]);
-                post.loadImage();
-                // post.addActions();
+                post.loadImage().addActions();
 
                 this.appendChild(post).render(frag);
             }

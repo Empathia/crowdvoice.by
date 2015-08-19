@@ -1,4 +1,3 @@
-/* globals App */
 var origin = require('get-location-origin');
 var moment = require('moment');
 
@@ -19,8 +18,8 @@ Class(CV, 'PostActionShare').inherits(Widget)({
             Widget.prototype.init.call(this, config);
             this.el = this.element[0];
 
-            var url = origin + '/' + App.Voice.data.owner.profileName + '/';
-            url += App.Voice.data.slug + '/';
+            var url = origin + '/' + this.entity.voice.owner.profileName + '/';
+            url += this.entity.voice.slug + '/';
             url += '#!' + moment(this.entity.publishedAt).format('YYYY-MM') + '/';
             url += this.entity.id;
 
