@@ -63,6 +63,14 @@ var PostsPresenter = Module('PostsPresenter')({
                 post.saved = false;
               }
 
+              console.log('RESULT', result, {
+                entity_id: hashids.decode(currentPerson.id)[0],
+                post_id: postInstance.id
+              }, currentPerson.id)
+
+              post.currentPerson = currentPerson;
+              post.postInstance = postInstance
+
               return done();
             });
           } else {
