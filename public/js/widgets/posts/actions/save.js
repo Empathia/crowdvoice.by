@@ -1,4 +1,3 @@
-/* globals App */
 var API = require('./../../../lib/api');
 var Events = require('./../../../lib/events');
 
@@ -26,6 +25,7 @@ Class(CV, 'PostActionSave').inherits(Widget)({
         </div>',
 
     prototype : {
+        /* the PostEntity */
         entity : null,
 
         init : function init (config) {
@@ -116,8 +116,8 @@ Class(CV, 'PostActionSave').inherits(Widget)({
             this._setIsSaved()._cancelHoverState();
 
             API.postSave({
-                profileName : App.Voice.data.owner.profileName,
-                voiceSlug : App.Voice.data.slug,
+                profileName : this.entity.voice.owner.profileName,
+                voiceSlug : this.entity.voice.slug,
                 postId : this.entity.id
             }, function(err) {
                 if (err) {
@@ -133,8 +133,8 @@ Class(CV, 'PostActionSave').inherits(Widget)({
             this._setIsNotSaved();
 
             API.postUnsave({
-                profileName : App.Voice.data.owner.profileName,
-                voiceSlug : App.Voice.data.slug,
+                profileName : this.entity.voice.owner.profileName,
+                voiceSlug : this.entity.voice.slug,
                 postId : this.entity.id
             }, function(err) {
                 if (err) {
