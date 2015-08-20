@@ -7,15 +7,15 @@ var SearchController = Class('SearchController')({
     index : function(req, res, next) {
       var query = req.params.query;
 
-      query = query.replace(/[^A-Za-z0-9\p{L}\p{Nd}]+/g, ' | ');
-
-      if (query.substr(0, 3) === ' | ') {
-        query = query.substr(3, query.length);
-      }
-
-      if (query.substr(query.length - 3, query.length) === ' | ') {
-        query = query.substr(0, query.length - 3);
-      }
+      // query = query.replace(/[^A-Za-z0-9\p{L}\p{Nd}]+/g, ' | ');
+      //
+      // if (query.substr(0, 3) === ' | ') {
+      //   query = query.substr(3, query.length);
+      // }
+      //
+      // if (query.substr(query.length - 3, query.length) === ' | ') {
+      //   query = query.substr(0, query.length - 3);
+      // }
 
       var response = {
 
@@ -118,8 +118,8 @@ var SearchController = Class('SearchController')({
         FROM "Voices" \
         JOIN "Entities" ON "Entities".id = "Voices".owner_id \
         WHERE "Voices".status = \'' + Voice.STATUS_PUBLISHED + '\') search \
-        WHERE search.document @@ to_tsquery(\'*' + query + '*\') \
-        ORDER BY ts_rank(search.document, to_tsquery(\'*' + query + '*\')) DESC;').exec(function(err, result) {
+        WHERE search.document @@ plainto_tsquery(\'' + query + '\') \
+        ORDER BY ts_rank(search.document, plainto_tsquery(\'' + query + '\')) DESC;').exec(function(err, result) {
           if (err) {
             return callback(err);
           }
@@ -154,8 +154,8 @@ var SearchController = Class('SearchController')({
         AS document \
         FROM "Entities" \
         WHERE "Entities".is_anonymous = false AND "Entities".type = \'person\') search \
-        WHERE search.document @@ to_tsquery(\'*' + query + '*\') \
-        ORDER BY ts_rank(search.document, to_tsquery(\'*' + query + '*\')) DESC;').exec(function(err, result) {
+        WHERE search.document @@ plainto_tsquery(\'' + query + '\') \
+        ORDER BY ts_rank(search.document, plainto_tsquery(\'' + query + '\')) DESC;').exec(function(err, result) {
           if (err) {
             return callback(err);
           }
@@ -182,8 +182,8 @@ var SearchController = Class('SearchController')({
         AS document \
         FROM "Entities" \
         WHERE "Entities".is_anonymous = false AND "Entities".type = \'organization\') search \
-        WHERE search.document @@ to_tsquery(\'*' + query + '*\') \
-        ORDER BY ts_rank(search.document, to_tsquery(\'*' + query + '*\')) DESC;').exec(function(err, result) {
+        WHERE search.document @@ plainto_tsquery(\'' + query + '\') \
+        ORDER BY ts_rank(search.document, plainto_tsquery(\'' + query + '\')) DESC;').exec(function(err, result) {
           if (err) {
             return callback(err);
           }
