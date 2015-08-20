@@ -1,54 +1,47 @@
 Class(CV, 'InputButton').inherits(Widget)({
-
-	ELEMENT_CLASS : '',
-
     HTML : '\
         <div class="form-field cv-input-search ">\
             <label><span></span></label>\
             <div class="-clear-after -rel ib-container">\
             </div>\
             <div class="search-results"></div>\
-        </div>\
-    ',
+        </div>',
 
     INPUT_ELEMENT : '\
-        <div class="cv-input">\
+        <button class="cv-button -m0 -float-right">Search</button>\
+        <div class="cv-input -overflow-hidden">\
             <input type="text">\
-        </div>\
-        <button class="cv-button">Search</button>\
-    ',
+        </div>',
 
     AREA_ELEMENT : '\
-        <div class="cv-input is-area">\
+        <button class="cv-button primary -m0 -float-right">Reply</button>\
+        <div class="cv-input is-area -overflow-hidden">\
             <textarea rows="" cols=""></textarea>\
-        </div>\
-        <button class="cv-button primary">Reply</button>\
-    ',
+        </div>',
 
-    prototype        : {
-        type            : null,
+    prototype : {
         style           : null,
         placeholder     : null,
         isArea          : false,
-        hasTitle        : false,
         title           : "",
         subTitle        : "",
         buttonLabel     : "",
 
         init : function(config){
             Widget.prototype.init.call(this, config);
+            this.el = this.element[0];
             this.resultsElement = this.element.find('.search-results');
 
-            if (this.hasTitle){
+            if (this.title) {
                 this.element.find('label').text(this.title).append('<span>' + this.subTitle + '</span>');
             } else {
                 this.element.find('label').remove();
             }
 
             if (this.isArea){
-                this.element.find('.ib-container').append($(this.constructor.AREA_ELEMENT));
+                this.element.find('.ib-container').append(this.constructor.AREA_ELEMENT);
             } else {
-                this.element.find('.ib-container').append($(this.constructor.INPUT_ELEMENT));
+                this.element.find('.ib-container').append(this.constructor.INPUT_ELEMENT);
             }
 
             this.inputEl = this.element.find('.cv-input');
@@ -57,23 +50,15 @@ Class(CV, 'InputButton').inherits(Widget)({
             if (this.style){
                 this.inputEl.addClass(this.style);
                 this.buttonEl.addClass(this.style);
-            };
+            }
 
             if (this.placeholder){
                 this.inputEl.find('input').attr('placeholder', this.placeholder);
             }
 
             if( this.buttonLabel){
-                this.element.find('button').text(this.buttonLabel);
+                this.buttonEl.text(this.buttonLabel);
             }
-
-            setTimeout(function(){
-                this.element.find('.cv-input').outerWidth( this.element.width() - this.element.find('button').outerWidth() );
-                //this.element.find('.cv-input').css( 'padding-right', (this.element.width() - this.element.find('button').outerWidth() ) );
-
-            }.bind(this), 0);
-
-
         },
 
         getResults : function getResults() {
@@ -88,15 +73,6 @@ Class(CV, 'InputButton').inherits(Widget)({
         enableButton : function(){
             this.buttonEl.removeClass('disabled');
             this.buttonEl.attr('disabled', false);
-        },
-
-        recalculate : function(){
-            this.element.find('.cv-input').outerWidth( this.element.width() - this.element.find('button').outerWidth() );
-            //this.element.find('.cv-input').css( 'padding-right', (this.element.width() - this.element.find('button').outerWidth() ) );
         }
     }
-
 });
-
-
-

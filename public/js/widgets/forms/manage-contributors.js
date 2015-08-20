@@ -14,10 +14,7 @@ Class(CV, 'ManageContributors').inherits(Widget)({
             Widget.prototype.init.call(this, config);
 
             new CV.InputButton({
-                type    	: '',
                 name  		: '',
-                style 		: '',
-                hasTitle 	: true,
                 placeholder : 'Search users...',
                 title 		: "Invite users to contribute (?)",
                 buttonLabel : "Invite"

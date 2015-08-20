@@ -27,7 +27,7 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
         </div>',
 
     LABEL_HTML : '\
-        <div class="form-field">\
+        <div class="form-field -mt2">\
             <label>Related Voices to “{title}”</label>\
         </div>',
 
@@ -76,11 +76,10 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
 
                 this.appendChild(new CV.InputButton({
                     name : 'searchInput',
-                    hasTitle : true,
                     placeholder : 'Search voices...',
-                    title : "Add voices that are related to this voice (?)",
+                    title : 'Add voices that are related to this voice (?)',
                     style : 'primary',
-                    buttonLabel : "Add Voice"
+                    buttonLabel : 'Add Voice'
                 })).render(this.el.querySelector('[data-main]'));
             }
 
