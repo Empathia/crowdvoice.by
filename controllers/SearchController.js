@@ -94,7 +94,11 @@ var SearchController = Class('SearchController')({
       var query = req.body.query;
       var exclude = req.body.exclude;
 
-      SearchController.prototype._searchVoices(query, req.currentPerson, function(err, result) {
+      if (!exclude) {
+          exclude = [];
+      }
+
+      SearchController.prototype._searchVoices(query, exclude, req.currentPerson, function(err, result) {
         if (err) {
           return next(err);
         }
