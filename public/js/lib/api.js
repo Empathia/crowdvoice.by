@@ -539,6 +539,33 @@ module.exports = {
         });
     },
 
+    /* Get Voices results from a specified query.
+     * @argument args.query <required> [String] the query string.
+     * @argument args.exclude <optional> [Array] Array of voices ids to exclude from the results.
+     * @argument callback <required> [Function]
+     */
+    searchVoices : function searchVoices(args, callback) {
+        if (!args.query || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'POST',
+            url : '/search/voices',
+            headers : {'csrf-token' : this.token},
+            data : {
+                query : args.query,
+                exclude : args.exclude || []
+            },
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
     /**************************************************************************
      * MISC
      *************************************************************************/
