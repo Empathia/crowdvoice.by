@@ -40,7 +40,6 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
       this.replyButton = new CV.InputButton({
           name        : 'replyButton',
           style       : 'primary',
-          type        : '',
           isArea      : true,
           buttonLabel : 'Reply'
       }).render(this.element.find('.message-create'));
@@ -474,7 +473,6 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
     },
 
     refresh : function refresh() {
-      this.replyButton.recalculate();
       var padDiff = 0;
 
       var chatHeight = this.getHeight() - $('.cv-main-header').outerHeight();

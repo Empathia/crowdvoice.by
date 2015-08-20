@@ -313,10 +313,7 @@ Organization: <%= organization.name %>
   //******* organizations ************
 
   var searchInput = new CV.InputButton({
-      type      : '',
-      name      : '',
       style     : 'primary',
-      hasTitle  : true,
       placeholder : 'Search users...',
       title     : "Invite users to join Mideast Youth (?)",
       buttonLabel : "Invite"
@@ -359,8 +356,6 @@ Organization: <%= organization.name %>
         $(this).addClass('active');
         $(contentContainer + ' .-menu-tab-content').removeClass('active');
         $(elContent).addClass('active');
-        searchInput.recalculate();
-
       }
     }
 
