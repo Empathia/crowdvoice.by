@@ -53,8 +53,10 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
                 })).render(this.actionsColumn);
             }
 
-            this.appendChild(new CV.VoiceRelatedVoices({
-                name : 'relatedVoicesButton'
+            this.appendChild(new CV.RelatedVoicesButton({
+                name : 'relatedVoicesButton',
+                editMode : (Person.get() && !Person.anon() && Person.memberOf('voice', this.voice.id)),
+                voice : this.voice
             })).render(this.actionsColumn);
 
             // currentPerson does not belongs/owns this voice already?

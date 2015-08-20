@@ -1,0 +1,19 @@
+.cv-related-voices {}
+
+.cv-related-voices__list {
+  max-height: 400px;
+  min-height: 50px;
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  .gm-scroll-view {
+    overflow-x: hidden;
+  }
+}
+
+.cv-related-voices-list {
+  &:empty::After {
+    content : 'No related voices';
+    font-style: italic;
+  }
+}

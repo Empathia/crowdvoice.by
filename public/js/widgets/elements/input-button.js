@@ -37,6 +37,7 @@ Class(CV, 'InputButton').inherits(Widget)({
 
         init : function(config){
             Widget.prototype.init.call(this, config);
+            this.resultsElement = this.element.find('.search-results');
 
             if (this.hasTitle){
                 this.element.find('label').text(this.title).append('<span>' + this.subTitle + '</span>');
@@ -73,6 +74,10 @@ Class(CV, 'InputButton').inherits(Widget)({
             }.bind(this), 0);
 
 
+        },
+
+        getResults : function getResults() {
+            return this.resultsElement;
         },
 
         disableButton : function(){

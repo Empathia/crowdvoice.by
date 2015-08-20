@@ -557,6 +557,7 @@ module.exports = {
             type : 'POST',
             url : '/search/voices',
             headers : {'csrf-token' : this.token},
+            dataType : 'json',
             data : {
                 query : args.query,
                 exclude : args.exclude || []
