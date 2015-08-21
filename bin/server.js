@@ -11,6 +11,9 @@ var io = require('socket.io')(application.server);
 // Load moment
 global.moment = require('moment');
 
+// Load underscore
+global._ = require('underscore');
+
 // Load routes
 require('./../lib/routes.js');
 
