@@ -211,6 +211,3 @@ Class(CV, 'SelectAccount').inherits(Widget)({
     }
 
 });
-
-
-

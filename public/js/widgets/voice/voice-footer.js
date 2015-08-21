@@ -29,9 +29,15 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
             console.log(this.voice.owner);
 
             this.dom.updateText(this.el.querySelector('.voice-footer-title'), this.voice.title);
-            this.dom.updateAttr('href', this.byAnchor, '/' + this.voice.owner.profileName);
+
+            if (this.voice.owner.isAnonymous) {
+              this.dom.updateAttr('href', this.byAnchor, '/anonymous');
+            } else {
+              this.dom.updateAttr('href', this.byAnchor, '/' + this.voice.owner.profileName);
+            }
+
             this.dom.updateAttr('alt', this.byAnchor, this.voice.owner.name + ' ' + this.voice.owner.lastname + '’s profile page');
-            if (this.voice.owner.type == 'organization'){
+            if (this.voice.owner.type == 'organization' || this.voice.owner.isAnonymous){
                 this.dom.updateText(this.byAnchor, this.voice.owner.name);
             } else {
                 this.dom.updateText(this.byAnchor, this.voice.owner.name + ' ' + this.voice.owner.lastname);
