@@ -74,12 +74,14 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
                 labelString = labelString.replace(/{title}/, this.data.voice.title);
                 this.el.querySelector('[data-list-wrapper]').insertAdjacentHTML('afterbegin', labelString);
 
-                this.appendChild(new CV.InputButton({
+                this.appendChild(new CV.UI.InputButton({
                     name : 'searchInput',
-                    placeholder : 'Search voices...',
-                    title : 'Add voices that are related to this voice (?)',
-                    style : 'primary',
-                    buttonLabel : 'Add Voice'
+                    data : {label : 'Add voices that are related to this voice (?)'},
+                    inputData : {placeholder : 'Search voices...'},
+                    buttonData : {
+                        value : 'Add Voice',
+                        className : 'primary'
+                    }
                 })).render(this.el.querySelector('[data-main]'));
             }
 
@@ -96,13 +98,19 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
         _bindEvents : function _bindEvents() {
             if (this.searchInput) {
                 this._searchKeyUpHandlerRef = this._searchKeyUpHandler.bind(this);
-                Events.on(this.searchInput.inputEl[0].querySelector('input'), 'keyup', this._searchKeyUpHandlerRef);
+                Events.on(this.searchInput.input.el, 'keyup', this._searchKeyUpHandlerRef);
+
+                this._setSelectedUserRef = this._setSelectedUser.bind(this);
+                this.searchInput.bind('results:item:clicked', this._setSelectedUserRef);
             }
         },
 
         _searchKeyUpHandler : function  _searchKeyUpHandler(ev) {
-            var searchString = ev.target.value.trim().toLocaleLowerCase();
+            if (ev.which === 40 || ev.which === 38 || ev.which === 13) {
+                return;
+            }
 
+            var searchString = ev.target.value.trim().toLocaleLowerCase();
             if (!searchString || (searchString.length < 2)) {
                 return;
             }
@@ -117,27 +125,39 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
             console.log(err);
             console.log(res);
 
-            this.searchInput.getResults().empty().hide();
+            this.searchInput.results.deactivate().clear();
 
             if (!res.voices.length) {
                 return;
             }
 
             res.voices.forEach(function(voice) {
-                this.appendChild(new CV.VoiceCoverMini({
-                    name : 'voice_' + voice.id,
+                this.searchInput.results.add({
+                    element : new CV.VoiceCoverMini({data: voice}).el,
                     data : voice
-                })).render(this.searchInput.getResults());
+                });
             }, this);
 
-            this.searchInput.getResults().show();
+            this.searchInput.results.activate();
+        },
+
+        _setSelectedUser : function _setSelectedUser(ev) {
+            this.searchInput.button.enable();
+            this.searchInput.input.setValue(ev.data.title);
+            this.searchInput.results.deactivate().clear();
         },
 
         destroy : function destroy() {
-            Widget.prototype.destroy.call(this);
             if (this.scrollbar) {
                 this.scrollbar = this.scrollbar.destroy();
             }
+
+            if (this.searchInput) {
+                Events.off(this.searchInput.input.el, 'keyup', this._searchKeyUpHandlerRef);
+                this._searchKeyUpHandlerRef = null;
+            }
+
+            Widget.prototype.destroy.call(this);
             return null;
         }
     }
