@@ -4,10 +4,6 @@ var FeedPresenter = require(__dirname + '/../presenters/FeedPresenter.js');
 
 var PeopleController = Class('PeopleController').inherits(EntitiesController)({
   prototype : {
-    init : function () {
-      return this;
-    },
-
     myVoices: function (req, res, next) {
       ACL.isAllowed('myVoices', 'entities', req.role, {
         currentEntity: req.entity,
@@ -19,8 +15,41 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
           return next(new ForbiddenError());
         }
 
-        Voice.find({ owner_id: response.entity.id }, function (err, voices) {
-          if (err) { return next(err); }
+        var ownerIds = [];
+        var voices;
+
+        async.series([function(done) {
+          EntityOwner.find({
+            owner_id : response.entity.id
+          }, function(err, result) {
+            if (err) {
+              return done(err);
+            }
+
+            ownerIds = result.map(function(item) {
+              return item.ownedId;
+            });
+
+            ownerIds.push(response.entity.id);
+            console.log('ownerIds', ownerIds)
+            done();
+          })
+        }, function(done) {
+          Voice.whereIn('owner_id', ownerIds, function(err, response) {
+            if (err) {
+              return done(err);
+            }
+
+            console.log('voices', response)
+
+            voices = response;
+
+            done();
+          });
+        }], function(err) {
+          if (err) {
+            return next(err);
+          }
 
           VoicesPresenter.build(voices, req.currentPerson, function (err, result) {
             if (err) { return next(err); }
@@ -58,7 +87,6 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
               },
             });
           });
-
         });
       });
     },

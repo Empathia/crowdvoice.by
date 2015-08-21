@@ -697,6 +697,42 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
         query.exec(done);
       },
 
+      getAnonymousEntity : function getAnonymousEntity(callback) {
+        if (!this.id) {
+          return callback(new Error('Entity doesn\'t have an ID'));
+        }
+
+        EntityOwner.find({
+          'owner_id' : this.id
+        }, function(err, result) {
+          if (err) {
+            return callback(err);
+          }
+
+          var entityIds = result.map(function(item){ return item.ownedId });
+
+          Entity.whereIn('id', entityIds, function(err, result) {
+            if (err) {
+              return callback(err);
+            }
+
+            var anonymous = result.filter(function(item) {
+              if (item.isAnonymous) {
+                return true;
+              }
+            });
+
+            console.log('anonymous', anonymous, result)
+
+            if (anonymous.length === 0) {
+              return callback(new Error('Entity doesn\'t have an anonymous record'));
+            }
+
+            return callback(null, anonymous[0]);
+          });
+        })
+      },
+
       toJSON : function toJSON() {
         var model = this;
         var json = {};

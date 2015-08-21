@@ -176,10 +176,14 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
       ACL.isAllowed('show', 'voices', req.role, {
         currentPerson : req.currentPerson,
         voice : res.locals.voice,
-        profileName : req.params.profileName
+        profileName : req.params.profileName || 'anonymous'
       }, function(err, response) {
         if (err) {
           return next(err);
+        }
+
+        if (!response.isAllowed) {
+          return next(new ForbiddenError());
         }
 
         if (response.isAllowed) {
@@ -236,6 +240,33 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         });
 
         async.series([function(done) {
+          // anonymous
+
+          if (req.currentPerson.isAnoymous) {
+            voice.ownerId = hashids.decode(req.currentPerson.id)[0]
+            return done();
+          }
+
+          Entity.find({
+            id : hashids.decode(req.currentPerson.id)[0]
+          }, function(err, result) {
+            if (err) {
+              return dond(err);
+            }
+
+            var person = new Entity(result[0]);
+
+            person.getAnonymousEntity(function(err, result) {
+              if (err) {
+                return done(err);
+              }
+
+              voice.ownerId = result.id;
+
+              done();
+            });
+          });
+        }, function(done) {
           voice.save(done);
         }, function(done) {
           voice.addSlug(req.body.slug, function(err) {
@@ -246,7 +277,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
             done();
           });
         }, function(done) {
-          if (!req.files.image) {
+          if (!req.files.image || req.files.images === 'undefined') {
             return done();
           }
 
