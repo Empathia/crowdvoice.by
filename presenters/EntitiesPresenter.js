@@ -9,9 +9,10 @@ var EntitiesPresenter = Module('EntitiesPresenter')({
 
       var images = {};
 
-      for (var version in entityInstance.imageMeta) {
+      var num = Math.floor(Math.random() * 9) + 1;
+      for (var version in entityInstance.image.versions) {
         images[version] = {
-          url : entityInstance.image.url(version),
+          url : entityInstance.image.url(version) || '/img/anonymous/' + num + '/image_' + version + '.png',
           meta : entityInstance.image.meta(version)
         };
       }
