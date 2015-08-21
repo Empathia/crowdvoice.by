@@ -19,7 +19,8 @@ Class(CV.UI, 'Input').inherits(Widget).includes(CV.WidgetUtils)({
             hint : '',
             placeholder : '',
             value : '',
-            attr : null
+            attr : null,
+            inputClassName : null
         },
 
         _input : null,
