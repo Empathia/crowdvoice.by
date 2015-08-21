@@ -4,7 +4,7 @@ var Events = require('./../../lib/events');
 
 Class(CV.UI, 'InputButton').inherits(Widget).includes(CV.WidgetUtils, BubblingSupport)({
     HTML : '\
-        <div class="ui-form-field cv-input-search ">\
+        <div class="ui-form-field ui-input-button -rel">\
             <div data-container class="-clearfix -rel"></div>\
         </div>',
 
@@ -20,7 +20,9 @@ Class(CV.UI, 'InputButton').inherits(Widget).includes(CV.WidgetUtils, BubblingSu
             hint : ''
         },
         inputData : {},
-        buttonData : {},
+        buttonData : {
+            value : 'Submit'
+        },
 
         init : function(config){
             Widget.prototype.init.call(this, config);
@@ -33,17 +35,14 @@ Class(CV.UI, 'InputButton').inherits(Widget).includes(CV.WidgetUtils, BubblingSu
         _setup : function _setup() {
             this.appendChild(new CV.UI.Button({
                 name : 'button',
-                className : '-float-right -m0 -brtl0 -brbl0 ' + this.buttonData.className,
-                value : this.buttonData.value || 'Submit'
+                className : '-float-right -m0 -btlr0 -bblr0 ' + this.buttonData.className,
+                data : this.buttonData
             })).render(this.containerElement);
 
             this.appendChild(new CV.UI.Input({
                 name : 'input',
                 className : '-overflow-hidden -mb -mb0',
-                data : {
-                    inputClassName : '-lg -block -btrr0 -bbrr0',
-                    placeholder : this.inputData.placeholder
-                }
+                data : this.inputData
             })).render(this.containerElement);
 
             this.appendChild(new CV.UI.InputButtonResults({

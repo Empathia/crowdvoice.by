@@ -44,6 +44,10 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
             editMode : false
         },
 
+        /* Holds the data of the selected voice. (for editMode)
+         */
+        _selectedVoice : null,
+
         init : function(config){
             Widget.prototype.init.call(this, config);
             this.el = this.element[0];
@@ -61,7 +65,6 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
         },
 
         /* Creates and appends its children.
-         * @method _setup <private>
          * @return ManageRelatedVoices
          */
         _setup : function _setup() {
@@ -77,12 +80,19 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
                 this.appendChild(new CV.UI.InputButton({
                     name : 'searchInput',
                     data : {label : 'Add voices that are related to this voice (?)'},
-                    inputData : {placeholder : 'Search voices...'},
+                    inputData : {
+                        inputClassName : '-lg -block -btrr0 -bbrr0',
+                        attr : {
+                            placeholder : 'Search voices...',
+                            autofocus : true
+                        }
+                    },
                     buttonData : {
                         value : 'Add Voice',
                         className : 'primary'
                     }
                 })).render(this.el.querySelector('[data-main]'));
+                this.searchInput.button.disable();
             }
 
             this.appendChild(new CV.RelatedVoicesList({
@@ -96,7 +106,7 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
         },
 
         _bindEvents : function _bindEvents() {
-            if (this.searchInput) {
+            if (this.data.editMode && this.searchInput) {
                 this._searchKeyUpHandlerRef = this._searchKeyUpHandler.bind(this);
                 Events.on(this.searchInput.input.el, 'keyup', this._searchKeyUpHandlerRef);
 
@@ -105,6 +115,8 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
             }
         },
 
+        /* Search Input Key Up Handler. Checks if we should call the searchVoices API endpoint.
+         */
         _searchKeyUpHandler : function  _searchKeyUpHandler(ev) {
             if (ev.which === 40 || ev.which === 38 || ev.which === 13) {
                 return;
@@ -115,12 +127,17 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
                 return;
             }
 
+            this.searchInput.button.disable();
+            this._selectedVoice = null;
+
             API.searchVoices({
                 query : searchString,
                 exclude : []
             }, this._searchVoicesResponseHandler.bind(this));
         },
 
+        /* Handles the searchVoices API response.
+         */
         _searchVoicesResponseHandler : function _searchVoicesResponseHandler(err, res) {
             console.log(err);
             console.log(res);
@@ -133,7 +150,7 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
 
             res.voices.forEach(function(voice) {
                 this.searchInput.results.add({
-                    element : new CV.VoiceCoverMini({data: voice}).el,
+                    element : new CV.VoiceCoverMiniClean({data: voice}).el,
                     data : voice
                 });
             }, this);
@@ -141,7 +158,11 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
             this.searchInput.results.activate();
         },
 
+        /* Sets the this._selectedVoice data.
+         */
         _setSelectedUser : function _setSelectedUser(ev) {
+            this._selectedVoice = ev.data;
+
             this.searchInput.button.enable();
             this.searchInput.input.setValue(ev.data.title);
             this.searchInput.results.deactivate().clear();

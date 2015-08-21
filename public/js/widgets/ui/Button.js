@@ -2,11 +2,15 @@ Class(CV.UI, 'Button').inherits(Widget).includes(CV.WidgetUtils)({
     ELEMENT_CLASS : 'cv-button',
     HTML : '<button></button>',
     prototype : {
-        value : '',
+        data : {
+            value : ''
+        },
+
         init : function init(config) {
             Widget.prototype.init.call(this, config);
             this.el = this.element[0];
-            this.dom.updateText(this.el, this.value);
+            console.log(this.data);
+            this.dom.updateText(this.el, this.data.value);
         },
 
         _enable : function _enable() {

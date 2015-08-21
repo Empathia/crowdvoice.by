@@ -1,4 +1,3 @@
-/* jshint multistr: true */
 Class(CV, 'VoiceCoverMini').inherits(Widget).includes(CV.WidgetUtils)({
     HTML : '\
         <article class="cv-voice-cover mini -clearfix" role="article">\
@@ -28,6 +27,11 @@ Class(CV, 'VoiceCoverMini').inherits(Widget).includes(CV.WidgetUtils)({
         </li>',
 
     prototype : {
+        /* VoiceEntity
+         * @property data <required> [Object]
+         */
+        data : {},
+
         init : function init(config) {
             Widget.prototype.init.call(this, config);
 

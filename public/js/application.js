@@ -81,8 +81,9 @@ require('./widgets/cards/action-join');
 require('./widgets/cards/popover-unfollow');
 require('./widgets/cards/popover-invite-to');
 
-require('./widgets/voice-cover/card');
-require('./widgets/voice-cover/mini');
+require('./widgets/voice-cover/VoiceCover');
+require('./widgets/voice-cover/VoiceCoverMini');
+require('./widgets/voice-cover/VoiceCoverMiniClean');
 require('./widgets/voice-cover/actions/actions');
 require('./widgets/voice-cover/actions/edit');
 require('./widgets/voice-cover/actions/delete');
@@ -236,7 +237,7 @@ require('./widgets/elements/alert.js');
 require('./widgets/elements/detect-location.js');
 
 require('./widgets/ui/modal');
-require('./widgets/ui/input');
+require('./widgets/ui/Input');
 require('./widgets/ui/Button');
 require('./widgets/ui/checkbox');
 require('./widgets/ui/close-button');
