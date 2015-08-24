@@ -18,6 +18,10 @@ var EntitiesPresenter = Module('EntitiesPresenter')({
 
         if (entityInstance.isAnonymous) {
           images[version].url = '/img/anonymous/' + num + '/image_' + version + '.png';
+        } else {
+          if (!images[version].url) {
+            images[version].url = '/img/entity-placeholder/image_' + version + '.png';
+          }
         }
       }
 
