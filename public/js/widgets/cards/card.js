@@ -211,7 +211,7 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
                 this.profileCoverEl.classList.add('-colored-background');
             }
 
-            if (this.data.images.card) {
+            if (this.data.images.card && this.data.images.card.url) {
                 this.dom.updateAttr('src', this.avatarEl, this.data.images.card.url);
                 this.dom.updateAttr('alt', this.avatarEl, this.data.profileName + "’s avatar image");
             } else {
