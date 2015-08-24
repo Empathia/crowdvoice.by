@@ -22,6 +22,7 @@ Class(CV, 'RelatedVoicesList').inherits(Widget)({
             this._index++;
             this.appendChild(new CV.VoiceCoverMini({
                 name : 'voice_' + this._index,
+                className : 'cv-related-voices__list-item',
                 data : voice
             })).render(this.el);
         }

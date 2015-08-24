@@ -9,16 +9,16 @@
   .gm-scroll-view {
     overflow-x: hidden;
   }
-
-  .cv-voice-cover {
-    border-bottom: 1px solid @color-neutral-x-light;
-    padding: 10px 0;
-  }
 }
 
 .cv-related-voices-list {
-  &:empty::After {
+  &:empty::after {
     content : 'No related voices';
     font-style: italic;
   }
+}
+
+.cv-related-voices__list-item {
+  border-bottom: 1px solid @color-neutral-x-light;
+  padding: 10px 0;
 }
