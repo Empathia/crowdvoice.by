@@ -14,6 +14,8 @@ global.moment = require('moment');
 // Load underscore
 global._ = require('underscore');
 
+global.FeedInjector = require(__dirname + '/../lib/FeedInjector.js');
+
 // Load routes
 require('./../lib/routes.js');
 

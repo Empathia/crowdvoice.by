@@ -9,7 +9,8 @@
   "scripts": {
     "start": "nodemon --ext js,html --watch public/demo-data --watch views --watch controllers --watch middlewares --watch models --watch presenters --watch lib bin/server.js",
     "dev": "webpack -d -w",
-    "svg": "svg-sprite -s --symbol-dest=svg --symbol-prefix=.svg- --ss=sprite.svg --si --sx --shape-id-generator=svg-%s --dest=views/shared public/svg/*.svg"
+    "svg": "svg-sprite -s --symbol-dest=svg --symbol-prefix=.svg- --ss=sprite.svg --si --sx --shape-id-generator=svg-%s --dest=views/shared public/svg/*.svg",
+    "feed-test": "export ENV=feedTest NODE_ENV=feedTest; knex migrate:rollback; knex migrate:latest; node bin/data_generator.js 2; node test/feed/FeedInjector.js"
   },
   "dependencies": {
     "SoundManager2": "scottschiller/SoundManager2",
@@ -78,6 +79,7 @@
     "gemini-scrollbar": "^1.2.8",
     "slug": "^0.9.1",
     "superagent": "^1.2.0",
+    "tape": "^4.2.0",
     "tellurium": "git://github.com/benbeltran/tellurium.git"
   }
 }
