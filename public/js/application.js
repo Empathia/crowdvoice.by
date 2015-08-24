@@ -134,6 +134,10 @@ require('./widgets/voice/related-voices/button');
 require('./widgets/voice/related-voices/manager');
 require('./widgets/voice/related-voices/list');
 
+require('./widgets/voice/contributors/ManageContributorsButton');
+require('./widgets/voice/contributors/ManageContributors');
+require('./widgets/voice/contributors/ManageContributorsList');
+
 // popovers
 require('./widgets/popovers/unsave');
 require('./widgets/popovers/share');
@@ -220,7 +224,6 @@ require('./widgets/forms/create-voice.js');
 require('./widgets/forms/create-organization.js');
 require('./widgets/forms/invite-to-contribute.js');
 require('./widgets/forms/invite-to-organization.js');
-require('./widgets/forms/manage-contributors.js');
 require('./widgets/forms/users-list.js');
 require('./widgets/forms/request-membership.js');
 require('./widgets/forms/report.js');

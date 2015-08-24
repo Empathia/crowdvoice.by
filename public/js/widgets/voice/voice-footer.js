@@ -37,7 +37,7 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
             }
 
             this.dom.updateAttr('alt', this.byAnchor, this.voice.owner.name + ' ' + this.voice.owner.lastname + '’s profile page');
-            if (this.voice.owner.type == 'organization' || this.voice.owner.isAnonymous){
+            if (this.voice.owner.type === 'organization' || this.voice.owner.isAnonymous){
                 this.dom.updateText(this.byAnchor, this.voice.owner.name);
             } else {
                 this.dom.updateText(this.byAnchor, this.voice.owner.name + ' ' + this.voice.owner.lastname);
@@ -61,6 +61,12 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
                 this.appendChild(new CV.VoiceFollowButton({
                     name : 'followButton',
                     voice : this.voice
+                })).render(this.actionsColumn);
+            }
+
+            if (Person.is(App.Voice.data.owner.id)) {
+                this.appendChild(new CV.ManageContributorsButton({
+                    name : 'manageContributors'
                 })).render(this.actionsColumn);
             }
 
