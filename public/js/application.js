@@ -130,9 +130,9 @@ require('./widgets/voice/moderate/footer.js');
 
 require('./widgets/voice/add-content/');
 
-require('./widgets/voice/related-voices/button');
-require('./widgets/voice/related-voices/manager');
-require('./widgets/voice/related-voices/list');
+require('./widgets/voice/related-voices/RelatedVoicesButton');
+require('./widgets/voice/related-voices/ManageRelatedVoices');
+require('./widgets/voice/related-voices/RelatedVoicesList');
 
 require('./widgets/voice/contributors/ManageContributorsButton');
 require('./widgets/voice/contributors/ManageContributors');

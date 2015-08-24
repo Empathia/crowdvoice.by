@@ -45,6 +45,7 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
         },
 
         /* Holds the data of the selected voice. (for editMode)
+         * @property _selectedVoice <private>
          */
         _selectedVoice : null,
 
@@ -105,6 +106,9 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
             return this;
         },
 
+        /* Subscribe its events.
+         * @method _bindEvents <private>
+         */
         _bindEvents : function _bindEvents() {
             if (this.data.editMode && this.searchInput) {
                 this._searchKeyUpHandlerRef = this._searchKeyUpHandler.bind(this);
@@ -115,7 +119,9 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
             }
         },
 
-        /* Search Input Key Up Handler. Checks if we should call the searchVoices API endpoint.
+        /* Search Input Key Up Handler. Checks if we should call the
+         * searchVoices API endpoint.
+         * @method _searchKeyUpHandler <private>
          */
         _searchKeyUpHandler : function  _searchKeyUpHandler(ev) {
             if (ev.which === 40 || ev.which === 38 || ev.which === 13) {
@@ -137,6 +143,7 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
         },
 
         /* Handles the searchVoices API response.
+         * @method _searchVoicesResponseHandler <private>
          */
         _searchVoicesResponseHandler : function _searchVoicesResponseHandler(err, res) {
             console.log(err);
@@ -159,6 +166,7 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
         },
 
         /* Sets the this._selectedVoice data.
+         * @method _setSelectedUser <private>
          */
         _setSelectedUser : function _setSelectedUser(ev) {
             this._selectedVoice = ev.data;
@@ -168,6 +176,9 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
             this.searchInput.results.deactivate().clear();
         },
 
+        /* Unsubscribe its events, nullify DOM references, destroy children, etc.
+         * @method destroy <public> (inherited from Widget)
+         */
         destroy : function destroy() {
             if (this.scrollbar) {
                 this.scrollbar = this.scrollbar.destroy();
