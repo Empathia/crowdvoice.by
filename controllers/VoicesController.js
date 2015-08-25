@@ -242,7 +242,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         async.series([function(done) {
           // anonymous
 
-          if (req.currentPerson.isAnoymous) {
+          if (req.currentPerson.isAnonymous) {
             voice.ownerId = hashids.decode(req.currentPerson.id)[0]
             return done();
           }
