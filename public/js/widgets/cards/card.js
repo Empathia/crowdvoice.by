@@ -149,11 +149,11 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
          */
         _addActionButtons : function _addActionButtons() {
             if (!Person.get()) {
-                return void 0;
+                return;
             }
 
             if (Person.is(this.data.id) || Person.anon()) {
-                return void 0;
+                return;
             }
 
             if (!Person.ownerOf('organization', this.data.id)) {
