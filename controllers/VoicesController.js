@@ -247,6 +247,11 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
             return done();
           }
 
+          if (req.body.anonymously !== 'true') {
+            return done();
+          }
+
+
           Entity.find({
             id : hashids.decode(req.currentPerson.id)[0]
           }, function(err, result) {
@@ -266,6 +271,8 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
               done();
             });
           });
+
+
         }, function(done) {
           voice.save(done);
         }, function(done) {
