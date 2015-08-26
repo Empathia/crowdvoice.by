@@ -172,8 +172,6 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
     },
 
     updateSidebarCount : function updateSidebarCount() {
-      //console.log(this.sidebarMessagesEl);
-      //console.log(this.unreadMessages);
       if(this.unreadMessages > 0){
         this.sidebarMessagesEl.addClass('has-messages');
         this.sidebarMessagesEl.find('.sidebar-link-badge').text(this.unreadMessages);
@@ -186,7 +184,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
     addThread : function addThread(threadData) {
       var container = this;
 
-      //console.log(threadData);
+      console.log(threadData);
 
       var thread = new CV.Thread({
         name : 'thread_' + threadData.id,

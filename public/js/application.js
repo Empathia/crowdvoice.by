@@ -37,10 +37,17 @@ require('./app');
 // notifications
 require('./widgets/notifications/manager');
 require('./widgets/notifications/notification');
-require('./widgets/notifications/notification-follow');
-require('./widgets/notifications/notification-message');
-require('./widgets/notifications/notification-invite');
-require('./widgets/notifications/notification-request');
+require('./widgets/notifications/notification-followed');
+require('./widgets/notifications/notification-created');
+require('./widgets/notifications/notification-new-posts');
+require('./widgets/notifications/notification-changed-avatar');
+require('./widgets/notifications/notification-changed-background');
+require('./widgets/notifications/notification-changed-description');
+require('./widgets/notifications/notification-changed-title');
+require('./widgets/notifications/notification-read-more');
+require('./widgets/notifications/-notification-message');
+require('./widgets/notifications/-notification-invite');
+require('./widgets/notifications/-notification-request');
 // search
 require('./widgets/search/search');
 require('./widgets/search/button');
@@ -243,6 +250,9 @@ require('./widgets/ui/close-button');
 require('./widgets/messages/ThreadsContainer.js');
 require('./widgets/messages/Thread.js');
 require('./widgets/messages/Message.js');
+
+// generators
+require('./widgets/generators/feedGenerator.js');
 
 
 require('./widgets/audio.js');

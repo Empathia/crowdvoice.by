@@ -68,48 +68,50 @@
 </main>
 
 <script>
-    // App
-    var ns = [];
-    <% if (typeof notifications !== "undefined") { %>
-      ns = <%= JSON.stringify(notifications) %>;
-    <% } %>
-    var App = new CV.App({
-      notifications : ns,
-      currentPerson : currentPerson
+  // App
+  var ns = [];
+  <% if (typeof notifications !== "undefined") { %>
+    ns = <%= JSON.stringify(notifications) %>;
+  <% } %>
+  var App = new CV.App({
+    notifications : ns,
+    currentPerson : currentPerson
+  });
+
+  App.addInteractiveSidebar();
+
+  $( document ).ready(function() {
+
+    var threadsContainer = new CV.ThreadsContainer({
+      name : 'threadContainer',
+      element : $(document.querySelector('.messages-main')),
+      threads : <%= JSON.stringify(threads) %>,
+      currentPerson : <%= JSON.stringify(currentPerson) %>
     });
-    App.addInteractiveSidebar();
 
-  	$( document ).ready(function() {
+    var threadHash = window.location.hash.substr(1);
 
-        var threadsContainer = new CV.ThreadsContainer({
-            name : 'threadContainer',
-            element : $(document.querySelector('.messages-main')),
-            threads : <%= JSON.stringify(threads) %>,
-            currentPerson : <%= JSON.stringify(currentPerson) %>
-        });
-
-        var threadHash = window.location.hash.substr(1);
-
-        if (threadHash){
-        	threadsContainer.element.find('.messages-list #'+threadHash).click();
-        }
+    if (threadHash){
+    	threadsContainer.element.find('.messages-list #'+threadHash).click();
+    }
 
 	});
 
-  	var searchElement = document.querySelector('.messages-search');
-  	var createElement = $(document.querySelector('.message-create'));
+	var searchElement = document.querySelector('.messages-search');
+	var createElement = $(document.querySelector('.message-create'));
 
-  	var messagesMainEl = $(document.querySelector('.messages-main'));
-  	var messagesContainerEl = $(document.querySelector('.messages-container'));
-  	var noMessagesEl = $(document.querySelector('.no-messages'));
-  	var messagesBodyHeaderEl = $(document.querySelector('.messages-body-header'));
-  	var messagesBodyContainerEl = $(document.querySelector('.messages-body-container'));
-  	var threadListEl = $(document.querySelector('.messages-list'));
-  	var messageListEl = $(document.querySelector('.msgs'));
+	var messagesMainEl = $(document.querySelector('.messages-main'));
+	var messagesContainerEl = $(document.querySelector('.messages-container'));
+	var noMessagesEl = $(document.querySelector('.no-messages'));
+	var messagesBodyHeaderEl = $(document.querySelector('.messages-body-header'));
+	var messagesBodyContainerEl = $(document.querySelector('.messages-body-container'));
+	var threadListEl = $(document.querySelector('.messages-list'));
+	var messageListEl = $(document.querySelector('.msgs'));
 
-  	var searchUsersResultEl = $(document.querySelector('.search-users-result'));
+	var searchUsersResultEl = $(document.querySelector('.search-users-result'));
 
-  	var threads = <%= JSON.stringify(threads) %>;
+	var threads = <%= JSON.stringify(threads) %>;
+
 	var threadsObj = {};
 
 	var currentThreadID;
