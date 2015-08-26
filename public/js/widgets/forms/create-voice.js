@@ -191,7 +191,6 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 name : 'voiceRssfeed',
                 data : {
                     label : 'Content from rss feed',
-                    placeholder : '',
                     inputClassName : '-lg -block'
                 }
             })).render(this.el.querySelector('[data-rss]'));
@@ -206,8 +205,10 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 name : 'voiceLocation',
                 data: {
                     label : 'Location Name',
-                    placeholder : 'Location name',
-                    inputClassName : '-lg -block'
+                    inputClassName : '-lg -block',
+                    attr : {
+                        placeholder : 'Location name'
+                    }
                 }
             })).render(this.el.querySelector('[data-location]'));
 
@@ -215,8 +216,10 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 name : 'voiceLatitude',
                 data: {
                     label : 'Latitude',
-                    placeholder : 'Latitude',
-                    inputClassName : '-lg -block'
+                    inputClassName : '-lg -block',
+                    attr : {
+                        placeholder : 'Latitude'
+                    }
                 }
             })).render(this.el.querySelector('[data-latitude]'));
 
@@ -224,8 +227,10 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 name : 'voiceLongitude',
                 data : {
                     label : 'Longitude',
-                    placeholder : 'Longitude',
                     inputClassName : '-lg -block',
+                    attr : {
+                        placeholder : 'Longitude'
+                    }
                 }
             })).render(this.el.querySelector('[data-longitude]'));
 

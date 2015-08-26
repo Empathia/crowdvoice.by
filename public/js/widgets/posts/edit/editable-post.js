@@ -210,7 +210,8 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
         addRemoveButton : function addRemoveButton() {
             this.appendChild(new CV.PostModerateRemoveButton({
                 name : 'removeButton',
-                postId : this.id
+                postId : this.id,
+                className : '-m0'
             }));
             this.el.appendChild(this.removeButton.el);
             return this;
@@ -222,7 +223,8 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
         addPublishButton : function addPublishButton() {
             this.appendChild(new CV.PostModeratePublishButton({
                 name : 'publishButton',
-                postId : this.id
+                postId : this.id,
+                className : '-m0'
             }));
             this.el.appendChild(this.publishButton.el);
             this.el.classList.add('has-bottom-actions');

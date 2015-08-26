@@ -26,14 +26,14 @@ module.exports = {
      * @return [Boolean]
      */
     is : function is(id) {
-        return this.get().id === id;
+        return (this.get() && (this.get().id === id));
     },
 
     /* Checks if currentPerson is in anonymous mode.
      * @return [Boolean]
      */
     anon : function anon() {
-        return this.get().isAnonymous;
+        return (this.get() && (this.get().isAnonymous));
     },
 
     /* Checks if currentPerson is the owner of a specific organization.
@@ -55,6 +55,10 @@ module.exports = {
      * @return [Boolean]
      */
     memberOf : function memberOf(type, id) {
+        if (!this.get()) {
+            return false;
+        }
+
         if (type === 'organization') {
             var organizations = this.get().organizations.concat(this.get().ownedOrganizations);
             return (organizations.some(function(organization) {

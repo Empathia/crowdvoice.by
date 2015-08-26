@@ -111,7 +111,7 @@ var UsersController = Class('UsersController')({
                 type: 'person',
                 name: 'Anonymous',
                 lastname: 'anonymous',
-                profileName: 'anonymous_' + hashids.encode(person.id),
+                profileName: 'anonymous_' + hashids.encode(Date.now() + (person.id * 10000)),
                 isAnonymous: true
               });
 

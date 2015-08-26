@@ -1,0 +1,15 @@
+.cv-manage-contributors__list {
+  max-height: 400px;
+  min-height: 50px;
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  .gm-scroll-view {
+    overflow-x: hidden;
+  }
+}
+
+.cv-manage-contributors-list:empty::after {
+  content: 'No contributors';
+  font-style: italic;
+}

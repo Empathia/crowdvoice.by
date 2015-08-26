@@ -398,20 +398,13 @@ a.cv-button{
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
     border-right: 0;
-    min-width: 50px;
-    width: 100%;
   }
   button{
-    margin: 0;
-    width: auto;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
-    float: right;
-    position: absolute;
-    top: 0;
-    right: 0;
   }
   .search-results{
+    z-index: 1;
     display: none;
     position: absolute;
     border: 1px solid @color-neutral-light;
@@ -420,7 +413,7 @@ a.cv-button{
     width: 100%;
     border-radius: 3px;
     box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
-    div{
+    > * {
       color: @color-neutral-dark;
       padding: 5px 5px 5px 15px;
       border-bottom: 1px solid @color-neutral-x-light;
@@ -1043,23 +1036,23 @@ form{
   }
 }
 
-.cv-modal{
-  .cv-voiceslist{
-    padding: 0;
-  }
-  .cv-voice-cover{
-    border: 1px solid #ddd;
-    border-radius: 1px;
-    padding: 16px;
-    margin-bottom: 10px;
-    .cv-tags{
-      margin-bottom: 0;
-    }
-  }
-  .center{
-    text-align: center;
-  }
-}
+// .cv-modal{
+//   .cv-voiceslist{
+//     padding: 0;
+//   }
+//   .cv-voice-cover{
+//     border: 1px solid #ddd;
+//     border-radius: 1px;
+//     padding: 16px;
+//     margin-bottom: 10px;
+//     .cv-tags{
+//       margin-bottom: 0;
+//     }
+//   }
+//   .center{
+//     text-align: center;
+//   }
+// }
 
 
 .cv-voiceslist{

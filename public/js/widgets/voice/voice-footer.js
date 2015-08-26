@@ -29,9 +29,15 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
             console.log(this.voice.owner);
 
             this.dom.updateText(this.el.querySelector('.voice-footer-title'), this.voice.title);
-            this.dom.updateAttr('href', this.byAnchor, '/' + this.voice.owner.profileName);
+
+            if (this.voice.owner.isAnonymous) {
+              this.dom.updateAttr('href', this.byAnchor, '/anonymous');
+            } else {
+              this.dom.updateAttr('href', this.byAnchor, '/' + this.voice.owner.profileName);
+            }
+
             this.dom.updateAttr('alt', this.byAnchor, this.voice.owner.name + ' ' + this.voice.owner.lastname + '’s profile page');
-            if (this.voice.owner.type == 'organization'){
+            if (this.voice.owner.type === 'organization' || this.voice.owner.isAnonymous){
                 this.dom.updateText(this.byAnchor, this.voice.owner.name);
             } else {
                 this.dom.updateText(this.byAnchor, this.voice.owner.name + ' ' + this.voice.owner.lastname);
@@ -51,19 +57,27 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
                 })).render(this.element);
             }
 
-            if (Person.get() && !Person.anon() && !Person.memberOf('voice', this.voice.id)) {
+            if ((!Person.anon()) && (!Person.memberOf('voice', this.voice.id))) {
                 this.appendChild(new CV.VoiceFollowButton({
                     name : 'followButton',
                     voice : this.voice
                 })).render(this.actionsColumn);
             }
 
-            this.appendChild(new CV.VoiceRelatedVoices({
-                name : 'relatedVoicesButton'
+            if (Person.is(App.Voice.data.owner.id)) {
+                this.appendChild(new CV.ManageContributorsButton({
+                    name : 'manageContributors'
+                })).render(this.actionsColumn);
+            }
+
+            this.appendChild(new CV.RelatedVoicesButton({
+                name : 'relatedVoicesButton',
+                editMode : (Person.get() && !Person.anon() && Person.memberOf('voice', this.voice.id)),
+                voice : this.voice
             })).render(this.actionsColumn);
 
             // currentPerson does not belongs/owns this voice already?
-            if (Person.get() && !Person.anon() && !Person.memberOf('voice', this.voice.id)) {
+            if ((!Person.anon()) && (!Person.memberOf('voice', this.voice.id))) {
                 this.appendChild(new CV.VoiceRequestToContribute({
                     name : 'voiceRequestToContribute'
                 })).render(this.actionsColumn);
