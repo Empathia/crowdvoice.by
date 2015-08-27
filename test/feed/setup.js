@@ -2,4 +2,4 @@
 
 require('neonode-core')
 
-global.test = require('tape')
+global.test = require('tape-catch')

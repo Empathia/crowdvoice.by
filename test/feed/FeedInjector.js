@@ -19,7 +19,7 @@ test('entityFollowsEntity', function (t) {
         return console.log(err)
       }
 
-      t.deepEqual(result, {
+      t.deepEqual(result[0], {
         id: 1,
         itemType: 'entity',
         itemId: 2,

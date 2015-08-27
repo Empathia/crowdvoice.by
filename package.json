@@ -80,7 +80,7 @@
     "gemini-scrollbar": "^1.2.8",
     "slug": "^0.9.1",
     "superagent": "^1.2.0",
-    "tape": "^4.2.0",
+    "tape-catch": "^1.0.4",
     "tellurium": "git://github.com/benbeltran/tellurium.git"
   }
 }

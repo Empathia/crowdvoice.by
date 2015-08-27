@@ -11,9 +11,6 @@ var io = require('socket.io')(application.server);
 // Load moment
 global.moment = require('moment');
 
-// Load underscore
-global._ = require('underscore');
-
 global.FeedInjector = require(__dirname + '/../lib/FeedInjector.js');
 
 // Load routes
