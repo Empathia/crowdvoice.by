@@ -20,13 +20,13 @@ test('entityFollowsEntity', function (t) {
       }
 
       t.deepEqual(result[0], {
-        id: 1,
+        id: result[0].id,
         itemType: 'entity',
         itemId: 2,
         action: 'followed',
         who: 1,
-        createdAt: result.createdAt,
-        updatedAt: result.updatedAt,
+        createdAt: result[0].createdAt,
+        updatedAt: result[0].updatedAt,
       }, 'FeedAction entry is right')
     })
 
