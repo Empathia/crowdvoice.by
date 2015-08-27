@@ -1,5 +1,7 @@
 'use strict'
 
+// this is very not ideal. any change in the migrations and I gotta change it here.
+
 db.schema.dropTable('FeedActions')
 
 db.schema.createTable('FeedActions', function (t) {

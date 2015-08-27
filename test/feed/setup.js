@@ -34,6 +34,7 @@ var entityFollowers = [
 async.series([
   function (next) {
     async.eachLimit(entityFollowers, 1, function (recordInfo, next) {
+      console.log('follower_id: ' + recordInfo.followerId)
       entityFollower = new EntityFollower(recordInfo)
       entityFollower.save(next)
     }, next)
@@ -41,6 +42,7 @@ async.series([
 
   function (next) {
     async.eachLimit(voiceFollowers, 1, function (recordInfo, next) {
+      console.log('entity_id: ' + recordInfo.entityId)
       voiceFollower = new VoiceFollower(recordInfo)
       voiceFollower.save(next)
     }, next)

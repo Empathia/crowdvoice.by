@@ -10,7 +10,7 @@
     "start": "nodemon --ext js,html --watch public/demo-data --watch views --watch controllers --watch middlewares --watch models --watch presenters --watch lib bin/server.js",
     "dev": "webpack -d -w",
     "svg": "svg-sprite -s --symbol-dest=svg --symbol-prefix=.svg- --ss=sprite.svg --si --sx --shape-id-generator=svg-%s --dest=views/shared public/svg/*.svg",
-    "feed-test": "export ENV=feedTest NODE_ENV=feedTest; knex migrate:rollback; knex migrate:latest; faucet test/feed/FeedInjector.js"
+    "feed-test": "export ENV=feedTest NODE_ENV=feedTest; knex migrate:rollback; knex migrate:latest; echo \"\n\"; faucet test/feed/FeedInjector.js"
   },
   "dependencies": {
     "SoundManager2": "scottschiller/SoundManager2",
