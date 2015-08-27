@@ -75,10 +75,12 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
                 '1' : {name: 'Logout', url: '/logout'}
             };
 
+            var num = Math.floor(Math.random() * 9) + 1;
+
             this.appendChild(new CV.SelectAccount({
                 label         : 'Multiple',
                 name          : 'select',
-                accountImage  : "/img/sample/avatars/org-00.jpg",
+                accountImage  : '/img/anonymous/' + num + '/image_small.png',
                 accountName   : 'Anonymous',
                 options       : allMulti
             })).render(this.loginActionsWrapper);

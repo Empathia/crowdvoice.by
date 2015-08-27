@@ -101,178 +101,15 @@
     </div>\
 	';
 
-	//action: "changed avatar"
-	//actionDoer: {}
-	//createdAt: "2015-08-18T02:54:03.208Z"
-	//entity/voice: {}
-	//itemType: "entity/voice"
-
 	//************* tmp **********************
-	var tmpVoices, tmpPeople, tmpOrganizations;
-	var tmpFeed = [];
 
-	function getData(url, type){
-		$.ajax({
-			type: "GET",
-			url: url,
-			headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
-			data : {},
-			dataType : 'json',
-			success: function(data) {
-					if (type == 'voices'){
-						tmpVoices = data;
-					} else if (type == 'people'){
-						tmpPeople = data;
-					} else if (type == 'organizations'){
-						tmpOrganizations = data;
-					}
+	var feedGenerator = new CV.feedGenerator({
+		type : 'feed feed'
+	});
 
-					if (tmpVoices && tmpPeople && tmpOrganizations){
-						console.log('ready');
-						createFeed();
-					}
-			  	//items = items.concat(data);
-			  	//renderData(data, instance, className);
-
-			}
-		});
-	}
-
-	function createFeed(){
-
-		//action: "changed avatar"
-		//actionDoer: {}
-		//createdAt: "2015-08-18T02:54:03.208Z"
-		//entity/voice: {}
-		//itemType: "entity/voice"
-
-		var tmpFeedItem = {
-			action: "changed description",
-			actionDoer: tmpPeople[ Math.floor(Math.random()*tmpPeople.length) ],
-			createdAt: "2015-08-18T02:54:03.208Z",
-			voice: tmpVoices[Math.floor(Math.random()*tmpVoices.length)],
-			itemType: "voice"
-		};tmpFeed.push(tmpFeedItem);
-
-		var tmpFeedItem = {
-			action: "changed title",
-			actionDoer: tmpPeople[ Math.floor(Math.random()*tmpPeople.length) ],
-			createdAt: "2015-08-18T02:54:03.208Z",
-			voice: tmpVoices[Math.floor(Math.random()*tmpVoices.length)],
-			itemType: "voice"
-		};tmpFeed.push(tmpFeedItem);
-
-		var tmpFeedItem = {
-			action: "new posts",
-			actionDoer: tmpPeople[ Math.floor(Math.random()*tmpPeople.length) ],
-			createdAt: "2015-08-18T02:54:03.208Z",
-			voice: tmpVoices[Math.floor(Math.random()*tmpVoices.length)],
-			itemType: "voice"
-		};tmpFeed.push(tmpFeedItem);
-
-		var tmpFeedItem = {
-			action: "created",
-			actionDoer: tmpPeople[ Math.floor(Math.random()*tmpPeople.length) ],
-			createdAt: "2015-08-18T02:54:03.208Z",
-			voice: tmpVoices[Math.floor(Math.random()*tmpVoices.length)],
-			itemType: "voice"
-		};tmpFeed.push(tmpFeedItem);
-
-		var tmpFeedItem = {
-			action: "created",
-			actionDoer: tmpPeople[ Math.floor(Math.random()*tmpPeople.length) ],
-			createdAt: "2015-08-18T02:54:03.208Z",
-			entity: tmpOrganizations[Math.floor(Math.random()*tmpOrganizations.length)],
-			itemType: "entity"
-		};tmpFeed.push(tmpFeedItem);
-
-		var tmpFeedItem = {
-			action: "followed",
-			actionDoer: tmpPeople[ Math.floor(Math.random()*tmpPeople.length) ],
-			createdAt: "2015-08-18T02:54:03.208Z",
-			entity: tmpPeople[Math.floor(Math.random()*tmpPeople.length)],
-			itemType: "entity"
-		};tmpFeed.push(tmpFeedItem);
-
-		var tmpFeedItem = {
-			action: "followed",
-			actionDoer: tmpPeople[ Math.floor(Math.random()*tmpPeople.length) ],
-			createdAt: "2015-08-18T02:54:03.208Z",
-			entity: tmpOrganizations[Math.floor(Math.random()*tmpOrganizations.length)],
-			itemType: "entity"
-		};tmpFeed.push(tmpFeedItem);
-
-		var tmpFeedItem = {
-			action: "followed",
-			actionDoer: tmpPeople[ Math.floor(Math.random()*tmpPeople.length) ],
-			createdAt: "2015-08-18T02:54:03.208Z",
-			voice: tmpVoices[Math.floor(Math.random()*tmpVoices.length)],
-			itemType: "voice"
-		};tmpFeed.push(tmpFeedItem);
-
-		var tmpFeedItem = {
-			action: "changed avatar",
-			actionDoer: tmpPeople[ Math.floor(Math.random()*tmpPeople.length) ],
-			createdAt: "2015-08-18T02:54:03.208Z",
-			entity: tmpPeople[Math.floor(Math.random()*tmpPeople.length)],
-			itemType: "entity"
-		};tmpFeed.push(tmpFeedItem);
-
-		var tmpFeedItem = {
-			action: "changed background",
-			actionDoer: tmpPeople[ Math.floor(Math.random()*tmpPeople.length) ],
-			createdAt: "2015-08-18T02:54:03.208Z",
-			entity: tmpPeople[Math.floor(Math.random()*tmpPeople.length)],
-			itemType: "entity"
-		};tmpFeed.push(tmpFeedItem);
-
-		var tmpFeedShuffled = shuffle(tmpFeed);
-
-		var tmpStartHour = 7;
-		var tmpStartMinute = 37;
-		tmpFeedShuffled.forEach(function (item, index){
-
-			if (tmpStartMinute < 10 ) {tmpStartMinute = '0' + tmpStartMinute}
-
-			if (isEven(index)){
-				tmpStartHour--;
-				if (tmpStartHour < 10 ) {tmpStartHour = '0' + tmpStartHour}
-			}
-			item.createdAt = '2015-08-18T' + tmpStartHour + ':'+ tmpStartMinute +':03.208Z';
-			tmpStartMinute--;
-
-		});
-
-		addFeedItems(tmpFeedShuffled);
-	}
-
-	getData('/discover/new/voices', 'voices');
-	getData('/discover/new/people', 'people');
-	getData('/discover/new/organizations', 'organizations');
-
-	function isEven(n) {
-	  n = Number(n);
-	  return n === 0 || !!(n && !(n%2));
-	}
-
-	function shuffle(array) {
-	  var currentIndex = array.length, temporaryValue, randomIndex ;
-
-	  // While there remain elements to shuffle...
-	  while (0 !== currentIndex) {
-
-	    // Pick a remaining element...
-	    randomIndex = Math.floor(Math.random() * currentIndex);
-	    currentIndex -= 1;
-
-	    // And swap it with the current element.
-	    temporaryValue = array[currentIndex];
-	    array[currentIndex] = array[randomIndex];
-	    array[randomIndex] = temporaryValue;
-	  }
-
-	  return array;
-	}
+	feedGenerator.bind('ready', function(){
+		addFeedItems(feedGenerator.feedItems);
+	});
 
 	//****************************************
 
@@ -304,11 +141,9 @@
 			numOrgs.textContent = currentPerson.organizations.length;
 		}
 
-		console.log(sortedFeedItems);
+		if ( sortedFeedItems.length > 0 ){
 
-		if ( sortedFeedItems.length > 1000 ){
-
-		  addFeedItems(sortedFeedItems);
+		  //addFeedItems(sortedFeedItems);
 
 		}else{
 
@@ -351,7 +186,6 @@
 		  		}
 	        typeWidget.showMeta();
 	        break;
-	      //xxx
 	      case 'followed':
 	      	if(feed.itemType == 'entity'){
 						feedEl.find('.feed-item-title > span').text(feed.action + ' ' + feed.entity.type + 's');
@@ -362,18 +196,18 @@
 		  		}
 	        typeWidget.showMeta();
 	        break;
-	      case 'changed avatar':
-					feedEl.find('.feed-item-title > span').text(feed.action);
-	        break;
-	      case 'changed background':
-					feedEl.find('.feed-item-title > span').text(feed.action);
-	        break;
 	      case 'new posts':
 	      	if (feed.itemType == 'voice'){
 		  			feedEl.find('.feed-item-title > span').text('added ' + feed.action + ' to ' + feed.itemType);
 		  			typeWidget = new CV.VoiceCoverMini({data:feed.voice}).render(feedEl.find('.feed-item-list'));
 		  		}
 	        typeWidget.showMeta();
+	        break;
+	      case 'changed avatar':
+					feedEl.find('.feed-item-title > span').text(feed.action);
+	        break;
+	      case 'changed background':
+					feedEl.find('.feed-item-title > span').text(feed.action);
 	        break;
 	      case 'changed title':
 	      	if (feed.itemType == 'voice'){

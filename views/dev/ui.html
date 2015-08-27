@@ -81,26 +81,56 @@
 </main>
 
 <script>
+var App = new CV.App({
+  currentPerson : currentPerson
+});
 
 $( document ).ready(function() {
 
   $('.create-voice').on('click', function(){
-    createVoice.show();
+    var createVoice = new CV.UI.Modal({
+      title       : 'Create a Voice',
+      name        : 'createAVoiceModal',
+      action      : CV.CreateVoice,
+      width       : 960,
+    }).render(document.body).activate();
   });
   $('.create-organization').on('click', function(){
     createOrganization.show();
   });
   $('.invite-contribute').on('click', function(){
-    inviteToContribute.show();
+    /*var inviteToContribute = new CV.UI.Modal({
+      title       : 'Invite to Contribute',
+      name        : 'inviteToContributeModal',
+      action      : CV.InviteToContribute,
+      width       : 650,
+    }).render(document.body).activate();*/
   });
   $('.manage-contributors').on('click', function(){
-    manageContributors.show();
+    var manageContributors = new CV.Modal({
+      title       : 'Manage Contributors',
+      name        : 'manageContributorsModal',
+      action      : CV.ManageContributors,
+      width       : 900,
+    }).render(document.body).activate();
   });
   $('.request-membership').on('click', function(){
     requestMembership.show();
   });
   $('.manage-related-voices').on('click', function(){
-    manageRelatedVoices.show();
+    var manageRelatedVoices = new CV.UI.Modal({
+      title       : 'Manage Related Voices',
+      name        : 'manageRelatedVoicesModal',
+      action      : CV.ManageRelatedVoices,
+      width       : 900,
+      data : {
+        voices : voices
+      }
+    }).render(document.body);
+    manageRelatedVoices.bubbleAction.setup();
+    requestAnimationFrame(function() {
+      manageRelatedVoices.activate();
+    });
   });
   $('.modal-report').on('click', function(){
     report.show();
@@ -137,15 +167,6 @@ var years= {
     ]
 }
 
-var createVoice = new CV.Modal({
-    style       : '',
-    type        : '',
-    title       : 'Create a Voice',
-    name        : 'createAVoiceModal',
-    action      : CV.CreateVoice,
-    width       : 960,
-});//.render(document.querySelector('body'));
-
 var createOrganization = new CV.Modal({
     style       : '',
     type        : '',
@@ -155,24 +176,6 @@ var createOrganization = new CV.Modal({
     width       : 540,
 });//.render(document.querySelector('body'));
 
-var inviteToContribute = new CV.Modal({
-    style       : '',
-    type        : '',
-    title       : 'Invite to Contribute',
-    name        : 'inviteToContributeModal',
-    action      : CV.InviteToContribute,
-    width       : 650,
-});
-
-var manageContributors = new CV.Modal({
-    style       : '',
-    type        : '',
-    title       : 'Manage Contributors',
-    name        : 'manageContributorsModal',
-    action      : CV.ManageContributors,
-    width       : 900,
-});
-
 var requestMembership = new CV.Modal({
     style       : '',
     type        : '',
@@ -180,15 +183,6 @@ var requestMembership = new CV.Modal({
     name        : 'requestmembershipModal',
     action      : CV.RequestMembership,
     width       : 650,
-});
-
-var manageRelatedVoices = new CV.Modal({
-    style       : '',
-    type        : '',
-    title       : 'Manage Related Voices',
-    name        : 'manageRelatedVoicesModal',
-    action      : CV.ManageRelatedVoices,
-    width       : 900,
 });
 
 var report = new CV.Modal({
@@ -222,7 +216,7 @@ CV.Notification.create({
 $('.placeholder-bubble').append('<br>');
 
 
-new CV.Bubble({
+/*new CV.Bubble({
     style       : '',
     type        : '',
     title       : 'Want to help out?',
@@ -231,7 +225,7 @@ new CV.Bubble({
     //actionData  : years,
     width       : 600,
     anchorEl    : document.querySelector('.bubble-help')
-});//.render(document.querySelector('.placeholder-bubble'));
+});
 
 $('.placeholder-bubble').append('<br>');
 
@@ -265,10 +259,10 @@ new CV.Bubble({
     title       : 'Related Voices',
     name        : 'relatedBubble',
     action      : CV.VoicesList,
-    actionData  : voices,
+    data        : voices,
     width       : 480,
     anchorEl    : document.querySelector('.bubble-related')
-}).render(document.querySelector('.placeholder-related'));
+}).render(document.querySelector('.placeholder-related'));*/
 
 
 /*******************************************
@@ -542,11 +536,9 @@ $('.placeholder-ui2 .c1').append('<br><br>');
 
 new CV.InputButton({
     style       : 'primary',
-    type        : '',
     name        : 'input',
     placeholder : 'Search',
     buttonLabel : 'Search',
-    hasTitle    : true,
     title       : 'Field label',
     subTitle    : 'External hint'
 }).render(document.querySelector('.placeholder-ui2 .c1'));
@@ -554,7 +546,6 @@ $('.placeholder-ui2 .c1').append('<br><br>');
 
 new CV.InputButton({
     style       : 'primary large',
-    type        : '',
     isArea      : true,
     name        : 'input',
     buttonLabel : 'Reply'

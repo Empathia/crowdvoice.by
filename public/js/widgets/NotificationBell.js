@@ -16,7 +16,11 @@ Class('NotificationBell').inherits(Widget)({
 
     setup : function setup() {
       var bell = this;
+      var notifications = null;
 
+      var feedGen = new CV.feedGenerator({
+          type : 'feed app'
+      });
 
       var socket = this.parent.parent.getSocket();
 
@@ -34,9 +38,24 @@ Class('NotificationBell').inherits(Widget)({
 
       bell.element.on('click', function() {
         socket.emit('readNotifications');
-        setTimeout(function() {
-          window.location = '/';
-        }, 500);
+        //setTimeout(function() {
+        //  window.location = '/';
+        //}, 500);
+        if (feedGen.feedItems){
+          if (!notifications){
+          //feedGen.bind('ready', function(){
+            notifications = new CV.NotificationsManager({
+                notifications : feedGen.feedItems
+            }).render(document.body);
+            notifications.show();
+          //});
+          } else {
+            notifications.open ? notifications.hide() : notifications.show();
+
+          }
+
+        }
+
       });
     }
   }

@@ -24,8 +24,9 @@ var PostsPresenter = Module('PostsPresenter')({
       post.postImages = images;
 
       async.series([
+
         // votes
-        function (done) {
+        function(done) {
           if (currentPerson) {
             Vote.find({
               'entity_id' : hashids.decode(currentPerson.id)[0],
@@ -48,7 +49,7 @@ var PostsPresenter = Module('PostsPresenter')({
         },
 
         // saved
-        function (done) {
+        function(done) {
           if (currentPerson) {
             SavedPost.find({
               entity_id: hashids.decode(currentPerson.id)[0],
@@ -61,6 +62,14 @@ var PostsPresenter = Module('PostsPresenter')({
               } else {
                 post.saved = false;
               }
+
+              console.log('RESULT', result, {
+                entity_id: hashids.decode(currentPerson.id)[0],
+                post_id: postInstance.id
+              }, currentPerson.id)
+
+              post.currentPerson = currentPerson;
+              post.postInstance = postInstance
 
               return done();
             });
@@ -81,14 +90,31 @@ var PostsPresenter = Module('PostsPresenter')({
 
             return done();
           });
-        }
-      ], function (err) {
+        }, function(done) {
+
+          // voice
+          Voice.find({ id : postInstance.voiceId }, function(err, result) {
+            if (err) {
+              return done(err);
+            }
+
+            VoicesPresenter.build(result, currentPerson, function(err, voices) {
+              if (err) {
+                return done(err);
+              }
+
+              post.voice = voices[0];
+
+              done();
+            });
+          });
+        } ], function(err) {
         if (err) { return next(err); }
 
         response.push(post);
         return next();
       });
-    }, function (err) {
+    }, function(err) {
       callback(err, response);
     });
   }

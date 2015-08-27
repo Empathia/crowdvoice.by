@@ -40,7 +40,6 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
       this.replyButton = new CV.InputButton({
           name        : 'replyButton',
           style       : 'primary',
-          type        : '',
           isArea      : true,
           buttonLabel : 'Reply'
       }).render(this.element.find('.message-create'));
@@ -172,8 +171,6 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
     },
 
     updateSidebarCount : function updateSidebarCount() {
-      //console.log(this.sidebarMessagesEl);
-      //console.log(this.unreadMessages);
       if(this.unreadMessages > 0){
         this.sidebarMessagesEl.addClass('has-messages');
         this.sidebarMessagesEl.find('.sidebar-link-badge').text(this.unreadMessages);
@@ -186,7 +183,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
     addThread : function addThread(threadData) {
       var container = this;
 
-      //console.log(threadData);
+      console.log(threadData);
 
       var thread = new CV.Thread({
         name : 'thread_' + threadData.id,
@@ -474,7 +471,6 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
     },
 
     refresh : function refresh() {
-      this.replyButton.recalculate();
       var padDiff = 0;
 
       var chatHeight = this.getHeight() - $('.cv-main-header').outerHeight();

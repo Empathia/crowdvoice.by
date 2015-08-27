@@ -40,9 +40,23 @@ Class(CV, 'App').includes(NodeSupport)({
 
             this.header.setup();
 
-            new CV.NotificationsManager({
-                notifications : this.notifications
-            }).render(document.body);
+            //************* tmp generator **********************
+
+            //var feedGen = new CV.feedGenerator({
+            //    type : 'feed app'
+            //});
+//
+            //feedGen.bind('ready', function(){
+            //    new CV.NotificationsManager({
+            //        notifications : feedGen.feedItems
+            //    }).render(document.body);
+            //});
+
+            //****************************************
+
+            //new CV.NotificationsManager({
+            //    notifications : this.notifications
+            //}).render(document.body);
         },
 
         /* Start socketio connection

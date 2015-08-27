@@ -17,8 +17,7 @@ Class(CV.UI, 'Input').inherits(Widget).includes(CV.WidgetUtils)({
             isTextArea : false,
             label : '',
             hint : '',
-            placeholder : '',
-            value : '',
+            inputClassName : null,
             attr : null
         },
 
@@ -63,8 +62,6 @@ Class(CV.UI, 'Input').inherits(Widget).includes(CV.WidgetUtils)({
                 this.dom.addClass(this._input, this.data.inputClassName.split(/\s/));
             }
 
-            this.dom.updateAttr('placeholder', this._input, this.data.placeholder || '');
-            this.dom.updateAttr('value', this._input, this.data.value || '');
             this.dom.updateAttr('id', this._input, this._unique);
 
             return this;
@@ -105,7 +102,7 @@ Class(CV.UI, 'Input').inherits(Widget).includes(CV.WidgetUtils)({
 
             this.dom.updateText(this.hintElement, data.hint);
             if (data.className) {
-                this.dom.addClass(this.hintElement, [data.className.split(/\s/)]);
+                this.dom.addClass(this.hintElement, data.className.split(/\s/));
             }
             return this;
         },

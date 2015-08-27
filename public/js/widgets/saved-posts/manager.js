@@ -38,15 +38,15 @@ Class(CV, 'SavedPostsManager').inherits(Widget)({
             this._resizeHandlerRef = this._resizeHandler.bind(this);
             Events.on(this._window, 'resize', this._resizeHandlerRef);
 
-            // this.bind('post:display:detail', function (ev) {
-            //     this.displayGallery(ev);
-            // }.bind(this));
+            this.bind('post:display:detail', function (ev) {
+                this.displayGallery(ev);
+            }.bind(this));
 
             return this;
         },
 
         /* Renders the PostDetail Overlay
-         *
+         */
         displayGallery : function displayGallery(ev) {
             if (this.postDetailController) {
                 this.postDetailController = this.postDetailController.destroy();
@@ -60,7 +60,7 @@ Class(CV, 'SavedPostsManager').inherits(Widget)({
             this.postDetailController.widget.bind('deactivate', function() {
                 this.postDetailController = this.postDetailController.destroy();
             }.bind(this));
-        },*/
+        },
 
         addPosts : function addPosts(posts) {
             var frag = document.createDocumentFragment();
@@ -72,8 +72,7 @@ Class(CV, 'SavedPostsManager').inherits(Widget)({
                 posts[i].name = 'post_' + i;
 
                 post = CV.Post.create(posts[i]);
-                post.loadImage();
-                // post.addActions();
+                post.loadImage().addActions();
 
                 this.appendChild(post).render(frag);
             }

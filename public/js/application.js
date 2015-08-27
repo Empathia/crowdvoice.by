@@ -37,10 +37,17 @@ require('./app');
 // notifications
 require('./widgets/notifications/manager');
 require('./widgets/notifications/notification');
-require('./widgets/notifications/notification-follow');
-require('./widgets/notifications/notification-message');
-require('./widgets/notifications/notification-invite');
-require('./widgets/notifications/notification-request');
+require('./widgets/notifications/notification-followed');
+require('./widgets/notifications/notification-created');
+require('./widgets/notifications/notification-new-posts');
+require('./widgets/notifications/notification-changed-avatar');
+require('./widgets/notifications/notification-changed-background');
+require('./widgets/notifications/notification-changed-description');
+require('./widgets/notifications/notification-changed-title');
+require('./widgets/notifications/notification-read-more');
+require('./widgets/notifications/-notification-message');
+require('./widgets/notifications/-notification-invite');
+require('./widgets/notifications/-notification-request');
 // search
 require('./widgets/search/search');
 require('./widgets/search/button');
@@ -81,8 +88,9 @@ require('./widgets/cards/action-join');
 require('./widgets/cards/popover-unfollow');
 require('./widgets/cards/popover-invite-to');
 
-require('./widgets/voice-cover/card');
-require('./widgets/voice-cover/mini');
+require('./widgets/voice-cover/VoiceCover');
+require('./widgets/voice-cover/VoiceCoverMini');
+require('./widgets/voice-cover/VoiceCoverMiniClean');
 require('./widgets/voice-cover/actions/actions');
 require('./widgets/voice-cover/actions/edit');
 require('./widgets/voice-cover/actions/delete');
@@ -108,7 +116,6 @@ require('./widgets/voice/footer/share-buttons-group');
 require('./widgets/voice/footer/share-button');
 require('./widgets/voice/footer/embed-button');
 require('./widgets/voice/voice-follow-button.js');
-require('./widgets/voice/voice-related-voices.js');
 
 require('./widgets/voice/timeline/feedback');
 require('./widgets/voice/timeline/jump-to-date');
@@ -129,6 +136,14 @@ require('./widgets/voice/moderate/footer-button.js');
 require('./widgets/voice/moderate/footer.js');
 
 require('./widgets/voice/add-content/');
+
+require('./widgets/voice/related-voices/RelatedVoicesButton');
+require('./widgets/voice/related-voices/ManageRelatedVoices');
+require('./widgets/voice/related-voices/RelatedVoicesList');
+
+require('./widgets/voice/contributors/ManageContributorsButton');
+require('./widgets/voice/contributors/ManageContributors');
+require('./widgets/voice/contributors/ManageContributorsList');
 
 // popovers
 require('./widgets/popovers/unsave');
@@ -207,7 +222,6 @@ require('./widgets/post-creators/write-article/cover-button');
 
 // bubbles
 require('./widgets/bubble.js');
-require('./widgets/bubble/voices-list.js');
 require('./widgets/modal.js');
 require('./widgets/login.js');
 require('./widgets/formUtils.js');
@@ -217,8 +231,6 @@ require('./widgets/forms/create-voice.js');
 require('./widgets/forms/create-organization.js');
 require('./widgets/forms/invite-to-contribute.js');
 require('./widgets/forms/invite-to-organization.js');
-require('./widgets/forms/manage-contributors.js');
-require('./widgets/forms/manage-related-voices.js');
 require('./widgets/forms/users-list.js');
 require('./widgets/forms/request-membership.js');
 require('./widgets/forms/report.js');
@@ -235,14 +247,21 @@ require('./widgets/elements/alert.js');
 require('./widgets/elements/detect-location.js');
 
 require('./widgets/ui/modal');
-require('./widgets/ui/input');
+require('./widgets/ui/Input');
+require('./widgets/ui/Button');
 require('./widgets/ui/checkbox');
 require('./widgets/ui/close-button');
+require('./widgets/ui/InputButton');
+require('./widgets/ui/InputButtonResults');
+require('./widgets/ui/InputButtonResultsItem');
 
 // threads and messages
 require('./widgets/messages/ThreadsContainer.js');
 require('./widgets/messages/Thread.js');
 require('./widgets/messages/Message.js');
+
+// generators
+require('./widgets/generators/feedGenerator.js');
 
 
 require('./widgets/audio.js');

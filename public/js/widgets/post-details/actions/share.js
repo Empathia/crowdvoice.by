@@ -1,4 +1,3 @@
-/* globals App */
 var origin = require('get-location-origin');
 var moment = require('moment');
 
@@ -32,8 +31,8 @@ Class(CV, 'PostDetailActionsShare').inherits(Widget).includes(CV.WidgetUtils)({
         },
 
         update : function update(data) {
-            var url = origin + '/' + App.Voice.data.owner.profileName + '/';
-            url += App.Voice.data.slug + '/';
+            var url = origin + '/' + data.voice.owner.profileName + '/';
+            url += data.voice.slug + '/';
             url += '#!' + moment(data.publishedAt).format('YYYY-MM') + '/';
             url += data.id;
 

@@ -1,4 +1,3 @@
-/* globals App */
 /* Handles the save/unsave post actions for PostDetails.
  * update(entity) => updates the button using the EntityData passed as param
  */
@@ -127,8 +126,8 @@ Class(CV, 'PostDetailActionsSave').inherits(Widget).includes(CV.WidgetUtils)({
             this._setIsSaved()._cancelHoverState();
 
             API.postSave({
-                profileName : App.Voice.data.owner.profileName,
-                voiceSlug : App.Voice.data.slug,
+                profileName : this.data.voice.owner.profileName,
+                voiceSlug : this.data.voice.slug,
                 postId : this.data.id
             }, function(err) {
                 if (err) {
@@ -149,8 +148,8 @@ Class(CV, 'PostDetailActionsSave').inherits(Widget).includes(CV.WidgetUtils)({
             this._setIsNotSaved();
 
             API.postUnsave({
-                profileName : App.Voice.data.owner.profileName,
-                voiceSlug : App.Voice.data.slug,
+                profileName : this.data.voice.owner.profileName,
+                voiceSlug : this.data.voice.slug,
                 postId : this.data.id
             }, function(err) {
                 if (err) {

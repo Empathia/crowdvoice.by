@@ -1,6 +1,6 @@
 /* jshint multistr: true */
-Class(CV, 'NotificationFollow').inherits(CV.Notification)({
-    ELEMENT_CLASS : 'cv-notification follow',
+Class(CV, 'NotificationChangedAvatar').inherits(CV.Notification)({
+    ELEMENT_CLASS : 'cv-notification changed-avatar',
     HTML : '\
         <div>\
             <div class="cv-notification__info">\
@@ -23,11 +23,13 @@ Class(CV, 'NotificationFollow').inherits(CV.Notification)({
 
             this.el = this.element[0];
             this.mainAvatarElement = this.el.querySelector('.main-avatar');
-            this.mainText = this.el. querySelector('.main-text');
+            this.mainText = this.el.querySelector('.main-text');
+            this.entityVoice = this.el.querySelector('.notification-entity-voice');
 
-            this.dom.updateAttr('src', this.mainAvatarElement, this.person.images.small.url);
-            this.dom.updateText(this.mainText, this.person.name + ' ' + this.person.lastname + ' followed you.');
-            console.log('follow');
+            this.dom.updateAttr('src', this.mainAvatarElement, this.actionDoer.images.small.url);
+
+            this.dom.updateText(this.mainText, this.actionDoer.name + ' ' + this.actionDoer.lastname + ' changed avatar.');
+
         }
     }
 });
