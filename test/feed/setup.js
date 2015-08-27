@@ -28,6 +28,14 @@ var entityFollowers = [
       entityId: 2,
       voiceId: 1,
     },
+    {
+      entityId: 1,
+      voiceId: 2,
+    },
+    {
+      entityId: 2,
+      voiceId: 2,
+    },
   ],
   voiceFollower
 
