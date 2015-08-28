@@ -87,7 +87,7 @@ test('entityFollowsVoice', function (t) {
 test('entityArchivesVoice', function (t) {
   t.plan(5)
 
-  FeedInjector().inject(1, 'both entityArchivesVoice', { id: 2 }, function (err) {
+  FeedInjector().inject(1, 'both entityArchivesVoice', { id: 2, status: Voice.STATUS_ARCHIVED }, function (err) {
     if (err) {
       t.fail()
       return console.log(err)
@@ -248,7 +248,7 @@ test('entityBecomesOrgPublicMember', function (t) {
 test('voiceIsPublished', function (t) {
   t.plan(4)
 
-  FeedInjector().inject(1, 'who voiceIsPublished', { id: 3 }, function (err) {
+  FeedInjector().inject(1, 'who voiceIsPublished', { id: 3, status: Voice.STATUS_PUBLISHED }, function (err) {
     if (err) {
       t.fail()
       return console.log(err)
@@ -288,7 +288,7 @@ test('voiceIsPublished', function (t) {
 test('voiceNewPosts', function (t) {
   t.plan(4)
 
-  FeedInjector().inject(1, 'item voiceNewPosts', { id: 2 }, function (err) {
+  FeedInjector().inject(1, 'item voiceNewPosts', { id: 2, status: Voice.STATUS_PUBLISHED }, function (err) {
     if (err) {
       t.fail()
       return console.log(err)
@@ -328,7 +328,7 @@ test('voiceNewPosts', function (t) {
 test('voiceNewTitle', function (t) {
   t.plan(4)
 
-  FeedInjector().inject(1, 'item voiceNewTitle', { id: 2 }, function (err) {
+  FeedInjector().inject(1, 'item voiceNewTitle', { id: 2, status: Voice.STATUS_PUBLISHED }, function (err) {
     if (err) {
       t.fail()
       return console.log(err)
@@ -368,7 +368,7 @@ test('voiceNewTitle', function (t) {
 test('voiceNewDescription', function (t) {
   t.plan(4)
 
-  FeedInjector().inject(1, 'item voiceNewDescription', { id: 2 }, function (err) {
+  FeedInjector().inject(1, 'item voiceNewDescription', { id: 2, status: Voice.STATUS_PUBLISHED }, function (err) {
     if (err) {
       t.fail()
       return console.log(err)
@@ -408,7 +408,7 @@ test('voiceNewDescription', function (t) {
 test('voiceNewPublicContributor', function (t) {
   t.plan(4)
 
-  FeedInjector().inject(1, 'item voiceNewPublicContributor', { voiceId: 2 }, function (err) {
+  FeedInjector().inject(1, 'item voiceNewPublicContributor', { voiceId: 3, isAnonymous: false }, function (err) {
     if (err) {
       t.fail()
       return console.log(err)
@@ -423,7 +423,7 @@ test('voiceNewPublicContributor', function (t) {
       t.deepEqual(feedAction[0], {
         id: feedAction[0].id,
         itemType: 'voice',
-        itemId: 2,
+        itemId: 3,
         action: 'became public contributor',
         who: 1,
         createdAt: feedAction[0].createdAt,

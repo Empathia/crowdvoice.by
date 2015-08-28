@@ -3,6 +3,7 @@ var Voice = Class('Voice').inherits(Argon.KnexModel).includes(ImageUploader)({
   STATUS_DRAFT:     'STATUS_DRAFT',
   STATUS_UNLISTED:  'STATUS_UNLISTED',
   STATUS_PUBLISHED: 'STATUS_PUBLISHED',
+  STATUS_ARCHIVED:  'STATUS_ARCHIVED',
 
   TYPE_PUBLIC:      'TYPE_PUBLIC',
   TYPE_CLOSED:      'TYPE_CLOSED',
