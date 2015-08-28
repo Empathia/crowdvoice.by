@@ -107,6 +107,40 @@ var SearchController = Class('SearchController')({
       });
     },
 
+    searchPeople : function (req, res, next) {
+      var query = req.body.query;
+      var exclude = req.body.exclude;
+
+      if (!exclude) {
+          exclude = [];
+      }
+
+      SearchController.prototype._searchPeople(query, exclude, req.currentPerson, function(err, result) {
+        if (err) {
+          return next(err);
+        }
+
+        res.json({voices : result});
+      });
+    },
+
+    searchOrganizations : function (req, res, next) {
+      var query = req.body.query;
+      var exclude = req.body.exclude;
+
+      if (!exclude) {
+          exclude = [];
+      }
+
+      SearchController.prototype._searchOrganizations(query, exclude, req.currentPerson, function(err, result) {
+        if (err) {
+          return next(err);
+        }
+
+        res.json({voices : result});
+      });
+    },
+
     _searchVoices : function _searchVoices(query, exclude, currentPerson, callback) {
       db.raw('SELECT * FROM ( \
         SELECT "Voices".*, \
@@ -144,7 +178,7 @@ var SearchController = Class('SearchController')({
         });
     },
 
-    _searchPeople : function _searchPeople(query, currentPerson, callback) {
+    _searchPeople : function _searchPeople(query, exclude, currentPerson, callback) {
       db.raw('SELECT * FROM ( \
         SELECT "Entities".*, \
         setweight(to_tsvector("Entities".name || "Entities".lastname), \'A\') || \
@@ -167,12 +201,20 @@ var SearchController = Class('SearchController')({
               return callback(err);
             }
 
+            if (exclude.length > 0) {
+              people = people.filter(function(item) {
+                if (exclude.indexOf(item.id) === -1) {
+                  return true;
+                }
+              });
+            }
+
             callback(null, people);
           });
         });
     },
 
-    _searchOrganizations : function _searchOrganizations(query, currentPerson, callback) {
+    _searchOrganizations : function _searchOrganizations(query, exclude, currentPerson, callback) {
       db.raw('SELECT * FROM ( \
         SELECT "Entities".*, \
         setweight(to_tsvector(concat("Entities".name, "Entities".lastname)), \'A\') || \
@@ -193,6 +235,14 @@ var SearchController = Class('SearchController')({
           EntitiesPresenter.build(result, currentPerson, function(err, organizations) {
             if (err) {
               return callback(err);
+            }
+
+            if (exclude.length > 0) {
+              organizations = organizations.filter(function(item) {
+                if (exclude.indexOf(item.id) === -1) {
+                  return true;
+                }
+              });
             }
 
             callback(null, organizations);
