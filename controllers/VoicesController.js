@@ -322,7 +322,9 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
               return next(err);
             }
 
-            feed.voiceCreated(req, voice, function() {
+            feed.voiceCreated(req, voice, function (err) {
+              if (err) { return next(err); }
+
               res.json(voices[0]);
             });
           });
@@ -421,8 +423,12 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
             return next(err);
           }
 
-          req.flash('success', 'Voice has been updated.');
-          res.json(voice);
+          feed.voiceCreated(req, voice, function (err) {
+            if (err) { return next(err); }
+
+            req.flash('success', 'Voice has been updated.');
+            res.json(voice);
+          });
         });
       });
     },
