@@ -120,7 +120,7 @@ var SearchController = Class('SearchController')({
           return next(err);
         }
 
-        res.json({voices : result});
+        res.json({people : result});
       });
     },
 
@@ -137,7 +137,7 @@ var SearchController = Class('SearchController')({
           return next(err);
         }
 
-        res.json({voices : result});
+        res.json({organizations : result});
       });
     },
 
