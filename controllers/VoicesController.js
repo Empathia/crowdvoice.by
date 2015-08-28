@@ -592,7 +592,64 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         });
 
       });
+    },
+
+    addContributor: function (req, res, next) {
+      /*
+       * req.body = {
+       *   personId: hashids.encode,
+       *   isAnonymous: Boolean
+       * }
+       */
+
+      VoiceCollaborator.find({
+        voiceId: hashids.decode(req.activeVoice.id)[0],
+        collaboratorId: hashids.decode(req.body.personId)[0]
+      }, function (err, result) {
+        if (err) { return next(err); }
+
+        if (result.length > 0) {
+          return res.json({ status: 'already collaborator' });
+        }
+
+        var record = new VoiceCollaborator({
+          voiceId: hashids.decode(req.activeVoice.id)[0],
+          collaboratorId: req.body.personId,
+          isAnonymous: req.body.isAnonymous || false
+        });
+        record.save(function (err) {
+          if (err) { return next(err); }
+
+          res.json({ status: 'ok' });
+        });
+      });
+    },
+
+    removeContributor: function (req, res, next) {
+      /*
+       * req.body = {
+       *   personId: hashids.encode
+       * }
+       */
+
+      VoiceCollaborator.find({
+        voiceId: hashids.decode(req.activeVoice.id)[0],
+        collaboratorId: hashids.decode(req.body.personId)[0]
+      }, function (err, result) {
+        if (err) { return next(err); }
+
+        if (result.length <= 0) {
+          return res.json({ status: 'not collaborator' });
+        } else {
+          result[0].destroy(function (err) {
+            if (err) { return next(err); }
+
+            res.json({ status: 'ok' });
+          })
+        }
+      });
     }
+
   }
 });
 
