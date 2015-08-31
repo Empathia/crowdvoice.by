@@ -2,36 +2,34 @@ var ImageUploader = require(__dirname + '/../lib/image_uploader.js');
 var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
 
   // Source services:
-  SOURCE_SERVICE_RAW:     "raw",
-  SOURCE_SERVICE_LINK:    "link",
-  SOURCE_SERVICE_VIMEO:   "vimeo",
-  SOURCE_SERVICE_YOUTUBE: "youtube",
-  SOURCE_SERVICE_YFROG:   "yfrog",
-  SOURCE_SERVICE_TWITPIC: "twitpic",
-  SOURCE_SERVICE_FLICKR:  "flickr",
+  SOURCE_SERVICE_RAW:     'raw',
+  SOURCE_SERVICE_LINK:    'link',
+  SOURCE_SERVICE_VIMEO:   'vimeo',
+  SOURCE_SERVICE_YOUTUBE: 'youtube',
+  SOURCE_SERVICE_YFROG:   'yfrog',
+  SOURCE_SERVICE_TWITPIC: 'twitpic',
+  SOURCE_SERVICE_FLICKR:  'flickr',
+  SOURCE_SERVICE_LOCAL:   'local',
 
   // Source types:
-  SOURCE_TYPE_IMAGE:      "image",
-  SOURCE_TYPE_VIDEO:      "video",
-  SOURCE_TYPE_LINK:       "link",
-  SOURCE_TYPE_TEXT:       "text",
+  SOURCE_TYPE_IMAGE:      'image',
+  SOURCE_TYPE_VIDEO:      'video',
+  SOURCE_TYPE_LINK:       'link',
+  SOURCE_TYPE_TEXT:       'text',
 
   validations : {
     ownerId       : ['required'],
     voiceId       : ['required'],
     sourceType    : ['required'],
     sourceUrl     : [
-      'required',
+      'exists',
       function (input) {
-        return input.sourceType !== Post.SOURCE_TYPE_TEXT;
+        if (input.sourceType !== Post.SOURCE_TYPE_TEXT) {
+          throw new Checkit.FieldError('sourceService is required unless sourceType === "text"');
+        }
       }
     ],
-    sourceService : [
-      'required',
-      function (input) {
-        return input.sourceType !== Post.SOURCE_TYPE_TEXT;
-      }
-    ],
+    sourceService : ['required'],
     publishedAt   : ['required']
   },
 

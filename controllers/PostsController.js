@@ -479,9 +479,9 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           ownerId: response.currentPerson.id,
           voiceId: response.voice.id,
           approved: approved,
-          sourceType: Post.SOURCE_TYPE_TEXT, // required
+          sourceType: Post.SOURCE_TYPE_TEXT,
           sourceUrl: null, // required if sourceType !== Post.SOURCE_TYPE_TEXT
-          sourceService: null // required if sourceType !== Post.SOURCE_TYPE_TEXT
+          sourceService: Post.SOURCE_SERVICE_LOCAL
         });
 
         post.save(function (err) {
