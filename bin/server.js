@@ -123,6 +123,45 @@ io.on('connection', function(socket) {
     });
   });
 
+  socket.on('getUnreadMessagesCount', function (data) {
+    if (!socket.request.session.currentPerson) {
+      return;
+    }
+
+    var currentPerson = socket.request.session.currentPerson;
+    var counter = 0;
+
+    console.log('!!!!!!!!!!!', currentPerson);
+
+    // loop through message threads where receiver = currentPerson
+      // get all messages where created_at is newer than thread's last_seen_receiver
+
+    MessageThread.find({
+      receiver_entity_id: socket.request.session.currentPerson.id
+    }, function (err, threads) {
+      // TODO: handle err
+
+      async.each(threads, function (thread, next) {
+        Message.find({
+          thread_id: thread.id,
+          type: 'message' // perhaps this should not be here
+        }, function (err, messages) {
+          // TODO: handle err
+
+          var unseenMessages = messages.filter(function (msg) {
+            return msg.createdAt > thread.lastSeenReceiver;
+          });
+
+          counter += unseenMessages.length;
+        });
+      }, function (err) {
+        // TODO: handle err
+
+        socket.emit('unreadMessagesCount', counter);
+      });
+    })
+  });
+
   socket.on('getNotifications', function(data) {
     if (!socket.request.session.currentPerson) {
       return;
