@@ -578,7 +578,6 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           return res.json({ 'status' : 'taken' });
         }
 
-        console.log('voice', req.activeVoice);
         Slug.find(['url = ? AND voice_id != ?', [value, req.activeVoice.id]], function(err, result) {
           if (err) {
             return next(err);
@@ -592,7 +591,32 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         });
 
       });
+    },
+
+    archiveVoice: function (req, res, next) {
+      ACL.isAllowed('archiveVoice', 'voices', req.role, {
+        currentPersonId: req.currentPerson.id,
+        voiceId: req.activeVoice.id
+      }, function (err, isAllowed) {
+        if (err) { return next(err); }
+
+        if (!isAllowed) {
+          return next(new ForbiddenError('Unauthorized.'));
+        }
+
+        var voice = new Voice(req.activeVoice);
+        voice.id = hashids.decode(voice.id)[0];
+
+        voice.status = Voice.STATUS_ARCHIVED;
+
+        voice.save(function (err) {
+          if (err) { return next(err); }
+
+          res.json({ status: 'archived' });
+        });
+      });
     }
+
   }
 });
 
