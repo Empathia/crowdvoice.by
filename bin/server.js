@@ -131,13 +131,11 @@ io.on('connection', function(socket) {
     var currentPerson = socket.request.session.currentPerson;
     var counter = 0;
 
-    console.log('!!!!!!!!!!!', currentPerson);
-
     // loop through message threads where receiver = currentPerson
       // get all messages where created_at is newer than thread's last_seen_receiver
 
     MessageThread.find({
-      receiver_entity_id: socket.request.session.currentPerson.id
+      receiver_entity_id: currentPerson.id
     }, function (err, threads) {
       // TODO: handle err
 
