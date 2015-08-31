@@ -14,14 +14,24 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
   SOURCE_TYPE_IMAGE:      "image",
   SOURCE_TYPE_VIDEO:      "video",
   SOURCE_TYPE_LINK:       "link",
-  SOURCE_TYPE_VIDEO:      "text",
+  SOURCE_TYPE_TEXT:       "text",
 
   validations : {
     ownerId       : ['required'],
     voiceId       : ['required'],
     sourceType    : ['required'],
-    sourceUrl     : ['required'],
-    sourceService : ['required'],
+    sourceUrl     : [
+      'required',
+      function (input) {
+        return input.sourceType !== Post.SOURCE_TYPE_TEXT;
+      }
+    ],
+    sourceService : [
+      'required',
+      function (input) {
+        return input.sourceType !== Post.SOURCE_TYPE_TEXT;
+      }
+    ],
     publishedAt   : ['required']
   },
 
