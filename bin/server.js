@@ -135,25 +135,36 @@ io.on('connection', function(socket) {
       // get all messages where created_at is newer than thread's last_seen_receiver
 
     MessageThread.find({
-      receiver_entity_id: currentPerson.id
+      receiver_entity_id: hashids.decode(currentPerson.id)[0]
     }, function (err, threads) {
       // TODO: handle err
+      if (err) {
+        return console.log(err);
+      }
 
       async.each(threads, function (thread, next) {
         Message.find({
           thread_id: thread.id,
           type: 'message' // perhaps this should not be here
         }, function (err, messages) {
-          // TODO: handle err
+          if (err) {
+            return console.log(err);
+          }
 
           var unseenMessages = messages.filter(function (msg) {
-            return msg.createdAt > thread.lastSeenReceiver;
+            if (thread.lastSeenReceiver === null) {
+              return true;
+            }
+            return moment(msg.createdAt).format('X') > moment(thread.lastSeenReceiver).format('X');
           });
 
           counter += unseenMessages.length;
+          next();
         });
       }, function (err) {
-        // TODO: handle err
+        if (err) {
+          return console.log(err);
+        }
 
         socket.emit('unreadMessagesCount', counter);
       });
