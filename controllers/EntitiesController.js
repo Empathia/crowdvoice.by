@@ -1,6 +1,5 @@
 var BlackListFilter = require(__dirname + '/BlackListFilter');
 var VoicesPresenter = require(path.join(process.cwd(), '/presenters/VoicesPresenter.js'));
-var feed = require(__dirname + '/../lib/feedInject.js');
 
 var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
@@ -134,7 +133,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
               entity.uploadImage('image', req.files.image.path, function (err) {
                 if (err) { return done(err); }
 
-                feed.entityUpdateAvatar(req, done);
+                FeedInjector().inject(hashids.decode(req.currentPerson.id)[0], 'item entityUpdatesAvatar', entity, done);
               });
             },
             function (done) {
@@ -142,7 +141,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
               entity.uploadImage('background', req.files.background.path, function (err) {
                 if (err) { return done(err); }
 
-                feed.entityUpdateBackground(req, done);
+                FeedInjector().inject(hashids.decode(req.currentPerson.id)[0], 'item entityUpdatesBackground', entity, done);
               });
             },
             function (done) {
@@ -214,8 +213,8 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
     },
 
     follow : function follow(req, res, next) {
-      var entity = req.entity;
-      var follower = req.currentPerson;
+      var entity = new Entity(req.entity);
+      var follower = new Entity(req.currentPerson);
       follower.id = hashids.decode(follower.id)[0];
       entity.id = hashids.decode(entity.id)[0];
 
@@ -250,7 +249,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
           follower.followEntity(entity, function (err, result) {
             if (err) { return next(err); }
 
-            feed.entityFollowsEntity(req, result, function (err) {
+            FeedInjector().inject(follower.id, 'who entityFollowsEntity', entity, function (err) {
               if (err) { return next(err); }
 
               res.format({
