@@ -1,5 +1,4 @@
 var Scrapper = require(process.cwd() + '/lib/cvscrapper');
-var feed = require(__dirname + '/../lib/feedInject.js');
 var sanitizer = require('sanitize-html');
 
 var PostsController = Class('PostsController').includes(BlackListFilter)({
@@ -161,19 +160,24 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
               post.save(function(err, resave) {
                 if (err) { return nextPost(err); }
 
-                feed.voiceNewPosts(req, function (err) {
+                Voice.findById(post.voiceId, function (err, result) {
                   if (err) { return nextPost(err); }
 
-                  if (item.images) {
-                    item.images.forEach(function(image) {
-                      fs.unlinkSync(process.cwd() + '/public' + image);
-                      logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image);
-                    });
-                  }
+                  FeedInjector().inject(voice.ownerId, 'item voiceNewPosts', voice, function (err) {
+                    if (err) { return nextPost(err); }
 
-                  results.push(post);
+                    if (item.images) {
+                      item.images.forEach(function(image) {
+                        // NOTE: this is sync, not async. maybe not good.
+                        fs.unlinkSync(process.cwd() + '/public' + image);
+                        logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image);
+                      });
+                    }
 
-                  return nextPost();
+                    results.push(post);
+
+                    return nextPost();
+                  });
                 });
               });
             });
