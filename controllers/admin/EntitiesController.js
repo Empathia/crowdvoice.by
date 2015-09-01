@@ -43,7 +43,7 @@ Admin.EntitiesController = Class(Admin, 'EntitiesController')({
             return next(err);
           }
 
-          EntitiesPresenter.build(result, function(err, entities) {
+          EntitiesPresenter.build(result, req.currentPerson, function(err, entities) {
             if (err) {
               return next(err);
             }
@@ -148,15 +148,54 @@ Admin.EntitiesController = Class(Admin, 'EntitiesController')({
               return res.render('admin/' + inflection.pluralize(req.entityType) + '/edit.html');
             }
 
+            req.flash('success', 'User updated');
             res.redirect('/admin/' + inflection.pluralize(req.entityType));
           });
         });
       });
     },
 
-    destroy : function destroy(req, res) {
-      return next(new NotFoundError());
+    destroy : function destroy(req, res, next) {
+      ACL.isAllowed('destroy', 'admin.' + inflection.pluralize(req.entityType), req.role, {}, function(err, isAllowed) {
+        if (err) {
+          return next(err);
+        }
+
+        if (!isAllowed) {
+          return next(new ForbiddenError());
+        }
+
+        Entity.find({ id : hashids.decode(req.params.entityId)[0] }, function(err, result) {
+          if (err) {
+            return next(err);
+          }
+
+          if (result.length === 0) {
+            return next(new NotFoundError());
+          }
+
+          var entity = new Entity(result[0]);
+
+          console.log(entity);
+
+          entity.markAsDeleted(function(err, result) {
+            if (err) {
+              return next(err);
+            }
+
+            req.flash('success', 'User deleted.');
+            res.redirect('/admin/' + inflection.pluralize(req.entityType));
+          });
+
+
+        });
+
+      });
     }
+
+    //destroy : function destroy(req, res) {
+    //  return next(new NotFoundError());
+    //}
   }
 });
 
