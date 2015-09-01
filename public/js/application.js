@@ -45,6 +45,7 @@ require('./widgets/notifications/notification-changed-background');
 require('./widgets/notifications/notification-changed-description');
 require('./widgets/notifications/notification-changed-title');
 require('./widgets/notifications/notification-read-more');
+require('./widgets/notifications/notification-flash');
 require('./widgets/notifications/-notification-message');
 require('./widgets/notifications/-notification-invite');
 require('./widgets/notifications/-notification-request');
