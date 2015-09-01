@@ -475,7 +475,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
         var post = new Post({
           title: req.body.title,
-          description: sanitizer(req.body.content), // TODO: what kind of output is this?
+          description: sanitizer(req.body.content),
           ownerId: response.currentPerson.id,
           voiceId: response.voice.id,
           approved: approved,
@@ -487,7 +487,9 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         post.save(function (err) {
           if (err) { return next(err); }
 
-          return res.json({ status: 'saved' });
+          PostsPresenter.build([post], function (err, presentedPost) {
+            return res.json(presentedPost[0]);
+          });
         });
       });
     }
