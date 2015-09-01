@@ -148,22 +148,59 @@ io.on('connection', function(socket) {
             return console.log(err);
           }
 
-          var unseenMessages = messages.filter(function (msg) {
-            // we're dealing with the sender
-            if (thread.senderPersonId === currentPerson.id) {
-              if (thread.lastSeenSender === null) {
-                return true;
-              }
-              return moment(msg.createdAt).format('X') > moment(thread.lastSeenSender).format('X');
-            // we're dealing with the receiver
-            } else if (thread.receiverEntityId === currentPerson.id) {
-              if (thread.lastSeenReceiver === null) {
-                return true;
-              }
-              return moment(msg.createdAt).format('X') > moment(thread.lastSeenReceiver).format('X');
-            } else {
-              return false;
+          var isSender = false,
+            isReceiver = false;
+
+          // figure out if we should deal with the thread receiver or the sender
+          if (thread.senderPersonId === currentPerson.id) {
+            isSender = true;
+          } else if (thread.receiverEntityId === currentPerson.id) {
+            isReceiver = true;
+          }
+
+          // don't count hidden threads
+          if (isSender) {
+            if (thread.isHiddenForSender) {
+              return next();
             }
+          } else if (isReceiver) {
+            if (thread.isHiddenForReceiver) {
+              return next();
+            }
+          }
+
+          var isUnread;
+
+          var unseenMessages = messages.filter(function (msg) {
+            isUnread = false;
+
+            // we're dealing with the sender
+            if (isSender) {
+              // don't count hidden messages
+              if (msg.hiddenForSender) {
+                isUnread = false;
+              }
+              // never seen thread thus unread
+              if (thread.lastSeenSender === null) {
+                isUnread = true;
+              }
+              isUnread = moment(msg.createdAt).format('X') > moment(thread.lastSeenSender).format('X');
+            // we're dealing with the receiver
+            } else if (isReceiver) {
+              // don't count hidden messages
+              if (msg.hiddenForReceiver) {
+                isUnread = false;
+              }
+              // never seen thread thus unread
+              if (thread.lastSeenReceiver === null) {
+                isUnread = true;
+              }
+              isUnread = moment(msg.createdAt).format('X') > moment(thread.lastSeenReceiver).format('X');
+            } else {
+              isUnread = false;
+            }
+
+            return isUnread;
           });
 
           counter += unseenMessages.length;

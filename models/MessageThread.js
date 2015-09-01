@@ -9,7 +9,7 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
             if (resp.length === 0) { throw new Checkit.FieldError('This senderPersonId doesn\'t exists!.'); }
           });
         },
-        message: 'This senderPersonId doesn\'t exists!.'
+        message: 'This senderPersonId doesn\'t exist!.'
       },
       {
         rule: function(val) {
@@ -259,6 +259,16 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
           logger.log('Thread ' + thread.id + ' updated');
           logger.log(thread);
         });
+      });
+
+      this.bind('afterCreateMessage', function (data) {
+        thread.lastSeenSender = new Date();
+        thread.save(function (err) {
+          if (err) {
+            logger.error(err);
+            logger.error(err.stat);
+          }
+        })
       });
 
       this.bind('afterDestroyMessage', function(data) {
