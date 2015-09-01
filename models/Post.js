@@ -22,11 +22,15 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
     voiceId       : ['required'],
     sourceType    : ['required'],
     sourceUrl     : [
-      'exists',
-      function (input) {
-        if (input.sourceType !== Post.SOURCE_TYPE_TEXT) {
-          throw new Checkit.FieldError('sourceService is required unless sourceType === "text"');
-        }
+      {
+        rule: function (val) {
+          if (this.target.sourceType !== Post.SOURCE_TYPE_TEXT) {
+            if (!val) {
+              throw new Checkit.FieldError('sourceService is required unless sourceType === "text"');
+            }
+          }
+        },
+        message: 'sourceService is required unless sourceType === "text"'
       }
     ],
     sourceService : ['required'],
