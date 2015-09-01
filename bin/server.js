@@ -206,7 +206,6 @@ io.on('connection', function(socket) {
 
             return isUnread;
           });
-          console.log(unseenMessages)
 
           counter += unseenMessages.length;
           next();
