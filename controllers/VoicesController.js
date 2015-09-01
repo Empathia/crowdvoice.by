@@ -1,6 +1,5 @@
 var BlackListFilter = require(__dirname + '/BlackListFilter');
 var EntitiesPresenter = require(path.join(process.cwd(), '/presenters/EntitiesPresenter.js'));
-var feed = require(__dirname + '/../lib/feedInject.js');
 
 var VoicesController = Class('VoicesController').includes(BlackListFilter)({
   prototype : {
@@ -322,7 +321,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
               return next(err);
             }
 
-            feed.voiceCreated(req, voice, function (err) {
+            FeedInjector().inject(hashids.decode(req.currentPerson.id)[0], 'who voiceIsPublished', voice, function (err) {
               if (err) { return next(err); }
 
               res.json(voices[0]);
@@ -350,6 +349,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         }
 
         var voice = req.activeVoice;
+        // TODO: no ID being decoded, this probably won't work
 
         var oldTitle = voice.title;
         var oldDescription = voice.description;
@@ -408,13 +408,17 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           });
         }, function(done) {
           if (req.body.title !== oldTitle) {
-            feed.voiceUpdateTitle(req, done);
+            var voiceModel = new Voice(req.activeVoice);
+            voiceModel.id = hashids.decode(voiceModel.id)[0];
+            FeedInjector(hashids.decode(req.currentPerson.id)[0], 'item voiceNewTitle', voiceModel, done)
           } else {
             done();
           }
         }, function(done) {
           if (req.body.description !== oldDescription) {
-            feed.voiceUpdateDescription(req, done);
+            var voiceModel = new Voice(req.activeVoice);
+            voiceModel.id = hashids.decode(voiceModel.id)[0];
+            FeedInjector(hashids.decode(req.currentPerson.id)[0], 'item voiceNewDescription', voiceModel, done)
           } else {
             done();
           }
@@ -423,7 +427,10 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
             return next(err);
           }
 
-          feed.voiceCreated(req, voice, function (err) {
+          var voiceModel = new Voice(req.activeVoice);
+          voiceModel.id = hashids.decode(voiceModel.id)[0];
+
+          FeedInjector().inject(hashids.decode(req.currentPerson.id)[0], 'who voiceIsPublished', voiceModel, function (err) {
             if (err) { return next(err); }
 
             req.flash('success', 'Voice has been updated.');
@@ -506,13 +513,15 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
     },
 
     follow : function follow(req, res, next) {
-      var follower = req.currentPerson;
+      var follower = new Entity(req.currentPerson);
       follower.id = hashids.decode(follower.id)[0];
 
       // we don't want to allow the user to follow if he is anonymous
       if (follower.isAnonymous) {
         return next(new ForbiddenError('Anonymous users can\'t follow'));
       }
+
+      console.log('!!!!!!!!!!!!!!!!!!!', req.activeVoice)
 
       // check if user is already following, if yes unfollow
       VoiceFollower.find({
@@ -541,7 +550,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           follower.followVoice(req.activeVoice, function (err, result) {
             if (err) { return next(err); }
 
-            feed.entityFollowsVoice(req, result, function (err) {
+            FeedInjector().inject(follower.id, 'who entityFollowsVoice', result, function (err) {
               if (err) { return next(err); }
 
               res.format({
