@@ -261,6 +261,23 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
         });
       },
 
+      /* Mark an entity as deleted
+       * @method: markAsDeleted
+       * @params:
+       *  + entity
+       *  + callback
+       */
+
+      markAsDeleted : function markAsDeleted(callback) {
+        if (!this.id) {
+          return callback(new Error('Invalid ID'));
+        }
+
+        this.deleted = true;
+
+        this.save(callback);
+      },
+
       /* Starts following an entity
        * @method: followEntity
        * @params:

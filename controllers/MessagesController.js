@@ -136,8 +136,6 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
             return next(new ForbiddenError('Unauthorized.'))
           }
 
-          console.log('!!!!!!!!!!!', req.body);
-
           async.series([
             // accept
             function (done) {
@@ -264,8 +262,8 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
                 next(err); return;
               }
 
-              if (thread.length === 0 ) {
-                next(new NotFoundError('MessageThread Not Found')); return;
+              if (thread.length === 0) {
+                return next(new NotFoundError('MessageThread Not Found'));
               }
 
               thread =  new MessageThread(thread[0]);
