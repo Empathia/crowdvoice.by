@@ -128,34 +128,42 @@ io.on('connection', function(socket) {
       return;
     }
 
-    var currentPerson = socket.request.session.currentPerson;
+    var currentPerson = new Entity(socket.request.session.currentPerson);
+    currentPerson.id = hashids.decode(currentPerson.id)[0];
     var counter = 0;
 
     // loop through message threads where receiver = currentPerson
       // get all messages where created_at is newer than thread's last_seen_receiver
 
-    MessageThread.find({
-      receiver_entity_id: hashids.decode(currentPerson.id)[0]
-    }, function (err, threads) {
-      // TODO: handle err
+    MessageThread.find(['receiver_entity_id = ? OR sender_person_id = ?', [currentPerson.id, currentPerson.id]], function (err, threads) {
       if (err) {
         return console.log(err);
       }
 
       async.each(threads, function (thread, next) {
         Message.find({
-          thread_id: thread.id,
-          type: 'message' // perhaps this should not be here
+          thread_id: thread.id
         }, function (err, messages) {
           if (err) {
             return console.log(err);
           }
 
           var unseenMessages = messages.filter(function (msg) {
-            if (thread.lastSeenReceiver === null) {
-              return true;
+            // we're dealing with the sender
+            if (thread.senderPersonId === currentPerson.id) {
+              if (thread.lastSeenSender === null) {
+                return true;
+              }
+              return moment(msg.createdAt).format('X') > moment(thread.lastSeenSender).format('X');
+            // we're dealing with the receiver
+            } else if (thread.receiverEntityId === currentPerson.id) {
+              if (thread.lastSeenReceiver === null) {
+                return true;
+              }
+              return moment(msg.createdAt).format('X') > moment(thread.lastSeenReceiver).format('X');
+            } else {
+              return false;
             }
-            return moment(msg.createdAt).format('X') > moment(thread.lastSeenReceiver).format('X');
           });
 
           counter += unseenMessages.length;

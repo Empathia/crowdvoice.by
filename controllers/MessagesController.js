@@ -136,8 +136,6 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
             return next(new ForbiddenError('Unauthorized.'))
           }
 
-          console.log('!!!!!!!!!!!', req.body);
-
           async.series([
             // accept
             function (done) {
