@@ -213,10 +213,10 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
     },
 
     follow : function follow(req, res, next) {
-      var entity = new Entity(req.entity);
-      var follower = new Entity(req.currentPerson);
-      follower.id = hashids.decode(follower.id)[0];
+      var entity = new Entity(req.entity),
+        follower = new Entity(req.currentPerson);
       entity.id = hashids.decode(entity.id)[0];
+      follower.id = hashids.decode(follower.id)[0];
 
       // we don't want to allow the user to follow if he is anonymous
       if (follower.isAnonymous) {

@@ -611,7 +611,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
        */
 
       VoiceCollaborator.find({
-        voiceId: hashids.decode(req.activeVoice.id)[0],
+        voiceId: req.activeVoice.id,
         collaboratorId: hashids.decode(req.body.personId)[0]
       }, function (err, result) {
         if (err) { return next(err); }
@@ -641,7 +641,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
        */
 
       VoiceCollaborator.find({
-        voiceId: hashids.decode(req.activeVoice.id)[0],
+        voiceId: req.activeVoice.id,
         collaboratorId: hashids.decode(req.body.personId)[0]
       }, function (err, result) {
         if (err) { return next(err); }
