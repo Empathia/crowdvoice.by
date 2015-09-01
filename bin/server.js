@@ -171,37 +171,42 @@ io.on('connection', function(socket) {
 
           var isUnread;
 
-          var unseenMessages = messages.filter(function (msg) {
+          var messagesNotByUser = messages.filter(function (msg) {
+            return msg.receiverEntityId === currentPerson.id;
+          });
+
+          var unseenMessages = messagesNotByUser.filter(function (msg) {
             isUnread = false;
 
             // we're dealing with the sender
             if (isSender) {
-              // don't count hidden messages
-              if (msg.hiddenForSender) {
-                isUnread = false;
-              }
               // never seen thread thus unread
               if (thread.lastSeenSender === null) {
                 isUnread = true;
               }
               isUnread = moment(msg.createdAt).format('X') > moment(thread.lastSeenSender).format('X');
-            // we're dealing with the receiver
-            } else if (isReceiver) {
               // don't count hidden messages
-              if (msg.hiddenForReceiver) {
+              if (msg.hiddenForSender) {
                 isUnread = false;
               }
+            // we're dealing with the receiver
+            } else if (isReceiver) {
               // never seen thread thus unread
               if (thread.lastSeenReceiver === null) {
                 isUnread = true;
               }
               isUnread = moment(msg.createdAt).format('X') > moment(thread.lastSeenReceiver).format('X');
+              // don't count hidden messages
+              if (msg.hiddenForReceiver) {
+                isUnread = false;
+              }
             } else {
               isUnread = false;
             }
 
             return isUnread;
           });
+          console.log(unseenMessages)
 
           counter += unseenMessages.length;
           next();
