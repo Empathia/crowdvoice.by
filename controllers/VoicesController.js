@@ -638,7 +638,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
               Entity.findById(hashids.decode(req.body.personId)[0], function (err, result) {
                 if (err) { return next(err); }
 
-                invited = result;
+                invited = result[0];
 
                 return next();
               })
