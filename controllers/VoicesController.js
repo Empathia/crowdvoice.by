@@ -593,33 +593,73 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
       });
     },
 
-    addContributor: function (req, res, next) {
+    inviteToContribute: function (req, res, next) {
       /*
        * req.body = {
        *   personId: hashids.encode,
-       *   isAnonymous: Boolean
+       *   message: String,
        * }
        */
 
-      VoiceCollaborator.find({
-        voiceId: req.activeVoice.id,
-        collaboratorId: hashids.decode(req.body.personId)[0]
-      }, function (err, result) {
+      ACL.isAllowed('inviteToContribute', 'voices', req.role, {
+        currentPerson: req.currentPerson,
+        voiceId: req.activeVoice.id
+      }, function (err, response) {
         if (err) { return next(err); }
 
-        if (result.length > 0) {
-          return res.json({ status: 'already collaborator' });
+        if (!response.isAllowed) {
+          return next(new ForbiddenError('Unauthorized.'));
         }
 
-        var record = new VoiceCollaborator({
-          voiceId: hashids.decode(req.activeVoice.id)[0],
-          collaboratorId: req.body.personId,
-          isAnonymous: req.body.isAnonymous || false
-        });
-        record.save(function (err) {
+        var thread,
+          invited;
+
+        async.series([
+          // get entity of invited
+          function (next) {
+            Entity.findById(hashids.decode(req.body.personId)[0], function (err, result) {
+              if (err) { return next(err); }
+
+              invited = result;
+
+              return next();
+            })
+          },
+
+          // get a thread
+          function (next) {
+            MessageThread.findOrCreate({
+              senderPerson: response.currentPerson,
+              senderEntity: response.currentPerson,
+              receiverEntity: invited
+            }, function (err, result) {
+              if (err) { return next(err); }
+
+              thread = result;
+
+              return next();
+            });
+          },
+
+          // make invitation message
+          function (next) {
+            thread.createMessage({
+              type: 'invitation_voice',
+              senderPersonId: response.currentPerson.id,
+              senderEntityId: response.currentPerson.id,
+              receiverEntityId: invited.id,
+              voiceId: response.voice.id,
+              message: req.body.message
+            }, function (err, result) {
+              if (err) { return next(err); }
+
+              next();
+            });
+          },
+        ], function (err) { // async.series
           if (err) { return next(err); }
 
-          res.json({ status: 'ok' });
+          res.json({ status: 'invited' });
         });
       });
     },
