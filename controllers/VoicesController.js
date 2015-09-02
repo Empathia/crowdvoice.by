@@ -611,55 +611,66 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           return next(new ForbiddenError('Unauthorized.'));
         }
 
-        var thread,
-          invited;
-
-        async.series([
-          // get entity of invited
-          function (next) {
-            Entity.findById(hashids.decode(req.body.personId)[0], function (err, result) {
-              if (err) { return next(err); }
-
-              invited = result;
-
-              return next();
-            })
-          },
-
-          // get a thread
-          function (next) {
-            MessageThread.findOrCreate({
-              senderPerson: response.currentPerson,
-              senderEntity: response.currentPerson,
-              receiverEntity: invited
-            }, function (err, result) {
-              if (err) { return next(err); }
-
-              thread = result;
-
-              return next();
-            });
-          },
-
-          // make invitation message
-          function (next) {
-            thread.createMessage({
-              type: 'invitation_voice',
-              senderPersonId: response.currentPerson.id,
-              senderEntityId: response.currentPerson.id,
-              receiverEntityId: invited.id,
-              voiceId: response.voice.id,
-              message: req.body.message
-            }, function (err, result) {
-              if (err) { return next(err); }
-
-              next();
-            });
-          },
-        ], function (err) { // async.series
+        VoiceCollaborator.find({
+          voice_id: req.activeVoice.id,
+          collaborator_id: hashids.decode(req.body.personId)[0]
+        }, function (err, result) {
           if (err) { return next(err); }
 
-          res.json({ status: 'invited' });
+          if (result.length > 0) {
+            return res.json({ status: 'already collaborator' });
+          }
+
+          var thread,
+            invited;
+
+          async.series([
+            // get entity of invited
+            function (next) {
+              Entity.findById(hashids.decode(req.body.personId)[0], function (err, result) {
+                if (err) { return next(err); }
+
+                invited = result;
+
+                return next();
+              })
+            },
+
+            // get a thread
+            function (next) {
+              MessageThread.findOrCreate({
+                senderPerson: response.currentPerson,
+                senderEntity: response.currentPerson,
+                receiverEntity: invited
+              }, function (err, result) {
+                if (err) { return next(err); }
+
+                thread = result;
+
+                return next();
+              });
+            },
+
+            // make invitation message
+            function (next) {
+              thread.createMessage({
+                type: 'invitation_voice',
+                senderPersonId: response.currentPerson.id,
+                senderEntityId: response.currentPerson.id,
+                receiverEntityId: invited.id,
+                voiceId: response.voice.id,
+                message: req.body.message
+              }, function (err, result) {
+                if (err) { return next(err); }
+
+                next();
+              });
+            },
+          ], function (err) { // async.series
+            if (err) { return next(err); }
+
+            res.json({ status: 'invited' });
+          });
         });
       });
     },
