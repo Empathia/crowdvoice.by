@@ -246,20 +246,24 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
           });
         } else {
           // follow
-          follower.followEntity(entity, function (err, result) {
+          follower.followEntity(entity, function (err, entityFollowerRecordId) {
             if (err) { return next(err); }
 
-            FeedInjector().inject(follower.id, 'who entityFollowsEntity', entity, function (err) {
+            EntityFollower.findById(entityFollowerRecordId[0], function (err, entityFollower) {
               if (err) { return next(err); }
 
-              res.format({
-                html: function() {
-                  req.flash('success', 'Followed successfully.');
-                  res.redirect('/' + entity.profileName);
-                },
-                json: function() {
-                  res.json({ status: 'followed' });
-                }
+              FeedInjector().inject(follower.id, 'who entityFollowsEntity', entityFollower[0], function (err) {
+                if (err) { return next(err); }
+
+                res.format({
+                  html: function() {
+                    req.flash('success', 'Followed successfully.');
+                    res.redirect('/' + entity.profileName);
+                  },
+                  json: function() {
+                    res.json({ status: 'followed' });
+                  }
+                });
               });
             });
           });

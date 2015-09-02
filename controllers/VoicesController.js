@@ -519,8 +519,6 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         return next(new ForbiddenError('Anonymous users can\'t follow'));
       }
 
-      console.log('!!!!!!!!!!!!!!!!!!!', req.activeVoice)
-
       // check if user is already following, if yes unfollow
       VoiceFollower.find({
         entity_id: follower.id,
@@ -545,20 +543,24 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           });
         } else {
           // follow
-          follower.followVoice(req.activeVoice, function (err, result) {
+          follower.followVoice(req.activeVoice, function (err, voiceFollowerRecordId) {
             if (err) { return next(err); }
 
-            FeedInjector().inject(follower.id, 'who entityFollowsVoice', result, function (err) {
+            VoiceFollower.findById(voiceFollowerRecordId[0], function (err, voiceFollower) {
               if (err) { return next(err); }
 
-              res.format({
-                html: function () {
-                  req.flash('success', 'Voice has been followed.');
-                  res.redirect('/' + req.params.profileName + '/' + req.params.voice_slug)
-                },
-                json: function () {
-                  res.json({ status: 'followed' });
-                }
+              FeedInjector().inject(follower.id, 'who entityFollowsVoice', voiceFollower[0], function (err) {
+                if (err) { return next(err); }
+
+                res.format({
+                  html: function () {
+                    req.flash('success', 'Voice has been followed.');
+                    res.redirect('/' + req.params.profileName + '/' + req.params.voice_slug)
+                  },
+                  json: function () {
+                    res.json({ status: 'followed' });
+                  }
+                });
               });
             });
           });
