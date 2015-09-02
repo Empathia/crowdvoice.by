@@ -123,6 +123,110 @@ io.on('connection', function(socket) {
     });
   });
 
+  socket.on('getUnreadMessagesCount', function (data) {
+    if (!socket.request.session.currentPerson) {
+      return;
+    }
+
+    var currentPerson = new Entity(socket.request.session.currentPerson);
+    currentPerson.id = hashids.decode(currentPerson.id)[0];
+    var counter = 0;
+
+    EntityOwner.find({ owner_id: currentPerson.id }, function (err, orgs) {
+      var ids = orgs.map(function (val) { return val.ownedId });
+      ids.push(currentPerson.id);
+
+      db('MessageThreads')
+        .whereIn('receiver_entity_id', ids)
+        .orWhereIn('sender_entity_id', ids)
+        .exec(function (err, result) {
+          if (err) {
+            return console.log(err);
+          }
+
+          var threads = Argon.Storage.Knex.processors[0](result);
+
+          async.each(threads, function (thread, next) {
+            var isThreadSender = false,
+              isThreadReceiver = false;
+
+            // figure out if we should deal with the thread receiver or the sender
+            if (thread.senderPersonId === currentPerson.id) {
+              isThreadSender = true;
+            } else if (thread.receiverEntityId === currentPerson.id) {
+              isThreadReceiver = true;
+            }
+
+            // don't count hidden threads
+            if (isThreadSender) {
+              if (thread.isHiddenForSender) {
+                return next();
+              }
+            } else if (isThreadReceiver) {
+              if (thread.isHiddenForReceiver) {
+                return next();
+              }
+            }
+
+            Message.find({
+              thread_id: thread.id
+            }, function (err, messages) {
+              if (err) {
+                return console.log(err);
+              }
+
+              var isUnread;
+
+              var messagesNotByUser = messages.filter(function (msg) {
+                return msg.receiverEntityId === currentPerson.id;
+              });
+
+              var unseenMessages = messagesNotByUser.filter(function (msg) {
+                isUnread = false;
+
+                // we're dealing with the sender
+                if (isThreadSender) {
+                  // never seen thread thus unread
+                  if (thread.lastSeenSender === null) {
+                    isUnread = true;
+                  }
+                  isUnread = moment(msg.createdAt).format('X') > moment(thread.lastSeenSender).format('X');
+                  // don't count hidden messages
+                  if (msg.hiddenForSender) {
+                    isUnread = false;
+                  }
+                // we're dealing with the receiver
+                } else if (isThreadReceiver) {
+                  // never seen thread thus unread
+                  if (thread.lastSeenReceiver === null) {
+                    isUnread = true;
+                  }
+                  isUnread = moment(msg.createdAt).format('X') > moment(thread.lastSeenReceiver).format('X');
+                  // don't count hidden messages
+                  if (msg.hiddenForReceiver) {
+                    isUnread = false;
+                  }
+                } else {
+                  isUnread = false;
+                }
+
+                return isUnread;
+              });
+
+              counter += unseenMessages.length;
+              next();
+            });
+          }, function (err) {
+            if (err) {
+              return console.log(err);
+            }
+
+            socket.emit('unreadMessagesCount', counter);
+          });
+        });
+    });
+  });
+
   socket.on('getNotifications', function(data) {
     if (!socket.request.session.currentPerson) {
       return;

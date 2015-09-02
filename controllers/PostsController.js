@@ -1,5 +1,6 @@
 var Scrapper = require(process.cwd() + '/lib/cvscrapper');
 var feed = require(__dirname + '/../lib/feedInject.js');
+var sanitizer = require('sanitize-html');
 
 var PostsController = Class('PostsController').includes(BlackListFilter)({
   prototype : {
@@ -441,7 +442,58 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
         unsavePost(hashids.decode(req.currentPerson.id)[0]);
       });
+    },
+
+    saveArticle: function (req, res, next) {
+      /*
+       * req.body = {
+       *   title: String,
+       *   content: String
+       * }
+       */
+
+      ACL.isAllowed('create', 'posts', req.role, {
+        currentPerson : req.currentPerson,
+        voiceSlug : req.params.voiceSlug,
+        profileName : req.params.profileName
+      }, function (err, response) {
+        if (err) { return next(err); }
+
+        if (!response.isAllowed) {
+          return next(new ForbiddenError('Unauthorized.'));
+        }
+
+        var approved = false;
+
+        if (req.role === 'Admin'
+          || response.currentPerson.id === response.voice.ownerId
+          || response.isVoiceCollaborator
+          || response.isOrganizationMember) {
+
+          approved = true;
+        }
+
+        var post = new Post({
+          title: req.body.title,
+          description: sanitizer(req.body.content),
+          ownerId: response.currentPerson.id,
+          voiceId: response.voice.id,
+          approved: approved,
+          sourceType: Post.SOURCE_TYPE_TEXT,
+          sourceUrl: null, // required if sourceType !== Post.SOURCE_TYPE_TEXT
+          sourceService: Post.SOURCE_SERVICE_LOCAL
+        });
+
+        post.save(function (err) {
+          if (err) { return next(err); }
+
+          PostsPresenter.build([post], function (err, presentedPost) {
+            return res.json(presentedPost[0]);
+          });
+        });
+      });
     }
+
   }
 });
 
