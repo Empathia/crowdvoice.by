@@ -474,8 +474,6 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           thread.createMessage({
             type : 'request_voice',
             senderPersonId : response.senderPerson.id,
-            senderEntityId : response.senderEntity.id,
-            receiverEntityId : response.receiverEntity.id,
             voiceId : response.voice.id,
             message : req.body.message
           }, function(err, result) {
@@ -602,33 +600,94 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
       });
     },
 
-    addContributor: function (req, res, next) {
+    inviteToContribute: function (req, res, next) {
       /*
        * req.body = {
        *   personId: hashids.encode,
-       *   isAnonymous: Boolean
+       *   message: String,
        * }
        */
 
-      VoiceCollaborator.find({
-        voiceId: req.activeVoice.id,
-        collaboratorId: hashids.decode(req.body.personId)[0]
-      }, function (err, result) {
+      ACL.isAllowed('inviteToContribute', 'voices', req.role, {
+        currentPerson: req.currentPerson,
+        voiceId: req.activeVoice.id
+      }, function (err, response) {
         if (err) { return next(err); }
 
-        if (result.length > 0) {
-          return res.json({ status: 'already collaborator' });
+        if (!response.isAllowed) {
+          return next(new ForbiddenError('Unauthorized.'));
         }
 
-        var record = new VoiceCollaborator({
-          voiceId: hashids.decode(req.activeVoice.id)[0],
-          collaboratorId: req.body.personId,
-          isAnonymous: req.body.isAnonymous || false
-        });
-        record.save(function (err) {
+        VoiceCollaborator.find({
+          voice_id: req.activeVoice.id,
+          collaborator_id: hashids.decode(req.body.personId)[0]
+        }, function (err, result) {
           if (err) { return next(err); }
 
-          res.json({ status: 'ok' });
+          if (result.length > 0) {
+            return res.json({ status: 'already collaborator' });
+          }
+
+          var thread,
+            invited,
+            invitationRequest;
+
+          async.series([
+            // get entity of invited
+            function (next) {
+              Entity.findById(hashids.decode(req.body.personId)[0], function (err, result) {
+                if (err) { return next(err); }
+
+                invited = result;
+
+                return next();
+              })
+            },
+
+            // get a thread
+            function (next) {
+              MessageThread.findOrCreate({
+                senderPerson: response.currentPerson,
+                senderEntity: response.currentPerson,
+                receiverEntity: invited
+              }, function (err, result) {
+                if (err) { return next(err); }
+
+                thread = result;
+
+                return next();
+              });
+            },
+
+            // make or find invitation request
+            function (next) {
+              invitationRequest = new InvitationRequest({
+                invitator_entity_id: response.currentPerson.id,
+                invited_entity_id: hashids.decode(req.body.personId)[0]
+              });
+
+              invitationRequest.save(next);
+            },
+
+            // make invitation message
+            function (next) {
+              thread.createMessage({
+                type: 'invitation_voice',
+                senderPersonId: response.currentPerson.id,
+                voiceId: response.voice.id,
+                invitationRequestId: invitationRequest.id,
+                message: req.body.message
+              }, function (err, result) {
+                if (err) { return next(err); }
+
+                next();
+              });
+            },
+          ], function (err) { // async.series
+            if (err) { return next(err); }
+
+            res.json({ status: 'invited' });
+          });
         });
       });
     },
@@ -640,21 +699,32 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
        * }
        */
 
-      VoiceCollaborator.find({
-        voiceId: req.activeVoice.id,
-        collaboratorId: hashids.decode(req.body.personId)[0]
-      }, function (err, result) {
+      ACL.isAllowed('removeContributor', 'voices', req.role, {
+        currentPerson: req.currentPerson,
+        voiceId: req.activeVoice.id
+      }, function (err, response) {
         if (err) { return next(err); }
 
-        if (result.length <= 0) {
-          return res.json({ status: 'not collaborator' });
-        } else {
-          result[0].destroy(function (err) {
-            if (err) { return next(err); }
-
-            res.json({ status: 'ok' });
-          })
+        if (!response.isAllowed) {
+          return next(new ForbiddenError('Unauthorized.'));
         }
+
+        VoiceCollaborator.find({
+          voiceId: req.activeVoice.id,
+          collaboratorId: hashids.decode(req.body.personId)[0]
+        }, function (err, result) {
+          if (err) { return next(err); }
+
+          if (result.length <= 0) {
+            return res.json({ status: 'not collaborator' });
+          } else {
+            result[0].destroy(function (err) {
+              if (err) { return next(err); }
+
+              res.json({ status: 'removed' });
+            })
+          }
+        });
       });
     },
 
