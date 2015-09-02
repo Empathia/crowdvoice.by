@@ -671,21 +671,32 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
        * }
        */
 
-      VoiceCollaborator.find({
-        voiceId: req.activeVoice.id,
-        collaboratorId: hashids.decode(req.body.personId)[0]
-      }, function (err, result) {
+      ACL.isAllowed('removeContributor', 'voices', req.role, {
+        currentPerson: req.currentPerson,
+        voiceId: req.activeVoice.id
+      }, function (err, response) {
         if (err) { return next(err); }
 
-        if (result.length <= 0) {
-          return res.json({ status: 'not collaborator' });
-        } else {
-          result[0].destroy(function (err) {
-            if (err) { return next(err); }
-
-            res.json({ status: 'ok' });
-          })
+        if (!response.isAllowed) {
+          return next(new ForbiddenError('Unauthorized.'));
         }
+
+        VoiceCollaborator.find({
+          voiceId: req.activeVoice.id,
+          collaboratorId: hashids.decode(req.body.personId)[0]
+        }, function (err, result) {
+          if (err) { return next(err); }
+
+          if (result.length <= 0) {
+            return res.json({ status: 'not collaborator' });
+          } else {
+            result[0].destroy(function (err) {
+              if (err) { return next(err); }
+
+              res.json({ status: 'removed' });
+            })
+          }
+        });
       });
     },
 
