@@ -410,7 +410,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           if (req.body.title !== oldTitle) {
             var voiceModel = new Voice(req.activeVoice);
             voiceModel.id = hashids.decode(voiceModel.id)[0];
-            FeedInjector(hashids.decode(req.currentPerson.id)[0], 'item voiceNewTitle', voiceModel, done)
+            FeedInjector().inject(hashids.decode(req.currentPerson.id)[0], 'item voiceNewTitle', voiceModel, done);
           } else {
             done();
           }
@@ -418,7 +418,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           if (req.body.description !== oldDescription) {
             var voiceModel = new Voice(req.activeVoice);
             voiceModel.id = hashids.decode(voiceModel.id)[0];
-            FeedInjector(hashids.decode(req.currentPerson.id)[0], 'item voiceNewDescription', voiceModel, done)
+            FeedInjector().inject(hashids.decode(req.currentPerson.id)[0], 'item voiceNewDescription', voiceModel, done)
           } else {
             done();
           }
@@ -677,7 +677,11 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         voice.save(function (err) {
           if (err) { return next(err); }
 
-          res.json({ status: 'archived' });
+          FeedInjector().inject(hashids.decode(req.currentPerson.id)[0], 'both entityArchivesVoice', voice, function (err) {
+            if (err) { return next(err); }
+
+            res.json({ status: 'archived' });
+          });
         });
       });
     }
