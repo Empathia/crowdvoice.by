@@ -467,8 +467,6 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           thread.createMessage({
             type : 'request_voice',
             senderPersonId : response.senderPerson.id,
-            senderEntityId : response.senderEntity.id,
-            receiverEntityId : response.receiverEntity.id,
             voiceId : response.voice.id,
             message : req.body.message
           }, function(err, result) {
@@ -622,7 +620,8 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           }
 
           var thread,
-            invited;
+            invited,
+            invitationRequest;
 
           async.series([
             // get entity of invited
@@ -651,14 +650,23 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
               });
             },
 
+            // make or find invitation request
+            function (next) {
+              invitationRequest = new InvitationRequest({
+                invitator_entity_id: response.currentPerson.id,
+                invited_entity_id: hashids.decode(req.body.personId)[0]
+              });
+
+              invitationRequest.save(next);
+            },
+
             // make invitation message
             function (next) {
               thread.createMessage({
                 type: 'invitation_voice',
                 senderPersonId: response.currentPerson.id,
-                senderEntityId: response.currentPerson.id,
-                receiverEntityId: invited.id,
                 voiceId: response.voice.id,
+                invitationRequestId: invitationRequest.id,
                 message: req.body.message
               }, function (err, result) {
                 if (err) { return next(err); }
