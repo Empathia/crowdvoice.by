@@ -509,10 +509,13 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
 
       isOwnerOf : function isOwnerOf(entityId, callback) {
         if (!this.id) {
-          return callback("Entity doesn't have an id");
+          return callback(new Error('Entity doesn\'t have an ID'));
         }
 
-        EntityOwner.find({'owner_id' : this.id, 'owned_id' : entityId}, function(err, result) {
+        EntityOwner.find({
+          owner_id: this.id,
+          owned_id: entityId
+        }, function(err, result) {
           if (err) {
             return callback(err);
           }
