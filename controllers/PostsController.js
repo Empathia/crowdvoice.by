@@ -135,7 +135,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           postData.sourceService  = item.sourceService;
           postData.sourceType     = item.sourceType;
           postData.approved       = approved;
-          postData.ownerId        = req.currentPerson ? req.currentPerson.id : 0;
+          postData.ownerId        = response.currentPerson.id;
           postData.voiceId        = response.voice.id;
           postData.publishedAt    = item.publishedAt;
 
@@ -160,19 +160,19 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
               post.save(function(err, resave) {
                 if (err) { return nextPost(err); }
 
-                Voice.findById(post.voiceId, function (err, result) {
+                Voice.findById(post.voiceId, function (err, voice) {
                   if (err) { return nextPost(err); }
 
-                  FeedInjector().inject(voice.ownerId, 'item voiceNewPosts', voice, function (err) {
-                    if (err) { return nextPost(err); }
+                  if (item.images) {
+                    item.images.forEach(function(image) {
+                      // NOTE: this is sync, not async. maybe not good.
+                      fs.unlinkSync(process.cwd() + '/public' + image);
+                      logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image);
+                    });
+                  }
 
-                    if (item.images) {
-                      item.images.forEach(function(image) {
-                        // NOTE: this is sync, not async. maybe not good.
-                        fs.unlinkSync(process.cwd() + '/public' + image);
-                        logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image);
-                      });
-                    }
+                  FeedInjector().inject(voice[0].ownerId, 'item voiceNewPosts', voice[0], function (err) {
+                    if (err) { return nextPost(err); }
 
                     results.push(post);
 
@@ -183,16 +183,14 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
             });
           });
         }, function(err) {
+          if (err) { return next(err); }
+
           PostsPresenter.build(results, req.currentPerson, function(err, result) {
             if (err) {
               return next(err);
             }
 
-            if (result.length === 1) {
-              return res.json(result);
-            } else {
-              return res.json(result);
-            }
+            return res.json(result);
           });
         });
       });
