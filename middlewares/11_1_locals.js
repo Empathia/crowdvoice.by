@@ -115,7 +115,7 @@ module.exports = function(req, res, next) {
 
             // Get Voices of type TYPE_CLOSED that are owned by currentPerson
             Voice.find({
-              'owner_id' : person.id,
+              owner_id : person.id,
               status : Voice.STATUS_PUBLISHED,
               type : Voice.TYPE_CLOSED
             }, function(err, result) {
@@ -172,6 +172,29 @@ module.exports = function(req, res, next) {
                 req.currentPerson.voiceNames = voiceTitles;
 
                 done();
+              });
+            });
+          }, function (done) {
+            // Get Voices owned directly by user or owned by organizations that
+            // user is owner of
+
+            person.ownedOrganizations(function (err, organizations) {
+              if (err) { return done(err); }
+
+              // get org IDs
+              var ids = organizations.map(function (org) { return org.id });
+              // get currentPerson ID
+              ids.push(person.id);
+
+              Voice.whereIn('owner_id', ids, function (err, voices) {
+                if (err) { return done(err); }
+
+                var result = voices.map(function (voice) { return hashids.encode(voice.id); });
+
+                res.locals.currentPerson.ownedVoices = result;
+                req.currentPerson.ownedVoices = result;
+
+                return done();
               });
             });
           }, function(done) {
