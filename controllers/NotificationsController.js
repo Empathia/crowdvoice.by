@@ -16,7 +16,7 @@ var NotificationsController = Class('NotificationsController')({
         FeedAction.find({ follower_id: hashids.decode(req.currentPerson.id)[0], read: false }, function (err, notifications) {
           if (err) { return next(err) }
 
-          FeedPresenter.build(notifications, req.currentPerson, function (err, presentedNotifications) {
+          FeedPresenter.build(notifications, req.currentPerson, true, function (err, presentedNotifications) {
             if (err) { return next(err) }
 
             res.json(presentedNotifications)
