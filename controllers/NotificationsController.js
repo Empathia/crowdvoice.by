@@ -1,5 +1,7 @@
 'use strict'
 
+var FeedPresenter = require(__dirname + '/../presenters/FeedPresenter.js')
+
 var NotificationsController = Class('NotificationsController')({
   prototype: {
     getNotifications: function (req, res, next) {
