@@ -248,6 +248,7 @@ Admin.VoicesController = Class(Admin, 'VoicesController')({
               return next(err);
             }
 
+            req.flash('success', 'Voice deleted.');
             res.redirect('/admin/voices');
           });
         });

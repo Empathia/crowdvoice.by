@@ -33,7 +33,7 @@
 
 						<a href="/<%= person.profileName %>" target="_blank"><button class="cv-button small">Show</button></a>
 						<a href="people/<%= person.id %>/edit"><button class="cv-button small">Edit</button></a>
-						<a href="<%= person.id %>">
+						<a >
 							<form class="form-profile" action="/admin/people/<%= person.id %>?_method=DELETE" method="POST" enctype="multipart/form-data">
 	      				<input type="hidden" name="_csrf" value="<%= csrfToken %>">
 								<button class="cv-button small">Delete</button>
@@ -53,15 +53,6 @@
 
 <script>
 	var people = <%= JSON.stringify(people) %>;
-	//console.log(people[0]);
-	var aulElement = document.querySelector('.admin-users-list');
-
-	//console.log(aulElement);
-	//people.forEach(function(person){
-	//	var nperson = new CV.Card({data:person});
-	//	nperson.render(window.body);
-	//	console.log(nperson);
-	//});
 
 	var headerEl = document.querySelector('header .header-actions');
 	headerEl.innerHTML = '<h2>User List</h2>';
@@ -77,7 +68,6 @@
   	setTimeout(function(){
   		$(nEl).fadeOut(500);
   	}, 2000);
-  	//CV.Notification.create({action:'Flash', text: flash.success}).render(document.body);
 	}
 
 </script>
