@@ -567,7 +567,6 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
         });
       },
 
-
       ownedOrganizations : function ownOrganizations(callback) {
         var entity = this;
 

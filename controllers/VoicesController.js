@@ -1,6 +1,5 @@
 var BlackListFilter = require(__dirname + '/BlackListFilter');
 var EntitiesPresenter = require(path.join(process.cwd(), '/presenters/EntitiesPresenter.js'));
-var feed = require(__dirname + '/../lib/feedInject.js');
 
 var VoicesController = Class('VoicesController').includes(BlackListFilter)({
   prototype : {
@@ -322,7 +321,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
               return next(err);
             }
 
-            feed.voiceCreated(req, voice, function (err) {
+            FeedInjector().inject(voice.ownerId, 'who voiceIsPublished', voice, function (err) {
               if (err) { return next(err); }
 
               res.json(voices[0]);
@@ -349,10 +348,10 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           return next(new ForbiddenError());
         }
 
-        var voice = req.activeVoice;
-
-        var oldTitle = voice.title;
-        var oldDescription = voice.description;
+        var voice = req.activeVoice,
+          oldTitle = voice.title,
+          oldDescription = voice.description,
+          oldStatus = voice.status;
 
         voice.setProperties({
           title: req.body.title || voice.title,
@@ -408,26 +407,38 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           });
         }, function(done) {
           if (req.body.title !== oldTitle) {
-            feed.voiceUpdateTitle(req, done);
+            FeedInjector().inject(voice.ownerId, 'item voiceNewTitle', voice, done);
           } else {
-            done();
+            return done();
           }
         }, function(done) {
           if (req.body.description !== oldDescription) {
-            feed.voiceUpdateDescription(req, done);
+            FeedInjector().inject(voice.ownerId, 'item voiceNewDescription', voice, done);
           } else {
-            done();
+            return done();
+          }
+        }, function (done) {
+          if (req.body.status !== oldStatus && req.body.status === Voice.STATUS_PUBLISHED) {
+            FeedInjector().inject(voice.ownerId, 'who voiceIsPublished', voice, done);
+          } else {
+            return done();
+          }
+        }, function (done) {
+          if (req.body.status !== oldStatus && req.body.status === Voice.STATUS_ARCHIVED) {
+            FeedInjector().inject(voice.ownerId, 'both entityArchivesVoice', voice, done);
+          } else {
+            return done();
           }
         }], function(err) {
           if (err) {
             return next(err);
           }
 
-          feed.voiceCreated(req, voice, function (err) {
+          VoicesPresenter.build([voice], req.currentPerson, function (err, presentedVoice) {
             if (err) { return next(err); }
 
             req.flash('success', 'Voice has been updated.');
-            res.json(voice);
+            res.json(presentedVoice[0]);
           });
         });
       });
@@ -504,7 +515,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
     },
 
     follow : function follow(req, res, next) {
-      var follower = req.currentPerson;
+      var follower = new Entity(req.currentPerson);
       follower.id = hashids.decode(follower.id)[0];
 
       // we don't want to allow the user to follow if he is anonymous
@@ -536,20 +547,24 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           });
         } else {
           // follow
-          follower.followVoice(req.activeVoice, function (err, result) {
+          follower.followVoice(req.activeVoice, function (err, voiceFollowerRecordId) {
             if (err) { return next(err); }
 
-            feed.entityFollowsVoice(req, result, function (err) {
+            VoiceFollower.findById(voiceFollowerRecordId[0], function (err, voiceFollower) {
               if (err) { return next(err); }
 
-              res.format({
-                html: function () {
-                  req.flash('success', 'Voice has been followed.');
-                  res.redirect('/' + req.params.profileName + '/' + req.params.voice_slug)
-                },
-                json: function () {
-                  res.json({ status: 'followed' });
-                }
+              FeedInjector().inject(follower.id, 'who entityFollowsVoice', voiceFollower[0], function (err) {
+                if (err) { return next(err); }
+
+                res.format({
+                  html: function () {
+                    req.flash('success', 'Voice has been followed.');
+                    res.redirect('/' + req.params.profileName + '/' + req.params.voice_slug)
+                  },
+                  json: function () {
+                    res.json({ status: 'followed' });
+                  }
+                });
               });
             });
           });
@@ -738,7 +753,11 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         voice.save(function (err) {
           if (err) { return next(err); }
 
-          res.json({ status: 'archived' });
+          FeedInjector().inject(voice.ownerId, 'both entityArchivesVoice', voice, function (err) {
+            if (err) { return next(err); }
+
+            res.json({ status: 'archived' });
+          });
         });
       });
     }

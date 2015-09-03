@@ -7,15 +7,35 @@ var FeedPresenter = Module('FeedPresenter')({
   build: function (feedActions, currentPerson, forNotifications, callback) {
     var result = []
 
+    var realCurrentPerson
+
     async.series([
+      // safety if currentPerson.isAnonymous is true
+      function (next) {
+        var person = new Entity(currentPerson)
+        person.id = hashids.decode(person.id)[0]
+
+        person.owner(function (err, result) {
+          if (err) { return next(err) }
+
+          if (currentPerson.isAnonymous) {
+            realCurrentPerson = new Entity(result)
+          } else {
+            realCurrentPerson = new Entity(person)
+          }
+
+          return next();
+        })
+      },
+
       // check if it's for notifications
       // if it is then we'll replace feedActions (which is what the presenter
-      // works on) with a new feedActions that only has nactions the user hasn't
+      // works on) with a new feedActions that only has actions the user hasn't
       // read
       function (next) {
         if (forNotifications) {
           Notification.find({
-            follower_id: hashids.decode(currentPerson.id)[0],
+            follower_id: realCurrentPerson.id,
             read: false,
           }, function (err, notifications) {
             if (err) { return next(err) }
@@ -48,10 +68,10 @@ var FeedPresenter = Module('FeedPresenter')({
             return next()
           },
 
-          // itemType and itemId
+          // itemType
           function (next) {
             if (action.itemType === 'voice') {
-              Voice.find({ id: action.itemId }, function (err, voice) {
+              Voice.findById(action.itemId, function (err, voice) {
                 if (err) { return next(err) }
 
                 VoicesPresenter.build(voice, currentPerson, function (err, presentedVoice) {
@@ -63,7 +83,7 @@ var FeedPresenter = Module('FeedPresenter')({
                 })
               })
             } else if (action.itemType === 'entity') {
-              Entity.find({ id: action.itemId }, function (err, entity) {
+              Entity.findById(action.itemId, function (err, entity) {
                 if (err) { return next(err) }
 
                 EntitiesPresenter.build(entity, currentPerson, function (err, presentedEntity) {
@@ -75,13 +95,18 @@ var FeedPresenter = Module('FeedPresenter')({
                 })
               })
             }
+          },
 
+          // itemId
+          function (next) {
             actionInst.itemId = hashids.encode(action.itemId)[0]
+
+            return next()
           },
 
           // actionDoer
           function (next) {
-            Entity.find(['id = ?', [action.who]], function (err, entity) {
+            Entity.findById(action.who, function (err, entity) {
               if (err) { return next(err) }
 
               EntitiesPresenter.build(entity, currentPerson, function (err, presentedEntity) {

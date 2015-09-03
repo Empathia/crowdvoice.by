@@ -45,11 +45,6 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
 
             message = messageInstance;
 
-            console.log("\n\n")
-            console.log('***************************')
-
-            console.log('message', message)
-
             done();
           })
         },
@@ -66,7 +61,6 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
             }
 
             invitationRequest = new InvitationRequest(result[0]);
-            console.log('invitationRequest', invitationRequest)
 
             done();
           })
@@ -88,8 +82,6 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
             }
 
             voice = result[0];
-
-            console.log('voice', voice)
 
             inviteToVoice = true;
 
@@ -114,8 +106,6 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
 
             organization = result[0];
 
-            console.log('organization', organization)
-
             inviteToOrg = true;
 
             done();
@@ -139,7 +129,7 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
           async.series([
             // accept
             function (done) {
-              if (req.body.action == 'accept') {
+              if (req.body.action === 'accept') {
 
                 async.series([function(doneSeries) {
                   if (!voice) {
@@ -148,7 +138,7 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
 
                   var voiceCollaborator = new VoiceCollaborator({
                     voiceId : voice.id,
-                    collaboratorId : req.currentPerson.id
+                    collaboratorId : hashids.decode(req.currentPerson.id)[0]
                   });
 
                   if (req.body.anonymous) {
@@ -167,7 +157,16 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
                         return doneSeries(err);
                       }
 
-                      invitationRequest.destroy(doneSeries);
+                      invitationRequest.destroy(function (err) {
+                        if (err) { return doneSeries(err); }
+
+                        // if new member is not anonymous, i.e. is public
+                        if (!req.body.anonymous) {
+                          FeedInjector().inject(voiceCollaborator.collaboratorId, 'item voiceNewPublicContributor', voiceCollaborator, doneSeries);
+                        } else {
+                          return doneSeries();
+                        }
+                      });
                     });
                   });
                 }, function(doneSeries) {
@@ -177,7 +176,7 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
 
                   var entityMembership = new EntityMembership({
                     entityId : organization.id,
-                    memberId : req.currentPerson.id
+                    memberId : hashids.decode(req.currentPerson.id)[0]
                   });
 
                   if (req.body.anonymous) {
@@ -196,7 +195,16 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
                         return doneSeries(err);
                       }
 
-                      invitationRequest.destroy(doneSeries);
+                      invitationRequest.destroy(function (err) {
+                        if (err) { return doneSeries(err); }
+
+                        // if new member is not anonymous, i.e. is public
+                        if (!req.body.anonymous) {
+                          FeedInjector().inject(entityMembership.memberId, 'item entityBecomesOrgPublicMember', entityMembership, doneSeries);
+                        } else {
+                          return doneSeries();
+                        }
+                      });
                     });
                   });
 

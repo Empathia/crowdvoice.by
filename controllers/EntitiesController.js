@@ -1,6 +1,6 @@
 var BlackListFilter = require(__dirname + '/BlackListFilter');
 var VoicesPresenter = require(path.join(process.cwd(), '/presenters/VoicesPresenter.js'));
-var feed = require(__dirname + '/../lib/feedInject.js');
+var FeedPresenter = require(__dirname + '/../presenters/FeedPresenter.js');
 
 var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
@@ -134,7 +134,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
               entity.uploadImage('image', req.files.image.path, function (err) {
                 if (err) { return done(err); }
 
-                feed.entityUpdateAvatar(req, done);
+                FeedInjector().inject(hashids.decode(req.currentPerson.id)[0], 'item entityUpdatesAvatar', entity, done);
               });
             },
             function (done) {
@@ -142,7 +142,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
               entity.uploadImage('background', req.files.background.path, function (err) {
                 if (err) { return done(err); }
 
-                feed.entityUpdateBackground(req, done);
+                FeedInjector().inject(hashids.decode(req.currentPerson.id)[0], 'item entityUpdatesBackground', entity, done);
               });
             },
             function (done) {
@@ -247,20 +247,24 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
           });
         } else {
           // follow
-          follower.followEntity(entity, function (err, result) {
+          follower.followEntity(entity, function (err, entityFollowerRecordId) {
             if (err) { return next(err); }
 
-            feed.entityFollowsEntity(req, result, function (err) {
+            EntityFollower.findById(entityFollowerRecordId[0], function (err, entityFollower) {
               if (err) { return next(err); }
 
-              res.format({
-                html: function() {
-                  req.flash('success', 'Followed successfully.');
-                  res.redirect('/' + entity.profileName);
-                },
-                json: function() {
-                  res.json({ status: 'followed' });
-                }
+              FeedInjector().inject(follower.id, 'who entityFollowsEntity', entityFollower[0], function (err) {
+                if (err) { return next(err); }
+
+                res.format({
+                  html: function() {
+                    req.flash('success', 'Followed successfully.');
+                    res.redirect('/' + entity.profileName);
+                  },
+                  json: function() {
+                    res.json({ status: 'followed' });
+                  }
+                });
               });
             });
           });

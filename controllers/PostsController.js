@@ -1,5 +1,4 @@
 var Scrapper = require(process.cwd() + '/lib/cvscrapper');
-var feed = require(__dirname + '/../lib/feedInject.js');
 var sanitizer = require('sanitize-html');
 
 var PostsController = Class('PostsController').includes(BlackListFilter)({
@@ -136,7 +135,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           postData.sourceService  = item.sourceService;
           postData.sourceType     = item.sourceType;
           postData.approved       = approved;
-          postData.ownerId        = req.currentPerson ? req.currentPerson.id : 0;
+          postData.ownerId        = response.currentPerson.id;
           postData.voiceId        = response.voice.id;
           postData.publishedAt    = item.publishedAt;
 
@@ -161,34 +160,37 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
               post.save(function(err, resave) {
                 if (err) { return nextPost(err); }
 
-                feed.voiceNewPosts(req, function (err) {
+                Voice.findById(post.voiceId, function (err, voice) {
                   if (err) { return nextPost(err); }
 
                   if (item.images) {
                     item.images.forEach(function(image) {
+                      // NOTE: this is sync, not async. maybe not good.
                       fs.unlinkSync(process.cwd() + '/public' + image);
                       logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image);
                     });
                   }
 
-                  results.push(post);
+                  FeedInjector().inject(voice[0].ownerId, 'item voiceNewPosts', voice[0], function (err) {
+                    if (err) { return nextPost(err); }
 
-                  return nextPost();
+                    results.push(post);
+
+                    return nextPost();
+                  });
                 });
               });
             });
           });
         }, function(err) {
+          if (err) { return next(err); }
+
           PostsPresenter.build(results, req.currentPerson, function(err, result) {
             if (err) {
               return next(err);
             }
 
-            if (result.length === 1) {
-              return res.json(result);
-            } else {
-              return res.json(result);
-            }
+            return res.json(result);
           });
         });
       });
