@@ -348,11 +348,10 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           return next(new ForbiddenError());
         }
 
-        var voice = req.activeVoice;
-        // TODO: no ID being decoded, this probably won't work
-
-        var oldTitle = voice.title;
-        var oldDescription = voice.description;
+        var voice = req.activeVoice,
+          oldTitle = voice.title,
+          oldDescription = voice.description,
+          oldStatus = voice.status;
 
         voice.setProperties({
           title: req.body.title || voice.title,
@@ -408,33 +407,32 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           });
         }, function(done) {
           if (req.body.title !== oldTitle) {
-            var voiceModel = new Voice(req.activeVoice);
-            voiceModel.id = hashids.decode(voiceModel.id)[0];
-            FeedInjector().inject(hashids.decode(req.currentPerson.id)[0], 'item voiceNewTitle', voiceModel, done);
+            FeedInjector().inject(voice.ownerId, 'item voiceNewTitle', voice, done);
           } else {
-            done();
+            return done();
           }
         }, function(done) {
           if (req.body.description !== oldDescription) {
-            var voiceModel = new Voice(req.activeVoice);
-            voiceModel.id = hashids.decode(voiceModel.id)[0];
-            FeedInjector().inject(hashids.decode(req.currentPerson.id)[0], 'item voiceNewDescription', voiceModel, done)
+            FeedInjector().inject(voice.ownerId, 'item voiceNewDescription', voice, done);
           } else {
-            done();
+            return done();
+          }
+        }, function (done) {
+          if (req.body.status !== oldStatus && req.body.status === Voice.STATUS_PUBLISHED) {
+            FeedInjector().inject(voice.ownerId, 'who voiceIsPublished', voice, done);
+          } else {
+            return done();
           }
         }], function(err) {
           if (err) {
             return next(err);
           }
 
-          var voiceModel = new Voice(req.activeVoice);
-          voiceModel.id = hashids.decode(voiceModel.id)[0];
-
-          FeedInjector().inject(hashids.decode(req.currentPerson.id)[0], 'who voiceIsPublished', voiceModel, function (err) {
+          VoicesPresenter.build([voice], req.currentPerson, function (err, presentedVoice) {
             if (err) { return next(err); }
 
             req.flash('success', 'Voice has been updated.');
-            res.json(voice);
+            res.json(presentedVoice[0]);
           });
         });
       });
