@@ -24,7 +24,6 @@ var HomeController = Class('HomeController')({
         }
 
         async.series([function(done) {
-          console.log('feat')
           // FeaturedVoices
           FeaturedVoice.all(function(err, result) {
             if (err) { return done(err); }
@@ -36,7 +35,11 @@ var HomeController = Class('HomeController')({
             Voice.whereIn('id', featuredIds, function(err, voicesResult) {
               if (err) { return done(err); }
 
-              VoicesPresenter.build(voicesResult, req.currentPerson, function(err, voices) {
+              var publishedVoices = voicesResult.filter(function (voice) {
+                return voice.status === Voice.STATUS_PUBLISHED
+              });
+
+              VoicesPresenter.build(publishedVoices, req.currentPerson, function (err, voices) {
                 if (err) { return done(err); }
 
                 res.locals.featuredVoices = voices;
@@ -46,7 +49,6 @@ var HomeController = Class('HomeController')({
             });
           });
         }, function(done) {
-          console.log('topics')
           Topic.all(function(err, result) {
             if (err) {
               return done(err);
@@ -63,8 +65,7 @@ var HomeController = Class('HomeController')({
             });
           });
         }, function(done) {
-          console.log('orgs')
-          Entity.find(['type = \'organization\' LIMIT 10', []], function(err, result) {
+          Entity.find(['type = ? LIMIT ?', ['organization', 10]], function(err, result) {
             if (err) { return done(err); }
 
             EntitiesPresenter.build(result, req.currentPerson, function(err, organizations) {
