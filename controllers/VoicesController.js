@@ -423,6 +423,12 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           } else {
             return done();
           }
+        }, function (done) {
+          if (req.body.status !== oldStatus && req.body.status === Voice.STATUS_ARCHIVED) {
+            FeedInjector().inject(voice.ownerId, 'both entityArchivesVoice', voice, done);
+          } else {
+            return done();
+          }
         }], function(err) {
           if (err) {
             return next(err);
@@ -747,7 +753,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         voice.save(function (err) {
           if (err) { return next(err); }
 
-          FeedInjector().inject(hashids.decode(req.currentPerson.id)[0], 'both entityArchivesVoice', voice, function (err) {
+          FeedInjector().inject(voice.ownerId, 'both entityArchivesVoice', voice, function (err) {
             if (err) { return next(err); }
 
             res.json({ status: 'archived' });
