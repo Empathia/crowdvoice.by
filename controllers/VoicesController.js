@@ -321,7 +321,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
               return next(err);
             }
 
-            FeedInjector().inject(hashids.decode(req.currentPerson.id)[0], 'who voiceIsPublished', voice, function (err) {
+            FeedInjector().inject(voice.ownerId, 'who voiceIsPublished', voice, function (err) {
               if (err) { return next(err); }
 
               res.json(voices[0]);
