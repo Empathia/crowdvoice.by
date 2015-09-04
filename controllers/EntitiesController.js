@@ -275,7 +275,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
     voices : function voices(req, res, next) {
       var entity = req.entity;
       Voice.find({
-        'owner_id' : hashids.decode(entity.id)[0],
+        owner_id : hashids.decode(entity.id)[0],
         status : Voice.STATUS_PUBLISHED
       }, function(err, result) {
         if (err) { next(err); return; }
@@ -350,9 +350,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
           }
 
           result = result.filter(function(item) {
-            if (item.status === Voice.STATUS_PUBLISHED) {
-              return true;
-            }
+            return item.status === Voice.STATUS_PUBLISHED
           })
 
           VoicesPresenter.build(result, req.currentPerson, function(err, voices) {
