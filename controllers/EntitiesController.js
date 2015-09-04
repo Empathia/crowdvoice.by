@@ -320,12 +320,12 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
         Entity.whereIn('id', followerIds, function(err, result) {
           if (err) {
-            return done(err);
+            return next(err);
           }
 
           EntitiesPresenter.build(result, req.currentPerson, function(err, followers) {
             if (err) {
-              return done(err);
+              return next(err);
             }
 
             res.json(followers);

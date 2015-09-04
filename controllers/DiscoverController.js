@@ -241,6 +241,11 @@ var DiscoverController = Class('DiscoverController')({
     },
 
     recommendedIndex: function (req, res, next) {
+      if (!req.currentPerson) {
+        return res.render('discover/recommended-visitor.html');
+      } else if (req.currentPerson.isAnonymous) {
+        return res.render('discover/recommended-anonymous.html');
+      }
 
       var items    = [];
       var voices   = [];
@@ -248,7 +253,7 @@ var DiscoverController = Class('DiscoverController')({
 
       async.series([function(done) {
         // Get the voices that the currentPerson is following
-        VoiceFollower.find({ 'entity_id' : hashids.decode(req.currentPerson.id)[0] }, function(err, result) {
+        VoiceFollower.find({ entity_id : hashids.decode(req.currentPerson.id)[0] }, function(err, result) {
           if (err) {
             return done(err);
           }
@@ -262,7 +267,11 @@ var DiscoverController = Class('DiscoverController')({
               return done(err);
             }
 
-            VoicesPresenter.build(result, req.currentPerson, function(err, result) {
+            var published = result.map(function (voice) {
+              return voice.status === Voice.STATUS_PUBLISHED
+            });
+
+            VoicesPresenter.build(published, req.currentPerson, function(err, result) {
               if (err) {
                 return next(err);
               }
