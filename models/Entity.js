@@ -21,10 +21,10 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
       {
         rule: function(val) {
           if (val.match(/[^a-zA-Z0-9_-]/)) {
-            throw new Checkit.FieldError('Profilename should only contain letters, numbers and dashes.');
+            throw new Checkit.FieldError('Profile name should only contain letters, numbers and dashes.');
           }
         },
-        message : 'Profilename should only contain letters, numbers and dashes.'
+        message : 'Profile name should only contain letters, numbers and dashes.'
       }
     ]
   },
@@ -133,7 +133,7 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
       lastname: null,
       profileName: null,
       isAnonymous: false,
-      description : null,
+      description : '',
       location : null,
       createdAt: null,
       updatedAt: null,
