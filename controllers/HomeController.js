@@ -65,18 +65,34 @@ var HomeController = Class('HomeController')({
             });
           });
         }, function(done) {
-          // TODO: this is not top at all, it's just random orgs
-          Entity.find(['type = ? LIMIT ?', ['organization', 10]], function(err, result) {
-            if (err) { return done(err); }
-
-            EntitiesPresenter.build(result, req.currentPerson, function(err, organizations) {
+          db.raw('SELECT ' +
+            'count(DISTINCT "Voices"."id") AS "voices_count", ' +
+            'count(DISTINCT "EntityMembership"."id") AS "members_count", ' +
+            '"Entities"."id" AS "org_id" ' +
+            'FROM "Entities" ' +
+            'LEFT JOIN "Voices" ' +
+            'ON "Entities"."id" = "Voices"."owner_id" ' +
+            'LEFT JOIN "EntityMembership" ' +
+            'ON "Entities"."id" = "EntityMembership"."entity_id" ' +
+            'WHERE "Entities"."type" = ? ' +
+            'AND "Voices"."status" = ? ' +
+            'GROUP BY "org_id" ' +
+            'ORDER BY "voices_count" DESC, "members_count" DESC', ['organization', Voice.STATUS_PUBLISHED])
+            .exec(function (err, result) {
               if (err) { return done(err); }
 
-              res.locals.mostActiveOrganizations = organizations;
+              var orgIds = result.rows.map(function (org) { return org.org_id; });
 
-              done();
+              Entity.whereIn('id', orgIds, function (err, orgs) {
+                EntitiesPresenter.build(orgs, req.currentPerson, function(err, organizations) {
+                  if (err) { return done(err); }
+
+                  res.locals.mostActiveOrganizations = organizations;
+
+                  done();
+                });
+              });
             });
-          });
         }], function(err) {
           if (err) { return next(err); }
 
