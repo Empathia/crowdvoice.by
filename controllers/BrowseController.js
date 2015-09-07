@@ -14,7 +14,13 @@ var BrowseController = Class('BrowseController')({
         },
 
         function (featuredVoices, callback) {
-          VoicesPresenter.build(featuredVoices, req.currentPerson, callback)
+          callback(null, featuredVoices.filter(function (val) {
+            return val.status === Voice.STATUS_PUBLISHED
+          }))
+        },
+
+        function (publishedFeaturedVoices, callback) {
+          VoicesPresenter.build(publishedFeaturedVoices, req.currentPerson, callback)
         },
       ], function (err, result) {
         if (err) { return next(err) }
