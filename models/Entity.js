@@ -26,15 +26,16 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
         },
         message : 'Profile name should only contain letters, numbers and dashes.'
       }
-    ]
+    ],
+    description: ['maxLength:140'], // short bio
   },
 
   storage : (new Argon.Storage.Knex({
     tableName : 'Entities',
     queries : {
       searchPeople : function(reqObj, callback) {
-        db(reqObj.model.storage.tableName).
-          where('is_anonymous', '=', false)
+        db(reqObj.model.storage.tableName)
+          .where('is_anonymous', '=', false)
           .andWhere('type', '=', 'person')
           .andWhereRaw("(name like ? OR lastname like ? OR profile_name like ?)",['%' + reqObj.params.value + '%', '%' + reqObj.params.value + '%', '%' + reqObj.params.value + '%'])
           .andWhere('id', '!=', reqObj.params.currentPersonId)
@@ -134,7 +135,7 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
       profileName: null,
       isAnonymous: false,
       description : '',
-      location : null,
+      location : '',
       createdAt: null,
       updatedAt: null,
 
