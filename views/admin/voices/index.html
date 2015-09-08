@@ -12,14 +12,14 @@
 
 					<div class="admin-info">
 						<article class="cv-voice-cover mini -clearfix widget" role="article">
-							<a href="/jon-snow/battle-of-castle-black/" class="-float-left" data-voice-anchor="" title="Battle of Castle Black voice">
+							<a href="/<%= voice.owner.profileName %>/<%= voice.slug %>/" class="-float-left" data-voice-anchor="" title="Battle of Castle Black voice">
 								<img class="voice-cover" width="36" height="36" src="<%= voice.images.small.url %>">
 							</a>
 							<div class="voice-content">
 								<a href="/<%= voice.owner.profileName %>/<%= voice.slug %>/" class="voice-cover-title voice-cover-title-anchor -font-semi-bold -tdn" data-voice-anchor="" title="Battle of Castle Black voice"><%= voice.title %></a>
 								<div class="meta">
 									<div class="author -inline-block">By
-										<a class="author-anchor" href="/jon-snow" title="jon-snow profile">
+										<a class="author-anchor" href="/<%= voice.owner.profileName %>" title="<%= voice.owner.profileName %> profile">
 											<span class="author-username"><%= voice.owner.name %> <%= voice.owner.lastname %></span>
 										</a>
 									</div>

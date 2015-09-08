@@ -247,7 +247,7 @@ Admin.UsersController = Class(Admin, 'UsersController')({
           return next(new ForbiddenError());
         }
 
-        User.find({ id : hashids.decode(req.params.userId)[0] }, function(err, result) {
+        User.find({ id : req.params.userId}, function(err, result) {
           if (err) {
             return next(err);
           }

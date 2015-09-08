@@ -147,6 +147,7 @@ Admin.TopicsController = Class(Admin, 'TopicsController')({
           var topic = new Topic(result[0]);
 
           topic.name = req.body.name;
+          topic.slug = req.body.slug;
 
           async.series([
             function (done) {
@@ -182,7 +183,29 @@ Admin.TopicsController = Class(Admin, 'TopicsController')({
           return next(new ForbiddenError());
         }
 
-        res.send('not implemented');
+        Topic.find({ id : hashids.decode(req.params.topicId)[0] }, function(err, result) {
+          if (err) {
+            return next(err);
+          }
+
+          if (result.length === 0) {
+            return next(new NotFoundError());
+          }
+
+          var topic = new Topic(result[0]);
+
+          topic.deleted = true;
+
+          topic.save(function(err, result) {
+            if (err) {
+              return next(err);
+            }
+
+            req.flash('success', 'Topic deleted.');
+            res.redirect('/admin/topics');
+          });
+        });
+
       });
     }
   }

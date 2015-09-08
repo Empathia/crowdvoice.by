@@ -252,6 +252,7 @@ Admin.VoicesController = Class(Admin, 'VoicesController')({
             res.redirect('/admin/voices');
           });
         });
+
       });
     }
   }
