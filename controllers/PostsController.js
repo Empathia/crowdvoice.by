@@ -274,11 +274,11 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
           var post = new Post(result[0]);
 
-          post.destroy(function(err, result) {
+          post.destroy(function(err) {
             if (err) { return next(err); }
-          });
 
-          res.json({ status : 'deteletd' });
+            res.json({ status : 'deleted' });
+          });
         })
       });
     },

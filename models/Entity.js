@@ -552,7 +552,7 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
 
       isMemberOf : function isMemberOf(entityId, callback) {
         if (!this.id) {
-          return callback("Entity doesn't have an id");
+          return callback("Entity doesn't have an ID");
         }
 
         EntityMembership.find({'entity_id' : entityId, 'member_id' : this.id}, function(err, result) {
