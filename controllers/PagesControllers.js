@@ -1,4 +1,4 @@
-var PagesController = Class('PagesController').includes()({
+var PagesController = Class('PagesController')({
   prototype : {
 
     about : function index (req, res, next) {

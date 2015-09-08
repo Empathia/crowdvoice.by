@@ -66,14 +66,6 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
       res.render(inflection.pluralize(req.entityType) + '/show.html');
     },
 
-    new : function (req, res, next) {
-      return next(new NotFoundError());
-    },
-
-    create : function create(req, res, next) {
-      return next(new NotFoundError());
-    },
-
     edit : function edit(req, res, next) {
       ACL.isAllowed('edit', 'entities', req.role, {
         entity : req.entity,

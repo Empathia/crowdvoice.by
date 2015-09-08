@@ -9,7 +9,7 @@ var UsersController = Class('UsersController')({
         }
 
         if (!isAllowed) {
-          return next(new ForbiddenError());
+          return next(new ForbiddenError('Unauthorized'));
         }
 
         User.all(function(err, users) {
@@ -25,14 +25,14 @@ var UsersController = Class('UsersController')({
         }
 
         if (!isAllowed) {
-          return next(new ForbiddenError());
+          return next(new ForbiddenError('Unauthorized'));
         }
 
         User.findById(req.params.id, function(err, result) {
           var user;
 
-          if (err) { next(err); return; }
-          if (result.length === 0) { next(new NotFoundError('User Not found')); return; }
+          if (err) { return next(err); }
+          if (result.length === 0) { return next(new NotFoundError('User Not found')); }
 
           user = new User(result[0]);
           res.render('users/show.html', {layout : 'application', user : user.toJson()});
@@ -160,7 +160,7 @@ var UsersController = Class('UsersController')({
                   var errors = err;
                 }
 
-                res.render('users/new.html', {errors: errors});
+                res.render('users/new.html', {layout: 'login', errors: errors});
 
                 return;
               }
