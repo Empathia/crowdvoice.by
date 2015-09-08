@@ -114,7 +114,7 @@ async.series([function(next) {
         profileName : 'tyrion-lannister',
         isAnonymous : false,
         isAdmin     : true,
-        description : 'Tyrion Lannister is a fictional character in the A Song of Ice and Fire series of fantasy novels by American author George R. R. Martin, and its television adaptation Game of Thrones',
+        description : 'Tyrion Lannister is a fictional character in the A Song of Ice and Fire series of fantasy novels.',
         location : 'King\'s Landing'
       },
       user : data.users.tyrion,
@@ -1063,7 +1063,7 @@ async.series([function(next) {
         'https://www.youtube.com/watch?v=f4RGU2jXQiE'
       ];
 
-      async.timesLimit(process.argv[2] || 250, 1, function(id, nextPost) {
+      async.timesLimit(process.argv[0] || 250, 1, function(id, nextPost) {
         var post =  new Post();
 
         var type = casual['random_element'](['image', 'video', 'link']);
