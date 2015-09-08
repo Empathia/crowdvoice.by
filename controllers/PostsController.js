@@ -274,11 +274,11 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
           var post = new Post(result[0]);
 
-          post.destroy(function(err, result) {
+          post.destroy(function(err) {
             if (err) { return next(err); }
-          });
 
-          res.json({ status : 'deteletd' });
+            res.json({ status : 'deleted' });
+          });
         })
       });
     },
@@ -494,6 +494,67 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           });
         });
       });
+    },
+
+    deleteOlderThan: function (req, res, next) {
+      /*
+       * req.body = {
+       *   olderThanDate: <Date string>
+       * }
+       */
+
+      ACL.isAllowed('deleteOlderThan', 'posts', req.role, {
+        currentPerson: req.currentPerson,
+        voiceSlug: req.params.voiceSlug,
+        profileName: req.params.profileName
+      }, function (err, response) {
+        if (err) { return next(err); }
+
+        if (!response.isAllowed) {
+          return next(new ForbiddenError('Unauthorized'));
+        }
+
+        db('Posts')
+          .where('voice_id', req.activeVoice.id) // correct voice
+          .andWhere('approved', false) // unmoderated
+          .andWhereRaw("created_at < '" + moment(req.body.olderThanDate).format() + "'") // older than
+          .del(function (err, affectedRows) {
+            if (err) { return next(err); }
+
+            res.json({
+              status: 'ok',
+              deletedPostsCount: affectedRows
+            });
+          });
+      });
+    },
+
+    deleteAllUnmoderated: function (req, res, next) {
+      ACL.isAllowed('deleteAllUnmoderated', 'posts', req.role, {
+        currentPerson: req.currentPerson,
+        voiceSlug: req.params.voiceSlug,
+        profileName: req.params.profileName
+      }, function (err, response) {
+        if (err) { return next(err); }
+
+        if (!response.isAllowed) {
+          return next(new ForbiddenError('Unauthorized'));
+        }
+
+        db('Posts')
+          .where({
+            voice_id: req.activeVoice.id,
+            approved: false
+          })
+          .del(function (err, affectedRows) {
+            if (err) { return next(err); }
+
+            res.json({
+              status: 'ok',
+              deletedPostsCount: affectedRows
+            });
+          });
+      })
     }
 
   }

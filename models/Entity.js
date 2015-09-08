@@ -21,20 +21,21 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
       {
         rule: function(val) {
           if (val.match(/[^a-zA-Z0-9_-]/)) {
-            throw new Checkit.FieldError('Profilename should only contain letters, numbers and dashes.');
+            throw new Checkit.FieldError('Profile name should only contain letters, numbers and dashes.');
           }
         },
-        message : 'Profilename should only contain letters, numbers and dashes.'
+        message : 'Profile name should only contain letters, numbers and dashes.'
       }
-    ]
+    ],
+    description: ['maxLength:140'], // short bio
   },
 
   storage : (new Argon.Storage.Knex({
     tableName : 'Entities',
     queries : {
       searchPeople : function(reqObj, callback) {
-        db(reqObj.model.storage.tableName).
-          where('is_anonymous', '=', false)
+        db(reqObj.model.storage.tableName)
+          .where('is_anonymous', '=', false)
           .andWhere('type', '=', 'person')
           .andWhereRaw("(name like ? OR lastname like ? OR profile_name like ?)",['%' + reqObj.params.value + '%', '%' + reqObj.params.value + '%', '%' + reqObj.params.value + '%'])
           .andWhere('id', '!=', reqObj.params.currentPersonId)
@@ -133,8 +134,8 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
       lastname: null,
       profileName: null,
       isAnonymous: false,
-      description : null,
-      location : null,
+      description : '',
+      location : '',
       createdAt: null,
       updatedAt: null,
 
@@ -551,7 +552,7 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
 
       isMemberOf : function isMemberOf(entityId, callback) {
         if (!this.id) {
-          return callback("Entity doesn't have an id");
+          return callback("Entity doesn't have an ID");
         }
 
         EntityMembership.find({'entity_id' : entityId, 'member_id' : this.id}, function(err, result) {

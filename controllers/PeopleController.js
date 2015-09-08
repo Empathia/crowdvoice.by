@@ -31,7 +31,6 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
             });
 
             ownerIds.push(response.entity.id);
-            console.log('ownerIds', ownerIds)
             done();
           })
         }, function(done) {
@@ -39,8 +38,6 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
             if (err) {
               return done(err);
             }
-
-            console.log('voices', response)
 
             voices = response;
 
@@ -118,7 +115,6 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
           }, function(err) {
             if (err) { next(err); return; }
 
-            console.log('reqCurrentPErson', req.currentPerson)
             PostsPresenter.build(posts, req.currentPerson, function(err, result) {
               if (err) {
                 return next(err);
