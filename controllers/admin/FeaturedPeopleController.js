@@ -2,6 +2,7 @@ Admin.FeaturedPeopleController = Class(Admin, 'FeaturedPeopleController')({
 
   prototype: {
 
+    // get all featured people
     index: function (req, res, next) {
       ACL.isAllowed('index', 'admin.featuredPeople', req.role, {}, function (err, isAllowed) {
         if (err) { return next(err) }
@@ -18,12 +19,13 @@ Admin.FeaturedPeopleController = Class(Admin, 'FeaturedPeopleController')({
 
             res.locals.featuredPeople = entities
 
-            res.render('admin/featuredPeople/index', { layout: 'admin' })
+            res.render('admin/featuredPeople/index.html', { layout: 'admin' })
           })
         })
       })
     },
 
+    // get featured person by :entityId
     show: function (req, res, next) {
       ACL.isAllowed('show', 'admin.featuredPeople', req.role, {}, function (err, isAllowed) {
         if (err) { return next(err) }
@@ -31,6 +33,18 @@ Admin.FeaturedPeopleController = Class(Admin, 'FeaturedPeopleController')({
         if (!isAllowed) {
           return next(new ForbiddenError('not an admin'))
         }
+
+        Entity.findById(hashids.decode(req.params.entityId)[0], function (err, result) {
+          if (err) { return next(err) }
+
+          EntitiesPresenter.build(result, req.currentPerson, function (err, entities) {
+            if (err) { return next(err) }
+
+            res.locals.person = entities[0]
+
+            res.render('admin/featuredPeople/show.html', { layout: 'admin' })
+          })
+        })
       })
     },
 
