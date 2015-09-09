@@ -160,7 +160,17 @@ Admin.FeaturedPeopleController = Class(Admin, 'FeaturedPeopleController')({
           return next(new ForbiddenError('not an admin'))
         }
 
-        var featured = FeaturedEntity(req.featuredPerson)
+        FeaturedEntity.findById(hashids.decode(req.featuredPerson.id)[0], function (err, entity) {
+          var featured = new FeaturedEntity(entity[0])
+
+          featured.entityId = hashids.decode(req.body.newEntityId)[0]
+
+          featured.save(functionn (err) {
+            if (err) { return next(err) }
+
+            res.json({ status: 'updated' })
+          })
+        })
       })
     },
 
@@ -178,7 +188,15 @@ Admin.FeaturedPeopleController = Class(Admin, 'FeaturedPeopleController')({
           return next(new ForbiddenError('not an admin'))
         }
 
-        var featured = FeaturedEntity(req.featuredPerson)
+        FeaturedEntity.findById(hashids.decode(req.featuredPerson.id)[0], function (err, entity) {
+          var featured = new FeaturedEntity(entity[0])
+
+          featured.destroy(functionn (err) {
+            if (err) { return next(err) }
+
+            res.json({ status: 'deleted' })
+          })
+        })
       })
     },
 
