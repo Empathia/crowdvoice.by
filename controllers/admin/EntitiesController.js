@@ -193,9 +193,6 @@ Admin.EntitiesController = Class(Admin, 'EntitiesController')({
       });
     }
 
-    //destroy : function destroy(req, res) {
-    //  return next(new NotFoundError());
-    //}
   }
 });
 
