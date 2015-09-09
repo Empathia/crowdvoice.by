@@ -4,7 +4,7 @@ Admin.FeaturedPeopleController = Class(Admin, 'FeaturedPeopleController')({
     var featuredPeopleResult = [],
       toAddToArray
 
-    async.each(featuredPeopleIdsArray, function (entityId, next) {
+    async.eachLimit(featuredPeopleIdsArray, 1, function (entityId, next) {
       FeaturedPerson.find({ entity_id: hashids.decode(entityId)[0] }, function (err, featuredPerson) {
         if (err) { return next(err) }
 
@@ -165,7 +165,7 @@ Admin.FeaturedPeopleController = Class(Admin, 'FeaturedPeopleController')({
 
           featured.entityId = hashids.decode(req.body.newEntityId)[0]
 
-          featured.save(functionn (err) {
+          featured.save(function (err) {
             if (err) { return next(err) }
 
             res.json({ status: 'updated' })
@@ -191,7 +191,7 @@ Admin.FeaturedPeopleController = Class(Admin, 'FeaturedPeopleController')({
         FeaturedEntity.findById(hashids.decode(req.featuredPerson.id)[0], function (err, entity) {
           var featured = new FeaturedEntity(entity[0])
 
-          featured.destroy(functionn (err) {
+          featured.destroy(function (err) {
             if (err) { return next(err) }
 
             res.json({ status: 'deleted' })
@@ -219,6 +219,30 @@ Admin.FeaturedPeopleController = Class(Admin, 'FeaturedPeopleController')({
         if (!isAllowed) {
           return next(new ForbiddenError('not an admin'))
         }
+
+        var realIds = req.body.entityIds.map(function (id) {
+          return hashids.decode(id)[0]
+        })
+
+        db('FeaturedPeople')
+          .whereIn('id', realIds)
+          .exec(function (err, result) {
+            if (err) { return next(err) }
+
+            var featuredPeople = Argon.Storage.Knex.processors[0](result),
+              featuredPerson
+
+            async.async(featuredPeople, function (val, next) {
+              featuredPerson = FeaturedPerson(val)
+              featuredPerson.position = realIds.indexOf(val)
+
+              featuredPerson.save(next)
+            }, function (err) {
+              if (err) { return next(err) }
+
+              return res.json({ status: 'updated positions' })
+            })
+          })
       })
     },
 
