@@ -1,25 +1,25 @@
-Admin.FeaturedPeopleController = Class(Admin, 'FeaturedPeopleController')({
+Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
 
-  featuredPeoplePresenter: function (featuredPeopleIdsArray, currentPerson, callback) {
-    var featuredPeopleResult = [],
+  presenter: function (featuredEntitiesIdsArray, entityType, currentPerson, callback) {
+    var featuredEntitiesResult = [],
       toAddToArray
 
-    async.eachLimit(featuredPeopleIdsArray, 1, function (entityId, next) {
-      FeaturedPerson.find({ entity_id: hashids.decode(entityId)[0] }, function (err, featuredPerson) {
+    async.eachLimit(featuredEntitiesIdsArray, 1, function (entityId, next) {
+      global['Featured' + entityType].find({ entity_id: hashids.decode(entityId)[0] }, function (err, featuredEntity) {
         if (err) { return next(err) }
 
         toAddToArray = {} // reset
 
-        toAddToArray = featuredPerson[0]
+        toAddToArray = featuredEntity[0]
         toAddToArray.id = hashids.encode(toAddToArray.id)
         toAddToArray.entityId = hashids.encode(toAddToArray.entityId)
 
-        EntitiesPresenter.build([featuredPerson[0].id], currentPerson, function (err, presented) {
+        EntitiesPresenter.build([featuredEntity[0].id], currentPerson, function (err, presented) {
           if (err) { return next(err) }
 
           toAddtoArray.entity = presented[0]
 
-          featuredPeopleResult.push(toAddToArray)
+          featuredEntitiesResult.push(toAddToArray)
 
           return next()
         })
@@ -27,27 +27,27 @@ Admin.FeaturedPeopleController = Class(Admin, 'FeaturedPeopleController')({
     }, function (err) {
       if (err) { return callback(err) }
 
-      return callback(null, featuredPeopleResult)
+      return callback(null, featuredEntitiesResult)
     })
   },
 
   prototype: {
 
-    // GET /admin/featuredPeople/:entityId*
-    // get entity and populate req.featuredPerson and res.locals.featuredPerson
+    // GET /admin/featured/:entityType/:entityId*
+    // get entity and populate req.featuredEntity and res.locals.featuredEntity
     getEntity: function (req, res, next) {
-      Admin.FeaturedPeopleController.featuredPeoplePresenter([req.params.entityId], req.currentPerson, function (err, presented) {
-        req.featuredPerson = presented[0]
-        res.locals.featuredPerson = presented[0]
+      Admin.FeaturedEntitiesController.presenter([req.params.entityId], req.currentPerson, req.params.entityType, function (err, presented) {
+        req.featuredEntity = presented[0]
+        res.locals.featuredEntity = presented[0]
 
-        return res.render('admin/featuredPeople/show.html', { layout: 'admin' })
+        return res.render('admin/featured/entities/show.html', { layout: 'admin' })
       })
     },
 
-    // GET /admin/featuredPeople
+    // GET /admin/featured/:entityType
     // get all featured people and render index view
     index: function (req, res, next) {
-      ACL.isAllowed('index', 'admin.featuredPeople', req.role, {}, function (err, isAllowed) {
+      ACL.isAllowed('index', 'admin.featuredEntities', req.role, {}, function (err, isAllowed) {
         if (err) { return next(err) }
 
         if (!isAllowed) {
@@ -57,46 +57,46 @@ Admin.FeaturedPeopleController = Class(Admin, 'FeaturedPeopleController')({
         FeaturedPeople.all(function (err, result) {
           if (err) { return next(err) }
 
-          Admin.FeaturedPeopleController.featuredPeoplePresenter(result, req.currentPerson, function (err, presented) {
+          Admin.FeaturedEntitiesController.presenter(result, req.currentPerson, req.params.entityType, function (err, presented) {
             if (err) { return next(err) }
 
-            res.locals.featuredPeople = presented
+            res.locals.featuredEntities = presented
 
-            return res.render('admin/featuredPeople/index.html', { layout: 'admin' })
+            return res.render('admin/featured/entities/index.html', { layout: 'admin' })
           })
         })
       })
     },
 
-    // GET /admin/featuredPeople/:entityId
+    // GET /admin/featured/:entityType/:entityId
     // render view for viewing a featured person
     show: function (req, res, next) {
-      ACL.isAllowed('show', 'admin.featuredPeople', req.role, {}, function (err, isAllowed) {
+      ACL.isAllowed('show', 'admin.featuredEntities', req.role, {}, function (err, isAllowed) {
         if (err) { return next(err) }
 
         if (!isAllowed) {
           return next(new ForbiddenError('not an admin'))
         }
 
-        return res.render('admin/featuredPeople/show.html', { layout: 'admin' })
+        return res.render('admin/featured/entities/show.html', { layout: 'admin' })
       })
     },
 
-    // GET /admin/featuredPeople/new
+    // GET /admin/featured/:entityType/new
     // render view for new entity
     new: function (req, res, next) {
-      ACL.isAllowed('new', 'admin.featuredPeople', req.role, {}, function (err, isAllowed) {
+      ACL.isAllowed('new', 'admin.featuredEntities', req.role, {}, function (err, isAllowed) {
         if (err) { return next(err) }
 
         if (!isAllowed) {
           return next(new ForbiddenError('not an admin'))
         }
 
-        return res.render('admin/featuredPeople/new.html', { layout: 'admin' })
+        return res.render('admin/featured/entities/new.html', { layout: 'admin' })
       })
     },
 
-    // POST /admin/featuredPeople/new
+    // POST /admin/featured/:entityType/new
     // create new featured entity from input
     create: function (req, res, next) {
       /*
@@ -105,9 +105,7 @@ Admin.FeaturedPeopleController = Class(Admin, 'FeaturedPeopleController')({
        * }
        */
 
-      // TODO: check entityId doesn't already exist
-
-      ACL.isAllowed('create', 'admin.featuredPeople', req.role, {}, function (err, isAllowed) {
+      ACL.isAllowed('create', 'admin.featuredEntities', req.role, {}, function (err, isAllowed) {
         if (err) { return next(err) }
 
         if (!isAllowed) {
@@ -122,27 +120,27 @@ Admin.FeaturedPeopleController = Class(Admin, 'FeaturedPeopleController')({
         featured.save(function (err) {
           if (err) { return next(err) }
 
-          // frontend should redirect to /admin/featuredPeople/:entityId (req.body.entityId)
-          res.json({ status: 'created' })
+          // frontend should redirect to /admin/featured/:entityType/:entityId (req.body.entityId)
+          return res.json({ status: 'created' })
         })
       })
     },
 
-    // GET /admin/featuredPeople/:entityId/edit
+    // GET /admin/featured/:entityType/:entityId/edit
     // render view for editing entity
     edit: function (req, res, next) {
-      ACL.isAllowed('edit', 'admin.featuredPeople', req.role, {}, function (err, isAllowed) {
+      ACL.isAllowed('edit', 'admin.featuredEntities', req.role, {}, function (err, isAllowed) {
         if (err) { return next(err) }
 
         if (!isAllowed) {
           return next(new ForbiddenError('not an admin'))
         }
 
-        return res.render('admin/featuredPeople/edit.html', { layout: 'admin' })
+        return res.render('admin/featured/entities/edit.html', { layout: 'admin' })
       })
     },
 
-    // PUT /admin/featuredPeople/:entityId/edit
+    // PUT /admin/featured/:entityType/:entityId/edit
     // update entity from input
     update: function (req, res, next) {
       /*
@@ -151,16 +149,14 @@ Admin.FeaturedPeopleController = Class(Admin, 'FeaturedPeopleController')({
        * }
        */
 
-      // TODO: check newEntityId doesn't already exist
-
-      ACL.isAllowed('update', 'admin.featuredPeople', req.role, {}, function (err, isAllowed) {
+      ACL.isAllowed('update', 'admin.featuredEntities', req.role, {}, function (err, isAllowed) {
         if (err) { return next(err) }
 
         if (!isAllowed) {
           return next(new ForbiddenError('not an admin'))
         }
 
-        FeaturedEntity.findById(hashids.decode(req.featuredPerson.id)[0], function (err, entity) {
+        global['Featured' + req.params.entityType].findById(hashids.decode(req.featuredEntity.id)[0], function (err, entity) {
           var featured = new FeaturedEntity(entity[0])
 
           featured.entityId = hashids.decode(req.body.newEntityId)[0]
@@ -168,39 +164,39 @@ Admin.FeaturedPeopleController = Class(Admin, 'FeaturedPeopleController')({
           featured.save(function (err) {
             if (err) { return next(err) }
 
-            res.json({ status: 'updated' })
+            return res.json({ status: 'updated' })
           })
         })
       })
     },
 
-    // DELETE /admin/featuredPeople/:entityId
-    // delete req.featuredPerson entity
+    // DELETE /admin/featured/:entityType/:entityId
+    // delete req.featuredEntity entity
     destroy: function (req, res, next) {
       /*
        * req.body = {}
        */
 
-      ACL.isAllowed('destroy', 'admin.featuredPeople', req.role, {}, function (err, isAllowed) {
+      ACL.isAllowed('destroy', 'admin.featuredEntities', req.role, {}, function (err, isAllowed) {
         if (err) { return next(err) }
 
         if (!isAllowed) {
           return next(new ForbiddenError('not an admin'))
         }
 
-        FeaturedEntity.findById(hashids.decode(req.featuredPerson.id)[0], function (err, entity) {
+        global['Featured' + req.params.entityType].findById(hashids.decode(req.featuredEntity.id)[0], function (err, entity) {
           var featured = new FeaturedEntity(entity[0])
 
           featured.destroy(function (err) {
             if (err) { return next(err) }
 
-            res.json({ status: 'deleted' })
+            return res.json({ status: 'deleted' })
           })
         })
       })
     },
 
-    // POST /admin/featuredPeople/updatePositions
+    // POST /admin/featured/:entityType/updatePositions
     // update the positions of all the entities with input
     updatePositions: function (req, res, next) {
       /*
@@ -213,7 +209,7 @@ Admin.FeaturedPeopleController = Class(Admin, 'FeaturedPeopleController')({
        * }
        */
 
-      ACL.isAllowed('updatePositions', 'admin.featuredPeople', req.role, {}, function (err, isAllowed) {
+      ACL.isAllowed('updatePositions', 'admin.featuredEntities', req.role, {}, function (err, isAllowed) {
         if (err) { return next(err) }
 
         if (!isAllowed) {
@@ -224,19 +220,19 @@ Admin.FeaturedPeopleController = Class(Admin, 'FeaturedPeopleController')({
           return hashids.decode(id)[0]
         })
 
-        db('FeaturedPeople')
+        db('Featured' + req.params.entityType)
           .whereIn('id', realIds)
           .exec(function (err, result) {
             if (err) { return next(err) }
 
-            var featuredPeople = Argon.Storage.Knex.processors[0](result),
-              featuredPerson
+            var featuredEntities = Argon.Storage.Knex.processors[0](result),
+              featuredEntity
 
-            async.async(featuredPeople, function (val, next) {
-              featuredPerson = FeaturedPerson(val)
-              featuredPerson.position = realIds.indexOf(val)
+            async.async(featuredEntities, function (val, next) {
+              featuredEntity = new global['Featured' + req.params.entityType](val)
+              featuredEntity.position = realIds.indexOf(val)
 
-              featuredPerson.save(next)
+              featuredEntity.save(next)
             }, function (err) {
               if (err) { return next(err) }
 
@@ -250,4 +246,4 @@ Admin.FeaturedPeopleController = Class(Admin, 'FeaturedPeopleController')({
 
 })
 
-module.exports = new Admin.FeaturedPeopleController()
+module.exports = new Admin.FeaturedEntitiesController()
