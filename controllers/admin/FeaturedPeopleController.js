@@ -102,9 +102,10 @@ Admin.FeaturedPeopleController = Class(Admin, 'FeaturedPeopleController')({
       /*
        * req.body = {
        *   entityId: Hashids.encode result,
-       *   position: Number,
        * }
        */
+
+      // TODO: check entityId doesn't already exist
 
       ACL.isAllowed('create', 'admin.featuredPeople', req.role, {}, function (err, isAllowed) {
         if (err) { return next(err) }
@@ -115,23 +116,14 @@ Admin.FeaturedPeopleController = Class(Admin, 'FeaturedPeopleController')({
 
         var featured = new FeaturedPerson({
           entityId: hashids.decode(req.body.entityId)[0],
-          position: req.body.position,
+          position: 0,
         })
 
         featured.save(function (err) {
           if (err) { return next(err) }
 
-          Admin.FeaturedPeopleController.rectifyPositions(function (err) {
-            if (err) { return next(err) }
-
-            return res.format({
-              html: function () {
-                res.render('admin/featuredPeople/', { layout: 'admin' })
-              },
-              json: function () {
-              },
-            })
-          })
+          // frontend should redirect to /admin/featuredPeople/:entityId (req.body.entityId)
+          res.json({ status: 'created' })
         })
       })
     },
@@ -150,21 +142,35 @@ Admin.FeaturedPeopleController = Class(Admin, 'FeaturedPeopleController')({
       })
     },
 
-    // POST /admin/featuredPeople/:entityId/edit
+    // PUT /admin/featuredPeople/:entityId/edit
     // update entity from input
     update: function (req, res, next) {
+      /*
+       * req.body = {
+       *   newEntityId: Hashids.encode result,
+       * }
+       */
+
+      // TODO: check newEntityId doesn't already exist
+
       ACL.isAllowed('update', 'admin.featuredPeople', req.role, {}, function (err, isAllowed) {
         if (err) { return next(err) }
 
         if (!isAllowed) {
           return next(new ForbiddenError('not an admin'))
         }
+
+        var featured = FeaturedEntity(req.featuredPerson)
       })
     },
 
     // DELETE /admin/featuredPeople/:entityId
     // delete req.featuredPerson entity
     destroy: function (req, res, next) {
+      /*
+       * req.body = {}
+       */
+
       ACL.isAllowed('destroy', 'admin.featuredPeople', req.role, {}, function (err, isAllowed) {
         if (err) { return next(err) }
 
@@ -179,6 +185,16 @@ Admin.FeaturedPeopleController = Class(Admin, 'FeaturedPeopleController')({
     // POST /admin/featuredPeople/updatePositions
     // update the positions of all the entities with input
     updatePositions: function (req, res, next) {
+      /*
+       * req.body = {
+       *   entityIds: [
+       *     Hashids.encode result,
+       *     Hashids.encode result,
+       *     ...
+       *   ]
+       * }
+       */
+
       ACL.isAllowed('updatePositions', 'admin.featuredPeople', req.role, {}, function (err, isAllowed) {
         if (err) { return next(err) }
 
