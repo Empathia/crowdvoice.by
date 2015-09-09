@@ -5,7 +5,7 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
       toAddToArray
 
     async.eachLimit(featuredEntitiesIdsArray, 1, function (entityId, next) {
-      global['Featured' + entityType].find({ entity_id: hashids.decode(entityId)[0] }, function (err, featuredEntity) {
+      global['Featured' + inflection.capitalize(entityType)].find({ entity_id: hashids.decode(entityId)[0] }, function (err, featuredEntity) {
         if (err) { return next(err) }
 
         toAddToArray = {} // reset
@@ -156,7 +156,7 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
           return next(new ForbiddenError('not an admin'))
         }
 
-        global['Featured' + req.params.entityType].findById(hashids.decode(req.featuredEntity.id)[0], function (err, entity) {
+        global['Featured' + inflection.capitalize(req.params.entityType)].findById(hashids.decode(req.featuredEntity.id)[0], function (err, entity) {
           var featured = new FeaturedEntity(entity[0])
 
           featured.entityId = hashids.decode(req.body.newEntityId)[0]
@@ -184,7 +184,7 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
           return next(new ForbiddenError('not an admin'))
         }
 
-        global['Featured' + req.params.entityType].findById(hashids.decode(req.featuredEntity.id)[0], function (err, entity) {
+        global['Featured' + inflection.capitalize(req.params.entityType)].findById(hashids.decode(req.featuredEntity.id)[0], function (err, entity) {
           var featured = new FeaturedEntity(entity[0])
 
           featured.destroy(function (err) {
@@ -220,7 +220,7 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
           return hashids.decode(id)[0]
         })
 
-        db('Featured' + req.params.entityType)
+        db('Featured' + inflection.capitalize(req.params.entityType))
           .whereIn('id', realIds)
           .exec(function (err, result) {
             if (err) { return next(err) }
@@ -229,7 +229,7 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
               featuredEntity
 
             async.async(featuredEntities, function (val, next) {
-              featuredEntity = new global['Featured' + req.params.entityType](val)
+              featuredEntity = new global['Featured' + inflection.capitalize(req.params.entityType)](val)
               featuredEntity.position = realIds.indexOf(val)
 
               featuredEntity.save(next)
