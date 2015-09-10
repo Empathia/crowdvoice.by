@@ -22,14 +22,6 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
             </div>\
         </div>',
 
-    BUTTON_ACTIONS_HTML : '\
-        <button class="header-notification-button header-actions-button cv-button small rounded -p0 -rel has-new-notifications">\
-            <svg class="header-actions-svg -s17">\
-                <use xlink:href="#svg-notifications"></use>\
-            </svg>\
-            <span class="ui-badge -abs">22</span>\
-        </button>',
-
     prototype : {
         /* private */
         el : null,
