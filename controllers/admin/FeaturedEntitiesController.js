@@ -221,7 +221,7 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
         })
 
         db('Featured' + inflection.capitalize(req.params.entityType))
-          .whereIn('id', realIds)
+          .whereIn('entity_id', realIds)
           .exec(function (err, result) {
             if (err) { return next(err) }
 
@@ -240,6 +240,9 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
             })
           })
       })
+    },
+
+    searchEntities: function (req, res, next) {
     },
 
   },
