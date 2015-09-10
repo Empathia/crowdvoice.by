@@ -243,6 +243,7 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
     },
 
     searchEntities: function (req, res, next) {
+      return SearchController.prototype['search' + inflection.transform(req.params.entityType, ['capitalize', 'pluralize'])](req, res, next)
     },
 
   },
