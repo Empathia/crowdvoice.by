@@ -37,10 +37,12 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
     // get entity and populate req.featuredEntity and res.locals.featuredEntity
     getEntity: function (req, res, next) {
       Admin.FeaturedEntitiesController.presenter([req.params.entityId], req.currentPerson, req.params.entityType, function (err, presented) {
+        if (err) { return next(err) }
+
         req.featuredEntity = presented[0]
         res.locals.featuredEntity = presented[0]
 
-        return res.render('admin/featured/entities/show.html', { layout: 'admin' })
+        return next()
       })
     },
 
@@ -118,10 +120,16 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
         })
 
         featured.save(function (err) {
-          if (err) { return next(err) }
+          if (err) {
+            res.locals.errors = err
+            req.errors = err
+            logger.log(err)
+            logger.log(err.stack)
+            return res.render('admin/featured/entities/new.html', { layout: 'admin' })
+          }
 
-          // frontend should redirect to /admin/featured/:entityType/:entityId (req.body.entityId)
-          return res.json({ status: 'created' })
+          req.flash('success', 'Featured ' + req.entityType + ' created')
+          return res.redirect('/admin/featured/' + req.params.entityType)
         })
       })
     },
@@ -162,9 +170,16 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
           featured.entityId = hashids.decode(req.body.newEntityId)[0]
 
           featured.save(function (err) {
-            if (err) { return next(err) }
+            if (err) {
+              res.locals.errors = err
+              req.errors = err
+              logger.log(err)
+              logger.log(err.stack)
+              return res.render('admin/featured/entities/edit.html', { layout: 'admin' })
+            }
 
-            return res.json({ status: 'updated' })
+            req.flash('success', 'Featured ' + req.entityType + ' updated')
+            return res.redirect('/admin/featured/' + req.params.entityType)
           })
         })
       })
@@ -188,9 +203,16 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
           var featured = new FeaturedEntity(entity[0])
 
           featured.destroy(function (err) {
-            if (err) { return next(err) }
+            if (err) {
+              res.locals.errors = err
+              req.errors = err
+              logger.log(err)
+              logger.log(err.stack)
+              return res.render('admin/featured/entities/index.html', { layout: 'admin' })
+            }
 
-            return res.json({ status: 'deleted' })
+            req.flash('success', 'Featured ' + req.entityType + ' deleted')
+            return res.redirect('/admin/featured/' + req.params.entityType)
           })
         })
       })
