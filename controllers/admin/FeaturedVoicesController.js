@@ -14,7 +14,7 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
         toAddToArray.id = hashids.encode(toAddToArray.id)
         toAddToArray.voiceId = hashids.encode(toAddToArray.voiceId)
 
-        VoicesPresenter.build([featuredVoice[0].id], currentPerson, function (err, presented) {
+        VoicesPresenter.build([featuredVoice[0].voiceId], currentPerson, function (err, presented) {
           if (err) { return next(err) }
 
           toAddtoArray.entity = presented[0]
@@ -37,17 +37,19 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
     // get entity and populate req.featuredVoice and res.locals.featuredVoice
     getVoice: function (req, res, next) {
       Admin.FeaturedEntitiesController.presenter([req.params.voiceId], req.currentPerson, function (err, presented) {
+        if (err) { return next(err) }
+
         req.featuredVoice = presented[0]
         res.locals.featuredVoice = presented[0]
 
-        return res.render('admin/featured/voices/show.html', { layout: 'admin' })
+        return next()
       })
     },
 
     // GET /admin/featured/voices
     // get all featured people and render index view
     index: function (req, res, next) {
-      ACL.isAllowed('index', 'admin.featuredEntities', req.role, {}, function (err, isAllowed) {
+      ACL.isAllowed('index', 'admin.featuredVoices', req.role, {}, function (err, isAllowed) {
         if (err) { return next(err) }
 
         if (!isAllowed) {
@@ -71,7 +73,7 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
     // GET /admin/featured/voices/:voiceId
     // render view for viewing a featured person
     show: function (req, res, next) {
-      ACL.isAllowed('show', 'admin.featuredEntities', req.role, {}, function (err, isAllowed) {
+      ACL.isAllowed('show', 'admin.featuredVoices', req.role, {}, function (err, isAllowed) {
         if (err) { return next(err) }
 
         if (!isAllowed) {
@@ -85,7 +87,7 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
     // GET /admin/featured/voices/new
     // render view for new entity
     new: function (req, res, next) {
-      ACL.isAllowed('new', 'admin.featuredEntities', req.role, {}, function (err, isAllowed) {
+      ACL.isAllowed('new', 'admin.featuredVoices', req.role, {}, function (err, isAllowed) {
         if (err) { return next(err) }
 
         if (!isAllowed) {
@@ -105,7 +107,7 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
        * }
        */
 
-      ACL.isAllowed('create', 'admin.featuredEntities', req.role, {}, function (err, isAllowed) {
+      ACL.isAllowed('create', 'admin.featuredVoices', req.role, {}, function (err, isAllowed) {
         if (err) { return next(err) }
 
         if (!isAllowed) {
@@ -118,10 +120,16 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
         })
 
         featured.save(function (err) {
-          if (err) { return next(err) }
+          if (err) {
+            res.locals.errors = err
+            req.errors = err
+            logger.log(err)
+            logger.log(err.stack)
+            return res.render('admin/featured/voices/new.html', { layout: 'admin' })
+          }
 
-          // frontend should redirect to /admin/featured/voices/:voiceId (req.body.voiceId)
-          return res.json({ status: 'created' })
+          req.flash('success', 'Featured voice created')
+          return res.redirect('/admin/featured/voices')
         })
       })
     },
@@ -129,7 +137,7 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
     // GET /admin/featured/voices/:voiceId/edit
     // render view for editing entity
     edit: function (req, res, next) {
-      ACL.isAllowed('edit', 'admin.featuredEntities', req.role, {}, function (err, isAllowed) {
+      ACL.isAllowed('edit', 'admin.featuredVoices', req.role, {}, function (err, isAllowed) {
         if (err) { return next(err) }
 
         if (!isAllowed) {
@@ -149,7 +157,7 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
        * }
        */
 
-      ACL.isAllowed('update', 'admin.featuredEntities', req.role, {}, function (err, isAllowed) {
+      ACL.isAllowed('update', 'admin.featuredVoices', req.role, {}, function (err, isAllowed) {
         if (err) { return next(err) }
 
         if (!isAllowed) {
@@ -162,9 +170,16 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
           featured.voiceId = hashids.decode(req.body.newEntityId)[0]
 
           featured.save(function (err) {
-            if (err) { return next(err) }
+            if (err) {
+              res.locals.errors = err
+              req.errors = err
+              logger.log(err)
+              logger.log(err.stack)
+              return res.render('admin/featured/voices/edit.html', { layout: 'admin' })
+            }
 
-            return res.json({ status: 'updated' })
+            req.flash('success', 'Featured voice updated')
+            return res.redirect('/admin/featured/voices')
           })
         })
       })
@@ -177,7 +192,7 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
        * req.body = {}
        */
 
-      ACL.isAllowed('destroy', 'admin.featuredEntities', req.role, {}, function (err, isAllowed) {
+      ACL.isAllowed('destroy', 'admin.featuredVoices', req.role, {}, function (err, isAllowed) {
         if (err) { return next(err) }
 
         if (!isAllowed) {
@@ -188,9 +203,16 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
           var featured = new FeaturedEntity(entity[0])
 
           featured.destroy(function (err) {
-            if (err) { return next(err) }
+            if (err) {
+              res.locals.errors = err
+              req.errors = err
+              logger.log(err)
+              logger.log(err.stack)
+              return res.render('admin/featured/voices/index.html', { layout: 'admin' })
+            }
 
-            return res.json({ status: 'deleted' })
+            req.flash('success', 'Featured voice deleted')
+            return res.redirect('/admin/featured/voices')
           })
         })
       })
@@ -209,7 +231,7 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
        * }
        */
 
-      ACL.isAllowed('updatePositions', 'admin.featuredEntities', req.role, {}, function (err, isAllowed) {
+      ACL.isAllowed('updatePositions', 'admin.featuredVoices', req.role, {}, function (err, isAllowed) {
         if (err) { return next(err) }
 
         if (!isAllowed) {

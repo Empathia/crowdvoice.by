@@ -14,7 +14,7 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
         toAddToArray.id = hashids.encode(toAddToArray.id)
         toAddToArray.entityId = hashids.encode(toAddToArray.entityId)
 
-        EntitiesPresenter.build([featuredEntity[0].id], currentPerson, function (err, presented) {
+        EntitiesPresenter.build([featuredEntity[0].entityId], currentPerson, function (err, presented) {
           if (err) { return next(err) }
 
           toAddtoArray.entity = presented[0]
