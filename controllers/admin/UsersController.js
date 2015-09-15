@@ -15,6 +15,10 @@ Admin.UsersController = Class(Admin, 'UsersController')({
             return next(err);
           }
 
+          result.forEach(function(user){
+            user.id = hashids.encode(user.id);
+          });
+
           res.locals.users = result;
 
           res.render('admin/users/index.html', { layout : 'admin' });
@@ -192,8 +196,11 @@ Admin.UsersController = Class(Admin, 'UsersController')({
             return next(new NotFoundError());
           }
 
+          result[0].id = hashids.encode(result[0].id);
+
           res.locals.user = result[0];
-          res.render('admin/users/edit.html');
+
+          res.render('admin/users/edit.html',  { layout : 'admin' });
         });
       });
     },
@@ -221,7 +228,7 @@ Admin.UsersController = Class(Admin, 'UsersController')({
 
           user.username = req.body.username;
           user.email = req.body.email;
-          user.password = req.body.password;
+          //user.password = req.body.password;
 
           user.save(function(err, result) {
             if (err) {
@@ -231,7 +238,7 @@ Admin.UsersController = Class(Admin, 'UsersController')({
             }
 
             req.flash('success', 'User updated');
-            res.redirect('/admin/users/' + req.params.userId);
+            res.redirect('/admin/users/' );
           });
         });
       });
@@ -247,7 +254,7 @@ Admin.UsersController = Class(Admin, 'UsersController')({
           return next(new ForbiddenError());
         }
 
-        User.find({ id : req.params.userId}, function(err, result) {
+        User.find({ id : hashids.decode(req.params.userId)[0] }, function(err, result) {
           if (err) {
             return next(err);
           }
