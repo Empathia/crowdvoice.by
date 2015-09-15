@@ -216,7 +216,7 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
               featuredEntity
 
             async.each(featuredEntities, function (val, next) {
-              featuredEntity = new global['Featured' + inflection.tramsform(req.params.entityType, ['capitalize, 'singularize'])](val)
+              featuredEntity = new global['Featured' + inflection.tramsform(req.params.entityType, ['capitalize', 'singularize'])](val)
               featuredEntity.position = realIds.indexOf(val)
 
               featuredEntity.save(next)
