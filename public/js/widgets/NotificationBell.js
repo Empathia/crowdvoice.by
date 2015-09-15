@@ -2,7 +2,7 @@
 
 Class('NotificationBell').inherits(Widget)({
   HTML : '\
-  <button class="header-notification-button header-actions-button cv-button small rounded -p0 -rel has-new-notifications">\
+  <button class="header-notification-button header-actions-button cv-button small rounded -p0 -rel">\
       <svg class="header-actions-svg -s17">\
           <use xlink:href="#svg-notifications"></use>\
       </svg>\
@@ -31,8 +31,10 @@ Class('NotificationBell').inherits(Widget)({
       socket.on('notifications', function(data) {
         if (data > 0) {
           bell.element.find('.ui-badge').show().html(data);
+          bell.element.addClass('has-new-notifications');
         } else {
           bell.element.find('.ui-badge').hide();
+          bell.element.removeClass('has-new-notifications');
         }
       });
 

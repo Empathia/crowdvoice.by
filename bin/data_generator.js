@@ -114,7 +114,7 @@ async.series([function(next) {
         profileName : 'tyrion-lannister',
         isAnonymous : false,
         isAdmin     : true,
-        description : 'Tyrion Lannister is a fictional character in the A Song of Ice and Fire series of fantasy novels by American author George R. R. Martin, and its television adaptation Game of Thrones',
+        description : 'Tyrion Lannister is a fictional character in the A Song of Ice and Fire series of fantasy novels.',
         location : 'King\'s Landing'
       },
       user : data.users.tyrion,
