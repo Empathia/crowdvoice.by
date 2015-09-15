@@ -4,7 +4,7 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
     var featuredEntitiesResult = [],
       toAddToArray
 
-    async.eachLimit(featuredEntitiesIdsArray, 1, function (entityId, next) {
+    async.each(featuredEntitiesIdsArray, function (entityId, next) {
       global['Featured' + inflection.transform(entityType, ['capitalize', 'singularize'])].find({ entity_id: hashids.decode(entityId)[0] }, function (err, featuredEntity) {
         if (err) { return next(err) }
 

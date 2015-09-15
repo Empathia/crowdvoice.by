@@ -4,7 +4,7 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
     var featuredVoicesResult = [],
       toAddToArray
 
-    async.eachLimit(featuredVoicesIdsArray, 1, function (voiceId, next) {
+    async.each(featuredVoicesIdsArray, function (voiceId, next) {
       FeaturedVoices.find({ voice_id: hashids.decode(voiceId)[0] }, function (err, featuredVoice) {
         if (err) { return next(err) }
 
