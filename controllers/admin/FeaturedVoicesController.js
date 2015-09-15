@@ -17,7 +17,7 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
         VoicesPresenter.build([featuredVoice[0].voiceId], currentPerson, function (err, presented) {
           if (err) { return next(err) }
 
-          toAddtoArray.entity = presented[0]
+          toAddtoArray.voice = presented[0]
 
           featuredVoicesResult.push(toAddToArray)
 
@@ -34,9 +34,9 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
   prototype: {
 
     // GET /admin/featured/voices/:voiceId*
-    // get entity and populate req.featuredVoice and res.locals.featuredVoice
+    // get voice and populate req.featuredVoice and res.locals.featuredVoice
     getVoice: function (req, res, next) {
-      Admin.FeaturedEntitiesController.presenter([req.params.voiceId], req.currentPerson, function (err, presented) {
+      Admin.FeaturedVoicesController.presenter([req.params.voiceId], req.currentPerson, function (err, presented) {
         if (err) { return next(err) }
 
         req.featuredVoice = presented[0]
@@ -56,13 +56,13 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
           return next(new ForbiddenError('not an admin'))
         }
 
-        FeaturedPeople.all(function (err, result) {
+        FeaturedVoices.all(function (err, result) {
           if (err) { return next(err) }
 
           Admin.FeaturedVoicesController.presenter(result, req.currentPerson, function (err, presented) {
             if (err) { return next(err) }
 
-            res.locals.featuredEntities = presented
+            res.locals.featuredVoices = presented
 
             return res.render('admin/featured/voices/index.html', { layout: 'admin' })
           })
@@ -85,7 +85,7 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
     },
 
     // GET /admin/featured/voices/new
-    // render view for new entity
+    // render view for new voice
     new: function (req, res, next) {
       ACL.isAllowed('new', 'admin.featuredVoices', req.role, {}, function (err, isAllowed) {
         if (err) { return next(err) }
@@ -99,7 +99,7 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
     },
 
     // POST /admin/featured/voices/new
-    // create new featured entity from input
+    // create new featured voice from input
     create: function (req, res, next) {
       /*
        * req.body = {
@@ -135,7 +135,7 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
     },
 
     // GET /admin/featured/voices/:voiceId/edit
-    // render view for editing entity
+    // render view for editing voice
     edit: function (req, res, next) {
       ACL.isAllowed('edit', 'admin.featuredVoices', req.role, {}, function (err, isAllowed) {
         if (err) { return next(err) }
@@ -149,11 +149,11 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
     },
 
     // PUT /admin/featured/voices/:voiceId/edit
-    // update entity from input
+    // update voice from input
     update: function (req, res, next) {
       /*
        * req.body = {
-       *   newEntityId: Hashids.encode result,
+       *   newVoiceId: Hashids.encode result,
        * }
        */
 
@@ -164,10 +164,10 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
           return next(new ForbiddenError('not an admin'))
         }
 
-        FeaturedVoice.findById(hashids.decode(req.featuredVoice.id)[0], function (err, entity) {
-          var featured = new FeaturedEntity(entity[0])
+        FeaturedVoice.findById(hashids.decode(req.featuredVoice.id)[0], function (err, voice) {
+          var featured = new FeaturedVoice(voice[0])
 
-          featured.voiceId = hashids.decode(req.body.newEntityId)[0]
+          featured.voiceId = hashids.decode(req.body.newVoiceId)[0]
 
           featured.save(function (err) {
             if (err) {
@@ -186,7 +186,7 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
     },
 
     // DELETE /admin/featured/voices/:voiceId
-    // delete req.featuredVoice entity
+    // delete req.featuredVoice voice
     destroy: function (req, res, next) {
       /*
        * req.body = {}
@@ -199,8 +199,8 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
           return next(new ForbiddenError('not an admin'))
         }
 
-        FeaturedVoice.findById(hashids.decode(req.featuredVoice.id)[0], function (err, entity) {
-          var featured = new FeaturedEntity(entity[0])
+        FeaturedVoice.findById(hashids.decode(req.featuredVoice.id)[0], function (err, voice) {
+          var featured = new FeaturedVoice(voice[0])
 
           featured.destroy(function (err) {
             if (err) {
@@ -219,7 +219,7 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
     },
 
     // POST /admin/featured/voices/updatePositions
-    // update the positions of all the entities with input
+    // update the positions of all the voices with input
     updatePositions: function (req, res, next) {
       /*
        * req.body = {

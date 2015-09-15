@@ -56,10 +56,10 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
           return next(new ForbiddenError('not an admin'))
         }
 
-        FeaturedPeople.all(function (err, result) {
+        FeaturedPeople.all(function (err, allFeatured) {
           if (err) { return next(err) }
 
-          Admin.FeaturedEntitiesController.presenter(result, req.currentPerson, req.params.entityType, function (err, presented) {
+          Admin.FeaturedEntitiesController.presenter(allFeatured, req.currentPerson, req.params.entityType, function (err, presented) {
             if (err) { return next(err) }
 
             res.locals.featuredEntities = presented
