@@ -135,54 +135,15 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
     },
 
     // GET /admin/featured/:entityType/:entityId/edit
-    // render view for editing entity
+    // 404
     edit: function (req, res, next) {
-      ACL.isAllowed('edit', 'admin.featuredEntities', req.role, {}, function (err, isAllowed) {
-        if (err) { return next(err) }
-
-        if (!isAllowed) {
-          return next(new ForbiddenError('not an admin'))
-        }
-
-        return res.render('admin/featured/entities/edit.html', { layout: 'admin' })
-      })
+      return next(new NotFoundError())
     },
 
     // PUT /admin/featured/:entityType/:entityId/edit
-    // update entity from input
+    // 404
     update: function (req, res, next) {
-      /*
-       * req.body = {
-       *   newEntityId: Hashids.encode result,
-       * }
-       */
-
-      ACL.isAllowed('update', 'admin.featuredEntities', req.role, {}, function (err, isAllowed) {
-        if (err) { return next(err) }
-
-        if (!isAllowed) {
-          return next(new ForbiddenError('not an admin'))
-        }
-
-        global['Featured' + inflection.transform(req.params.entityType, ['capitalize', 'singularize'])].findById(hashids.decode(req.featuredEntity.id)[0], function (err, entity) {
-          var featured = new FeaturedEntity(entity[0])
-
-          featured.entityId = hashids.decode(req.body.newEntityId)[0]
-
-          featured.save(function (err) {
-            if (err) {
-              res.locals.errors = err
-              req.errors = err
-              logger.log(err)
-              logger.log(err.stack)
-              return res.render('admin/featured/entities/edit.html', { layout: 'admin' })
-            }
-
-            req.flash('success', 'Featured ' + req.entityType + ' updated')
-            return res.redirect('/admin/featured/' + req.params.entityType)
-          })
-        })
-      })
+      return next(new NotFoundError())
     },
 
     // DELETE /admin/featured/:entityType/:entityId
