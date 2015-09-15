@@ -27,7 +27,11 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
     }, function (err) {
       if (err) { return callback(err) }
 
-      return callback(null, featuredEntitiesResult)
+      var result = featuredEntitiesResult.sort(function (a, b) {
+        return a.position - b.position
+      })
+
+      return callback(null, result)
     })
   },
 

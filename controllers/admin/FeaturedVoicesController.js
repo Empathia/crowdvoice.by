@@ -27,7 +27,11 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
     }, function (err) {
       if (err) { return callback(err) }
 
-      return callback(null, featuredVoicesResult)
+      var result = featuredVoicesResult.sort(function (a, b) {
+        return a.position - b.position
+      })
+
+      return callback(null, result)
     })
   },
 
