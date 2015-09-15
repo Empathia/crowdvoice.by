@@ -206,61 +206,75 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
     },
 
     follow : function follow(req, res, next) {
-      var entity = new Entity(req.entity),
-        follower = new Entity(req.currentPerson);
-      entity.id = hashids.decode(entity.id)[0];
-      follower.id = hashids.decode(follower.id)[0];
-
-      // we don't want to allow the user to follow if he is anonymous
-      if (follower.isAnonymous) {
-        return next(new ForbiddenError('Anonymous users can\'t follow'));
-      }
-
-      EntityFollower.find({
-        follower_id: follower.id,
-        followed_id: entity.id
-      }, function(err, result) {
+      ACL.isAllowed('followAsOrg', 'entities', req.role, {
+        currentPersonId: req.currentPerson.id,
+        orgId: req.body.followerId
+      }, function (err, response) {
         if (err) { return next(err); }
 
-        if (result.length > 0) { // already following?
-          // unfollow
-          follower.unfollowEntity(entity, function(err) {
+        if (!response.isAllowed) {
+          return next(new ForbiddenError('not owner of provided entity'));
+        }
+
+        Entity.findById(hashids.decode(req.body.followerId)[0], function (err, followers) {
+          if (err) { return next(err); }
+
+          var entity = new Entity(req.entity),
+            follower = followers[0];
+          entity.id = hashids.decode(entity.id)[0];
+
+          // we don't want to allow the user to follow if he is anonymous
+          if (follower.isAnonymous) {
+            return next(new ForbiddenError('Anonymous users can\'t follow'));
+          }
+
+          EntityFollower.find({
+            follower_id: follower.id,
+            followed_id: entity.id
+          }, function(err, result) {
             if (err) { return next(err); }
 
-            res.format({
-              html: function() {
-                req.flash('success', 'Unfollowed successfully.');
-                res.redirect('/' + entity.profileName);
-              },
-              json: function() {
-                res.json({ status: 'unfollowed' });
-              }
-            });
-          });
-        } else {
-          // follow
-          follower.followEntity(entity, function (err, entityFollowerRecordId) {
-            if (err) { return next(err); }
-
-            EntityFollower.findById(entityFollowerRecordId[0], function (err, entityFollower) {
-              if (err) { return next(err); }
-
-              FeedInjector().inject(follower.id, 'who entityFollowsEntity', entityFollower[0], function (err) {
+            if (result.length > 0) { // already following?
+              // unfollow
+              follower.unfollowEntity(entity, function(err) {
                 if (err) { return next(err); }
 
                 res.format({
                   html: function() {
-                    req.flash('success', 'Followed successfully.');
+                    req.flash('success', 'Unfollowed successfully.');
                     res.redirect('/' + entity.profileName);
                   },
                   json: function() {
-                    res.json({ status: 'followed' });
+                    res.json({ status: 'unfollowed' });
                   }
                 });
               });
-            });
+            } else {
+              // follow
+              follower.followEntity(entity, function (err, entityFollowerRecordId) {
+                if (err) { return next(err); }
+
+                EntityFollower.findById(entityFollowerRecordId[0], function (err, entityFollower) {
+                  if (err) { return next(err); }
+
+                  FeedInjector().inject(follower.id, 'who entityFollowsEntity', entityFollower[0], function (err) {
+                    if (err) { return next(err); }
+
+                    res.format({
+                      html: function() {
+                        req.flash('success', 'Followed successfully.');
+                        res.redirect('/' + entity.profileName);
+                      },
+                      json: function() {
+                        res.json({ status: 'followed' });
+                      }
+                    });
+                  });
+                });
+              });
+            }
           });
-        }
+        });
       });
     },
 
