@@ -250,7 +250,7 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
             var featuredVoices = Argon.Storage.Knex.processors[0](result),
               featuredVoice
 
-            async.async(featuredVoices, function (val, next) {
+            async.each(featuredVoices, function (val, next) {
               featuredVoice = new FeaturedVoice(val)
               featuredVoice.position = realIds.indexOf(val)
 

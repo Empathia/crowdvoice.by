@@ -250,7 +250,7 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
             var featuredEntities = Argon.Storage.Knex.processors[0](result),
               featuredEntity
 
-            async.async(featuredEntities, function (val, next) {
+            async.each(featuredEntities, function (val, next) {
               featuredEntity = new global['Featured' + inflection.capitalize(req.params.entityType)](val)
               featuredEntity.position = realIds.indexOf(val)
 
