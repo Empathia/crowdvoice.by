@@ -515,60 +515,74 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
     },
 
     follow : function follow(req, res, next) {
-      var follower = new Entity(req.currentPerson);
-      follower.id = hashids.decode(follower.id)[0];
-
-      // we don't want to allow the user to follow if he is anonymous
-      if (follower.isAnonymous) {
-        return next(new ForbiddenError('Anonymous users can\'t follow'));
-      }
-
-      // check if user is already following, if yes unfollow
-      VoiceFollower.find({
-        entity_id: follower.id,
-        voice_id: req.activeVoice.id
-      }, function (err, result) {
+      ACL.isAllowed('followAsOrg', 'entities', req.role, {
+        currentPersonId: req.currentPerson.id,
+        orgId: req.body.followerId
+      }, function (err, response) {
         if (err) { return next(err); }
 
-        if (result.length > 0) { // we're following this voice
-          // unfollow
-          follower.unfollowVoice(req.activeVoice, function (err) {
+        if (!response.isAllowed) {
+          return next(new ForbiddenError('not owner of provided entity'));
+        }
+
+        Entity.findById(hashids.decode(req.body.followerId)[0], function (err, followers) {
+          if (err) { return next(err); }
+
+          var follower = followers[0];
+
+          // we don't want to allow the user to follow if he is anonymous
+          if (follower.isAnonymous) {
+            return next(new ForbiddenError('Anonymous users can\'t follow'));
+          }
+
+          // check if user is already following, if yes unfollow
+          VoiceFollower.find({
+            entity_id: follower.id,
+            voice_id: req.activeVoice.id
+          }, function (err, result) {
             if (err) { return next(err); }
 
-            res.format({
-              html: function () {
-                req.flash('success', 'Voice has been unfollowed.');
-                res.redirect('/' + req.params.profileName + '/' + req.params.voice_slug)
-              },
-              json: function () {
-                res.json({ status: 'unfollowed' });
-              }
-            })
-          });
-        } else {
-          // follow
-          follower.followVoice(req.activeVoice, function (err, voiceFollowerRecordId) {
-            if (err) { return next(err); }
-
-            VoiceFollower.findById(voiceFollowerRecordId[0], function (err, voiceFollower) {
-              if (err) { return next(err); }
-
-              FeedInjector().inject(follower.id, 'who entityFollowsVoice', voiceFollower[0], function (err) {
+            if (result.length > 0) { // we're following this voice
+              // unfollow
+              follower.unfollowVoice(req.activeVoice, function (err) {
                 if (err) { return next(err); }
 
                 res.format({
                   html: function () {
-                    req.flash('success', 'Voice has been followed.');
+                    req.flash('success', 'Voice has been unfollowed.');
                     res.redirect('/' + req.params.profileName + '/' + req.params.voice_slug)
                   },
                   json: function () {
-                    res.json({ status: 'followed' });
+                    res.json({ status: 'unfollowed' });
                   }
+                })
+              });
+            } else {
+              // follow
+              follower.followVoice(req.activeVoice, function (err, voiceFollowerRecordId) {
+                if (err) { return next(err); }
+
+                VoiceFollower.findById(voiceFollowerRecordId[0], function (err, voiceFollower) {
+                  if (err) { return next(err); }
+
+                  FeedInjector().inject(follower.id, 'who entityFollowsVoice', voiceFollower[0], function (err) {
+                    if (err) { return next(err); }
+
+                    res.format({
+                      html: function () {
+                        req.flash('success', 'Voice has been followed.');
+                        res.redirect('/' + req.params.profileName + '/' + req.params.voice_slug)
+                      },
+                      json: function () {
+                        res.json({ status: 'followed' });
+                      }
+                    });
+                  });
                 });
               });
-            });
+            }
           });
-        }
+        });
       });
     },
 
