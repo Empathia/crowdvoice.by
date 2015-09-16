@@ -24,11 +24,11 @@
 
 					<div class="admin-actions">
 
-						<a href="users/<%= user.id %>/edit"><button class="cv-button small">Edit</button></a>
+						<a href="/admin/users/<%= user.id %>/edit"><button class="cv-button tiny">Edit</button></a>
 						<a >
 							<form class="form-profile" action="/admin/users/<%= user.id %>?_method=DELETE" method="POST" enctype="multipart/form-data">
 	      						<input type="hidden" name="_csrf" value="<%= csrfToken %>">
-								<button class="cv-button small">Delete</button>
+								<button class="cv-button tiny">Delete</button>
 							</form>
 						</a>
 

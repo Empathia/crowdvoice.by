@@ -5,7 +5,7 @@ Admin.OrganizationsController = Class(Admin, 'OrganizationsController').inherits
     setType : function setType(req, res, next) {
       req.entityType = 'organization';
       next();
-    }
+    },
   }
 });
 
