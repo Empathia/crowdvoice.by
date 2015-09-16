@@ -44,7 +44,7 @@ var SearchController = Class('SearchController')({
           done();
         });
       }, function(done) {
-        SearchController.prototype._searchPeople(query, req.currentPerson, function(err, result) {
+        SearchController.prototype._searchPeople(query, [], req.currentPerson, function(err, result) {
           if (err) {
             return done(err);
           }
@@ -55,7 +55,7 @@ var SearchController = Class('SearchController')({
           done();
         });
       }, function(done) {
-        SearchController.prototype._searchOrganizations(query, req.currentPerson, function(err, result) {
+        SearchController.prototype._searchOrganizations(query, [], req.currentPerson, function(err, result) {
           if (err) {
             return done(err);
           }
@@ -95,7 +95,7 @@ var SearchController = Class('SearchController')({
       var exclude = req.body.exclude;
 
       if (!exclude) {
-          exclude = [];
+        exclude = [];
       }
 
       SearchController.prototype._searchVoices(query, exclude, req.currentPerson, function(err, result) {
@@ -112,7 +112,7 @@ var SearchController = Class('SearchController')({
       var exclude = req.body.exclude;
 
       if (!exclude) {
-          exclude = [];
+        exclude = [];
       }
 
       SearchController.prototype._searchPeople(query, exclude, req.currentPerson, function(err, result) {
@@ -129,7 +129,7 @@ var SearchController = Class('SearchController')({
       var exclude = req.body.exclude;
 
       if (!exclude) {
-          exclude = [];
+        exclude = [];
       }
 
       SearchController.prototype._searchOrganizations(query, exclude, req.currentPerson, function(err, result) {
