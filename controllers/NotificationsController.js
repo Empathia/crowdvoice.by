@@ -46,11 +46,26 @@ var NotificationsController = Class('NotificationsController')({
        * req.body = {
        *   settings: {
        *     ...
-       *   }
+       *   },
        * }
        */
 
-      return res.json({ status: 'updated settings' })
+      ACL.isAllowed('updateNotificationSettings', 'entities', req.role, {
+        entity: req.entity,
+        currentPerson: req.currentPersonA,
+      }, function (err, response) {
+        if (err) { return next(err) }
+
+        if (!response.isAllowed) {
+          return next(new ForbiddenError('Unauthorized.'))
+        }
+
+        Entity.find({ profile_name: req.entity.profileName }, function (err, entity) {
+          NotificationSetting
+        })
+
+        return res.json({ status: 'updated settings' })
+      })
     },
   },
 })
