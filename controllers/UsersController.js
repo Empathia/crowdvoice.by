@@ -139,8 +139,38 @@ var UsersController = Class('UsersController')({
                   return done(err);
                 }
 
-                done()
+                done();
               })
+            }, function (done) {
+              // NOTE: WHEN ADDING NEW FEED ACTIONS YOU NEED TO UPDATE THIS!!
+              // TAGS: notifications, settings
+              var settings = new NotificationSetting({
+                entityId: person.id,
+                settings: {
+                  entityFollowsEntity: true,
+                  entityFollowsVoice: true,
+                  entityArchivesVoice: true,
+                  entityUpdatesAvatar: true,
+                  entityUpdatesBackground: true,
+                  entityBecomesOrgPublicMember: true,
+                  voiceIsPublished: true,
+                  voiceNewPosts: true,
+                  voiceNewTitle: true,
+                  voiceNewDescription: true,
+                  voiceNewPublicContributor: true,
+                }
+              });
+
+              settings.save(function (err, result) {
+                if (err) {
+                  person.destroy(function () {});
+                  user.destroy(function () {});
+                  anonymous.destroy(function () {});
+                  return done(err);
+                }
+
+                done();
+              });
             }], function(err) {
               if (err) {
                 req.flash('error', 'There was an error creating the user.');

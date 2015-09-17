@@ -33,10 +33,10 @@ exports.up = function(knex, Promise) {
               voiceNewPosts: true,
               voiceNewTitle: true,
               voiceNewDescription: true,
-              voiceNewPublicContributor: true
+              voiceNewPublicContributor: true,
             },
             created_at: nowDate,
-            updated_at: nowDate
+            updated_at: nowDate,
           });
         });
 
