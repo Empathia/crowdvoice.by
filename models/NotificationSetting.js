@@ -1,7 +1,8 @@
 var NotificationSetting = Class('NotificationSetting').inherits(Argon.KnexModel)({
   validations: {
     entityId: ['required'],
-    settings: ['required'],
+    webSettings: ['required'],
+    emailSettings: ['required'],
   },
 
   storage: (new Argon.Storage.Knex({
@@ -10,7 +11,8 @@ var NotificationSetting = Class('NotificationSetting').inherits(Argon.KnexModel)
 
   prototype: {
     entityId: null,
-    settings: null,
+    webSettings: null,
+    emailSettings: null,
   },
 })
 

@@ -143,25 +143,28 @@ var UsersController = Class('UsersController')({
               })
             }, function (done) {
               // NOTE: WHEN ADDING NEW FEED ACTIONS YOU NEED TO UPDATE THIS!!
-              // TAGS: notifications, settings
-              var settings = new NotificationSetting({
+              // TAGS: notifications, settings, default
+              var defaultSettings = {
+                entityFollowsEntity: true,
+                entityFollowsVoice: true,
+                entityArchivesVoice: true,
+                entityUpdatesAvatar: true,
+                entityUpdatesBackground: true,
+                entityBecomesOrgPublicMember: true,
+                voiceIsPublished: true,
+                voiceNewPosts: true,
+                voiceNewTitle: true,
+                voiceNewDescription: true,
+                voiceNewPublicContributor: true,
+              };
+
+              var setting = new NotificationSetting({
                 entityId: person.id,
-                settings: {
-                  entityFollowsEntity: true,
-                  entityFollowsVoice: true,
-                  entityArchivesVoice: true,
-                  entityUpdatesAvatar: true,
-                  entityUpdatesBackground: true,
-                  entityBecomesOrgPublicMember: true,
-                  voiceIsPublished: true,
-                  voiceNewPosts: true,
-                  voiceNewTitle: true,
-                  voiceNewDescription: true,
-                  voiceNewPublicContributor: true,
-                }
+                webSettings: defaultSettings,
+                emailSettings: defaultSetting
               });
 
-              settings.save(function (err, result) {
+              setting.save(function (err, result) {
                 if (err) {
                   person.destroy(function () {});
                   user.destroy(function () {});

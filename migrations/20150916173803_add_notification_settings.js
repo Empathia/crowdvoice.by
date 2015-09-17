@@ -6,7 +6,8 @@ exports.up = function(knex, Promise) {
     knex.schema.createTable('NotificationSettings', function (t) {
       t.increments('id').primary();
       t.integer('entity_id').index();
-      t.json('settings');
+      t.json('web_settings');
+      t.json('email_settings');
       t.timestamps();
     }),
 
@@ -15,26 +16,28 @@ exports.up = function(knex, Promise) {
       .then(function (entities) {
         var ids = entities.map(function (entity) { return entity.id; }),
           records = [],
-          nowDate;
+          nowDate,
+          defaultSettings = {
+            entityFollowsEntity: true,
+            entityFollowsVoice: true,
+            entityArchivesVoice: true,
+            entityUpdatesAvatar: true,
+            entityUpdatesBackground: true,
+            entityBecomesOrgPublicMember: true,
+            voiceIsPublished: true,
+            voiceNewPosts: true,
+            voiceNewTitle: true,
+            voiceNewDescription: true,
+            voiceNewPublicContributor: true,
+          };
 
         ids.forEach(function (id) {
           nowDate = new Date();
 
           records.push({
             entity_id: id,
-            settings: {
-              entityFollowsEntity: true,
-              entityFollowsVoice: true,
-              entityArchivesVoice: true,
-              entityUpdatesAvatar: true,
-              entityUpdatesBackground: true,
-              entityBecomesOrgPublicMember: true,
-              voiceIsPublished: true,
-              voiceNewPosts: true,
-              voiceNewTitle: true,
-              voiceNewDescription: true,
-              voiceNewPublicContributor: true,
-            },
+            web_settings: defaultSettings,
+            email_settings: defaultSettings,
             created_at: nowDate,
             updated_at: nowDate,
           });
