@@ -40,6 +40,18 @@ var NotificationsController = Class('NotificationsController')({
         })
       })
     },
+
+    updateNotificationSettings: function (req, res, next) {
+      /* PUT
+       * req.body = {
+       *   settings: {
+       *     ...
+       *   }
+       * }
+       */
+
+      return res.json({ status: 'updated settings' })
+    },
   },
 })
 
