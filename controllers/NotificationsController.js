@@ -52,7 +52,7 @@ var NotificationsController = Class('NotificationsController')({
 
       ACL.isAllowed('updateNotificationSettings', 'entities', req.role, {
         entity: req.entity,
-        currentPerson: req.currentPersonA,
+        currentPerson: req.currentPerson,
       }, function (err, response) {
         if (err) { return next(err) }
 
@@ -61,10 +61,21 @@ var NotificationsController = Class('NotificationsController')({
         }
 
         Entity.find({ profile_name: req.entity.profileName }, function (err, entity) {
-          NotificationSetting
-        })
+          if (err) { return next(err) }
 
-        return res.json({ status: 'updated settings' })
+          NotificationSetting.find({ entity_id: entity[0].id }, function (err, setting) {
+            if (err) { return next(err) }
+
+            var newSetting = setting[0]
+            newSetting.settings = _.extend(newSetting.settings, req.body.settings)
+
+            newSetting.save(function (err) {
+              if (err) { return next(err) }
+
+              return res.json({ status: 'updated settings' })
+            })
+          })
+        })
       })
     },
   },
