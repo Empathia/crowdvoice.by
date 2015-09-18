@@ -20,8 +20,10 @@ var NotificationsMailer = Module('NotificationsMailer')({
     var template = new Thulium({ template: viewFile })
 
     template.parseSync().renderSync({
-      user: user,
-      notificationInfo: notificationInfo
+      params: {
+        user: user,
+        notificationInfo: notificationInfo,
+      },
     })
 
     var view = template.view
