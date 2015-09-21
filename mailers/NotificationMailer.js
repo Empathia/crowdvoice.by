@@ -13,7 +13,7 @@ var message = {
   inline_css: true,
 }
 
-var NotificationsMailer = Module('NotificationsMailer')({
+var NotificationMailer = Module('NotificationMailer')({
 
   // Send email notification
   notification: function (user, notificationInfo, callback) {
@@ -50,4 +50,4 @@ var NotificationsMailer = Module('NotificationsMailer')({
 
 })
 
-module.exports = NotificationsMailer
+module.exports = NotificationMailer
