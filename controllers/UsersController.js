@@ -161,7 +161,7 @@ var UsersController = Class('UsersController')({
               var setting = new NotificationSetting({
                 entityId: person.id,
                 webSettings: defaultSettings,
-                emailSettings: defaultSetting
+                emailSettings: defaultSettings
               });
 
               setting.save(function (err, result) {
