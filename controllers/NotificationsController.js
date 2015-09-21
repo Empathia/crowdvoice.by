@@ -1,6 +1,6 @@
 'use strict'
 
-var FeedPresenter = require(__dirname + '/../presenters/FeedPresenter.js')
+var NotificationsPresenter = require(__dirname + '/../presenters/NotificationsPresenter.js')
 
 var NotificationsController = Class('NotificationsController')({
   prototype: {
@@ -21,21 +21,11 @@ var NotificationsController = Class('NotificationsController')({
         }, function (err, notifications) {
           if (err) { return next(err) }
 
-          var actionIds = notifications.map(function (val) { return val.actionId })
+          NotificationsPresenter.build(notifications, req.currentPerson, function (err, presentedNotifications) {
+            if (err) { return next(err) }
 
-          db('FeedActions')
-            .whereIn('id', actionIds)
-            .exec(function (err, result) {
-              if (err) { return next(err) }
-
-              var actions = Argon.Storage.Knex.processors[0](result)
-
-              FeedPresenter.build(actions, req.currentPerson, function (err, presentedNotifications) {
-                if (err) { return next(err) }
-
-                res.json(presentedNotifications)
-              })
-            })
+            res.json(presentedNotifications)
+          })
         })
       })
     },
@@ -47,21 +37,61 @@ var NotificationsController = Class('NotificationsController')({
        * }
        */
 
-      FeedAction.find({ id: hashids.decode(req.body.notificationId)[0] }, function (err, action) {
+      ACL.isAllowed('getNotifications', 'entities', req.role, {
+        currentEntity: req.entity,
+        currentPerson: req.currentPerson,
+      }, function (err, response) {
         if (err) { return next(err) }
 
-        var notif = new FeedAction(action[0])
-        notif.read = true
-        notif.save(function (err) {
+        if (!response.isAllowed) {
+          return next(new ForbiddenError('Unauthorized.'))
+        }
+
+        Notification.find({ id: hashids.decode(req.body.notificationId)[0] }, function (err, notification) {
           if (err) { return next(err) }
 
-          res.json({ status: 'ok' })
+          var notif = new Notification(action[0])
+          notif.read = true
+          notif.save(function (err) {
+            if (err) { return next(err) }
+
+            return res.json({ status: 'ok' })
+          })
         })
       })
     },
 
     markAllAsRead: function (req, res, next) {
-      FeedAction.find({  })
+      /* DELETE
+       * req.body = {}
+       */
+
+      ACL.isAllowed('getNotifications', 'entities', req.role, {
+        currentEntity: req.entity,
+        currentPerson: req.currentPerson,
+      }, function (err, response) {
+        if (err) { return next(err) }
+
+        if (!response.isAllowed) {
+          return next(new ForbiddenError('Unauthorized.'))
+        }
+
+        Notification.find({
+          follower_id: response.follower.id,
+          read: false,
+        }, function (err, notifications) {
+          if (err) { return next(err) }
+
+          async.each(notifications, function (notification, next) {
+            notification.read = true
+            notification.save(next)
+          }, functionn (err) {
+            if (err) { return next(err) }
+
+            return res.json({ status: 'ok' })
+          })
+        })
+      })
     },
 
     updateNotificationSettings: function (req, res, next) {
