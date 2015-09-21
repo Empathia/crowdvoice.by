@@ -15,19 +15,38 @@ var NotificationsController = Class('NotificationsController')({
           return next(new ForbiddenError())
         }
 
-        FeedAction.find({ follower_id: hashids.decode(req.currentPerson.id)[0], read: false }, function (err, notifications) {
+        Notification.find({
+          follower_id: hashids.decode(req.currentPerson.id)[0],
+          read: false,
+        }, function (err, notifications) {
           if (err) { return next(err) }
 
-          FeedPresenter.build(notifications, req.currentPerson, function (err, presentedNotifications) {
-            if (err) { return next(err) }
+          var actionIds = notifications.map(function (val) { return val.actionId })
 
-            res.json(presentedNotifications)
-          })
+          db('FeedActions')
+            .whereIn('id', actionIds)
+            .exec(function (err, result) {
+              if (err) { return next(err) }
+
+              var actions = Argon.Storage.Knex.processors[0](result)
+
+              FeedPresenter.build(actions, req.currentPerson, function (err, presentedNotifications) {
+                if (err) { return next(err) }
+
+                res.json(presentedNotifications)
+              })
+            })
         })
       })
     },
 
     markAsRead: function (req, res, next) {
+      /* DELETE
+       * req.body = {
+       *   notificationId: Hashids.encode result,
+       * }
+       */
+
       FeedAction.find({ id: hashids.decode(req.body.notificationId)[0] }, function (err, action) {
         if (err) { return next(err) }
 
@@ -39,6 +58,10 @@ var NotificationsController = Class('NotificationsController')({
           res.json({ status: 'ok' })
         })
       })
+    },
+
+    markAllAsRead: function (req, res, next) {
+      FeedAction.find({  })
     },
 
     updateNotificationSettings: function (req, res, next) {

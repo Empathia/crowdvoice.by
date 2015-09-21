@@ -207,7 +207,7 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
           return hashids.decode(id)[0]
         })
 
-        db('Featured' + inflection.capitalize(req.params.entityType))
+        db('Featured' + inflection.transform(req.params.entityType, ['capitalize', 'pluralize']))
           .whereIn('entity_id', realIds)
           .exec(function (err, result) {
             if (err) { return next(err) }
