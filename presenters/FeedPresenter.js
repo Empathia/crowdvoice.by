@@ -4,7 +4,7 @@ var EntitiesPresenter = require('./EntitiesPresenter.js')
 var VoicesPresenter = require('./VoicesPresenter.js')
 
 var FeedPresenter = Module('FeedPresenter')({
-  build: function (feedActions, currentPerson, forNotifications, callback) {
+  build: function (feedActions, currentPerson, callback) {
     var result = []
 
     var realCurrentPerson
@@ -26,33 +26,6 @@ var FeedPresenter = Module('FeedPresenter')({
 
           return next();
         })
-      },
-
-      // check if it's for notifications
-      // if it is then we'll replace feedActions (which is what the presenter
-      // works on) with a new feedActions that only has actions the user hasn't
-      // read
-      function (next) {
-        if (forNotifications) {
-          Notification.find({
-            follower_id: realCurrentPerson.id,
-            read: false,
-          }, function (err, notifications) {
-            if (err) { return next(err) }
-
-            var actionIds = notifications.map(function (val) { return val.actionId })
-
-            FeedAction.whereIn('id', actionIds, function (err, actions) {
-              if (err) { return next(err) }
-
-              feedActions = actions
-
-              return next()
-            })
-          })
-        } else {
-          return next()
-        }
       },
     ], function (err) {
       if (err) { return callback(err) }

@@ -38,10 +38,7 @@ var UserMailer = Module('UserMailer')({
       "type" : "to"
     })
 
-    var async = true;
-    var ip_pool = "Main Pool";
-
-    client.messages.send({"message": message, "async": async}, function(result) {
+    client.messages.send({"message": message, "async": true}, function(result) {
         logger.log('UserMailer new():');
         logger.log(result);
         callback(null, result);
@@ -76,10 +73,7 @@ var UserMailer = Module('UserMailer')({
       "type" : "to"
     })
 
-    var async = true;
-    var ip_pool = "Main Pool";
-
-    client.messages.send({"message": message, "async": async}, function(result) {
+    client.messages.send({"message": message, "async": true}, function(result) {
         logger.log('UserMailer forgotPassword():');
         logger.log(result);
         callback(null, result);
@@ -89,6 +83,7 @@ var UserMailer = Module('UserMailer')({
         callback(e);
     });
   }
+
 });
 
 module.exports = UserMailer;
