@@ -418,6 +418,7 @@ async.series([function(next) {
     });
   }, next);
 }, function (next) {
+  // NOTE: WHEN ADDING NEW FEED ACTIONS YOU NEED TO UPDATE THIS!!
   var defaultSettings = {
     entityFollowsEntity: true,
     entityFollowsVoice: true,

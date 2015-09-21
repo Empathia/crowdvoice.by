@@ -143,7 +143,6 @@ var UsersController = Class('UsersController')({
               })
             }, function (done) {
               // NOTE: WHEN ADDING NEW FEED ACTIONS YOU NEED TO UPDATE THIS!!
-              // TAGS: notifications, settings, default
               var defaultSettings = {
                 entityFollowsEntity: true,
                 entityFollowsVoice: true,
