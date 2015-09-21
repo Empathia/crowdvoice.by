@@ -37,7 +37,7 @@ var NotificationsController = Class('NotificationsController')({
        * }
        */
 
-      ACL.isAllowed('getNotifications', 'entities', req.role, {
+      ACL.isAllowed('markAsRead', 'entities', req.role, {
         currentEntity: req.entity,
         currentPerson: req.currentPerson,
       }, function (err, response) {
@@ -66,7 +66,7 @@ var NotificationsController = Class('NotificationsController')({
        * req.body = {}
        */
 
-      ACL.isAllowed('getNotifications', 'entities', req.role, {
+      ACL.isAllowed('markAllAsRead', 'entities', req.role, {
         currentEntity: req.entity,
         currentPerson: req.currentPerson,
       }, function (err, response) {
@@ -85,7 +85,7 @@ var NotificationsController = Class('NotificationsController')({
           async.each(notifications, function (notification, next) {
             notification.read = true
             notification.save(next)
-          }, functionn (err) {
+          }, function (err) {
             if (err) { return next(err) }
 
             return res.json({ status: 'ok' })
