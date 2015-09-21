@@ -15,17 +15,24 @@ var NotificationsController = Class('NotificationsController')({
           return next(new ForbiddenError())
         }
 
-        Notification.find({
-          follower_id: hashids.decode(req.currentPerson.id)[0],
-          read: false,
-        }, function (err, notifications) {
-          if (err) { return next(err) }
+        EntityOwner.find({ owner_id: hashids.decode(req.currentPerson.id)[0] }, function (err, entities) {
+          var ids = entities.map(function (entity) { return entity.id })
+          ids.push(hashids.decode(req.currentPerson.id)[0])
 
-          NotificationsPresenter.build(notifications, req.currentPerson, function (err, presentedNotifications) {
-            if (err) { return next(err) }
+          db('Notifications')
+            .whereIn('follower_id', ids)
+            .andWhere('read', '=', false)
+            .exec(function (err, result) {
+              if (err) { return next(err) }
 
-            res.json(presentedNotifications)
-          })
+              var notifications = Argon.Storage.Knex.processors[0](result)
+
+              NotificationsPresenter.build(notifications, req.currentPerson, function (err, presentedNotifications) {
+                if (err) { return next(err) }
+
+                res.json(presentedNotifications)
+              })
+            })
         })
       })
     },
