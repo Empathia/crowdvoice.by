@@ -417,6 +417,39 @@ async.series([function(next) {
       });
     });
   }, next);
+}, function (next) {
+  var defaultSettings = {
+    entityFollowsEntity: true,
+    entityFollowsVoice: true,
+    entityArchivesVoice: true,
+    entityUpdatesAvatar: true,
+    entityUpdatesBackground: true,
+    entityBecomesOrgPublicMember: true,
+    voiceIsPublished: true,
+    voiceNewPosts: true,
+    voiceNewTitle: true,
+    voiceNewDescription: true,
+    voiceNewPublicContributor: true,
+  };
+
+  Entity.find({ is_anonymous: false }, function (err, entities) {
+    if (err) { return next(err); }
+
+    var ids = entities.map(function (entity) {
+        return entity.id;
+      }),
+      notification;
+
+    async.each(ids, function (id, next) {
+      notification = new NotificationSetting({
+        entityId: id,
+        webSettings: defaultSettings,
+        emailSettings: defaultSettings
+      });
+      notification.save(next);
+    }, next);
+  });
+
 }, function(next) {
 
   // Topics
@@ -489,7 +522,6 @@ async.series([function(next) {
     });
   }, next);
 }, function(next) {
-  console.log('Voices')
   // Voices
   var voices = [
 
