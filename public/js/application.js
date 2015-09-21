@@ -248,7 +248,7 @@ require('./widgets/elements/alert.js');
 require('./widgets/elements/detect-location.js');
 
 require('./widgets/ui/modal');
-require('./widgets/ui/Input');
+require('./widgets/ui/input');
 require('./widgets/ui/Button');
 require('./widgets/ui/checkbox');
 require('./widgets/ui/close-button');
