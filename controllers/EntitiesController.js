@@ -617,31 +617,39 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
           return next(new ForbiddenError('Unauthorized.'));
         }
 
-        var page = req.query.page || 1;
+        var page = req.query.page || 1,
+          pageLength = 20;
 
-        db('Notifications')
-          .where('follower_id', '=', response.follower.id)
-          .orderBy('created_at', 'desc')
-          .limit(20)
-          .offset((page - 1) * 20)
+        db.raw('SELECT *, ' +
+          '(SELECT count(*) AS full_count ' +
+          'FROM "Notifications" ' +
+          'WHERE follower_id = ?) ' +
+          'FROM "Notifications" ' +
+          'WHERE follower_id = ? ' +
+          'ORDER BY created_at DESC ' +
+          'LIMIT ? ' +
+          'OFFSET ?', [response.follower.id, response.follower.id, pageLength, (page - 1) * pageLength])
           .exec(function (err, result) {
             if (err) { return next(err); }
 
+            var totalPages = Math.ceil(result.rows[0].full_count, pageLength),
+              isThereNextPage = page < totalPages;
+
             // no results, i.e. no notifications or a blank page
-            if (result.length < 1) {
+            if (result.rows.length < 1) {
               return res.format({
                 html: function () {
-                  req.feed = [];
-                  res.locals.feed = [];
+                  req.feed = { feed: [], isThereNextPage: false };
+                  res.locals.feed = { feed: [], isThereNextPage: false };
                   res.render('people/feed');
                 },
                 json: function () {
-                  res.json([]);
+                  res.json({ feed: [], isThereNextPage: false });
                 }
               });
             }
 
-            var notifications = Argon.Storage.Knex.processors[0](result),
+            var notifications = Argon.Storage.Knex.processors[0](result.rows),
               actionIds = notifications.map(function (val) {
                 return val.actionId;
               });
@@ -652,14 +660,19 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
               FeedPresenter.build(actions, req.currentPerson, function (err, presentedFeed) {
                 if (err) { return next(err); }
 
+                var answer = {
+                  feed: presentedFeed,
+                  isThereNextPage: isThereNextPage
+                };
+
                 return res.format({
                   html: function () {
-                    req.feed = presentedFeed;
-                    res.locals.feed = presentedFeed;
+                    req.feed = answer;
+                    res.locals.feed = answer;
                     res.render('people/feed');
                   },
                   json: function () {
-                    res.json(presentedFeed);
+                    res.json(answer);
                   }
                 });
               });
