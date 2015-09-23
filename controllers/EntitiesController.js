@@ -603,6 +603,10 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
     },
 
     feed : function (req, res, next) {
+      /* GET
+       * req.query.page = Number // page
+       */
+
       ACL.isAllowed('feed', 'entities', req.role, {
         entityProfileName: req.entity.profileName,
         currentPerson: req.currentPerson
@@ -613,28 +617,54 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
           return next(new ForbiddenError());
         }
 
-        Notification.find({ follower_id: response.follower.id }, function (err, notifications) {
-          var actionIds = notifications.map(function (val) { return val.actionId; });
+        var page = req.query.page || 1;
 
-          FeedAction.whereIn('id', actionIds, function (err, actions) {
-            FeedPresenter.build(actions, req.currentPerson, function (err, presentedFeed) {
-              if (err) { return next(err); }
+        db('Notifications')
+          .where('follower_id', '=', response.follower.id)
+          .orderBy('created_at', 'desc')
+          .limit(20)
+          .offset(20 * page)
+          .exec(function (err, result) {
+            if (err) { return next(err); }
 
+            // no results, i.e. no notifications or a blank page
+            if (result.length < 1) {
               res.format({
                 html: function () {
-                  req.feed = presentedFeed;
-                  res.locals.feed = presentedFeed;
+                  req.feed = [];
+                  res.locals.feed = [];
                   res.render('people/feed');
                 },
                 json: function () {
-                  res.json(presentedFeed);
+                  res.json([]);
                 }
+              });
+            }
+
+            var notifications = Argon.Storage.Knex.processors[0](result),
+              actionIds = notifications.map(function (val) {
+                return val.actionId;
+              });
+
+            FeedAction.whereIn('id', actionIds, function (err, actions) {
+              FeedPresenter.build(actions, req.currentPerson, function (err, presentedFeed) {
+                if (err) { return next(err); }
+
+                res.format({
+                  html: function () {
+                    req.feed = presentedFeed;
+                    res.locals.feed = presentedFeed;
+                    res.render('people/feed');
+                  },
+                  json: function () {
+                    res.json(presentedFeed);
+                  }
+                });
               });
             });
           });
-        });
       });
-    },
+    }
 
   }
 });
