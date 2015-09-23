@@ -614,7 +614,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
         if (err) { return next(err); }
 
         if (!response.isAllowed) {
-          return next(new ForbiddenError());
+          return next(new ForbiddenError('Unauthorized.'));
         }
 
         var page = req.query.page || 1;
@@ -623,13 +623,13 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
           .where('follower_id', '=', response.follower.id)
           .orderBy('created_at', 'desc')
           .limit(20)
-          .offset(20 * page)
+          .offset((page - 1) * 20)
           .exec(function (err, result) {
             if (err) { return next(err); }
 
             // no results, i.e. no notifications or a blank page
             if (result.length < 1) {
-              res.format({
+              return res.format({
                 html: function () {
                   req.feed = [];
                   res.locals.feed = [];
@@ -647,10 +647,12 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
               });
 
             FeedAction.whereIn('id', actionIds, function (err, actions) {
+              if (err) { return next(err); }
+
               FeedPresenter.build(actions, req.currentPerson, function (err, presentedFeed) {
                 if (err) { return next(err); }
 
-                res.format({
+                return res.format({
                   html: function () {
                     req.feed = presentedFeed;
                     res.locals.feed = presentedFeed;

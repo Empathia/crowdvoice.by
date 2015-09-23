@@ -13,7 +13,7 @@ var FeedPresenter = Module('FeedPresenter')({
       async.series([
         // feed action ID
         function (next) {
-          actionInst.id = hashids.encode(action.id)[0]
+          actionInst.id = hashids.encode(action.id)
 
           return next()
         },
@@ -49,7 +49,7 @@ var FeedPresenter = Module('FeedPresenter')({
 
         // itemId
         function (next) {
-          actionInst.itemId = hashids.encode(action.itemId)[0]
+          actionInst.itemId = hashids.encode(action.itemId)
 
           return next()
         },
