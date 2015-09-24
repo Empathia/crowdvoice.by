@@ -632,19 +632,18 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
           .exec(function (err, result) {
             if (err) { return next(err); }
 
-            var totalPages = Math.ceil(result.rows[0].full_count, pageLength),
-              isThereNextPage = page < totalPages;
-
             // no results, i.e. no notifications or a blank page
             if (result.rows.length < 1) {
+              var empty = { feed: [], isThereNextPage: false };
+
               return res.format({
                 html: function () {
-                  req.feed = { feed: [], isThereNextPage: false };
-                  res.locals.feed = { feed: [], isThereNextPage: false };
+                  req.feed = empty;
+                  res.locals.feed = empty;
                   res.render('people/feed');
                 },
                 json: function () {
-                  res.json({ feed: [], isThereNextPage: false });
+                  res.json(empty);
                 }
               });
             }
@@ -652,7 +651,9 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
             var notifications = Argon.Storage.Knex.processors[0](result.rows),
               actionIds = notifications.map(function (val) {
                 return val.actionId;
-              });
+              }),
+              totalPages = Math.ceil(result.rows[0].full_count / pageLength),
+              isThereNextPage = page < totalPages;
 
             FeedAction.whereIn('id', actionIds, function (err, actions) {
               if (err) { return next(err); }
