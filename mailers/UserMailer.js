@@ -29,7 +29,7 @@ var UserMailer = Module('UserMailer')({
     var view = template.view;
 
     message.html = view;
-    message.subject = "Welcome to CrowdVoice.by",
+    message.subject = "Welcome to CrowdVoice.by";
     message.to = [];
 
     message.to.push({
@@ -44,7 +44,7 @@ var UserMailer = Module('UserMailer')({
         callback(null, result);
 
     }, function(e) {
-        logger.error('A mandrill error occurred: ' + e.name + ' - ' + e.message);
+        logger.error('UserMailer new(): A mandrill error occurred: ' + e.name + ' - ' + e.message);
         callback(e);
     });
   },
@@ -64,7 +64,7 @@ var UserMailer = Module('UserMailer')({
     var view = template.view;
 
     message.html = view;
-    message.subject = "CrowdVoice.by - Instructions to reset your password.",
+    message.subject = "CrowdVoice.by - Reset password";
     message.to = [];
 
     message.to.push({
@@ -77,10 +77,45 @@ var UserMailer = Module('UserMailer')({
         logger.log('UserMailer forgotPassword():');
         logger.log(result);
         callback(null, result);
-
     }, function(e) {
-        logger.error('A mandrill error occurred: ' + e.name + ' - ' + e.message);
+        logger.error('UserMailer forgotPassword(): A mandrill error occurred: ' + e.name + ' - ' + e.message);
         callback(e);
+    });
+  },
+
+  // Password has been reset notification
+  passwordReset: function (user, callback) {
+    var mailer = this;
+
+    var viewFile = fs.readFileSync('./views/mailers/user/passwordReset.html', 'utf8');
+
+    var template = new Thulium({
+      params: {
+        template: viewFile
+      }
+    });
+
+    template.parseSync().renderSync({ user: user });
+
+    var view = template.view;
+
+    message.html = view;
+    message.subject = 'CrowdVoice.by - Your password has been reset';
+    message.to = [
+      {
+        email: user.email,
+        name: user.email,
+        type: 'to'
+      }
+    ];
+
+    client.messages.send({ message: message, async: true }, function (result) {
+      logger.log('UserMailer passwordReset():');
+      logger.log(result);
+      callback(null, result);
+    }, function (err) {
+      logger.error('A Mandrill error ocurred: ' + err.name + ' - ' + err.message);
+      return callback(err);
     });
   }
 
