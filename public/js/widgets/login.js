@@ -403,7 +403,7 @@ Class(CV, 'Login').inherits(Widget)({
                   };
                   break;
 
-              case 'forgot-password':
+              case 'reset-password':
                 checkit = new Checkit({
                     'Password'      : ['required', 'minLength:8'],
                   });
