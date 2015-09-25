@@ -75,9 +75,9 @@ var HomeController = Class('HomeController')({
             'LEFT JOIN "EntityMembership" ' +
             'ON "Entities"."id" = "EntityMembership"."entity_id" ' +
             'WHERE "Entities"."type" = ? ' +
-            'AND "Entities"."deleted" = false ' +
+            'AND "Entities"."deleted" = ? ' +
             'AND "Voices"."status" = ? ' +
-            'AND "Voices"."deleted" = false ' +
+            'AND "Voices"."deleted" = ? ' +
             'GROUP BY "org_id" ' +
             'ORDER BY "voices_count" DESC, "members_count" DESC', ['organization', false, Voice.STATUS_PUBLISHED, false])
             .exec(function (err, result) {
