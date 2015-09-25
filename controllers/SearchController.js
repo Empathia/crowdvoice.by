@@ -152,7 +152,7 @@ var SearchController = Class('SearchController')({
         FROM "Voices" \
         JOIN "Entities" ON "Entities".id = "Voices".owner_id \
         WHERE "Voices".status = \'?\' \
-        AND WHERE "Entities".deleted = false) search \
+        AND "Entities".deleted = false) search \
         WHERE search.document @@ plainto_tsquery(\'?\') \
         ORDER BY ts_rank(search.document, plainto_tsquery(\'?\')) DESC;', [Voice.STATUS_PUBLISHED, query, query]).exec(function(err, result) {
           if (err) {
@@ -189,7 +189,7 @@ var SearchController = Class('SearchController')({
         AS document \
         FROM "Entities" \
         WHERE "Entities".is_anonymous = false AND "Entities".type = \'person\' \
-        AND WHERE "Entities".deleted = false) search \
+        AND "Entities".deleted = false) search \
         WHERE search.document @@ plainto_tsquery(\'?\') \
         ORDER BY ts_rank(search.document, plainto_tsquery(\'?\')) DESC;', [query, query]).exec(function(err, result) {
           if (err) {
@@ -226,7 +226,7 @@ var SearchController = Class('SearchController')({
         AS document \
         FROM "Entities" \
         WHERE "Entities".is_anonymous = false AND "Entities".type = \'organization\' \
-        AND WHERE "Entities".deleted = false) search \
+        AND "Entities".deleted = false) search \
         WHERE search.document @@ plainto_tsquery(\'?\') \
         ORDER BY ts_rank(search.document, plainto_tsquery(\'?\')) DESC;', [query, query]).exec(function(err, result) {
           if (err) {
