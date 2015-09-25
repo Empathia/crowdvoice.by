@@ -20,7 +20,7 @@ var SessionsController = Class('SessionsController')({
           if (req.method === 'GET') {
             return res.render('sessions/forgotPassword.html', {layout : 'login'})
           } else if (req.method === 'POST') {
-            User.find({email : req.body.email}, function(err, user) {
+            User.find({email : req.body.email, deleted: false}, function(err, user) {
               if (err) {
                 return next(err);
               }

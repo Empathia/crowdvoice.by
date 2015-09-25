@@ -6,9 +6,13 @@ var VoicesPresenter = Module('VoicesPresenter')({
     var response = [];
     async.each(voices, function(voice, nextVoice) {
       var voiceInstance = new Voice(voice);
-
       voiceInstance.id = hashids.encode(voiceInstance.id);
       voiceInstance.ownerId = hashids.encode(voiceInstance.ownerId);
+
+      // skip deleted voices
+      if (voiceInstance.deleted) {
+        return nextVoice();
+      }
 
       Slug.find(['voice_id = ? ORDER BY id DESC LIMIT 1', [voice.id]], function(err, result) {
         if (err) {

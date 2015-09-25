@@ -5,10 +5,15 @@ var isProfileNameAvailable = require(__dirname + '/../lib/util/isProfileNameAvai
 var OrganizationsController = Class('OrganizationsController').inherits(EntitiesController)({
   prototype : {
     inviteEntity : function inviteEntity (req, res, next) {
-      var org = req.entity, entity;
-      Entity.find({id: req.body.entityId}, function (err, result) {
+      var org = req.entity,
+        entity;
+
+      Entity.find({ id: req.body.entityId, deleted: false }, function (err, result) {
         if (err) { return next(err); }
-        if (result.length === 0) { return next(new NotFoundError('Entity Not found')); }
+
+        if (result.length === 0) {
+          return next(new NotFoundError('Entity Not found'));
+        }
 
         var user = new User(req.user);
         entity = result[0];

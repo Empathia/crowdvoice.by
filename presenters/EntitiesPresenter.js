@@ -4,8 +4,12 @@ var EntitiesPresenter = Module('EntitiesPresenter')({
 
     async.eachLimit(entities, 1, function(entity, nextEntity) {
       var entityInstance = new Entity(entity);
-
       entityInstance.id = hashids.encode(entityInstance.id);
+
+      // skip deleted entities
+      if (entityInstance.deleted) {
+        return nextEntity();
+      }
 
       var images = {};
 
