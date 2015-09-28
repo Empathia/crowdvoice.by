@@ -58,7 +58,8 @@ module.exports = {
             contentType : false,
             processData : false,
             data : args.data,
-            success : function success(data) { callback(false, data); },
+            success : function success(data) { //callback(false, data);
+             },
             error : function error(err) { callback(true, err); }
         });
     },
@@ -66,6 +67,7 @@ module.exports = {
     /* Follow/Unfollow Voice.
      * @argument args.profileName <required> [String] the voice owner profileName
      * @argument args.voiceSlug <required> [String] the voice slug
+     * @argument args.data.followerId <required> [String] Hashids.encode
      * @argument callback <required> [Function]
      */
     followVoice : function followVoice(args, callback) {
@@ -325,10 +327,11 @@ module.exports = {
      *************************************************************************/
     /* Follow/Unfollow Entity
      * @argument args.profileName <required> [String] the entity profileName
+     * @argument args.data.followerId <required> [String] Hashids.encode
      * @argument callback <required> [Function]
      */
     followEntity : function followEntity(args, callback) {
-        if (!args.profileName || !callback) {
+        if (!args.profileName || !args.data.followerId || !callback) {
             throw new Error('Missing required params');
         }
 
@@ -337,9 +340,10 @@ module.exports = {
         }
 
         $.ajax({
-            type : 'GET',
+            type : 'POST',
             url : '/' + args.profileName + '/follow',
             dataType : 'json',
+            data : args.data,
             headers : {'csrf-token' : this.token},
             success : function success(data) {callback(false, data);},
             error : function error(err) {callback(true, err);}

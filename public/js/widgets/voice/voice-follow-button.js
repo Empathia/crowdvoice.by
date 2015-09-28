@@ -38,9 +38,7 @@ Class(CV, 'VoiceFollowButton').inherits(Widget).includes(CV.WidgetUtils)({
             API.followVoice({
                 profileName : this.voice.owner.profileName,
                 voiceSlug : this.voice.slug,
-                data : {
-                    followerId : Person.get().id
-                }
+                data : {followerId : Person.get().id}
             }, function(err, res) {
                 if (err) {
                     return;

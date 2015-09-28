@@ -153,7 +153,7 @@ Admin.VoicesController = Class(Admin, 'VoicesController')({
 
             res.locals.voice = voices[0];
 
-            res.render('admin/voices/edit.html');
+            res.render('admin/voices/edit.html', { layout : 'admin' });
           });
         });
       });
@@ -161,6 +161,7 @@ Admin.VoicesController = Class(Admin, 'VoicesController')({
 
     update : function update(req, res, next) {
       ACL.isAllowed('update', 'admin.voices', req.role, {}, function(err, isAllowed) {
+
         if (err) {
           return next(err);
         }
@@ -193,9 +194,9 @@ Admin.VoicesController = Class(Admin, 'VoicesController')({
           async.series([function(done) {
             if (!req.files.image) {
               done();
+            } else {
+              voice.uploadImage('image', req.files.image.path, done);
             }
-
-            voice.uploadImage('image', req.files.image.path, done);
           }, function(done) {
             voice.save(done);
           }], function(err) {
@@ -213,7 +214,12 @@ Admin.VoicesController = Class(Admin, 'VoicesController')({
 
               res.locals.voice = voices[0];
 
-              res.redirect('/admin/voices');
+              req.flash('success', 'Voice has been updated.');
+
+              //res.redirect('/admin/voices');
+
+              res.json(voices[0]);
+
             });
           });
         });

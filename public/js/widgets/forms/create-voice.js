@@ -51,6 +51,9 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
         MAX_TITLE_LENGTH : 65,
         MAX_DESCRIPTION_LENGTH : 180,
         _autoGenerateSlug : true,
+        isAdmin     : null,
+        token : $('meta[name="csrf-token"]').attr('content'),
+
 
         init : function init(config){
             Widget.prototype.init.call(this, config);
@@ -94,7 +97,11 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             this.voiceTopicsDropdown.selectValues(voice.topics);
             this.voiceTypesDropdown.selectByValue(voice.type);
             this.voiceStatusDropdown.selectByValue(voice.status);
-            this.voiceOwnershipDropdown.selectByEntity(voice.owner);
+            if (this.isAdmin) {
+                //this.voiceOwnershipDropdownAdmin.selectByEntity(voice.owner);
+            }else{
+                this.voiceOwnershipDropdown.selectByEntity(voice.owner);
+            }
             this.voiceHashtags.setValue(voice.twitterSearch);
             this.voiceRssfeed.setValue(voice.rssUrl);
             this.voiceLocation.setValue(voice.locationName);
@@ -257,15 +264,31 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
         _updateInfoRow : function _updateInfoRow() {
             var row = this.el.querySelector('[data-row-voice-info]');
 
-            if (!Person.anon() && Person.ownsOrganizations()) {
+            if (this.isAdmin){
+
                 var owncol = document.createElement('div');
-                this.appendChild(new CV.UI.DropdownVoiceOwnership({
-                    name : 'voiceOwnershipDropdown'
+                this.appendChild(new CV.UI.DropdownVoiceOwnershipAdmin({
+                    name : 'voiceOwnershipDropdown',
+                    owner : this.data.owner,
                 })).render(owncol);
-                this.voiceOwnershipDropdown.selectByEntity(Person.get());
+
+                this.voiceOwnershipDropdown.selectByEntity(this.data.owner);
                 row.appendChild(owncol);
 
                 this.checkitProps.ownershipDropdown = 'required';
+
+            } else {
+                if (!Person.anon() && Person.ownsOrganizations()) {
+                    var owncol = document.createElement('div');
+                    this.appendChild(new CV.UI.DropdownVoiceOwnership({
+                        name : 'voiceOwnershipDropdown'
+                    })).render(owncol);
+
+                    this.voiceOwnershipDropdown.selectByEntity(Person.get());
+                    row.appendChild(owncol);
+
+                    this.checkitProps.ownershipDropdown = 'required';
+                }
             }
 
             var l = 12/row.childElementCount;
@@ -432,36 +455,81 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
         },
 
         _sendFormHandler : function _sendFormHandler() {
+
             var validate = this.checkit.validateSync(this._getCurrentData());
 
             if (validate[0]) {
                 return this._displayErrors(validate[0].errors);
             }
 
-            this._setSendingState();
+            if(this.isAdmin){
 
-            // Edit
-            if (this.data) {
-                var profileName;
-                if (Person.anon() || this.checkAnon.isChecked()) {
-                    profileName = 'anonymous';
-                } else {
-                    profileName = this.data.owner.profileName;
+                this.buttonSend.disable();
+                var createVoice = this;
+
+                $.ajax({
+                    type : 'PUT',
+                    url : '/admin/voices/' + this.data.id,
+                    headers : {'csrf-token' : this.token},
+                    data : this._dataPresenterAdmin(),
+                    dataType : 'json',
+                    success : function success(data) {
+                        console.log('success');
+                        if (createVoice._flashMessage) {
+                            createVoice._flashMessage = createVoice._flashMessage.destroy();
+                        }
+                        createVoice.appendChild(new CV.Alert({
+                            name : '_flashMessage',
+                            type : 'positive',
+                            text : "Voice edited succesfully, redirecting to voices list.",
+                            className : '-mb1'
+                        })).render(createVoice.el, createVoice.el.firstElementChild);
+                        window.setTimeout(function() {
+                            window.location = '/admin/voices';
+                        }, 2000);
+                    },
+                    error : function error(err) {
+                        if (createVoice._flashMessage) {
+                            createVoice._flashMessage = createVoice._flashMessage.destroy();
+                        }
+                        createVoice.appendChild(new CV.Alert({
+                            name : '_flashMessage',
+                            type : 'negative',
+                            text : "Could not update voice try again please.",
+                            className : '-mb1'
+                        })).render(createVoice.el, createVoice.el.firstElementChild);
+                        this.buttonSend.enable();
+                    }
+                });
+
+            } else {
+                this._setSendingState();
+
+                // Edit
+                if (this.data) {
+                    var profileName;
+                    if (Person.anon() || this.checkAnon.isChecked()) {
+                        profileName = 'anonymous';
+                    } else {
+                        profileName = this.data.owner.profileName;
+                    }
+
+                    API.voiceEdit({
+                        profileName : profileName,
+                        voiceSlug : this.data.slug,
+                        data : this._dataPresenter()
+                    }, this._createVoiceHandler.bind(this));
+
+                    return void 0;
                 }
 
-                API.voiceEdit({
-                    profileName : profileName,
-                    voiceSlug : this.data.slug,
-                    data : this._dataPresenter()
+                // Create
+                API.voiceCreate({
+                    data: this._dataPresenter()
                 }, this._createVoiceHandler.bind(this));
 
-                return void 0;
             }
 
-            // Create
-            API.voiceCreate({
-                data: this._dataPresenter()
-            }, this._createVoiceHandler.bind(this));
         },
 
         _createVoiceHandler : function _createVoiceHandler(err, res) {
@@ -477,6 +545,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
          * @method _displayErrors
          */
         _displayErrors : function _displayErrors(errors) {
+            console.log(errors);
             Object.keys(errors).forEach(function(propertyName) {
                 var widget = 'voice' + this.format.capitalizeFirstLetter(propertyName);
                 this[widget].error();
@@ -594,7 +663,33 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             } else {
                 data.append('ownerId', Person.get().id);
             }
+            window.tmp = this;
+            console.log(data);
+            return data;
+        },
 
+        /* Returns the data to be sent to server to edit a Voice as admin.
+         * @method _dataPresenterAdmin <private> [Function]
+         */
+        _dataPresenterAdmin : function _dataPresenterAdmin() {
+            var data = {};
+
+            data['image'] = this.voiceBgImage.getFile();
+            data['title'] = this.voiceTitle.getValue().trim();
+            data['slug'] = this.voiceSlug.getValue().trim();
+            data['description'] = this.voiceDescription.getValue().trim();
+            data['topics'] = this.voiceTopicsDropdown.getSelection().map(function(topic) {return topic.id;});
+            data['type'] = this.voiceTypesDropdown.getValue();
+            data['status'] = this.voiceStatusDropdown.getValue();
+            data['twitterSearch'] = this.voiceHashtags.getValue().trim();
+            data['rssUrl'] = this.voiceRssfeed.getValue().trim();
+            data['locationName'] = this.voiceLocation.getValue().trim();
+            data['latitude'] = this.voiceLatitude.getValue().trim();
+            data['longitude'] = this.voiceLongitude.getValue().trim();
+            data['anonymously'] = this.checkAnon.isChecked();
+            data['ownerId'] = this.voiceOwnershipDropdown.getValue();
+
+            window.tmp = this;
             return data;
         },
 
