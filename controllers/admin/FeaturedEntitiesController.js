@@ -5,19 +5,19 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
       toAddToArray
 
     async.each(featuredEntitiesIdsArray, function (entityId, next) {
-      global['Featured' + inflection.transform(entityType, ['capitalize', 'singularize'])].find({ entity_id: hashids.decode(entityId)[0] }, function (err, featuredEntity) {
+      global['Featured' + inflection.transform(entityType, ['capitalize', 'singularize'])].find({ entity_id: entityId }, function (err, featuredEntity) {
         if (err) { return next(err) }
 
         toAddToArray = {} // reset
 
-        toAddToArray = featuredEntity[0]
+        toAddToArray = new global['Featured' + inflection.transform(entityType, ['capitalize', 'singularize'])](featuredEntity[0])
         toAddToArray.id = hashids.encode(toAddToArray.id)
         toAddToArray.entityId = hashids.encode(toAddToArray.entityId)
 
-        EntitiesPresenter.build([featuredEntity[0].entityId], currentPerson, function (err, presented) {
+        EntitiesPresenter.build([{ id: featuredEntity[0].entityId }], currentPerson, function (err, presented) {
           if (err) { return next(err) }
 
-          toAddtoArray.entity = presented[0]
+          toAddToArray.entity = presented[0]
 
           featuredEntitiesResult.push(toAddToArray)
 
@@ -40,7 +40,7 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
     // GET /admin/featured/:entityType/:entityId*
     // get entity and populate req.featuredEntity and res.locals.featuredEntity
     getEntity: function (req, res, next) {
-      Admin.FeaturedEntitiesController.presenter([req.params.entityId], req.currentPerson, req.params.entityType, function (err, presented) {
+      Admin.FeaturedEntitiesController.presenter([req.params.entityId], req.params.entityType, req.currentPerson, function (err, presented) {
         if (err) { return next(err) }
 
         req.featuredEntity = presented[0]
@@ -63,7 +63,9 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
         global['Featured' + inflection.transform(req.params.entityType, ['capitalize', 'singularize'])].all(function (err, allFeatured) {
           if (err) { return next(err) }
 
-          Admin.FeaturedEntitiesController.presenter(allFeatured, req.currentPerson, req.params.entityType, function (err, presented) {
+          var ids = allFeatured.map(function (entity) { return entity.entityId })
+
+          Admin.FeaturedEntitiesController.presenter(ids, req.params.entityType, req.currentPerson, function (err, presented) {
             if (err) { return next(err) }
 
             res.locals.featuredEntities = presented
