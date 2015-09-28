@@ -1,6 +1,6 @@
 var VoicesPresenter = require(path.join(process.cwd(), '/presenters/VoicesPresenter.js'));
 var PostsPresenter = require(path.join(process.cwd(), '/presenters/PostsPresenter.js'));
-var FeedPresenter = require(__dirname + '/../presenters/FeedPresenter.js');
+var FeedPresenter = require(path.join(__dirname, '../presenters/FeedPresenter.js'));
 
 var PeopleController = Class('PeopleController').inherits(EntitiesController)({
   prototype : {

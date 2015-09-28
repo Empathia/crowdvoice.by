@@ -4,7 +4,7 @@ var VoicesPresenter = require(path.join(process.cwd(), '/presenters/VoicesPresen
 var TopicsPresenter = require(path.join(process.cwd(), '/presenters/TopicsPresenter'));
 var EntitiesPresenter = require(path.join(process.cwd(), '/presenters/EntitiesPresenter'));
 
-var isProfileNameAvailable = require(__dirname + '/../lib/util/isProfileNameAvailable.js');
+var isProfileNameAvailable = require(path.join(__dirname, '../lib/util/isProfileNameAvailable.js'));
 
 var HomeController = Class('HomeController')({
   prototype : {
