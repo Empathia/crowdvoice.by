@@ -67,6 +67,8 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
             this.appendChild(new CV.VoiceFooter({
                 name : 'voiceFooter',
                 voice : this.data,
+                allowPosting : this.allowPosting,
+                allowPostEditing : this.allowPostEditing,
                 voiceScrollableArea : this.scrollableArea
             })).render(document.querySelector('.app-wrapper'));
 
