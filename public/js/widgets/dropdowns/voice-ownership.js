@@ -43,6 +43,11 @@ Class(CV.UI, 'DropdownVoiceOwnership').inherits(Widget).includes(CV.WidgetUtils)
             return this;
         },
 
+        /* Fill the dropdown options using currentPerson data. It will add currentPerson itself and
+         * its owned organizations (if any).
+         * @method _setup <private>
+         * @return DropdownVoiceOwnership
+         */
         _setup : function _setup() {
             this._createItem((Person.get().name + ' ' + Person.get().lastname).trim(), Person.get().id);
 
