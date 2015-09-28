@@ -44,13 +44,13 @@ var NotificationsController = Class('NotificationsController')({
        * }
        */
 
-      ACL.isAllowed('markAsRead', 'entities', req.role, {
-        currentEntity: req.entity,
+      ACL.isAllowed('markAsRead', 'notifications', req.role, {
         currentPerson: req.currentPerson,
-      }, function (err, response) {
+        notificationId: req.body.notificationId
+      }, function (err, isAllowed) {
         if (err) { return next(err) }
 
-        if (!response.isAllowed) {
+        if (!isAllowed) {
           return next(new ForbiddenError('Unauthorized.'))
         }
 
@@ -73,13 +73,10 @@ var NotificationsController = Class('NotificationsController')({
        * req.body = {}
        */
 
-      ACL.isAllowed('markAllAsRead', 'entities', req.role, {
-        currentEntity: req.entity,
-        currentPerson: req.currentPerson,
-      }, function (err, response) {
+      ACL.isAllowed('markAllAsRead', 'notifications', req.role, {}, function (err, isAllowed) {
         if (err) { return next(err) }
 
-        if (!response.isAllowed) {
+        if (!isAllowed) {
           return next(new ForbiddenError('Unauthorized.'))
         }
 
