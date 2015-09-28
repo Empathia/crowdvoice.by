@@ -12,7 +12,7 @@ var UsersController = Class('UsersController')({
           return next(new ForbiddenError('Unauthorized'));
         }
 
-        User.all(function(err, users) {
+        User.find({ deleted: false }, function(err, users) {
           res.render('users/index.html', {layout : 'application', users : users});
         });
       });
@@ -32,7 +32,7 @@ var UsersController = Class('UsersController')({
           var user;
 
           if (err) { return next(err); }
-          if (result.length === 0) { return next(new NotFoundError('User Not found')); }
+          if (result.length === 0 || result[0].deleted) { return next(new NotFoundError('User Not found')); }
 
           user = new User(result[0]);
           res.render('users/show.html', {layout : 'application', user : user.toJson()});
@@ -139,8 +139,40 @@ var UsersController = Class('UsersController')({
                   return done(err);
                 }
 
-                done()
+                done();
               })
+            }, function (done) {
+              // NOTE: WHEN ADDING NEW FEED ACTIONS YOU NEED TO UPDATE THIS!!
+              var defaultSettings = {
+                entityFollowsEntity: true,
+                entityFollowsVoice: true,
+                entityArchivesVoice: true,
+                entityUpdatesAvatar: true,
+                entityUpdatesBackground: true,
+                entityBecomesOrgPublicMember: true,
+                voiceIsPublished: true,
+                voiceNewPosts: true,
+                voiceNewTitle: true,
+                voiceNewDescription: true,
+                voiceNewPublicContributor: true,
+              };
+
+              var setting = new NotificationSetting({
+                entityId: person.id,
+                webSettings: defaultSettings,
+                emailSettings: defaultSettings
+              });
+
+              setting.save(function (err, result) {
+                if (err) {
+                  person.destroy(function () {});
+                  user.destroy(function () {});
+                  anonymous.destroy(function () {});
+                  return done(err);
+                }
+
+                done();
+              });
             }], function(err) {
               if (err) {
                 req.flash('error', 'There was an error creating the user.');
@@ -197,7 +229,7 @@ var UsersController = Class('UsersController')({
 
         User.findById(userId, function (err, user) {
           if (err) { next(err); return; }
-          if (user.length === 0) { next(new NotFoundError('User Not found')); return; }
+          if (user.length === 0 || user[0].deleted) { next(new NotFoundError('User Not found')); return; }
 
           res.render('users/edit.html', {layout : 'application', user: user[0]});
         });
@@ -222,7 +254,7 @@ var UsersController = Class('UsersController')({
           var user;
 
           if (err) { next(err); return; }
-          if (result.length === 0) { next(new NotFoundError('User Not found')); return; }
+          if (result.length === 0 || result[0].deleted) { next(new NotFoundError('User Not found')); return; }
 
           user = new User(result[0]);
           user.setProperties(req.body);

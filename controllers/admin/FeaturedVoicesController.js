@@ -4,7 +4,7 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
     var featuredVoicesResult = [],
       toAddToArray
 
-    async.eachLimit(featuredVoicesIdsArray, 1, function (voiceId, next) {
+    async.each(featuredVoicesIdsArray, function (voiceId, next) {
       FeaturedVoices.find({ voice_id: hashids.decode(voiceId)[0] }, function (err, featuredVoice) {
         if (err) { return next(err) }
 
@@ -27,7 +27,11 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
     }, function (err) {
       if (err) { return callback(err) }
 
-      return callback(null, featuredVoicesResult)
+      var result = featuredVoicesResult.sort(function (a, b) {
+        return a.position - b.position
+      })
+
+      return callback(null, result)
     })
   },
 
@@ -135,54 +139,15 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
     },
 
     // GET /admin/featured/voices/:voiceId/edit
-    // render view for editing voice
+    // 404
     edit: function (req, res, next) {
-      ACL.isAllowed('edit', 'admin.featuredVoices', req.role, {}, function (err, isAllowed) {
-        if (err) { return next(err) }
-
-        if (!isAllowed) {
-          return next(new ForbiddenError('not an admin'))
-        }
-
-        return res.render('admin/featured/voices/edit.html', { layout: 'admin' })
-      })
+      return next(new NotFoundError())
     },
 
     // PUT /admin/featured/voices/:voiceId/edit
-    // update voice from input
+    // 404
     update: function (req, res, next) {
-      /*
-       * req.body = {
-       *   newVoiceId: Hashids.encode result,
-       * }
-       */
-
-      ACL.isAllowed('update', 'admin.featuredVoices', req.role, {}, function (err, isAllowed) {
-        if (err) { return next(err) }
-
-        if (!isAllowed) {
-          return next(new ForbiddenError('not an admin'))
-        }
-
-        FeaturedVoice.findById(hashids.decode(req.featuredVoice.id)[0], function (err, voice) {
-          var featured = new FeaturedVoice(voice[0])
-
-          featured.voiceId = hashids.decode(req.body.newVoiceId)[0]
-
-          featured.save(function (err) {
-            if (err) {
-              res.locals.errors = err
-              req.errors = err
-              logger.log(err)
-              logger.log(err.stack)
-              return res.render('admin/featured/voices/edit.html', { layout: 'admin' })
-            }
-
-            req.flash('success', 'Featured voice updated')
-            return res.redirect('/admin/featured/voices')
-          })
-        })
-      })
+      return next(new NotFoundError())
     },
 
     // DELETE /admin/featured/voices/:voiceId

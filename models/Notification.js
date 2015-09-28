@@ -6,7 +6,7 @@ var Notification = Class('Notification').inherits(Argon.KnexModel)({
   },
 
   storage: (new Argon.Storage.Knex({
-    tableName: 'Notifications'
+    tableName: 'Notifications',
   })),
 
   prototype: {

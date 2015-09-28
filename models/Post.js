@@ -24,17 +24,27 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
     sourceUrl     : [
       {
         rule: function (val) {
-          if (this.target.sourceType !== Post.SOURCE_TYPE_TEXT) {
-            if (!val) {
-              throw new Checkit.FieldError('sourceService is required unless sourceType === "text"');
-            }
+          if (this.target.sourceType !== Post.SOURCE_TYPE_TEXT && !val) {
+            throw new Checkit.FieldError('sourceService is required unless sourceType === "text"');
           }
         },
         message: 'sourceService is required unless sourceType === "text"'
       }
     ],
     sourceService : ['required'],
-    publishedAt   : ['required']
+    publishedAt   : ['required'],
+    title         : ['required', 'maxLength:65'],
+    description   : [
+      'required',
+      {
+        rule: function (val) {
+          if (this.target.sourceType !== Post.SOURCE_TYPE_TEXT && val.length > 180) {
+            throw new Checkit.FieldError('The description must be less than 65 characters.');
+          }
+        },
+        message: 'The description must be less than 65 characters.'
+      }
+    ],
   },
 
   storage : (new Argon.Storage.Knex({

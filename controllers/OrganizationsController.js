@@ -5,10 +5,15 @@ var isProfileNameAvailable = require(__dirname + '/../lib/util/isProfileNameAvai
 var OrganizationsController = Class('OrganizationsController').inherits(EntitiesController)({
   prototype : {
     inviteEntity : function inviteEntity (req, res, next) {
-      var org = req.entity, entity;
-      Entity.find({id: req.body.entityId}, function (err, result) {
+      var org = req.entity,
+        entity;
+
+      Entity.find({ id: req.body.entityId, deleted: false }, function (err, result) {
         if (err) { return next(err); }
-        if (result.length === 0) { return next(new NotFoundError('Entity Not found')); }
+
+        if (result.length === 0) {
+          return next(new NotFoundError('Entity Not found'));
+        }
 
         var user = new User(req.user);
         entity = result[0];
@@ -134,27 +139,27 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
     },
 
     create: function (req, res, next) {
-      // req.body = {
-      //   title: '1234', // organization name
-      //   profileName: '1234',
-      //   description: '1234',
-      //   locationName: 'Guadalajara, Jalisco, Mexico.',
-      //   imageBackground: 'undefined', // goes somewhere else if defined
-      //   imageLogo: 'undefined', // goes somewhere else if defined
-      // }
-      // req.files = {
-      //   imageLogo,
-      //   imageBackground,
-      // }
-
-      //console.log('??????????????????????????', req.files)
-      //console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', req.body)
+      /* POST
+       * req.body = {
+       *   title: '1234', // organization name
+       *   profileName: '1234',
+       *   description: '1234',
+       *   locationName: 'Guadalajara, Jalisco, Mexico.',
+       *   imageBackground: 'undefined', // req.files if defined
+       *   imageLogo: 'undefined', // req.files if defined
+       * }
+       *
+       * req.files = {
+       *   imageLogo,
+       *   imageBackground,
+       * }
+       */
 
       ACL.isAllowed('createOrganization', 'entities', req.role, {}, function (err, isAllowed) {
         if (err) { return next(err); }
 
         if (!isAllowed) {
-          return next(new ForbiddenError('not allowed to create new organization'));
+          return next(new ForbiddenError('Unauthorized.'));
         }
 
         // check if provided profile name is taken
@@ -164,8 +169,6 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
           if (!isAvailable) {
             return res.status(200).json({ error: new Error('profile name not available') });
           }
-
-          // TODO check that no required fields are empty (title, profileName, description)
 
           var org = new Entity({
             type: 'organization',
@@ -257,7 +260,8 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
 
     members : function members(req, res, next) {
       EntityMembership.find({
-        'entity_id' : hashids.decode(req.entity.id)[0]
+        entity_id: hashids.decode(req.entity.id)[0],
+        is_anonymous: false
       }, function(err, result) {
         if (err) {
           return next(err);

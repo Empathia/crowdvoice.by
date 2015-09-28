@@ -206,61 +206,75 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
     },
 
     follow : function follow(req, res, next) {
-      var entity = new Entity(req.entity),
-        follower = new Entity(req.currentPerson);
-      entity.id = hashids.decode(entity.id)[0];
-      follower.id = hashids.decode(follower.id)[0];
-
-      // we don't want to allow the user to follow if he is anonymous
-      if (follower.isAnonymous) {
-        return next(new ForbiddenError('Anonymous users can\'t follow'));
-      }
-
-      EntityFollower.find({
-        follower_id: follower.id,
-        followed_id: entity.id
-      }, function(err, result) {
+      ACL.isAllowed('followAs', 'entities', req.role, {
+        currentPersonId: req.currentPerson.id,
+        followerId: req.body.followerId
+      }, function (err, response) {
         if (err) { return next(err); }
 
-        if (result.length > 0) { // already following?
-          // unfollow
-          follower.unfollowEntity(entity, function(err) {
+        if (!response.isAllowed) {
+          return next(new ForbiddenError('not owner of provided entity'));
+        }
+
+        Entity.findById(hashids.decode(req.body.followerId)[0], function (err, followers) {
+          if (err) { return next(err); }
+
+          var entity = new Entity(req.entity),
+            follower = new Entity(followers[0]);
+          entity.id = hashids.decode(entity.id)[0];
+
+          // we don't want to allow the user to follow if he is anonymous
+          if (follower.isAnonymous) {
+            return next(new ForbiddenError('Anonymous users can\'t follow'));
+          }
+
+          EntityFollower.find({
+            follower_id: follower.id,
+            followed_id: entity.id
+          }, function(err, result) {
             if (err) { return next(err); }
 
-            res.format({
-              html: function() {
-                req.flash('success', 'Unfollowed successfully.');
-                res.redirect('/' + entity.profileName);
-              },
-              json: function() {
-                res.json({ status: 'unfollowed' });
-              }
-            });
-          });
-        } else {
-          // follow
-          follower.followEntity(entity, function (err, entityFollowerRecordId) {
-            if (err) { return next(err); }
-
-            EntityFollower.findById(entityFollowerRecordId[0], function (err, entityFollower) {
-              if (err) { return next(err); }
-
-              FeedInjector().inject(follower.id, 'who entityFollowsEntity', entityFollower[0], function (err) {
+            if (result.length > 0) { // already following?
+              // unfollow
+              follower.unfollowEntity(entity, function(err) {
                 if (err) { return next(err); }
 
                 res.format({
                   html: function() {
-                    req.flash('success', 'Followed successfully.');
+                    req.flash('success', 'Unfollowed successfully.');
                     res.redirect('/' + entity.profileName);
                   },
                   json: function() {
-                    res.json({ status: 'followed' });
+                    res.json({ status: 'unfollowed' });
                   }
                 });
               });
-            });
+            } else {
+              // follow
+              follower.followEntity(entity, function (err, entityFollowerRecordId) {
+                if (err) { return next(err); }
+
+                EntityFollower.findById(entityFollowerRecordId[0], function (err, entityFollower) {
+                  if (err) { return next(err); }
+
+                  FeedInjector().inject(follower.id, 'who entityFollowsEntity', entityFollower[0], function (err) {
+                    if (err) { return next(err); }
+
+                    res.format({
+                      html: function() {
+                        req.flash('success', 'Followed successfully.');
+                        res.redirect('/' + entity.profileName);
+                      },
+                      json: function() {
+                        res.json({ status: 'followed' });
+                      }
+                    });
+                  });
+                });
+              });
+            }
           });
-        }
+        });
       });
     },
 
@@ -589,6 +603,10 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
     },
 
     feed : function (req, res, next) {
+      /* GET
+       * req.query.page = Number // page
+       */
+
       ACL.isAllowed('feed', 'entities', req.role, {
         entityProfileName: req.entity.profileName,
         currentPerson: req.currentPerson
@@ -596,31 +614,73 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
         if (err) { return next(err); }
 
         if (!response.isAllowed) {
-          return next(new ForbiddenError());
+          return next(new ForbiddenError('Unauthorized.'));
         }
 
-        Notification.find({ follower_id: response.follower.id }, function (err, notifications) {
-          var actionIds = notifications.map(function (val) { return val.actionId; });
+        var page = req.query.page || 1,
+          pageLength = 20;
 
-          FeedAction.whereIn('id', actionIds, function (err, actions) {
-            FeedPresenter.build(actions, response.follower, false, function (err, presentedFeed) {
-              if (err) { return next(err); }
+        db.raw('SELECT *, ' +
+          '(SELECT count(*) AS full_count ' +
+          'FROM "Notifications" ' +
+          'WHERE follower_id = ?) ' +
+          'FROM "Notifications" ' +
+          'WHERE follower_id = ? ' +
+          'ORDER BY created_at DESC ' +
+          'LIMIT ? ' +
+          'OFFSET ?', [response.follower.id, response.follower.id, pageLength, (page - 1) * pageLength])
+          .exec(function (err, result) {
+            if (err) { return next(err); }
 
-              res.format({
+            // no results, i.e. no notifications or a blank page
+            if (result.rows.length < 1) {
+              var empty = { feed: [], isThereNextPage: false };
+
+              return res.format({
                 html: function () {
-                  req.feed = presentedFeed;
-                  res.locals.feed = presentedFeed;
+                  req.feed = empty;
+                  res.locals.feed = empty;
                   res.render('people/feed');
                 },
                 json: function () {
-                  res.json(presentedFeed);
+                  res.json(empty);
                 }
+              });
+            }
+
+            var notifications = Argon.Storage.Knex.processors[0](result.rows),
+              actionIds = notifications.map(function (val) {
+                return val.actionId;
+              }),
+              totalPages = Math.ceil(result.rows[0].full_count / pageLength),
+              isThereNextPage = page < totalPages;
+
+            FeedAction.whereIn('id', actionIds, function (err, actions) {
+              if (err) { return next(err); }
+
+              FeedPresenter.build(actions, req.currentPerson, function (err, presentedFeed) {
+                if (err) { return next(err); }
+
+                var answer = {
+                  feed: presentedFeed,
+                  isThereNextPage: isThereNextPage
+                };
+
+                return res.format({
+                  html: function () {
+                    req.feed = answer;
+                    res.locals.feed = answer;
+                    res.render('people/feed');
+                  },
+                  json: function () {
+                    res.json(answer);
+                  }
+                });
               });
             });
           });
-        });
       });
-    },
+    }
 
   }
 });

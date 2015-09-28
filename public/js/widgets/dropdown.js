@@ -64,7 +64,13 @@ Class(CV, 'Dropdown').inherits(Widget).includes(CV.WidgetUtils)({
             this.setContent(this.content);
 
             if (this.showArrow) {
-                this.head.insertAdjacentHTML('beforeend', this.constructor.ARROW_HTML);
+                var arrow = this.constructor.ARROW_HTML;
+
+                if (this.alignment === 'top') {
+                    arrow = arrow.replace(/arrow-down/, 'arrow-up');
+                }
+
+                this.head.insertAdjacentHTML('beforeend', arrow);
 
                 if (this.arrowClassName) {
                     this.arrowElement = this.head.querySelector('.ui-dropdown-arrow');

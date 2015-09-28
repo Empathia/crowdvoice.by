@@ -1,4 +1,6 @@
 var API = require('../../lib/api');
+var Person = require('../../lib/currentPerson');
+
 Class(CV, 'CardActionFollow').inherits(Widget)({
 
     ELEMENT_CLASS : 'card-actions-item card-actions-follow-button',
@@ -118,7 +120,10 @@ Class(CV, 'CardActionFollow').inherits(Widget)({
         _followHandler : function _followHandler() {
             this._setIsFollowing()._cancelHoverState();
 
-            API.followEntity({profileName: this.profileName}, function(err) {
+            API.followEntity({
+                profileName: this.profileName,
+                data : {followerId : Person.get().id}
+            }, function(err) {
                 if (err) {
                     this._setIsNotFollowing();
                 }
@@ -131,7 +136,10 @@ Class(CV, 'CardActionFollow').inherits(Widget)({
         _unfollowHandlerRef : function _unfollowHandlerRef() {
             this._setIsNotFollowing();
 
-            API.followEntity({profileName: this.profileName}, function(err) {
+            API.followEntity({
+                profileName: this.profileName,
+                data : {followerId : Person.get().id}
+            }, function(err) {
                 if (err) {
                     this._setIsFollowing();
                 }

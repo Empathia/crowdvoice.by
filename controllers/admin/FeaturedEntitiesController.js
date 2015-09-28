@@ -4,8 +4,8 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
     var featuredEntitiesResult = [],
       toAddToArray
 
-    async.eachLimit(featuredEntitiesIdsArray, 1, function (entityId, next) {
-      global['Featured' + inflection.capitalize(entityType)].find({ entity_id: hashids.decode(entityId)[0] }, function (err, featuredEntity) {
+    async.each(featuredEntitiesIdsArray, function (entityId, next) {
+      global['Featured' + inflection.transform(entityType, ['capitalize', 'singularize'])].find({ entity_id: hashids.decode(entityId)[0] }, function (err, featuredEntity) {
         if (err) { return next(err) }
 
         toAddToArray = {} // reset
@@ -27,7 +27,11 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
     }, function (err) {
       if (err) { return callback(err) }
 
-      return callback(null, featuredEntitiesResult)
+      var result = featuredEntitiesResult.sort(function (a, b) {
+        return a.position - b.position
+      })
+
+      return callback(null, result)
     })
   },
 
@@ -56,7 +60,7 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
           return next(new ForbiddenError('not an admin'))
         }
 
-        FeaturedPeople.all(function (err, allFeatured) {
+        global['Featured' + inflection.transform(req.params.entityType, ['capitalize', 'singularize'])].all(function (err, allFeatured) {
           if (err) { return next(err) }
 
           Admin.FeaturedEntitiesController.presenter(allFeatured, req.currentPerson, req.params.entityType, function (err, presented) {
@@ -135,54 +139,15 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
     },
 
     // GET /admin/featured/:entityType/:entityId/edit
-    // render view for editing entity
+    // 404
     edit: function (req, res, next) {
-      ACL.isAllowed('edit', 'admin.featuredEntities', req.role, {}, function (err, isAllowed) {
-        if (err) { return next(err) }
-
-        if (!isAllowed) {
-          return next(new ForbiddenError('not an admin'))
-        }
-
-        return res.render('admin/featured/entities/edit.html', { layout: 'admin' })
-      })
+      return next(new NotFoundError())
     },
 
     // PUT /admin/featured/:entityType/:entityId/edit
-    // update entity from input
+    // 404
     update: function (req, res, next) {
-      /*
-       * req.body = {
-       *   newEntityId: Hashids.encode result,
-       * }
-       */
-
-      ACL.isAllowed('update', 'admin.featuredEntities', req.role, {}, function (err, isAllowed) {
-        if (err) { return next(err) }
-
-        if (!isAllowed) {
-          return next(new ForbiddenError('not an admin'))
-        }
-
-        global['Featured' + inflection.capitalize(req.params.entityType)].findById(hashids.decode(req.featuredEntity.id)[0], function (err, entity) {
-          var featured = new FeaturedEntity(entity[0])
-
-          featured.entityId = hashids.decode(req.body.newEntityId)[0]
-
-          featured.save(function (err) {
-            if (err) {
-              res.locals.errors = err
-              req.errors = err
-              logger.log(err)
-              logger.log(err.stack)
-              return res.render('admin/featured/entities/edit.html', { layout: 'admin' })
-            }
-
-            req.flash('success', 'Featured ' + req.entityType + ' updated')
-            return res.redirect('/admin/featured/' + req.params.entityType)
-          })
-        })
-      })
+      return next(new NotFoundError())
     },
 
     // DELETE /admin/featured/:entityType/:entityId
@@ -199,7 +164,7 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
           return next(new ForbiddenError('not an admin'))
         }
 
-        global['Featured' + inflection.capitalize(req.params.entityType)].findById(hashids.decode(req.featuredEntity.id)[0], function (err, entity) {
+        global['Featured' + inflection.transform(req.params.entityType, ['capitalize', 'singularize'])].findById(hashids.decode(req.featuredEntity.id)[0], function (err, entity) {
           var featured = new FeaturedEntity(entity[0])
 
           featured.destroy(function (err) {
@@ -242,7 +207,7 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
           return hashids.decode(id)[0]
         })
 
-        db('Featured' + inflection.capitalize(req.params.entityType))
+        db('Featured' + inflection.transform(req.params.entityType, ['capitalize', 'pluralize']))
           .whereIn('entity_id', realIds)
           .exec(function (err, result) {
             if (err) { return next(err) }
@@ -251,7 +216,7 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
               featuredEntity
 
             async.each(featuredEntities, function (val, next) {
-              featuredEntity = new global['Featured' + inflection.capitalize(req.params.entityType)](val)
+              featuredEntity = new global['Featured' + inflection.tramsform(req.params.entityType, ['capitalize', 'singularize'])](val)
               featuredEntity.position = realIds.indexOf(val)
 
               featuredEntity.save(next)
