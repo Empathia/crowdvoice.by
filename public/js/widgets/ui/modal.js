@@ -29,6 +29,8 @@ Class(CV.UI, 'Modal').inherits(Widget).includes(CV.WidgetUtils)({
         data : null,
         width : null,
         modalElement : null,
+        isAdmin : null,
+
 
         init : function(config){
             Widget.prototype.init.call(this, config);
@@ -41,6 +43,8 @@ Class(CV.UI, 'Modal').inherits(Widget).includes(CV.WidgetUtils)({
             this.appendChild(new this.action({
                 data : this.data,
                 name : 'bubbleAction',
+                isAdmin : this.isAdmin,
+
             })).render(this.el.querySelector('.body'));
 
             this._setup()._bindEvents();

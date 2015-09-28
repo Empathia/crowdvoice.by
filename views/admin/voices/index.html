@@ -32,7 +32,7 @@
 					<div class="admin-actions">
 
 						<a href="/<%= voice.owner.profileName %>/<%= voice.slug %>/" target="_blank"><button class="cv-button small">Show</button></a>
-						<a href="voices/<%= voice.id %>/edit"><button class="cv-button small">Edit</button></a>
+						<a href="/admin/voices/<%= voice.id %>/edit"><button class="cv-button small">Edit</button></a>
 						<a >
 							<form class="form-profile" action="/admin/voices/<%= voice.id %>?_method=DELETE" method="POST" enctype="multipart/form-data">
 	      						<input type="hidden" name="_csrf" value="<%= csrfToken %>">
@@ -53,21 +53,19 @@
 
 <script>
 	var voices = <%= JSON.stringify(voices) %>;
-	console.log(voices[0]);
 	var headerEl = document.querySelector('header .header-actions');
 	headerEl.innerHTML = '<h2>Organization List</h2>';
 
 	var flash = <%= JSON.stringify(flash) %>;
-	console.log(flash);
-  if (flash.success){
+	if (flash.success){
 
-  	var nEl= document.querySelector('.notifications');
-		nEl.innerHTML = '<p>' + flash.success + '</p>';
+	  	var nEl= document.querySelector('.notifications');
+			nEl.innerHTML = '<p>' + flash.success + '</p>';
 
-  	nEl.style.display = 'block';
-  	setTimeout(function(){
-  		$(nEl).fadeOut(500);
-  	}, 2000);
+	  	nEl.style.display = 'block';
+	  	setTimeout(function(){
+	  		$(nEl).fadeOut(500);
+	  	}, 2000);
 	}
 
 </script>

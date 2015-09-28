@@ -58,7 +58,8 @@ module.exports = {
             contentType : false,
             processData : false,
             data : args.data,
-            success : function success(data) { callback(false, data); },
+            success : function success(data) { //callback(false, data);
+             },
             error : function error(err) { callback(true, err); }
         });
     },
