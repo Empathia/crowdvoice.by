@@ -1,4 +1,3 @@
-/* globals App */
 var Person = require('./../../lib/currentPerson');
 
 Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
@@ -26,7 +25,6 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
             this.el = this.element[0];
             this.actionsColumn = this.el.querySelector('.voice-footer-right');
             this.byAnchor = this.el.querySelector('.voice-footer-by > a');
-            console.log(this.voice.owner);
 
             this.dom.updateText(this.el.querySelector('.voice-footer-title'), this.voice.title);
 
@@ -50,7 +48,7 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
                 scrollableArea : this.voiceScrollableArea
             })).render(this.element);
 
-            if (App.Voice.allowPosting) {
+            if (this.allowPosting) {
                 this.appendChild(new CV.VoiceAddContent({
                     name : 'voiceAddContent',
                     voice : this.voice
@@ -64,7 +62,7 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
                 })).render(this.actionsColumn);
             }
 
-            if (Person.is(App.Voice.data.owner.id)) {
+            if (Person.is(this.voice.owner.id)) {
                 this.appendChild(new CV.ManageContributorsButton({
                     name : 'manageContributors'
                 })).render(this.actionsColumn);
@@ -87,10 +85,10 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
                 name : 'shareButtons'
             })).render(this.actionsColumn);
 
-            if (this.voice.type !== CV.VoiceView.TYPE_CLOSED || App.Voice.allowPostEditing) {
+            if (this.voice.type !== CV.VoiceView.TYPE_CLOSED || this.allowPostEditing) {
                 this.appendChild(new CV.VoiceModerate({
                     name : 'voiceModerate',
-                    allowPostEditing : App.Voice.allowPostEditing
+                    allowPostEditing : this.allowPostEditing
                 })).render(this.actionsColumn);
             }
         },

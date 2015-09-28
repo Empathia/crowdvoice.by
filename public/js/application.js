@@ -110,9 +110,9 @@ require('./widgets/saved-posts/onboarding');
 require('./widgets/saved-posts/manager');
 
 require('./widgets/voice/posts-registry');
-require('./widgets/voice/onboarding');
-require('./widgets/voice/voice-header');
-require('./widgets/voice/voice-footer');
+require('./widgets/voice/Onboarding');
+require('./widgets/voice/VoiceHeader');
+require('./widgets/voice/VoiceFooter');
 require('./widgets/voice/footer/share-buttons-group');
 require('./widgets/voice/footer/share-button');
 require('./widgets/voice/footer/embed-button');
