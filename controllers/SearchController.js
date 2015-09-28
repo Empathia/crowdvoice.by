@@ -151,9 +151,10 @@ var SearchController = Class('SearchController')({
         AS document \
         FROM "Voices" \
         JOIN "Entities" ON "Entities".id = "Voices".owner_id \
-        WHERE "Voices".status = \'' + Voice.STATUS_PUBLISHED + '\') search \
-        WHERE search.document @@ plainto_tsquery(\'' + query + '\') \
-        ORDER BY ts_rank(search.document, plainto_tsquery(\'' + query + '\')) DESC;').exec(function(err, result) {
+        WHERE "Voices".status = ? \
+        AND "Entities".deleted = ?) search \
+        WHERE search.document @@ plainto_tsquery(?) \
+        ORDER BY ts_rank(search.document, plainto_tsquery(?)) DESC;', [Voice.STATUS_PUBLISHED, false, query, query]).exec(function(err, result) {
           if (err) {
             return callback(err);
           }
@@ -187,9 +188,10 @@ var SearchController = Class('SearchController')({
         setweight(to_tsvector("Entities".location), \'D\') \
         AS document \
         FROM "Entities" \
-        WHERE "Entities".is_anonymous = false AND "Entities".type = \'person\') search \
-        WHERE search.document @@ plainto_tsquery(\'' + query + '\') \
-        ORDER BY ts_rank(search.document, plainto_tsquery(\'' + query + '\')) DESC;').exec(function(err, result) {
+        WHERE "Entities".is_anonymous = false AND "Entities".type = \'person\' \
+        AND "Entities".deleted = ?) search \
+        WHERE search.document @@ plainto_tsquery(?) \
+        ORDER BY ts_rank(search.document, plainto_tsquery(?)) DESC;', [false, query, query]).exec(function(err, result) {
           if (err) {
             return callback(err);
           }
@@ -223,9 +225,10 @@ var SearchController = Class('SearchController')({
         setweight(to_tsvector("Entities".location), \'D\') \
         AS document \
         FROM "Entities" \
-        WHERE "Entities".is_anonymous = false AND "Entities".type = \'organization\') search \
-        WHERE search.document @@ plainto_tsquery(\'' + query + '\') \
-        ORDER BY ts_rank(search.document, plainto_tsquery(\'' + query + '\')) DESC;').exec(function(err, result) {
+        WHERE "Entities".is_anonymous = false AND "Entities".type = \'organization\' \
+        AND "Entities".deleted = ?) search \
+        WHERE search.document @@ plainto_tsquery(?) \
+        ORDER BY ts_rank(search.document, plainto_tsquery(?)) DESC;', [false, query, query]).exec(function(err, result) {
           if (err) {
             return callback(err);
           }

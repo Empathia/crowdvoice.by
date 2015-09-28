@@ -20,7 +20,7 @@ var SessionsController = Class('SessionsController')({
           if (req.method === 'GET') {
             return res.render('sessions/forgotPassword.html', {layout : 'login'})
           } else if (req.method === 'POST') {
-            User.find({email : req.body.email}, function(err, user) {
+            User.find({email : req.body.email, deleted: false}, function(err, user) {
               if (err) {
                 return next(err);
               }
@@ -72,6 +72,7 @@ var SessionsController = Class('SessionsController')({
       })
     },
 
+    // email confirmation thingy
     /* Create session if token authentication is correct
      * @method: tokenAuth
      */
@@ -110,6 +111,7 @@ var SessionsController = Class('SessionsController')({
       })(req, res, next);
     },
 
+    // login
     /* Create session if authentication is correct
      * @method: create
      */
@@ -120,7 +122,7 @@ var SessionsController = Class('SessionsController')({
           return next(err);
         }
 
-        if (!user) {
+        if (!user || user.deleted) {
           req.flash('error', 'Invalid Username or Password!');
           return res.redirect('/login');
         }

@@ -515,9 +515,9 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
     },
 
     follow : function follow(req, res, next) {
-      ACL.isAllowed('followAsOrg', 'entities', req.role, {
+      ACL.isAllowed('followAs', 'entities', req.role, {
         currentPersonId: req.currentPerson.id,
-        orgId: req.body.followerId
+        followerId: req.body.followerId
       }, function (err, response) {
         if (err) { return next(err); }
 

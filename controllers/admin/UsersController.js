@@ -10,7 +10,7 @@ Admin.UsersController = Class(Admin, 'UsersController')({
           return next(new ForbiddenError());
         }
 
-        User.all(function(err, result) {
+        User.find({ deleted: false }, function(err, result) {
           if (err) {
             return next(err);
           }
@@ -41,7 +41,7 @@ Admin.UsersController = Class(Admin, 'UsersController')({
             return next(err);
           }
 
-          if (result.length === 0) {
+          if (result.length === 0 || result[0].deleted) {
             return next(new NotFoundError());
           }
 
@@ -192,7 +192,7 @@ Admin.UsersController = Class(Admin, 'UsersController')({
             return next(err);
           }
 
-          if (result.length === 0) {
+          if (result.length === 0 || result[0].deleted) {
             return next(new NotFoundError());
           }
 
@@ -220,7 +220,7 @@ Admin.UsersController = Class(Admin, 'UsersController')({
             return next(err);
           }
 
-          if (result.length === 0) {
+          if (result.length === 0 || result[0].deleted) {
             return next(new NotFoundError());
           }
 
@@ -259,7 +259,7 @@ Admin.UsersController = Class(Admin, 'UsersController')({
             return next(err);
           }
 
-          if (result.length === 0) {
+          if (result.length === 0 || result[0].deleted) {
             return next(new NotFoundError());
           }
 
