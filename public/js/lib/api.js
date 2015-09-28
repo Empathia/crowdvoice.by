@@ -69,7 +69,7 @@ module.exports = {
      * @argument callback <required> [Function]
      */
     followVoice : function followVoice(args, callback) {
-        if (!args.profileName || !args.voiceSlug || !callback) {
+        if (!args.profileName || !args.voiceSlug || !args.data.followerId || !callback) {
             throw new Error('Missing required params');
         }
 
@@ -78,8 +78,9 @@ module.exports = {
         }
 
         $.ajax({
-            type : 'GET',
+            type : 'POST',
             url : '/' + args.profileName + '/' + args.voiceSlug + '/follow',
+            data : args.data,
             dataType : 'json',
             headers : {'csrf-token' : this.token},
             success : function success(data) {callback(false, data);},
