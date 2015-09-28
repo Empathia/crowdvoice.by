@@ -515,13 +515,24 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
     },
 
     destroy : function destroy(req, res, next) {
-      var voice = req.activeVoice;
-      voice.deleted = true;
-      voice.save(function(err) {
+      ACL.isAllowed('edit', 'voices', req.role, {
+        currentPerson : req.currentPerson,
+        voice : req.activeVoice
+      }, function(err, response) {
         if (err) { return next(err); }
 
-        req.flash('success', 'Voice has been deleted.');
-        res.redirect('/voices');
+        if (!response.isAllowed) {
+          return next(new ForbiddenError('Unauthorized.'));
+        }
+
+        var voice = new Voice(req.activeVoice);
+        voice.deleted = true;
+        voice.save(function(err) {
+          if (err) { return next(err); }
+
+          req.flash('success', 'Voice has been deleted.');
+          res.redirect('/voices');
+        });
       });
     },
 
