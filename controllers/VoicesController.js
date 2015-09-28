@@ -528,7 +528,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         Entity.findById(hashids.decode(req.body.followerId)[0], function (err, followers) {
           if (err) { return next(err); }
 
-          var follower = followers[0];
+          var follower = new Entity(followers[0]);
 
           // we don't want to allow the user to follow if he is anonymous
           if (follower.isAnonymous) {
