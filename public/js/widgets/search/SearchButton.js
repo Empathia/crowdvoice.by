@@ -1,4 +1,5 @@
-/* jshint multistr: true */
+var Events = require('../../lib/events');
+
 Class(CV, 'SearchButton').inherits(Widget)({
     HTML : '\
     <button class="cv-button small rounded -p0">\
@@ -13,31 +14,32 @@ Class(CV, 'SearchButton').inherits(Widget)({
 
             this.el = this.element[0];
 
-            this.appendChild(
-                new CV.Search({
-                    name : 'search'
-                })
-            ).render(document.body);
+            this.appendChild(new CV.Search({
+                name : 'search'
+            })).render(document.body);
 
             this._bindEvents();
         },
 
         _bindEvents : function _bindEvents() {
             this._clickElementRef = this.toggle.bind(this);
-            this.el.addEventListener('click', this._clickElementRef);
+            Events.on(this.el, 'click', this._clickElementRef);
 
             this.search.bind('close', this._clickElementRef);
-
             return this;
         },
 
+        /* Toggle active/deactive states.
+         * @method toggle <public> [Function]
+         * @return this.active [Boolean]
+         */
         toggle : function toggle() {
             if (this.active) {
                 this.deactivate();
-                return false;
+            } else {
+                this.activate();
             }
-
-            this.activate();
+            return this.active;
         },
 
         _activate : function _activate() {
@@ -51,13 +53,11 @@ Class(CV, 'SearchButton').inherits(Widget)({
         },
 
         destroy : function destroy() {
-            Widget.prototype.destroy.call(this);
-
             this.search.unbind('close', this._clickElementRef);
-
-            this.el.removeEventListener('click', this._clickElementRef);
+            Events.off(this.el, 'click', this._clickElementRef);
             this._clickElementRef = null;
 
+            Widget.prototype.destroy.call(this);
             return null;
         }
     }
