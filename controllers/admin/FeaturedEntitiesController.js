@@ -56,11 +56,11 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
     // GET /admin/featured/:entityType
     // get all featured people and render index view
     index: function (req, res, next) {
-      ACL.isAllowed('index', 'admin.featuredEntities', req.role, {}, function (err, isAllowed) {
+      ACL.isAllowed('index', 'admin.featuredEntities', req.role, { currentPerson: req.currentPerson }, function (err, isAllowed) {
         if (err) { return next(err) }
 
         if (!isAllowed) {
-          return next(new ForbiddenError('not an admin'))
+          return next(new ForbiddenError('Unauthorized. Must be Admin.'))
         }
 
         global['Featured' + inflection.transform(req.params.entityType, ['capitalize', 'singularize'])].all(function (err, allFeatured) {
@@ -82,11 +82,11 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
     // GET /admin/featured/:entityType/:entityId
     // render view for viewing a featured person
     show: function (req, res, next) {
-      ACL.isAllowed('show', 'admin.featuredEntities', req.role, {}, function (err, isAllowed) {
+      ACL.isAllowed('show', 'admin.featuredEntities', req.role, { currentPerson: req.currentPerson }, function (err, isAllowed) {
         if (err) { return next(err) }
 
         if (!isAllowed) {
-          return next(new ForbiddenError('not an admin'))
+          return next(new ForbiddenError('Unauthorized. Must be Admin.'))
         }
 
         return res.render('admin/featured/entities/show.html', { layout: 'admin' })
@@ -96,11 +96,11 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
     // GET /admin/featured/:entityType/new
     // render view for new entity
     new: function (req, res, next) {
-      ACL.isAllowed('new', 'admin.featuredEntities', req.role, {}, function (err, isAllowed) {
+      ACL.isAllowed('new', 'admin.featuredEntities', req.role, { currentPerson: req.currentPerson }, function (err, isAllowed) {
         if (err) { return next(err) }
 
         if (!isAllowed) {
-          return next(new ForbiddenError('not an admin'))
+          return next(new ForbiddenError('Unauthorized. Must be Admin.'))
         }
 
         return res.render('admin/featured/entities/new.html', { layout: 'admin' })
@@ -116,11 +116,11 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
        * }
        */
 
-      ACL.isAllowed('create', 'admin.featuredEntities', req.role, {}, function (err, isAllowed) {
+      ACL.isAllowed('create', 'admin.featuredEntities', req.role, { currentPerson: req.currentPerson }, function (err, isAllowed) {
         if (err) { return next(err) }
 
         if (!isAllowed) {
-          return next(new ForbiddenError('not an admin'))
+          return next(new ForbiddenError('Unauthorized. Must be Admin.'))
         }
 
         var featured = new FeaturedPerson({
@@ -162,11 +162,11 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
        * req.body = {}
        */
 
-      ACL.isAllowed('destroy', 'admin.featuredEntities', req.role, {}, function (err, isAllowed) {
+      ACL.isAllowed('destroy', 'admin.featuredEntities', req.role, { currentPerson: req.currentPerson }, function (err, isAllowed) {
         if (err) { return next(err) }
 
         if (!isAllowed) {
-          return next(new ForbiddenError('not an admin'))
+          return next(new ForbiddenError('Unauthorized. Must be Admin.'))
         }
 
         global['Featured' + inflection.transform(req.params.entityType, ['capitalize', 'singularize'])].findById(hashids.decode(req.featuredEntity.id)[0], function (err, entity) {
@@ -201,11 +201,11 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
        * }
        */
 
-      ACL.isAllowed('updatePositions', 'admin.featuredEntities', req.role, {}, function (err, isAllowed) {
+      ACL.isAllowed('updatePositions', 'admin.featuredEntities', req.role, { currentPerson: req.currentPerson }, function (err, isAllowed) {
         if (err) { return next(err) }
 
         if (!isAllowed) {
-          return next(new ForbiddenError('not an admin'))
+          return next(new ForbiddenError('Unauthorized. Must be Admin.'))
         }
 
         var realIds = req.body.entityIds.map(function (id) {

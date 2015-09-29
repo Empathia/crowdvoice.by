@@ -1,7 +1,7 @@
 Admin.EntitiesController = Class(Admin, 'EntitiesController')({
   prototype : {
     index : function index(req, res, next) {
-      ACL.isAllowed('index', 'admin.' + inflection.pluralize(req.entityType), req.role, {}, function(err, isAllowed) {
+      ACL.isAllowed('index', 'admin.' + inflection.pluralize(req.entityType), req.role, { currentPerson: req.currentPerson }, function(err, isAllowed) {
         if (err) {
           return next(err);
         }
@@ -29,7 +29,7 @@ Admin.EntitiesController = Class(Admin, 'EntitiesController')({
     },
 
     show : function show(req, res, next) {
-      ACL.isAllowed('show', 'admin.' + inflection.pluralize(req.entityType), req.role, {}, function(err, isAllowed) {
+      ACL.isAllowed('show', 'admin.' + inflection.pluralize(req.entityType), req.role, { currentPerson: req.currentPerson }, function(err, isAllowed) {
         if (err) {
           return next(err);
         }
@@ -66,7 +66,7 @@ Admin.EntitiesController = Class(Admin, 'EntitiesController')({
     },
 
     edit : function edit(req, res, next) {
-      ACL.isAllowed('edit', 'admin.' + inflection.pluralize(req.entityType), req.role, {}, function(err, isAllowed) {
+      ACL.isAllowed('edit', 'admin.' + inflection.pluralize(req.entityType), req.role, { currentPerson: req.currentPerson }, function(err, isAllowed) {
         if (err) {
           return next(err);
         }
@@ -98,7 +98,7 @@ Admin.EntitiesController = Class(Admin, 'EntitiesController')({
     },
 
     update : function update(req, res, next) {
-      ACL.isAllowed('update', 'admin.' + inflection.pluralize(req.entityType), req.role, {}, function(err, isAllowed) {
+      ACL.isAllowed('update', 'admin.' + inflection.pluralize(req.entityType), req.role, { currentPerson: req.currentPerson }, function(err, isAllowed) {
         if (err) {
           return next(err);
         }
@@ -156,7 +156,7 @@ Admin.EntitiesController = Class(Admin, 'EntitiesController')({
     },
 
     destroy : function destroy(req, res, next) {
-      ACL.isAllowed('destroy', 'admin.' + inflection.pluralize(req.entityType), req.role, {}, function(err, isAllowed) {
+      ACL.isAllowed('destroy', 'admin.' + inflection.pluralize(req.entityType), req.role, { currentPerson: req.currentPerson }, function(err, isAllowed) {
         if (err) {
           return next(err);
         }

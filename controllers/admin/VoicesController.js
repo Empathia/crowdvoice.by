@@ -1,7 +1,7 @@
 Admin.VoicesController = Class(Admin, 'VoicesController')({
   prototype : {
     index : function index(req, res, next) {
-      ACL.isAllowed('index', 'admin.voices', req.role, {}, function(err, isAllowed) {
+      ACL.isAllowed('index', 'admin.voices', req.role, { currentPerson: req.currentPerson }, function(err, isAllowed) {
         if (err) {
           return next(err);
         }
@@ -29,7 +29,7 @@ Admin.VoicesController = Class(Admin, 'VoicesController')({
     },
 
     show : function show(req, res, next) {
-      ACL.isAllowed('show', 'admin.voices', req.role, {}, function(err, isAllowed) {
+      ACL.isAllowed('show', 'admin.voices', req.role, { currentPerson: req.currentPerson }, function(err, isAllowed) {
         if (err) {
           return next(err);
         }
@@ -62,7 +62,7 @@ Admin.VoicesController = Class(Admin, 'VoicesController')({
     },
 
     new : function(req, res, next) {
-      ACL.isAllowed('new', 'admin.voices', req.role, {}, function(err, isAllowed) {
+      ACL.isAllowed('new', 'admin.voices', req.role, { currentPerson: req.currentPerson }, function(err, isAllowed) {
         if (err) {
           return next(err);
         }
@@ -76,7 +76,7 @@ Admin.VoicesController = Class(Admin, 'VoicesController')({
     },
 
     create : function create(req, res, next) {
-      ACL.isAllowed('create', 'admin.voices', req.role, {}, function(err, isAllowed) {
+      ACL.isAllowed('create', 'admin.voices', req.role, { currentPerson: req.currentPerson }, function(err, isAllowed) {
         if (err) {
           return next(err);
         }
@@ -128,7 +128,7 @@ Admin.VoicesController = Class(Admin, 'VoicesController')({
     },
 
     edit : function edit(req, res, next) {
-      ACL.isAllowed('edit', 'admin.voices', req.role, {}, function(err, isAllowed) {
+      ACL.isAllowed('edit', 'admin.voices', req.role, { currentPerson: req.currentPerson }, function(err, isAllowed) {
         if (err) {
           return next(err);
         }
@@ -160,7 +160,7 @@ Admin.VoicesController = Class(Admin, 'VoicesController')({
     },
 
     update : function update(req, res, next) {
-      ACL.isAllowed('update', 'admin.voices', req.role, {}, function(err, isAllowed) {
+      ACL.isAllowed('update', 'admin.voices', req.role, { currentPerson: req.currentPerson }, function(err, isAllowed) {
 
         if (err) {
           return next(err);
@@ -227,7 +227,7 @@ Admin.VoicesController = Class(Admin, 'VoicesController')({
     },
 
     destroy : function destroy(req, res, next) {
-      ACL.isAllowed('destroy', 'admin.voices', req.role, {}, function(err, isAllowed) {
+      ACL.isAllowed('destroy', 'admin.voices', req.role, { currentPerson: req.currentPerson }, function(err, isAllowed) {
         if (err) {
           return next(err);
         }
