@@ -1,27 +1,30 @@
 Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
 
   presenter: function (featuredVoicesIdsArray, currentPerson, callback) {
-    var featuredVoicesResult = [],
-      toAddToArray
+    var featuredVoicesResult = []
 
     async.each(featuredVoicesIdsArray, function (voiceId, next) {
+      var toAddToArray = {}
+
       FeaturedVoice.find({ voice_id: voiceId }, function (err, featuredVoice) {
         if (err) { return next(err) }
-
-        toAddToArray = {} // reset
 
         toAddToArray = new FeaturedVoice(featuredVoice[0])
         toAddToArray.id = hashids.encode(toAddToArray.id)
         toAddToArray.voiceId = hashids.encode(toAddToArray.voiceId)
 
-        VoicesPresenter.build([{ id: featuredVoice[0].voiceId }], currentPerson, function (err, presented) {
+        Voice.findById(featuredVoice[0].voiceId, function (err, voice) {
           if (err) { return next(err) }
 
-          toAddToArray.voice = presented[0]
+          VoicesPresenter.build(voice, currentPerson, function (err, presented) {
+            if (err) { return next(err) }
 
-          featuredVoicesResult.push(toAddToArray)
+            toAddToArray.voice = presented[0]
 
-          return next()
+            featuredVoicesResult.push(toAddToArray)
+
+            return next()
+          })
         })
       })
     }, function (err) {

@@ -1,27 +1,30 @@
 Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
 
   presenter: function (featuredEntitiesIdsArray, entityType, currentPerson, callback) {
-    var featuredEntitiesResult = [],
-      toAddToArray
+    var featuredEntitiesResult = []
 
     async.each(featuredEntitiesIdsArray, function (entityId, next) {
+      var toAddToArray = {}
+
       global['Featured' + inflection.transform(entityType, ['capitalize', 'singularize'])].find({ entity_id: entityId }, function (err, featuredEntity) {
         if (err) { return next(err) }
-
-        toAddToArray = {} // reset
 
         toAddToArray = new global['Featured' + inflection.transform(entityType, ['capitalize', 'singularize'])](featuredEntity[0])
         toAddToArray.id = hashids.encode(toAddToArray.id)
         toAddToArray.entityId = hashids.encode(toAddToArray.entityId)
 
-        EntitiesPresenter.build([{ id: featuredEntity[0].entityId }], currentPerson, function (err, presented) {
+        Entity.findById(featuredEntity[0].entityId, function (err, entity) {
           if (err) { return next(err) }
 
-          toAddToArray.entity = presented[0]
+          EntitiesPresenter.build(entity, currentPerson, function (err, presented) {
+            if (err) { return next(err) }
 
-          featuredEntitiesResult.push(toAddToArray)
+            toAddToArray.entity = presented[0]
 
-          return next()
+            featuredEntitiesResult.push(toAddToArray)
+
+            return next()
+          })
         })
       })
     }, function (err) {
