@@ -23,21 +23,22 @@
   min-height: 58px;
 
   .header-title {
-    line-height: 58px;
+    line-height: 60px;
   }
 }
 
 .cv-search-overlay__input {
   .input-search-icon {
     z-index: 1;
-    top: 16px;
+    top: 26px;
+    left: 2px;
   }
 
   .cv-loader {
-    display: none;
     z-index: 1;
     right: 20px;
-    top: 20px;
+    top: 35px;
+    visibility: hidden;
     transform: scale(.4);
 
     .ball-spin-fade-loader > div {
@@ -45,28 +46,27 @@
     }
 
     &.active {
-      display: block;
+      visibility: visible;
     }
   }
 
   .ui-input {
-    padding-left: 34px;
+    font-size: 2em;
+    height: 70px;
+    padding-left: 1.5em;
     border-width: 0 0 1px 0;
     box-shadow: none;
+    background-color: transparent;
   }
 }
 
 .cv-search-overlay__results {
   overflow: auto;
-  height: e('calc(100vh - 110px)');
+  height: e('calc(100vh - 130px)');
 
   .search-results {
     padding: 0 20px 20px 0;
   }
-}
-
-.search-results-table {
-  margin-bottom: 20px;
 }
 
 .search-results-title {
