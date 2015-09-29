@@ -765,7 +765,10 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         voice.status = Voice.STATUS_ARCHIVED;
 
         voice.save(function (err) {
-          if (err) { return next(err); }
+          if (err) {
+            console.log(err.errors); 
+            return next(err); 
+          }
 
           FeedInjector().inject(voice.ownerId, 'both entityArchivesVoice', voice, function (err) {
             if (err) { return next(err); }
