@@ -91,7 +91,9 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             this.voiceDescription.setValue(
                 this.format.truncate(voice.description, this.MAX_DESCRIPTION_LENGTH)
             );
-            this.voiceTopicsDropdown.selectValues(voice.topics);
+            this.voiceTopicsDropdown.selectValues(voice.topics.map(function(topic) {
+                return topic.id;
+            }));
             this.voiceTypesDropdown.selectByValue(voice.type);
             this.voiceStatusDropdown.selectByValue(voice.status);
             this.voiceOwnershipDropdown.selectByEntity(voice.owner);
