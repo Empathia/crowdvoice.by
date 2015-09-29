@@ -1,7 +1,7 @@
 Admin.UsersController = Class(Admin, 'UsersController')({
   prototype : {
     index : function index(req, res, next) {
-      ACL.isAllowed('index', 'admin.users', req.role, {}, function(err, isAllowed) {
+      ACL.isAllowed('index', 'admin.users', req.role, { currentPerson: req.currentPerson }, function(err, isAllowed) {
         if (err) {
           return next(err);
         }
@@ -27,7 +27,7 @@ Admin.UsersController = Class(Admin, 'UsersController')({
     },
 
     show : function show(req, res, next) {
-      ACL.isAllowed('show', 'admin.users', req.role, {}, function(err, isAllowed) {
+      ACL.isAllowed('show', 'admin.users', req.role, { currentPerson: req.currentPerson }, function(err, isAllowed) {
         if (err) {
           return next(err);
         }
@@ -53,7 +53,7 @@ Admin.UsersController = Class(Admin, 'UsersController')({
     },
 
     new : function(req, res, next) {
-      ACL.isAllowed('new', 'admin.users', req.role, {}, function(err, isAllowed) {
+      ACL.isAllowed('new', 'admin.users', req.role, { currentPerson: req.currentPerson }, function(err, isAllowed) {
         if (err) {
           return next(err);
         }
@@ -67,7 +67,7 @@ Admin.UsersController = Class(Admin, 'UsersController')({
     },
 
     create : function create(req, res, next) {
-      ACL.isAllowed('create', 'admin.users', req.role, {}, function(err, isAllowed) {
+      ACL.isAllowed('create', 'admin.users', req.role, { currentPerson: req.currentPerson }, function(err, isAllowed) {
         if (err) {
           return next(err);
         }
@@ -178,7 +178,7 @@ Admin.UsersController = Class(Admin, 'UsersController')({
     },
 
     edit : function edit(req, res, next) {
-      ACL.isAllowed('edit', 'admin.users', req.role, {}, function(err, isAllowed) {
+      ACL.isAllowed('edit', 'admin.users', req.role, { currentPerson: req.currentPerson }, function(err, isAllowed) {
         if (err) {
           return next(err);
         }
@@ -206,7 +206,7 @@ Admin.UsersController = Class(Admin, 'UsersController')({
     },
 
     update : function update(req, res, next) {
-      ACL.isAllowed('update', 'admin.users', req.role, {}, function(err, isAllowed) {
+      ACL.isAllowed('update', 'admin.users', req.role, { currentPerson: req.currentPerson }, function(err, isAllowed) {
         if (err) {
           return next(err);
         }
@@ -245,7 +245,7 @@ Admin.UsersController = Class(Admin, 'UsersController')({
     },
 
     destroy : function destroy(req, res, next) {
-      ACL.isAllowed('destroy', 'admin.users', req.role, {}, function(err, isAllowed) {
+      ACL.isAllowed('destroy', 'admin.users', req.role, { currentPerson: req.currentPerson }, function(err, isAllowed) {
         if (err) {
           return next(err);
         }

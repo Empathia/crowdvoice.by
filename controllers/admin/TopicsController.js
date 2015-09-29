@@ -1,7 +1,7 @@
 Admin.TopicsController = Class(Admin, 'TopicsController')({
   prototype : {
     index : function index(req, res, next) {
-      ACL.isAllowed('index', 'admin.topics', req.role, {}, function(err, isAllowed) {
+      ACL.isAllowed('index', 'admin.topics', req.role, { currentPerson: req.currentPerson }, function(err, isAllowed) {
         if (err) {
           return next(err);
         }
@@ -29,7 +29,7 @@ Admin.TopicsController = Class(Admin, 'TopicsController')({
     },
 
     show : function show(req, res, next) {
-      ACL.isAllowed('show', 'admin.topics', req.role, {}, function(err, isAllowed) {
+      ACL.isAllowed('show', 'admin.topics', req.role, { currentPerson: req.currentPerson }, function(err, isAllowed) {
         if (err) {
           return next(err);
         }
@@ -44,7 +44,7 @@ Admin.TopicsController = Class(Admin, 'TopicsController')({
     },
 
     new : function(req, res, next) {
-      ACL.isAllowed('new', 'admin.topics', req.role, {}, function(err, isAllowed) {
+      ACL.isAllowed('new', 'admin.topics', req.role, { currentPerson: req.currentPerson }, function(err, isAllowed) {
         if (err) {
           return next(err);
         }
@@ -58,7 +58,7 @@ Admin.TopicsController = Class(Admin, 'TopicsController')({
     },
 
     create : function create(req, res, next) {
-      ACL.isAllowed('create', 'admin.topics', req.role, {}, function(err, isAllowed) {
+      ACL.isAllowed('create', 'admin.topics', req.role, { currentPerson: req.currentPerson }, function(err, isAllowed) {
         if (err) {
           return next(err);
         }
@@ -97,7 +97,7 @@ Admin.TopicsController = Class(Admin, 'TopicsController')({
     },
 
     edit : function edit(req, res, next) {
-      ACL.isAllowed('edit', 'admin.topics', req.role, {}, function(err, isAllowed) {
+      ACL.isAllowed('edit', 'admin.topics', req.role, { currentPerson: req.currentPerson }, function(err, isAllowed) {
         if (err) {
           return next(err);
         }
@@ -129,7 +129,7 @@ Admin.TopicsController = Class(Admin, 'TopicsController')({
     },
 
     update : function update(req, res, next) {
-      ACL.isAllowed('update', 'admin.topics', req.role, {}, function(err, isAllowed) {
+      ACL.isAllowed('update', 'admin.topics', req.role, { currentPerson: req.currentPerson }, function(err, isAllowed) {
         if (err) {
           return next(err);
         }
@@ -174,7 +174,7 @@ Admin.TopicsController = Class(Admin, 'TopicsController')({
     },
 
     destroy : function destroy(req, res, next) {
-      ACL.isAllowed('destroy', 'admin.topics', req.role, {}, function(err, isAllowed) {
+      ACL.isAllowed('destroy', 'admin.topics', req.role, { currentPerson: req.currentPerson }, function(err, isAllowed) {
         if (err) {
           return next(err);
         }
