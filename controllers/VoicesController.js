@@ -766,7 +766,6 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
         voice.save(function (err) {
           if (err) {
-            console.log(err.errors); 
             return next(err); 
           }
 
