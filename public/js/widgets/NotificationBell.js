@@ -47,7 +47,7 @@ Class('NotificationBell').inherits(Widget)({
           if (!notifications){
           //feedGen.bind('ready', function(){
             notifications = new CV.NotificationsManager({
-                notifications : feedGen.feedItems
+                notifications : feedGen.feedItems.feed
             }).render(document.body);
             notifications.show();
           //});
