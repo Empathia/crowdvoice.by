@@ -105,11 +105,13 @@ Class(CV, 'Search').inherits(Widget)({
         },
 
         _setSearchingState : function _setSearchingState() {
+            this.input.hideClearButton();
             this.loader.activate();
             return this;
         },
 
         _setResponseState : function _setResponseState() {
+            this.input.showClearButton();
             this.loader.deactivate();
             return this;
         },
