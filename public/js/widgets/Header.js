@@ -1,4 +1,4 @@
-/* globals App */
+/* globals App, NotificationBell */
 var Person = require('./../lib/currentPerson');
 
 Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
@@ -36,6 +36,10 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
             this.buttonActionsWrapper = this.el.querySelector('.header-actions');
         },
 
+        /* Defines which buttons should be displayed based on currentPerson.
+         * @method setup <public>
+         * @return undefined
+         */
         setup : function setup() {
           if (!Person.get()) {
               this._setupVisitor();
@@ -151,24 +155,37 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
          * @method _displayCreateNewDropdown <private> [Function]
          */
         _displayCreateNewDropdown : function _displayCreateNewDropdown() {
-            this.appendChild(new CV.Select({
-                className : 'header-create-dropdown -inline-block',
-                style: 'primary small',
-                label : 'Create New',
-                name  : 'createSelect',
-                options: {
-                    "1": {label: 'Voice', name: 'voice'},
-                    "2": {label: 'Organization', name: 'organization'}
-                }
+            this.appendChild(new CV.Dropdown({
+                name : 'createDropdown',
+                label : 'Create New&nbsp;&nbsp;&nbsp;',
+                showArrow : true,
+                className : 'ui-dropdown-styled primary -md -inline-block -mr1 -text-left',
+                arrowClassName : '-s10 -color-white',
+                bodyClassName : 'ui-vertical-list hoverable -full-width'
             })).render(this.buttonActionsWrapper);
 
-            this.createSelect.voice[0].addEventListener('click', function() {
-                App.showCreateVoiceModal();
-            });
+            this.appendChild(new Widget({
+                name : 'createDropdownVoice',
+                className : 'ui-vertical-list-item -block'
+            })).element.text('Voice');
 
-            this.createSelect.organization[0].addEventListener('click', function() {
+            this.appendChild(new Widget({
+                name : 'createDropdownOrganization',
+                className : 'ui-vertical-list-item -block'
+            })).element.text('Organization');
+
+            this.createDropdown.addContent(this.createDropdownVoice.element[0]);
+            this.createDropdown.addContent(this.createDropdownOrganization.element[0]);
+
+            this.createDropdownVoice.element[0].addEventListener('click', function() {
+                this.createDropdown.deactivate();
+                App.showCreateVoiceModal();
+            }.bind(this));
+
+            this.createDropdownOrganization.element[0].addEventListener('click', function() {
+                this.createDropdown.deactivate();
                 App.showCreateOrganizationModal();
-            });
+            }.bind(this));
         }
     }
 });

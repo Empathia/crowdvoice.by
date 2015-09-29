@@ -71,6 +71,7 @@ Class(CV, 'Dropdown').inherits(Widget).includes(CV.WidgetUtils)({
                 }
 
                 this.head.insertAdjacentHTML('beforeend', arrow);
+                this.dom.addClass(this.el, ['has-arrow']);
 
                 if (this.arrowClassName) {
                     this.arrowElement = this.head.querySelector('.ui-dropdown-arrow');
