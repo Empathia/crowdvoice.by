@@ -86,7 +86,7 @@
 	//		}
 	//  });
 
-	console.log(feedItems);
+	//console.log(feedItems);
 
 	var currentOrganization;
 
@@ -325,14 +325,12 @@
         var itemsElements = [];
 
         data.forEach(function(item, index) {
-        	console.log(item);
-          var itemWidget = new instance({data:item}).render(itemsWrapper);
-          if(showMeta){
-            itemWidget.showMeta();
-          }
+	          var itemWidget = new instance({data:item}).render(itemsWrapper);
+	          if(showMeta){
+	            itemWidget.showMeta();
+	          }
 			itemWidget.element.addClass('id-' + item.id);
-          itemsElements.push(itemWidget.el);
-
+	        itemsElements.push(itemWidget.el);
         });
 
 	}
@@ -344,7 +342,7 @@
 		data : {},
 		dataType : 'json',
 		success: function(data) {
-		  //renderData(data.slice(0,6), CV.VoiceCoverMini, 'voices-list', false);
+		  renderData(data.slice(0,6), CV.VoiceCoverMini, 'voices-list', false);
 
 		}
 	});

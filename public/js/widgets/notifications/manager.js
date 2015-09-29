@@ -25,7 +25,7 @@ Class(CV, 'NotificationsManager').inherits(Widget)({
         _renderNotifications : function _renderNotifications() {
             slicedNotifications = this.notifications.slice(0, 4);
             slicedNotifications.forEach(function(n) {
-                this.appendChild(CV.Notification.create(n)).render(this.el);
+                this.appendChild(CV.Notification.create(n.action, n.notificationId)).render(this.el);
             }, this);
 
             this.appendChild(CV.Notification.create({action:'ReadMore'})).render(this.el);
