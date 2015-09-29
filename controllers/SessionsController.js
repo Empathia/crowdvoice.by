@@ -15,6 +15,11 @@ var SessionsController = Class('SessionsController')({
      * @method: forgotPassword
      */
     forgotPassword : function forgotPassword(req, res, next) {
+      if (req.currentPerson) {
+        req.flash('info', 'You must be logged out in order to perform the previous action.');
+        return res.redirect('/');
+      }
+
       res.format({
         html : function() {
           if (req.method === 'GET') {
@@ -50,6 +55,11 @@ var SessionsController = Class('SessionsController')({
     },
 
     resetPassword : function resetPassword(req, res, next) {
+      if (req.currentPerson) {
+        req.flash('info', 'You must be logged out in order to perform the previous action.');
+        return res.redirect('/');
+      }
+
       res.format({
         html : function() {
           var user = new User(req.currentUser);
@@ -77,6 +87,11 @@ var SessionsController = Class('SessionsController')({
      * @method: tokenAuth
      */
     tokenAuth : function tokenAuth(req, res, next) {
+      if (req.currentPerson) {
+        req.flash('info', 'You must be logged out in order to perform the previous action.');
+        return res.redirect('/');
+      }
+
       passport.authenticate('token', function(err, user, info) {
         if (err) {
           return next(err);
@@ -116,6 +131,10 @@ var SessionsController = Class('SessionsController')({
      * @method: create
      */
     create : function (req, res, next) {
+      if (req.currentPerson) {
+        req.flash('info', 'You must be logged out in order to perform the previous action.');
+        return res.redirect('/');
+      }
 
       passport.authenticate('local', function (err, user, info) {
         if (err) {

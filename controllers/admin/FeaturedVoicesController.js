@@ -5,19 +5,19 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
       toAddToArray
 
     async.each(featuredVoicesIdsArray, function (voiceId, next) {
-      FeaturedVoices.find({ voice_id: hashids.decode(voiceId)[0] }, function (err, featuredVoice) {
+      FeaturedVoice.find({ voice_id: voiceId }, function (err, featuredVoice) {
         if (err) { return next(err) }
 
         toAddToArray = {} // reset
 
-        toAddToArray = featuredVoice[0]
+        toAddToArray = new FeaturedVoice(featuredVoice[0])
         toAddToArray.id = hashids.encode(toAddToArray.id)
         toAddToArray.voiceId = hashids.encode(toAddToArray.voiceId)
 
-        VoicesPresenter.build([featuredVoice[0].voiceId], currentPerson, function (err, presented) {
+        VoicesPresenter.build([{ id: featuredVoice[0].voiceId }], currentPerson, function (err, presented) {
           if (err) { return next(err) }
 
-          toAddtoArray.voice = presented[0]
+          toAddToArray.voice = presented[0]
 
           featuredVoicesResult.push(toAddToArray)
 
@@ -60,10 +60,12 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
           return next(new ForbiddenError('not an admin'))
         }
 
-        FeaturedVoices.all(function (err, result) {
+        FeaturedVoice.all(function (err, result) {
           if (err) { return next(err) }
 
-          Admin.FeaturedVoicesController.presenter(result, req.currentPerson, function (err, presented) {
+          var ids = result.map(function (voice) { return voice.voiceId })
+
+          Admin.FeaturedVoicesController.presenter(ids, req.currentPerson, function (err, presented) {
             if (err) { return next(err) }
 
             res.locals.featuredVoices = presented

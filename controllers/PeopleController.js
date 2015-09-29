@@ -140,68 +140,79 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
       var orgsMemberOf;
       var orgsOwnerOf;
 
-      async.series([
-        function (done) {
-          EntityMembership.find({ member_id: hashids.decode(entity.id)[0] }, function (err, result) {
-            if (err) { return done(err); }
-
-            var entityIds = result.map(function (val) {
-              return val.entityId;
-            })
-
-            Entity.whereIn('id', entityIds, function (err, result) {
-              if (err) { return done(err); }
-
-              result = result.filter(function(item) {
-                if (item.type === 'organization') {
-                  return true;
-                }
-              });
-
-              EntitiesPresenter.build(result, req.currentPerson, function (err, result) {
-                if (err) { return done(err); }
-
-                orgsMemberOf = result;
-                done();
-              })
-            })
-          })
-        },
-
-        function (done) {
-          EntityOwner.find({ owner_id: hashids.decode(entity.id)[0] }, function (err, result) {
-            if (err) { return done(err); }
-
-            var entityIds = result.map(function (val) {
-              return val.ownedId;
-            });
-
-            Entity.whereIn('id', entityIds, function (err, result) {
-              if (err) { return done(err); }
-
-              result = result.filter(function(item) {
-                if (item.type === 'organization') {
-                  return true;
-                }
-              });
-
-              EntitiesPresenter.build(result, req.currentPerson, function (err, result) {
-                if (err) { return done(err); }
-
-                orgsOwnerOf = result;
-
-                done();
-              })
-            })
-          })
-        }
-      ], function (err) {
+      ACL.isAllowed('myVoices', 'entities', req.role, {
+        currentEntity: req.entity,
+        currentPerson: req.currentPerson
+      }, function (err, response) {
         if (err) { return next(err); }
 
-        var result = orgsOwnerOf.concat(orgsMemberOf);
+        if (!response.isAllowed) {
+          return next(new ForbiddenError('Unauthorized.'));
+        }
 
-        res.json(result);
-      })
+        async.series([
+          function (done) {
+            EntityMembership.find({ member_id: hashids.decode(entity.id)[0] }, function (err, result) {
+              if (err) { return done(err); }
+
+              var entityIds = result.map(function (val) {
+                return val.entityId;
+              })
+
+              Entity.whereIn('id', entityIds, function (err, result) {
+                if (err) { return done(err); }
+
+                result = result.filter(function(item) {
+                  if (item.type === 'organization') {
+                    return true;
+                  }
+                });
+
+                EntitiesPresenter.build(result, req.currentPerson, function (err, result) {
+                  if (err) { return done(err); }
+
+                  orgsMemberOf = result;
+                  done();
+                })
+              })
+            })
+          },
+
+          function (done) {
+            EntityOwner.find({ owner_id: hashids.decode(entity.id)[0] }, function (err, result) {
+              if (err) { return done(err); }
+
+              var entityIds = result.map(function (val) {
+                return val.ownedId;
+              });
+
+              Entity.whereIn('id', entityIds, function (err, result) {
+                if (err) { return done(err); }
+
+                result = result.filter(function(item) {
+                  if (item.type === 'organization') {
+                    return true;
+                  }
+                });
+
+                EntitiesPresenter.build(result, req.currentPerson, function (err, result) {
+                  if (err) { return done(err); }
+
+                  orgsOwnerOf = result;
+
+                  done();
+                })
+              })
+            })
+          }
+        ], function (err) {
+          if (err) { return next(err); }
+
+          var result = orgsOwnerOf.concat(orgsMemberOf);
+
+          res.json(result);
+        });
+      });
     }
   }
 });
