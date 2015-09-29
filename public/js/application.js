@@ -118,7 +118,7 @@ require('./widgets/voice/VoiceFooter');
 require('./widgets/voice/footer/share-buttons-group');
 require('./widgets/voice/footer/share-button');
 require('./widgets/voice/footer/embed-button');
-require('./widgets/voice/voice-follow-button.js');
+require('./widgets/voice/VoiceFollowButton.js');
 
 require('./widgets/voice/timeline/feedback');
 require('./widgets/voice/timeline/jump-to-date');
