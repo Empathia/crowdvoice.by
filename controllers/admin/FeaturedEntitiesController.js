@@ -1,27 +1,30 @@
 Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
 
   presenter: function (featuredEntitiesIdsArray, entityType, currentPerson, callback) {
-    var featuredEntitiesResult = [],
-      toAddToArray
+    var featuredEntitiesResult = []
 
     async.each(featuredEntitiesIdsArray, function (entityId, next) {
+      var toAddToArray = {}
+
       global['Featured' + inflection.transform(entityType, ['capitalize', 'singularize'])].find({ entity_id: entityId }, function (err, featuredEntity) {
         if (err) { return next(err) }
-
-        toAddToArray = {} // reset
 
         toAddToArray = new global['Featured' + inflection.transform(entityType, ['capitalize', 'singularize'])](featuredEntity[0])
         toAddToArray.id = hashids.encode(toAddToArray.id)
         toAddToArray.entityId = hashids.encode(toAddToArray.entityId)
 
-        EntitiesPresenter.build([{ id: featuredEntity[0].entityId }], currentPerson, function (err, presented) {
+        Entity.findById(featuredEntity[0].entityId, function (err, entity) {
           if (err) { return next(err) }
 
-          toAddToArray.entity = presented[0]
+          EntitiesPresenter.build(entity, currentPerson, function (err, presented) {
+            if (err) { return next(err) }
 
-          featuredEntitiesResult.push(toAddToArray)
+            toAddToArray.entity = presented[0]
 
-          return next()
+            featuredEntitiesResult.push(toAddToArray)
+
+            return next()
+          })
         })
       })
     }, function (err) {
@@ -53,11 +56,11 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
     // GET /admin/featured/:entityType
     // get all featured people and render index view
     index: function (req, res, next) {
-      ACL.isAllowed('index', 'admin.featuredEntities', req.role, {}, function (err, isAllowed) {
+      ACL.isAllowed('index', 'admin.featuredEntities', req.role, { currentPerson: req.currentPerson }, function (err, isAllowed) {
         if (err) { return next(err) }
 
         if (!isAllowed) {
-          return next(new ForbiddenError('not an admin'))
+          return next(new ForbiddenError('Unauthorized. Must be Admin.'))
         }
 
         global['Featured' + inflection.transform(req.params.entityType, ['capitalize', 'singularize'])].all(function (err, allFeatured) {
@@ -79,11 +82,11 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
     // GET /admin/featured/:entityType/:entityId
     // render view for viewing a featured person
     show: function (req, res, next) {
-      ACL.isAllowed('show', 'admin.featuredEntities', req.role, {}, function (err, isAllowed) {
+      ACL.isAllowed('show', 'admin.featuredEntities', req.role, { currentPerson: req.currentPerson }, function (err, isAllowed) {
         if (err) { return next(err) }
 
         if (!isAllowed) {
-          return next(new ForbiddenError('not an admin'))
+          return next(new ForbiddenError('Unauthorized. Must be Admin.'))
         }
 
         return res.render('admin/featured/entities/show.html', { layout: 'admin' })
@@ -93,11 +96,11 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
     // GET /admin/featured/:entityType/new
     // render view for new entity
     new: function (req, res, next) {
-      ACL.isAllowed('new', 'admin.featuredEntities', req.role, {}, function (err, isAllowed) {
+      ACL.isAllowed('new', 'admin.featuredEntities', req.role, { currentPerson: req.currentPerson }, function (err, isAllowed) {
         if (err) { return next(err) }
 
         if (!isAllowed) {
-          return next(new ForbiddenError('not an admin'))
+          return next(new ForbiddenError('Unauthorized. Must be Admin.'))
         }
 
         return res.render('admin/featured/entities/new.html', { layout: 'admin' })
@@ -113,11 +116,11 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
        * }
        */
 
-      ACL.isAllowed('create', 'admin.featuredEntities', req.role, {}, function (err, isAllowed) {
+      ACL.isAllowed('create', 'admin.featuredEntities', req.role, { currentPerson: req.currentPerson }, function (err, isAllowed) {
         if (err) { return next(err) }
 
         if (!isAllowed) {
-          return next(new ForbiddenError('not an admin'))
+          return next(new ForbiddenError('Unauthorized. Must be Admin.'))
         }
 
         var featured = new FeaturedPerson({
@@ -159,11 +162,11 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
        * req.body = {}
        */
 
-      ACL.isAllowed('destroy', 'admin.featuredEntities', req.role, {}, function (err, isAllowed) {
+      ACL.isAllowed('destroy', 'admin.featuredEntities', req.role, { currentPerson: req.currentPerson }, function (err, isAllowed) {
         if (err) { return next(err) }
 
         if (!isAllowed) {
-          return next(new ForbiddenError('not an admin'))
+          return next(new ForbiddenError('Unauthorized. Must be Admin.'))
         }
 
         global['Featured' + inflection.transform(req.params.entityType, ['capitalize', 'singularize'])].findById(hashids.decode(req.featuredEntity.id)[0], function (err, entity) {
@@ -198,11 +201,11 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
        * }
        */
 
-      ACL.isAllowed('updatePositions', 'admin.featuredEntities', req.role, {}, function (err, isAllowed) {
+      ACL.isAllowed('updatePositions', 'admin.featuredEntities', req.role, { currentPerson: req.currentPerson }, function (err, isAllowed) {
         if (err) { return next(err) }
 
         if (!isAllowed) {
-          return next(new ForbiddenError('not an admin'))
+          return next(new ForbiddenError('Unauthorized. Must be Admin.'))
         }
 
         var realIds = req.body.entityIds.map(function (id) {
