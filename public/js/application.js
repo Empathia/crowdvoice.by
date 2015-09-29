@@ -74,6 +74,7 @@ require('./widgets/dropdowns/DropdownTopics');
 require('./widgets/dropdowns/voice-types');
 require('./widgets/dropdowns/voice-status');
 require('./widgets/dropdowns/voice-ownership');
+require('./widgets/dropdowns/voice-ownership-admin');
 require('./widgets/dropdowns/CurrentPersonEntitiesCheckboxes');
 require('./widgets/tabs/manager');
 require('./widgets/tabs/tab');
