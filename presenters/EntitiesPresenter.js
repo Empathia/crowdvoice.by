@@ -4,8 +4,12 @@ var EntitiesPresenter = Module('EntitiesPresenter')({
 
     async.eachLimit(entities, 1, function(entity, nextEntity) {
       var entityInstance = new Entity(entity);
-
       entityInstance.id = hashids.encode(entityInstance.id);
+
+      // skip deleted entities
+      if (entityInstance.deleted) {
+        return nextEntity();
+      }
 
       var images = {};
 
@@ -261,7 +265,76 @@ var EntitiesPresenter = Module('EntitiesPresenter')({
           done();
         });
 
-      }], function(err) {
+      }, function (next) {
+
+        // Get the Entity IDs that follow this entity, that are owned by currentPerson
+
+        // since it is optional, really
+        if (!currentPerson) {
+          entityInstance.followersOwnedByCurrentPerson = false;
+          return next();
+        }
+
+        var currentPersonEntity = new Entity(currentPerson),
+          realCurrentPerson,
+          ownedIds = [],
+          result = [];
+
+        currentPersonEntity.id = hashids.decode(currentPersonEntity.id)[0];
+
+        async.series([
+          // get real entity
+          function (done) {
+            currentPersonEntity.owner(function (err, owner) {
+              if (err) { return done(err); }
+
+              if (currentPerson.isAnonymous) {
+                realCurrentPerson = new Entity(owner);
+              } else {
+                realCurrentPerson = new Entity(currentPersonEntity);
+              }
+
+              return done();
+            });
+          },
+
+          // get owned entities
+          function (done) {
+            EntityOwner.find({ owner_id: realCurrentPerson.id }, function (err, owned) {
+              if (err) { return done(err); }
+
+              ownedIds = owned.map(function (entity) {
+                return entity.ownedId;
+              });
+              ownedIds.push(realCurrentPerson.id);
+
+              return done();
+            });
+          },
+
+          // get follow records where one of these entities are found
+          function (done) {
+            db('EntityFollower')
+              .whereIn('follower_id', ownedIds)
+              .andWhere('followed_id', entity.id)
+              .exec(function (err, rows) {
+                if (err) { return done(err); }
+
+                result = rows.map(function (row) {
+                  return hashids.encode(row.follower_id);
+                });
+
+                return done();
+              });
+          }
+        ], function (err) { // async.series
+          if (err) { return next(err); }
+
+          entityInstance.followersOwnedByCurrentPerson = result;
+
+          return next();
+        });
+      }], function(err) { // async.series
         if (err) {
           return nextEntity(err);
         }
@@ -270,7 +343,7 @@ var EntitiesPresenter = Module('EntitiesPresenter')({
 
         nextEntity();
       })
-    }, function(err) {
+    }, function(err) { // async.eachLimit
       if (err) {
         return callback(err);
       }

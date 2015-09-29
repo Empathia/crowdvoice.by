@@ -1,7 +1,7 @@
 var Person = require('./../../lib/currentPerson');
 var Events = require('./../../lib/events');
 
-Class(CV.UI, 'DropdownVoiceOwnership').inherits(Widget).includes(CV.WidgetUtils)({
+Class(CV.UI, 'DropdownVoiceOwnershipAdmin').inherits(Widget).includes(CV.WidgetUtils)({
     HTML : '\
         <div class="ui-form-field">\
             <label class="-block">\
@@ -12,6 +12,7 @@ Class(CV.UI, 'DropdownVoiceOwnership').inherits(Widget).includes(CV.WidgetUtils)
     prototype : {
         _items : null,
         _value : null,
+        owner : null,
         init : function init(config) {
             Widget.prototype.init.call(this, config);
             this.el = this.element[0];
@@ -43,17 +44,14 @@ Class(CV.UI, 'DropdownVoiceOwnership').inherits(Widget).includes(CV.WidgetUtils)
             return this;
         },
 
-        /* Fill the dropdown options using currentPerson data. It will add currentPerson itself and
-         * its owned organizations (if any).
-         * @method _setup <private>
-         * @return DropdownVoiceOwnership
-         */
         _setup : function _setup() {
-            this._createItem((Person.get().name + ' ' + Person.get().lastname).trim(), Person.get().id);
+            this._createItem((this.owner.name + ' ' + this.owner.lastname).trim(), this.owner.id);
 
-            Person.get().ownedOrganizations.forEach(function(organization) {
-                this._createItem(organization.name, organization.id);
-            }, this);
+            if (this.owner.ownedOrganizations){
+                this.owner.ownedOrganizations.forEach(function(organization) {
+                    this._createItem(organization.name, organization.id);
+                }, this);
+            }
 
             this._items = [].slice.call(this.dropdown.getContent());
 

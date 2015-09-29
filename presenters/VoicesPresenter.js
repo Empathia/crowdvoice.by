@@ -6,9 +6,13 @@ var VoicesPresenter = Module('VoicesPresenter')({
     var response = [];
     async.each(voices, function(voice, nextVoice) {
       var voiceInstance = new Voice(voice);
-
       voiceInstance.id = hashids.encode(voiceInstance.id);
       voiceInstance.ownerId = hashids.encode(voiceInstance.ownerId);
+
+      // skip deleted voices
+      if (voiceInstance.deleted) {
+        return nextVoice();
+      }
 
       Slug.find(['voice_id = ? ORDER BY id DESC LIMIT 1', [voice.id]], function(err, result) {
         if (err) {
@@ -87,7 +91,7 @@ var VoicesPresenter = Module('VoicesPresenter')({
                 voiceInstance.followed = false;
 
                 if (currentPerson) {
-                  if (followerIds.indexOf(currentPerson.id) !== -1) {
+                  if (followerIds.indexOf(hashids.decode(currentPerson.id)[0]) !== -1) {
                     voiceInstance.followed = true;
                   }
                 }
@@ -106,6 +110,75 @@ var VoicesPresenter = Module('VoicesPresenter')({
                     done();
                   });
                 });
+              });
+            }, function (next) {
+
+              // Get the Entity IDs that follow this entity, that are owned by currentPerson
+
+              // since it is optional, really
+              if (!currentPerson) {
+                voiceInstance.followersOwnedByCurrentPerson = false;
+                return next();
+              }
+
+              var currentPersonEntity = new Entity(currentPerson),
+                realCurrentPerson,
+                ownedIds = [],
+                result = [];
+
+              currentPersonEntity.id = hashids.decode(currentPersonEntity.id)[0];
+
+              async.series([
+                // get real entity
+                function (done) {
+                  currentPersonEntity.owner(function (err, owner) {
+                    if (err) { return done(err); }
+
+                    if (currentPerson.isAnonymous) {
+                      realCurrentPerson = new Entity(owner);
+                    } else {
+                      realCurrentPerson = new Entity(currentPersonEntity);
+                    }
+
+                    return done();
+                  });
+                },
+
+                // get owned entities
+                function (done) {
+                  EntityOwner.find({ owner_id: realCurrentPerson.id }, function (err, owned) {
+                    if (err) { return done(err); }
+
+                    ownedIds = owned.map(function (entity) {
+                      return entity.ownedId;
+                    });
+                    ownedIds.push(realCurrentPerson.id);
+
+                    return done();
+                  });
+                },
+
+                // get follow records where one of these entities are found
+                function (done) {
+                  db('VoiceFollowers')
+                    .whereIn('entity_id', ownedIds)
+                    .andWhere('voice_id', voice.id)
+                    .exec(function (err, rows) {
+                      if (err) { return done(err); }
+
+                      result = rows.map(function (row) {
+                        return hashids.encode(row.entity_id);
+                      });
+
+                      return done();
+                    });
+                }
+              ], function (err) { // async.series
+                if (err) { return next(err); }
+
+                voiceInstance.followersOwnedByCurrentPerson = result;
+
+                return next();
               });
             }], function(err) {
               if (err) {

@@ -1,3 +1,30 @@
-<pre>
-    <%= JSON.stringify(voice, null, 2) %>
-</pre>
+<div class="edit-voice"></div>
+
+<script>
+	var voice = <%= JSON.stringify(voice) %>;
+	//console.log('edit');
+	//console.log(voice);
+
+	var App = new CV.App({
+    	currentPerson : currentPerson
+  	});
+
+    var editVoiceEl = $('.edit-voice ');
+
+    function myTimer() {
+        var isAdmin = true;
+        App.showCreateVoiceModal(voice, $('.edit-voice'), isAdmin);
+    }
+
+    var myVar = setInterval(function(){
+        myTimer();
+        if( editVoiceEl.find('> .cv-modal-container').length > 0 ){
+            clearInterval(myVar);
+            $('.edit-voice .cv-modal').css('width', '100%');
+            $('.edit-voice .cv-modal-container, .edit-voice .cv-modal-container > .cv-modal__inner').css('position', 'initial');
+            $('.edit-voice .cv-modal__backdrop, .edit-voice svg.close').css('display', 'none');
+        }
+    }, 500);
+
+
+</script>

@@ -10,6 +10,9 @@ Class('NotificationBell').inherits(Widget)({
   </button>\
   ',
   prototype : {
+
+    token : $('meta[name="csrf-token"]').attr('content'),
+
     init : function(config) {
       Widget.prototype.init.call(this, config);
     },
@@ -18,11 +21,28 @@ Class('NotificationBell').inherits(Widget)({
       var bell = this;
       var notifications = null;
 
-      var feedGen = new CV.feedGenerator({
-          type : 'feed app'
+      //var feedGen = new CV.feedGenerator({
+      //    type : 'feed app'
+      //});
+
+      $.ajax({
+          type : 'GET',
+          dataType : 'json',
+          url : '/' + currentPerson.profileName + '/notifications',
+          headers : {'csrf-token' : this.token},
+          success : function success(data) {
+            console.log(data);
+            notifications = new CV.NotificationsManager({
+                notifications : data
+            }).render(document.body);
+          },
+          error : function error(err) {
+            console.log(err);
+          }
       });
 
       var socket = this.parent.parent.getSocket();
+      socket.emit('getNotifications');
 
       setInterval(function() {
         socket.emit('getNotifications');
@@ -39,26 +59,22 @@ Class('NotificationBell').inherits(Widget)({
       });
 
       bell.element.on('click', function() {
-        socket.emit('readNotifications');
-        //setTimeout(function() {
-        //  window.location = '/';
-        //}, 500);
-        if (feedGen.feedItems){
-          if (!notifications){
-          //feedGen.bind('ready', function(){
-            notifications = new CV.NotificationsManager({
-                notifications : feedGen.feedItems
-            }).render(document.body);
-            notifications.show();
-          //});
-          } else {
-            notifications.open ? notifications.hide() : notifications.show();
+        //socket.emit('readNotifications');
 
-          }
-
+        if(notifications){
+          notifications.open ? notifications.hide() : notifications.show();
         }
 
       });
     }
   }
 });
+
+
+
+
+
+
+
+
+

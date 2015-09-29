@@ -4,8 +4,12 @@ var TopicsPresenter = Module('TopicsPresenter')({
 
     async.eachLimit(topics, 1, function(topic, nextTopic) {
       var topicInstance = new Topic(topic);
-
       topicInstance.id = hashids.encode(topicInstance.id);
+
+      // skip deleted topics
+      if (topicInstance.deleted) {
+        return nextTopic();
+      }
 
       // Images
       var images = {};

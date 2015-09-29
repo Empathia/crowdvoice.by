@@ -4,7 +4,7 @@ var VoicesPresenter = require(path.join(process.cwd(), '/presenters/VoicesPresen
 var TopicsPresenter = require(path.join(process.cwd(), '/presenters/TopicsPresenter'));
 var EntitiesPresenter = require(path.join(process.cwd(), '/presenters/EntitiesPresenter'));
 
-var isProfileNameAvailable = require(__dirname + '/../lib/util/isProfileNameAvailable.js');
+var isProfileNameAvailable = require(path.join(__dirname, '../lib/util/isProfileNameAvailable.js'));
 
 var HomeController = Class('HomeController')({
   prototype : {
@@ -75,9 +75,11 @@ var HomeController = Class('HomeController')({
             'LEFT JOIN "EntityMembership" ' +
             'ON "Entities"."id" = "EntityMembership"."entity_id" ' +
             'WHERE "Entities"."type" = ? ' +
+            'AND "Entities"."deleted" = ? ' +
             'AND "Voices"."status" = ? ' +
+            'AND "Voices"."deleted" = ? ' +
             'GROUP BY "org_id" ' +
-            'ORDER BY "voices_count" DESC, "members_count" DESC', ['organization', Voice.STATUS_PUBLISHED])
+            'ORDER BY "voices_count" DESC, "members_count" DESC', ['organization', false, Voice.STATUS_PUBLISHED, false])
             .exec(function (err, result) {
               if (err) { return done(err); }
 

@@ -1,27 +1,30 @@
 Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
 
   presenter: function (featuredVoicesIdsArray, currentPerson, callback) {
-    var featuredVoicesResult = [],
-      toAddToArray
+    var featuredVoicesResult = []
 
     async.each(featuredVoicesIdsArray, function (voiceId, next) {
-      FeaturedVoices.find({ voice_id: hashids.decode(voiceId)[0] }, function (err, featuredVoice) {
+      var toAddToArray = {}
+
+      FeaturedVoice.find({ voice_id: voiceId }, function (err, featuredVoice) {
         if (err) { return next(err) }
 
-        toAddToArray = {} // reset
-
-        toAddToArray = featuredVoice[0]
+        toAddToArray = new FeaturedVoice(featuredVoice[0])
         toAddToArray.id = hashids.encode(toAddToArray.id)
         toAddToArray.voiceId = hashids.encode(toAddToArray.voiceId)
 
-        VoicesPresenter.build([featuredVoice[0].voiceId], currentPerson, function (err, presented) {
+        Voice.findById(featuredVoice[0].voiceId, function (err, voice) {
           if (err) { return next(err) }
 
-          toAddtoArray.voice = presented[0]
+          VoicesPresenter.build(voice, currentPerson, function (err, presented) {
+            if (err) { return next(err) }
 
-          featuredVoicesResult.push(toAddToArray)
+            toAddToArray.voice = presented[0]
 
-          return next()
+            featuredVoicesResult.push(toAddToArray)
+
+            return next()
+          })
         })
       })
     }, function (err) {
@@ -53,17 +56,19 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
     // GET /admin/featured/voices
     // get all featured people and render index view
     index: function (req, res, next) {
-      ACL.isAllowed('index', 'admin.featuredVoices', req.role, {}, function (err, isAllowed) {
+      ACL.isAllowed('index', 'admin.featuredVoices', req.role, { currentPerson: req.currentPerson }, function (err, isAllowed) {
         if (err) { return next(err) }
 
         if (!isAllowed) {
-          return next(new ForbiddenError('not an admin'))
+          return next(new ForbiddenError('Unauthorized. Must be Admin.'))
         }
 
-        FeaturedVoices.all(function (err, result) {
+        FeaturedVoice.all(function (err, result) {
           if (err) { return next(err) }
 
-          Admin.FeaturedVoicesController.presenter(result, req.currentPerson, function (err, presented) {
+          var ids = result.map(function (voice) { return voice.voiceId })
+
+          Admin.FeaturedVoicesController.presenter(ids, req.currentPerson, function (err, presented) {
             if (err) { return next(err) }
 
             res.locals.featuredVoices = presented
@@ -77,11 +82,11 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
     // GET /admin/featured/voices/:voiceId
     // render view for viewing a featured person
     show: function (req, res, next) {
-      ACL.isAllowed('show', 'admin.featuredVoices', req.role, {}, function (err, isAllowed) {
+      ACL.isAllowed('show', 'admin.featuredVoices', req.role, { currentPerson: req.currentPerson }, function (err, isAllowed) {
         if (err) { return next(err) }
 
         if (!isAllowed) {
-          return next(new ForbiddenError('not an admin'))
+          return next(new ForbiddenError('Unauthorized. Must be Admin.'))
         }
 
         return res.render('admin/featured/voices/show.html', { layout: 'admin' })
@@ -91,11 +96,11 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
     // GET /admin/featured/voices/new
     // render view for new voice
     new: function (req, res, next) {
-      ACL.isAllowed('new', 'admin.featuredVoices', req.role, {}, function (err, isAllowed) {
+      ACL.isAllowed('new', 'admin.featuredVoices', req.role, { currentPerson: req.currentPerson }, function (err, isAllowed) {
         if (err) { return next(err) }
 
         if (!isAllowed) {
-          return next(new ForbiddenError('not an admin'))
+          return next(new ForbiddenError('Unauthorized. Must be Admin.'))
         }
 
         return res.render('admin/featured/voices/new.html', { layout: 'admin' })
@@ -111,11 +116,11 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
        * }
        */
 
-      ACL.isAllowed('create', 'admin.featuredVoices', req.role, {}, function (err, isAllowed) {
+      ACL.isAllowed('create', 'admin.featuredVoices', req.role, { currentPerson: req.currentPerson }, function (err, isAllowed) {
         if (err) { return next(err) }
 
         if (!isAllowed) {
-          return next(new ForbiddenError('not an admin'))
+          return next(new ForbiddenError('Unauthorized. Must be Admin.'))
         }
 
         var featured = new FeaturedPerson({
@@ -157,11 +162,11 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
        * req.body = {}
        */
 
-      ACL.isAllowed('destroy', 'admin.featuredVoices', req.role, {}, function (err, isAllowed) {
+      ACL.isAllowed('destroy', 'admin.featuredVoices', req.role, { currentPerson: req.currentPerson }, function (err, isAllowed) {
         if (err) { return next(err) }
 
         if (!isAllowed) {
-          return next(new ForbiddenError('not an admin'))
+          return next(new ForbiddenError('Unauthorized. Must be Admin.'))
         }
 
         FeaturedVoice.findById(hashids.decode(req.featuredVoice.id)[0], function (err, voice) {
@@ -196,11 +201,11 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
        * }
        */
 
-      ACL.isAllowed('updatePositions', 'admin.featuredVoices', req.role, {}, function (err, isAllowed) {
+      ACL.isAllowed('updatePositions', 'admin.featuredVoices', req.role, { currentPerson: req.currentPerson }, function (err, isAllowed) {
         if (err) { return next(err) }
 
         if (!isAllowed) {
-          return next(new ForbiddenError('not an admin'))
+          return next(new ForbiddenError('Unauthorized. Must be Admin.'))
         }
 
         var realIds = req.body.voiceIds.map(function (id) {

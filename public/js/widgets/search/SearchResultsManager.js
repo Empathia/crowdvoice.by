@@ -1,9 +1,8 @@
-/* jshint multistr: true */
 Class(CV, 'SearchResultsManager').inherits(Widget)({
     ELEMENT_CLASS : 'search-results',
     HTML : '\
         <div>\
-            <table class="search-results-table -full-width"></table>\
+            <table class="-full-width"></table>\
         </div>',
     MAX_TOTAL_RESULTS: 9,
 
@@ -22,9 +21,13 @@ Class(CV, 'SearchResultsManager').inherits(Widget)({
          */
         renderResults : function renderResults(results, queryString) {
             var preview = results.preview;
+            var previewTotals = 0;
 
             Object.keys(preview).forEach(function(propertyName) {
-                if (preview[propertyName].length) {
+                var groupLength = preview[propertyName].length;
+                previewTotals += groupLength;
+
+                if (groupLength) {
                     this.appendChild(
                         new CV.SearchResultsGroup({
                             name : propertyName,
@@ -34,9 +37,11 @@ Class(CV, 'SearchResultsManager').inherits(Widget)({
                 }
             }, this);
 
-            if (results.totals > this.constructor.MAX_TOTAL_RESULTS) {
+            if  ((results.totals > this.constructor.MAX_TOTAL_RESULTS) ||
+                    (results.totals > previewTotals)) {
                 this.appendChild(new CV.SearchResultsViewAllButton({
                     name : 'viewAllButton',
+                    className : '-mt3',
                     totals : results.totals,
                     queryString : queryString
                 })).render(this.el);

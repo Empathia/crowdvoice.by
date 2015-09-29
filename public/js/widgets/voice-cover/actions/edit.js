@@ -12,10 +12,15 @@ Class(CV, 'VoiceCoverActionsEdit').inherits(Widget).includes(CV.WidgetUtils)({
 
             this._clickHandlerRef = this._clickHandler.bind(this);
             Events.on(this.el, 'click', this._clickHandlerRef);
+
         },
 
         _clickHandler : function _clickHandler(ev) {
             ev.preventDefault();
+            App.showCreateVoiceModal(this.voiceEntity);
+        },
+
+        createModal : function createModal() {
             App.showCreateVoiceModal(this.voiceEntity);
         },
 

@@ -15,12 +15,17 @@ var SessionsController = Class('SessionsController')({
      * @method: forgotPassword
      */
     forgotPassword : function forgotPassword(req, res, next) {
+      if (req.currentPerson) {
+        req.flash('info', 'You must be logged out in order to perform the previous action.');
+        return res.redirect('/');
+      }
+
       res.format({
         html : function() {
           if (req.method === 'GET') {
             return res.render('sessions/forgotPassword.html', {layout : 'login'})
           } else if (req.method === 'POST') {
-            User.find({email : req.body.email}, function(err, user) {
+            User.find({email : req.body.email, deleted: false}, function(err, user) {
               if (err) {
                 return next(err);
               }
@@ -50,10 +55,13 @@ var SessionsController = Class('SessionsController')({
     },
 
     resetPassword : function resetPassword(req, res, next) {
+      if (req.currentPerson) {
+        req.flash('info', 'You must be logged out in order to perform the previous action.');
+        return res.redirect('/');
+      }
+
       res.format({
         html : function() {
-          //res.render('sessions/resetPassword.html', {layout : 'login'});
-
           var user = new User(req.currentUser);
 
           user.password = req.body.password;
@@ -65,17 +73,25 @@ var SessionsController = Class('SessionsController')({
               return next(err);
             }
 
-            req.flash('success', 'Your password has been reset.');
-            return res.redirect('/');
+            UserMailer.passwordReset(user, function (err, mailerResult) {
+              req.flash('success', 'Your password has been reset.');
+              return res.redirect('/');
+            });
           })
         }
       })
     },
 
+    // email confirmation thingy
     /* Create session if token authentication is correct
      * @method: tokenAuth
      */
     tokenAuth : function tokenAuth(req, res, next) {
+      if (req.currentPerson) {
+        req.flash('info', 'You must be logged out in order to perform the previous action.');
+        return res.redirect('/');
+      }
+
       passport.authenticate('token', function(err, user, info) {
         if (err) {
           return next(err);
@@ -110,17 +126,22 @@ var SessionsController = Class('SessionsController')({
       })(req, res, next);
     },
 
+    // login
     /* Create session if authentication is correct
      * @method: create
      */
     create : function (req, res, next) {
+      if (req.currentPerson) {
+        req.flash('info', 'You must be logged out in order to perform the previous action.');
+        return res.redirect('/');
+      }
 
       passport.authenticate('local', function (err, user, info) {
         if (err) {
           return next(err);
         }
 
-        if (!user) {
+        if (!user || user.deleted) {
           req.flash('error', 'Invalid Username or Password!');
           return res.redirect('/login');
         }

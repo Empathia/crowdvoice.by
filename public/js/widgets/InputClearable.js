@@ -1,21 +1,19 @@
-/* jshint multistr: true */
-Class(CV, 'InputClearable').inherits(Widget).includes(CV.WidgetUtils)({
+var Events = require('./../lib/events');
 
+Class(CV, 'InputClearable').inherits(Widget).includes(CV.WidgetUtils)({
     ELEMENT_CLASS : 'cv-input-clearable -rel',
 
     HTML : '\
-    <div>\
-        <input class="ui-input" placeholder=""/>\
-        <svg class="cv-input-clearable__clear -abs -clickable">\
-            <use xlink:href="#svg-circle-x"></use>\
-        </svg>\
-    </div>\
-    ',
+        <div>\
+            <input class="ui-input" placeholder=""/>\
+            <svg class="cv-input-clearable__clear -abs -clickable">\
+                <use xlink:href="#svg-circle-x"></use>\
+            </svg>\
+        </div>',
 
     ACTIVE_CLASSNAME : 'active',
 
     prototype : {
-
         value : '',
         placeholder : '',
         inputClass : '',
@@ -55,24 +53,12 @@ Class(CV, 'InputClearable').inherits(Widget).includes(CV.WidgetUtils)({
 
         _bindEvents : function _bindEvents() {
             this._keyDownHandlerRef = this._keyDownHandler.bind(this);
-            this.inputElement.addEventListener('keyup', this._keyDownHandlerRef);
+            Events.on(this.inputElement, 'keyup', this._keyDownHandlerRef);
 
             this._clearClickHandlerRef = this._clearClickHandler.bind(this);
-            this.clearButton.addEventListener('click', this._clearClickHandlerRef);
+            Events.on(this.clearButton, 'click', this._clearClickHandlerRef);
 
             return this;
-        },
-
-        _keyDownHandler : function _keyDownHandler() {
-            var x = (this.getValue().length > this.min) ? 'add' : 'remove';
-
-            this.clearButton.classList[x](this.constructor.ACTIVE_CLASSNAME);
-        },
-
-        _clearClickHandler : function _clearClickHandler() {
-            this.inputElement.value = "";
-            this.clearButton.classList.remove(this.constructor.ACTIVE_CLASSNAME);
-            this.inputElement.focus();
         },
 
         /* Updates the input value with the passed string
@@ -99,13 +85,45 @@ Class(CV, 'InputClearable').inherits(Widget).includes(CV.WidgetUtils)({
             return this.inputElement;
         },
 
+        /* Force to display the clearButton.
+         * @method showClearButton <public> [Function]
+         * @return InputClearable
+         */
+        showClearButton : function showClearButton() {
+            this.clearButton.style.visibility = 'visible';
+            this.clearButton.classList.add('active');
+            return this;
+        },
+
+        /* Force to hide the clearButton.
+         * @method hideClearButton <public> [Function]
+         * @return InputClearable
+         */
+        hideClearButton : function hideClearButton() {
+            this.clearButton.style.visibility = 'hidden';
+            this.clearButton.classList.remove('active');
+            return this;
+        },
+
+        _keyDownHandler : function _keyDownHandler() {
+            var x = (this.getValue().length > this.min) ? 'add' : 'remove';
+
+            this.clearButton.classList[x](this.constructor.ACTIVE_CLASSNAME);
+        },
+
+        _clearClickHandler : function _clearClickHandler() {
+            this.inputElement.value = "";
+            this.clearButton.classList.remove(this.constructor.ACTIVE_CLASSNAME);
+            this.inputElement.focus();
+        },
+
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
 
-            this.inputElement.addEventListener('keyup', this._keyDownHandlerRef);
+            Events.off(this.inputElement, 'keyup', this._keyDownHandlerRef);
             this._keyDownHandlerRef = null;
 
-            this.clearButton.addEventListener('click', this._clearClickHandlerRef);
+            Events.off(this.clearButton, 'click', this._clearClickHandlerRef);
             this._clearClickHandlerRef = null;
 
             this.placeholder = null;

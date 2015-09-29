@@ -331,8 +331,19 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
       });
     },
 
-    edit : function edit(req, res) {
-      res.render('voices/edit.html', { errors: null });
+    edit : function edit(req, res, next) {
+      ACL.isAllowed('edit', 'voices', req.role, {
+        currentPerson : req.currentPerson,
+        voice : req.activeVoice
+      }, function(err, response) {
+        if (err) { return next(err); }
+
+        if (!response.isAllowed) {
+          return next(new ForbiddenError('Unauthorized.'));
+        }
+
+        return res.render('voices/edit.html', { errors: null });
+      });
     },
 
     update : function update(req, res, next) {
@@ -504,20 +515,31 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
     },
 
     destroy : function destroy(req, res, next) {
-      var voice = req.activeVoice;
-      voice.deleted = true;
-      voice.save(function(err) {
+      ACL.isAllowed('edit', 'voices', req.role, {
+        currentPerson : req.currentPerson,
+        voice : req.activeVoice
+      }, function(err, response) {
         if (err) { return next(err); }
 
-        req.flash('success', 'Voice has been deleted.');
-        res.redirect('/voices');
+        if (!response.isAllowed) {
+          return next(new ForbiddenError('Unauthorized.'));
+        }
+
+        var voice = new Voice(req.activeVoice);
+        voice.deleted = true;
+        voice.save(function(err) {
+          if (err) { return next(err); }
+
+          req.flash('success', 'Voice has been deleted.');
+          res.redirect('/voices');
+        });
       });
     },
 
     follow : function follow(req, res, next) {
-      ACL.isAllowed('followAsOrg', 'entities', req.role, {
+      ACL.isAllowed('followAs', 'entities', req.role, {
         currentPersonId: req.currentPerson.id,
-        orgId: req.body.followerId
+        followerId: req.body.followerId
       }, function (err, response) {
         if (err) { return next(err); }
 
@@ -528,7 +550,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         Entity.findById(hashids.decode(req.body.followerId)[0], function (err, followers) {
           if (err) { return next(err); }
 
-          var follower = followers[0];
+          var follower = new Entity(followers[0]);
 
           // we don't want to allow the user to follow if he is anonymous
           if (follower.isAnonymous) {

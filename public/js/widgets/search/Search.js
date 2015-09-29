@@ -7,13 +7,10 @@ Class(CV, 'Search').inherits(Widget)({
     HTML : '\
         <div>\
             <header class="cv-search-overlay__header">\
-                <p class="header-title">Type in what you’re looking for and press enter to search.</p>\
-                <svg class="cv-search-overlay__close -clickable -s18 -abs">\
-                    <use xlink:href="#svg-close"></use>\
-                </svg>\
+                <p class="header-title -color-neutral-mid">Type in what you’re looking for and press enter to search.</p>\
             </header>\
             <div class="cv-search-overlay__input -rel">\
-                <svg class="input-search-icon -s18 -abs">\
+                <svg class="input-search-icon -s20 -abs -color-neutral-mid">\
                     <use xlink:href="#svg-search"></use>\
                 </svg>\
             </div>\
@@ -40,7 +37,6 @@ Class(CV, 'Search').inherits(Widget)({
 
             this.el = this.element[0];
             this.inputWrapper = this.el.querySelector('.cv-search-overlay__input');
-            this.closeElement = this.el.querySelector('.cv-search-overlay__close');
 
             this.scrollbar = new Gemini({
                 element : this.el.querySelector('.cv-search-overlay__results'),
@@ -50,6 +46,12 @@ Class(CV, 'Search').inherits(Widget)({
             this._queryRe = new RegExp('[^A-Za-z0-9\\p{L}\\p{Nd}]+','g');
             this._queryRe2 = new RegExp('[\\ ~`!#$%\\^&*+=\\-\\[\\]\';,{}|":<>\\?]','g');
 
+            this.appendChild(new CV.UI.Close({
+                name : 'closeButton',
+                className : 'cv-search-overlay__close -abs',
+                svgClassName : '-s18'
+            })).render(this.el.querySelector('.cv-search-overlay__header'));
+
             this.appendChild(new CV.Loader({
                 name : 'loader'
             })).render(this.inputWrapper);
@@ -57,7 +59,7 @@ Class(CV, 'Search').inherits(Widget)({
             this.appendChild(new CV.InputClearable({
                 name : 'input',
                 placeholder : 'Search...',
-                inputClass : '-block -lg -br0 -font-bold'
+                inputClass : '-block -lg -br0'
             })).render(this.inputWrapper);
 
             this.appendChild(new CV.SearchResultsManager({
@@ -69,7 +71,7 @@ Class(CV, 'Search').inherits(Widget)({
 
         _bindEvents : function _bindEvents() {
             this._closeElementClickHandlerRef = this._closeElementClickHandler.bind(this);
-            this.closeElement.addEventListener('click', this._closeElementClickHandlerRef);
+            this.closeButton.bind('click', this._closeElementClickHandlerRef);
 
             this._inputKeyPressHandlerRef = this._inputKeyPressHandler.bind(this);
             this.input.getElement().addEventListener('keyup', this._inputKeyPressHandlerRef);
@@ -105,11 +107,13 @@ Class(CV, 'Search').inherits(Widget)({
         },
 
         _setSearchingState : function _setSearchingState() {
+            this.input.hideClearButton();
             this.loader.activate();
             return this;
         },
 
         _setResponseState : function _setResponseState() {
+            this.input.showClearButton();
             this.loader.deactivate();
             return this;
         },
@@ -130,11 +134,10 @@ Class(CV, 'Search').inherits(Widget)({
         },
 
         destroy : function destroy() {
-            Widget.prototype.destroy.call(this);
-
-            this.closeElement.removeEventListener('click', this._closeElementClickHandlerRef);
+            this.closeButton.unbind('click', this._closeElementClickHandlerRef);
             this._closeElementClickHandlerRef = null;
 
+            Widget.prototype.destroy.call(this);
             return null;
         }
     }
