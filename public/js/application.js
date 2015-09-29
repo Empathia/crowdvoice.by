@@ -253,7 +253,7 @@ require('./widgets/ui/modal');
 require('./widgets/ui/input');
 require('./widgets/ui/Button');
 require('./widgets/ui/Checkbox');
-require('./widgets/ui/close-button');
+require('./widgets/ui/Close');
 require('./widgets/ui/InputButton');
 require('./widgets/ui/InputButtonResults');
 require('./widgets/ui/InputButtonResultsItem');
