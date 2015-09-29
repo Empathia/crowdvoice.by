@@ -77,11 +77,12 @@ module.exports = {
         }
 
         $.ajax({
-            type : 'PUT',
-            url : '/' + args.profileName + '/' + args.voiceSlug +'/archiveVoice',
+            type : 'POST',
+            url : '/' + args.profileName + '/' + args.voiceSlug +'/archive?_method=PUT',
             headers : {'csrf-token' : this.token},
             cache : false,
-            contentType : false,
+            data : {},
+            contentType : 'json',
             success : function success(data) { callback(false, data); },
             error : function error(err) { callback(true, err); }
         });
