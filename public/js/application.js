@@ -50,11 +50,11 @@ require('./widgets/notifications/-notification-message');
 require('./widgets/notifications/-notification-invite');
 require('./widgets/notifications/-notification-request');
 // search
-require('./widgets/search/search');
-require('./widgets/search/button');
-require('./widgets/search/results-manager');
-require('./widgets/search/results-group');
-require('./widgets/search/results-view-all-button');
+require('./widgets/search/Search');
+require('./widgets/search/SearchButton');
+require('./widgets/search/SearchResultsManager');
+require('./widgets/search/SearchResultsGroup');
+require('./widgets/search/SearchResultsViewAllButton');
 // other
 require('./widgets/sidebar.js');
 require('./widgets/NotificationBell.js');
@@ -66,7 +66,7 @@ require('./widgets/loader');
 require('./widgets/popover.js');
 require('./widgets/popover-blocker.js');
 require('./widgets/responsive-slider.js');
-require('./widgets/input-clearable.js');
+require('./widgets/InputClearable');
 require('./widgets/input-counter.js');
 require('./widgets/dropdown.js');
 require('./widgets/dropdowns/regular');
