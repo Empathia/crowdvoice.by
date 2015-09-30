@@ -160,9 +160,4 @@ var User = Class('User').inherits(Argon.KnexModel)({
   }
 });
 
-
-
-
-
-
 module.exports = User;

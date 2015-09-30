@@ -280,7 +280,7 @@ var Voice = Class('Voice').inherits(Argon.KnexModel).includes(ImageUploader)({
     addTopics : function (topics, done) {
       var voice = this;
       topics.forEach(function (topic) {
-        Topic.find({name: topic}, function (err, result) {
+        Topic.find({name: topic, deleted: false}, function (err, result) {
           if (err) { done(err); return; }
           if (result.length === 0) { done(new Error('Topic (' + topic + ') not found when adding topics to voice')); return; }
 
