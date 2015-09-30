@@ -133,11 +133,11 @@ require('./widgets/voice/layers/layer');
 require('./widgets/voice/layers/indicator');
 require('./widgets/voice/voice-about-box');
 
-require('./widgets/voice/moderate/registry');
-require('./widgets/voice/moderate/button.js');
-require('./widgets/voice/moderate/manager.js');
-require('./widgets/voice/moderate/footer-button.js');
-require('./widgets/voice/moderate/footer.js');
+require('./widgets/voice/moderate/ModeratePostsRegistry');
+require('./widgets/voice/moderate/VoiceModerateButton');
+require('./widgets/voice/moderate/VoiceModerateManager');
+require('./widgets/voice/moderate/VoiceModerateDoneButton');
+require('./widgets/voice/moderate/VoiceModerateFooter');
 
 require('./widgets/voice/add-content/');
 

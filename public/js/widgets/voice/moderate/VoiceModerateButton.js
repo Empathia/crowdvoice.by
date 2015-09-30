@@ -1,5 +1,5 @@
 /* globals App */
-Class(CV, 'VoiceModerate').inherits(Widget).includes(CV.WidgetUtils)({
+Class(CV, 'VoiceModerateButton').inherits(Widget).includes(CV.WidgetUtils)({
     HTML : '\
     <button class="cv-button tiny ui-has-tooltip">\
         <svg class="voice-footer-svg">\

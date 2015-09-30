@@ -61,6 +61,12 @@ Class(CV, 'PostModeratePublishButton').inherits(Widget).includes(BubblingSupport
         _setSuccessState : function _setSuccessState() {
             this.el.innerHTML = 'Published!';
             this.dispatch('post:moderate:published');
+
+            setTimeout(function() {
+                var layer = this.parent.parent;
+                this.parent.destroy();
+                layer.reLayout();
+            }.bind(this), 1000);
         },
 
         _disable : function _disable() {
@@ -83,6 +89,5 @@ Class(CV, 'PostModeratePublishButton').inherits(Widget).includes(BubblingSupport
 
             return null;
         }
-
     }
 });

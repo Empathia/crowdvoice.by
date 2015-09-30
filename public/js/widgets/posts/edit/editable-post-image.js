@@ -17,7 +17,10 @@ Class(CV, 'EditablePostImage').inherits(CV.PostImage).includes(CV.EditablePost)(
             this.unbind('render', this._renderHandlerRef);
             this._renderHandlerRef = null;
 
+            this.el.parentElement.removeChild(this.el);
+
             CV.PostImage.prototype.destroy.call(this);
+            return null;
         }
     }
 });

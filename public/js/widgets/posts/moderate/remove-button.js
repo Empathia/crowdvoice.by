@@ -21,7 +21,20 @@ Class(CV, 'PostModerateRemoveButton').inherits(Widget).includes(BubblingSupport)
         },
 
         _clickHandler : function _clickHandler() {
+            this.disable();
             this.dispatch('post:moderate:delete', {data: this});
+        },
+
+        _disable : function _disable() {
+            Widget.prototype._disable.call(this);
+            this.el.classList.add('-muted');
+            this.el.setAttribute('disabled', true);
+        },
+
+        _enable : function _enable() {
+            Widget.prototype._enable.call(this);
+            this.el.classList.remove('-muted');
+            this.el.removeAttribute('disabled');
         },
 
         destroy : function destroy() {
