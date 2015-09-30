@@ -138,6 +138,10 @@ Class(CV, 'Dropdown').inherits(Widget).includes(CV.WidgetUtils)({
         },
 
         toggle : function toggle() {
+            if (this.disabled) {
+                return;
+            }
+
             if (this.active) {
                 this.deactivate();
             } else {
