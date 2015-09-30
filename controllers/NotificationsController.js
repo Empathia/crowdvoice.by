@@ -58,7 +58,7 @@ var NotificationsController = Class('NotificationsController')({
         Notification.find({ id: hashids.decode(req.body.notificationId)[0] }, function (err, notification) {
           if (err) { return next(err) }
 
-          var notif = new Notification(action[0])
+          var notif = new Notification(notification[0])
           notif.read = true
           notif.save(function (err) {
             if (err) { return next(err) }
