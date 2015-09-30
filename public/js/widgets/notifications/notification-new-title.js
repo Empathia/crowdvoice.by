@@ -1,5 +1,5 @@
 /* jshint multistr: true */
-Class(CV, 'NotificationChangedTitle').inherits(CV.Notification)({
+Class(CV, 'NotificationNewTitle').inherits(CV.Notification)({
     ELEMENT_CLASS : 'cv-notification changed-title',
     HTML : '\
         <div>\
