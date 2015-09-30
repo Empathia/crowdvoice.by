@@ -97,8 +97,8 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
          */
         getEditedData : function getEditedData() {
             return {
-                title : this.titleElement.value,
-                description : this.descriptionElement.value,
+                title : this.format.truncate(this.titleElement.value, this.constructor.MAX_LENGTH_TITLE),
+                description : this.format.truncate(this.descriptionElement.value, this.constructor.MAX_LENGTH_DESCRIPTION),
                 publishedAt : this.romeTime.getDate(),
 
                 image : this.image,
