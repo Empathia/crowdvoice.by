@@ -22,6 +22,7 @@ var TopicsController = Class('TopicsController')({
           db('Voices')
             .whereIn('id', voicesIds)
             .andWhere('status', Voice.STATUS_PUBLISHED)
+            .andWhere('deleted', false)
             .exec(callback)
         },
 
@@ -35,6 +36,7 @@ var TopicsController = Class('TopicsController')({
             .whereIn('id', ownersIds)
             .andWhere('is_anonymous', false)
             .andWhere('type', 'person')
+            .andWhere('deleted', false)
             .exec(callback)
         },
 
@@ -79,6 +81,7 @@ var TopicsController = Class('TopicsController')({
           db('Voices')
             .whereIn('id', voicesIds)
             .andWhere('status', Voice.STATUS_PUBLISHED)
+            .andWhere('deleted', false)
             .exec(callback)
         },
 
@@ -92,6 +95,7 @@ var TopicsController = Class('TopicsController')({
             .whereIn('id', ownersIds)
             .andWhere('is_anonymous', false)
             .andWhere('type', 'organization')
+            .andWhere('deleted', false)
             .exec(callback)
         },
 
@@ -156,11 +160,15 @@ var TopicsController = Class('TopicsController')({
             return val.voiceId;
           });
 
-          Voice.whereIn('id', voicesIds, callback);
+          db('Voices')
+            .whereIn('id', voicesIds)
+            .andWhere('deleted', false)
+            .exec(callbac);
         },
 
         function (voices, callback) {
-          VoicesPresenter.build(voices, req.currentPerson, callback);
+          var processed = Argon.Storage.Knex.processors[0](voices)
+          VoicesPresenter.build(processed, req.currentPerson, callback);
         }
       ], function (err, voices) {
         if (err) { return next(err); }
