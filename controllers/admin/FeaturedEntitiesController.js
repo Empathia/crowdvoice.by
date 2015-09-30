@@ -138,7 +138,7 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
             return res.render('admin/featured/entities/new.html', { layout: 'admin' })
           }
 
-          req.flash('success', 'Featured ' + req.entityType + ' created')
+          req.flash('success', 'Featured ' + inflection.singularize(req.params.entityType) + ' created')
           return res.redirect('/admin/featured/' + req.params.entityType)
         })
       })
@@ -170,8 +170,8 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
           return next(new ForbiddenError('Unauthorized. Must be Admin.'))
         }
 
-        global['Featured' + inflection.transform(req.params.entityType, ['capitalize', 'singularize'])].findById(hashids.decode(req.body.entityId)[0], function (err, entity) {
-          var featured = new FeaturedEntity(entity[0])
+        global['Featured' + inflection.transform(req.params.entityType, ['capitalize', 'singularize'])].find({ entity_id: hashids.decode(req.params.entityId)[0] }, function (err, entity) {
+          var featured = new global['Featured' + inflection.transform(req.params.entityType, ['capitalize', 'singularize'])](entity[0])
 
           featured.destroy(function (err) {
             if (err) {
@@ -182,7 +182,7 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
               return res.render('admin/featured/entities/index.html', { layout: 'admin' })
             }
 
-            req.flash('success', 'Featured ' + req.entityType + ' deleted')
+            req.flash('success', 'Featured ' + inflection.singularize(req.params.entityType) + ' deleted')
             return res.redirect('/admin/featured/' + req.params.entityType)
           })
         })
