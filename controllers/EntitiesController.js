@@ -245,7 +245,10 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
                     res.redirect('/' + entity.profileName);
                   },
                   json: function() {
-                    res.json({ status: 'unfollowed' });
+                    res.json({
+                      status: 'unfollowed',
+                      entity: { id: follower.id }
+                    });
                   }
                 });
               });
@@ -266,7 +269,10 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
                         res.redirect('/' + entity.profileName);
                       },
                       json: function() {
-                        res.json({ status: 'followed' });
+                        res.json({
+                          status: 'followed',
+                          entity: { id: follower.id }
+                        });
                       }
                     });
                   });
