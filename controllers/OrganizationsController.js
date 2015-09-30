@@ -213,22 +213,18 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
       });
     },
 
+    // not currently in use
     voices : function voices (req, res, next) {
-      Voice.find({owner_id: req.entity.id}, function (err, result) {
+      Voice.find({
+        owner_id: req.entity.id,
+        deleted: false
+      }, function (err, result) {
         if (err) { return next(err); }
 
-        var voices = [];
-        async.each(result, function (rvoice, done) {
-          var rvoice = new Voice(rvoice);
-          voices.push(rvoice);
-          done();
-        }, function (err) {
+        VoicesPresenter.build(voices, req.currentPerson, function (err, voices) {
           if (err) { return next(err); }
-          res.format({
-            'application/json': function () {
-              res.json(voices);
-            }
-          });
+
+          res.json(voices);
         });
       });
     },
