@@ -34,6 +34,15 @@ require('./lib/responsive-width');
 require('./app');
 
 // Global Widgets
+require('./widgets/ui/modal');
+require('./widgets/ui/Input');
+require('./widgets/ui/Button');
+require('./widgets/ui/Checkbox');
+require('./widgets/ui/Close');
+require('./widgets/ui/InputButton');
+require('./widgets/ui/InputButtonResults');
+require('./widgets/ui/InputButtonResultsItem');
+
 // notifications
 require('./widgets/notifications/manager');
 require('./widgets/notifications/notification');
@@ -118,7 +127,8 @@ require('./widgets/voice/VoiceFooter');
 require('./widgets/voice/footer/share-buttons-group');
 require('./widgets/voice/footer/share-button');
 require('./widgets/voice/footer/embed-button');
-require('./widgets/voice/VoiceFollowButton.js');
+require('./widgets/voice/follow/VoiceFollowSingleButton');
+require('./widgets/voice/follow/VoiceFollowMultipleButton');
 
 require('./widgets/voice/timeline/feedback');
 require('./widgets/voice/timeline/jump-to-date');
@@ -248,15 +258,6 @@ require('./widgets/elements/select.js');
 require('./widgets/elements/select-account.js');
 require('./widgets/elements/alert.js');
 require('./widgets/elements/detect-location.js');
-
-require('./widgets/ui/modal');
-require('./widgets/ui/input');
-require('./widgets/ui/Button');
-require('./widgets/ui/Checkbox');
-require('./widgets/ui/Close');
-require('./widgets/ui/InputButton');
-require('./widgets/ui/InputButtonResults');
-require('./widgets/ui/InputButtonResultsItem');
 
 // threads and messages
 require('./widgets/messages/ThreadsContainer.js');
