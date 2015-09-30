@@ -48,6 +48,7 @@ var NotificationsController = Class('NotificationsController')({
         currentPerson: req.currentPerson,
         notificationId: req.body.notificationId
       }, function (err, isAllowed) {
+
         if (err) { return next(err) }
 
         if (!isAllowed) {
