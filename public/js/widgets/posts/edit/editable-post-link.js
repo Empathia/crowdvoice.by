@@ -17,7 +17,10 @@ Class(CV, 'EditablePostLink').inherits(CV.PostLink).includes(CV.EditablePost)({
             this.unbind('render', this._renderHandlerRef);
             this._renderHandlerRef = null;
 
+            this.el.parentElement.removeChild(this.el);
+
             CV.PostLink.prototype.destroy.call(this);
+            return null;
         }
     }
 });

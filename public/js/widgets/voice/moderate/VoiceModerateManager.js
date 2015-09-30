@@ -1,6 +1,8 @@
 /* globals App */
 /* Handles the modetate window ui. Uses VoicePostLayersManager to create the layers and fill them with posts.
  */
+var API = require('./../../../lib/api');
+
 Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
     HTML : '\
         <div class="voice-moderate-wrapper">\
@@ -58,14 +60,10 @@ Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
          * - ESC to close the widget
          */
         _bindEvents : function _bindEvents() {
+            this.bind('post:moderate:delete', this._postModerateDelete.bind(this));
+
             this.bind('post:moderate:published', function () {
                 this._publishedPosts = true;
-            }.bind(this));
-
-            this.bind('beforeDestroy', function beforeDestroy() {
-                if (this._publishedPosts) {
-                    window.location.reload();
-                }
             }.bind(this));
 
             this.footer.bind('done', this.destroy.bind(this));
@@ -80,6 +78,29 @@ Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
             this._window.addEventListener('keydown', this._windowKeydownHandlerRef);
 
             return this;
+        },
+
+        _postModerateDelete : function _postModerateDelete(ev) {
+            API.postDelete({
+                profileName : App.Voice.data.owner.profileName,
+                voiceSlug : App.Voice.data.slug,
+                postId : ev.data.parent.id
+            }, function(err, res) {
+                console.log(err);
+                console.log(res);
+
+                if (err) {
+                    return;
+                }
+
+                setTimeout(function() {
+                    var layer = ev.data.parent.parent;
+                    ev.data.parent.destroy();
+                    layer.reLayout();
+                }.bind(this), 1000);
+            }.bind(this));
+
+            this._publishedPosts = true;
         },
 
         /* Handle the scrollableArea scroll event.
@@ -163,6 +184,10 @@ Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
 
             this.el = null;
             this._window = null;
+
+            if (this._publishedPosts) {
+                window.location.reload();
+            }
 
             return null;
         }

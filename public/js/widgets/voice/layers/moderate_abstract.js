@@ -75,8 +75,9 @@ Class(CV, 'VoicePostLayersModerateAbstract').inherits(CV.VoicePostLayers)({
          * description/title length
          * @method _reLayoutLayer <private> [Function]
          */
-        _reLayoutLayer : function _reLayoutLayer(data) {
-            data.layer.reLayout();
+        _reLayoutLayer : function _reLayoutLayer(ev) {
+            ev.stopPropagation();
+            ev.layer.reLayout();
         },
 
         /* Implementation for custom bindings required by this subclass.
@@ -84,21 +85,6 @@ Class(CV, 'VoicePostLayersModerateAbstract').inherits(CV.VoicePostLayers)({
          */
         __bindEvents : function __bindEvents() {
             this._socket.on('unapprovedMonthPosts', this._loadLayerRef);
-
-            this.bind('post:moderate:delete', function (ev) {
-                debugger;
-                API.postDelete({
-                    profileName : App.Voice.data.owner.profileName,
-                    voiceSlug : App.Voice.data.slug,
-                    postId : ev.data.parent.id
-                }, function(err, res) {
-                    console.log(err);
-                    console.log(res);
-                    debugger
-                    // this._reLayoutLayer({layer: ev.data.parent.parent});
-                    // ev.data.parent.parent.reLayout()
-                });
-            }.bind(this));
 
             return this;
         },
