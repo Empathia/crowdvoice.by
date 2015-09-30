@@ -49,6 +49,7 @@ Class('NotificationBell').inherits(Widget)({
       }, 5000);
 
       socket.on('notifications', function(data) {
+        console.log(data);
         if (data > 0) {
           bell.element.find('.ui-badge').show().html(data);
           bell.element.addClass('has-new-notifications');

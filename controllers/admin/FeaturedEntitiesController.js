@@ -71,7 +71,8 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
           Admin.FeaturedEntitiesController.presenter(ids, req.params.entityType, req.currentPerson, function (err, presented) {
             if (err) { return next(err) }
 
-            res.locals.featuredEntities = presented
+            res.locals.entityType = inflection.transform(req.params.entityType, ['singularize']);
+            res.locals.featuredEntities = presented;
 
             return res.render('admin/featured/entities/index.html', { layout: 'admin' })
           })
@@ -169,7 +170,7 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
           return next(new ForbiddenError('Unauthorized. Must be Admin.'))
         }
 
-        global['Featured' + inflection.transform(req.params.entityType, ['capitalize', 'singularize'])].findById(hashids.decode(req.featuredEntity.id)[0], function (err, entity) {
+        global['Featured' + inflection.transform(req.params.entityType, ['capitalize', 'singularize'])].findById(hashids.decode(req.body.entityId)[0], function (err, entity) {
           var featured = new FeaturedEntity(entity[0])
 
           featured.destroy(function (err) {

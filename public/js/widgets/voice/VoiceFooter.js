@@ -56,10 +56,19 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
             }
 
             if ((!Person.anon()) && (!Person.memberOf('voice', this.voice.id))) {
-                this.appendChild(new CV.VoiceFollowButton({
-                    name : 'followButton',
-                    voice : this.voice
-                })).render(this.actionsColumn);
+                if (Person.get().ownedOrganizations.length) {
+                    this.appendChild(new CV.VoiceFollowMultipleButton({
+                        name : 'followButton',
+                        voice : this.voice,
+                        className : '-inline-block'
+                    })).render(this.actionsColumn);
+                } else {
+                    this.appendChild(new CV.VoiceFollowSingleButton({
+                        name : 'followButton',
+                        voice : this.voice,
+                        className : 'tiny'
+                    })).render(this.actionsColumn);
+                }
             }
 
             if (Person.is(this.voice.owner.id)) {
