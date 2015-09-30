@@ -9,18 +9,25 @@ Class(CV.UI, 'Button').inherits(Widget).includes(CV.WidgetUtils)({
         init : function init(config) {
             Widget.prototype.init.call(this, config);
             this.el = this.element[0];
-            console.log(this.data);
-            this.dom.updateText(this.el, this.data.value);
+            this.updateText(this.data.value);
+        },
+
+        updateText : function updateText(text) {
+            this.dom.updateText(this.el, text);
+        },
+
+        updateHTML : function updateHTML(string) {
+            this.dom.updateHTML(this.el, string);
         },
 
         _enable : function _enable() {
             Widget.prototype._enable.call(this);
-            this.dom.updateAttr('disabled', this.el, false);
+            this.el.removeAttribute('disabled');
         },
 
         _disable : function _disable() {
             Widget.prototype._disable.call(this);
-            this.dom.updateAttr('disabled', this.el, true);
+            this.el.setAttribute('disabled', true);
         }
     }
 });
