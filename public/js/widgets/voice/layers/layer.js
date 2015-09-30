@@ -57,7 +57,9 @@ Class(CV, 'VoicePostsLayer').inherits(Widget).includes(BubblingSupport)({
                 this._updatePostIndicatorsPostion();
             }
 
-            if (!this.getPosts().length) this.setHeight(args.averageHeigth);
+            if (!this.getPosts().length) {
+                this.setHeight(args.averageHeigth);
+            }
 
             return this;
         },
@@ -248,6 +250,29 @@ Class(CV, 'VoicePostsLayer').inherits(Widget).includes(BubblingSupport)({
             for (i = 0; i < len; i++) {
                 this._indicatorWidgets[i].updatePosition();
             }
+        },
+
+        removePost : function removePost(post) {
+            post.destroy();
+            this.removeChild(post);
+
+            var index = this._postWidgets.indexOf(post);
+            if (index > -1) {
+                this._postWidgets.splice(index, 1);
+            }
+
+            // this.getIndicators().forEach(function(indicator) {
+            //     this.removeChild(indicator);
+            // }, this);
+            // this.ticksContainerElement.innerHTML = '';
+            // CV.VoicePostIndicator.flushRegisteredYValues();
+            // this._addPostIndicators(this._postWidgets);
+
+            if (this._postWidgets.length === 0) {
+                return this.destroy();
+            }
+
+            this.reLayout();
         },
 
         destroy : function destroy() {

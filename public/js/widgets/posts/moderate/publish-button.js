@@ -1,9 +1,10 @@
+/* globals App */
 var API = require('../../../lib/api');
 
-Class(CV, 'PostModeratePublishButton').inherits(Widget).includes(BubblingSupport)({
+Class(CV, 'PostModeratePublishButton').inherits(Widget).includes(CV.WidgetUtils, BubblingSupport)({
     HTML : '\
-        <button class="post-moderate-publish-btn cv-button -abs">\
-            <svg class="-s16">\
+        <button class="post-moderate-publish-btn cv-button -abs -color-success">\
+            <svg class="-s16 -mr1">\
                 <use xlink:href="#svg-thumbs-up"></use>\
             </svg>\
             <span>Publish</span>\
@@ -51,6 +52,9 @@ Class(CV, 'PostModeratePublishButton').inherits(Widget).includes(BubblingSupport
         },
 
         _setErrorState : function _setErrorState(config) {
+            this.dom.removeClass(this.el, ['-color-success']);
+            this.dom.addClass(this.el, ['-color-danger']);
+
             if (config && config.message) {
                 this.el.innerHTML = config.message;
             }
@@ -59,13 +63,15 @@ Class(CV, 'PostModeratePublishButton').inherits(Widget).includes(BubblingSupport
         },
 
         _setSuccessState : function _setSuccessState() {
+            this.dom.removeClass(this.el, ['-color-danger']);
+            this.dom.addClass(this.el, ['-color-success']);
+
             this.el.innerHTML = 'Published!';
             this.dispatch('post:moderate:published');
 
             setTimeout(function() {
                 var layer = this.parent.parent;
-                this.parent.destroy();
-                layer.reLayout();
+                layer.removePost(this.parent);
             }.bind(this), 1000);
         },
 
