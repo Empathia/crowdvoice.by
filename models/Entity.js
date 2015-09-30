@@ -134,11 +134,11 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
     lastname: null,
     profileName: null,
     isAnonymous: false,
-    description : ''e
+    description : '',
     location : '',
     createdAt: null,
     updatedAt: null,
-    deleted: null,
+    deleted: false,
 
     init : function init(config) {
       Argon.KnexModel.prototype.init.call(this, config);
@@ -340,32 +340,22 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
      *  + callback
      */
     followers : function followers (done) {
-      var query = db('Entities').
-          select('Entities.*').
-          rightJoin('EntityFollower', 'Entities.id', 'EntityFollower.follower_id').
-          where('followed_id', '=', this.id);
-
-      if (done) {
-        query.then(done);
-      } else {
-        return query;
-      }
+      db('Entities')
+        .select('Entities.*')
+        .rightJoin('EntityFollower', 'Entities.id', 'EntityFollower.follower_id')
+        .where('followed_id', '=', this.id)
+        .exec(done);
     },
 
     /* Returns the followedEntities made by the current entity
      * @method: followedEntities
      */
     followedEntities : function followedEntities (done) {
-      var query = db('Entities').
-          select('Entities.*').
-          rightJoin('EntityFollower', 'Entities.id', 'EntityFollower.followed_id').
-          where('follower_id', '=', this.id);
-
-      if (done) {
-        query.then(done);
-      } else {
-        return query;
-      }
+      db('Entities')
+        .select('Entities.*')
+        .rightJoin('EntityFollower', 'Entities.id', 'EntityFollower.followed_id')
+        .where('follower_id', '=', this.id)
+        .exec(done);
     },
 
     /* Follows a voice
@@ -412,16 +402,11 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
      *  + callback
      */
     followedVoices: function followedVoices (done) {
-      var query = db('Voices').
-          select('Voices.*').
-          rightJoin('VoiceFollowers', 'Voices.id', 'VoiceFollowers.voice_id').
-          where('entity_id', '=', this.id);
-
-      if (done) {
-        query.then(done);
-      } else {
-        return query;
-      }
+      db('Voices')
+        .select('Voices.*')
+        .rightJoin('VoiceFollowers', 'Voices.id', 'VoiceFollowers.voice_id')
+        .where('entity_id', '=', this.id)
+        .exec(done);
     },
 
     /* Invite another entity to join the organization
@@ -612,7 +597,7 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
       var entity = this;
 
       if (!this.id) {
-        return callback(new Error("Entity doesn't have an id"));
+        return callback(new Error("Entity doesn't have an ID"));
       }
 
       var organizations = [];
@@ -692,8 +677,6 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
 
         callback(null, result)
       })
-
-
     },
 
     /* Return voices for which the current entity is owner.
@@ -709,13 +692,12 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
      * being followed by the given entity.
      */
     recommendedVoices: function (done) {
-      var query = db('Voices');
-      query.leftJoin('VoiceFollowers', 'Voices.id', 'VoiceFollowers.voice_id');
-      query.leftJoin('EntityFollower', 'Voices.owner_id', 'EntityFollower.followed_id');
-      query.whereRaw('("VoiceFollowers".entity_id <> ? or "VoiceFollowers".entity_id is null)', [this.id]);
-      query.andWhere('EntityFollower.follower_id', '=', this.id);
-
-      query.exec(done);
+      db('Voices')
+        .leftJoin('VoiceFollowers', 'Voices.id', 'VoiceFollowers.voice_id')
+        .leftJoin('EntityFollower', 'Voices.owner_id', 'EntityFollower.followed_id')
+        .whereRaw('("VoiceFollowers".entity_id <> ? or "VoiceFollowers".entity_id is null)', [this.id])
+        .andWhere('EntityFollower.follower_id', '=', this.id)
+        .exec(done);
     },
 
     getAnonymousEntity : function getAnonymousEntity(callback) {
@@ -742,8 +724,6 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
               return true;
             }
           });
-
-          console.log('anonymous', anonymous, result)
 
           if (anonymous.length === 0) {
             return callback(new Error('Entity doesn\'t have an anonymous record'));
