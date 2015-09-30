@@ -1,6 +1,6 @@
 Class(CV, 'PostModerateRemoveButton').inherits(Widget).includes(BubblingSupport)({
     HTML : '\
-        <button class="post-moderate-remove-btn cv-button primary tiny -abs">\
+        <button class="post-moderate-remove-btn cv-button danger tiny -abs">\
             <svg class="-s16">\
                 <use xlink:href="#svg-trash"></use>\
             </svg>\
