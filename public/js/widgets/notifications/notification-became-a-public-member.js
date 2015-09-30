@@ -1,6 +1,6 @@
 /* jshint multistr: true */
-Class(CV, 'NotificationChangedDescription').inherits(CV.Notification)({
-    ELEMENT_CLASS : 'cv-notification changed-description',
+Class(CV, 'NotificationBecameAPublicMember').inherits(CV.Notification)({
+    ELEMENT_CLASS : 'cv-notification became-public',
     HTML : '\
         <div>\
             <div class="cv-notification__info">\
@@ -29,9 +29,12 @@ Class(CV, 'NotificationChangedDescription').inherits(CV.Notification)({
 
             this.dom.updateAttr('src', this.mainAvatarElement, this.actionDoer.images.small.url);
 
-            if (this.itemType == 'voice'){
+            if(this.itemType == 'entity'){
+                new CV.CardMini({data:this.entity}).render(this.entityVoice);
+                this.dom.updateText(this.mainText, this.actionDoer.name + ' ' + this.actionDoer.lastname + ' became a public member:');
+            } else if (this.itemType == 'voice'){
                 new CV.VoiceCoverMini({data:this.voice}).render(this.entityVoice);
-                this.dom.updateText(this.mainText, this.actionDoer.name + ' ' + this.actionDoer.lastname + ' changed background to a voice:');
+                this.dom.updateText(this.mainText, this.actionDoer.name + ' ' + this.actionDoer.lastname + ' became a public member of:');
             }
 
             //console.log('created');

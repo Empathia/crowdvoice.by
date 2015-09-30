@@ -51,13 +51,18 @@ require('./widgets/notifications/notification-created');
 require('./widgets/notifications/notification-new-posts');
 require('./widgets/notifications/notification-changed-avatar');
 require('./widgets/notifications/notification-changed-background');
-require('./widgets/notifications/notification-changed-description');
-require('./widgets/notifications/notification-changed-title');
+require('./widgets/notifications/notification-new-description');
+require('./widgets/notifications/notification-new-title');
 require('./widgets/notifications/notification-read-more');
 require('./widgets/notifications/notification-flash');
+require('./widgets/notifications/notification-published');
+require('./widgets/notifications/notification-archived');
+require('./widgets/notifications/notification-became-a-public-member');
+require('./widgets/notifications/notification-became-a-public-contributor');
 require('./widgets/notifications/-notification-message');
 require('./widgets/notifications/-notification-invite');
 require('./widgets/notifications/-notification-request');
+
 // search
 require('./widgets/search/Search');
 require('./widgets/search/SearchButton');
