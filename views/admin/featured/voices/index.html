@@ -36,8 +36,9 @@
 
 						<a href="/<%= voice.owner.profileName %>/<%= voice.slug %>/" target="_blank"><button class="cv-button small">Reorder</button></a>
 						<a >
-							<form class="form-profile" action="/admin/voices/<%= voice.id %>?_method=DELETE" method="POST" enctype="multipart/form-data">
+							<form class="form-profile" action="/admin/featured/voices/<%= voice.id %>?_method=DELETE" method="POST" enctype="multipart/form-data">
 	      						<input type="hidden" name="_csrf" value="<%= csrfToken %>">
+	      						<input type="hidden" name="voiceId" value="<%= voice.id %>">
 								<button class="cv-button small">Remove from featured</button>
 							</form>
 						</a>
