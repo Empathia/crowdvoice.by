@@ -575,7 +575,10 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                     res.redirect('/' + req.params.profileName + '/' + req.params.voice_slug)
                   },
                   json: function () {
-                    res.json({ status: 'unfollowed' });
+                    res.json({
+                      status: 'unfollowed',
+                      entity: { id: follower.id }
+                    });
                   }
                 })
               });
@@ -596,7 +599,10 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                         res.redirect('/' + req.params.profileName + '/' + req.params.voice_slug)
                       },
                       json: function () {
-                        res.json({ status: 'followed' });
+                        res.json({
+                          status: 'followed',
+                          entity: { id: follower.id }
+                        });
                       }
                     });
                   });
