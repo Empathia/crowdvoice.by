@@ -6,6 +6,7 @@ Class(CV, 'VoiceFooterShareButtonsGroup').inherits(Widget)({
         </div>',
 
     prototype : {
+        voice : null,
         init : function init(config) {
             Widget.prototype.init.call(this, config);
 
@@ -15,8 +16,9 @@ Class(CV, 'VoiceFooterShareButtonsGroup').inherits(Widget)({
             // this.appendChild(new CV.VoiceFooterEmbedButton({name: 'embedButton'})).render(this.groupElement)
 
             this.appendChild(new CV.VoiceFooterShareButton({
-                name : 'shareButton'
-            })).render(this.groupElement).setup();
+                name : 'shareButton',
+                voice : this.voice
+            })).render(this.groupElement);
         }
     }
 });
