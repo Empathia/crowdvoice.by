@@ -57,6 +57,23 @@ Class('NotificationBell').inherits(Widget)({
           bell.element.find('.ui-badge').hide();
           bell.element.removeClass('has-new-notifications');
         }
+
+        $.ajax({
+            type : 'GET',
+            dataType : 'json',
+            url : '/' + currentPerson.profileName + '/notifications',
+            headers : {'csrf-token' : this.token},
+            success : function success(data) {
+              //console.log(data);
+              notifications.update(data.reverse());
+
+            },
+            error : function error(err) {
+              console.log(err);
+            }
+        });
+
+
       });
 
       bell.element.on('click', function() {

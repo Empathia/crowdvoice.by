@@ -63,7 +63,7 @@
 	console.log(entityType);
 
 	var headerEl = document.querySelector('header .header-actions');
-	headerEl.innerHTML = '<h2>User List</h2>';
+	headerEl.innerHTML = '<h2>Featured <%= entityType %></h2>';
 
 	var flash = <%= JSON.stringify(flash) %>;
 	console.log(flash);
