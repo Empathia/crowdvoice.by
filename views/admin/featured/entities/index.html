@@ -37,7 +37,7 @@
 						<a href="/<%= entity.profileName %>" target="_blank"><button class="cv-button small">Reorder</button></a>
 						<a >
 
-							<form class="form-profile" action="/admin/featured/people/<%= entity.id %>?_method=DELETE" method="POST" enctype="multipart/form-data">
+							<form class="form-profile" action="/admin/featured/<%= entityType %>/<%= entity.id %>?_method=DELETE" method="POST" enctype="multipart/form-data">
 	      						<input type="hidden" name="_csrf" value="<%= csrfToken %>">
 	      						<input type="hidden" name="entityId" value="<%= entity.id %>">
 								<button class="cv-button small">Remove from featured</button>
@@ -59,6 +59,8 @@
 <script>
 	var featuredEntities = <%= JSON.stringify(featuredEntities) %>;
 	console.log(featuredEntities);
+	var entityType = <%= JSON.stringify(entityType) %>;
+	console.log(entityType);
 
 	var headerEl = document.querySelector('header .header-actions');
 	headerEl.innerHTML = '<h2>User List</h2>';

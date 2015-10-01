@@ -33,7 +33,7 @@ Class('NotificationBell').inherits(Widget)({
           success : function success(data) {
             console.log(data);
             notifications = new CV.NotificationsManager({
-                notifications : data
+                notifications : data.reverse()
             }).render(document.body);
           },
           error : function error(err) {
@@ -44,12 +44,12 @@ Class('NotificationBell').inherits(Widget)({
       var socket = this.parent.parent.getSocket();
       socket.emit('getNotifications');
 
-      setInterval(function() {
-        socket.emit('getNotifications');
-      }, 5000);
+       setInterval(function() {
+         socket.emit('getNotifications');
+       }, 5000);
 
       socket.on('notifications', function(data) {
-        console.log(data);
+        //console.log(data);
         if (data > 0) {
           bell.element.find('.ui-badge').show().html(data);
           bell.element.addClass('has-new-notifications');
