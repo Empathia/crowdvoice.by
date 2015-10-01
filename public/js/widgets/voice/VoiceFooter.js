@@ -86,7 +86,8 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
             // currentPerson does not belongs/owns this voice already?
             if ((!Person.anon()) && (!Person.memberOf('voice', this.voice.id))) {
                 this.appendChild(new CV.VoiceRequestToContribute({
-                    name : 'voiceRequestToContribute'
+                    name : 'voiceRequestToContribute',
+                    voice : this.voice
                 })).render(this.actionsColumn);
             }
 
