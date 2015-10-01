@@ -600,9 +600,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           hrtime = process.hrtime(),
           filename = 'upload_' + (hrtime[0] + hrtime[1] / 1000000) + '.jpg',
           toFile = sharp().toFile(savePath + filename, function(err, info) {
-            if (err) {
-              return next(err);
-            }
+            if (err) { return next(err); }
 
             info.path = '/posts_images/' + filename;
 

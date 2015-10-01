@@ -180,6 +180,29 @@ var VoicesPresenter = Module('VoicesPresenter')({
 
                 return next();
               });
+            }, function (next) {
+              var result = [];
+
+              VoiceCollaborator.find({
+                voice_id: voiceInstance.id,
+                is_anonymous: false
+              }, function (err, collaborators) {
+                if (err) { return next(err); }
+
+                var ids = collaborators.map(function (val) { return val.collaboratorId; });
+
+                Entity.whereIn('id', ids, function (err, entities) {
+                  if (err) { return next(err); }
+
+                  EntitiesPresenter.build(entities, function (err, presented) {
+                    if (err) { return next(err); }
+
+                    voiceInstance.contributors = presented;
+
+                    return next();
+                  });
+                });
+              });
             }], function(err) {
               if (err) {
                 return nextVoice(err);
