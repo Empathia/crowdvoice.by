@@ -181,8 +181,6 @@ var VoicesPresenter = Module('VoicesPresenter')({
                 return next();
               });
             }, function (next) {
-              var result = [];
-
               VoiceCollaborator.find({
                 voice_id: voiceInstance.id,
                 is_anonymous: false
@@ -198,6 +196,24 @@ var VoicesPresenter = Module('VoicesPresenter')({
                     if (err) { return next(err); }
 
                     voiceInstance.contributors = presented;
+
+                    return next();
+                  });
+                });
+              });
+            }, function (next) {
+              RelatedVoice.find({ voice_id: voiceInstance.id }, function (err, related) {
+                if (err) { return next(err); }
+
+                var ids = related.map(function (val) { return val.relatedId });
+
+                Voice.whereIn('id', ids, function (err, voices) {
+                  if (err) { return next(err); }
+
+                  VoicesPresenter.build(voices, function (err, presented) {
+                    if (err) { return next(err); }
+
+                    voiceInstance.relatedVoices = presented;
 
                     return next();
                   });
