@@ -144,6 +144,45 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
               done();
             });
+          }, function (next) {
+            VoiceCollaborator.find({
+              voice_id: req.activeVoice.id,
+              is_anonymous: false
+            }, function (err, collaborators) {
+              if (err) { return next(err); }
+
+              var ids = collaborators.map(function (val) { return val.collaboratorId; });
+
+              Entity.whereIn('id', ids, function (err, entities) {
+                if (err) { return next(err); }
+
+                EntitiesPresenter.build(entities, req.currentPerson, function (err, presented) {
+                  if (err) { return next(err); }
+
+                  res.locals.contributors = presented;
+
+                  return next();
+                });
+              });
+            });
+          }, function (next) {
+            RelatedVoice.find({ voice_id: req.activeVoice.id }, function (err, related) {
+              if (err) { return next(err); }
+
+              var ids = related.map(function (val) { return val.relatedId });
+
+              Voice.whereIn('id', ids, function (err, voices) {
+                if (err) { return next(err); }
+
+                VoicesPresenter.build(voices, req.currentPerson, function (err, presented) {
+                  if (err) { return next(err); }
+
+                  res.locals.relatedVoices = presented;
+
+                  return next();
+                });
+              });
+            });
           }], next);
       });
     },

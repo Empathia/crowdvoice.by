@@ -180,45 +180,6 @@ var VoicesPresenter = Module('VoicesPresenter')({
 
                 return next();
               });
-            }, function (next) {
-              VoiceCollaborator.find({
-                voice_id: voiceInstance.id,
-                is_anonymous: false
-              }, function (err, collaborators) {
-                if (err) { return next(err); }
-
-                var ids = collaborators.map(function (val) { return val.collaboratorId; });
-
-                Entity.whereIn('id', ids, function (err, entities) {
-                  if (err) { return next(err); }
-
-                  EntitiesPresenter.build(entities, function (err, presented) {
-                    if (err) { return next(err); }
-
-                    voiceInstance.contributors = presented;
-
-                    return next();
-                  });
-                });
-              });
-            }, function (next) {
-              RelatedVoice.find({ voice_id: voiceInstance.id }, function (err, related) {
-                if (err) { return next(err); }
-
-                var ids = related.map(function (val) { return val.relatedId });
-
-                Voice.whereIn('id', ids, function (err, voices) {
-                  if (err) { return next(err); }
-
-                  VoicesPresenter.build(voices, function (err, presented) {
-                    if (err) { return next(err); }
-
-                    voiceInstance.relatedVoices = presented;
-
-                    return next();
-                  });
-                });
-              });
             }], function(err) {
               if (err) {
                 return nextVoice(err);
