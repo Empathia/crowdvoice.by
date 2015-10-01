@@ -548,7 +548,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         if (err) { return next(err); }
 
         if (!response.isAllowed) {
-          return next(new ForbiddenError('Unauthorized'));
+          return next(new ForbiddenError('Unauthorized.'));
         }
 
         db('Posts')
@@ -564,8 +564,54 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
               deletedPostsCount: affectedRows
             });
           });
-      })
-    }
+      });
+    },
+
+    uploadPostImage: function (req, res, next) {
+      ACL.isAllowed('uploadPostImage', 'posts', req.role, {
+        currentPerson: req.currentPerson,
+        voiceSlug: req.params.voiceSlug,
+        profileName: req.params.profileName
+      }, function (err, response) {
+        if (err) { return next(err); }
+
+        if (!response.isAllowed) {
+          return next(new ForbiddenError('Unauthorized.'));
+        }
+
+        if (!req.files.image) {
+          return res.status(400).json({ status : 'Missing Image' });
+        }
+
+        if (/.*\.(jpe?g|png|gif|tiff)[^\.]*$/i.test(req.files.image.path) === false) {
+          return res.status(400).json({ status : 'Invalid Image Format' });
+        }
+
+        var transform = sharp(req.files.image.path)
+          .resize(340)
+          .interpolateWith(sharp.interpolator.nohalo)
+          .embed()
+          .progressive()
+          .flatten()
+          .background('#FFFFFF')
+          .quality(100);
+
+        var savePath = path.join(process.cwd(),  '/public/posts_images/'),
+          hrtime = process.hrtime(),
+          filename = 'upload_' + (hrtime[0] + hrtime[1] / 1000000) + '.jpg',
+          toFile = sharp().toFile(savePath + filename, function(err, info) {
+            if (err) {
+              return next(err);
+            }
+
+            info.path = '/posts_images/' + filename;
+
+            res.json(info);
+          });
+
+        transform.pipe(toFile);
+      });
+    },
 
   }
 });
