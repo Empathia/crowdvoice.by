@@ -58,8 +58,7 @@ module.exports = {
             contentType : false,
             processData : false,
             data : args.data,
-            success : function success(data) { //callback(false, data);
-             },
+            success : function success(data) { callback(false, data); },
             error : function error(err) { callback(true, err); }
         });
     },
@@ -130,12 +129,38 @@ module.exports = {
         if ((typeof callback).toLowerCase() !== "function") {
             throw new Error('Callback should be a function');
         }
+
         $.ajax({
             type : 'POST',
             url : '/' + args.profileName + '/' + args.voiceSlug + '/preview',
             headers : {'csrf-token' : this.token},
             data : {url : args.url},
             success: function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
+    },
+
+    /* Request to contribute to a voice.
+     * @argument args.profileName <required> [String] the voice owner profileName
+     * @argument args.voiceSlug <required> [String] the voice slug
+     * @argument args.data.message <required> [Text] the message to send to the organizaiton
+     * @argument callback <required> [Function]
+     */
+    voiceRequestToContribute : function voiceRequestToContribute(args, callback) {
+        if (!args.profileName || !args.voiceSlug || !args.data.message || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            method : 'POST',
+            url : '/' + args.profileName + '/' + args.voiceSlug + '/requestToContribute',
+            headers : {'csrf-token' : this.token},
+            data : args.data,
+            success : function success(data) { callback(false, data); },
             error : function error(err) { callback(true, err); }
         });
     },

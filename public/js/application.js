@@ -198,7 +198,7 @@ require('./widgets/post-details/media/thumb');
 require('./widgets/post-details/media/info');
 
 // editable posts
-require('./widgets/posts/edit/editable-post.js');
+require('./widgets/posts/edit/EditablePost');
 require('./widgets/posts/edit/editable-post-link.js');
 require('./widgets/posts/edit/editable-post-video.js');
 require('./widgets/posts/edit/editable-post-image.js');
@@ -209,7 +209,7 @@ require('./widgets/posts/moderate/remove-button.js');
 require('./widgets/posts/moderate/publish-button.js');
 require('./widgets/posts/moderate/vote-buttons.js');
 
-require('./widgets/voice/voice-request-to-contribute.js');
+require('./widgets/voice/VoiceRequestToContribute');
 
 // post creators
 require('./widgets/post-creators/post-creator.js');

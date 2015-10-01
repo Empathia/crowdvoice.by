@@ -1,3 +1,5 @@
+var API = require('./../../lib/api');
+
 Class(CV, 'RequestToContribute').inherits(Widget)({
 
 	ELEMENT_CLASS : 'cv-form-request-to-contribute',
@@ -24,17 +26,12 @@ Class(CV, 'RequestToContribute').inherits(Widget)({
         </div>\
     ',
 
-    prototype        : {
-        type            : null,
-        style           : null,
-        voices          : null,
-        data            : null,
+    prototype : {
+        data : null,
 
         init : function(config){
             Widget.prototype.init.call(this, config);
-
             this.setup();
-
         },
 
         setup : function(){
@@ -42,9 +39,7 @@ Class(CV, 'RequestToContribute').inherits(Widget)({
             this.element.append(this.constructor.FORM);
 
             new CV.Input({
-                type        : '',
                 name        : '',
-                style       : '',
                 isArea      : true,
                 hasTitle    : true,
                 title       : "Briefly state why would you be a valuable content contributor to this Voice."
@@ -67,29 +62,25 @@ Class(CV, 'RequestToContribute').inherits(Widget)({
         sendMessage : function(){
             var sendmessage = this;
 
-            var textData = {
-                message : this.element.find('form textarea').val()
-            }
-
-            $.ajax({
-                method : 'POST',
-                url : window.location.pathname + 'requestToContribute',
-                headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
-                data : textData,
-                success : function(data) {
-                    sendmessage.element.find('form').remove();
-                    sendmessage.element.append(sendmessage.constructor.SENT);
-                    sendmessage.element.find('button').on('click', function(){
-                        sendmessage.dispatch('close');
-                        sendmessage.setup();
-                    });
-                },
-                error : function(data) {
-                  console.error(data)
+            API.voiceRequestToContribute({
+                profileName : this.data.voice.owner.profileName,
+                voiceSlug : this.data.voice.slug,
+                data : {
+                    message : this.element.find('form textarea').val()
                 }
+            }, function(err, res) {
+                if (err) {
+                    console.log(res);
+                    return;
+                }
+
+                sendmessage.element.find('form').remove();
+                sendmessage.element.append(sendmessage.constructor.SENT);
+                sendmessage.element.find('button').on('click', function(){
+                    sendmessage.dispatch('close');
+                    sendmessage.setup();
+                });
             });
         }
-
     }
-
 });

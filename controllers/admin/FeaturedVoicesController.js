@@ -161,16 +161,15 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
       /*
        * req.body = {}
        */
-      ACL.isAllowed('destroy', 'admin.featuredVoices', req.role, { currentPerson: req.currentPerson }, function (err, isAllowed) {
 
+      ACL.isAllowed('destroy', 'admin.featuredVoices', req.role, { currentPerson: req.currentPerson }, function (err, isAllowed) {
         if (err) { return next(err) }
 
         if (!isAllowed) {
           return next(new ForbiddenError('Unauthorized. Must be Admin.'))
         }
 
-        FeaturedVoice.findById(hashids.decode(req.body.voiceId)[0], function (err, voice) {
-
+        FeaturedVoice.find({ voice_id: hashids.decode(req.params.voiceId)[0] }, function (err, voice) {
           var featured = new FeaturedVoice(voice[0])
 
           featured.destroy(function (err) {

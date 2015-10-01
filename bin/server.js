@@ -259,7 +259,8 @@ io.on('connection', function(socket) {
         done();
       });
     }, function(done) {
-      Notification.find(['follower_id = ? AND read = false AND created_at > ? ORDER BY created_at DESC', [hashids.decode(currentPerson.id)[0], moment(new Date(lastNotificationDate).toISOString()).format()]], function(err, result) {
+      // Using DESC in the query returns 1 notification everytime
+      Notification.find(['follower_id = ? AND read = false AND created_at > ? ORDER BY created_at ASC', [hashids.decode(currentPerson.id)[0], moment(new Date(lastNotificationDate).toISOString()).format()]], function(err, result) {
         if (err) {
           return done(err);
         }

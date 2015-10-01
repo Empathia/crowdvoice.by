@@ -95,8 +95,7 @@ Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
 
                 setTimeout(function() {
                     var layer = ev.data.parent.parent;
-                    ev.data.parent.destroy();
-                    layer.reLayout();
+                    layer.removePost(ev.data.parent);
                 }.bind(this), 1000);
             }.bind(this));
 
