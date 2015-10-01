@@ -1,4 +1,3 @@
-/* jshint multistr: true */
 Class(CV, 'VoiceRequestToContribute').inherits(Widget)({
     HTML : '\
         <div class="request-to-contribute-container -inline-block">\
