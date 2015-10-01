@@ -12,10 +12,9 @@ Class(CV, 'Notification').inherits(Widget).includes(CV.WidgetUtils)({
         var token = $('meta[name="csrf-token"]').attr('content');
 
         var notificationType = new window.CV['Notification' + type](config);
-
         notificationType.element.find('.cv-notification__close').on('click', function(){
             console.log(id);
-        	//notificationType.destroy();
+        	notificationType.destroy();
             $.ajax({
                 type : 'POST',
                 url : '/' + currentPerson.profileName + '/notifications/markAsRead?_method=DELETE',

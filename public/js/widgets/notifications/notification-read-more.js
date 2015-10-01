@@ -1,6 +1,6 @@
 /* jshint multistr: true */
 Class(CV, 'NotificationReadMore').inherits(CV.Notification)({
-    ELEMENT_CLASS : 'cv-notification changed-avatar',
+    ELEMENT_CLASS : 'cv-notification read-more',
     HTML : '\
         <div>\
             <div class="cv-notification__info -is-link">\

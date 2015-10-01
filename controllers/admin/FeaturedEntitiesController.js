@@ -71,7 +71,7 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
           Admin.FeaturedEntitiesController.presenter(ids, req.params.entityType, req.currentPerson, function (err, presented) {
             if (err) { return next(err) }
 
-            res.locals.entityType = inflection.transform(req.params.entityType, ['singularize']);
+            res.locals.entityType = req.params.entityType;
             res.locals.featuredEntities = presented;
 
             return res.render('admin/featured/entities/index.html', { layout: 'admin' })
@@ -181,8 +181,9 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
               logger.log(err.stack)
               return res.render('admin/featured/entities/index.html', { layout: 'admin' })
             }
-
-            req.flash('success', 'Featured ' + inflection.singularize(req.params.entityType) + ' deleted')
+            console.log('xxx');
+            console.log(req.params.entityType);
+            req.flash('success', 'Featured ' + inflection.singularize(req.params.entityType) + ' removed')
             return res.redirect('/admin/featured/' + req.params.entityType)
           })
         })
