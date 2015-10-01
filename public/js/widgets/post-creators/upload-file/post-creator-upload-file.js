@@ -1,5 +1,5 @@
-/* globals App */
 var API = require('../../../lib/api');
+var Events = require('../../../lib/events');
 
 Class(CV, 'PostCreatorUploadFile').inherits(CV.PostCreator)({
     ELEMENT_CLASS : 'cv-post-creator post-creator-upload-file',
@@ -33,8 +33,8 @@ Class(CV, 'PostCreatorUploadFile').inherits(CV.PostCreator)({
             this.addCloseButton()._setup()._bindEvents()._disablePostButton();
         },
 
-        activate : function activate(ev) {
-            Widget.prototype.activate.call(this);
+        _activate : function _activate(ev) {
+            Widget.prototype._activate.call(this);
             this.inputFile.click(ev);
         },
 
@@ -66,14 +66,20 @@ Class(CV, 'PostCreatorUploadFile').inherits(CV.PostCreator)({
 
         _bindEvents : function _bindEvents() {
             CV.PostCreator.prototype._bindEvents.call(this);
-            this.inputFile.addEventListener('change', this._uploadFile.bind(this));
+
+            this._uploadFileRef = this._uploadFile.bind(this);
+            Events.on(this.inputFile, 'change', this._uploadFileRef);
+
             this.postButton.bind('buttonClick', this._handlePostButtonClick.bind(this));
             return this;
         },
 
+        /* Sends the current Post data to the server to be created.
+         * @method _handlePostButtonClick <private>
+         * @return undefined
+         */
         _handlePostButtonClick : function _handlePostButtonClick() {
             var postEditedData = this._previewPostWidget.getEditedData();
-            console.log(postEditedData);
 
             API.postCreate({
                 profileName : App.Voice.data.owner.profileName,
@@ -82,6 +88,11 @@ Class(CV, 'PostCreatorUploadFile').inherits(CV.PostCreator)({
             }, this._savePostResponse.bind(this));
         },
 
+        /* Handles the PostCreate API response.
+         * Shows an error or success msg.
+         * @method _savePostResponse <private>
+         * @return undefined
+         */
         _savePostResponse : function _savePostResponse(err, response) {
             var errorMessage = '';
 
@@ -118,6 +129,10 @@ Class(CV, 'PostCreatorUploadFile').inherits(CV.PostCreator)({
             return this;
         },
 
+        /* Display a success message and reloads the page if the API call to
+         * create a new Post was successfull.
+         * @method _setSuccessState <private>
+         */
         _setSuccessState : function _setSuccessState() {
             this.el.classList.add('is-success');
             this.successTemplate.activate();
@@ -129,8 +144,11 @@ Class(CV, 'PostCreatorUploadFile').inherits(CV.PostCreator)({
             return this;
         },
 
+        /* Uploads the image selected.
+         * @method _uploadFile <private>
+         */
         _uploadFile : function _uploadFile() {
-            this._statusUploading();
+            this._statusUploadingImage();
 
             var data = new FormData();
             data.append('image',  this.inputFile.files[0]);
@@ -144,17 +162,17 @@ Class(CV, 'PostCreatorUploadFile').inherits(CV.PostCreator)({
                 console.log(res);
 
                 if (err) {
-                    return this._statusError();
+                    return this._statusErrorUploadingImage();
                 }
 
                 this._statusImageUploaded(res);
             }.bind(this));
         },
 
-        /* Sets the widget state as uploading.
-         * @method _statusUploading <private> [Function]
+        /* Sets the widget state as uploading image.
+         * @method _statusUploadingImage <private> [Function]
          */
-        _statusUploading : function _statusUploading() {
+        _statusUploadingImage : function _statusUploadingImage() {
             this.headerStatus.uploading();
             this.errorTemplate.deactivate();
             this.uploadingTemplate.activate();
@@ -162,9 +180,9 @@ Class(CV, 'PostCreatorUploadFile').inherits(CV.PostCreator)({
         },
 
         /* Sets the widget state as error.
-         * @method _statusError <private> [Function]
+         * @method _statusErrorUploadingImage <private> [Function]
          */
-        _statusError : function _statusError() {
+        _statusErrorUploadingImage : function _statusErrorUploadingImage() {
             this.headerStatus.error();
             this.errorTemplate.activate();
             this.uploadingTemplate.deactivate();
@@ -203,9 +221,8 @@ Class(CV, 'PostCreatorUploadFile').inherits(CV.PostCreator)({
         destroy : function destroy() {
             CV.PostCreator.prototype.destroy.call(this);
 
-            this.el = null;
-            this.header = null;
-            this.content = null;
+            Events.off(this.inputFile, 'change', this._uploadFileRef);
+            this._uploadFileRef = null;
 
             return null;
         }

@@ -2,22 +2,22 @@
 Class(CV, 'PostCreatorUploadFileHeaderMessages').inherits(Widget)({
     HTML : '\
         <div>\
-            <div class="upload-file-msg-uploading -color-grey-light -font-bold">\
-                Hold on. We’re uploading your file. It might take a few mins.\
+            <div class="upload-file-msg-uploading">\
+                <span class="upload-file-msg-text -color-grey-light -font-bold">Hold on. We’re uploading your file. It might take a few mins.</span>\
             </div>\
-            <div class="upload-file-msg-error -font-bold">\
+            <div class="upload-file-msg-error">\
                 <svg class="-s20 -color-negative">\
                     <use xlink:href="#svg-warning"></use>\
                 </svg>\
-                There was a problem uploading your file. Check that the file is an image. \
-                <button class="ui-btn -outline -sm">Try Again</button>\
+                <span class="upload-file-msg-text -font-bold">There was a problem uploading your file. Check that the file is an image.</span>\
+                <button class="cv-button tiny -m0">Try Again</button>\
             </div>\
-            <div class="upload-file-msg-uploaded-image -font-bold">\
+            <div class="upload-file-msg-uploaded-image">\
                 <svg class="-s20 -color-grey-light">\
                     <use xlink:href="#svg-image"></use>\
                 </svg>\
-                You uploaded an image.\
-                <button class="ui-btn -outline -sm">Upload something else</button>\
+                <span class="upload-file-msg-text -font-bold">You uploaded an image.</span>\
+                <button class="cv-button tiny -float-right -m0">Upload something else</button>\
             </div>\
         </div>\
     ',
