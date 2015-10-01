@@ -122,10 +122,10 @@ Class(CV, 'VoiceAddContent').inherits(Widget)({
         _optionClickHandler : function _optionClickHandler(ev) {
             var type = ev.currentTarget.getAttribute('data-type');
 
-            this.createPostModal = CV.PostCreator.create({type: type});
-
-            this.createPostModal.render(document.body);
-
+            this.appendChild(CV.PostCreator.create({
+                name : 'createPostModal',
+                type: type
+            })).render(document.body);
             this.addPostBubble.deactivate();
 
             this._createPostDeactivateHandlerRef = this._createPostDeactivateHandler.bind(this);
@@ -140,8 +140,6 @@ Class(CV, 'VoiceAddContent').inherits(Widget)({
         },
 
         destroy : function destroy() {
-            Widget.prototype.destroy.call(this);
-
             this.addPostBubble.unbind('activate', this._bubbleActivateHandlerRef);
             this._bubbleActivateHandlerRef = null;
 
@@ -152,6 +150,8 @@ Class(CV, 'VoiceAddContent').inherits(Widget)({
                 option.removeEventListener('click', this._optionClickHandlerRef);
             }, this);
             this._optionClickHandlerRef = null;
+
+            Widget.prototype.destroy.call(this);
 
             return null;
         }

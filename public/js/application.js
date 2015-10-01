@@ -197,7 +197,7 @@ require('./widgets/post-details/media/thumb');
 require('./widgets/post-details/media/info');
 
 // editable posts
-require('./widgets/posts/edit/editable-post.js');
+require('./widgets/posts/edit/EditablePost');
 require('./widgets/posts/edit/editable-post-link.js');
 require('./widgets/posts/edit/editable-post-video.js');
 require('./widgets/posts/edit/editable-post-image.js');
