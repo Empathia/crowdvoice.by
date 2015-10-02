@@ -35,7 +35,7 @@ var User = Class('User').inherits(Argon.KnexModel)({
             query.andWhere('id', '!=', this.target.id);
           }
           return query.then(function(resp) {
-            if (resp.length > 0) throw new Checkit.FieldError('The email address is already in use.');
+            if (resp.length > 0) throw new Checkit.FieldError('Please use another email.');
           });
         },
         message: 'This email address is already in use.'

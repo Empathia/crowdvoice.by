@@ -267,7 +267,7 @@ var DiscoverController = Class('DiscoverController')({
               return done(err);
             }
 
-            var published = result.map(function (voice) {
+            var published = result.filter(function (voice) {
               return voice.status === Voice.STATUS_PUBLISHED
             });
 

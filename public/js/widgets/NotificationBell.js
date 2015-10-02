@@ -46,7 +46,7 @@ Class('NotificationBell').inherits(Widget)({
 
        setInterval(function() {
          socket.emit('getNotifications');
-       }, 5000);
+       }, 30000);
 
       socket.on('notifications', function(data) {
         //console.log(data);
