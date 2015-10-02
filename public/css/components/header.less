@@ -10,10 +10,9 @@ body.page-inner .cv-main-header .cv-main-logo-type {
  * =========================================================================== */
 body.page-voice .cv-main-header {
   transform: translateY(1px) translateZ(0);
-  transition: transform 200ms ease;
+  transition: transform 200ms @ease;
 
   &.hide {
-    pointer-events: none;
     transform: translateY(-@cv-header-height) translateZ(0) !important;
   }
 }

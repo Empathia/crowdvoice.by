@@ -43,9 +43,8 @@ Class(CV, 'VoiceHeader').inherits(Widget)({
             }
 
             if (scrollingDown && y > this.HEADER_HEIGHT) {
-                this.el.classList.add('hide');
-
                 if (y > this.TITLE_OFF_PAGE) {
+                    this.el.classList.add('hide');
                     this.footerVoiceTitle.classList.add('active');
                 }
 
@@ -55,10 +54,11 @@ Class(CV, 'VoiceHeader').inherits(Widget)({
 
             if (y + this.scrollableArea.innerHeight < document.height || document.body.clientHeight) {
                 this.el.classList.remove('hide');
+                this.footerVoiceTitle.classList.remove('active');
 
-                if (y < this.HEADER_HEIGHT) {
-                    this.footerVoiceTitle.classList.remove('active');
-                }
+                // if (y < this.HEADER_HEIGHT) {
+                    // this.footerVoiceTitle.classList.remove('active');
+                // }
 
                 this._lastScrollTop = y;
             }
