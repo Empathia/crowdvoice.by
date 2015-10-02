@@ -51,9 +51,9 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
         /* Random-ish value to alter the clock roration based on total height */
         _rotateFactor : 0,
         /* Offset left spacing for the clock available space */
-        _timelineOffsetLeft : 10,
+        _timelineOffsetLeft : 0,
         /* Offset rigth spacing for the clock available space */
-        _timelineOffsetRight : 10, /* value updated on setTimelineInitialDate method*/
+        _timelineOffsetRight : 0, /* value updated on setTimelineInitialDate method*/
         /* Holds the reference to the last date indicator detected */
         _lastScrollDate : null,
 
@@ -64,7 +64,7 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
             this._window = window;
             this.clockWrapper = this.el.querySelector('.cv-voice-timeline-feedback');
             this._mainContent = document.getElementsByClassName('cv-main-content')[0];
-            // this.clockElement = this.el.querySelector('.cv-voice-timeline-clock');
+            this.clockElement = this.el.querySelector('.cv-voice-timeline-clock');
             this.hourElement = this.el.querySelector('.timeline-clock-h');
             this.minutesElement = this.el.querySelector('.timeline-clock-m');
 
@@ -78,7 +78,7 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
             this.appendChild(new CV.VoiceTimelineJumpToDate({
                 name : 'jumpToDate',
                 postsCount : postsCount,
-                clockElement : this.clockWrapper,
+                clockElement : this.el,
                 container : this.el
             })).render(this.el);
         },
@@ -113,7 +113,8 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
          * @method _readAndUpdate <private> [Function]
          */
         _readAndUpdate : function _readAndUpdate() {
-            var scrollPercentage, scrollViewportPixels, elem, scaledPercentage, scaledPixels, degs;
+            var scrollPercentage, scrollViewportPixels, elem, scaledPercentage, scaledPixels;
+            // var degs;
 
             scrollPercentage = 100 * this._lastScrollY / (this._totalHeight - this._clientHeight);
             scrollViewportPixels = scrollPercentage * this._clientHeight / 100;
@@ -131,27 +132,28 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
                 scaledPercentage = 0;
             }
 
-            scaledPixels = ~~((this._clientWidth - this._timelineOffsetRight) * scaledPercentage / 100);
+            // scaledPixels = ~~((this._clientWidth - this._timelineOffsetRight) * scaledPercentage / 100);
+            scaledPixels = ~~((this._clientWidth - 66) * scaledPercentage / 100);
 
-            if (scaledPixels < this._timelineOffsetLeft) {
-                scaledPixels = this._timelineOffsetLeft;
-            }
+            // if (scaledPixels < this._timelineOffsetLeft) {
+            //     scaledPixels = this._timelineOffsetLeft;
+            // }
 
-            degs = scaledPercentage * 3.6;
+            // degs = scaledPercentage * 3.6;
 
-            Velocity(this.hourElement, 'stop', true);
-            Velocity(this.hourElement, {
-                rotateZ: (degs * (this._rotateFactor / 2)) + 'deg'
-            }, {
-                easing: 'ease'
-            });
+            // Velocity(this.hourElement, 'stop', true);
+            // Velocity(this.hourElement, {
+            //     rotateZ: (degs * (this._rotateFactor / 2)) + 'deg'
+            // }, {
+            //     easing: 'ease'
+            // });
 
-            Velocity(this.minutesElement, 'stop', true);
-            Velocity(this.minutesElement, {
-                rotateZ: (degs * this._rotateFactor) + 'deg'
-            }, {
-                easing: 'ease'
-            });
+            // Velocity(this.minutesElement, 'stop', true);
+            // Velocity(this.minutesElement, {
+            //     rotateZ: (degs * this._rotateFactor) + 'deg'
+            // }, {
+            //     easing: 'ease'
+            // });
 
             Velocity(this.clockWrapper, 'stop', true);
             Velocity(this.clockWrapper, {
