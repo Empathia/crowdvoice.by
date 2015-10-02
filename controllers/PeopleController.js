@@ -54,7 +54,8 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
             var endResult = {
               drafts: [],
               unlisted: [],
-              published: []
+              published: [],
+              archived: []
             };
 
             var voicesLength = result.length;
@@ -69,6 +70,9 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
                   break;
                 case 'STATUS_PUBLISHED':
                   endResult.published.push(val);
+                  break;
+                case 'STATUS_ARCHIVED':
+                  endResult.archived.push(val);
                   break;
               };
             });
