@@ -177,9 +177,9 @@ var UsersController = Class('UsersController')({
               if (err) {
                 req.flash('error', 'There was an error creating the user.');
 
-                if (err.errors) {
+                var errors = [];
 
-                  var errors = [];
+                if (err.errors) {
 
                   Object.keys(err.errors).forEach(function(k) {
                     err.errors[k].errors.forEach(function(error) {

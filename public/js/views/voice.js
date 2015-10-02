@@ -64,13 +64,22 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
          * @return [CV.VoiceView]
          */
         setupVoiceWidgets : function setupVoiceWidgets() {
+            if (this.allowPosting) {
+                this.appendChild(new CV.VoiceAddContent({
+                    name : 'voiceAddContent',
+                    voice : this.data
+                })).render(document.body);
+            }
+
             this.appendChild(new CV.VoiceFooter({
                 name : 'voiceFooter',
                 voice : this.data,
                 allowPosting : this.allowPosting,
                 allowPostEditing : this.allowPostEditing,
-                voiceScrollableArea : this.scrollableArea
-            })).render(document.querySelector('.app-wrapper'));
+                voiceScrollableArea : this.scrollableArea,
+                postCount : this.postCount,
+                followerCount : this.followerCount
+            })).render(document.querySelector('.cv-main-header'));
 
             new CV.VoiceHeader({
                 element : document.getElementsByClassName('cv-main-header')[0],
@@ -94,9 +103,6 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
             } else {
                 this.backgroundElement.className += ' -colored-background';
             }
-
-            this.dom.updateText(this.postCountElement, this.format.numberUS(this.postCount));
-            this.dom.updateText(this.followersCountElement, this.format.numberUS(this.followerCount));
 
             return this;
         },
@@ -234,7 +240,7 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
          * @method _scrollHandler <private> [Function]
          */
         _scrollHandler : function _scrollHandler() {
-            var st = this._window.scrollY;
+            var st = this.scrollableArea.scrollTop;
             var scrollingUpwards = (st < this._lastScrollTop);
             var y = 0;
             var el;

@@ -243,10 +243,31 @@
     }).render(document.querySelector('.profile-actions .p-buttons'));
 
       //Normal
-    var profileOptions = {
-      "1": {label: 'Request Membership', name: 'request', icon: 'user'},
-      "2": {label: 'Report/Claim', name: 'report', icon: 'info'}
-    };
+    var belongsTo = false;
+
+    currentPerson.organizationIds.forEach(function(orgId){
+
+      if (orgId == currentOrganization.id) {
+        belongsTo = true;
+      };
+
+    });
+
+
+
+    var profileOptions = {};
+
+    if (belongsTo == false) {
+      var profileOptions = {
+        "1": {label: 'Request Membership', name: 'request', icon: 'user'},
+        "2": {label: 'Report/Claim', name: 'report', icon: 'info'}
+      };
+    } else{
+      var profileOptions = {
+        "2": {label: 'Report/Claim', name: 'report', icon: 'info'}
+      };
+    }
+
 
     var profileSettings = new CV.Select({
       label     : '',
@@ -272,23 +293,28 @@
       buttonFollow.element.on('click', function(){
         followEntity();
       });
-      // select actions
-      profileSettings.request.on('click', function(){
-        var requestMembershipModal = new CV.UI.Modal({
-          title : 'Request Membership',
-          name : 'requestMembershipModal',
-          action : CV.RequestMembership,
-          width : 650,
-          data : {
-            orgId : currentOrganization.id,
-            profileName : currentOrganization.profileName
-          }
-        }).render(document.body);
 
-        requestAnimationFrame(function() {
-          requestMembershipModal.activate();
+      if (belongsTo == false) {
+
+        // select actions
+        profileSettings.request.on('click', function(){
+          var requestMembershipModal = new CV.UI.Modal({
+            title : 'Request Membership',
+            name : 'requestMembershipModal',
+            action : CV.RequestMembership,
+            width : 650,
+            data : {
+              orgId : currentOrganization.id,
+              profileName : currentOrganization.profileName
+            }
+          }).render(document.body);
+
+          requestAnimationFrame(function() {
+            requestMembershipModal.activate();
+          });
         });
-      });
+
+      }
 
       profileSettings.report.on('click', function(){
         reportModal.show();

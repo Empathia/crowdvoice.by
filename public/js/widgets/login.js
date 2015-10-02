@@ -110,7 +110,7 @@ Class(CV, 'Login').inherits(Widget)({
       <form action="" method="post" accept-charset="utf-8">\
         <div class="form-field">\
           <div class="cv-input">\
-            <input type="text" class="email" placeholder="YOUR EMAIL">\
+            <input type="text" class="email" name="email" placeholder="YOUR EMAIL">\
           </div>\
         </div>\
         <input type="hidden" name="_csrf" class="form-token" value="">\
