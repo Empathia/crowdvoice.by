@@ -18,9 +18,9 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
     show : function show(req, res, next) {
       if (req.params.postId === 'edit') { next(); return; }
 
-      var post;
-      var voice;
-      var entity;
+      var post,
+        voice,
+        entity;
 
       async.series([function(done) {
         Post.findById(req.params.postId, function(err, result) {
@@ -110,10 +110,10 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
         var approved = false;
 
-        if (req.role === 'Admin' ||
-          response.currentPerson.id === response.voice.ownerId ||
-          response.isVoiceCollaborator ||
-          response.isOrganizationMember) {
+        if (req.role === 'Admin'
+          || response.currentPerson.id === response.voice.ownerId
+          || response.isVoiceCollaborator
+          || response.isOrganizationMember) {
 
           approved = true;
         }
@@ -387,7 +387,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
     },
 
     // Create reference for SavedPosts
-    // NOTE: This is not the same as saving a post.
+    // NOTE: This creates a SavedPost record, as opposed to creating a post
     savePost : function savePost(req, res, next) {
       ACL.isAllowed('savePost', 'posts', req.role, {
         currentPerson : req.currentPerson
@@ -396,25 +396,19 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
         if (!response.isAllowed) { return next(new ForbiddenError('Unauthorized.')); }
 
-        var person = req.currentPerson;
+        var sp = new SavedPost({
+          entityId: req.currentPerson.id,
+          postId: hashids.decode(req.params.postId)[0]
+        });
+        sp.save(function(err) {
+          if (err) { return next(err); }
 
-        var createSavedPost = function(personId) {
-          var sp = new SavedPost({
-            entityId: personId,
-            postId: hashids.decode(req.params.postId)[0]
+          res.format({
+            json : function() {
+              res.json({ status : 'saved' });
+            }
           });
-          sp.save(function(err) {
-            if (err) { return next(err); }
-
-            res.format({
-              json : function() {
-                res.json({ status : 'saved' });
-              }
-            });
-          });
-        };
-
-        createSavedPost(hashids.decode(req.currentPerson.id)[0]);
+        });
       });
     },
 
@@ -432,27 +426,23 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
         var person = req.currentPerson;
 
-        var unsavePost = function(personId) {
-          SavedPost.find({
-            'entity_id' : personId,
-            'post_id' : hashids.decode(req.params.postId)[0]
-          }, function(err, result) {
-            if (err) { next(err); return; }
-            if (result.length === 0) { next(new Error('Not found')); }
+        SavedPost.find({
+          'entity_id' : hashids.decode(req.currentPerson.id)[0],
+          'post_id' : hashids.decode(req.params.postId)[0]
+        }, function(err, result) {
+          if (err) { next(err); return; }
+          if (result.length === 0) { next(new Error('Saved Post Not found')); }
 
-            var sp = new SavedPost(result[0]);
-            sp.destroy(function(err) {
-              if (err) { next(err); return; }
-              res.format({
-                json: function() {
-                  res.json({ status : 'removed' });
-                }
-              });
+          var sp = new SavedPost(result[0]);
+          sp.destroy(function(err) {
+            if (err) { next(err); return; }
+            res.format({
+              json: function() {
+                res.json({ status : 'removed' });
+              }
             });
           });
-        };
-
-        unsavePost(hashids.decode(req.currentPerson.id)[0]);
+        });
       });
     },
 
