@@ -4,13 +4,16 @@ var Velocity = require('velocity-animate');
 
 Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
     HTML : '\
-        <div class="cv-voice-timeline-feedback disable -clickable">\
-            <div class="cv-voice-timeline-clock">\
-                <span class="timeline-clock-h"></span>\
-                <span class="timeline-clock-m"></span>\
+        <div class="cv-voice-timeline-feedback-hitpoint disable -clickable">\
+            <div class="cv-voice-timeline-feedback-wrapper -clickable">\
+                <div class="cv-voice-timeline-feedback -clickable">\
+                    <div class="cv-voice-timeline-clock">\
+                        <span class="timeline-clock-h"></span>\
+                        <span class="timeline-clock-m"></span>\
+                    </div>\
+                </div>\
             </div>\
-        </div>\
-    ',
+        </div>',
 
     INDICATOR_CLASSNAME : 'cv-voice-tick-indicator',
     FOOTER_HEIGHT: 56,
@@ -59,8 +62,9 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
 
             this.el = this.element[0];
             this._window = window;
+            this.clockWrapper = this.el.querySelector('.cv-voice-timeline-feedback');
             this._mainContent = document.getElementsByClassName('cv-main-content')[0];
-            this.clockElement = this.el.querySelector('.cv-voice-timeline-clock');
+            // this.clockElement = this.el.querySelector('.cv-voice-timeline-clock');
             this.hourElement = this.el.querySelector('.timeline-clock-h');
             this.minutesElement = this.el.querySelector('.timeline-clock-m');
 
@@ -74,7 +78,7 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
             this.appendChild(new CV.VoiceTimelineJumpToDate({
                 name : 'jumpToDate',
                 postsCount : postsCount,
-                clockElement : this.el,
+                clockElement : this.clockWrapper,
                 container : this.el
             })).render(this.el);
         },
@@ -149,8 +153,8 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
                 easing: 'ease'
             });
 
-            Velocity(this.el, 'stop', true);
-            Velocity(this.el, {
+            Velocity(this.clockWrapper, 'stop', true);
+            Velocity(this.clockWrapper, {
                 translateX: scaledPixels + 'px'
             }, {
                 duration: 200,
@@ -182,7 +186,8 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
          */
         setInitialFeedbackDate : function setInitialFeedbackDate(timestamp) {
             this._lastScrollDate = timestamp;
-            this._timelineOffsetRight = this.el.offsetWidth + 20;
+            // clock-width = 16 + 20 (padding)
+            this._timelineOffsetRight = 16 + 20;
 
             this._readAndUpdate();
 
