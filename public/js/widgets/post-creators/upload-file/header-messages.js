@@ -9,7 +9,7 @@ Class(CV, 'PostCreatorUploadFileHeaderMessages').inherits(Widget)({
                 <svg class="-s20 -color-negative">\
                     <use xlink:href="#svg-warning"></use>\
                 </svg>\
-                <span class="upload-file-msg-text -font-bold">There was a problem uploading your file. Check that the file is an image.</span>\
+                <span class="upload-file-msg-text -font-bold">There was a problem uploading your file. Check that the file is not corrupt.</span>\
                 <button class="cv-button tiny -m0">Try Again</button>\
             </div>\
             <div class="upload-file-msg-uploaded-image">\
