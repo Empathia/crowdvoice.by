@@ -27,7 +27,7 @@ Class(CV, 'VoiceTimelineJumpToDate').inherits(Widget)({
                     name : 'jumpToDatePopover',
                     className : 'voice-timeline-popover -color-border-grey-light',
                     title : 'Jump to',
-                    placement : 'top',
+                    placement : 'bottom',
                     toggler : this.clockElement,
                     showCloseButton : true,
                     hasScrollbar : true

@@ -4,13 +4,16 @@ var Velocity = require('velocity-animate');
 
 Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
     HTML : '\
-        <div class="cv-voice-timeline-feedback disable -clickable">\
-            <div class="cv-voice-timeline-clock">\
-                <span class="timeline-clock-h"></span>\
-                <span class="timeline-clock-m"></span>\
+        <div class="cv-voice-timeline-feedback-hitpoint disable -clickable">\
+            <div class="cv-voice-timeline-feedback-wrapper -clickable">\
+                <div class="cv-voice-timeline-feedback -clickable">\
+                    <div class="cv-voice-timeline-clock">\
+                        <span class="timeline-clock-h"></span>\
+                        <span class="timeline-clock-m"></span>\
+                    </div>\
+                </div>\
             </div>\
-        </div>\
-    ',
+        </div>',
 
     INDICATOR_CLASSNAME : 'cv-voice-tick-indicator',
     FOOTER_HEIGHT: 56,
@@ -48,9 +51,9 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
         /* Random-ish value to alter the clock roration based on total height */
         _rotateFactor : 0,
         /* Offset left spacing for the clock available space */
-        _timelineOffsetLeft : 10,
+        _timelineOffsetLeft : 0,
         /* Offset rigth spacing for the clock available space */
-        _timelineOffsetRight : 10, /* value updated on setTimelineInitialDate method*/
+        _timelineOffsetRight : 0, /* value updated on setTimelineInitialDate method*/
         /* Holds the reference to the last date indicator detected */
         _lastScrollDate : null,
 
@@ -59,6 +62,7 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
 
             this.el = this.element[0];
             this._window = window;
+            this.clockWrapper = this.el.querySelector('.cv-voice-timeline-feedback');
             this._mainContent = document.getElementsByClassName('cv-main-content')[0];
             this.clockElement = this.el.querySelector('.cv-voice-timeline-clock');
             this.hourElement = this.el.querySelector('.timeline-clock-h');
@@ -109,7 +113,8 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
          * @method _readAndUpdate <private> [Function]
          */
         _readAndUpdate : function _readAndUpdate() {
-            var scrollPercentage, scrollViewportPixels, elem, scaledPercentage, scaledPixels, degs;
+            var scrollPercentage, scrollViewportPixels, elem, scaledPercentage, scaledPixels;
+            // var degs;
 
             scrollPercentage = 100 * this._lastScrollY / (this._totalHeight - this._clientHeight);
             scrollViewportPixels = scrollPercentage * this._clientHeight / 100;
@@ -127,30 +132,32 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
                 scaledPercentage = 0;
             }
 
-            scaledPixels = ~~((this._clientWidth - this._timelineOffsetRight) * scaledPercentage / 100);
+            // scaledPixels = ~~((this._clientWidth - this._timelineOffsetRight) * scaledPercentage / 100);
+            // 60 (sidebar-width) + 14 (clock-width) = 74
+            scaledPixels = ~~((this._clientWidth - 74) * scaledPercentage / 100);
 
-            if (scaledPixels < this._timelineOffsetLeft) {
-                scaledPixels = this._timelineOffsetLeft;
-            }
+            // if (scaledPixels < this._timelineOffsetLeft) {
+            //     scaledPixels = this._timelineOffsetLeft;
+            // }
 
-            degs = scaledPercentage * 3.6;
+            // degs = scaledPercentage * 3.6;
 
-            Velocity(this.hourElement, 'stop', true);
-            Velocity(this.hourElement, {
-                rotateZ: (degs * (this._rotateFactor / 2)) + 'deg'
-            }, {
-                easing: 'ease'
-            });
+            // Velocity(this.hourElement, 'stop', true);
+            // Velocity(this.hourElement, {
+            //     rotateZ: (degs * (this._rotateFactor / 2)) + 'deg'
+            // }, {
+            //     easing: 'ease'
+            // });
 
-            Velocity(this.minutesElement, 'stop', true);
-            Velocity(this.minutesElement, {
-                rotateZ: (degs * this._rotateFactor) + 'deg'
-            }, {
-                easing: 'ease'
-            });
+            // Velocity(this.minutesElement, 'stop', true);
+            // Velocity(this.minutesElement, {
+            //     rotateZ: (degs * this._rotateFactor) + 'deg'
+            // }, {
+            //     easing: 'ease'
+            // });
 
-            Velocity(this.el, 'stop', true);
-            Velocity(this.el, {
+            Velocity(this.clockWrapper, 'stop', true);
+            Velocity(this.clockWrapper, {
                 translateX: scaledPixels + 'px'
             }, {
                 duration: 200,
@@ -182,7 +189,8 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
          */
         setInitialFeedbackDate : function setInitialFeedbackDate(timestamp) {
             this._lastScrollDate = timestamp;
-            this._timelineOffsetRight = this.el.offsetWidth + 20;
+            // clock-width = 16 + 20 (padding)
+            this._timelineOffsetRight = 16 + 20;
 
             this._readAndUpdate();
 

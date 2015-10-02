@@ -19,10 +19,6 @@ Class(CV, 'VoiceFollowMultipleButton').inherits(Widget).includes(CV.WidgetUtils)
          */
         voice : null,
 
-        data : {
-            alignment : 'top'
-        },
-
         _followerIds : null,
         _requestsPending : 0,
 
@@ -36,8 +32,7 @@ Class(CV, 'VoiceFollowMultipleButton').inherits(Widget).includes(CV.WidgetUtils)
             this.appendChild(new CV.UI.CurrentPersonEntitiesCheckboxes({
                 name : 'dropdown',
                 data : {
-                    className : 'dropdown-entities-checkboxes ui-dropdown-styled -sm',
-                    alignment : this.data.alignment || 'top'
+                    className : 'dropdown-entities-checkboxes ui-dropdown-styled -sm'
                 }
             })).render(this.el);
 

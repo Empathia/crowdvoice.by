@@ -42,8 +42,7 @@ Class(CV, 'VoicePostsLayer').inherits(Widget).includes(BubblingSupport)({
             this.waterfall = new Waterfall({
                 containerElement : this.postContainerElement,
                 columnWidth : this.columnWidth,
-                gutter : 20,
-                centerItems : true
+                gutter : 20
             });
         },
 
