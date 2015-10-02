@@ -100,18 +100,20 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
     create : function create(req, res, next) {
       ACL.isAllowed('create', 'posts', req.role, {
-        currentPerson : req.currentPerson,
-        voiceSlug : req.params.voiceSlug,
-        profileName : req.params.profileName
+        currentPerson: req.currentPerson,
+        activeVoice: req.activeVoice,
+        voiceOwnerProfile: req.params.profileName
       }, function(err, response) {
         if (err) {return next(err)}
 
-        if (!response.isAllowed) { return next(new ForbiddenError()) }
+        if (!response.isAllowed) {
+          return next(new ForbiddenError('Unauthorized'));
+        }
 
         var approved = false;
 
         if (req.role === 'Admin'
-          || response.currentPerson.id === response.voice.ownerId
+          || response.isVoiceOwner
           || response.isVoiceCollaborator
           || response.isOrganizationMember) {
 
@@ -129,15 +131,15 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         async.each(posts, function(item, nextPost) {
           var postData = {};
 
-          postData.title          = item.title;
-          postData.description    = item.description;
-          postData.sourceUrl      = item.sourceUrl;
-          postData.sourceService  = item.sourceService;
-          postData.sourceType     = item.sourceType;
-          postData.approved       = approved;
-          postData.ownerId        = response.currentPerson.id;
-          postData.voiceId        = response.voice.id;
-          postData.publishedAt    = item.publishedAt;
+          postData.title = item.title;
+          postData.description = item.description;
+          postData.sourceUrl = item.sourceUrl;
+          postData.sourceService = item.sourceService;
+          postData.sourceType = item.sourceType;
+          postData.approved = approved;
+          postData.ownerId = response.postOwner.id;
+          postData.voiceId = req.activeVoice.id;
+          postData.publishedAt = item.publishedAt;
 
           if (postData.sourceUrl === 'local_image') {
             var hrtime = process.hrtime();
@@ -152,7 +154,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
             }
 
             var imagePath = '';
-            if (item.imagePath !== '') {
+            if (item.imagePath.length > 0) {
               imagePath = process.cwd() + '/public' + item.imagePath;
             }
 
@@ -342,12 +344,14 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
     preview : function preview(req, res, next) {
       ACL.isAllowed('preview', 'posts', req.role, {
         currentPerson: req.currentPerson,
-        voiceSlug: req.params.voiceSlug,
-        profileName: req.params.profileName
+        activeVoice: req.activeVoice,
+        voiceOwnerProfile: req.params.profileName
       }, function (err, response) {
         if (err) { return next(err) }
 
-        if (!response.isAllowed) { return next(new ForbiddenError('Unauthorized.')); }
+        if (req.role !== 'Admin' || !response.isAllowed) {
+          return next(new ForbiddenError('Unauthorized.'));
+        }
 
         var url = req.body.url;
 
