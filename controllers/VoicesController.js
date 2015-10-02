@@ -144,6 +144,45 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
               done();
             });
+          }, function (next) {
+            VoiceCollaborator.find({
+              voice_id: req.activeVoice.id,
+              is_anonymous: false
+            }, function (err, collaborators) {
+              if (err) { return next(err); }
+
+              var ids = collaborators.map(function (val) { return val.collaboratorId; });
+
+              Entity.whereIn('id', ids, function (err, entities) {
+                if (err) { return next(err); }
+
+                EntitiesPresenter.build(entities, req.currentPerson, function (err, presented) {
+                  if (err) { return next(err); }
+
+                  res.locals.contributors = presented;
+
+                  return next();
+                });
+              });
+            });
+          }, function (next) {
+            RelatedVoice.find({ voice_id: req.activeVoice.id }, function (err, related) {
+              if (err) { return next(err); }
+
+              var ids = related.map(function (val) { return val.relatedId });
+
+              Voice.whereIn('id', ids, function (err, voices) {
+                if (err) { return next(err); }
+
+                VoicesPresenter.build(voices, req.currentPerson, function (err, presented) {
+                  if (err) { return next(err); }
+
+                  res.locals.relatedVoices = presented;
+
+                  return next();
+                });
+              });
+            });
           }], next);
       });
     },
@@ -800,6 +839,83 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
             res.json({ status: 'archived' });
           });
+        });
+      });
+    },
+
+    addRelatedVoice: function (req, res, next) {
+      /* POST
+       * req.body = {
+       *   relatedVoiceId: Hashids.encode
+       * }
+       */
+
+      ACL.isAllowed('manageRelatedVoices', 'voices', req.role, {
+        currentPerson: req.currentPerson,
+        voiceId: req.activeVoice.id
+      }, function (err, response) {
+        if (err) { return next(err); }
+
+        if (!response.isAllowed) {
+          return next(new ForbiddenError('Unauthorized.'));
+        }
+
+        RelatedVoice.find({
+          voice_id: req.activeVoice.id,
+          related_id: hashids.decode(req.body.relatedVoiceId)[0]
+        }, function (err, relatedVoice) {
+          if (err) { return next(err); }
+
+          if (relatedVoice.length > 0) {
+            return res.json({ status: 'already a related voice' });
+          } else {
+            var newRelation = new RelatedVoice({
+              voice_id: req.activeVoice.id,
+              related_id: hashids.decode(req.body.relatedVoiceId)[0]
+            });
+
+            newRelation.save(function (err) {
+              if (err) { return next(err); }
+
+              return res.json({ status: 'added related voice' });
+            });
+          }
+        });
+      });
+    },
+
+    removeRelatedVoice: function (req, res, next) {
+      /* DELETE
+       * req.body = {
+       *   relatedVoiceId: Hashids.encode
+       * }
+       */
+
+      ACL.isAllowed('manageRelatedVoices', 'voices', req.role, {
+        currentPerson: req.currentPerson,
+        voiceId: req.activeVoice.id
+      }, function (err, response) {
+        if (err) { return next(err); }
+
+        if (!response.isAllowed) {
+          return next(new ForbiddenError('Unauthorized.'));
+        }
+
+        RelatedVoice.find({
+          voice_id: req.activeVoice.id,
+          related_id: hashids.decode(req.body.relatedVoiceId)[0]
+        }, function (err, relatedVoice) {
+          if (err) { return next(err); }
+
+          if (relatedVoice.length < 1) {
+            return res.json({ status: 'not a related voice' });
+          } else {
+            relatedVoice[0].destroy(function (err) {
+              if (err) { return next(err); }
+
+              return res.json({ status: 'removed related voice' });
+            });
+          }
         });
       });
     }
