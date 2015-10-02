@@ -54,11 +54,10 @@ Class(CV, 'VoiceHeader').inherits(Widget)({
 
             if (y + this.scrollableArea.innerHeight < document.height || document.body.clientHeight) {
                 this.el.classList.remove('hide');
-                this.footerVoiceTitle.classList.remove('active');
 
-                // if (y < this.HEADER_HEIGHT) {
-                    // this.footerVoiceTitle.classList.remove('active');
-                // }
+                if (y < this.HEADER_HEIGHT) {
+                    this.footerVoiceTitle.classList.remove('active');
+                }
 
                 this._lastScrollTop = y;
             }

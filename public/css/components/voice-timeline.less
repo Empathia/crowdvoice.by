@@ -11,6 +11,14 @@
     .cv-voice-timeline-feedback {border-radius: 8px 0 0 8px;}
     .cv-voice-timeline-clock {transform: scale(1);}
   }
+
+  &.disable {
+    pointer-events: none;
+
+    .cv-voice-timeline-feedback {
+      opacity: 0;
+    }
+  }
 }
 
 .cv-voice-timeline-feedback-wrapper {
@@ -18,10 +26,6 @@
   background-color: rgba(0,0,0,.2);
   transform: translate(0, -13px);
   transition: transform 200ms ease;
-
-  &.disable {
-    opacity: 0;
-  }
 }
 
 .cv-voice-timeline-feedback {

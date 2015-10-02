@@ -133,7 +133,8 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
             }
 
             // scaledPixels = ~~((this._clientWidth - this._timelineOffsetRight) * scaledPercentage / 100);
-            scaledPixels = ~~((this._clientWidth - 66) * scaledPercentage / 100);
+            // 60 (sidebar-width) + 14 (clock-width) = 74
+            scaledPixels = ~~((this._clientWidth - 74) * scaledPercentage / 100);
 
             // if (scaledPixels < this._timelineOffsetLeft) {
             //     scaledPixels = this._timelineOffsetLeft;
