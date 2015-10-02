@@ -1,15 +1,16 @@
-<pre>
-<!--<%= JSON.stringify(params, null, 2) %>-->
-<% var voiceInfo = params.notificationInfo.voice; %>
-<% var doerInfo = params.notificationInfo.actionDoer; %>
-<% var voiceDate = voiceInfo.createdAt;  %>
-<% var monthNames = ["January", "February", "March","April", "May", "June", "July","August", "September", "October","November", "December"];%>
-<% var day = voiceDate.getDate(); %> 
-<% var monthIndex = voiceDate.getMonth(); %>
-<% var year = voiceDate.getFullYear(); %>
+<pre style="white-space: inherit;">
+		<!--<%= JSON.stringify(params, null, 2) %>-->
+		<% var voiceInfo = params.notificationInfo.voice; %>
+		<% var doerInfo = params.notificationInfo.actionDoer; %>
+		<% var voiceDate = voiceInfo.createdAt;  %>
+		<% var monthNames = ["January", "February", "March","April", "May", "June", "July","August", "September", "October","November", "December"];%>
+		<% var day = voiceDate.getDate(); %> 
+		<% var monthIndex = voiceDate.getMonth(); %>
+		<% var year = voiceDate.getFullYear(); var voiceImage; %>
+		<% if(voiceInfo.images.length == undefined){ voiceImage = CONFIG.siteUrl[application.env]+'/img/img-placeholder.png'; }else{ voiceImage = CONFIG.siteUrl[application.env]+voiceInfo.images.small.url;} %>
 </pre>
 <!-- Change image url -->
-<div style="background-color:#F7F9FA !important;background: url('http://img42.com/kveXP+')right top;background-repeat: no-repeat; text-align: center; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; height: 100%;">
+<div style="background-color:#F7F9FA !important;background: url('<%= CONFIG.siteUrl[application.env]+'/img/cv-mailtemplate.png'%>')right top;background-repeat: no-repeat; text-align: center; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; height: 100%;">
 	<!-- Header -->
 	<div style="padding: 30px 0 25px 0; text-align: center;">
 		<p style="font-size:36px;color:#454B4D">CrowdVoice.by</p>
@@ -25,7 +26,7 @@
 				            	<td style="padding: 0 25px; text-align: left;">
 					             	<div style="font-size: 14px; line-height: 38px; color: #b2b2b2;">
 						                <p style="font-size:18px;color:black;">
-						                	Hello Esra'a, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] %><%= doerInfo.profileName %>" target="blank_"><%= doerInfo.name + ' ' + doerInfo.lastname %></a> has created a Voice!
+						                	Hello Esra'a, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="blank_"><%= doerInfo.name + ' ' + doerInfo.lastname %></a> has created a Voice!
 						                </p>
 					              	</div>
 				            	</td>
@@ -36,10 +37,10 @@
 				        <tbody>
 					        <tr style="background-color:#F7F9FA;">
 					            <td style="padding: 25px 0px 25px 25px;">
-					            	<img style="width:52px;height:52px;border-radius:5px;"src="<%= CONFIG.siteUrl[application.env] %><%= voiceInfo.images.small.url %>"/>
+					            	<img style="width:52px;height:52px;border-radius:5px;"src="<%= voiceImage %>"/>
 					            </td>
 					            <td style="padding-right:25px;">
-					            	<a href="<%= CONFIG.siteUrl[application.env] %>/<%= voiceInfo.owner.profileName %>/<%= voiceInfo.slug %>" target="blank_" style="font-size:13px;color:#4D4D4D;text-align:left;font-weight:bold;"><%= voiceInfo.title %></a>
+					            	<a href="<%= CONFIG.siteUrl[application.env] +'/'+ voiceInfo.owner.profileName +'/'+ voiceInfo.slug %>" target="blank_" style="font-size:13px;color:#4D4D4D;text-align:left;font-weight:bold;"><%= voiceInfo.title %></a>
 					            	<p style="font-size:12px;color:#A1B0B3;">by @<%= doerInfo.name + ' ' + doerInfo.lastname %></p>
 					            </td>
 					        </tr>
@@ -54,7 +55,7 @@
 			            		<td style="padding: 0 25px; text-align: left;">
 			              			<div style="font-size: 14px; line-height: 38px; color: #b2b2b2;">
 			                			<p style="font-size:18px;color:black;">
-			                				Hello Esra'a, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] %><%= doerInfo.profileName %>" target="blank_"><%= doerInfo.name + ' ' + doerInfo.lastname %></a> followed your Voice!
+			                				Hello Esra'a, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="blank_"><%= doerInfo.name + ' ' + doerInfo.lastname %></a> followed your Voice!
 			                			</p>
 			              			</div>
 			            		</td>
@@ -65,10 +66,10 @@
 			        	<tbody>
 			          		<tr style="background-color:#F7F9FA;">
 			            		<td style="padding: 25px 0px 25px 25px;">
-			                		<img style="width:52px;height:52px;border-radius:5px;"src="<%= CONFIG.siteUrl[application.env] %><%= voiceInfo.images.small.url %>"/>
+			                		<img style="width:52px;height:52px;border-radius:5px;"src="<%= voiceImage %>"/>
 			            		</td>
 			            		<td style="padding-right:25px;">
-			              			<a href="<%= CONFIG.siteUrl[application.env] %>/<%= voiceInfo.owner.profileName %>/<%= voiceInfo.slug %>" target="blank_" style="font-size:13px;color:#4D4D4D;text-align:left;font-weight:bold;"><%= voiceInfo.title %></a>
+			              			<a href="<%= CONFIG.siteUrl[application.env] +'/'+ voiceInfo.owner.profileName +'/'+ voiceInfo.slug %>" target="blank_" style="font-size:13px;color:#4D4D4D;text-align:left;font-weight:bold;"><%= voiceInfo.title %></a>
 			              			<p style="font-size:12px;color:#A1B0B3;">by <%= voiceInfo.owner.name + ' ' + voiceInfo.owner.lastname %></p>
 			            		</td>
 			          		</tr>
