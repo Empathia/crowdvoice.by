@@ -8,7 +8,8 @@ Class(CV, 'VoiceCoverActions').inherits(Widget).includes(CV.WidgetUtils)({
 
             this.appendChild(new CV.VoiceCoverActionsEdit({
                 name : 'edit',
-                voiceEntity : this.voiceEntity
+                voiceEntity : this.voiceEntity,
+                data : {value: 'Edit'}
             })).render(this.el);
 
             // this.appendChild(new CV.VoiceCoverActionsDelete({

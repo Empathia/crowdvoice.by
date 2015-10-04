@@ -1,33 +1,25 @@
 /* globals App */
 var Events = require('./../../../lib/events');
 
-Class(CV, 'VoiceCoverActionsEdit').inherits(Widget).includes(CV.WidgetUtils)({
-    ELEMENT_CLASS : '-color-positive -mr1',
-    HTML : '<a href="">Edit</a>',
+Class(CV, 'VoiceCoverActionsEdit').inherits(CV.UI.Button)({
+    ELEMENT_CLASS : 'cv-button micro -color-positive -mr1',
     prototype : {
         voiceEntity : null,
-        init : function init(config) {
-            Widget.prototype.init.call(this, config);
-            this.el = this.element[0];
 
+        init : function init(config) {
+            CV.UI.Button.prototype.init.call(this, config);
             this._clickHandlerRef = this._clickHandler.bind(this);
             Events.on(this.el, 'click', this._clickHandlerRef);
-
         },
 
-        _clickHandler : function _clickHandler(ev) {
-            ev.preventDefault();
-            App.showCreateVoiceModal(this.voiceEntity);
-        },
-
-        createModal : function createModal() {
+        _clickHandler : function _clickHandler() {
             App.showCreateVoiceModal(this.voiceEntity);
         },
 
         destroy : function destroy() {
-            Widget.prototype.destroy.call(this);
             Events.off(this.el, 'click', this._clickHandlerRef);
             this._clickHandlerRef = null;
+            CV.UI.Button.prototype.destroy.call(this);
             return null;
         }
     }
