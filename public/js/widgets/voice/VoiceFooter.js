@@ -88,7 +88,6 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
 
             this.appendChild(new CV.RelatedVoicesButton({
                 name : 'relatedVoicesButton',
-                editMode : (Person.get() && !Person.anon() && Person.memberOf('voice', this.voice.id)),
                 voice : this.voice
             })).render(this.actionsColumn);
 

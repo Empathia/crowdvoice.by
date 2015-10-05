@@ -1,6 +1,6 @@
 /* Class ManageRelatedVoices
  * Handles the Related Voices (search/add/remove) for voices.
- * It should receive a `voices` Array via data to display the current related
+ * It should receive a `relatedVoices` Array via data to display the current related
  * voices lists. That array will be passed to the RelatedVoicesList widget
  * to render them.
  * This Widget also acts as a Controller because it will listen for when a voice
@@ -34,9 +34,9 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
     prototype : {
         data : {
             /* VoiceEntities Models
-             * @property voices <required> [Array]
+             * @property relatedVoices <required> [Array]
              */
-            voices : null,
+            relatedVoices : null,
             /* Will include the search voices handler and the remove button on
              * each voice item.
              * @property editMode <optional> [Boolean]
@@ -69,7 +69,7 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
          * @return ManageRelatedVoices
          */
         _setup : function _setup() {
-            if (!this.data.voices) {
+            if (!this.data.relatedVoices) {
                 throw Error('ManageRelatedVoices require data.voices Array to be passed.');
             }
 
@@ -99,7 +99,7 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
             this.appendChild(new CV.RelatedVoicesList({
                 name : 'list',
                 data : {
-                    voices : this.data.voices,
+                    voices : this.data.relatedVoices,
                     editMode : this.data.editMode
                 }
             })).render(this.el.querySelector('[data-voices-list]'));
@@ -116,6 +116,9 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
 
                 this._setSelectedUserRef = this._setSelectedUser.bind(this);
                 this.searchInput.bind('results:item:clicked', this._setSelectedUserRef);
+
+                this._addVoiceClickHandlerRef = this._addVoiceClickHandler.bind(this);
+                Events.on(this.searchInput.button.el, 'click', this._addVoiceClickHandlerRef);
             }
         },
 
@@ -138,7 +141,7 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
 
             API.searchVoices({
                 query : searchString,
-                exclude : []
+                exclude : this.data.relatedVoices.map(function(voice) {return voice.id;})
             }, this._searchVoicesResponseHandler.bind(this));
         },
 
@@ -146,9 +149,6 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
          * @method _searchVoicesResponseHandler <private>
          */
         _searchVoicesResponseHandler : function _searchVoicesResponseHandler(err, res) {
-            console.log(err);
-            console.log(res);
-
             this.searchInput.results.deactivate().clear();
 
             if (!res.voices.length) {
@@ -176,6 +176,21 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
             this.searchInput.results.deactivate().clear();
         },
 
+        _addVoiceClickHandler : function _addVoiceClickHandler() {
+            if (!this._selectedVoice) {
+                return;
+            }
+
+            API.voiceAddRelatedVoice({
+                profileName : this.data.voice.owner.profileName,
+                voiceSlug : this.data.voice.slug,
+                data : {relatedVoiceId : this._selectedVoice.id}
+            }, function(err, res) {
+                console.log(err);
+                console.log(res);
+            }.bind(this));
+        },
+
         /* Unsubscribe its events, nullify DOM references, destroy children, etc.
          * @method destroy <public> (inherited from Widget)
          */
@@ -187,6 +202,9 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
             if (this.searchInput) {
                 Events.off(this.searchInput.input.el, 'keyup', this._searchKeyUpHandlerRef);
                 this._searchKeyUpHandlerRef = null;
+
+                Events.on(this.searchInput.button.el, 'click', this._addVoiceClickHandlerRef);
+                this._addVoiceClickHandlerRef = null;
             }
 
             Widget.prototype.destroy.call(this);

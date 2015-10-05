@@ -37,7 +37,8 @@
     scrollableArea        : document.querySelector('.yield'),
     postsCount            : <%= JSON.stringify(postsCount) %>,
     allowPosting          : <%= allowPosting %>,
-    allowPostEditing      : <%= allowPostEditing %>
+    allowPostEditing      : <%= allowPostEditing %>,
+    relatedVoices         : <%= JSON.stringify(relatedVoices) %>
   }));
 
   App.Voice.updateVoiceInfo();

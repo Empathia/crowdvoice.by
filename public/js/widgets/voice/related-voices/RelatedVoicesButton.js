@@ -2,10 +2,13 @@
  * No public methods, it will render the ManageRelatedVoices widget inside a
  * Modal when clicked. The ManageRelatedVoices widget will do everything itself.
  */
+var Person = require('./../../../lib/currentPerson');
 var Events = require('./../../../lib/events');
 
 Class(CV, 'RelatedVoicesButton').inherits(Widget).includes(CV.WidgetUtils)({
-    HTML : '<button class="cv-button tiny">See Related Voices</button>',
+    // HTML : '<button class="cv-button tiny">See Related Voices</button>',
+    ELEMENT_CLASS : '-inline-block',
+
     prototype : {
         /* VoiceEntity data.
          * @property voice <required> [Object] (null)
@@ -27,9 +30,21 @@ Class(CV, 'RelatedVoicesButton').inherits(Widget).includes(CV.WidgetUtils)({
          * @return RelatedVoicesButton
          */
         _setup : function _setup() {
+            this.editMode = (Person.get() && !Person.anon() && Person.memberOf('voice', this.voice.id));
+            var buttonText  = '';
+
             if (this.editMode) {
-                this.dom.updateText(this.el, 'Manage Related Voices');
+                buttonText = 'Manage Related Voices';
+            } else {
+                buttonText = 'See Related Voices';
             }
+
+            this.appendChild(new CV.UI.Button({
+                name : 'button',
+                className : 'tiny',
+                data : {value : buttonText}
+            })).render(this.el);
+
             return this;
         },
 
@@ -38,7 +53,7 @@ Class(CV, 'RelatedVoicesButton').inherits(Widget).includes(CV.WidgetUtils)({
          */
         _bindEvents : function _bindEvents() {
             this._clickHandlerRef = this._clickHandler.bind(this);
-            Events.on(this.el, 'click', this._clickHandlerRef);
+            Events.on(this.button.el, 'click', this._clickHandlerRef);
         },
 
         /* Button click handler.
@@ -56,22 +71,24 @@ Class(CV, 'RelatedVoicesButton').inherits(Widget).includes(CV.WidgetUtils)({
                     action : CV.ManageRelatedVoices,
                     width : 900,
                     data : {
-                        voices : [],
+                        relatedVoices : [],
                         editMode : true,
                         voice : this.voice
                     }
                 })).render(document.body);
+
+                this.relatedVoicesModal.bubbleAction.setup();
             } else {
-                this.appendChild(new CV.UI.Modal({
+                this.appendChild(new CV.PopoverBlocker({
                     name : 'relatedVoicesModal',
                     title : 'Related Voices',
-                    action : CV.ManageRelatedVoices,
-                    width : 900,
-                    data : {voices : []}
-                })).render(document.body);
+                    placement : 'bottom',
+                    showCloseButton : true,
+                    content : new CV.ManageRelatedVoices({
+                        data : {relatedVoices : []}
+                    }).el,
+                })).render(this.button.el.parentElement).activate();
             }
-
-            this.relatedVoicesModal.bubbleAction.setup();
 
             requestAnimationFrame(function() {
                 this.relatedVoicesModal.activate();
@@ -82,9 +99,9 @@ Class(CV, 'RelatedVoicesButton').inherits(Widget).includes(CV.WidgetUtils)({
          * @method destroy <public> (inherited from Widget)
          */
         destroy : function destroy() {
-            Widget.prototype.destroy.call(this);
-            Events.off(this.el, 'click', this._clickHandlerRef);
+            Events.off(this.button.el, 'click', this._clickHandlerRef);
             this._clickHandlerRef = null;
+            Widget.prototype.destroy.call(this);
             return null;
         }
     }
