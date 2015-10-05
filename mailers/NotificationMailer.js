@@ -54,45 +54,77 @@ var NotificationMailer = Module('NotificationMailer')({
 
   // Send notification about new message
   newMessage: function (user, info, callback) {
-    var template = new Thulium({ template: newMessageViewFile }),
-      message = {
-        html: '',
-        subject: 'CrowdVoice.by - You have received a new message from ' + info.sender, // TODO placeholder
-        from_email: 'notifications@crowdvoice.by',
-        from_name: 'CrowdVoice.by',
-        to: [],
-        important: true,
-        auto_text: true,
-        inline_css: true,
+    // FIRST OUR LOGIC GOES HERE:
+    // CHECK IF THERE'S BEEN A MESSAGE WITHIN THE LAST 24 HOURS BY THE SAME
+    // USER TO THE SAME USER, IF YES THEN DON'T SEND MESSAGE, IF NOT THEN DO.
+
+    Message.find(['thread_id = ? AND receiver_entity_id = ? ORDER BY created_at ASC LIMIT ?', [info.message.threadId, info.message.receiverEntityId, 2]], function (err, messages) {
+      if (err) { return callback(err); }
+
+      var isSender = new MessageThread(info.thread).isPersonSender(user.entityId),
+        isUnread
+
+      if (isSender && info.thread.lastSeenSender === null) {
+        isUnread = true
+      } else if (!isSender && info.thread.lastSeenReceiver === null) {
+        isUnread = true
       }
 
-    template.parseSync().renderSync({
-      params: {
-        user: user,
-        info: info,
-      },
+      if (!isUnread) {
+        isUnread = (moment(messages[1].createdAt).format('X') > moment(thread.['lastSeen' + (isSender ? 'Sender' : 'Receiver').format('X')]))
+      }
+
+      // oh wait it's not read, well was it within the last 24 hours?
+      if (isUnread) {
+        var time = moment().diff(moment(message.createdAt), 'hours')
+
+        // too soon, let's bail
+        if (time <= 24) {
+          return callback()
+        }
+      }
+
+      var template = new Thulium({ template: newMessageViewFile }),
+        message = {
+          html: '',
+          subject: 'CrowdVoice.by - You have received a new message from ' + info.message.senderEntityId,
+          from_email: 'notifications@crowdvoice.by',
+          from_name: 'CrowdVoice.by',
+          to: [],
+          important: true,
+          auto_text: true,
+          inline_css: true,
+        }
+
+      template.parseSync().renderSync({
+        params: {
+          user: user,
+          info: info,
+        },
+      })
+
+      var view = template.view
+
+      message.html = view
+      message.to = [] // reset
+
+      message.to.push({
+        email: user.email,
+        name: user.name,
+        type: 'to'
+      })
+
+      client.messages.send({ message: message, async: true }, function (result) {
+        logger.log('NotificationMailer newMessage():')
+        logger.log(result)
+
+        return callback(null, result)
+      }, function (err) {
+        logger.err('NotificationMailer newMessage(): A mandrill error occurred: ' + err.name + ' - ' + err.message)
+        return callback(err)
+      })
     })
 
-    var view = template.view
-
-    message.html = view
-    message.to = [] // reset
-
-    message.to.push({
-      email: user.email,
-      name: user.name,
-      type: 'to'
-    })
-
-    client.messages.send({ message: message, async: true }, function (result) {
-      logger.log('NotificationMailer newMessage():')
-      logger.log(result)
-
-      return callback(null, result)
-    }, function (err) {
-      logger.err('NotificationMailer newMessage(): A mandrill error occurred: ' + err.name + ' - ' + err.message)
-      return callback(err)
-    })
   },
 
   // Send on new invitation
@@ -100,7 +132,7 @@ var NotificationMailer = Module('NotificationMailer')({
     var template = new Thulium({ template: newInvitationViewFile }),
       message = {
         html: '',
-        subject: 'CrowdVoice.by - You have received a new invitation from ' + info.message.sender_entity_id, // TODO placeholder
+        subject: 'CrowdVoice.by - You have received a new invitation from ' + info.message.senderEntityId, // TODO placeholder
         from_email: 'notifications@crowdvoice.by',
         from_name: 'CrowdVoice.by',
         to: [],
@@ -143,7 +175,7 @@ var NotificationMailer = Module('NotificationMailer')({
     var template = new Thulium({ template: newRequestViewFile }),
       message = {
         html: '',
-        subject: 'CrowdVoice.by - You have received a new request from ' + info.sender, // TODO placeholder
+        subject: 'CrowdVoice.by - You have received a new request from ' + info.message.senderEntityId, // TODO placeholder
         from_email: 'notifications@crowdvoice.by',
         from_name: 'CrowdVoice.by',
         to: [],
