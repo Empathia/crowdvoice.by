@@ -869,8 +869,8 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
             return res.json({ status: 'already a related voice' });
           } else {
             var newRelation = new RelatedVoice({
-              voice_id: req.activeVoice.id,
-              related_id: hashids.decode(req.body.relatedVoiceId)[0]
+              voiceId: req.activeVoice.id,
+              relatedId: hashids.decode(req.body.relatedVoiceId)[0]
             });
 
             newRelation.save(function (err) {
