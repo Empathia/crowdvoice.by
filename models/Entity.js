@@ -159,6 +159,7 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
                 .resize(16,16)
                 .interpolateWith(sharp.interpolator.nohalo)
                 .embed()
+                .crop(sharp.gravity.center)
                 .progressive()
                 .flatten()
                 .background('#FFFFFF')
@@ -171,6 +172,7 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
                 .resize(28,28)
                 .interpolateWith(sharp.interpolator.nohalo)
                 .embed()
+                .crop(sharp.gravity.center)
                 .progressive()
                 .flatten()
                 .background('#FFFFFF')
@@ -183,6 +185,7 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
                 .resize(36,36)
                 .interpolateWith(sharp.interpolator.nohalo)
                 .embed()
+                .crop(sharp.gravity.center)
                 .progressive()
                 .flatten()
                 .background('#FFFFFF')
@@ -195,6 +198,7 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
               .resize(88,88)
               .interpolateWith(sharp.interpolator.nohalo)
               .embed()
+              .crop(sharp.gravity.center)
               .progressive()
               .flatten()
               .background('#FFFFFF')
@@ -204,13 +208,14 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
           medium: function (readStream) {
             return readStream.pipe(
               sharp()
-                .resize(160,160)
-                .interpolateWith(sharp.interpolator.nohalo)
-                .embed()
-                .progressive()
-                .flatten()
-                .background('#FFFFFF')
-                .quality(100)
+              .resize(160,160)
+              .interpolateWith(sharp.interpolator.nohalo)
+              .embed()
+              .crop(sharp.gravity.center)
+              .progressive()
+              .flatten()
+              .background('#FFFFFF')
+              .quality(100)
             );
           }
         },
