@@ -57,7 +57,10 @@ var VotesController = Class('VotesController').includes(BlackListFilter)({
       if (isLoggedIn) {
         // the user is logged in, if we find a vote from him for the post just
         // forbid the new vote
-        Vote.find({ post_id: postId, entity_id: entityId }, function (err, result) {
+        Vote.find({
+          post_id: postId,
+          entity_id: entityId
+        }, function (err, result) {
           if (err) { return next(err) }
 
           if (result.length >= 1) {
