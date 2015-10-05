@@ -40,7 +40,7 @@ Class(CV, 'RelatedVoicesList').inherits(Widget)({
                 name : 'voice_' + this._index,
                 className : 'cv-related-voices__list-item',
                 data : voice
-            })).render(this.el);
+            })).render(this.el).showMeta();
         }
     }
 });
