@@ -12,6 +12,11 @@ Class(CV, 'VoiceCoverActions').inherits(Widget).includes(CV.WidgetUtils)({
                 data : {value: 'Edit'}
             })).render(this.el);
 
+            this.appendChild(new CV.VoiceCoverActionsArchive({
+                name : 'archive',
+                voiceEntity : this.voiceEntity
+            })).render(this.el);
+
             // this.appendChild(new CV.VoiceCoverActionsDelete({
             //     name : 'delete'
             // })).render(this.el);

@@ -63,6 +63,32 @@ module.exports = {
         });
     },
 
+    /* Archives an existing Voice.
+     * @argument args.profileName <required> [String] the voice owner profileName
+     * @argument args.voiceSlug <required> [String] the voice slug
+     * @argument callback <required> [Function]
+     */
+     voiceArchive : function voiceArchive (args, callback) {
+        if (!args.profileName || !args.voiceSlug || !callback){
+            throw new Error('Missing required params');
+        }
+        if ((typeof callback).toLowerCase() !== "function"){
+            throw new Error ('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'POST',
+            url : '/' + args.profileName + '/' + args.voiceSlug +'/archive?_method=PUT',
+            headers : {'csrf-token' : this.token},
+            cache : false,
+            data : {},
+            contentType : 'json',
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
+
+     },
+
     /* Follow/Unfollow Voice.
      * @argument args.profileName <required> [String] the voice owner profileName
      * @argument args.voiceSlug <required> [String] the voice slug
