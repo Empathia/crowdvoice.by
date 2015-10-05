@@ -1,5 +1,5 @@
 Class(CV, 'TabContent').inherits(Widget)({
-    ELEMENT_CLASS : '-menu-tab-content',
+    ELEMENT_CLASS : 'ui-tab-content -menu-tab-content',
 
     prototype : {
         init : function init(config) {

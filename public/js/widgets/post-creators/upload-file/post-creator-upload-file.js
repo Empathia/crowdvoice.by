@@ -7,7 +7,7 @@ Class(CV, 'PostCreatorUploadFile').inherits(CV.PostCreator)({
         <div>\
             <div class="input-error-message -on-error -abs -color-negative"></div>\
             <header class="cv-post-creator__header -clearfix">\
-                <input type="file" name="image" class="image-input cv-button tiny -hide"/>\
+                <input type="file" name="image" accept="image/*" class="image-input cv-button tiny -hide"/>\
             </header>\
             <div class="cv-post-creator__content -abs"></div>\
             <div class="cv-post-creator__disable"></div>\

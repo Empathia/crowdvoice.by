@@ -26,7 +26,7 @@ window.moment = moment;
 // JS » Our stack, namespace, lib
 require('neon');
 require('neon/stdlib');
-window.CV = {UI: {}};
+window.CV = {UI: {}, Views: {}};
 require('./lib/widget-utils.js');
 require('./lib/Widget.js');
 require('./lib/image-halt');
@@ -124,6 +124,9 @@ require('./widgets/search-view/organizations-tab');
 require('./views/savedPosts');
 require('./widgets/saved-posts/onboarding');
 require('./widgets/saved-posts/manager');
+require('./views/myVoices');
+require('./widgets/my-voices-view/MyVoicesOnboarding');
+require('./widgets/my-voices-view/VoiceTab');
 
 require('./widgets/voice/posts-registry');
 require('./widgets/voice/Onboarding');

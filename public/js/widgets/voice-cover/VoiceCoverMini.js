@@ -1,3 +1,5 @@
+var Person = require('./../../lib/currentPerson');
+
 Class(CV, 'VoiceCoverMini').inherits(Widget).includes(CV.WidgetUtils)({
     HTML : '\
         <article class="cv-voice-cover mini -clearfix" role="article">\
@@ -42,13 +44,30 @@ Class(CV, 'VoiceCoverMini').inherits(Widget).includes(CV.WidgetUtils)({
             this._setup();
         },
 
+        addActions : function addActions() {
+            if (!Person.get()) {
+                return;
+            }
+
+            if (Person.memberOf('voice', this.data.id)) {
+                this.appendChild(new CV.VoiceCoverActions({
+                    name : 'actions',
+                    voiceEntity : this.data
+                })).render(this.el.querySelector('.action'));
+            }
+        },
+
         _setup : function _setup() {
             this.voiceAnchors.forEach(function(anchor) {
                 this.dom.updateAttr('href', anchor, '/' + this.data.owner.profileName + '/' + this.data.slug + '/');
                 this.dom.updateAttr('title', anchor, this.data.title + ' voice');
             }, this);
 
-            this.dom.updateAttr('src', this.el.querySelector('.voice-cover'), this.data.images.small.url);
+            if (this.data.images.small) {
+                this.dom.updateAttr('src', this.el.querySelector('.voice-cover'), this.data.images.small.url);
+            } else {
+                this.el.querySelector('.voice-cover').classList.add('-colored-background');
+            }
             this.dom.updateText(this.el.querySelector('.voice-cover-title'), this.data.title);
 
             this.dom.updateAttr('href', this.authorAnchor, '/' + this.data.owner.profileName);

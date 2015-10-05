@@ -11,7 +11,7 @@ Class(CV, 'SelectAccount').inherits(Widget)({
                     <span class="account-info-name"></span>\
                     <span class="actions-wrapper -inline-block">\
                       <svg class="actions-dropdown-svg -block">\
-                        <use xlink:href="#svg-arrow-down-2"></use>\
+                        <use xlink:href="#svg-arrow-down"></use>\
                       </svg>\
                     </span>\
                 </div>\
