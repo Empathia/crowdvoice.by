@@ -108,10 +108,9 @@ require('./widgets/cards/popover-invite-to');
 require('./widgets/voice-cover/VoiceCover');
 require('./widgets/voice-cover/VoiceCoverMini');
 require('./widgets/voice-cover/VoiceCoverMiniClean');
-require('./widgets/voice-cover/actions/actions');
-require('./widgets/voice-cover/actions/edit');
-require('./widgets/voice-cover/actions/archive');
-require('./widgets/voice-cover/actions/delete');
+require('./widgets/voice-cover/actions/VoiceCoverActions');
+require('./widgets/voice-cover/actions/VoiceCoverActionsEdit');
+require('./widgets/voice-cover/actions/VoiceCoverActionsArchive');
 require('./widgets/category-cover');
 
 // views
