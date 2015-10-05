@@ -78,18 +78,29 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
                         className : 'tiny'
                     })).render(this.actionsColumn);
                 }
+            } else {
+                this.appendChild(new CV.VoiceFollowSingleButton({
+                    name : 'followButton',
+                    voice : this.voice,
+                    className : 'tiny'
+                })).render(this.actionsColumn).disable();
             }
+
+            var relatedVoicesDiv = document.createElement('div');
+            relatedVoicesDiv.className = '-inline-block';
+            this.appendChild(new CV.RelatedVoicesButton({
+                name : 'relatedVoicesButton',
+                voice : this.voice,
+                className : 'tiny',
+                relatedVoices : App.Voice.relatedVoices
+            })).render(relatedVoicesDiv);
+            this.actionsColumn.appendChild(relatedVoicesDiv);
 
             if (Person.is(this.voice.owner.id)) {
                 this.appendChild(new CV.ManageContributorsButton({
                     name : 'manageContributors'
                 })).render(this.actionsColumn);
             }
-
-            this.appendChild(new CV.RelatedVoicesButton({
-                name : 'relatedVoicesButton',
-                voice : this.voice
-            })).render(this.actionsColumn);
 
             // currentPerson does not belongs/owns this voice already?
             if ((!Person.anon()) && (!Person.memberOf('voice', this.voice.id))) {

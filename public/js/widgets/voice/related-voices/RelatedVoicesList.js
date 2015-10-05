@@ -8,8 +8,7 @@ Class(CV, 'RelatedVoicesList').inherits(Widget)({
             /* Initial voices to display. (VoiceEntities)
              * @property voices <require> [Array]
              */
-            voices : null,
-            editMode : false
+            voices : null
         },
 
         /* Holds the count of how many voices have been added, usefull to keep

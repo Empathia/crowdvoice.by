@@ -49,6 +49,12 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
          */
         _selectedVoice : null,
 
+        /* Array of related voices ids (plus the current voice id).
+         * Used to exclude this voices from the search voices results.
+         * @property _relatedVoicesIds <private>
+         */
+        _relatedVoicesIds : null,
+
         init : function(config){
             Widget.prototype.init.call(this, config);
             this.el = this.element[0];
@@ -72,6 +78,11 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
             if (!this.data.relatedVoices) {
                 throw Error('ManageRelatedVoices require data.voices Array to be passed.');
             }
+
+            this._relatedVoicesIds = this.data.relatedVoices.map(function(voice) {
+                return voice.id;
+            });
+            this._relatedVoicesIds.push(this.data.voice.id);
 
             if (this.data.editMode) {
                 var labelString = this.constructor.LABEL_HTML;
@@ -98,11 +109,9 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
 
             this.appendChild(new CV.RelatedVoicesList({
                 name : 'list',
-                data : {
-                    voices : this.data.relatedVoices,
-                    editMode : this.data.editMode
-                }
+                data : {voices : this.data.relatedVoices}
             })).render(this.el.querySelector('[data-voices-list]'));
+
             return this;
         },
 
@@ -114,8 +123,8 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
                 this._searchKeyUpHandlerRef = this._searchKeyUpHandler.bind(this);
                 Events.on(this.searchInput.input.el, 'keyup', this._searchKeyUpHandlerRef);
 
-                this._setSelectedUserRef = this._setSelectedUser.bind(this);
-                this.searchInput.bind('results:item:clicked', this._setSelectedUserRef);
+                this._setSelectedVoiceRef = this._setSelectedVoice.bind(this);
+                this.searchInput.bind('results:item:clicked', this._setSelectedVoiceRef);
 
                 this._addVoiceClickHandlerRef = this._addVoiceClickHandler.bind(this);
                 Events.on(this.searchInput.button.el, 'click', this._addVoiceClickHandlerRef);
@@ -141,7 +150,7 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
 
             API.searchVoices({
                 query : searchString,
-                exclude : this.data.relatedVoices.map(function(voice) {return voice.id;})
+                exclude : this._relatedVoicesIds
             }, this._searchVoicesResponseHandler.bind(this));
         },
 
@@ -166,9 +175,9 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
         },
 
         /* Sets the this._selectedVoice data.
-         * @method _setSelectedUser <private>
+         * @method _setSelectedVoice <private>
          */
-        _setSelectedUser : function _setSelectedUser(ev) {
+        _setSelectedVoice : function _setSelectedVoice(ev) {
             this._selectedVoice = ev.data;
 
             this.searchInput.button.enable();
@@ -177,6 +186,8 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
         },
 
         _addVoiceClickHandler : function _addVoiceClickHandler() {
+            this.searchInput.button.disable();
+
             if (!this._selectedVoice) {
                 return;
             }
@@ -186,8 +197,15 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
                 voiceSlug : this.data.voice.slug,
                 data : {relatedVoiceId : this._selectedVoice.id}
             }, function(err, res) {
-                console.log(err);
-                console.log(res);
+                if (err) {
+                    this.searchInput.button.enable();
+                    return;
+                }
+
+                this._relatedVoicesIds.push(this._selectedVoice.id);
+                this.searchInput.input.setValue('');
+                this.list.addVoice(this._selectedVoice);
+                this._selectedVoice = null;
             }.bind(this));
         },
 

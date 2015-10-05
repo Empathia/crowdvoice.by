@@ -5,23 +5,21 @@
 var Person = require('./../../../lib/currentPerson');
 var Events = require('./../../../lib/events');
 
-Class(CV, 'RelatedVoicesButton').inherits(Widget).includes(CV.WidgetUtils)({
-    // HTML : '<button class="cv-button tiny">See Related Voices</button>',
-    ELEMENT_CLASS : '-inline-block',
-
+Class(CV, 'RelatedVoicesButton').inherits(CV.UI.Button)({
     prototype : {
         /* VoiceEntity data.
          * @property voice <required> [Object] (null)
          */
         voice : null,
+        relatedVoices : null,
+
         /* The voice is beign displayed for its owner?
          * @property editMode <optional> [Boolean] (false)
          */
         editMode : false,
 
         init : function init(config) {
-            Widget.prototype.init.call(this, config);
-            this.el = this.element[0];
+            CV.UI.Button.prototype.init.call(this, config);
             this._setup()._bindEvents();
         },
 
@@ -39,11 +37,7 @@ Class(CV, 'RelatedVoicesButton').inherits(Widget).includes(CV.WidgetUtils)({
                 buttonText = 'See Related Voices';
             }
 
-            this.appendChild(new CV.UI.Button({
-                name : 'button',
-                className : 'tiny',
-                data : {value : buttonText}
-            })).render(this.el);
+            this.updateText(buttonText);
 
             return this;
         },
@@ -53,7 +47,7 @@ Class(CV, 'RelatedVoicesButton').inherits(Widget).includes(CV.WidgetUtils)({
          */
         _bindEvents : function _bindEvents() {
             this._clickHandlerRef = this._clickHandler.bind(this);
-            Events.on(this.button.el, 'click', this._clickHandlerRef);
+            Events.on(this.el, 'click', this._clickHandlerRef);
         },
 
         /* Button click handler.
@@ -71,7 +65,7 @@ Class(CV, 'RelatedVoicesButton').inherits(Widget).includes(CV.WidgetUtils)({
                     action : CV.ManageRelatedVoices,
                     width : 900,
                     data : {
-                        relatedVoices : [],
+                        relatedVoices : this.relatedVoices,
                         editMode : true,
                         voice : this.voice
                     }
@@ -84,10 +78,15 @@ Class(CV, 'RelatedVoicesButton').inherits(Widget).includes(CV.WidgetUtils)({
                     title : 'Related Voices',
                     placement : 'bottom',
                     showCloseButton : true,
+                    className : 'voice-related-voices-bubble',
                     content : new CV.ManageRelatedVoices({
-                        data : {relatedVoices : []}
+                        data : {
+                            relatedVoices : this.relatedVoices,
+                            editMode : false,
+                            voice : this.voice
+                        }
                     }).el,
-                })).render(this.button.el.parentElement).activate();
+                })).render(this.el.parentElement).activate();
             }
 
             requestAnimationFrame(function() {
@@ -99,9 +98,9 @@ Class(CV, 'RelatedVoicesButton').inherits(Widget).includes(CV.WidgetUtils)({
          * @method destroy <public> (inherited from Widget)
          */
         destroy : function destroy() {
-            Events.off(this.button.el, 'click', this._clickHandlerRef);
+            Events.off(this.el, 'click', this._clickHandlerRef);
             this._clickHandlerRef = null;
-            Widget.prototype.destroy.call(this);
+            CV.UI.Button.prototype.destroy.call(this);
             return null;
         }
     }
