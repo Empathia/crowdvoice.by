@@ -247,6 +247,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
       });
     },
 
+    // not in use
     new : function(req, res) {
       res.render('voices/new.html', { errors: null });
     },
@@ -288,7 +289,6 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           if (req.body.anonymously !== 'true') {
             return done();
           }
-
 
           Entity.find({
             id : hashids.decode(req.currentPerson.id)[0]
