@@ -53,11 +53,11 @@ var NotificationMailer = Module('NotificationMailer')({
   },
 
   // Send notification about new message
-  newMessage: function (user, messageInfo, callback) {
+  newMessage: function (user, info, callback) {
     var template = new Thulium({ template: newMessageViewFile }),
       message = {
         html: '',
-        subject: 'CrowdVoice.by - You have received a new message from ' + messageInfo.sender, // TODO placeholder
+        subject: 'CrowdVoice.by - You have received a new message from ' + info.sender, // TODO placeholder
         from_email: 'notifications@crowdvoice.by',
         from_name: 'CrowdVoice.by',
         to: [],
@@ -69,7 +69,7 @@ var NotificationMailer = Module('NotificationMailer')({
     template.parseSync().renderSync({
       params: {
         user: user,
-        messageInfo: messageInfo,
+        info: info,
       },
     })
 
@@ -96,11 +96,11 @@ var NotificationMailer = Module('NotificationMailer')({
   },
 
   // Send on new invitation
-  newInvitation: function (user, messageInfo, callback) {
+  newInvitation: function (user, info, callback) {
     var template = new Thulium({ template: newInvitationViewFile }),
       message = {
         html: '',
-        subject: 'CrowdVoice.by - You have received a new invitation from ' + messageInfo.sender, // TODO placeholder
+        subject: 'CrowdVoice.by - You have received a new invitation from ' + info.message.sender_entity_id, // TODO placeholder
         from_email: 'notifications@crowdvoice.by',
         from_name: 'CrowdVoice.by',
         to: [],
@@ -112,7 +112,7 @@ var NotificationMailer = Module('NotificationMailer')({
     template.parseSync().renderSync({
       params: {
         user: user,
-        messageInfo: messageInfo,
+        info: info,
       },
     })
 
@@ -139,11 +139,11 @@ var NotificationMailer = Module('NotificationMailer')({
   },
 
   // Send on new request
-  newRequest: function (user, messageInfo, callback) {
+  newRequest: function (user, info, callback) {
     var template = new Thulium({ template: newRequestViewFile }),
       message = {
         html: '',
-        subject: 'CrowdVoice.by - You have received a new request from ' + messageInfo.sender, // TODO placeholder
+        subject: 'CrowdVoice.by - You have received a new request from ' + info.sender, // TODO placeholder
         from_email: 'notifications@crowdvoice.by',
         from_name: 'CrowdVoice.by',
         to: [],
@@ -155,7 +155,7 @@ var NotificationMailer = Module('NotificationMailer')({
     template.parseSync().renderSync({
       params: {
         user: user,
-        messageInfo: messageInfo,
+        info: info,
       },
     })
 
@@ -198,7 +198,7 @@ var NotificationMailer = Module('NotificationMailer')({
     template.parseSync().renderSync({
       params: {
         user: user,
-        messageInfo: messageInfo,
+        info: newFollowerEntity,
       },
     })
 

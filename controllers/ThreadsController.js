@@ -1,4 +1,5 @@
 require('./../presenters/ThreadsPresenter');
+var NotificationMailer = require(path.join(__dirname, '../mailers/NotificationMailer.js'));
 
 var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
   prototype : {
@@ -85,6 +86,7 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
 
         var thread;
         var invite;
+        var message;
 
         async.series([
           function(done) {
@@ -131,7 +133,39 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
                 return done(err);
               }
 
+              message = result;
+
               done();
+            });
+          }, function (done) {
+            // send message to person who received message / invitation / request
+
+            var emailEntityId;
+
+            // TEST HOPEFULLY THIS WORKS
+            if (thread.isPersonSender(hashids.decode(req.currentPerson.id)[0])) {
+              emailEntityId = thread.receiverEntity.id;
+            } else {
+              emailEntityId = threat.senderEntity.id;
+            }
+
+            User.find({ entity_id: emailEntityId }, function (err, user) {
+              if (payload.type === 'message') {
+                NotificationMailer.newMessage(user[0], {
+                  thread: thread,
+                  message: message,
+                }, done);
+              } else if (payload.type.match(/request_(voice|organization)/)) {
+                NotificationMailer.newInvitation(user[0], {
+                  thread: thread,
+                  message: message,
+                }, done);
+              } else if (payload.type.match(/invitation_(voice|organization)/)) {
+                NotificationMailer.newRequest(user[0], {
+                  thread: thread,
+                  message: message,
+                }, done);
+              }
             });
           }
         ], function(err) {
