@@ -672,6 +672,34 @@ module.exports = {
         });
     },
 
+    /* Get People results from a specified query
+     * @argument args.query <required> [String] the query string.
+     * @argument args.exclude <optional> [Array] Array of people hashids to exclude from the results.
+     * @argument callback <required> [Function]
+     */
+    searchPeople : function searchPeople(args, callback) {
+        if (!args.query || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'POST',
+            url : '/search/people',
+            headers : {'csrf-token' : this.token},
+            dataType : 'json',
+            data : {
+                query : args.query,
+                exclude : args.exclude || []
+            },
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
     /**************************************************************************
      * MISC
      *************************************************************************/
