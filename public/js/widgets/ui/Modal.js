@@ -12,9 +12,6 @@ Class(CV.UI, 'Modal').inherits(Widget).includes(CV.WidgetUtils)({
                     <div class="header">\
                         <h3 class="title"></h3>\
                         <div class="line"></div>\
-                        <svg class="close">\
-                            <use xlink:href="#svg-close"></use>\
-                        </svg>\
                     </div>\
                     <div class="body-wrapper">\
                         <div class="body -clear-after"></div>\
@@ -31,26 +28,29 @@ Class(CV.UI, 'Modal').inherits(Widget).includes(CV.WidgetUtils)({
         modalElement : null,
         isAdmin : null,
 
-
         init : function(config){
             Widget.prototype.init.call(this, config);
             this.el = this.element[0];
 
             this.innerElement = this.el.querySelector('.cv-modal__inner');
             this.modalElement = this.el.querySelector('.cv-modal');
-            this.closeElement = this.el.querySelector('.close');
 
             this.appendChild(new this.action({
                 data : this.data,
                 name : 'bubbleAction',
-                isAdmin : this.isAdmin,
-
+                isAdmin : this.isAdmin
             })).render(this.el.querySelector('.body'));
 
             this._setup()._bindEvents();
         },
 
         _setup : function _setup() {
+            this.appendChild(new CV.UI.Close({
+                name : 'closeButton',
+                className : '-abs -color-bg-white',
+                svgClassName : '-s16'
+            })).render(this.el.querySelector('.header'));
+
             if (this.width) {
                 this.modalElement.style.width = this.width + 'px';
             }
@@ -65,7 +65,7 @@ Class(CV.UI, 'Modal').inherits(Widget).includes(CV.WidgetUtils)({
 
             this.bubbleAction.bind('close', this._destroyRef);
             Events.on(this.innerElement, 'click', this._clickHandlerRef);
-            Events.on(this.closeElement, 'click', this._destroyRef);
+            this.closeButton.bind('click', this._destroyRef);
             return this;
         },
 
@@ -83,10 +83,9 @@ Class(CV.UI, 'Modal').inherits(Widget).includes(CV.WidgetUtils)({
         },
 
         destroy : function destroy() {
-            Widget.prototype.destroy.call(this);
             Events.off(this.innerElement, 'click', this._clickHandlerRef);
-            Events.off(this.closeElement, 'click', this._destroyRef);
-            this._destroyRef = this.closeElement = this.modalElement = this.el = null;
+            this._destroyRef = this.modalElement = this.el = null;
+            Widget.prototype.destroy.call(this);
             return false;
         }
     }

@@ -1,3 +1,12 @@
+/* Class ManageContributors
+ * Handles the Voice Contributors (search-people/add/remove) for a voice.
+ * It should receive a `contributors` Array via data to display the current
+ * contributors lists. That array will be passed to the ManageContributorsList
+ * widget to render them.
+ * This Widget also acts as a Controller because it will listen for when a
+ * contributor gets removed and it will also handle when a new contributor gets
+ * added.
+ */
 var Events = require('./../../../lib/events');
 var API = require('./../../../lib/api');
 var GeminiScrollbar = require('gemini-scrollbar');
@@ -23,15 +32,25 @@ Class(CV, 'ManageContributors').inherits(Widget)({
 
     prototype : {
         data : {
-            /* UserEntities Models
-             * @property users <required> [Array]
+            /* Current Voice Model.
+             * @property voice <required> [Object]
              */
-            users : null
+            voice : null,
+            /* ContributorsEntities Models
+             * @property contributors <required> [Array]
+             */
+            contributors : null
         },
 
         /* Holds the data of the selected user.
          */
         _selectedUser : null,
+
+        /* Array of contributors ids (plus currentUser id).
+         * Used to exclude this users from searchPeople results.
+         * @property _contributorIds <private>
+         */
+        _contributorIds : null,
 
         init : function(config){
             Widget.prototype.init.call(this, config);
@@ -53,9 +72,14 @@ Class(CV, 'ManageContributors').inherits(Widget)({
          * @return ManageRelatedVoices
          */
         _setup : function _setup() {
-            if (!this.data.users) {
-                throw Error('ManageContributors require data.users Array.');
+            if (!this.data.contributors) {
+                throw Error('ManageContributors require data.contributors Array.');
             }
+
+            this._contributorIds = this.data.contributors.map(function(user) {
+                return user.id;
+            });
+            this._contributorIds.push(this.data.voice.owner.id);
 
             this.appendChild(new CV.UI.InputButton({
                 name : 'searchInput',
@@ -88,22 +112,33 @@ Class(CV, 'ManageContributors').inherits(Widget)({
             this.appendChild(new CV.ManageContributorsList({
                 name : 'list',
                 data : {
-                    users : this.data.users
+                    contributors : this.data.contributors
                 }
             })).render(this.el.querySelector('[data-contributors-list]'));
 
             return this;
         },
 
+        /* Subscribe its events.
+         * @method _bindEvents <private>
+         * @return ManageContributors
+         */
         _bindEvents : function _bindEvents() {
             this._searchKeyUpHandlerRef = this._searchKeyUpHandler.bind(this);
             Events.on(this.searchInput.input.el, 'keyup', this._searchKeyUpHandlerRef);
 
             this._setSelectedUserRef = this._setSelectedUser.bind(this);
             this.searchInput.bind('results:item:clicked', this._setSelectedUserRef);
+
+            this._inviteClickHandlerRef = this._inviteClickHandler.bind(this);
+            Events.on(this.searchInput.button.el, 'click', this._inviteClickHandlerRef);
+
+            return this;
         },
 
-        /* Search Input Key Up Handler. Checks if we should call the searchVoices API endpoint.
+        /* Search Input Key Up Handler. Checks if we should call the
+         * searchPeople API endpoint.
+         * @method _searchKeyUpHandler <private> [Function]
          */
         _searchKeyUpHandler : function  _searchKeyUpHandler(ev) {
             if (ev.which === 40 || ev.which === 38 || ev.which === 13) {
@@ -118,28 +153,27 @@ Class(CV, 'ManageContributors').inherits(Widget)({
             this.searchInput.button.disable();
             this._selectedUser = null;
 
-            API.searchVoices({
+            API.searchPeople({
                 query : searchString,
-                exclude : []
+                exclude : this._contributorIds
             }, this._searchUsersResponseHandler.bind(this));
         },
 
         /* Handles the searchUsers API response.
+         * @method _searchUsersResponseHandler <private> [Function]
+         * @return undefined
          */
         _searchUsersResponseHandler : function _searchUsersResponseHandler(err, res) {
-            console.log(err);
-            console.log(res);
-
             this.searchInput.results.deactivate().clear();
 
-            if (!res.voices.length) {
+            if (!res.people.length) {
                 return;
             }
 
-            res.voices.forEach(function(voice) {
+            res.people.forEach(function(user) {
                 this.searchInput.results.add({
-                    element : new CV.VoiceCoverMiniClean({data: voice}).el,
-                    data : voice
+                    element : new CV.CardMiniClean({data: user}).el,
+                    data : user
                 });
             }, this);
 
@@ -147,13 +181,57 @@ Class(CV, 'ManageContributors').inherits(Widget)({
         },
 
         /* Sets the this._selectedUser data.
+         * @method _setSelectedUser <private> [Function]
+         * @return undefined
          */
         _setSelectedUser : function _setSelectedUser(ev) {
             this._selectedUser = ev.data;
+            var userName = ev.data.name + ' ' + ev.data.lastname;
 
             this.searchInput.button.enable();
-            this.searchInput.input.setValue(ev.data.title);
+            this.searchInput.input.setValue(userName);
             this.searchInput.results.deactivate().clear();
+        },
+
+        /* Sends an invitation to _selectedUser to become a voice contributor.
+         * @method _inviteClickHandler <private> [Function]
+         * @return undefined
+         */
+        _inviteClickHandler : function _inviteClickHandler() {
+            this.searchInput.button.disable();
+
+            if (!this._selectedUser) {
+                return;
+            }
+
+            API.voiceInviteToContribute({
+                profileName : this.data.voice.owner.profileName,
+                voiceSlug : this.data.voice.slug,
+                data : {
+                    personId : this._selectedUser.id,
+                    message : this.message.getValue()
+                }
+            }, this._inviteToContributeResponseHandler.bind(this));
+        },
+
+        /* Handles the inviteToContibute API response.
+         * @method _inviteToContributeResponseHandler <private> [Function]
+         * @return undefined
+         */
+        _inviteToContributeResponseHandler : function _inviteToContributeResponseHandler(err, res) {
+            console.log(err);
+            console.log(res);
+
+            if (err) {
+                this.searchInput.button.enable();
+                return;
+            }
+
+            this._contributorIds.push(this._selectedUser.id);
+            this.searchInput.input.setValue('');
+            this.list.addUser(this._selectedUser);
+            this.scrollbar.update();
+            this._selectedUser = null;
         },
 
         destroy : function destroy() {
@@ -164,6 +242,9 @@ Class(CV, 'ManageContributors').inherits(Widget)({
             if (this.searchInput) {
                 Events.off(this.searchInput.input.el, 'keyup', this._searchKeyUpHandlerRef);
                 this._searchKeyUpHandlerRef = null;
+
+                Events.off(this.searchInput.button.el, 'click', this._inviteClickHandlerRef);
+                this._inviteClickHandlerRef = null;
             }
 
             Widget.prototype.destroy.call(this);

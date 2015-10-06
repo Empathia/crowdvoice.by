@@ -33,7 +33,7 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
         /* layer offset left to perform hit-test on layer elements
          * sidebar = 60, main-container-padding-left = 40
          */
-        _layersOffsetLeft : 100,
+        _layersOffsetLeft : 70,
 
         LAYER_CLASSNAME : 'cv-voice-posts-layer__detector',
 
@@ -79,7 +79,9 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
                 allowPostEditing : this.allowPostEditing,
                 voiceScrollableArea : this.scrollableArea,
                 postCount : this.postCount,
-                followerCount : this.followerCount
+                followerCount : this.followerCount,
+                relatedVoices : this.relatedVoices,
+                contributors : this.contributors
             })).render(document.querySelector('.cv-main-header'));
 
             this.appendChild(new CV.VoiceHeader({

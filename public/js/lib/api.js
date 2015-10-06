@@ -214,6 +214,57 @@ module.exports = {
         });
      },
 
+    /* Invite user to become contributor of voice.
+     * @argument args.profileName <required> [String] the voice owner profileName
+     * @argument args.voiceSlug <required> [String] the voice slug
+     * @argument args.data.personId <required> [String] ID of new contributor
+     * @argument args.data.message <required> [Text] text message to send to contributor
+     * @argument callback <required> [Function]
+     */
+     voiceInviteToContribute : function voiceInviteToContribute(args, callback) {
+        if (!args.profileName || !args.voiceSlug || !args.data.personId || !args.data.message || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            method : 'POST',
+            url : '/' + args.profileName + '/' + args.voiceSlug + '/inviteToContribute',
+            headers : {'csrf-token': this.token},
+            data : args.data,
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
+     },
+
+    /* Removes contributor from voice.
+     * @argument args.profileName <required> [String] the voice owner profileName
+     * @argument args.voiceSlug <required> [String] the voice slug
+     * @argument args.data.personId <required> [String] ID of contributor to remove
+     * @argument callback <required> [Function]
+     */
+     voiceRemoveContributor : function voiceRemoveContributor(args, callback) {
+        if (!args.profileName || !args.voiceSlug || !args.data.personId || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            method : 'POST',
+            url : '/' + args.profileName + '/' + args.voiceSlug + '/removeContributor',
+            headers : {'csrf-token': this.token},
+            data : args.data,
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
+     },
+
     /**************************************************************************
      * POSTS
      *************************************************************************/
@@ -661,6 +712,34 @@ module.exports = {
         $.ajax({
             type : 'POST',
             url : '/search/voices',
+            headers : {'csrf-token' : this.token},
+            dataType : 'json',
+            data : {
+                query : args.query,
+                exclude : args.exclude || []
+            },
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
+    /* Get People results from a specified query
+     * @argument args.query <required> [String] the query string.
+     * @argument args.exclude <optional> [Array] Array of people hashids to exclude from the results.
+     * @argument callback <required> [Function]
+     */
+    searchPeople : function searchPeople(args, callback) {
+        if (!args.query || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'POST',
+            url : '/search/people',
             headers : {'csrf-token' : this.token},
             dataType : 'json',
             data : {
