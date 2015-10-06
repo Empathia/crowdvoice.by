@@ -734,8 +734,8 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
             // get a thread
             function (next) {
               MessageThread.findOrCreate({
-                senderPerson: response.currentPerson,
-                senderEntity: response.currentPerson,
+                senderPerson: response.owner,
+                senderEntity: response.owner,
                 receiverEntity: invited
               }, function (err, result) {
                 if (err) { return next(err); }
@@ -749,8 +749,8 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
             // make or find invitation request
             function (next) {
               invitationRequest = new InvitationRequest({
-                invitator_entity_id: response.currentPerson.id,
-                invited_entity_id: hashids.decode(req.body.personId)[0]
+                invitatorEntityId: response.owner.id,
+                invitedEntityId: hashids.decode(req.body.personId)[0]
               });
 
               invitationRequest.save(next);
@@ -760,7 +760,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
             function (next) {
               thread.createMessage({
                 type: 'invitation_voice',
-                senderPersonId: response.currentPerson.id,
+                senderPersonId: response.owner.id,
                 voiceId: response.voice.id,
                 invitationRequestId: invitationRequest.id,
                 message: req.body.message
