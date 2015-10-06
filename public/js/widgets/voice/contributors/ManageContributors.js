@@ -11,7 +11,7 @@ var Events = require('./../../../lib/events');
 var API = require('./../../../lib/api');
 var GeminiScrollbar = require('gemini-scrollbar');
 
-Class(CV, 'ManageContributors').inherits(Widget)({
+Class(CV, 'ManageContributors').inherits(Widget).includes(BubblingSupport)({
     ELEMENT_CLASS : 'cv-manage-contributors',
     HTML : '\
         <div>\
@@ -29,6 +29,8 @@ Class(CV, 'ManageContributors').inherits(Widget)({
                 </div>\
             </div>\
         </div>',
+
+    REMOVE_CONTRIBUTOR_EVENT_NAME : 'card-remove-action-clicked',
 
     prototype : {
         data : {
@@ -133,6 +135,9 @@ Class(CV, 'ManageContributors').inherits(Widget)({
             this._inviteClickHandlerRef = this._inviteClickHandler.bind(this);
             Events.on(this.searchInput.button.el, 'click', this._inviteClickHandlerRef);
 
+            this._removeContributorRef = this._removeContributor.bind(this);
+            this.bind(this.constructor.REMOVE_CONTRIBUTOR_EVENT_NAME, this._removeContributorRef);
+
             return this;
         },
 
@@ -219,9 +224,6 @@ Class(CV, 'ManageContributors').inherits(Widget)({
          * @return undefined
          */
         _inviteToContributeResponseHandler : function _inviteToContributeResponseHandler(err, res) {
-            console.log(err);
-            console.log(res);
-
             if (err) {
                 this.searchInput.button.enable();
                 return;
@@ -232,6 +234,37 @@ Class(CV, 'ManageContributors').inherits(Widget)({
             this.list.addUser(this._selectedUser);
             this.scrollbar.update();
             this._selectedUser = null;
+
+            this.dispatch('collaborator-added');
+        },
+
+        _removeContributor : function _removeContributor(ev) {
+            ev.stopPropagation();
+
+            var widget = ev.data;
+            widget.removeButton.disable();
+
+            API.voiceRemoveContributor({
+                profileName : this.data.voice.owner.profileName,
+                voiceSlug : this.data.voice.slug,
+                data : {personId : widget.data.id}
+            }, this._removeContributorResponseHandler.bind(this, widget));
+        },
+
+        _removeContributorResponseHandler : function _removeContributorResponseHandler(widget, err, res) {
+            if (err) {
+                widget.removeButton.enable();
+                return;
+            }
+
+            var index = this._contributorIds.indexOf(widget.data.id);
+            if (index > -1) {
+                this._contributorIds.splice(index, 1);
+            }
+            this.list.removeUser(widget);
+            this.scrollbar.update();
+
+            this.dispatch('collaborator-removed');
         },
 
         destroy : function destroy() {
