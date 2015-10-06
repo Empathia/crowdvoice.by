@@ -82,7 +82,7 @@ Class(CV.UI, 'CurrentPersonEntitiesCheckboxes').inherits(Widget)({
 
             this.appendChild(new CV.UI.Button({
                 name : 'doneButton',
-                className : 'tiny -m0',
+                className : 'tiny primary -m0 -block',
                 data : {value: 'Done'}
             })).render(this.buttonRow.element[0]);
 
