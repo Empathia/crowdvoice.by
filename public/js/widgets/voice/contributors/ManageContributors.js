@@ -161,7 +161,7 @@ Class(CV, 'ManageContributors').inherits(Widget)({
 
             res.people.forEach(function(user) {
                 this.searchInput.results.add({
-                    element : new CV.CardMini({data: user}).el,
+                    element : new CV.CardMiniClean({data: user}).el,
                     data : user
                 });
             }, this);
