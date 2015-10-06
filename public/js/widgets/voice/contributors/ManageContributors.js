@@ -11,14 +11,16 @@ var Events = require('./../../../lib/events');
 var API = require('./../../../lib/api');
 var GeminiScrollbar = require('gemini-scrollbar');
 
-Class(CV, 'ManageContributors').inherits(Widget)({
+Class(CV, 'ManageContributors').inherits(Widget).includes(CV.WidgetUtils)({
     ELEMENT_CLASS : 'cv-manage-contributors',
     HTML : '\
         <div>\
             <div data-main></div>\
             <div data-list-wrapper>\
                 <div class="form-field -mt2">\
-                    <label><span data-contributors-count>0</span> contributors of the “<span data-voice-name>voice-name</span>”</label>\
+                    <label>\
+                        <div data-contributors-count class="-inline-block">0</div> contributors of “<div class="-inline-block" data-voice-name>voice-name</div>”\
+                    </label>\
                 </div>\
                 <div>\
                     <div class="cv-manage-contributors__list">\
@@ -53,10 +55,12 @@ Class(CV, 'ManageContributors').inherits(Widget)({
          * @property _contributorIds <private>
          */
         _contributorIds : null,
+        _contributorsLength : 0,
 
-        init : function(config){
+        init : function(config) {
             Widget.prototype.init.call(this, config);
             this.el = this.element[0];
+            this.counterLabelElement = this.el.querySelector('[data-contributors-count]');
             this._setup()._bindEvents();
         },
 
@@ -82,6 +86,10 @@ Class(CV, 'ManageContributors').inherits(Widget)({
                 return user.id;
             });
             this._contributorIds.push(this.data.voice.owner.id);
+
+            this._contributorsLength = this.data.contributors.length;
+            this.dom.updateText(this.el.querySelector('[data-voice-name]'), this.data.voice.title);
+            this.dom.updateText(this.counterLabelElement, this._contributorsLength);
 
             this.appendChild(new CV.UI.InputButton({
                 name : 'searchInput',
@@ -279,6 +287,8 @@ Class(CV, 'ManageContributors').inherits(Widget)({
                 this._contributorIds.splice(index, 1);
             }
             this.list.removeUser(widget);
+            this._contributorsLength--;
+            this.dom.updateText(this.counterLabelElement, this._contributorsLength);
             this.scrollbar.update();
 
             this.dispatch('collaborator-removed');
