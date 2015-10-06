@@ -1,6 +1,6 @@
 var Events = require('./../../../lib/events');
 
-Class(CV, 'ManageContributorsButton').inherits(CV.UI.Button).includes(BubblingSupport)({
+Class(CV, 'ManageContributorsButton').inherits(CV.UI.Button)({
     BUTTON_TEXT_TEMPLATE : 'Manage Contributors ({count})',
 
     prototype : {
@@ -31,13 +31,6 @@ Class(CV, 'ManageContributorsButton').inherits(CV.UI.Button).includes(BubblingSu
         _bindEvents : function _bindEvents() {
             this._clickHandlerRef = this._clickHandler.bind(this);
             Events.on(this.el, 'click', this._clickHandlerRef);
-
-            this._collaboratorRemovedListenerRef = this._collaboratorRemovedListener.bind(this);
-            this.bind('collaborator-removed', this._collaboratorRemovedListenerRef);
-
-            this._collaboratorAddedListenerRef = this._collaboratorAddedListener.bind(this);
-            this.bind('collaborator-added', this._collaboratorAddedListenerRef);
-
             return this;
         },
 
@@ -63,7 +56,10 @@ Class(CV, 'ManageContributorsButton').inherits(CV.UI.Button).includes(BubblingSu
         _clickHandler : function _clickHandler() {
             if (this.modal) {
                 this.modal = this.modal.destroy();
-                this.manageContributors = this.manageContributorsModalroy();
+
+                this.manageContributors.unbind('collaborator-removed', this._collaboratorRemovedListenerRef);
+                this._collaboratorRemovedListenerRef = null;
+                this.manageContributors = this.manageContributors.destroy();
             }
 
             this.appendChild(new CV.UI.Modal({
@@ -80,21 +76,21 @@ Class(CV, 'ManageContributorsButton').inherits(CV.UI.Button).includes(BubblingSu
                 }
             })).render(this.modal.bodyElement).setup();
 
+            this._collaboratorRemovedListenerRef = this._collaboratorRemovedListener.bind(this);
+            this.manageContributors.bind('collaborator-removed', this._collaboratorRemovedListenerRef);
+
             requestAnimationFrame(function() {
                 this.modal.activate();
             }.bind(this));
         },
 
-        _collaboratorAddedListener : function _collaboratorAddedListener() {
+        /* Listens when manageContributors reports a collaborator has been removed
+         * so it can update the button counter.
+         * @method _collaboratorRemovedListener <private> [Function]
+         * @return undefined
+         */
+        _collaboratorRemovedListener : function _collaboratorRemovedListener(ev) {
             ev.stopPropagation();
-            console.log('collaborator-added');
-            this._totalContributors++;
-            this._updateButtonText(this._totalContributors);
-        },
-
-        _collaboratorRemovedListener : function _collaboratorRemovedListener() {
-            ev.stopPropagation();
-            console.log('collaborator-removed');
             this._totalContributors--;
             this._updateButtonText(this._totalContributors);
         },

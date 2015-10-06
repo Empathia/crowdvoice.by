@@ -11,7 +11,7 @@ var Events = require('./../../../lib/events');
 var API = require('./../../../lib/api');
 var GeminiScrollbar = require('gemini-scrollbar');
 
-Class(CV, 'ManageContributors').inherits(Widget).includes(BubblingSupport)({
+Class(CV, 'ManageContributors').inherits(Widget)({
     ELEMENT_CLASS : 'cv-manage-contributors',
     HTML : '\
         <div>\
@@ -224,6 +224,8 @@ Class(CV, 'ManageContributors').inherits(Widget).includes(BubblingSupport)({
          * @return undefined
          */
         _inviteToContributeResponseHandler : function _inviteToContributeResponseHandler(err, res) {
+            console.log(res);
+
             if (err) {
                 this.searchInput.button.enable();
                 return;
@@ -231,11 +233,18 @@ Class(CV, 'ManageContributors').inherits(Widget).includes(BubblingSupport)({
 
             this._contributorIds.push(this._selectedUser.id);
             this.searchInput.input.setValue('');
-            this.list.addUser(this._selectedUser);
-            this.scrollbar.update();
             this._selectedUser = null;
 
-            this.dispatch('collaborator-added');
+            if (this._flashMessage) {
+                this._flashMessage = this._flashMessage.destroy();
+            }
+
+            this.appendChild(new CV.Alert({
+                name : '_flashMessage',
+                type : 'positive',
+                text : "Invitation was sent, the user will see it on the message box.",
+                className : '-mb1'
+            })).render(this.el, this.el.firstElementChild);
         },
 
         _removeContributor : function _removeContributor(ev) {
@@ -252,6 +261,8 @@ Class(CV, 'ManageContributors').inherits(Widget).includes(BubblingSupport)({
         },
 
         _removeContributorResponseHandler : function _removeContributorResponseHandler(widget, err, res) {
+            console.log(res);
+
             if (err) {
                 widget.removeButton.enable();
                 return;
