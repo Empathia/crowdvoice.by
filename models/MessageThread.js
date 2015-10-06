@@ -388,21 +388,21 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
           if (params.type === 'message') {
             NotificationMailer.newMessage(user[0], {
               thread: thread,
-              message: message,
+              message: message
             }, function (err) {
               callback(err, message);
             });
           } else if (params.type.match(/request_(voice|organization)/)) {
-            NotificationMailer.newInvitation(user[0], {
+            NotificationMailer.newRequest(user[0], {
               thread: thread,
-              message: message,
+              message: message
             }, function (err) {
               callback(err, message);
             });
           } else if (params.type.match(/invitation_(voice|organization)/)) {
-            NotificationMailer.newRequest(user[0], {
+            NotificationMailer.newInvitation(user[0], {
               thread: thread,
-              message: message,
+              message: message
             }, function (err) {
               callback(err, message);
             });
