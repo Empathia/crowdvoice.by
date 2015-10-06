@@ -1,4 +1,3 @@
-/* jshint multistr: true */
 /* Mini Card Widget.
  * @argument person <required> [Object]
  * @argument person.avatar <required> [String]
