@@ -817,7 +817,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
     archiveVoice: function (req, res, next) {
       ACL.isAllowed('archiveVoice', 'voices', req.role, {
-        currentPersonId: req.currentPerson.id,
+        currentPerson: req.currentPerson,
         voiceId: req.activeVoice.id
       }, function (err, isAllowed) {
         if (err) { return next(err); }
@@ -827,7 +827,6 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         }
 
         var voice = new Voice(req.activeVoice);
-        voice.id = hashids.decode(voice.id)[0];
 
         voice.status = Voice.STATUS_ARCHIVED;
 
@@ -870,8 +869,8 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
             return res.json({ status: 'already a related voice' });
           } else {
             var newRelation = new RelatedVoice({
-              voice_id: req.activeVoice.id,
-              related_id: hashids.decode(req.body.relatedVoiceId)[0]
+              voiceId: req.activeVoice.id,
+              relatedId: hashids.decode(req.body.relatedVoiceId)[0]
             });
 
             newRelation.save(function (err) {
@@ -910,7 +909,9 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           if (relatedVoice.length < 1) {
             return res.json({ status: 'not a related voice' });
           } else {
-            relatedVoice[0].destroy(function (err) {
+            var relatedVoiceToDestroy = new RelatedVoice(relatedVoice[0]);
+
+            relatedVoiceToDestroy.destroy(function (err) {
               if (err) { return next(err); }
 
               return res.json({ status: 'removed related voice' });

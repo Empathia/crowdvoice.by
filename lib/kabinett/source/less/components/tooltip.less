@@ -26,7 +26,7 @@
   border-color: @root-text-color;
   border-radius: @tooltip-radius;
 
-  &:after {
+  &::after {
     content: '';
     position: absolute;
     border-width: @tooltip-arrow-size;
@@ -38,36 +38,42 @@
 
   /** ===== MODIFIERS ===== */
 
-  &@{-}top:after {
+  &@{-}top::after {
     top: 100%;
     left: 50%;
     margin-left: unit(-@tooltip-arrow-size, px);
     border-top-color: inherit;
   }
 
-  &@{-}top-right:after {
+  &@{-}top-right::after {
     top: 100%;
     margin-left: unit(-@tooltip-arrow-size, px);
     border-top-color: inherit;
   }
 
-  &@{-}right:after {
+  &@{-}right::after {
     right: 100%;
     top: 50%;
     margin-top: unit(-@tooltip-arrow-size, px);
     border-right-color: inherit;
   }
 
-  &@{-}left:after {
+  &@{-}left::after {
     left: 100%;
     top: 50%;
     margin-top: unit(-@tooltip-arrow-size, px);
     border-left-color: inherit;
   }
 
-  &@{-}bottom:after {
+  &@{-}bottom::after {
     bottom: 100%;
     left: 50%;
+    margin-left: unit(-@tooltip-arrow-size, px);
+    border-bottom-color: inherit;
+  }
+
+  &@{-}bottom-right::after {
+    bottom: 100%;
     margin-left: unit(-@tooltip-arrow-size, px);
     border-bottom-color: inherit;
   }
@@ -109,6 +115,12 @@
       left: 50%;
       top: 100%;
       transform: translate(-50%, 10px);
+    }
+
+    &@{-}bottom-right {
+      right: 0;
+      top: 100%;
+      transform: translate(0, 10px);
     }
 
     &@{-}left {

@@ -132,13 +132,14 @@ Class(CV, 'VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
          */
         _addActions : function _addActions() {
             if (!Person.get()) {
-                return void 0;
+                return;
             }
 
             if (Person.memberOf('voice', this.data.id)) {
                 this.appendChild(new CV.VoiceCoverActions({
                     name : 'actions',
-                    voiceEntity : this.data
+                    voiceEntity : this.data,
+                    className : '-mt1'
                 })).render(this.el.querySelector('.voice-content'));
             }
 

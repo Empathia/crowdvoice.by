@@ -8,12 +8,15 @@ Class(CV, 'VoiceCoverActions').inherits(Widget).includes(CV.WidgetUtils)({
 
             this.appendChild(new CV.VoiceCoverActionsEdit({
                 name : 'edit',
-                voiceEntity : this.voiceEntity
+                voiceEntity : this.voiceEntity,
+                data : {value: 'Edit'}
             })).render(this.el);
 
-            // this.appendChild(new CV.VoiceCoverActionsDelete({
-            //     name : 'delete'
-            // })).render(this.el);
+            this.appendChild(new CV.VoiceCoverActionsArchive({
+                name : 'archive',
+                voiceEntity : this.voiceEntity,
+                data : {value: 'Archive'}
+            })).render(this.el);
         }
     }
 });

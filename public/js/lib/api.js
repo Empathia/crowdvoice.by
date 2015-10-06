@@ -63,6 +63,31 @@ module.exports = {
         });
     },
 
+    /* Archives an existing Voice.
+     * @argument args.profileName <required> [String] the voice owner profileName
+     * @argument args.voiceSlug <required> [String] the voice slug
+     * @argument callback <required> [Function]
+     */
+     voiceArchive : function voiceArchive (args, callback) {
+        if (!args.profileName || !args.voiceSlug || !callback){
+            throw new Error('Missing required params');
+        }
+        if ((typeof callback).toLowerCase() !== "function"){
+            throw new Error ('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'POST',
+            url : '/' + args.profileName + '/' + args.voiceSlug +'/archive?_method=PUT',
+            headers : {'csrf-token' : this.token},
+            cache : false,
+            data : {},
+            contentType : 'json',
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
+     },
+
     /* Follow/Unfollow Voice.
      * @argument args.profileName <required> [String] the voice owner profileName
      * @argument args.voiceSlug <required> [String] the voice slug
@@ -138,6 +163,56 @@ module.exports = {
             error : function error(err) { callback(true, err); }
         });
     },
+
+    /* Adds a voice as related to other voice.
+     * @argument args.profileName <required> [String] the voice owner profileName
+     * @argument args.voiceSlug <required> [String] the voice slug
+     * @argument args.data.relatedVoiceId <required> [String] the id of the voice to add
+     * @argument callback <required> [Function]
+     */
+    voiceAddRelatedVoice : function voiceAddRelatedVoice(args, callback) {
+        if (!args.profileName || !args.voiceSlug || !args.data.relatedVoiceId || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            method : 'POST',
+            url : '/' + args.profileName + '/' + args.voiceSlug + '/manageRelatedVoices',
+            headers : {'csrf-token': this.token},
+            data : args.data,
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
+    },
+
+    /* Removes relationship between one voice and other voice.
+     * @argument args.profileName <required> [String] the voice owner profileName
+     * @argument args.voiceSlug <required> [String] the voice slug
+     * @argument args.data.relatedVoiceId <required> [String] the id of the voice to add
+     * @argument callback <required> [Function]
+     */
+    voiceRemoveRelatedVoice : function voiceRemoveRelatedVoice(args, callback) {
+        if (!args.profileName || !args.voiceSlug || !args.data.relatedVoiceId || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            method : 'POST',
+            url : '/' + args.profileName + '/' + args.voiceSlug + '/manageRelatedVoices?_method=DELETE',
+            headers : {'csrf-token': this.token},
+            data : args.data,
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
+     },
 
     /**************************************************************************
      * POSTS

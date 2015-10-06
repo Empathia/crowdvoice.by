@@ -7,7 +7,8 @@
   &.-top .ui-dropdown__body {
     bottom: 100%;
     top: initial;
-    transform: translateY(20%);
+    transform: translateY(20px);
+    transform: translate3d(0, 20px, 0);
   }
 
   &.active {
@@ -15,6 +16,7 @@
       visibility: visible;
       opacity: 1;
       transform: translateY(0);
+      transform: translate3d(0, 0, 0);
       transition-duration: 400ms;
     }
     .ui-dropdown-arrow {transform: rotate(180deg)}
@@ -45,7 +47,8 @@
   margin-top: 1px;
   border-width: 1px;
   padding: 7px 0;
-  transform: translateY(-20%);
+  transform: translateY(-20px);
+  transform: translate3d(0, -20px, 0);
   background-color: @color-white;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
   border-radius: 3px;
