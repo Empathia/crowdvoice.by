@@ -34,7 +34,7 @@ require('./lib/responsive-width');
 require('./app');
 
 // Global Widgets
-require('./widgets/ui/modal');
+require('./widgets/ui/Modal');
 require('./widgets/ui/Input');
 require('./widgets/ui/Button');
 require('./widgets/ui/Checkbox');
