@@ -349,7 +349,6 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
      *    type : //
      *    invitationRequestId,
      *    voiceId,
-     *    organizationId,
      *    message
      *  }
      * @return null
