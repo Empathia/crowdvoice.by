@@ -79,7 +79,9 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
                 allowPostEditing : this.allowPostEditing,
                 voiceScrollableArea : this.scrollableArea,
                 postCount : this.postCount,
-                followerCount : this.followerCount
+                followerCount : this.followerCount,
+                relatedVoices : this.relatedVoices,
+                contributors : this.contributors
             })).render(document.querySelector('.cv-main-header'));
 
             this.appendChild(new CV.VoiceHeader({

@@ -92,13 +92,18 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
                 name : 'relatedVoicesButton',
                 voice : this.voice,
                 className : 'tiny',
-                relatedVoices : App.Voice.relatedVoices
+                relatedVoices : this.relatedVoices
             })).render(relatedVoicesDiv);
             this.actionsColumn.appendChild(relatedVoicesDiv);
 
             if (Person.is(this.voice.owner.id)) {
                 this.appendChild(new CV.ManageContributorsButton({
-                    name : 'manageContributors'
+                    name : 'manageContributors',
+                    className : 'tiny',
+                    data : {
+                        value: 'Manage Contributors',
+                        contributors : this.contributors
+                    }
                 })).render(this.actionsColumn);
             }
 
