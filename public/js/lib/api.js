@@ -214,6 +214,57 @@ module.exports = {
         });
      },
 
+    /* Invite user to become contributor of voice.
+     * @argument args.profileName <required> [String] the voice owner profileName
+     * @argument args.voiceSlug <required> [String] the voice slug
+     * @argument args.data.personId <required> [String] ID of new contributor
+     * @argument args.data.message <required> [Text] text message to send to contributor
+     * @argument callback <required> [Function]
+     */
+     voiceInviteToContibute : function voiceInviteToContibute(args, callback) {
+        if (!args.profileName || !args.voiceSlug || !args.data.personId || !args.data.message || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            method : 'POST',
+            url : '/' + args.profileName + '/' + args.voiceSlug + '/inviteToContibute',
+            headers : {'csrf-token': this.token},
+            data : args.data,
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
+     },
+
+    /* Removes contributor from voice.
+     * @argument args.profileName <required> [String] the voice owner profileName
+     * @argument args.voiceSlug <required> [String] the voice slug
+     * @argument args.data.personId <required> [String] ID of contributor to remove
+     * @argument callback <required> [Function]
+     */
+     voiceRemoveContributor : function voiceRemoveContributor(args, callback) {
+        if (!args.profileName || !args.voiceSlug || !args.data.personId || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            method : 'POST',
+            url : '/' + args.profileName + '/' + args.voiceSlug + '/removeContributor',
+            headers : {'csrf-token': this.token},
+            data : args.data,
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
+     },
+
     /**************************************************************************
      * POSTS
      *************************************************************************/
