@@ -221,7 +221,7 @@ module.exports = {
      * @argument args.data.message <required> [Text] text message to send to contributor
      * @argument callback <required> [Function]
      */
-     voiceInviteToContibute : function voiceInviteToContibute(args, callback) {
+     voiceInviteToContribute : function voiceInviteToContribute(args, callback) {
         if (!args.profileName || !args.voiceSlug || !args.data.personId || !args.data.message || !callback) {
             throw new Error('Missing required params');
         }
@@ -232,7 +232,7 @@ module.exports = {
 
         $.ajax({
             method : 'POST',
-            url : '/' + args.profileName + '/' + args.voiceSlug + '/inviteToContibute',
+            url : '/' + args.profileName + '/' + args.voiceSlug + '/inviteToContribute',
             headers : {'csrf-token': this.token},
             data : args.data,
             success : function success(data) { callback(false, data); },
