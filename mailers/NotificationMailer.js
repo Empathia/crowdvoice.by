@@ -54,35 +54,46 @@ var NotificationMailer = Module('NotificationMailer')({
 
   // Send notification about new message
   newMessage: function (user, info, callback) {
-    // FIRST OUR LOGIC GOES HERE:
     // CHECK IF THERE'S BEEN A MESSAGE WITHIN THE LAST 24 HOURS BY THE SAME
     // USER TO THE SAME USER, IF YES THEN DON'T SEND MESSAGE, IF NOT THEN DO.
 
-    Message.find(['thread_id = ? AND receiver_entity_id = ? ORDER BY created_at ASC LIMIT ?', [info.message.threadId, info.message.receiverEntityId, 2]], function (err, messages) {
+    // get newest message that was sent to the receiver that is not the message
+    // we just sent and that is part of the same thread
+    Message.find(['thread_id = ? AND receiver_entity_id = ? ORDER BY created_at DESC LIMIT ?',
+                 [info.message.threadId, info.message.receiverEntityId, 2]], function (err, messages) {
       if (err) { return callback(err); }
 
-      var isSender = new MessageThread(info.thread).isPersonSender(user.entityId),
-        isUnread
+      var isSender = new MessageThread(info.thread).isPersonSender(user.entityId)
+        isReceiver = !isSender,
+        isUnread = false
 
       if (isSender && info.thread.lastSeenSender === null) {
         isUnread = true
-      } else if (!isSender && info.thread.lastSeenReceiver === null) {
+      } else if (isReceiver && info.thread.lastSeenReceiver === null) {
         isUnread = true
       }
 
       if (!isUnread) {
-        isUnread = (moment(messages[1].createdAt).format('X') > moment(thread.['lastSeen' + (isSender ? 'Sender' : 'Receiver').format('X')]))
+        isUnread = (
+          // message createdAt is newer than
+          moment(messages[1].createdAt).format('X')
+          >
+          // last read by involved party
+          moment(info.thread['lastSeen' + (isSender ? 'Sender' : 'Receiver')]).format('X')
+        )
       }
 
-      // oh wait it's not read, well was it within the last 24 hours?
+      // oh wait it's not read, well was it sent within the last 24 hours?
       if (isUnread) {
-        var time = moment().diff(moment(message.createdAt), 'hours')
+        var time = moment().diff(moment(messages[0].createdAt), 'hours')
 
         // too soon, let's bail
         if (time <= 24) {
           return callback()
         }
       }
+
+      // SEND EMAIL LIKE NORMAL
 
       var template = new Thulium({ template: newMessageViewFile }),
         message = {
