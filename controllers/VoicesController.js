@@ -909,7 +909,9 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           if (relatedVoice.length < 1) {
             return res.json({ status: 'not a related voice' });
           } else {
-            relatedVoice[0].destroy(function (err) {
+            var relatedVoiceToDestroy = new RelatedVoice(relatedVoice[0]);
+
+            relatedVoiceToDestroy.destroy(function (err) {
               if (err) { return next(err); }
 
               return res.json({ status: 'removed related voice' });
