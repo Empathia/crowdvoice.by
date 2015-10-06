@@ -102,6 +102,7 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
                     className : 'tiny',
                     data : {
                         value: 'Manage Contributors',
+                        voice : this.voice,
                         contributors : this.contributors
                     }
                 })).render(this.actionsColumn);

@@ -2,7 +2,7 @@ Class(CV, 'ManageContributorsList').inherits(Widget)({
     ELEMENT_CLASS : 'cv-manage-contributors-list',
     prototype : {
         data : {
-            users : null
+            contributors : null
         },
         _index: 0,
 
@@ -13,13 +13,13 @@ Class(CV, 'ManageContributorsList').inherits(Widget)({
         },
 
         _setup : function _setup() {
-            this.data.users.forEach(this.addUser, this);
+            this.data.contributors.forEach(this.addUser, this);
             return this;
         },
 
         addUser : function addUser(user) {
             this._index++;
-            this.appendChild(new CV.VoiceCoverMini({
+            this.appendChild(new CV.CardMini({
                 name : 'user_' + this._index,
                 className : 'cv-manage-contributors__list-item',
                 data : user
