@@ -100,7 +100,7 @@ Class(CV, 'ManageContributors').inherits(Widget)({
             })).render(this.el.querySelector('[data-main]')).button.disable();
 
             this.appendChild(new CV.UI.Input({
-                name : 'message',
+                name : 'messageInput',
                 data : {
                     label : 'Write a message',
                     inputClassName : '-lg -block',
@@ -203,6 +203,11 @@ Class(CV, 'ManageContributors').inherits(Widget)({
          * @return undefined
          */
         _inviteClickHandler : function _inviteClickHandler() {
+            if (this.messageInput.getValue().trim().length === 0) {
+                this.messageInput.error().getInput().focus();
+                return;
+            }
+
             this.searchInput.button.disable();
 
             if (!this._selectedUser) {
@@ -214,7 +219,7 @@ Class(CV, 'ManageContributors').inherits(Widget)({
                 voiceSlug : this.data.voice.slug,
                 data : {
                     personId : this._selectedUser.id,
-                    message : this.message.getValue()
+                    message : this.messageInput.getValue()
                 }
             }, this._inviteToContributeResponseHandler.bind(this));
         },
@@ -233,6 +238,7 @@ Class(CV, 'ManageContributors').inherits(Widget)({
 
             this._contributorIds.push(this._selectedUser.id);
             this.searchInput.input.setValue('');
+            this.messageInput.setValue('');
             this._selectedUser = null;
 
             if (this._flashMessage) {
