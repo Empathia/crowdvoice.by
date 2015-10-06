@@ -134,6 +134,14 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
         setContent : function setContent(content) {
             this.contentElement.innerHTML = "";
 
+            if (typeof content === 'function') {
+                this.appendChild(new content({
+                    name : 'bubbleAction',
+                    data : this.data
+                })).render(this.contentElement);
+                return this;
+            }
+
             if ((typeof content).toLowerCase() === 'string') {
                 this.contentElement.insertAdjacentHTML('afterbegin', content);
                 return this;
