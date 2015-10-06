@@ -96,14 +96,15 @@ require('./widgets/tabs/tab-nav');
 require('./widgets/tabs/tab-content');
 
 // components
-require('./widgets/cards/card');
-require('./widgets/cards/mini');
-require('./widgets/cards/action-follow');
-require('./widgets/cards/action-message');
-require('./widgets/cards/action-invite-to');
-require('./widgets/cards/action-join');
-require('./widgets/cards/popover-unfollow');
-require('./widgets/cards/popover-invite-to');
+require('./widgets/cards/Card');
+require('./widgets/cards/CardMini');
+require('./widgets/cards/CardMiniClean');
+require('./widgets/cards/CardActionFollow');
+require('./widgets/cards/CardActionMessage');
+require('./widgets/cards/CardActionInvite');
+require('./widgets/cards/CardActionJoin');
+require('./widgets/cards/CardUnfollowPopover');
+require('./widgets/cards/CardInviteToPopover');
 
 require('./widgets/voice-cover/VoiceCover');
 require('./widgets/voice-cover/VoiceCoverMini');
