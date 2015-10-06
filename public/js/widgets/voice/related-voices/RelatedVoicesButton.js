@@ -70,8 +70,6 @@ Class(CV, 'RelatedVoicesButton').inherits(CV.UI.Button)({
                         voice : this.voice
                     }
                 })).render(document.body);
-
-                this.relatedVoicesModal.bubbleAction.setup();
             } else {
                 this.appendChild(new CV.PopoverBlocker({
                     name : 'relatedVoicesModal',
@@ -79,15 +77,16 @@ Class(CV, 'RelatedVoicesButton').inherits(CV.UI.Button)({
                     placement : 'bottom',
                     showCloseButton : true,
                     className : 'voice-related-voices-bubble',
-                    content : new CV.ManageRelatedVoices({
-                        data : {
-                            relatedVoices : this.relatedVoices,
-                            editMode : false,
-                            voice : this.voice
-                        }
-                    }).el,
+                    content : CV.ManageRelatedVoices,
+                    data : {
+                        relatedVoices : this.relatedVoices,
+                        editMode : false,
+                        voice : this.voice
+                    }
                 })).render(this.el.parentElement).activate();
             }
+
+            this.relatedVoicesModal.bubbleAction.setup();
 
             requestAnimationFrame(function() {
                 this.relatedVoicesModal.activate();

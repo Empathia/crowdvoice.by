@@ -40,6 +40,7 @@ Class(CV, 'VoiceCoverMini').inherits(Widget).includes(CV.WidgetUtils)({
             this.el = this.element[0];
             this.authorAnchor = this.el.querySelector('.author-anchor');
             this.voiceAnchors = [].slice.call(this.el.querySelectorAll('[data-voice-anchor]'), 0);
+            this.actionsElement = this.el.querySelector('.action');
 
             this._setup();
         },
@@ -53,7 +54,7 @@ Class(CV, 'VoiceCoverMini').inherits(Widget).includes(CV.WidgetUtils)({
                 this.appendChild(new CV.VoiceCoverActions({
                     name : 'actions',
                     voiceEntity : this.data
-                })).render(this.el.querySelector('.action'));
+                })).render(this.actionsElement);
             }
         },
 

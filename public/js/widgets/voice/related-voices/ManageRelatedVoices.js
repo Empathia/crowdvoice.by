@@ -69,6 +69,8 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
                 element : this.el.querySelector('.cv-related-voices__list'),
                 createElements : false
             }).create();
+
+            return this;
         },
 
         /* Creates and appends its children.
@@ -109,7 +111,10 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
 
             this.appendChild(new CV.RelatedVoicesList({
                 name : 'list',
-                data : {voices : this.data.relatedVoices}
+                data : {
+                    voices : this.data.relatedVoices,
+                    editMode : this.data.editMode
+                }
             })).render(this.el.querySelector('[data-voices-list]'));
 
             return this;
@@ -128,7 +133,35 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
 
                 this._addVoiceClickHandlerRef = this._addVoiceClickHandler.bind(this);
                 Events.on(this.searchInput.button.el, 'click', this._addVoiceClickHandlerRef);
+
+                this._removeItemRef = this._removeItem.bind(this);
+                this.list.bind('related:voices:remove:item', this._removeItemRef);
             }
+        },
+
+        _removeItem : function _removeItem(ev) {
+            var widget = ev.widget;
+            var id = widget.data.id;
+
+            widget.button.disable();
+
+            API.voiceRemoveRelatedVoice({
+                profileName : this.data.voice.owner.profileName,
+                voiceSlug : this.data.voice.slug,
+                data : {relatedVoiceId : id}
+            }, function (err, res) {
+                if (err) {
+                    widget.button.enable();
+                    return;
+                }
+
+                var index = this._relatedVoicesIds.indexOf(id);
+                if (index > -1) {
+                    this._relatedVoicesIds.splice(index, 1);
+                }
+                this.list.removeVoice(widget);
+                this.scrollbar.update();
+            }.bind(this));
         },
 
         /* Search Input Key Up Handler. Checks if we should call the
@@ -205,6 +238,7 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
                 this._relatedVoicesIds.push(this._selectedVoice.id);
                 this.searchInput.input.setValue('');
                 this.list.addVoice(this._selectedVoice);
+                this.scrollbar.update();
                 this._selectedVoice = null;
             }.bind(this));
         },
