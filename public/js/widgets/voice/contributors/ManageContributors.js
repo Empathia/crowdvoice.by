@@ -46,6 +46,12 @@ Class(CV, 'ManageContributors').inherits(Widget)({
          */
         _selectedUser : null,
 
+        /* Array of contributors ids (plus currentUser id).
+         * Used to exclude this users from searchPeople results.
+         * @property _contributorIds <private>
+         */
+        _contributorIds : null,
+
         init : function(config){
             Widget.prototype.init.call(this, config);
             this.el = this.element[0];
@@ -69,6 +75,11 @@ Class(CV, 'ManageContributors').inherits(Widget)({
             if (!this.data.contributors) {
                 throw Error('ManageContributors require data.contributors Array.');
             }
+
+            this._contributorIds = this.data.contributors.map(function(user) {
+                return user.id;
+            });
+            this._contributorIds.push(this.data.voice.owner.id);
 
             this.appendChild(new CV.UI.InputButton({
                 name : 'searchInput',
@@ -144,7 +155,7 @@ Class(CV, 'ManageContributors').inherits(Widget)({
 
             API.searchPeople({
                 query : searchString,
-                exclude : []
+                exclude : this._contributorIds
             }, this._searchUsersResponseHandler.bind(this));
         },
 
@@ -216,6 +227,7 @@ Class(CV, 'ManageContributors').inherits(Widget)({
                 return;
             }
 
+            this._contributorIds.push(this._selectedUser.id);
             this.searchInput.input.setValue('');
             this.list.addUser(this._selectedUser);
             this.scrollbar.update();
