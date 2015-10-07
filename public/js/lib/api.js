@@ -214,6 +214,33 @@ module.exports = {
         });
      },
 
+     /* Saves new article to voice.
+     * @argument args.userSlug <required> [String] the voice owner profileName
+     * @argument args.voiceSlug <required> [String] the voice slug
+     * @argument args.articleTitle <required> [String] the article title 
+     * @argument args.articleContent <required> [String] article html content
+     * @argument callback <required> [Function]
+     */
+     voiceNewArticle : function voiceNewArticle(args, callback) {
+        if (!args.userSlug || !args.voiceSlug || !args.articleTitle || !args.articleContent || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+        $.ajax({
+            type : 'POST',
+            url : '/' + args.userSlug + '/' + args.voiceSlug +'/saveArticle',
+            headers : {'csrf-token' : this.token},
+            cache : false,
+            data : {title: args.articleTitle, content: args.articleContent},
+            contentType : 'json',
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); },
+        });
+     },
+
     /**************************************************************************
      * POSTS
      *************************************************************************/

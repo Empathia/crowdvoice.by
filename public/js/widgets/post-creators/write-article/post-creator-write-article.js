@@ -1,3 +1,5 @@
+var API = require('./../../../lib/api');
+
 /* jshint multistr: true */
 Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
 
@@ -16,8 +18,8 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
         el : null,
         header : null,
         content : null,
-        voiceTitle: null,
-        voiceContent: null,
+        articleTitle: null,
+        articleContent: null,
         voiceSlug: null,
         userSlug: null,
 
@@ -35,7 +37,6 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
 
             this.addCloseButton()._setup()._bindEvents()._disablePostButton();
         },
-
         _setup : function _setup() {
             this.appendChild(
                 new CV.PostCreatorPostButton({
@@ -58,12 +59,11 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
             ).render(this.content);
 
             // Content
-            this.voiceContent = this.content.querySelector('.write-article-body-editable');
-            this.voiceTitle = this.content.querySelector('.editor-title');
+            this.articleContent = this.content.querySelector('.write-article-body-editable');
+            this.articleTitle = this.content.querySelector('.editor-title');
 
             return this;
         },
-
         /* Binds the events.
          * @method _bindEvents <private> [Function]
          * @return [PostCreatorFromUrl]
@@ -76,33 +76,30 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
             this.postButton.bind('buttonClick', this._buttonClickRef);
 
             this._contentFilledRef = this._contentFilled.bind(this);
-            $(this.voiceTitle).on('change keyup paste',this._contentFilledRef);
-            $(this.voiceContent).on('change keyup paste',this._contentFilledRef);
+            $(this.articleTitle).on('change keyup paste',this._contentFilledRef);
+            $(this.articleContent).on('change keyup paste',this._contentFilledRef);
 
             return this;
         },
         _buttonClick : function _buttonClick(ev){
-            var userUrl = this.userSlug;
-            var voiceUrl = this.voiceSlug;
-            var voiceTitleContent = $(this.voiceTitle).val();
-            var voiceContentText = $(this.voiceContent).html();
-            
-            $.ajax({
-                type : 'POST',
-                url : '/' + userUrl + '/' + voiceUrl +'/saveArticle',
-                headers : {'csrf-token' : this.token},
-                cache : false,
-                data : {title: voiceTitleContent,
-                        content: voiceContentText
-                        },
-                contentType : 'json',
-                success : function success(data) {},
-                error : function error(err) {},
-            });
+            API.voiceNewArticle({
+                userSlug : this.userSlug,
+                voiceSlug : this.voiceSlug,
+                articleTitle : $(this.articleTitle).val(),
+                articleContent : $(this.articleContent).html()
+            }, this._responseHandler.bind(this));   
+        },
+        _responseHandler : function _responseHandler(err, res){
+            if (err) {
+                console.log(err);
+                return;
+            }
+
+            console.log(res);
         },
         _contentFilled : function _contentFilled(){
-            var contentText = this.voiceContent.querySelector('p');
-            if(($(this.voiceContent).children().size() > 0 && $(contentText).text().length > 0) && $(this.voiceTitle).val().length){
+            var contentText = this.articleContent.querySelector('p');
+            if(($(this.articleContent).children().size() > 0 && $(contentText).text().length > 0) && $(this.articleTitle).val().length){
                 this._enabledPostButton();
             } else {
                 this._disablePostButton();
