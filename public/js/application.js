@@ -77,8 +77,8 @@ require('./widgets/incognito/button');
 require('./widgets/loader');
 
 // generic widgets
-require('./widgets/popover.js');
-require('./widgets/popover-blocker.js');
+require('./widgets/Popover.js');
+require('./widgets/PopoverBlocker');
 require('./widgets/responsive-slider.js');
 require('./widgets/InputClearable');
 require('./widgets/input-counter.js');
@@ -248,7 +248,7 @@ require('./widgets/modal.js');
 require('./widgets/login.js');
 require('./widgets/formUtils.js');
 require('./widgets/forms/send-message.js');
-require('./widgets/forms/request-to-contribute.js');
+require('./widgets/forms/RequestToContribute');
 require('./widgets/forms/CreateVoice.js');
 require('./widgets/forms/create-organization.js');
 require('./widgets/forms/invite-to-contribute.js');

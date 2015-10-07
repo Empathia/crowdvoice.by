@@ -57,6 +57,8 @@ Class(CV, 'ManageContributors').inherits(Widget).includes(CV.WidgetUtils)({
         _contributorIds : null,
         _contributorsLength : 0,
 
+        _flashMessage : null,
+
         init : function(config) {
             Widget.prototype.init.call(this, config);
             this.el = this.element[0];
