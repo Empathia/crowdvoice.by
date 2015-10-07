@@ -32,7 +32,8 @@ Class(CV, 'VoiceFollowMultipleButton').inherits(Widget).includes(CV.WidgetUtils)
             this.appendChild(new CV.UI.CurrentPersonEntitiesCheckboxes({
                 name : 'dropdown',
                 data : {
-                    className : 'dropdown-entities-checkboxes ui-dropdown-styled -sm'
+                    className : 'dropdown-entities-checkboxes ui-dropdown-styled -sm',
+                    showArrow : true
                 }
             })).render(this.el);
 

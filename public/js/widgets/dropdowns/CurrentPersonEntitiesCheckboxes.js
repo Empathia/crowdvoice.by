@@ -5,7 +5,8 @@ Class(CV.UI, 'CurrentPersonEntitiesCheckboxes').inherits(Widget)({
     prototype : {
         data : {
             label : '',
-            className : 'ui-dropdown-styled'
+            className : 'ui-dropdown-styled',
+            showArrow : true
         },
 
         _options : null,
@@ -25,9 +26,9 @@ Class(CV.UI, 'CurrentPersonEntitiesCheckboxes').inherits(Widget)({
          * @return CurrentPersonEntitiesCheckboxes
          */
         selectValues : function selectValues(followerIds) {
-            this._options.forEach(function(follower) {
-                if (followerIds.indexOf(follower.id) !== -1) {
-                    follower.check();
+            this._options.forEach(function(checkbox) {
+                if (followerIds.indexOf(checkbox.id) !== -1) {
+                    checkbox.check();
                 }
             });
 
@@ -62,11 +63,11 @@ Class(CV.UI, 'CurrentPersonEntitiesCheckboxes').inherits(Widget)({
             this.appendChild(new CV.Dropdown({
                 name : 'dropdown',
                 label : this.data.label || '- Select an Entity',
-                showArrow : true,
+                showArrow : this.data.showArrow,
                 alignment : this.data.alignment || 'bottom',
                 className : this.data.className || 'ui-dropdown-styled -lg',
                 arrowClassName : '-s10 -color-grey',
-                bodyClassName : 'ui-vertical-list hoverable -block'
+                bodyClassName : this.data.bodyClassName || 'ui-vertical-list hoverable -block'
             })).render(this.el);
 
             this._createItem(Person.get());
@@ -82,7 +83,7 @@ Class(CV.UI, 'CurrentPersonEntitiesCheckboxes').inherits(Widget)({
 
             this.appendChild(new CV.UI.Button({
                 name : 'doneButton',
-                className : 'tiny primary -m0 -block',
+                className : 'tiny -m0 -block',
                 data : {value: 'Done'}
             })).render(this.buttonRow.element[0]);
 
@@ -94,6 +95,12 @@ Class(CV.UI, 'CurrentPersonEntitiesCheckboxes').inherits(Widget)({
         _bindEvents : function _bindEvents() {
             this._doneButtonClickHandlerRef = this._doneButtonClickHandler.bind(this);
             Events.on(this.doneButton.el, 'click', this._doneButtonClickHandlerRef);
+
+            this._changeHandlerRef = this._changeHandler.bind(this);
+            this._options.forEach(function(option) {
+                option.bind('changed', this._changeHandlerRef);
+            }, this);
+
             return this;
         },
 
@@ -111,6 +118,10 @@ Class(CV.UI, 'CurrentPersonEntitiesCheckboxes').inherits(Widget)({
             })).el);
 
             this._options.push(this[entity.profileName]);
+        },
+
+        _changeHandler : function _changeHandler(ev) {
+            this.dispatch('changed', {checkbox: ev.target});
         },
 
         _doneButtonClickHandler : function _doneButtonClickHandler() {
@@ -140,6 +151,11 @@ Class(CV.UI, 'CurrentPersonEntitiesCheckboxes').inherits(Widget)({
         destroy : function destroy() {
             Events.off(this.doneButton.el, 'click', this._doneButtonClickHandlerRef);
             this._doneButtonClickHandlerRef = null;
+
+            this._options.forEach(function(option) {
+                option.unbind('changed', this._changeHandlerRef);
+            }, this);
+            this._changeHandlerRef = null;
 
             Widget.prototype.destroy.call(this);
             return null;
