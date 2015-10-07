@@ -267,19 +267,21 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
                     FeedInjector().inject(follower.id, 'who entityFollowsEntity', entityFollower[0], function (err) {
                       if (err) { return next(err); }
 
-                      NotificationMailer.newEntityFollower(user[0], follower, function(){})
+                      NotificationMailer.newEntityFollower(user[0], follower, entity, function (err) {
+                        if (err) { return next(err); }
 
-                      res.format({
-                        html: function() {
-                          req.flash('success', 'Followed successfully.');
-                          res.redirect('/' + entity.profileName);
-                        },
-                        json: function() {
-                          res.json({
-                            status: 'followed',
-                            entity: { id: follower.id }
-                          });
-                        }
+                        res.format({
+                          html: function() {
+                            req.flash('success', 'Followed successfully.');
+                            res.redirect('/' + entity.profileName);
+                          },
+                          json: function() {
+                            res.json({
+                              status: 'followed',
+                              entity: { id: follower.id }
+                            });
+                          }
+                        });
                       });
                     });
                   });

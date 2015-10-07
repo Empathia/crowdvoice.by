@@ -636,19 +636,21 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                     FeedInjector().inject(follower.id, 'who entityFollowsVoice', voiceFollower[0], function (err) {
                       if (err) { return next(err); }
 
-                      NotificationMailer.newVoiceFollower(user[0], follower, function(){})
+                      NotificationMailer.newVoiceFollower(user[0], follower, req.activeVoice, function (err) {
+                        if (err) { return next(err); }
 
-                      res.format({
-                        html: function () {
-                          req.flash('success', 'Voice has been followed.');
-                          res.redirect('/' + req.params.profileName + '/' + req.params.voice_slug)
-                        },
-                        json: function () {
-                          res.json({
-                            status: 'followed',
-                            entity: { id: follower.id }
-                          });
-                        }
+                        res.format({
+                          html: function () {
+                            req.flash('success', 'Voice has been followed.');
+                            res.redirect('/' + req.params.profileName + '/' + req.params.voice_slug)
+                          },
+                          json: function () {
+                            res.json({
+                              status: 'followed',
+                              entity: { id: follower.id }
+                            });
+                          }
+                        });
                       });
                     });
                   });
