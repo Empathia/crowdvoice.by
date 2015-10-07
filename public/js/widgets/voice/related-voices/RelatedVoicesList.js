@@ -49,11 +49,11 @@ Class(CV, 'RelatedVoicesList').inherits(Widget)({
             if (this.data.editMode) {
                 this[widgetName].appendChild(new CV.UI.Button({
                     name : 'button',
-                    className : 'tiny',
+                    className : 'micro',
                     data : {value: 'Remove'}
                 })).render(this[widgetName].actionsElement);
 
-                Events.once(this[widgetName]['button'].el, 'click', function() {
+                Events.once(this[widgetName].button.el, 'click', function() {
                     this.dispatch('related:voices:remove:item', {widget: this[widgetName]});
                 }.bind(this));
             }

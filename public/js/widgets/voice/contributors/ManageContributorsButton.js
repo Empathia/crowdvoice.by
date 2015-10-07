@@ -19,9 +19,12 @@ Class(CV, 'ManageContributorsButton').inherits(CV.UI.Button)({
             contributors : null
         },
 
+        _totalContributors : 0,
+
         init : function init(config) {
             CV.UI.Button.prototype.init.call(this, config);
-            this._updateButtonText(this.data.contributors.length);
+            this._totalContributors = this.data.contributors.length;
+            this._updateButtonText(this._totalContributors);
             this._bindEvents();
         },
 
@@ -51,26 +54,45 @@ Class(CV, 'ManageContributorsButton').inherits(CV.UI.Button)({
          * @return undefined
          */
         _clickHandler : function _clickHandler() {
-            if (this.manageContributorsModal) {
-                this.manageContributorsModal = this.manageContributorsModal.destroy();
+            if (this.modal) {
+                this.modal = this.modal.destroy();
+
+                this.manageContributors.unbind('collaborator-removed', this._collaboratorRemovedListenerRef);
+                this._collaboratorRemovedListenerRef = null;
+                this.manageContributors = this.manageContributors.destroy();
             }
 
             this.appendChild(new CV.UI.Modal({
-                name : 'manageContributorsModal',
+                name : 'modal',
                 title : 'Manage Contributors',
-                action : CV.ManageContributors,
-                width : 900,
+                width : 900
+            })).render(document.body);
+
+            this.appendChild(new CV.ManageContributors({
+                name : 'manageContributors',
                 data : {
                     voice : this.data.voice,
                     contributors : this.data.contributors
                 }
-            })).render(document.body);
+            })).render(this.modal.bodyElement).setup();
 
-            this.manageContributorsModal.bubbleAction.setup();
+            this._collaboratorRemovedListenerRef = this._collaboratorRemovedListener.bind(this);
+            this.manageContributors.bind('collaborator-removed', this._collaboratorRemovedListenerRef);
 
             requestAnimationFrame(function() {
-                this.manageContributorsModal.activate();
+                this.modal.activate();
             }.bind(this));
+        },
+
+        /* Listens when manageContributors reports a collaborator has been removed
+         * so it can update the button counter.
+         * @method _collaboratorRemovedListener <private> [Function]
+         * @return undefined
+         */
+        _collaboratorRemovedListener : function _collaboratorRemovedListener(ev) {
+            ev.stopPropagation();
+            this._totalContributors--;
+            this._updateButtonText(this._totalContributors);
         },
 
         destroy : function destroy() {

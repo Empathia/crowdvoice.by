@@ -108,14 +108,6 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
                 })).render(this.actionsColumn);
             }
 
-            // currentPerson does not belongs/owns this voice already?
-            if ((!Person.anon()) && (!Person.memberOf('voice', this.voice.id))) {
-                this.appendChild(new CV.VoiceRequestToContribute({
-                    name : 'voiceRequestToContribute',
-                    voice : this.voice
-                })).render(this.actionsColumn);
-            }
-
             this.appendChild(new CV.VoiceFooterShareButtonsGroup({
                 name : 'shareButtons',
                 voice : this.voice
@@ -128,6 +120,13 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
                 })).render(this.actionsColumn);
             }
 
+            // currentPerson does not belongs/owns this voice already?
+            if ((!Person.anon()) && (!Person.memberOf('voice', this.voice.id))) {
+                this.appendChild(new CV.VoiceRequestToContribute({
+                    name : 'voiceRequestToContribute',
+                    voice : this.voice
+                })).render(this.actionsColumn);
+            }
         },
 
         /* Sets the Timeline's inital date.

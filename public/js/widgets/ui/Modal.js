@@ -28,20 +28,51 @@ Class(CV.UI, 'Modal').inherits(Widget).includes(CV.WidgetUtils)({
         modalElement : null,
         isAdmin : null,
 
-        init : function(config){
+        init : function(config) {
             Widget.prototype.init.call(this, config);
             this.el = this.element[0];
 
             this.innerElement = this.el.querySelector('.cv-modal__inner');
+            this.bodyElement = this.el.querySelector('.body');
             this.modalElement = this.el.querySelector('.cv-modal');
 
-            this.appendChild(new this.action({
-                data : this.data,
-                name : 'bubbleAction',
-                isAdmin : this.isAdmin
-            })).render(this.el.querySelector('.body'));
+            if (this.action) {
+                this.appendChild(new this.action({
+                    data : this.data,
+                    name : 'bubbleAction',
+                    isAdmin : this.isAdmin
+                })).render(this.bodyElement);
+            }
 
             this._setup()._bindEvents();
+        },
+
+        /* Replaces the contents of the modal's body.
+         * @method setContent <public> [Function]
+         * @param content <required> [HTMLString, Function(widget), NodeElement] the new content
+         * @return Modal
+         */
+        addContent : function addContent(content) {
+            while(this.bodyElement.firstChild) {
+                this.bodyElement.removeChild(this.bodyElement.firstChild);
+            }
+
+            if (typeof content === 'function') {
+                this.appendChild(new this.action({
+                    data : this.data,
+                    name : 'bubbleAction',
+                    isAdmin : this.isAdmin
+                })).render(this.bodyElement);
+                return this;
+            }
+
+           if (typeof content === 'string') {
+               this.bodyElement.insertAdjacentHTML('beforeend', content);
+               return this;
+           }
+
+            this.bodyElement.appendChild(content);
+            return this;
         },
 
         _setup : function _setup() {
@@ -63,7 +94,9 @@ Class(CV.UI, 'Modal').inherits(Widget).includes(CV.WidgetUtils)({
             this._destroyRef = this._beforeDestroyHandler.bind(this);
             this._clickHandlerRef = this._clickHandler.bind(this);
 
-            this.bubbleAction.bind('close', this._destroyRef);
+            if (this.bubbleAction) {
+                this.bubbleAction.bind('close', this._destroyRef);
+            }
             Events.on(this.innerElement, 'click', this._clickHandlerRef);
             this.closeButton.bind('click', this._destroyRef);
             return this;

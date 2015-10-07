@@ -130,7 +130,9 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
          * @return this [CV.Popover]
          */
         setContent : function setContent(content) {
-            this.contentElement.innerHTML = "";
+            while(this.contentElement.firstChild) {
+                this.contentElement.removeChild(this.contentElement.firstChild);
+            }
 
             if (typeof content === 'function') {
                 this.appendChild(new content({

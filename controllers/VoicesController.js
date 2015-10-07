@@ -806,15 +806,17 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         }
 
         VoiceCollaborator.find({
-          voiceId: req.activeVoice.id,
-          collaboratorId: hashids.decode(req.body.personId)[0]
+          voice_id: req.activeVoice.id,
+          collaborator_id: hashids.decode(req.body.personId)[0]
         }, function (err, result) {
           if (err) { return next(err); }
 
           if (result.length <= 0) {
             return res.json({ status: 'not collaborator' });
           } else {
-            result[0].destroy(function (err) {
+            var contributorToRemove = new VoiceCollaborator(result[0]);
+
+            contributorToRemove.destroy(function (err) {
               if (err) { return next(err); }
 
               res.json({ status: 'removed' });

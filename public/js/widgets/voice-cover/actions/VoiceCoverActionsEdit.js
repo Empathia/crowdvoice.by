@@ -2,7 +2,7 @@
 var Events = require('./../../../lib/events');
 
 Class(CV, 'VoiceCoverActionsEdit').inherits(CV.UI.Button)({
-    ELEMENT_CLASS : 'cv-button micro -color-positive -mr1',
+    ELEMENT_CLASS : 'cv-button tiny -mr1',
     prototype : {
         voiceEntity : null,
 
