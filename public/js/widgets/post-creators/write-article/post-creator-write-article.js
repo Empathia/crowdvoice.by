@@ -16,6 +16,10 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
         el : null,
         header : null,
         content : null,
+        voiceTitle: null,
+        voiceContent: null,
+        voiceSlug: null,
+        userSlug: null,
 
         init : function init(config) {
             CV.PostCreator.prototype.init.call(this, config);
@@ -23,6 +27,11 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
             this.el = this.element[0];
             this.header = this.el.querySelector('.cv-post-creator__header');
             this.content = this.el.querySelector('.cv-post-creator__content');
+
+
+            // Voice and user slugs
+            this.voiceSlug = App.Voice.data.slug;
+            this.userSlug = App.Voice.data.owner.profileName;
 
             this.addCloseButton()._setup()._bindEvents()._disablePostButton();
         },
@@ -48,6 +57,10 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
                 })
             ).render(this.content);
 
+            // Content
+            this.voiceContent = this.content.querySelector('.write-article-body-editable');
+            this.voiceTitle = this.content.querySelector('.editor-title');
+
             return this;
         },
 
@@ -57,9 +70,44 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
          */
         _bindEvents : function _bindEvents() {
             CV.PostCreator.prototype._bindEvents.call(this);
+
+            // To catch the dispatch event in Post Button
+            this._buttonClickRef = this._buttonClick.bind(this);
+            this.postButton.bind('buttonClick', this._buttonClickRef);
+
+            this._contentFilledRef = this._contentFilled.bind(this);
+            $(this.voiceTitle).on('change keyup paste',this._contentFilledRef);
+            $(this.voiceContent).on('change keyup paste',this._contentFilledRef);
+
             return this;
         },
-
+        _buttonClick : function _buttonClick(ev){
+            var userUrl = this.userSlug;
+            var voiceUrl = this.voiceSlug;
+            var voiceTitleContent = $(this.voiceTitle).val();
+            var voiceContentText = $(this.voiceContent).html();
+            
+            $.ajax({
+                type : 'POST',
+                url : '/' + userUrl + '/' + voiceUrl +'/saveArticle',
+                headers : {'csrf-token' : this.token},
+                cache : false,
+                data : {title: voiceTitleContent,
+                        content: voiceContentText
+                        },
+                contentType : 'json',
+                success : function success(data) {},
+                error : function error(err) {},
+            });
+        },
+        _contentFilled : function _contentFilled(){
+            var contentText = this.voiceContent.querySelector('p');
+            if(($(this.voiceContent).children().size() > 0 && $(contentText).text().length > 0) && $(this.voiceTitle).val().length){
+                this._enabledPostButton();
+            } else {
+                this._disablePostButton();
+            }           
+        },
         /* Enables the Post Button.
          * @method _enabledPostButton <private> [Function]
          * @return [PostCreatorFromUrl]
