@@ -1,9 +1,7 @@
+var Events = require('./../../lib/events');
+
 Class(CV, 'VoiceRequestToContribute').inherits(Widget)({
-    HTML : '\
-        <div class="request-to-contribute-container -inline-block">\
-          <button class="request-to-contribute-button cv-button tiny">Request to Contribute</button>\
-        </div>\
-    ',
+    ELEMENT_CLASS : 'request-to-contribute-container -inline-block',
 
     prototype : {
         /* Voice Model of the current voice.
@@ -13,21 +11,59 @@ Class(CV, 'VoiceRequestToContribute').inherits(Widget)({
 
         init : function init(config) {
             Widget.prototype.init.call(this, config);
-
             this.el = this.element[0];
+            this._setup()._bindEvents();
+        },
 
-            var bubble = new CV.Bubble({
+        _setup : function _setup() {
+            this.appendChild(new CV.UI.Button({
+                name : 'button',
+                className : 'request-to-contribute-button tiny',
+                data : {value: 'Request to Contribute'}
+            })).render(this.el);
+            return this;
+        },
+
+        /* Subscribe its events.
+         * @method _bindEvents <private>
+         */
+        _bindEvents : function _bindEvents() {
+            this._clickHandlerRef = this._clickHandler.bind(this);
+            Events.on(this.button.el, 'click', this._clickHandlerRef);
+            return this;
+        },
+
+        /* Button click handler.
+         * @method _clickHandler <private>
+         */
+        _clickHandler : function _clickHandler() {
+            if (this.popover) {
+                this.popover = this.popover.destroy();
+                this.requestToContribute = this.requestToContribute.destroy();
+            }
+
+            this.appendChild(new CV.PopoverBlocker({
+                name : 'popover',
                 title : 'Want to help out?',
-                name : 'bubbleRequest',
-                action : CV.RequestToContribute,
-                data : {
-                    voice : this.voice
-                },
-                width : 600,
-                anchorEl : $(this.el).find('.request-to-contribute-button')
-            });
+                placement : 'bottom-right',
+                showCloseButton : true,
+                className : 'request-to-contribute-popover',
+            })).render(this.el);
 
-            this.appendChild(bubble);
+            this.appendChild(new CV.RequestToContribute({
+                name : 'requestToContribute',
+                data : {voice: this.voice}
+            }));
+
+            this.requestToContribute.bind('close', function() {
+                this.popover.deactivate();
+            }.bind(this));
+
+            this.popover.setContent(this.requestToContribute.el);
+
+            requestAnimationFrame(function() {
+                this.popover.activate();
+            }.bind(this));
         }
     }
 });

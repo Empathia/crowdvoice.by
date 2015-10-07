@@ -37,11 +37,6 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
             </div>\
         </div>',
 
-    HTML_CLOSE : '\
-        <svg class="ui-popover-close -abs -clickable -color-bg-white">\
-            <use xlink:href="#svg-close"></use>\
-        </svg>',
-
     prototype : {
         toggler : null,
         container : null,
@@ -91,8 +86,11 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
                 }
 
                 if (this.showCloseButton) {
-                    this.headerElement.insertAdjacentHTML('beforeend', this.constructor.HTML_CLOSE);
-                    this.closeButton = this.headerElement.querySelector('.ui-popover-close');
+                    this.appendChild(new CV.UI.Close({
+                        name : 'closeButton',
+                        className : 'ui-popover-close -abs -color-bg-white',
+                        svgClassName : '-s16'
+                    })).render(this.headerElement);
                 }
             }
 
@@ -114,7 +112,7 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
 
             if (this.closeButton) {
                 this._closeHandlerRef = this.deactivate.bind(this);
-                this.closeButton.addEventListener('click', this._closeHandlerRef);
+                this.closeButton.bind('click', this._closeHandlerRef);
             }
         },
 
@@ -132,7 +130,17 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
          * @return this [CV.Popover]
          */
         setContent : function setContent(content) {
-            this.contentElement.innerHTML = "";
+            while(this.contentElement.firstChild) {
+                this.contentElement.removeChild(this.contentElement.firstChild);
+            }
+
+            if (typeof content === 'function') {
+                this.appendChild(new content({
+                    name : 'bubbleAction',
+                    data : this.data
+                })).render(this.contentElement);
+                return this;
+            }
 
             if ((typeof content).toLowerCase() === 'string') {
                 this.contentElement.insertAdjacentHTML('afterbegin', content);
@@ -226,14 +234,11 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
         },
 
         destroy : function destroy() {
-            Widget.prototype.destroy.call(this);
-
             if (this.backdropElement.parentNode) {
                 this.backdropElement.parentNode.removeChild(this.backdropElement);
             }
 
             if (this.closeButton) {
-                this.closeButton.removeEventListener('click', this._closeHandlerRef);
                 this._closeHandlerRef = null;
             }
 
@@ -244,6 +249,8 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
 
             this.backdropElement.removeEventListener('click', this._backdropClickHandlerRef);
             this._backdropClickHandlerRef = null;
+
+            Widget.prototype.destroy.call(this);
 
             return null;
         }

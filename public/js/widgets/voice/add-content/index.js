@@ -2,7 +2,7 @@
 Class(CV, 'VoiceAddContent').inherits(Widget)({
     HTML: '\
         <div class="voice-add-content">\
-            <button class="voice-add-post-button cv-button primary -m0 -p0">\
+            <button class="voice-add-post-button cv-button primary -m0 -p0 -rel">\
                 <svg class="voice-add-post-button-svg -abs -color-white">\
                     <use xlink:href="#svg-plus"></use>\
                 </svg>\
@@ -71,7 +71,7 @@ Class(CV, 'VoiceAddContent').inherits(Widget)({
             this.appendChild(new CV.PopoverBlocker({
                 name : 'addPostBubble',
                 className : 'voice-add-content-bubble',
-                placement : 'left',
+                placement : 'top-right',
                 toggler : this.addPostButton,
                 content : this.constructor.BUBBLE_OPTIONS
             })).render(this.el);

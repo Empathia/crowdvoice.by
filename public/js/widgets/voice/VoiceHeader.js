@@ -1,23 +1,27 @@
 var Events = require('./../../lib/events');
+var inlineStyle = require('./../../lib/inline-style');
 
 Class(CV, 'VoiceHeader').inherits(Widget)({
     prototype : {
-
         el : null,
+        backgroundElement : null,
         footerVoiceTitle : null,
         scrollableArea : window,
 
         HEADER_HEIGHT : 0,
         TITLE_OFF_PAGE : 0,
         DELTA : 5,
+        backgroundElementHeigth : 0,
+        _backgroundSizeKnow : false,
         _lastScrollTop : 0,
 
         init : function init(config) {
             Widget.prototype.init.call(this, config);
 
             this.el = this.element;
-            this.HEADER_HEIGHT = this.el.offsetHeight;
+            this.HEADER_HEIGHT = this.el.offsetHeight + 52;
             this.TITLE_OFF_PAGE = this.HEADER_HEIGHT + document.querySelector('.voice-heading').offsetHeight;
+            this.backgroundElementHeigth = this.backgroundElement.offsetHeight;
             this._bindEvents();
         },
 
@@ -28,6 +32,17 @@ Class(CV, 'VoiceHeader').inherits(Widget)({
         _bindEvents : function _bindEvents() {
             this._scrollHandlerRef = this._scrollHandler.bind(this);
             Events.on(this.scrollableArea, 'scroll', this._scrollHandlerRef);
+
+            var backgroundImage = this.backgroundElement.getElementsByTagName('img')[0];
+            if (backgroundImage) {
+                Events.once(backgroundImage, 'load', function(ev) {
+                    this.backgroundElementHeigth = ev.currentTarget.clientHeight;
+                    this._backgroundSizeKnow = true;
+                }.bind(this));
+            } else {
+                this._backgroundSizeKnow = true;
+            }
+
             return this;
         },
 
@@ -38,22 +53,32 @@ Class(CV, 'VoiceHeader').inherits(Widget)({
             var y = this.scrollableArea.scrollTop;
             var scrollingDown = (y > this._lastScrollTop);
 
-            if (Math.abs(this._lastScrollTop - y) <= this.DELTA) {
-                return void 0;
+            if (this._backgroundSizeKnow) {
+                if (y <= (this.backgroundElementHeigth * 2)) {
+                    var yHalf = (y/2);
+                    inlineStyle(this.backgroundElement, {
+                        msTransform: 'translateY('+ yHalf +'px)',
+                        webkitTransform: 'translate3d(0px, '+ yHalf +'px, 0px)',
+                        transform: 'translate3d(0px, '+ yHalf +'px, 0px)'
+                    });
+                }
             }
 
-            if (scrollingDown && y > this.HEADER_HEIGHT) {
-                this.el.classList.add('hide');
-
-                if (y > this.TITLE_OFF_PAGE) {
-                    this.footerVoiceTitle.classList.add('active');
-                }
-
-                this._lastScrollTop = y;
+            if (Math.abs(this._lastScrollTop - y) <= this.DELTA) {
                 return;
             }
 
-            if (y + this.scrollableArea.innerHeight < document.height || document.body.clientHeight) {
+            this._lastScrollTop = y;
+
+            if (scrollingDown && (y > this.HEADER_HEIGHT)) {
+                if (y > this.TITLE_OFF_PAGE) {
+                    this.el.classList.add('hide');
+                    this.footerVoiceTitle.classList.add('active');
+                }
+                return;
+            }
+
+            if (scrollingDown === false) {
                 this.el.classList.remove('hide');
 
                 if (y < this.HEADER_HEIGHT) {

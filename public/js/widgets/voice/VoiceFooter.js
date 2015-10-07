@@ -5,9 +5,18 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
         <footer class="voice-footer">\
             <div class="voice-footer-inner -clearfix">\
                 <div class="voice-footer-meta-wrapper -float-left">\
-                    <div class="voice-footer-title -font-bold"></div>\
-                    <div class="voice-footer-by -color-grey">\
-                        by <a href=""></a>\
+                    <div class="voice-footer-meta-inner">\
+                        <div class="voice-footer-stats">\
+                            <span class="voice-stat -inline-block" data-stats-post-count></span>\
+                            <span class="voice-stat -inline-block" data-stats-followers></span>\
+                            <span class="voice-stat -inline-block" data-stats-location></span>\
+                        </div>\
+                        <div class="voice-footer-owner-data">\
+                            <div class="voice-footer-title -font-bold"></div>\
+                            <div class="voice-footer-by">\
+                                by <a href=""></a>\
+                            </div>\
+                        </div>\
                     </div>\
                 </div>\
                 <div class="voice-footer-right -float-right"></div>\
@@ -26,12 +35,16 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
             this.actionsColumn = this.el.querySelector('.voice-footer-right');
             this.byAnchor = this.el.querySelector('.voice-footer-by > a');
 
+            this._setup();
+        },
+
+        _setup : function _setup() {
             this.dom.updateText(this.el.querySelector('.voice-footer-title'), this.voice.title);
 
             if (this.voice.owner.isAnonymous) {
-              this.dom.updateAttr('href', this.byAnchor, '/anonymous');
+                this.dom.updateAttr('href', this.byAnchor, '/anonymous');
             } else {
-              this.dom.updateAttr('href', this.byAnchor, '/' + this.voice.owner.profileName);
+                this.dom.updateAttr('href', this.byAnchor, '/' + this.voice.owner.profileName);
             }
 
             this.dom.updateAttr('alt', this.byAnchor, this.voice.owner.name + ' ' + this.voice.owner.lastname + '’s profile page');
@@ -41,6 +54,9 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
                 this.dom.updateText(this.byAnchor, this.voice.owner.name + ' ' + this.voice.owner.lastname);
             }
 
+            this.dom.updateText(this.el.querySelector('[data-stats-post-count]'), this.format.numberUS(this.postCount) + ' posts');
+            this.dom.updateText(this.el.querySelector('[data-stats-followers]'), this.format.numberUS(this.followerCount) + ' followers');
+
             this.appendChild(new CV.VoiceTimelineFeedback({
                 name : 'voiceTimelineFeedback',
                 firstPostDate : this.voice.firstPostDate,
@@ -48,14 +64,7 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
                 scrollableArea : this.voiceScrollableArea
             })).render(this.element);
 
-            if (this.allowPosting) {
-                this.appendChild(new CV.VoiceAddContent({
-                    name : 'voiceAddContent',
-                    voice : this.voice
-                })).render(this.element);
-            }
-
-            if ((!Person.anon()) && (!Person.memberOf('voice', this.voice.id))) {
+            if (Person.get() && (!Person.anon()) && (!Person.memberOf('voice', this.voice.id))) {
                 if (Person.get().ownedOrganizations.length) {
                     this.appendChild(new CV.VoiceFollowMultipleButton({
                         name : 'followButton',
@@ -69,25 +78,33 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
                         className : 'tiny'
                     })).render(this.actionsColumn);
                 }
+            } else {
+                this.appendChild(new CV.VoiceFollowSingleButton({
+                    name : 'followButton',
+                    voice : this.voice,
+                    className : 'tiny'
+                })).render(this.actionsColumn).disable();
             }
+
+            var relatedVoicesDiv = document.createElement('div');
+            relatedVoicesDiv.className = '-inline-block';
+            this.appendChild(new CV.RelatedVoicesButton({
+                name : 'relatedVoicesButton',
+                voice : this.voice,
+                className : 'tiny',
+                relatedVoices : this.relatedVoices
+            })).render(relatedVoicesDiv);
+            this.actionsColumn.appendChild(relatedVoicesDiv);
 
             if (Person.is(this.voice.owner.id)) {
                 this.appendChild(new CV.ManageContributorsButton({
-                    name : 'manageContributors'
-                })).render(this.actionsColumn);
-            }
-
-            this.appendChild(new CV.RelatedVoicesButton({
-                name : 'relatedVoicesButton',
-                editMode : (Person.get() && !Person.anon() && Person.memberOf('voice', this.voice.id)),
-                voice : this.voice
-            })).render(this.actionsColumn);
-
-            // currentPerson does not belongs/owns this voice already?
-            if ((!Person.anon()) && (!Person.memberOf('voice', this.voice.id))) {
-                this.appendChild(new CV.VoiceRequestToContribute({
-                    name : 'voiceRequestToContribute',
-                    voice : this.voice
+                    name : 'manageContributors',
+                    className : 'tiny',
+                    data : {
+                        value: 'Manage Contributors',
+                        voice : this.voice,
+                        contributors : this.contributors
+                    }
                 })).render(this.actionsColumn);
             }
 
@@ -100,6 +117,14 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
                 this.appendChild(new CV.VoiceModerateButton({
                     name : 'voiceModerate',
                     allowPostEditing : this.allowPostEditing
+                })).render(this.actionsColumn);
+            }
+
+            // currentPerson does not belongs/owns this voice already?
+            if ((!Person.anon()) && (!Person.memberOf('voice', this.voice.id))) {
+                this.appendChild(new CV.VoiceRequestToContribute({
+                    name : 'voiceRequestToContribute',
+                    voice : this.voice
                 })).render(this.actionsColumn);
             }
         },

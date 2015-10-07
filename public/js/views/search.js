@@ -1,4 +1,4 @@
-Class(CV, 'SearchView').includes(NodeSupport, CV.WidgetUtils)({
+Class(CV.Views, 'SearchView').includes(NodeSupport, CV.WidgetUtils)({
     prototype : {
         searchResults : null,
 

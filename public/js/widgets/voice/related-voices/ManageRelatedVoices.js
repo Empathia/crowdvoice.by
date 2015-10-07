@@ -1,6 +1,6 @@
 /* Class ManageRelatedVoices
  * Handles the Related Voices (search/add/remove) for voices.
- * It should receive a `voices` Array via data to display the current related
+ * It should receive a `relatedVoices` Array via data to display the current related
  * voices lists. That array will be passed to the RelatedVoicesList widget
  * to render them.
  * This Widget also acts as a Controller because it will listen for when a voice
@@ -34,9 +34,9 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
     prototype : {
         data : {
             /* VoiceEntities Models
-             * @property voices <required> [Array]
+             * @property relatedVoices <required> [Array]
              */
-            voices : null,
+            relatedVoices : null,
             /* Will include the search voices handler and the remove button on
              * each voice item.
              * @property editMode <optional> [Boolean]
@@ -48,6 +48,12 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
          * @property _selectedVoice <private>
          */
         _selectedVoice : null,
+
+        /* Array of related voices ids (plus the current voice id).
+         * Used to exclude this voices from the search voices results.
+         * @property _relatedVoicesIds <private>
+         */
+        _relatedVoicesIds : null,
 
         init : function(config){
             Widget.prototype.init.call(this, config);
@@ -63,15 +69,22 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
                 element : this.el.querySelector('.cv-related-voices__list'),
                 createElements : false
             }).create();
+
+            return this;
         },
 
         /* Creates and appends its children.
          * @return ManageRelatedVoices
          */
         _setup : function _setup() {
-            if (!this.data.voices) {
+            if (!this.data.relatedVoices) {
                 throw Error('ManageRelatedVoices require data.voices Array to be passed.');
             }
+
+            this._relatedVoicesIds = this.data.relatedVoices.map(function(voice) {
+                return voice.id;
+            });
+            this._relatedVoicesIds.push(this.data.voice.id);
 
             if (this.data.editMode) {
                 var labelString = this.constructor.LABEL_HTML;
@@ -99,10 +112,11 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
             this.appendChild(new CV.RelatedVoicesList({
                 name : 'list',
                 data : {
-                    voices : this.data.voices,
+                    voices : this.data.relatedVoices,
                     editMode : this.data.editMode
                 }
             })).render(this.el.querySelector('[data-voices-list]'));
+
             return this;
         },
 
@@ -114,9 +128,40 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
                 this._searchKeyUpHandlerRef = this._searchKeyUpHandler.bind(this);
                 Events.on(this.searchInput.input.el, 'keyup', this._searchKeyUpHandlerRef);
 
-                this._setSelectedUserRef = this._setSelectedUser.bind(this);
-                this.searchInput.bind('results:item:clicked', this._setSelectedUserRef);
+                this._setSelectedVoiceRef = this._setSelectedVoice.bind(this);
+                this.searchInput.bind('results:item:clicked', this._setSelectedVoiceRef);
+
+                this._addVoiceClickHandlerRef = this._addVoiceClickHandler.bind(this);
+                Events.on(this.searchInput.button.el, 'click', this._addVoiceClickHandlerRef);
+
+                this._removeItemRef = this._removeItem.bind(this);
+                this.list.bind('related:voices:remove:item', this._removeItemRef);
             }
+        },
+
+        _removeItem : function _removeItem(ev) {
+            var widget = ev.widget;
+            var id = widget.data.id;
+
+            widget.button.disable();
+
+            API.voiceRemoveRelatedVoice({
+                profileName : this.data.voice.owner.profileName,
+                voiceSlug : this.data.voice.slug,
+                data : {relatedVoiceId : id}
+            }, function (err, res) {
+                if (err) {
+                    widget.button.enable();
+                    return;
+                }
+
+                var index = this._relatedVoicesIds.indexOf(id);
+                if (index > -1) {
+                    this._relatedVoicesIds.splice(index, 1);
+                }
+                this.list.removeVoice(widget);
+                this.scrollbar.update();
+            }.bind(this));
         },
 
         /* Search Input Key Up Handler. Checks if we should call the
@@ -138,7 +183,7 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
 
             API.searchVoices({
                 query : searchString,
-                exclude : []
+                exclude : this._relatedVoicesIds
             }, this._searchVoicesResponseHandler.bind(this));
         },
 
@@ -146,9 +191,6 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
          * @method _searchVoicesResponseHandler <private>
          */
         _searchVoicesResponseHandler : function _searchVoicesResponseHandler(err, res) {
-            console.log(err);
-            console.log(res);
-
             this.searchInput.results.deactivate().clear();
 
             if (!res.voices.length) {
@@ -166,14 +208,39 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
         },
 
         /* Sets the this._selectedVoice data.
-         * @method _setSelectedUser <private>
+         * @method _setSelectedVoice <private>
          */
-        _setSelectedUser : function _setSelectedUser(ev) {
+        _setSelectedVoice : function _setSelectedVoice(ev) {
             this._selectedVoice = ev.data;
 
             this.searchInput.button.enable();
             this.searchInput.input.setValue(ev.data.title);
             this.searchInput.results.deactivate().clear();
+        },
+
+        _addVoiceClickHandler : function _addVoiceClickHandler() {
+            this.searchInput.button.disable();
+
+            if (!this._selectedVoice) {
+                return;
+            }
+
+            API.voiceAddRelatedVoice({
+                profileName : this.data.voice.owner.profileName,
+                voiceSlug : this.data.voice.slug,
+                data : {relatedVoiceId : this._selectedVoice.id}
+            }, function(err, res) {
+                if (err) {
+                    this.searchInput.button.enable();
+                    return;
+                }
+
+                this._relatedVoicesIds.push(this._selectedVoice.id);
+                this.searchInput.input.setValue('');
+                this.list.addVoice(this._selectedVoice);
+                this.scrollbar.update();
+                this._selectedVoice = null;
+            }.bind(this));
         },
 
         /* Unsubscribe its events, nullify DOM references, destroy children, etc.
@@ -187,6 +254,9 @@ Class(CV, 'ManageRelatedVoices').inherits(Widget)({
             if (this.searchInput) {
                 Events.off(this.searchInput.input.el, 'keyup', this._searchKeyUpHandlerRef);
                 this._searchKeyUpHandlerRef = null;
+
+                Events.on(this.searchInput.button.el, 'click', this._addVoiceClickHandlerRef);
+                this._addVoiceClickHandlerRef = null;
             }
 
             Widget.prototype.destroy.call(this);

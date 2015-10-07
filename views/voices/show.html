@@ -3,22 +3,13 @@
 
   <section class="voice-intro -rel">
     <h1 class="voice-heading -font-bold -color-white -m0"><%= voice.title %></h1>
-    <div class="voice-stats">
-      <span class="-inline-block">
-        <b class="voice-stats__post-count"><%= voice.postCount %></b> posts
-      </span> &middot;
-      <span class="-inline-block">
-        <b class="voice-stats__followers">0</b> followers
-      </span> &middot;
-
-      <% if(voice.locationName) { %>
-        <span class="-inline-block">
-          <%= voice.locationName %>
-        </span> &middot;
-      <% } %>
-
-      <button class="voice-about-show-btn cv-button micro">About</button>
+    <div class="voice-info__author -inline-block">
+      <img class="-rounded" width="18" height="18" src="<%= voice.owner.images.small.url %>">
+      <span class="voice-info__author-name -inline-block">
+        by <%= voice.owner.name + ' ' + (voice.owner.lastname || '') %>
+      </span>
     </div>
+    <button class="voice-about-show-btn cv-button micro -m0">About</button>
   </section>
 </main>
 
@@ -42,13 +33,13 @@
     _socket               : App.getSocket(),
     backgroundElement     : document.querySelector('.voice-background-cover'),
     followerCount         : <%= voice.followers.length %>,
-    postCountElement      : document.querySelector('.voice-stats__post-count'),
-    followersCountElement : document.querySelector('.voice-stats__followers'),
     aboutBoxButtonElement : document.querySelector('.voice-about-show-btn'),
     scrollableArea        : document.querySelector('.yield'),
     postsCount            : <%= JSON.stringify(postsCount) %>,
     allowPosting          : <%= allowPosting %>,
-    allowPostEditing      : <%= allowPostEditing %>
+    allowPostEditing      : <%= allowPostEditing %>,
+    relatedVoices         : <%= JSON.stringify(relatedVoices) %>,
+    contributors          : <%= JSON.stringify(contributors) %>
   }));
 
   App.Voice.updateVoiceInfo();

@@ -1,9 +1,6 @@
-
 /* Subclass of VoicePostLayers
  * Declares the required abstract methods to handle the Voice Posts on Moderation Mode
  */
-var API = require('../../../lib/api');
-
 Class(CV, 'VoicePostLayersModerateAbstract').inherits(CV.VoicePostLayers)({
 
     prototype : {

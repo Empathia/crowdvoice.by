@@ -33,7 +33,7 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
         /* layer offset left to perform hit-test on layer elements
          * sidebar = 60, main-container-padding-left = 40
          */
-        _layersOffsetLeft : 100,
+        _layersOffsetLeft : 70,
 
         LAYER_CLASSNAME : 'cv-voice-posts-layer__detector',
 
@@ -64,19 +64,33 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
          * @return [CV.VoiceView]
          */
         setupVoiceWidgets : function setupVoiceWidgets() {
+            // display the create content button if the voice allows posting.
+            if (this.allowPosting) {
+                this.appendChild(new CV.VoiceAddContent({
+                    name : 'voiceAddContent',
+                    voice : this.data
+                })).render(document.body);
+            }
+
             this.appendChild(new CV.VoiceFooter({
                 name : 'voiceFooter',
                 voice : this.data,
                 allowPosting : this.allowPosting,
                 allowPostEditing : this.allowPostEditing,
-                voiceScrollableArea : this.scrollableArea
-            })).render(document.querySelector('.app-wrapper'));
+                voiceScrollableArea : this.scrollableArea,
+                postCount : this.postCount,
+                followerCount : this.followerCount,
+                relatedVoices : this.relatedVoices,
+                contributors : this.contributors
+            })).render(document.querySelector('.cv-main-header'));
 
-            new CV.VoiceHeader({
+            this.appendChild(new CV.VoiceHeader({
+                name : 'voiceHeader',
                 element : document.getElementsByClassName('cv-main-header')[0],
+                backgroundElement : this.backgroundElement,
                 footerVoiceTitle : document.getElementsByClassName('voice-footer-meta-wrapper')[0],
                 scrollableArea : document.querySelector('.yield')
-            });
+            }));
 
             return this;
         },
@@ -94,9 +108,6 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
             } else {
                 this.backgroundElement.className += ' -colored-background';
             }
-
-            this.dom.updateText(this.postCountElement, this.format.numberUS(this.postCount));
-            this.dom.updateText(this.followersCountElement, this.format.numberUS(this.followerCount));
 
             return this;
         },

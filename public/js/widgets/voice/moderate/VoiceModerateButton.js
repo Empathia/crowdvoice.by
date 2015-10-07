@@ -5,7 +5,7 @@ Class(CV, 'VoiceModerateButton').inherits(Widget).includes(CV.WidgetUtils)({
         <svg class="voice-footer-svg">\
             <use xlink:href="#svg-moderate"></use>\
         </svg>\
-        <span class="ui-tooltip -top-right -nw">Moderate Content</span>\
+        <span class="ui-tooltip -bottom-right -nw">Moderate Content</span>\
     </button>',
 
     prototype : {

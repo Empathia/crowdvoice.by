@@ -68,6 +68,21 @@
     }
   }
 
+  /* bottom-right */
+  &@{-}bottom-right @{ns}-popover__arrow {
+    bottom: 100%;
+    right: 20px;
+  }
+
+  &@{-}bottom @{ns}-popover__arrow,
+  &@{-}bottom-right @{ns}-popover__arrow {
+    &::before {border-bottom-color: inherit}
+    &::after {
+      margin-bottom: -1px;
+      border-bottom-color: @color-white;
+    }
+  }
+
   /* left */
   &@{-}left @{ns}-popover__arrow {
     top: 50%;
@@ -109,8 +124,7 @@
 }
 
 @{ns}-popover-close {
-  width: 16px;
-  height: 16px;
+  padding: 0 10px;
   top: 50%;
   right: 20px;
   margin-top: -8px;
@@ -170,6 +184,12 @@
       left: 50%;
       top: 100%;
       transform: translate(-50%, 15px);
+    }
+
+    &@{-}bottom-right {
+      right: 0;
+      top: 100%;
+      transform: translate(15px, 15px);
     }
 
     &@{-}left {

@@ -1,10 +1,10 @@
 var Events = require('./../../lib/events');
 
 Class(CV.UI, 'Close').inherits(Widget).includes(CV.WidgetUtils)({
-    ELEMENT_CLASS : 'ui-close-button',
+    ELEMENT_CLASS : 'ui-close-button -clickable',
     HTML : '\
         <button>\
-            <svg class="ui-close-button__svg cv-post-creator__close -clickable">\
+            <svg class="ui-close-button__svg -clickable">\
                 <use xlink:href="#svg-close"></use>\
             </svg>\
         </button>',

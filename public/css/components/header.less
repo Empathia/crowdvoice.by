@@ -10,10 +10,9 @@ body.page-inner .cv-main-header .cv-main-logo-type {
  * =========================================================================== */
 body.page-voice .cv-main-header {
   transform: translateY(1px) translateZ(0);
-  transition: transform 200ms ease;
+  transition: transform 200ms @ease;
 
   &.hide {
-    pointer-events: none;
     transform: translateY(-@cv-header-height) translateZ(0) !important;
   }
 }
@@ -95,14 +94,12 @@ body.page-voice .cv-main-header {
 
 .account-info-name {
   font-size: 15px;
-  line-height: 28px;
+  line-height: 32px;
   color: @color-neutral-dark;
-  &:extend(.-ctu);
-  &:extend(.-ctu-neutral-dark);
 }
 
 .actions-wrapper {
-  padding: 14px 10px 10px;
+  padding: 15px 10px 0;
 }
 
 .actions-dropdown-svg {

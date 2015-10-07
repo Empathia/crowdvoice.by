@@ -12,9 +12,6 @@ Class(CV.UI, 'Modal').inherits(Widget).includes(CV.WidgetUtils)({
                     <div class="header">\
                         <h3 class="title"></h3>\
                         <div class="line"></div>\
-                        <svg class="close">\
-                            <use xlink:href="#svg-close"></use>\
-                        </svg>\
                     </div>\
                     <div class="body-wrapper">\
                         <div class="body -clear-after"></div>\
@@ -31,26 +28,60 @@ Class(CV.UI, 'Modal').inherits(Widget).includes(CV.WidgetUtils)({
         modalElement : null,
         isAdmin : null,
 
-
-        init : function(config){
+        init : function(config) {
             Widget.prototype.init.call(this, config);
             this.el = this.element[0];
 
             this.innerElement = this.el.querySelector('.cv-modal__inner');
+            this.bodyElement = this.el.querySelector('.body');
             this.modalElement = this.el.querySelector('.cv-modal');
-            this.closeElement = this.el.querySelector('.close');
 
-            this.appendChild(new this.action({
-                data : this.data,
-                name : 'bubbleAction',
-                isAdmin : this.isAdmin,
-
-            })).render(this.el.querySelector('.body'));
+            if (this.action) {
+                this.appendChild(new this.action({
+                    data : this.data,
+                    name : 'bubbleAction',
+                    isAdmin : this.isAdmin
+                })).render(this.bodyElement);
+            }
 
             this._setup()._bindEvents();
         },
 
+        /* Replaces the contents of the modal's body.
+         * @method setContent <public> [Function]
+         * @param content <required> [HTMLString, Function(widget), NodeElement] the new content
+         * @return Modal
+         */
+        addContent : function addContent(content) {
+            while(this.bodyElement.firstChild) {
+                this.bodyElement.removeChild(this.bodyElement.firstChild);
+            }
+
+            if (typeof content === 'function') {
+                this.appendChild(new this.action({
+                    data : this.data,
+                    name : 'bubbleAction',
+                    isAdmin : this.isAdmin
+                })).render(this.bodyElement);
+                return this;
+            }
+
+           if (typeof content === 'string') {
+               this.bodyElement.insertAdjacentHTML('beforeend', content);
+               return this;
+           }
+
+            this.bodyElement.appendChild(content);
+            return this;
+        },
+
         _setup : function _setup() {
+            this.appendChild(new CV.UI.Close({
+                name : 'closeButton',
+                className : '-abs -color-bg-white',
+                svgClassName : '-s16'
+            })).render(this.el.querySelector('.header'));
+
             if (this.width) {
                 this.modalElement.style.width = this.width + 'px';
             }
@@ -63,9 +94,11 @@ Class(CV.UI, 'Modal').inherits(Widget).includes(CV.WidgetUtils)({
             this._destroyRef = this._beforeDestroyHandler.bind(this);
             this._clickHandlerRef = this._clickHandler.bind(this);
 
-            this.bubbleAction.bind('close', this._destroyRef);
+            if (this.bubbleAction) {
+                this.bubbleAction.bind('close', this._destroyRef);
+            }
             Events.on(this.innerElement, 'click', this._clickHandlerRef);
-            Events.on(this.closeElement, 'click', this._destroyRef);
+            this.closeButton.bind('click', this._destroyRef);
             return this;
         },
 
@@ -83,10 +116,9 @@ Class(CV.UI, 'Modal').inherits(Widget).includes(CV.WidgetUtils)({
         },
 
         destroy : function destroy() {
-            Widget.prototype.destroy.call(this);
             Events.off(this.innerElement, 'click', this._clickHandlerRef);
-            Events.off(this.closeElement, 'click', this._destroyRef);
-            this._destroyRef = this.closeElement = this.modalElement = this.el = null;
+            this._destroyRef = this.modalElement = this.el = null;
+            Widget.prototype.destroy.call(this);
             return false;
         }
     }

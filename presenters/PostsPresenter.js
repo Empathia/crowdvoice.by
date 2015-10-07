@@ -25,7 +25,7 @@ var PostsPresenter = Module('PostsPresenter')({
 
       async.series([
 
-        // votes
+        // .voted, whether you've voted on this post
         function(done) {
           if (currentPerson) {
             Vote.find({
@@ -48,7 +48,7 @@ var PostsPresenter = Module('PostsPresenter')({
           }
         },
 
-        // saved
+        // .saved, whether you've saved this post
         function(done) {
           if (currentPerson) {
             SavedPost.find({
@@ -74,7 +74,7 @@ var PostsPresenter = Module('PostsPresenter')({
           }
         },
 
-        // totalSaves
+        // .totalSaves, total amount of this the post has been saved
         function(done) {
           SavedPost.find({
             post_id: postInstance.id
@@ -85,7 +85,9 @@ var PostsPresenter = Module('PostsPresenter')({
 
             return done();
           });
-        }, function(done) {
+        },
+
+        function(done) {
 
           // voice
           Voice.find({ id : postInstance.voiceId }, function(err, result) {
@@ -103,7 +105,7 @@ var PostsPresenter = Module('PostsPresenter')({
               done();
             });
           });
-        } ], function(err) {
+        }], function(err) {
         if (err) { return next(err); }
 
         response.push(post);

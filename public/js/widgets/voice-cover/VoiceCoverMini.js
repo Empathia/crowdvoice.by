@@ -1,3 +1,5 @@
+var Person = require('./../../lib/currentPerson');
+
 Class(CV, 'VoiceCoverMini').inherits(Widget).includes(CV.WidgetUtils)({
     HTML : '\
         <article class="cv-voice-cover mini -clearfix" role="article">\
@@ -16,7 +18,7 @@ Class(CV, 'VoiceCoverMini').inherits(Widget).includes(CV.WidgetUtils)({
                     </div>\
                 </div>\
             </div>\
-            <div class="action"></div>\
+            <div class="action -abs"></div>\
         </article>',
 
     TOPICS_HTML : ' · <ul class="cv-tags -inline-block -list-horizontal"></ul>',
@@ -38,8 +40,22 @@ Class(CV, 'VoiceCoverMini').inherits(Widget).includes(CV.WidgetUtils)({
             this.el = this.element[0];
             this.authorAnchor = this.el.querySelector('.author-anchor');
             this.voiceAnchors = [].slice.call(this.el.querySelectorAll('[data-voice-anchor]'), 0);
+            this.actionsElement = this.el.querySelector('.action');
 
             this._setup();
+        },
+
+        addActions : function addActions() {
+            if (!Person.get()) {
+                return;
+            }
+
+            if (Person.memberOf('voice', this.data.id)) {
+                this.appendChild(new CV.VoiceCoverActions({
+                    name : 'actions',
+                    voiceEntity : this.data
+                })).render(this.actionsElement);
+            }
         },
 
         _setup : function _setup() {
@@ -48,7 +64,11 @@ Class(CV, 'VoiceCoverMini').inherits(Widget).includes(CV.WidgetUtils)({
                 this.dom.updateAttr('title', anchor, this.data.title + ' voice');
             }, this);
 
-            this.dom.updateAttr('src', this.el.querySelector('.voice-cover'), this.data.images.small.url);
+            if (this.data.images.small) {
+                this.dom.updateAttr('src', this.el.querySelector('.voice-cover'), this.data.images.small.url);
+            } else {
+                this.el.querySelector('.voice-cover').classList.add('-colored-background');
+            }
             this.dom.updateText(this.el.querySelector('.voice-cover-title'), this.data.title);
 
             this.dom.updateAttr('href', this.authorAnchor, '/' + this.data.owner.profileName);

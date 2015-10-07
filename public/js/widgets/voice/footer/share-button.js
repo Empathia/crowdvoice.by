@@ -35,7 +35,7 @@ Class(CV, 'VoiceFooterShareButton').inherits(Widget)({
             this.appendChild(new CV.PopoverBlocker({
                 name : 'popover',
                 className : 'voice-share-popover share-popover',
-                placement : 'top-right',
+                placement : 'bottom-right',
                 content : new CV.PopoverShare({
                     name : 'shareItems',
                     data : {

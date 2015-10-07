@@ -1,3 +1,5 @@
+var Events = require('./../../../lib/events');
+
 Class(CV, 'RelatedVoicesList').inherits(Widget)({
     ELEMENT_CLASS : 'cv-related-voices-list',
     prototype : {
@@ -8,8 +10,7 @@ Class(CV, 'RelatedVoicesList').inherits(Widget)({
             /* Initial voices to display. (VoiceEntities)
              * @property voices <require> [Array]
              */
-            voices : null,
-            editMode : false
+            voices : null
         },
 
         /* Holds the count of how many voices have been added, usefull to keep
@@ -37,11 +38,33 @@ Class(CV, 'RelatedVoicesList').inherits(Widget)({
          */
         addVoice : function addVoice(voice) {
             this._index++;
+            var widgetName = 'voice_' + this._index;
+
             this.appendChild(new CV.VoiceCoverMini({
-                name : 'voice_' + this._index,
+                name : widgetName,
                 className : 'cv-related-voices__list-item',
                 data : voice
-            })).render(this.el);
+            })).render(this.el).showMeta();
+
+            if (this.data.editMode) {
+                this[widgetName].appendChild(new CV.UI.Button({
+                    name : 'button',
+                    className : 'micro',
+                    data : {value: 'Remove'}
+                })).render(this[widgetName].actionsElement);
+
+                Events.once(this[widgetName].button.el, 'click', function() {
+                    this.dispatch('related:voices:remove:item', {widget: this[widgetName]});
+                }.bind(this));
+            }
+
+            return this;
+        },
+
+        removeVoice : function removeVoice(voice) {
+            this.removeChild(voice);
+            voice = voice.destroy();
+            return this;
         }
     }
 });
