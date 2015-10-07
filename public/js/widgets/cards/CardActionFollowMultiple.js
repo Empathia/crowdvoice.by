@@ -54,6 +54,11 @@ Class(CV, 'CardActionFollowMultiple').inherits(Widget)({
             return this;
         },
 
+        /* Listens and handle the checkbox change state.
+         * Tells the server to stablish a new `follow` relationship.
+         * @method _changeHandler <private> [Function]
+         * @return undefined
+         */
         _changeHandler : function _changeHandler(ev) {
             API.followEntity({
                 profileName : this.entity.profileName,
@@ -61,6 +66,13 @@ Class(CV, 'CardActionFollowMultiple').inherits(Widget)({
             }, this._responseHandler.bind(this, ev.checkbox));
         },
 
+        /* API response handler.
+         * @method _responseHandler <private> [Function]
+         * @argument checkboxWidget <required> [Widget] the checkbox instance related with the request.
+         * @argument err <required> [Boolean] tells if an error happened on the server request.
+         * @argument res <required> [Object] the server response.
+         * @return undefined
+         */
         _responseHandler : function _responseHandler(checkboxWidget, err, res) {
             if (err) {
                 /* revert silently without forcing it to dispatch the change event,
@@ -86,7 +98,7 @@ Class(CV, 'CardActionFollowMultiple').inherits(Widget)({
             this.dropdown.deactivate();
         },
 
-        /* Updates the button's text based on if currentPerson is following the
+        /* Updates the button's text based on the dropdown selection state.
          * current voice.
          * @method _updateButtonState <private> [Function]
          * @return VoiceFollowButton
