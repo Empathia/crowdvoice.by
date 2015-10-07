@@ -22,6 +22,7 @@ window.jQuery = window.$ = require('jquery');
 window.validate = require('validate');
 var moment = require('moment');
 window.moment = moment;
+window.dragula = require('dragula');
 
 // JS » Our stack, namespace, lib
 require('neon');
