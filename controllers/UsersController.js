@@ -160,7 +160,13 @@ var UsersController = Class('UsersController')({
               var setting = new NotificationSetting({
                 entityId: person.id,
                 webSettings: defaultSettings,
-                emailSettings: defaultSettings
+                emailSettings: _.defaults(defaultSettings, {
+                  selfNewMessage: true,
+                  selfNewInvitation: true,
+                  selfNewRequest: true,
+                  selfNewVoiceFollower: true,
+                  selfNewEntityFollower: true
+                })
               });
 
               setting.save(function (err, result) {
