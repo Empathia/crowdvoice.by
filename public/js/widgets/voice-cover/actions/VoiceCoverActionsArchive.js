@@ -1,9 +1,8 @@
-/* Globals App */
 var Events = require('./../../../lib/events');
 var API = require('./../../../lib/api');
 
 Class(CV, 'VoiceCoverActionsArchive').inherits(CV.UI.Button)({
-    ELEMENT_CLASS : 'cv-button micro -color-negative -mr1',
+    ELEMENT_CLASS : 'cv-button tiny -color-negative -mr1',
     prototype : {
         voiceEntity : null,
         init : function init (config){

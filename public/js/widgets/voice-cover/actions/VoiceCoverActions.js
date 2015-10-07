@@ -1,5 +1,5 @@
 Class(CV, 'VoiceCoverActions').inherits(Widget).includes(CV.WidgetUtils)({
-    ELEMENT_CLASS : 'cv-cover-actions',
+    ELEMENT_CLASS : 'cv-cover-actions cv-button-group multiple',
     prototype : {
         voiceEntity : null,
         init : function init(config) {
