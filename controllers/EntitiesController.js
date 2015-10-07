@@ -261,7 +261,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
                 EntityFollower.findById(entityFollowerRecordId[0], function (err, entityFollower) {
                   if (err) { return next(err); }
 
-                  User.find({ entity_id: follower.id }, function (err, user) {
+                  User.find({ entity_id: entity.id }, function (err, user) {
                     if (err) { return next(err); }
 
                     FeedInjector().inject(follower.id, 'who entityFollowsEntity', entityFollower[0], function (err) {

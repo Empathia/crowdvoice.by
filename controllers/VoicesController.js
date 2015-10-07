@@ -630,7 +630,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                 VoiceFollower.findById(voiceFollowerRecordId[0], function (err, voiceFollower) {
                   if (err) { return next(err); }
 
-                  User.find({ entity_id: follower.id }, function (err, user) {
+                  User.find({ entity_id: req.activeVoice.ownerId }, function (err, user) {
                     if (err) { return next(err); }
 
                     FeedInjector().inject(follower.id, 'who entityFollowsVoice', voiceFollower[0], function (err) {

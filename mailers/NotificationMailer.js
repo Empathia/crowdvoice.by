@@ -58,7 +58,7 @@ var NotificationMailer = Module('NotificationMailer')({
 
   // Send notification about new message
   newMessage: function (user, info, callback) {
-    NotificationSettings.find({ entity_id: user.entityId }, function (err, setting) {
+    NotificationSetting.find({ entity_id: user.entityId }, function (err, setting) {
       if (err) { return callback(err) }
 
       if (!setting[0].emailSettings.selfNewMessage) {
@@ -109,7 +109,7 @@ var NotificationMailer = Module('NotificationMailer')({
         Entity.findById(info.message.senderEntityId, function (err, sender) {
           if (err) { return callback(err) }
 
-          EntitiesPresenter.build(sender, function (err, presented) {
+          EntitiesPresenter.build(sender, null, function (err, presented) {
             if (err) { return callback(err) }
 
             var template = new Thulium({ template: newMessageViewFile }),
@@ -161,7 +161,7 @@ var NotificationMailer = Module('NotificationMailer')({
 
   // Send on new invitation
   newInvitation: function (user, info, callback) {
-    NotificationSettings.find({ entity_id: user.entityId }, function (err, setting) {
+    NotificationSetting.find({ entity_id: user.entityId }, function (err, setting) {
       if (err) { return callback(err) }
 
       if (!setting[0].emailSettings.selfNewInvitation) {
@@ -171,7 +171,7 @@ var NotificationMailer = Module('NotificationMailer')({
       Entity.findById(info.message.senderEntityId, function (err, sender) {
         if (err) { return callback(err) }
 
-        EntitiesPresenter.build(sender, function (err, presented) {
+        EntitiesPresenter.build(sender, null, function (err, presented) {
           if (err) { return callback(err) }
 
           var template = new Thulium({ template: newInvitationViewFile }),
@@ -222,7 +222,7 @@ var NotificationMailer = Module('NotificationMailer')({
 
   // Send on new request
   newRequest: function (user, info, callback) {
-    NotificationSettings.find({ entity_id: user.entityId }, function (err, setting) {
+    NotificationSetting.find({ entity_id: user.entityId }, function (err, setting) {
       if (err) { return callback(err) }
 
       if (!setting[0].emailSettings.selfNewRequest) {
@@ -232,7 +232,7 @@ var NotificationMailer = Module('NotificationMailer')({
       Entity.findById(info.message.senderEntityId, function (err, sender) {
         if (err) { return callback(err) }
 
-        EntitiesPresenter.build(sender, function (err, presented) {
+        EntitiesPresenter.build(sender, null, function (err, presented) {
           if (err) { return callback(err) }
 
           var template = new Thulium({ template: newRequestViewFile }),
@@ -283,17 +283,17 @@ var NotificationMailer = Module('NotificationMailer')({
 
   // Send on new follow of your voice
   newVoiceFollower: function (user, newFollowerEntity, followedVoice, callback) {
-    NotificationSettings.find({ entity_id: user.entityId }, function (err, setting) {
+    NotificationSetting.find({ entity_id: user.entityId }, function (err, setting) {
       if (err) { return callback(err) }
 
       if (!setting[0].emailSettings.selfNewVoiceFollower) {
         return callback();
       }
 
-      EntitiesPresenter.build([newFollowerEntity], function (err, presentedEntity) {
+      EntitiesPresenter.build([newFollowerEntity], null, function (err, presentedEntity) {
         if (err) { return callback(err) }
 
-        VoicesPresenter.build([followedVoice], function (err, presentedVoice) {
+        VoicesPresenter.build([followedVoice], null, function (err, presentedVoice) {
           if (err) { return callback(err) }
 
           var template = new Thulium({ template: newVoiceFollowerViewFile }),
@@ -311,8 +311,6 @@ var NotificationMailer = Module('NotificationMailer')({
           template.parseSync().renderSync({
             params: {
               user: user,
-              thread: info.thread,
-              message: info.message,
               follower: presentedEntity[0],
               voice: presentedVoice[0],
             },
@@ -345,14 +343,14 @@ var NotificationMailer = Module('NotificationMailer')({
 
   // Send on entity following you
   newEntityFollower: function (user, newFollowerEntity, followedEntity, callback) {
-    NotificationSettings.find({ entity_id: user.entityId }, function (err, setting) {
+    NotificationSetting.find({ entity_id: user.entityId }, function (err, setting) {
       if (err) { return callback(err) }
 
       if (!setting[0].emailSettings.selfNewEntityFollower) {
         return callback();
       }
 
-      EntitiesPresenter.build([newFollowerEntity, followedEntity], function (err, presented) {
+      EntitiesPresenter.build([newFollowerEntity, followedEntity], null, function (err, presented) {
         if (err) { return callback(err); }
 
         var template = new Thulium({ template: newEntityFollowerViewFile }),
@@ -370,10 +368,8 @@ var NotificationMailer = Module('NotificationMailer')({
         template.parseSync().renderSync({
           params: {
             user: user,
-            thread: info.thread,
-            message: info.message,
-            follower: presentedEntity[0],
-            followed: presentedEntity[1],
+            follower: presented[0],
+            followed: presented[1],
           },
         })
 
