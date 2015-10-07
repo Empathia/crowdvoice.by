@@ -11,7 +11,7 @@
     <% if (person.image.exists('medium')){ %>
       <img class="profile-image" src="<%= person.image.url('medium') %>">
     <% } else { %>
-      <img class="profile-image" src="/img/placeholder-image.png">
+      <img class="profile-image" src="/img/entity-placeholder/image_medium.png">
     <% } %>
 
     <div class="pan-separator -rel">
@@ -399,5 +399,5 @@ followSelect.voices.on('click', function(){
 
 
   });
-
+  console.log(<%= JSON.stringify(person) %>);
 </script>
