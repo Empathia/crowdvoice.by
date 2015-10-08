@@ -22,6 +22,7 @@ window.jQuery = window.$ = require('jquery');
 window.validate = require('validate');
 var moment = require('moment');
 window.moment = moment;
+window.dragula = require('dragula');
 
 // JS » Our stack, namespace, lib
 require('neon');
@@ -82,7 +83,7 @@ require('./widgets/PopoverBlocker');
 require('./widgets/responsive-slider.js');
 require('./widgets/InputClearable');
 require('./widgets/input-counter.js');
-require('./widgets/dropdown.js');
+require('./widgets/Dropdown');
 require('./widgets/dropdowns/regular');
 require('./widgets/dropdowns/DropdownTopics');
 require('./widgets/dropdowns/voice-types');
@@ -100,6 +101,7 @@ require('./widgets/cards/Card');
 require('./widgets/cards/CardMini');
 require('./widgets/cards/CardMiniClean');
 require('./widgets/cards/CardActionFollow');
+require('./widgets/cards/CardActionFollowMultiple');
 require('./widgets/cards/CardActionMessage');
 require('./widgets/cards/CardActionInvite');
 require('./widgets/cards/CardActionJoin');

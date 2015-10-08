@@ -3,7 +3,7 @@
 
 </div>
 
-<div class="admin-users-list">
+<div class="admin-users-list" id="pos-container" >
 
 	<% featuredEntities.forEach(function(featuredEntity){ %>
 
@@ -12,7 +12,7 @@
 		if (!entity.deleted) {
 		%>
 
-			<div class="admin-user ">
+			<div class="admin-user" id="<%= entity.id %>" data-position="<%= featuredEntity.position %>" >
 
 					<div class="admin-info">
 						<article role="article" class="card-mini has-meta">
@@ -54,19 +54,21 @@
 	<% }); %>
 
 
+
+
 </div>
 
 <script>
 	var featuredEntities = <%= JSON.stringify(featuredEntities) %>;
-	console.log(featuredEntities);
+
 	var entityType = <%= JSON.stringify(entityType) %>;
 	console.log(entityType);
-
 	var headerEl = document.querySelector('header .header-actions');
 	headerEl.innerHTML = '<h2>Featured <%= entityType %></h2>';
 
 	var flash = <%= JSON.stringify(flash) %>;
-	console.log(flash);
+
+
   	if (flash.success){
 
   		var nEl= document.querySelector('.notifications');
@@ -79,4 +81,67 @@
 
 	}
 
+	dragula([document.querySelector('.admin-users-list')])
+	.on('drag', function (el) {
+	    el.querySelector('.admin-actions').style.display = "none";
+	 })
+	.on('drop', function (el) {
+
+		var nodes = document.querySelectorAll('.admin-user:not(.gu-mirror)');
+		var entityIds = [];
+
+		//console.log(nodes);
+
+		Array.prototype.forEach.call(nodes, function( node ){
+			entityIds.push(node.id);
+
+		});
+
+		reorder(entityIds);
+		console.log(entityIds);
+
+
+ 	 });
+
+	 function reorder(ids){
+
+	 	$.ajax({
+            type : 'POST',
+            url : '/admin/featured/' + entityType + '/updatePositions',
+            headers : {'csrf-token' : $('meta[name="csrf-token"]').attr('content')},
+            data : {entityIds : ids},
+            dataType : 'json',
+            success : function success(data) {
+                console.log('success');
+            },
+            error : function error(err) {
+                console.log('error');
+                console.log(err);
+            }
+        });
+
+	 }
+
 </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

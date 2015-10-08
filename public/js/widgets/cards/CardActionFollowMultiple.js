@@ -1,23 +1,27 @@
-/* This version of the button replaces the default one when the user is a also
- * an Organization Owner. The user then has to decide to follow a Voice, User
- * or Organization as him/herself or as the organization.
- * @inherits Widget
- */
-var API = require('./../../../lib/api');
+var API = require('../../lib/api');
 
-Class(CV, 'VoiceFollowMultipleButton').inherits(Widget).includes(CV.WidgetUtils)({
-    FOLLOW_AS_TEXT : 'Follow Voice As..',
-    FOLLOWING_AS_TEXT : '\
-        <svg class="-s10 -vam">\
-            <use xlink:href="#svg-checkmark"></use>\
+Class(CV, 'CardActionFollowMultiple').inherits(Widget)({
+    ELEMENT_CLASS : 'card-actions-item card-actions-follow-button',
+
+    FOLLOW_AS_TEXT : '\
+        <svg class="card-activity-svg -s16">\
+            <use xlink:href="#svg-user-follow"></use>\
         </svg>\
-        <span style="padding-left:.4em;">Following Voice As...</span>',
+        <p class="card-actions-label">Follow As...</p>',
+
+    FOLLOWING_AS_TEXT : '\
+        <div class="following-button-single-state">\
+            <svg class="card-activity-svg -s16">\
+                <use xlink:href="#svg-user-following"></use>\
+            </svg>\
+            <p class="card-actions-label">Following As...</p>\
+        </div>',
 
     prototype : {
-        /* Current Voice Model.
-         * @property voice <required> [Object]
+        /* Entity Model
+         * @property entity <required> [EntityModel]
          */
-        voice : null,
+        entity : null,
 
         init : function init(config) {
             Widget.prototype.init.call(this, config);
@@ -29,12 +33,14 @@ Class(CV, 'VoiceFollowMultipleButton').inherits(Widget).includes(CV.WidgetUtils)
             this.appendChild(new CV.UI.CurrentPersonEntitiesCheckboxes({
                 name : 'dropdown',
                 data : {
-                    className : 'dropdown-entities-checkboxes ui-dropdown-styled -sm',
-                    showArrow : true
+                    className : 'dropdown-entities-checkboxes',
+                    showArrow : false,
+                    alignment : 'top',
+                    bodyClassName : 'ui-vertical-list hoverable -block -text-left'
                 }
             })).render(this.el);
 
-            this.dropdown.selectValues(this.voice.followersOwnedByCurrentPerson);
+            this.dropdown.selectValues(this.entity.followersOwnedByCurrentPerson);
 
             return this;
         },
@@ -54,9 +60,8 @@ Class(CV, 'VoiceFollowMultipleButton').inherits(Widget).includes(CV.WidgetUtils)
          * @return undefined
          */
         _changeHandler : function _changeHandler(ev) {
-            API.followVoice({
-                profileName : this.voice.owner.profileName,
-                voiceSlug : this.voice.slug,
+            API.followEntity({
+                profileName : this.entity.profileName,
                 data : {followerId : ev.checkbox.id}
             }, this._responseHandler.bind(this, ev.checkbox));
         },

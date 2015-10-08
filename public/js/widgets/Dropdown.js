@@ -1,4 +1,3 @@
-/* jshint multistr: true */
 /* Class CV.Dropdown
  * The dropdown class require the following options to work:
  * - label (string | Node/s)
