@@ -238,6 +238,8 @@ module.exports = {
             contentType : 'json',
             success : function success(data) { callback(false, data); },
             error : function error(err) { callback(true, err); },
+        });
+    },
     /* Invite user to become contributor of voice.
      * @argument args.profileName <required> [String] the voice owner profileName
      * @argument args.voiceSlug <required> [String] the voice slug
