@@ -1,5 +1,4 @@
 require('./../presenters/ThreadsPresenter');
-var NotificationMailer = require(path.join(__dirname, '../mailers/NotificationMailer.js'));
 
 var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
   prototype : {
