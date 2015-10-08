@@ -18,10 +18,6 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
         el : null,
         header : null,
         content : null,
-        articleTitle: null,
-        articleContent: null,
-        voiceSlug: null,
-        userSlug: null,
 
         init : function init(config) {
             CV.PostCreator.prototype.init.call(this, config);
@@ -33,7 +29,7 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
 
             // Voice and user slugs
             this.voiceSlug = App.Voice.data.slug;
-            this.userSlug = App.Voice.data.owner.profileName;
+            this.userSlug = App.Voice.data.owner.profileName;     
 
             this.addCloseButton()._setup()._bindEvents()._disablePostButton();
         },
@@ -61,6 +57,9 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
             // Content
             this.articleContent = this.content.querySelector('.write-article-body-editable');
             this.articleTitle = this.content.querySelector('.editor-title');
+            this.coverButton = this.editor.editorHeader.coverButton;
+            this.coverImage = this.editor.editorHeader.el;
+            
 
             return this;
         },
@@ -75,13 +74,27 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
             this._buttonClickRef = this._buttonClick.bind(this);
             this.postButton.bind('buttonClick', this._buttonClickRef);
 
+            this._imageReceivedRef = this._imageReceived.bind(this);
+            this.coverButton.bind('fileUploaded', this._imageReceivedRef);
+
             this._contentFilledRef = this._contentFilled.bind(this);
             $(this.articleTitle).on('change keyup paste',this._contentFilledRef);
             $(this.articleContent).on('change keyup paste',this._contentFilledRef);
 
             return this;
         },
+        // Saves the article 
         _buttonClick : function _buttonClick(ev){
+            if(this.articleImage){
+                API.uploadArticleImage({
+                    profileName : this.userSlug,
+                    voiceSlug : this.voiceSlug,
+                    data : this.articleImage
+                }, this._responseHandler.bind(this));
+            }else{
+                console.log('No image attached.');
+            }
+            // API responding with 404
             API.voiceNewArticle({
                 userSlug : this.userSlug,
                 voiceSlug : this.voiceSlug,
@@ -91,11 +104,20 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
         },
         _responseHandler : function _responseHandler(err, res){
             if (err) {
-                console.log(err);
+                console.log(res.status + ' ' +res.statusText);
                 return;
             }
-
             console.log(res);
+        },
+        // Gets the image and sets the header background to it
+        _imageReceived : function _imageReceived(ev){
+            this.articleImage = ev.data;
+            var imgUrl = URL.createObjectURL(ev.data);
+
+            $(this.coverImage).css('background-image', 'url('+imgUrl+')');
+            $(this.coverImage).css('background-size', 'cover');
+            $(this.coverImage).css('background-repeat', 'no-repeat');
+
         },
         _contentFilled : function _contentFilled(){
             var contentText = this.articleContent.querySelector('p');
