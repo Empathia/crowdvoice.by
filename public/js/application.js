@@ -22,6 +22,7 @@ window.jQuery = window.$ = require('jquery');
 window.validate = require('validate');
 var moment = require('moment');
 window.moment = moment;
+window.dragula = require('dragula');
 
 // JS » Our stack, namespace, lib
 require('neon');
@@ -34,7 +35,7 @@ require('./lib/responsive-width');
 require('./app');
 
 // Global Widgets
-require('./widgets/ui/modal');
+require('./widgets/ui/Modal');
 require('./widgets/ui/Input');
 require('./widgets/ui/Button');
 require('./widgets/ui/Checkbox');
@@ -77,12 +78,12 @@ require('./widgets/incognito/button');
 require('./widgets/loader');
 
 // generic widgets
-require('./widgets/popover.js');
-require('./widgets/popover-blocker.js');
+require('./widgets/Popover.js');
+require('./widgets/PopoverBlocker');
 require('./widgets/responsive-slider.js');
 require('./widgets/InputClearable');
 require('./widgets/input-counter.js');
-require('./widgets/dropdown.js');
+require('./widgets/Dropdown');
 require('./widgets/dropdowns/regular');
 require('./widgets/dropdowns/DropdownTopics');
 require('./widgets/dropdowns/voice-types');
@@ -96,14 +97,16 @@ require('./widgets/tabs/tab-nav');
 require('./widgets/tabs/tab-content');
 
 // components
-require('./widgets/cards/card');
-require('./widgets/cards/mini');
-require('./widgets/cards/action-follow');
-require('./widgets/cards/action-message');
-require('./widgets/cards/action-invite-to');
-require('./widgets/cards/action-join');
-require('./widgets/cards/popover-unfollow');
-require('./widgets/cards/popover-invite-to');
+require('./widgets/cards/Card');
+require('./widgets/cards/CardMini');
+require('./widgets/cards/CardMiniClean');
+require('./widgets/cards/CardActionFollow');
+require('./widgets/cards/CardActionFollowMultiple');
+require('./widgets/cards/CardActionMessage');
+require('./widgets/cards/CardActionInvite');
+require('./widgets/cards/CardActionJoin');
+require('./widgets/cards/CardUnfollowPopover');
+require('./widgets/cards/CardInviteToPopover');
 
 require('./widgets/voice-cover/VoiceCover');
 require('./widgets/voice-cover/VoiceCoverMini');
@@ -247,7 +250,7 @@ require('./widgets/modal.js');
 require('./widgets/login.js');
 require('./widgets/formUtils.js');
 require('./widgets/forms/send-message.js');
-require('./widgets/forms/request-to-contribute.js');
+require('./widgets/forms/RequestToContribute');
 require('./widgets/forms/CreateVoice.js');
 require('./widgets/forms/create-organization.js');
 require('./widgets/forms/invite-to-contribute.js');

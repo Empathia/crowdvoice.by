@@ -92,21 +92,19 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
                 name : 'relatedVoicesButton',
                 voice : this.voice,
                 className : 'tiny',
-                relatedVoices : App.Voice.relatedVoices
+                relatedVoices : this.relatedVoices
             })).render(relatedVoicesDiv);
             this.actionsColumn.appendChild(relatedVoicesDiv);
 
             if (Person.is(this.voice.owner.id)) {
                 this.appendChild(new CV.ManageContributorsButton({
-                    name : 'manageContributors'
-                })).render(this.actionsColumn);
-            }
-
-            // currentPerson does not belongs/owns this voice already?
-            if ((!Person.anon()) && (!Person.memberOf('voice', this.voice.id))) {
-                this.appendChild(new CV.VoiceRequestToContribute({
-                    name : 'voiceRequestToContribute',
-                    voice : this.voice
+                    name : 'manageContributors',
+                    className : 'tiny',
+                    data : {
+                        value: 'Manage Contributors',
+                        voice : this.voice,
+                        contributors : this.contributors
+                    }
                 })).render(this.actionsColumn);
             }
 
@@ -122,6 +120,13 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
                 })).render(this.actionsColumn);
             }
 
+            // currentPerson does not belongs/owns this voice already?
+            if ((!Person.anon()) && (!Person.memberOf('voice', this.voice.id))) {
+                this.appendChild(new CV.VoiceRequestToContribute({
+                    name : 'voiceRequestToContribute',
+                    voice : this.voice
+                })).render(this.actionsColumn);
+            }
         },
 
         /* Sets the Timeline's inital date.

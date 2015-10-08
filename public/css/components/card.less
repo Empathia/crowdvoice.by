@@ -156,9 +156,15 @@
 }
 
 .card-actions-follow-button {
+  .following-button-single-state,
   .following-button {
     color: @color-positive-dark;
     fill: @color-positive-dark;
+  }
+
+  .following-button-single-state:hover {
+    color: @color-positive;
+    fill: @color-positive;
   }
 
   .unfollow-button {
@@ -190,6 +196,13 @@
 /* =========================================================================== *
  * card-mini
  * =========================================================================== */
+.card-mini {
+  .action {
+    top: 16px;
+    right: 16px;
+  }
+}
+
 .card-mini.has-meta {
   .card-mini-fullname,
   .card-mini-username {

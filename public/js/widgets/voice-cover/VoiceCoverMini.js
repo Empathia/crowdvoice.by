@@ -18,7 +18,7 @@ Class(CV, 'VoiceCoverMini').inherits(Widget).includes(CV.WidgetUtils)({
                     </div>\
                 </div>\
             </div>\
-            <div class="action"></div>\
+            <div class="action -abs"></div>\
         </article>',
 
     TOPICS_HTML : ' · <ul class="cv-tags -inline-block -list-horizontal"></ul>',
