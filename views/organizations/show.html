@@ -11,7 +11,7 @@
     <% if (organization.image.exists('medium')){ %>
       <img class="profile-image" src="<%= organization.image.url('medium') %>">
     <% }else{ %>
-      <img class="profile-image" src="/img/placeholder-image.png">
+      <img class="profile-image" src="/img/entity-placeholder/image_medium.png">
     <% } %>
 
     <div class="pan-separator -rel">
@@ -195,7 +195,7 @@
     var itemsElements = [];
 
     data.forEach(function(item, index) {
-      var itemWidget = new instance(item).render(itemsWrapper);
+      var itemWidget = new instance({data: item}).render(itemsWrapper);
       itemWidget.element.addClass('id-' + item.id);
       itemsElements.push(itemWidget.el);
     });

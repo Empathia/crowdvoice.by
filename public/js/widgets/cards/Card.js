@@ -22,8 +22,6 @@
  * membershipCount  {Number} total of members (for 'organization' Entities)
  * followingCount   {Number} total of entities following
  * followed         {Boolean} Flag for currentPerson. Indicates if currentPerson is following this entity
- * voiceIds         {Array} Voice ids of voices this entity belongs or owns
- * organizationIds  {Array} Organization ids of organizations this entity belongs or owns
  */
 
 var Person = require('./../../lib/currentPerson');
@@ -156,12 +154,18 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
                 return;
             }
 
-            if (!Person.ownerOf('organization', this.data.id)) {
-                this.appendChild(new CV.CardActionFollow({
-                    name : 'followButton',
-                    followed: this.data.followed,
-                    profileName : this.data.profileName
-                })).render(this.actionsEl);
+            if (Person.ownerOf('organization', this.data.id) === false) {
+                if (Person.get().ownedOrganizations.length === 0) {
+                    this.appendChild(new CV.CardActionFollow({
+                        name : 'followButton',
+                        entity :  this.data
+                    })).render(this.actionsEl);
+                } else {
+                    this.appendChild(new CV.CardActionFollowMultiple({
+                        name : 'followButton',
+                        entity :  this.data
+                    })).render(this.actionsEl);
+                }
                 this._totalCountActions++;
 
                 this.appendChild(new CV.CardActionMessage({
@@ -172,7 +176,7 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
             }
 
             if (this.data.type === "organization") {
-                if (!Person.memberOf('organization', this.data.id)) {
+                if (Person.memberOf('organization', this.data.id) === false) {
                     this.appendChild(new CV.CardActionJoin({
                         name : 'joinButton',
                         entity : this.data

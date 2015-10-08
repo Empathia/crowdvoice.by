@@ -1,8 +1,5 @@
-/* jshint multistr: true */
 Class(CV, 'CardActionInvite').inherits(Widget)({
-
     ELEMENT_CLASS : 'card-actions-item',
-
     HTML : '\
         <div>\
             <svg class="card-activity-svg -s16">\
