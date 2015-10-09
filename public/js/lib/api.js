@@ -228,14 +228,14 @@ module.exports = {
         if ((typeof callback).toLowerCase() !== "function") {
             throw new Error('Callback should be a function');
         }
-        
+        console.log(args);
         $.ajax({
             type : 'POST',
             url : '/' + args.userSlug + '/' + args.voiceSlug +'/saveArticle',
             headers : {'csrf-token' : this.token},
             cache : false,
             data : {title: args.articleTitle, content: args.articleContent},
-            contentType : 'json',
+            dataType : 'json',
             success : function success(data) { callback(false, data); },
             error : function error(err) { callback(true, err); },
         });
@@ -327,7 +327,7 @@ module.exports = {
      * @argument args.data <required> [FormData] the image as FormData
      * @argument callback <required> [Function]
      */
-    uploadArticleImage : function uploadPostImage(args, callback) {
+    uploadArticleImage : function uploadArticleImage(args, callback) {
         if (!args.profileName || !args.voiceSlug || !args.data || !callback) {
             throw new Error('Missing required params');
         }
@@ -335,6 +335,7 @@ module.exports = {
         if ((typeof callback).toLowerCase() !== "function") {
             throw new Error('Callback should be a function');
         }
+        
 
         $.ajax({
             type : 'POST',

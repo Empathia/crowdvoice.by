@@ -2,7 +2,7 @@
 Class(CV, 'PostCreatorWriteArticleEditorCoverButton').inherits(Widget)({
 
     HTML : '<button class="editor-add-cover cv-button tiny primary -abs">Add Cover</button>\
-			<input type="file" name="image" accept="image/*" class="image-input -hide"/>\
+			<input type="file" name="image" accept="image/.jpg,.png,.jpeg" class="image-input -hide"/>\
     	',
 
     prototype : {

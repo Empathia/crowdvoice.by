@@ -18,6 +18,7 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
         el : null,
         header : null,
         content : null,
+        articleImage : null,
 
         init : function init(config) {
             CV.PostCreator.prototype.init.call(this, config);
@@ -85,21 +86,15 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
         },
         // Saves the article 
         _buttonClick : function _buttonClick(ev){
-            if(this.articleImage){
-                API.uploadArticleImage({
-                    profileName : this.userSlug,
-                    voiceSlug : this.voiceSlug,
-                    data : this.articleImage
-                }, this._responseHandler.bind(this));
-            }else{
-                console.log('No image attached.');
-            }
+
             // API responding with 404
             API.voiceNewArticle({
                 userSlug : this.userSlug,
                 voiceSlug : this.voiceSlug,
                 articleTitle : $(this.articleTitle).val(),
-                articleContent : $(this.articleContent).html()
+                articleContent : $(this.articleContent).html(),
+                articleImage : this.articleImage.path,
+                articleDate : this.postDate.timePickerInput.value
             }, this._responseHandler.bind(this));   
         },
         _responseHandler : function _responseHandler(err, res){
@@ -109,15 +104,29 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
             }
             console.log(res);
         },
-        // Gets the image and sets the header background to it
+        // Gets the <INPUT> IMAGE and sent it to the API
         _imageReceived : function _imageReceived(ev){
-            this.articleImage = ev.data;
-            var imgUrl = URL.createObjectURL(ev.data);
+            var imageData = new FormData();
+            imageData.append('image', ev.data);
 
-            $(this.coverImage).css('background-image', 'url('+imgUrl+')');
+            API.uploadArticleImage({
+                    profileName : this.userSlug,
+                    voiceSlug : this.voiceSlug,
+                    data : imageData
+            }, function (err, res){
+                if (err) {
+                    console.log(res.status + ' ' +res.statusText);
+                    return;
+                }
+                this._imageUploaded(res);
+            }.bind(this));
+        },
+        //Gets the API response and puts the image as background for the header
+        _imageUploaded : function _imageUploaded(image){
+            this.articleImage = image;
+            $(this.coverImage).css('background-image', 'url('+this.articleImage.path+')');
             $(this.coverImage).css('background-size', 'cover');
             $(this.coverImage).css('background-repeat', 'no-repeat');
-
         },
         _contentFilled : function _contentFilled(){
             var contentText = this.articleContent.querySelector('p');
