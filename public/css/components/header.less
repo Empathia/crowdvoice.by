@@ -13,7 +13,8 @@ body.page-voice .cv-main-header {
   transition: transform 200ms @ease;
 
   &.hide {
-    transform: translateY(-@cv-header-height) translateZ(0) !important;
+    transform: translateY(-@cv-header-height) translateZ(0);
+    .voice-footer {background-color: @color-white}
   }
 }
 
