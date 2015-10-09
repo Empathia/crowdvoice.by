@@ -75,7 +75,6 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
       //console.log('type: ' +message.type);
 
       if ( message.type == 'report') {
-        console.log(this);
         var messageNotificationElement = $(message.constructor.REPORT);
         var text = messageNotificationElement.html();
 
@@ -94,7 +93,7 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
 
         var text = messageNotificationElement.html();
 
-        if (message.data.senderEntity.id !== message.parent.parent.currentPerson.id) {
+        if (message.data.senderEntity.id !== currentPerson.id) {
           switch(message.type) {
             case 'invitation_organization':
               text = text
@@ -243,20 +242,25 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
           }
 
         } else {
+
           switch(message.type) {
-            case 'invitation_organization':
-              text = 'You have invited this user to become member of ' + message.data.organization.name;
+            case 'invitation_accepted_voice':
+              text = 'Invitation to ' + message.data.voice.title + ' accepted';
               break;
-            case 'invitation_voice':
-              text = 'You have invited this user to become contributor of ' + message.data.voice.title;
+
+            case 'invitation_accepted_organization':
+              text = 'Invitation to ' + message.data.organization.name + ' accepted';
               break;
-            case 'request_organization':
-              text = 'You have requested to be a member of ' + message.data.organization.name;
+
+            case 'invitation_rejected_voice':
+              text = 'Your invitation to ' + message.data.voice.title + ' was rejected';
               break;
-            case 'request_voice':
-              text = 'You have requested to be a contributor of ' + message.data.voice.title;
+
+            case 'invitation_rejected_organization':
+              text = 'Invitation to ' + message.data.organization.name + ' rejected';
               break;
           }
+
         }
 
         messageNotificationElement.html(text);
