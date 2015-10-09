@@ -484,6 +484,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           description: sanitizer(req.body.content),
           ownerId: response.currentPerson.id,
           voiceId: response.voice.id,
+          publishedAt : req.body.publishedAt,
           approved: approved,
           sourceType: Post.SOURCE_TYPE_TEXT,
           sourceUrl: null, // required if sourceType !== Post.SOURCE_TYPE_TEXT
@@ -493,7 +494,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         post.save(function (err) {
           if (err) { return next(err); }
 
-          PostsPresenter.build([post], function (err, presentedPost) {
+          PostsPresenter.build([post], req.currentPerson, function (err, presentedPost) {
             return res.json(presentedPost[0]);
           });
         });

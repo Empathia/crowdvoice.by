@@ -234,7 +234,7 @@ module.exports = {
             url : '/' + args.userSlug + '/' + args.voiceSlug +'/saveArticle',
             headers : {'csrf-token' : this.token},
             cache : false,
-            data : {title: args.articleTitle, content: args.articleContent},
+            data : {title: args.articleTitle, content: args.articleContent, publishedAt: args.articleDate},
             dataType : 'json',
             success : function success(data) { callback(false, data); },
             error : function error(err) { callback(true, err); },
