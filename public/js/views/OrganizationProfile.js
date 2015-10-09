@@ -170,7 +170,36 @@ Class(CV.Views, 'OrganizationProfile').includes(NodeSupport, CV.WidgetUtils)({
          * @return undefined
          */
         _updateAsVisitor : function _updateAsVisitor() {
-            this._actionsElementWrapper.textContent = 'logged in visitor';
+            var buttonsGroup = document.createElement('div');
+            buttonsGroup.className = 'cv-button-group multiple';
+
+            this.appendChild(new CV.UserProfileActionMessage({
+                name : 'messageButton',
+                className : 'small',
+                data : {value: 'Message'},
+                entity :  this.entity
+            })).render(buttonsGroup);
+
+            if (Person.get().ownedOrganizations.length === 0) {
+                this.appendChild(new CV.UserProfileActionFollow({
+                    name : 'followButton',
+                    className : 'small',
+                    entity :  this.entity
+                })).render(buttonsGroup);
+            } else {
+                this.appendChild(new CV.UserProfileActionFollowMultiple({
+                    name : 'followButton',
+                    className : 'profile-actions-follow-as-wrapper -inline-block',
+                    entity :  this.entity
+                })).render(buttonsGroup);
+            }
+            this._actionsElementWrapper.appendChild(buttonsGroup);
+
+            this.appendChild(new CV.OrganizationProfileMoreActions({
+                name : 'moreActionsDropdown',
+                className : '-inline-block -ml1',
+                entity :  this.entity
+            })).render(this._actionsElementWrapper);
         }
     }
 });
