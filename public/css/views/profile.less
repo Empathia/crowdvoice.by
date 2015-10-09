@@ -1,3 +1,115 @@
+.responsive-width-voice-covers,
+.responsive-width-cards {
+  margin: 0 -15px;
+  padding-top: 25px;
+  min-height: 185px;
+
+  > .cv-loader {
+    top: 100px;
+    left: 50%;
+    opacity: 1;
+    transition: opacity 300ms linear;
+
+    &.disable {opacity: 0;}
+  }
+
+  .ball-spin-fade-loader > div {
+    background-color: grey;
+  }
+}
+
+.responsive-width-voice-covers {
+  > .cv-voice-cover {
+    display: inline-block;
+    padding: 0 15px 40px;
+  }
+}
+
+.responsive-width-cards {
+  > .widget-card {
+    display: inline-block;
+    padding-right: 15px;
+    padding-left: 15px;
+    padding-bottom: 40px;
+  }
+}
+
+.user-profile-tab {
+  position: relative;
+  display: inline-block;
+  height: 60px;
+  padding: 10px 20px 0;
+  overflow: hidden;
+  transition: color 150ms linear;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background-color: @color-primary;
+    transform: translateY(-3px);
+    transition: transform 150ms ease-in-out;
+  }
+
+  &.active {
+    color: @color-primary;
+    &::before {
+      transform: translateY(0);
+    }
+  }
+
+  &:hover {
+    &::before {
+      transform: translateY(0);
+    }
+  }
+}
+
+.user-profile-tab__counter {
+  font-size: 16px;
+}
+
+.user-profile-tab__label {
+  font-size: 13px;
+}
+
+.profile__actions {
+  padding: 20px 25px 0px 0px;
+}
+
+.profile-actions-follow-as-wrapper {
+  margin-left: -1px;
+  .ui-dropdown__head {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}
+
+.profile-actions-settings-dropdown {
+  &.has-arrow > .ui-dropdown__head {
+    padding-right: 2em;
+    padding-left: 10px;
+  }
+
+  .ui-dropdown-label > svg {
+    position: relative;
+    top: 7px;
+  }
+
+  .ui-dropdown__body {
+    white-space: nowrap;
+    width: inherit;
+  }
+}
+
+.user-profile-following-tab-dropdown {
+  width: 120px;
+  margin: 9px 0 0 1em;
+}
+
 hr{
 	margin: 20px 0px;
 	height: 1px;
@@ -215,21 +327,21 @@ hr{
 }
 
 .profile-content-body{
-	padding: 35px 0px 25px 65px;
-	.profile-voice-container{
-		padding-right: 50px;
-	}
-	.profile-container{
-		padding-right: 60px;
-	}
+  padding: 35px 60px 25px 60px;
+	// .profile-voice-container{
+	// 	padding-right: 50px;
+	// }
+	// .profile-container{
+	// 	padding-right: 60px;
+	// }
 }
 
-.profile-body:after,
-.profile-content-body:after{
-  	content: "";
-    display: table;
-    clear: both;
-}
+// .profile-body:after,
+// .profile-content-body:after{
+//   	content: "";
+//     display: table;
+//     clear: both;
+// }
 .profile-body .profile-list{
 	display: none;
 }
@@ -243,29 +355,29 @@ hr{
 .-menu-tab-content.active{
 	display: block;
 }
-.profile-list-type-container{
-	margin-right: 40px;
-}
-.profile-list-type {
-	position: absolute;
-	top: 40px;
-	right: 25px;
-	font-size: 0px;
-	margin: 5px 5px 0px 0px;
-	z-index: 1;
-}
-.profile-menu .profile-list-type{
-	top: 10px;
-}
-.profile-list-type > div{
-	cursor: pointer;
-	display: inline-block;
-	vertical-align: middle;
-	margin-left: 10px;
-}
-.profile-list-type > div.active{
-	opacity: .4;
-}
+// .profile-list-type-container{
+// 	margin-right: 40px;
+// }
+// .profile-list-type {
+// 	position: absolute;
+// 	top: 40px;
+// 	right: 25px;
+// 	font-size: 0px;
+// 	margin: 5px 5px 0px 0px;
+// 	z-index: 1;
+// }
+// .profile-menu .profile-list-type{
+// 	top: 10px;
+// }
+// .profile-list-type > div{
+// 	cursor: pointer;
+// 	display: inline-block;
+// 	vertical-align: middle;
+// 	margin-left: 10px;
+// }
+// .profile-list-type > div.active{
+// 	opacity: .4;
+// }
 
 .profile-onboarding{
 	text-align: center;
@@ -401,9 +513,9 @@ hr{
 	color: @color-neutral-dark;
 	border-bottom: 1px solid @color-menu-border;
 	&.bg-fix{
-		margin: -74px 40px 0;
+		margin: -60px 40px 0;
 		border-bottom: none;
-		height: 74px;
+		height: 60px;
 	}
 	.menu-item{
 		text-align: center;
@@ -430,16 +542,16 @@ hr{
 		margin-bottom: -1px;
 
 	}
-	.profile-actions{
-		float: right;
-		padding: 20px 25px 0px 0px;
-		.ui-tooltip{
-			width: 210px;
-			&.-top{
-				transform: translate(-50%, 10px);
-			}
-		}
-	}
+	// .profile-actions{
+	// 	float: right;
+	// 	padding: 20px 25px 0px 0px;
+	// 	.ui-tooltip{
+	// 		width: 210px;
+	// 		&.-top{
+	// 			transform: translate(-50%, 10px);
+	// 		}
+	// 	}
+	// }
 	&.top-menu{
 		border: none;
 		margin-top: -1px;
