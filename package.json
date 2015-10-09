@@ -11,7 +11,7 @@
     "dev": "webpack -d -w",
     "svg": "svg-sprite -s --symbol-dest=svg --symbol-prefix=.svg- --ss=sprite.svg --si --sx --shape-id-generator=svg-%s --dest=views/shared public/svg/*.svg",
     "feed-test": "export ENV=feedTest NODE_ENV=feedTest; knex migrate:rollback; knex migrate:latest; echo \"\n\"; node test/feed/clean.js && node test/feed/FeedInjector.js",
-    "controllers-test": "export ENV=test NODE_ENV=test ; node test/controllers/EntitiesController.js"
+    "controllers-test": "ENV=test NODE_ENV=test node test/controllers/EntitiesController.js"
   },
   "dependencies": {
     "SoundManager2": "scottschiller/SoundManager2",

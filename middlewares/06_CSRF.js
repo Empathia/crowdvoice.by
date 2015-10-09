@@ -1,9 +1,9 @@
 // *************************************************************************
 //                          CSRF
 // *************************************************************************
-logger.log("Setting csrf");
+logger.log("Setting CSRF");
 
-if (CONFIG.enableRedis && !CONFIG.env !== 'test') {
+if (CONFIG.enableRedis) {
   module.exports = global.csrf();
 } else {
   module.exports = function(req, res, next) {
