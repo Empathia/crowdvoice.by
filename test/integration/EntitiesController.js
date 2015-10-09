@@ -1,98 +1,74 @@
-'use strict';
+'use strict'
 
-global.Admin = {};
+global.Admin = {}
 
-var application = require('neonode-core');
-require(path.join(__dirname, '../../lib/routes.js'));
+var application = require('neonode-core')
+require(path.join(__dirname, '../../lib/routes.js'))
 
 // Load moment
-global.moment = require('moment');
+global.moment = require('moment')
 
-global.FeedInjector = require(path.join(__dirname, '../../lib/FeedInjector.js'));
-require(path.join(__dirname, '../../presenters/PostsPresenter'));
+global.FeedInjector = require(path.join(__dirname, '../../lib/FeedInjector.js'))
+require(path.join(__dirname, '../../presenters/PostsPresenter'))
 
-application._serverStart();
+application._serverStart()
 
-require('tellurium');
-require(process.cwd() + '/node_modules/tellurium/reporters/pretty');
+var request = require('superagent')
+var test = require('tape-catch')
 
-Tellurium.reporter = new Tellurium.Reporter.Pretty({
-  colorsEnabled : true
-});
+CONFIG.database.logQueries = false
 
-var request = require('superagent');
-var crypto = require('crypto');
+var urlBase = 'http://localhost:3000'
 
-CONFIG.database.logQueries = false;
+test('Follow an entity ( .follow() )', function (t) {
+  var cookies,
+    csrf,
+    agent = request.agent()
 
-var urlBase = 'http://localhost:3000';
+  async.series([
+    function (next) {
+      agent
+        .get(urlBase + '/csrf')
+        .end(function (err, res) {
+          if (err) { t.fail(err) }
 
-Tellurium.suite('Entities Controller')(function() {
-  var suite = this;
+          csrf = res.text
 
-  this.describe('Actions')(function(desc) {
+          return next()
+        })
+    },
 
-    desc.specify('Follow an entity')(function(spec) {
-      var cookies;
-      var csrf;
-      var agent = request.agent();
+    function (next) {
+      agent
+        .post(urlBase + '/session')
+        .send({
+          _csrf: csrf,
+          username: 'cersei',
+          password: '12345678'
+        })
+        .end(function (err, res) {
+          if (err) { t.fail(err) }
 
-      async.series([
-        function (done) {
-          agent
-            .get(urlBase + '/csrf')
-            .end(function (err, res) {
-              if (err) { throw err }
+          return next()
+        })
+    },
+  ], function(err) {
+    if (err) { t.fail(err) }
 
-              csrf = res.text;
-              done();
-            });
-        },
+    agent
+      .post(urlBase + '/jon-snow/follow')
+      .accept('application/json')
+      .send({
+        _csrf: csrf,
+        followerId : hashids.encode(3) // cersei's ID
+      })
+      .end(function (err, res) {
+        if (err) { t.fail(err) }
 
-        function (done) {
-          agent
-            .post(urlBase + '/session')
-            .send({
-              _csrf: csrf,
-              username: 'cersei',
-              password: '12345678'
-            })
-            .end(function (err, res) {
-              if (err) { throw err }
-
-              //agent.saveCookies(res)
-
-              done()
-            })
-        },
-      ], function(err) {
-        if (err) {
-          throw new Error(err);
-        }
-
-        agent
-          .post(urlBase + '/jon-snow/follow')
-          .accept('application/json')
-          .send({
-            _csrf: csrf,
-            followerId : hashids.encode(3) // cersei's ID
-          })
-          .end(function(err, res) {
-            if (err) {
-              spec.assert(true).toBe(false);
-            }
-
-            console.log(res.body)
-
-            spec.assert(res.status).toBe(200);
-            spec.assert(res.body.status).toBe('followed');
-            spec.completed();
-          })
-      });
-    });
-  });
+        t.equal(res.status, 200)
+        t.equal(res.body.status, 'followed')
+        t.equal(res.body.status, 'unfollowed')
+        t.end()
+      })
+  })
 })
-
-application.server.listen(CONFIG.port, function () {
-  Tellurium.run();
-});
