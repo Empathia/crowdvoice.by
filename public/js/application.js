@@ -78,7 +78,8 @@ require('./widgets/incognito/button');
 require('./widgets/loader');
 
 // generic widgets
-require('./widgets/Popover.js');
+require('./widgets/EmptyState');
+require('./widgets/Popover');
 require('./widgets/PopoverBlocker');
 require('./widgets/responsive-slider.js');
 require('./widgets/InputClearable');

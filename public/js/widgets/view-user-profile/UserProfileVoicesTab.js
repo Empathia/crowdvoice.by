@@ -8,11 +8,6 @@ Class(CV, 'UserProfileVoicesTab').inherits(Widget)({
             <div data-container class="responsive-width-voice-covers -rel"></div>\
         </div>',
 
-    NO_CONTENT_MESSAGE : '\
-        <div class="-text-center -pt5" style="font-size: 14px">\
-            @{profileName} hasn’t created voices yet.\
-        </div>',
-
     prototype : {
         _fetching : false,
         _fetched : false,
@@ -72,7 +67,11 @@ Class(CV, 'UserProfileVoicesTab').inherits(Widget)({
                     minWidth : 300
                 }).setup();
             } else {
-                this.containerElement.insertAdjacentHTML('beforeend', this.constructor.NO_CONTENT_MESSAGE.replace(/{profileName}/, this.data.entity.profileName));
+                this.appendChild(new CV.EmptyState({
+                    name : 'empty',
+                    className : '-pt4 -pb4',
+                    message : '@' + this.data.entity.profileName + ' hasn’t created voices yet.'
+                })).render(this.containerElement);
             }
 
             this.loader.disable();

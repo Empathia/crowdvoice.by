@@ -12,17 +12,6 @@ Class(CV, 'UserProfileFollowingTab').inherits(Widget)({
             </div>\
         </div>',
 
-    NO_USERS_MESSAGE : '\
-        <div class="-text-center -pt5" style="font-size: 14px">\
-            @{profileName} hasn’t followed users yet.\
-        </div>',
-
-    NO_VOICES_MESSAGE : '\
-        <div class="-text-center -pt5" style="font-size: 14px">\
-            @{profileName} hasn’t followed voices yet.\
-        </div>',
-
-
     prototype : {
         _fetchingUsers : false,
         _fetchedUsers : false,
@@ -159,7 +148,11 @@ Class(CV, 'UserProfileFollowingTab').inherits(Widget)({
                     minWidth : 300
                 }).setup();
              } else {
-                this.cardsContainer.insertAdjacentHTML('beforeend', this.constructor.NO_USERS_MESSAGE.replace(/{profileName}/, this.data.entity.profileName));
+                this.appendChild(new CV.EmptyState({
+                    name : 'empty',
+                    className : '-pt4 -pb4',
+                    message : '@' + this.data.entity.profileName + ' hasn’t followed users yet.'
+                })).render(this.cardsContainer);
              }
 
             this.loader.disable();
@@ -187,7 +180,11 @@ Class(CV, 'UserProfileFollowingTab').inherits(Widget)({
                     minWidth : 300
                 }).setup();
             } else {
-                this.voicesContainer.insertAdjacentHTML('beforeend', this.constructor.NO_VOICES_MESSAGE.replace(/{profileName}/, this.data.entity.profileName));
+                this.appendChild(new CV.EmptyState({
+                    name : 'empty',
+                    className : '-pt4 -pb4',
+                    message : '@' + this.data.entity.profileName + ' hasn’t followed voices yet.'
+                })).render(this.voicesContainer);
             }
 
             this.loader.disable();
@@ -201,7 +198,7 @@ Class(CV, 'UserProfileFollowingTab').inherits(Widget)({
             this.dropdown.deactivate();
             this.cardsContainer.style.display = '';
             this.voicesContainer.style.display = 'none';
-            this._responsiveWidthUsers.update();
+            this._responsiveWidthUsers && this._responsiveWidthUsers.update();
         },
 
         _showVoices : function _showVoices() {
@@ -209,7 +206,7 @@ Class(CV, 'UserProfileFollowingTab').inherits(Widget)({
             this.dropdown.deactivate();
             this.voicesContainer.style.display = '';
             this.cardsContainer.style.display = 'none';
-            this._responsiveWidthVoices.update();
+            this._responsiveWidthVoices && this._responsiveWidthVoices.update();
         },
 
         _activate : function _activate() {
