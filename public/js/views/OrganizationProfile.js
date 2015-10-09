@@ -1,3 +1,5 @@
+var Person = require('./../lib/currentPerson');
+
 Class(CV.Views, 'OrganizationProfile').includes(NodeSupport, CV.WidgetUtils)({
     ANONYMOUS_TEMPLATE : '\
         <div class="ui-has-tooltip">\
@@ -35,10 +37,10 @@ Class(CV.Views, 'OrganizationProfile').includes(NodeSupport, CV.WidgetUtils)({
 
             this._setup();
 
-            // if (Person.get()) {
-            //     this._actionsElementWrapper = this.el.querySelector('.profile__actions');
-            //     this._addActions();
-            // }
+            if (Person.get()) {
+                this._actionsElementWrapper = this.el.querySelector('.profile__actions');
+                this._addActions();
+            }
         },
 
         _setup : function _setup() {
@@ -103,6 +105,72 @@ Class(CV.Views, 'OrganizationProfile').includes(NodeSupport, CV.WidgetUtils)({
             }.bind(this), t);
 
             return this;
+        },
+
+        /* Sets the Actions based on what kind of User currentPerson is
+         * related to this profile.
+         * @method _addActions <private> [Function]
+         */
+        _addActions : function _addActions() {
+            if (!Person.get()) {
+                return;
+            }
+
+            if (Person.ownerOf('organization', this.entity.id)) {
+                return this._updateAsOrganizationOwner();
+            }
+
+            if (Person.memberOf('organization', this.entity.id)) {
+                return this._updateAsOrganizationMember();
+            }
+
+            if (Person.anon()) {
+                return this._updateAsAnonymous();
+            }
+
+            return this._updateAsVisitor();
+        },
+
+        /* Display Actions for OrganizationOwner.
+         * @method _updateAsOrganizationOwner <private>
+         * @return undefined
+         */
+        _updateAsOrganizationOwner : function _updateAsOrganizationOwner() {
+            this.appendChild(new CV.UI.Button({
+                name : 'editProfileButton',
+                className : 'small',
+                data : {
+                    href : '/' + this.entity.profileName + '/edit',
+                    value : 'Manage Organization'
+                }
+            })).render(this._actionsElementWrapper);
+        },
+
+        /* Display Actions for OrganizationMember.
+         * @method _updateAsOrganizationMember <private>
+         * @return undefined
+         */
+        _updateAsOrganizationMember : function _updateAsOrganizationMember() {
+            this.appendChild(new CV.OrganizationProfileActionLeave({
+                name : 'leaveOrganization',
+                entity :  this.entity
+            })).render(this._actionsElementWrapper);
+        },
+
+        /* Display Actions for Anonymous, just a template without behaviour.
+         * @method _updateAsAnonymous <private>
+         * @return undefined
+         */
+        _updateAsAnonymous : function _updateAsAnonymous() {
+            this._actionsElementWrapper.insertAdjacentHTML('beforeend', this.constructor.ANONYMOUS_TEMPLATE);
+        },
+
+        /* Display Actions for Logged in Visitor.
+         * @method _updateAsVisitor <private>
+         * @return undefined
+         */
+        _updateAsVisitor : function _updateAsVisitor() {
+            this._actionsElementWrapper.textContent = 'logged in visitor';
         }
     }
 });
