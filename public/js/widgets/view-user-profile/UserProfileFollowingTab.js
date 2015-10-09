@@ -151,7 +151,7 @@ Class(CV, 'UserProfileFollowingTab').inherits(Widget)({
                 this.appendChild(new CV.EmptyState({
                     name : 'empty',
                     className : '-pt4 -pb4',
-                    message : '@' + this.data.entity.profileName + ' hasn’t followed users yet.'
+                    message : '@' + this.data.entity.profileName + ' hasn’t followed any users yet.'
                 })).render(this.cardsContainer);
              }
 
@@ -183,7 +183,7 @@ Class(CV, 'UserProfileFollowingTab').inherits(Widget)({
                 this.appendChild(new CV.EmptyState({
                     name : 'empty',
                     className : '-pt4 -pb4',
-                    message : '@' + this.data.entity.profileName + ' hasn’t followed voices yet.'
+                    message : '@' + this.data.entity.profileName + ' hasn’t followed any voices yet.'
                 })).render(this.voicesContainer);
             }
 

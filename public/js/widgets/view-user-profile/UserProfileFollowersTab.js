@@ -71,7 +71,7 @@ Class(CV, 'UserProfileFollowersTab').inherits(Widget)({
                 this.appendChild(new CV.EmptyState({
                     name : 'empty',
                     className : '-pt4 -pb4',
-                    message : '@' + this.data.entity.profileName + ' hasn’t followers yet.'
+                    message : '@' + this.data.entity.profileName + ' has no followers yet.'
                 })).render(this.containerElement);
              }
 
