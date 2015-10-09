@@ -6,10 +6,16 @@ Class(CV, 'Tab').inherits(Widget)({
         init : function init(config) {
             Widget.prototype.init.call(this, config);
 
-            this.appendChild(new CV.TabNav({
-                name : 'nav',
-                title : this.title
-            }));
+            if (typeof this.nav === 'function') {
+                this.navData = this.navData || {};
+                this.navData.name = 'nav';
+                this.appendChild(new this.nav(this.navData));
+            } else {
+                this.appendChild(new CV.TabNav({
+                    name : 'nav',
+                    title : this.title
+                })).setup();
+            }
 
             this.appendChild(new CV.TabContent({
                 name : 'content',
@@ -23,6 +29,10 @@ Class(CV, 'Tab').inherits(Widget)({
         _bindEvents : function _bindEvents() {
             this._activateRef = this.activate.bind(this);
             this.nav.bind('click', this._activateRef);
+        },
+
+        getContent : function getContent() {
+            return this.content.content;
         },
 
         activate : function activate() {
