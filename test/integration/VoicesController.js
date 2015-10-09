@@ -56,7 +56,7 @@ test('Follow an entity ( .follow() )', function (t) {
     if (err) { t.fail(err) }
 
     agent
-      .post(urlBase + '/jon-snow/follow')
+      .post(urlBase + '/jon-snow/white-walkers/follow')
       .accept('application/json')
       .send({
         _csrf: csrf,
