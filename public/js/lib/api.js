@@ -228,7 +228,6 @@ module.exports = {
         if ((typeof callback).toLowerCase() !== "function") {
             throw new Error('Callback should be a function');
         }
-        console.log(args);
         $.ajax({
             type : 'POST',
             url : '/' + args.userSlug + '/' + args.voiceSlug +'/saveArticle',

@@ -9,7 +9,7 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
     <div>\
         <header class="cv-post-creator__header -clearfix"></header>\
         <div class="cv-post-creator__content -abs"></div>\
-        <div class="cv-post-creator__disable"></div>\
+        <div class="cv-post-creator__disable article"></div>\
     </div>\
     ',
 
@@ -26,7 +26,7 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
             this.el = this.element[0];
             this.header = this.el.querySelector('.cv-post-creator__header');
             this.content = this.el.querySelector('.cv-post-creator__content');
-
+            this.loadingStep = this.el.querySelector('.cv-post-creator__disable');
 
             // Voice and user slugs
             this.voiceSlug = App.Voice.data.slug;
@@ -35,6 +35,10 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
             this.addCloseButton()._setup()._bindEvents()._disablePostButton();
         },
         _setup : function _setup() {
+            this.appendChild(new CV.Loader({
+                name : 'loader'
+            })).render(this.el.querySelector('.cv-post-creator__disable'));
+
             this.appendChild(
                 new CV.PostCreatorPostButton({
                     name : 'postButton',
@@ -54,6 +58,8 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
                     name : 'editor'
                 })
             ).render(this.content);
+
+            
 
             // Content
             this.articleContent = this.content.querySelector('.write-article-body-editable');
@@ -86,22 +92,37 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
         },
         // Saves the article 
         _buttonClick : function _buttonClick(ev){
+            // Disables button and activates the loader
+            this._disablePostButton();
+            $(this.loadingStep).addClass('active');
 
-            // API responding with 404
-            API.voiceNewArticle({
-                userSlug : this.userSlug,
-                voiceSlug : this.voiceSlug,
-                articleTitle : $(this.articleTitle).val(),
-                articleContent : $(this.articleContent).html(),
-                articleImage : this.articleImage.path,
-                articleDate : this.postDate.timePickerInput.value
-            }, this._responseHandler.bind(this));   
+            if(this.articleImage !== null){
+                API.voiceNewArticle({
+                    userSlug : this.userSlug,
+                    voiceSlug : this.voiceSlug,
+                    articleTitle : $(this.articleTitle).val(),
+                    articleContent : $(this.articleContent).html(),
+                    articleImage : this.articleImage.path,
+                    articleDate : this.postDate.timePickerInput.value
+                }, this._responseHandler.bind(this)); 
+            }else{
+                API.voiceNewArticle({
+                    userSlug : this.userSlug,
+                    voiceSlug : this.voiceSlug,
+                    articleTitle : $(this.articleTitle).val(),
+                    articleContent : $(this.articleContent).html(),
+                    articleImage : '',
+                    articleDate : this.postDate.timePickerInput.value
+                }, this._responseHandler.bind(this)); 
+            }
         },
         _responseHandler : function _responseHandler(err, res){
             if (err) {
                 console.log(res.status + ' ' +res.statusText);
+                $(this.loadingStep).removeClass('active');
                 return;
             }
+            $(this.loadingStep).removeClass('active');
             console.log(res);
         },
         // Gets the <INPUT> IMAGE and sent it to the API
