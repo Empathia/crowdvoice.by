@@ -127,13 +127,12 @@ Class(CV, 'SendMessage').inherits(Widget).includes(CV.WidgetUtils)({
         },
 
         destroy : function destroy() {
-            Widget.prototype.destroy.call(this);
-
             Events.off(this.formButton.el, 'click', this._sendMessageRef);
             this._sendMessageRef = null;
             Events.off(this.successMessageButton, 'click', this._closeRef);
             this._closeRef = null;
 
+            Widget.prototype.destroy.call(this);
             return null;
         }
     }

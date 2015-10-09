@@ -1,10 +1,13 @@
-Class(CV, 'TabManager').includes(NodeSupport, CustomEventSupport)({
+Class(CV, 'TabsManager').includes(NodeSupport, CustomEventSupport)({
     prototype : {
         useHash : false,
         nav : null,
         content : null,
         contentData : null,
 
+        /* config.nav <required> [NodeElement] the element to append the tabs
+         * config.content <required> [NodeElement] the element to append the contents
+         */
         init : function init(config) {
             Object.keys(config || {}).forEach(function(propertyName) {
                 this[propertyName] = config[propertyName];
@@ -15,7 +18,7 @@ Class(CV, 'TabManager').includes(NodeSupport, CustomEventSupport)({
          * If this.useHash is true, it will check the hash and activate the
          * correct one if found, otherwise it will activate the 1st tab.
          * @method start <public> [Function]
-         * @return CV.TabManager
+         * @return CV.TabsManager
          */
         start : function start() {
             if (this.children.some(function(child) {
@@ -50,7 +53,7 @@ Class(CV, 'TabManager').includes(NodeSupport, CustomEventSupport)({
          * @argument config.title <required> [String] The nav label.
          * @argument config.content <required> [Function] A widget.
          * @argument config.contentData <optional> [Object] Data to pass to the content widget.
-         * @return CV.TabManager
+         * @return CV.TabsManager
          */
         addTab : function addTab(config) {
             this.appendChild(new CV.Tab(config));

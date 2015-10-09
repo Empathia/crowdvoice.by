@@ -1,11 +1,20 @@
 .ui-dropdown {
-  // &.-right .ui-dropdown__body {
-  //   right: 0;
-  //   left: initial;
-  // }
+  &.-bottom-right .ui-dropdown__body {
+    right: 0;
+    left: initial;
+  }
 
   &.-top .ui-dropdown__body {
     bottom: 100%;
+    top: initial;
+    transform: translateY(20px);
+    transform: translate3d(0, 20px, 0);
+  }
+
+  &.-top-right .ui-dropdown__body {
+    bottom: 100%;
+    right: 0;
+    left: initial;
     top: initial;
     transform: translateY(20px);
     transform: translate3d(0, 20px, 0);

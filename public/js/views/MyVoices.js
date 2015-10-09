@@ -33,7 +33,7 @@ Class(CV.Views, 'MyVoices').includes(NodeSupport, CV.WidgetUtils)({
         },
 
         _setupTabs : function _setupTabs() {
-            this.appendChild(new CV.TabManager({
+            this.appendChild(new CV.TabsManager({
                 name : 'tabs',
                 useHash : true,
                 nav : document.querySelector('.profile-menu'),

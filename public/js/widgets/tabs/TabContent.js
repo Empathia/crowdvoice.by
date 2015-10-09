@@ -4,7 +4,6 @@ Class(CV, 'TabContent').inherits(Widget)({
     prototype : {
         init : function init(config) {
             Widget.prototype.init.call(this, config);
-
             this.el = this.element[0];
 
             if (typeof this.content === 'function') {
@@ -17,7 +16,6 @@ Class(CV, 'TabContent').inherits(Widget)({
 
         _activate : function _activate() {
             Widget.prototype._activate.call(this);
-
             if (typeof this.content.activate === "function") {
                 this.content.activate();
             }

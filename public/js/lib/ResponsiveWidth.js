@@ -31,16 +31,20 @@ Class(CV, 'ResponsiveWidth')({
                this._itemsThatFit = Math.floor(availableWidth / this.minWidth);
             }
 
-            return this.update();
+            return this._update();
         },
 
-        update : function update() {
+        _update : function _update() {
             var itemsWidth = (100 / this._itemsThatFit);
             this.items.forEach(function(item) {
                 item.style.width = itemsWidth + '%';
             });
 
             return this;
+        },
+
+        update : function update() {
+            this.setup();
         },
 
         destroy : function destroy() {

@@ -103,17 +103,17 @@ Class(CV, 'Report').inherits(Widget)({
 
             var textData = {
                 message : this.reportTitle + ' ' + this.element.find('form textarea').val()
-            }
+            };
 
             $.ajax({
                 method : 'POST',
-                url : '/' + currentOrganization.profileName + '/report',
+                url : '/' + this.data.profileName + '/report',
                 headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
                 data : textData,
                 success : function(data) {
                 	console.log(data);
                     sendmessage.element.find('form').remove();
-                    if (data.status == 'ok'){
+                    if (data.status === 'ok'){
                     	sendmessage.element.append(sendmessage.constructor.SENT);
                 	}else {
                     	sendmessage.element.append(sendmessage.constructor.REPORTED);
