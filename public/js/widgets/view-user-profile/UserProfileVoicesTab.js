@@ -8,6 +8,11 @@ Class(CV, 'UserProfileVoicesTab').inherits(Widget)({
             <div data-container class="responsive-width-voice-covers -rel"></div>\
         </div>',
 
+    NO_CONTENT_MESSAGE : '\
+        <div class="-text-center -pt5" style="font-size: 14px">\
+            @{profileName} hasn’t created voices yet.\
+        </div>',
+
     prototype : {
         _fetching : false,
         _fetched : false,
@@ -52,19 +57,26 @@ Class(CV, 'UserProfileVoicesTab').inherits(Widget)({
 
         _renderResults : function _renderResults(voices) {
             this.parent.parent.nav.updateCounter(voices.length);
-            voices.forEach(function(voice, index) {
-                this.appendChild(new CV.VoiceCover({
-                    name : 'voice_' + index,
-                    data : voice
-                })).render(this.containerElement);
-            }, this);
 
-            this._responsiveWidth = new CV.ResponsiveWidth({
-                container : this.containerElement,
-                items : this.children.map(function(ch) {return ch.el;}),
-                minWidth : 300
-            }).setup();
+            if (voices.length) {
+                voices.forEach(function(voice, index) {
+                    this.appendChild(new CV.VoiceCover({
+                        name : 'voice_' + index,
+                        data : voice
+                    })).render(this.containerElement);
+                }, this);
+
+                this._responsiveWidth = new CV.ResponsiveWidth({
+                    container : this.containerElement,
+                    items : this.children.map(function(ch) {return ch.el;}),
+                    minWidth : 300
+                }).setup();
+            } else {
+                this.containerElement.insertAdjacentHTML('beforeend', this.constructor.NO_CONTENT_MESSAGE.replace(/{profileName}/, this.data.entity.profileName));
+            }
+
             this.loader.disable();
+
             console.timeEnd('vr');
             console.log('%cvoices rendered', 'color: red');
         },

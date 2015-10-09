@@ -12,6 +12,17 @@ Class(CV, 'UserProfileFollowingTab').inherits(Widget)({
             </div>\
         </div>',
 
+    NO_USERS_MESSAGE : '\
+        <div class="-text-center -pt5" style="font-size: 14px">\
+            @{profileName} hasn’t followed users yet.\
+        </div>',
+
+    NO_VOICES_MESSAGE : '\
+        <div class="-text-center -pt5" style="font-size: 14px">\
+            @{profileName} hasn’t followed voices yet.\
+        </div>',
+
+
     prototype : {
         _fetchingUsers : false,
         _fetchedUsers : false,
@@ -132,43 +143,53 @@ Class(CV, 'UserProfileFollowingTab').inherits(Widget)({
          _renderUserResults : function _renderUserResults(entities) {
              this.parent.parent.nav.increaseCounter(entities.length);
 
-             this._entities = [];
-             entities.forEach(function(entity, index) {
-                this.appendChild(new CV.Card({
-                    name : 'entity_' + index,
-                    data : entity
-                })).render(this.cardsContainer);
-                this._entities.push(this['entity_' + index]);
-            }, this);
+             if (entities.length) {
+                this._entities = [];
+                entities.forEach(function(entity, index) {
+                    this.appendChild(new CV.Card({
+                        name : 'entity_' + index,
+                        data : entity
+                    })).render(this.cardsContainer);
+                    this._entities.push(this['entity_' + index]);
+                }, this);
 
-            this._responsiveWidthUsers = new CV.ResponsiveWidth({
-                container : this.cardsContainer,
-                items : this._entities.map(function(ch) {return ch.el;}),
-                minWidth : 300
-            }).setup();
+                this._responsiveWidthUsers = new CV.ResponsiveWidth({
+                    container : this.cardsContainer,
+                    items : this._entities.map(function(ch) {return ch.el;}),
+                    minWidth : 300
+                }).setup();
+             } else {
+                this.cardsContainer.insertAdjacentHTML('beforeend', this.constructor.NO_USERS_MESSAGE.replace(/{profileName}/, this.data.entity.profileName));
+             }
+
             this.loader.disable();
 
             console.timeEnd('fr');
             console.log('%cfollowing rendered', 'color: orange');
         },
 
-         _renderVoicesResults : function _renderVoicesResults(voices) {
-             this.parent.parent.nav.increaseCounter(voices.length);
+        _renderVoicesResults : function _renderVoicesResults(voices) {
+            this.parent.parent.nav.increaseCounter(voices.length);
 
-             this._voices = [];
-             voices.forEach(function(voice, index) {
-                this.appendChild(new CV.VoiceCover({
-                    name : 'voice_' + index,
-                    data : voice
-                })).render(this.voicesContainer);
-                this._voices.push(this['voice_' + index]);
-            }, this);
+            if (voices.length) {
+                this._voices = [];
+                voices.forEach(function(voice, index) {
+                    this.appendChild(new CV.VoiceCover({
+                        name : 'voice_' + index,
+                        data : voice
+                    })).render(this.voicesContainer);
+                    this._voices.push(this['voice_' + index]);
+                }, this);
 
-            this._responsiveWidthVoices = new CV.ResponsiveWidth({
-                container : this.voicesContainer,
-                items : this._voices.map(function(ch) {return ch.el;}),
-                minWidth : 300
-            }).setup();
+                this._responsiveWidthVoices = new CV.ResponsiveWidth({
+                    container : this.voicesContainer,
+                    items : this._voices.map(function(ch) {return ch.el;}),
+                    minWidth : 300
+                }).setup();
+            } else {
+                this.voicesContainer.insertAdjacentHTML('beforeend', this.constructor.NO_VOICES_MESSAGE.replace(/{profileName}/, this.data.entity.profileName));
+            }
+
             this.loader.disable();
 
             console.timeEnd('fr2');

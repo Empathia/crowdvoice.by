@@ -8,6 +8,11 @@ Class(CV, 'UserProfileFollowersTab').inherits(Widget)({
             <div data-container class="responsive-width-cards -rel"></div>\
         </div>',
 
+    NO_CONTENT_MESSAGE : '\
+        <div class="-text-center -pt5" style="font-size: 14px">\
+            @{profileName} hasn’t followers yet.\
+        </div>',
+
     prototype : {
         _fetching : false,
         _fetched : false,
@@ -53,21 +58,27 @@ Class(CV, 'UserProfileFollowersTab').inherits(Widget)({
 
          _renderResults : function _renderResults(followers) {
              this.parent.parent.nav.updateCounter(followers.length);
-             followers.forEach(function(follower, index) {
-                this.appendChild(new CV.Card({
-                    name : 'follower_' + index,
-                    data : follower
-                })).render(this.containerElement);
-            }, this);
 
-            this._responsiveWidth = new CV.ResponsiveWidth({
-                container : this.containerElement,
-                items : this.children.map(function(ch) {return ch.el;}),
-                minWidth : 300
-            }).setup();
-            this.loader.disable();
-            console.timeEnd('wr');
-            console.log('%cfollowers rendered', 'color: green');
+             if (followers.length) {
+                 followers.forEach(function(follower, index) {
+                     this.appendChild(new CV.Card({
+                         name : 'follower_' + index,
+                         data : follower
+                     })).render(this.containerElement);
+                 }, this);
+
+                 this._responsiveWidth = new CV.ResponsiveWidth({
+                     container : this.containerElement,
+                     items : this.children.map(function(ch) {return ch.el;}),
+                     minWidth : 300
+                 }).setup();
+             } else {
+                this.containerElement.insertAdjacentHTML('beforeend', this.constructor.NO_CONTENT_MESSAGE.replace(/{profileName}/, this.data.entity.profileName));
+             }
+
+             this.loader.disable();
+             console.timeEnd('wr');
+             console.log('%cfollowers rendered', 'color: green');
         },
 
         _activate : function _activate() {
