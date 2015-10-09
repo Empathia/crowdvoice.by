@@ -7,7 +7,7 @@ Class(CV.Views, 'SearchView').includes(NodeSupport, CV.WidgetUtils)({
                 this[propertyName] = config[propertyName];
             }, this);
 
-            this.appendChild(new CV.TabManager({
+            this.appendChild(new CV.TabsManager({
                 name : 'tabs',
                 useHash : true,
                 nav : document.querySelector('.profile-menu'),

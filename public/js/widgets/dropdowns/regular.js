@@ -34,7 +34,7 @@ Class(CV.UI, 'DropdownRegular').inherits(Widget).includes(CV.WidgetUtils)({
                 name : 'dropdown',
                 label : this.data.dropdownLabel || '',
                 showArrow : true,
-                className : 'ui-dropdown-styled -lg',
+                className : this.data.className || 'ui-dropdown-styled -lg',
                 arrowClassName : '-s10 -color-grey',
                 bodyClassName : 'ui-vertical-list hoverable -block'
             })).render(this.el);
