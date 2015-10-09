@@ -460,8 +460,8 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
       ACL.isAllowed('create', 'posts', req.role, {
         currentPerson : req.currentPerson,
-        voiceSlug : req.params.voiceSlug,
-        profileName : req.params.profileName
+        activeVoice : req.activeVoice,
+        voiceOwnerProfile : req.params.profileName
       }, function (err, response) {
         if (err) { return next(err); }
 
@@ -482,8 +482,8 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         var post = new Post({
           title: req.body.title,
           description: sanitizer(req.body.content),
-          ownerId: response.currentPerson.id,
-          voiceId: response.voice.id,
+          ownerId: response.postOwner.id,
+          voiceId: req.activeVoice.id,
           publishedAt : req.body.publishedAt,
           approved: approved,
           sourceType: Post.SOURCE_TYPE_TEXT,
