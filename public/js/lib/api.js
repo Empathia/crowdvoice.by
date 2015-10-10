@@ -695,6 +695,34 @@ module.exports = {
         });
     },
 
+    /* Remove entity from organization. Must be part of organization in order to do so.
+     * @argument args.profileName <required> [String] profileName of current user.
+     * @argument args.data.entityId <required> [hashid] entity ID of current user.
+     * @argument args.data.orgId <required> [hashid] entity ID of organization to be removed from.
+     * @argument callback <required> [Function]
+     */
+    leaveOrganization : function leaveOrganization(args, callback) {
+        if (!args.profileName || !args.data || !args.data.entityId || !args.data.orgId || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type: "POST",
+            url : '/' + args.profileName + '/leaveOrganization',
+            headers : {'csrf-token' : this.token},
+            data : {
+                entityId : args.data.entityId,
+                orgId : args.data.orgId
+            },
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
+    },
+
     /* Request invitation for membership of organization.
      * @argument args.profileName <required> [String] profileName of organization
      * @argument args.data.orgId <required> [hashid] entity ID of organization tp request membership of

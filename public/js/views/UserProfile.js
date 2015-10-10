@@ -1,5 +1,4 @@
 var Person = require('./../lib/currentPerson');
-var Events = require('./../lib/events');
 
 Class(CV.Views, 'UserProfile').includes(NodeSupport, CV.WidgetUtils)({
     ANONYMOUS_TEMPLATE : '\
@@ -96,7 +95,15 @@ Class(CV.Views, 'UserProfile').includes(NodeSupport, CV.WidgetUtils)({
             return this;
         },
 
+        /* Sets the Actions based on what kind of User currentPerson is
+         * related to this profile.
+         * @method _addActions <private> [Function]
+         */
         _addActions : function _addActions() {
+            if (!Person.get()) {
+                return;
+            }
+
             if (Person.is(this.entity.id)) {
                 return this._updateAsProfileOwner();
             }
@@ -116,12 +123,11 @@ Class(CV.Views, 'UserProfile').includes(NodeSupport, CV.WidgetUtils)({
             this.appendChild(new CV.UI.Button({
                 name : 'editProfileButton',
                 className : 'small',
-                data : {value : 'Edit My Profile'}
+                data : {
+                    href : '/' + this.entity.profileName + '/edit',
+                    value : 'Edit My Profile'
+                }
             })).render(this._actionsElementWrapper);
-
-            Events.on(this.editProfileButton.el, 'click', function() {
-                window.location = '/' + this.entity.profileName + '/edit';
-            }.bind(this));
         },
 
         /* Display Actions for Anonymous, just a template without behaviour.
@@ -134,6 +140,7 @@ Class(CV.Views, 'UserProfile').includes(NodeSupport, CV.WidgetUtils)({
 
         /* Display Actions for Logged in Visitor.
          * @method _updateAsVisitor <private>
+         * @return undefined
          */
         _updateAsVisitor : function _updateAsVisitor() {
             var buttonsGroup = document.createElement('div');

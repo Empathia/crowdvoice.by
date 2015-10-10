@@ -142,6 +142,8 @@ require('./widgets/view-user-profile/actions/UserProfileActionFollow');
 require('./widgets/view-user-profile/actions/UserProfileActionFollowMultiple');
 require('./widgets/view-user-profile/actions/UserProfileActionMessage');
 require('./widgets/view-user-profile/actions/UserProfileMoreActions');
+require('./widgets/view-user-profile/actions/OrganizationProfileActionLeave');
+require('./widgets/view-user-profile/actions/OrganizationProfileMoreActions');
 
 require('./widgets/voice/posts-registry');
 require('./widgets/voice/Onboarding');
@@ -182,6 +184,7 @@ require('./widgets/voice/contributors/ManageContributors');
 require('./widgets/voice/contributors/ManageContributorsList');
 
 // popovers
+require('./widgets/popovers/PopoverLeave');
 require('./widgets/popovers/unsave');
 require('./widgets/popovers/share');
 
