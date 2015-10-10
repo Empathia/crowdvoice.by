@@ -168,11 +168,13 @@ Class(CV.Views, 'UserProfile').includes(NodeSupport, CV.WidgetUtils)({
             }
             this._actionsElementWrapper.appendChild(buttonsGroup);
 
-            this.appendChild(new CV.UserProfileMoreActions({
-                name : 'moreActionsDropdown',
-                className : '-inline-block -ml1',
-                entity :  this.entity
-            })).render(this._actionsElementWrapper);
+            if (Person.canInviteEntity(this.entity)) {
+                this.appendChild(new CV.UserProfileMoreActions({
+                    name : 'moreActionsDropdown',
+                    className : '-inline-block -ml1',
+                    entity :  this.entity
+                })).render(this._actionsElementWrapper);
+            }
         }
     }
 });

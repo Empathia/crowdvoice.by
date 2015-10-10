@@ -1,3 +1,4 @@
+var Person = require('./../../../lib/currentPerson');
 var Events = require('./../../../lib/events');
 
 Class(CV, 'UserProfileMoreActions').inherits(Widget)({
@@ -7,10 +8,17 @@ Class(CV, 'UserProfileMoreActions').inherits(Widget)({
          */
         entity : null,
 
+        _hasVoices : false,
+        _hasOwnedOrganizations : false,
+
         init : function init(config) {
             Widget.prototype.init.call(this, config);
             this.el = this.element[0];
-            this._setup()._bindEvents();
+
+            this._hasVoices = Person.canInviteEntityToAVoice(this.entity);
+            this._hasOwnedOrganizations = Person.canInviteEntityToAnOrg(this.entity);
+
+            this._setup();
         },
 
         _setup : function _setup() {
@@ -28,25 +36,27 @@ Class(CV, 'UserProfileMoreActions').inherits(Widget)({
                     <use xlink:href="#svg-settings"></use>\
                 </svg>');
 
-            this.appendChild(new Widget({
-                name : 'dropdownInviteToOrganization',
-                className : 'ui-vertical-list-item -block'
-            })).element.text('Invite to Organization');
+            if (this._hasOwnedOrganizations) {
+                this.appendChild(new Widget({
+                    name : 'dropdownInviteToOrganization',
+                    className : 'ui-vertical-list-item -block'
+                })).element.text('Invite to Organization');
 
-            this.appendChild(new Widget({
-                name : 'dropdownInviteToContribute',
-                className : 'ui-vertical-list-item -block'
-            })).element.text('Invite to Contribute');
+                this.settingsDropdown.addContent(this.dropdownInviteToOrganization.element[0]);
+                Events.on(this.dropdownInviteToOrganization.element[0], 'click', this._showInviteToOrganization.bind(this));
+            }
 
-            this.settingsDropdown.addContent(this.dropdownInviteToOrganization.element[0]);
-            this.settingsDropdown.addContent(this.dropdownInviteToContribute.element[0]);
+            if (this._hasVoices) {
+                this.appendChild(new Widget({
+                    name : 'dropdownInviteToContribute',
+                    className : 'ui-vertical-list-item -block'
+                })).element.text('Invite to Contribute');
+
+                this.settingsDropdown.addContent(this.dropdownInviteToContribute.element[0]);
+                Events.on(this.dropdownInviteToContribute.element[0], 'click', this._showInviteToContribute.bind(this));
+            }
 
             return this;
-        },
-
-        _bindEvents : function _bindEvents() {
-            Events.on(this.dropdownInviteToOrganization.element[0], 'click', this._showInviteToOrganization.bind(this));
-            Events.on(this.dropdownInviteToContribute.element[0], 'click', this._showInviteToContribute.bind(this));
         },
 
         _showInviteToOrganization : function _showInviteToOrganization() {
@@ -75,6 +85,20 @@ Class(CV, 'UserProfileMoreActions').inherits(Widget)({
             requestAnimationFrame(function() {
                 inviteToContributeModal.activate();
             });
+        },
+
+        destroy : function destroy() {
+            Widget.prototype.destroy.call(this);
+
+            if (this._hasOwnedOrganizations) {
+                Events.off(this.dropdownInviteToOrganization.element[0], 'click', this._showInviteToOrganization.bind(this));
+            }
+
+            if (this._hasVoices) {
+                Events.off(this.dropdownInviteToContribute.element[0], 'click', this._showInviteToContribute.bind(this));
+            }
+
+            return null;
         }
     }
 });
