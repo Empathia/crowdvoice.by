@@ -209,3 +209,27 @@
     }
   }
 }
+
+/* =========================================================================== *
+  overrides :: radio
+ * =========================================================================== */
+@{ns}-radio {
+  &-radio:checked + @{ns}-radio-element {
+    > svg {
+      stroke: @color-primary-dark;
+      fill: @color-primary;
+    }
+  }
+
+  &-element {
+    border-color: @color-neutral-light;
+    background-color: @color-neutral-xx-light;
+    box-shadow: inset 0 2px 0 rgba(0,0,0,0.05);
+  }
+
+  > label:hover {
+    @{ns}-radio-element {
+      border-color: @color-primary;
+    }
+  }
+}

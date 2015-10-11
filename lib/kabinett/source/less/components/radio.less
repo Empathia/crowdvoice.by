@@ -17,40 +17,42 @@
   display: inline-block;
   vertical-align: top;
 
-  // color: inherit;
   cursor: pointer;
+
+  label {
+    display: block;
+  }
 
   &-radio {
     display: none;
 
-    &:checked + @{ns}-radio-element::after {
+    &:checked + @{ns}-radio-element > svg {
       display: block;
     }
   }
 
   &-element {
-    position: relative;
     display: inline-block;
     vertical-align: top;
-    top: 2px;
     width: @radio-size;
     height: @radio-size;
+    margin-right: .7em;
     border: 1px solid;
 
     border-color: currentColor;
     border-radius: 50%;
 
-    &:after {
+    > svg {
       display: none;
-      content: "";
-      width: .5em;
-      height: .5em;
-      left: 50%;
-      position: relative;
-      top: 50%;
-      background-color: currentColor;
-      border-radius: 50%;
-      transform: translate(-50%,-50%);
+      margin: 2px 0 0 2px;
+      stroke-width: 1;
+      stroke: currentColor;
+      fill: currentColor;
     }
+  }
+
+  &-label {
+    font-size: 1rem;
+    line-height: @checkbox-size;
   }
 }

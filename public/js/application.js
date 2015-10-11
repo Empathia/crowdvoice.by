@@ -39,6 +39,7 @@ require('./widgets/ui/Modal');
 require('./widgets/ui/Input');
 require('./widgets/ui/Button');
 require('./widgets/ui/Checkbox');
+require('./widgets/ui/Radio');
 require('./widgets/ui/Close');
 require('./widgets/ui/InputButton');
 require('./widgets/ui/InputButtonResults');
