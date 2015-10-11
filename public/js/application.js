@@ -147,6 +147,7 @@ require('./widgets/view-user-profile/actions/OrganizationProfileMoreActions');
 require('./views/UserProfileEdit');
 require('./widgets/view-user-profile-edit/UserProfileEditTab');
 require('./widgets/view-user-profile-edit/UserProfileEditAccountTab');
+require('./widgets/view-user-profile-edit/UserProfileEditNotificationsTab');
 require('./widgets/view-user-profile-edit/UserProfileEditOrganizationsTab');
 
 require('./widgets/voice/posts-registry');
