@@ -476,6 +476,45 @@ module.exports = {
     /**************************************************************************
      * ENTITIES
      *************************************************************************/
+    /* Save Entity data.
+     * @argument args.profileName <required> [String] the entity profileName
+     * @argument args.data.image <optional> [File] entity's image
+     * @argument args.data.background <optional> [File] entity's background
+     * @argument args.data.name <optional> [String] entity's name
+     * @argument args.data.lastname <optional> [String] entity's lastname
+     * @argument args.data.profileName <optional> [String] entity's profileName
+     * @argument args.data.description <optional> [String] entity's description
+     * @argument args.data.location <optional> [String] entity's location
+     * @argument callback <required> [Function]
+     */
+    updateEntity : function updateEntity(args, callback) {
+        if (!args.profileName || !args.data || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'PUT',
+            url : '/' + args.profileName,
+            headers : {'csrf-token' : this.token},
+            contentType : false,
+            processData : false,
+            dataType : 'json',
+            data : args.data,
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
+    },
+
+    /* Save User data.
+     * @argument args.profileName <required> [String] the entity profileName
+     * @argument args.data.email <optional> [String] entity's email
+     * @argument args.data.password <optional> [String] entity's password
+     * @argument callback <required> [Function]
+     */
     updateUser : function updateUser(args, callback) {
         if (!args.profileName || (!args.data.email && !args.data.password) || !callback) {
             throw new Error('Missing required params');
@@ -490,8 +529,8 @@ module.exports = {
         if (args.data.password) {data.password = args.data.password;}
 
         $.ajax({
-            type : 'POST',
-            url : '/' + args.profileName + '/updateUser?_method=PUT',
+            type : 'PUT',
+            url : '/' + args.profileName + '/updateUser',
             headers : {'csrf-token' : this.token},
             dataType : 'json',
             data : data,
