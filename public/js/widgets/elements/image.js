@@ -7,7 +7,7 @@ Class(CV, 'Image').inherits(Widget).includes(CV.WidgetUtils)({
             <label><span></span></label>\
             <div class="cv-image">\
                 <div class="placeholder"></div>\
-                <div class="button">Replace</div>\
+                <div class="button" data-button>Replace</div>\
                 <input type="file" name="upload" class="-hide"/>\
             </div>\
         </div>\
@@ -22,7 +22,7 @@ Class(CV, 'Image').inherits(Widget).includes(CV.WidgetUtils)({
             this.el = this.element[0];
             this.imageWrapper = this.el.querySelector('.cv-image');
             this.backgroundImage = this.el.querySelector('.placeholder');
-            this.uploadBgButton = this.el.getElementsByClassName('button')[0];
+            this.uploadBgButton = this.el.querySelector('[data-button]');
             this.uploadFile = this.el.querySelector('[name="upload"]');
 
             this._setup()._bindEvents();
@@ -76,6 +76,11 @@ Class(CV, 'Image').inherits(Widget).includes(CV.WidgetUtils)({
             } else {
                 this.el.removeChild(this.el.querySelector('label'));
             }
+
+            if (this.data.accept) {
+                this.uploadFile.setAttribute('accept', this.data.accept);
+            }
+
             return this;
         },
 
