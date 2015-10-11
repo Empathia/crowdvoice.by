@@ -32,6 +32,8 @@ Class(CV, 'CardMini').inherits(Widget).includes(CV.WidgetUtils, BubblingSupport)
         </div>',
 
     prototype : {
+        _actions : null,
+
         init : function init(config) {
             Widget.prototype.init.call(this, config);
 
@@ -107,15 +109,6 @@ Class(CV, 'CardMini').inherits(Widget).includes(CV.WidgetUtils, BubblingSupport)
             if (this._actions.indexOf(data) >= 0) {
                 this.dispatch(data.eventName, {data: this});
             }
-        },
-
-        destroy : function destroy() {
-            if (this.removeButtonAction) {
-                Events.off(this.removeButtonAction.el, 'click', this._dispatchRemoveEventRef);
-                this._dispatchRemoveEventRef = null;
-            }
-            Widget.prototype.destroy.call(this);
-            return null;
         }
     }
 });
