@@ -219,14 +219,13 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
           .exec(function (err, result) {
             if (err) { return next(err) }
 
-            var featuredEntities = Argon.Storage.Knex.processors[0](result),
-              featuredEntity
+            var featuredEntities = Argon.Storage.Knex.processors[0](result)
 
-            async.each(featuredEntities, function (val, next) {
-              featuredEntity = new global['Featured' + inflection.transform(req.params.entityType, ['capitalize', 'singularize'])](val)
-              featuredEntity.position = realIds.indexOf(val)
+            async.each(featuredEntities, function (val, done) {
+              var featuredEntity = new global['Featured' + inflection.transform(req.params.entityType, ['capitalize', 'singularize'])](val)
+              featuredEntity.position = realIds.indexOf(val.entityId)
 
-              featuredEntity.save(next)
+              featuredEntity.save(done)
             }, function (err) {
               if (err) { return next(err) }
 
