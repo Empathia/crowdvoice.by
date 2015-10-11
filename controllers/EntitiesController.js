@@ -142,14 +142,30 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
             }
           ], function (err) {
             if (err) {
-              res.locals.errors = err;
-              req.errors = err;
-              logger.log(err);
-
-              res.render(inflection.pluralize(req.entityType) + '/edit.html');
+              res.format({
+                html: function() {
+                  res.locals.errors = err;
+                  req.errors = err;
+                  logger.log(err);
+                  res.render(inflection.pluralize(req.entityType) + '/edit.html');
+                },
+                json: function() {
+                  res.json({
+                    status : 'error',
+                    errors : err
+                  });
+                }
+              });
             } else {
-              req.flash('success', 'Your profile has been updated.');
-              res.redirect('/' + entity.profileName + '/edit');
+              res.format({
+                html: function() {
+                  req.flash('success', 'Your profile has been updated.');
+                  res.redirect('/' + entity.profileName + '/edit');
+                },
+                json: function() {
+                  res.json({status : 'success'});
+                }
+              });
             }
           });
         });
