@@ -154,6 +154,16 @@ Class(CV.UI, 'Input').inherits(Widget).includes(CV.WidgetUtils)({
             }
         },
 
+        _disable : function _disable() {
+            Widget.prototype._disable.call(this);
+            this.getInput().setAttribute('disabled', true);
+        },
+
+        _enable : function _enable() {
+            Widget.prototype._enable.call(this);
+            this.getInput().removeAttribute('disabled');
+        },
+
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
             Events.off(this._input, 'keydown', this._clearStateRef);
