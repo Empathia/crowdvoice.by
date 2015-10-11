@@ -144,6 +144,10 @@ require('./widgets/view-user-profile/actions/UserProfileActionMessage');
 require('./widgets/view-user-profile/actions/UserProfileMoreActions');
 require('./widgets/view-user-profile/actions/OrganizationProfileActionLeave');
 require('./widgets/view-user-profile/actions/OrganizationProfileMoreActions');
+require('./views/UserProfileEdit');
+require('./widgets/view-user-profile-edit/UserProfileEditTab');
+require('./widgets/view-user-profile-edit/UserProfileEditAccountTab');
+require('./widgets/view-user-profile-edit/UserProfileEditOrganizationsTab');
 
 require('./widgets/voice/posts-registry');
 require('./widgets/voice/Onboarding');
