@@ -46,7 +46,6 @@ Class(CV, 'UserProfileEditTab').inherits(Widget)({
                 data : {
                     title : 'Profile Picture',
                     accept : 'image/*',
-                    showRemoveButton : true,
                     buttonWrapperClassName : '-pl1',
                     buttonHint : 'JPG, GIF or PNG'
                 }
@@ -61,6 +60,7 @@ Class(CV, 'UserProfileEditTab').inherits(Widget)({
                 data: {
                     title : 'Background Picture',
                     accept : 'image/*',
+                    showRemoveButton : true,
                     buttonWrapperClassName : '-pl1',
                     buttonHint : 'JPG, GIF or PNG'
                 }

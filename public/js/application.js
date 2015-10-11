@@ -150,6 +150,8 @@ require('./widgets/view-user-profile-edit/UserProfileEditTab');
 require('./widgets/view-user-profile-edit/UserProfileEditAccountTab');
 require('./widgets/view-user-profile-edit/UserProfileEditNotificationsTab');
 require('./widgets/view-user-profile-edit/UserProfileEditOrganizationsTab');
+require('./widgets/view-user-profile-edit/notifications/EditNotificationsNotifyMeItem');
+require('./widgets/view-user-profile-edit/notifications/EditNotificationsEmailDigestsItem');
 
 require('./widgets/voice/posts-registry');
 require('./widgets/voice/Onboarding');

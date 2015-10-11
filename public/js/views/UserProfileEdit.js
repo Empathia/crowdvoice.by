@@ -33,6 +33,12 @@ Class(CV.Views, 'UserProfileEdit').includes(NodeSupport, CV.WidgetUtils)({
             });
 
             this.tabs.addTab({
+                name : 'notifications',
+                title : 'Notifications',
+                content : CV.UserProfileEditNotificationsTab,
+            });
+
+            this.tabs.addTab({
                 name : 'organizations',
                 title : 'Organizations',
                 content : CV.UserProfileEditOrganizationsTab,
