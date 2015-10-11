@@ -118,9 +118,9 @@ module.exports = {
     },
 
     /* Tries to retrieves a specific version of the person images,
-     * if not found it will return a placeholder instead so we do get errors
-     * or empty images
-     * @return [String] image path
+     * if it doest not exists it will try to return a placeholder instead
+     * otherwhise it will return null.
+     * @return [String] image_path
      */
     getImage : function getImage(version) {
         var images = this.get().images;
@@ -129,6 +129,10 @@ module.exports = {
             return images[version].url;
         }
 
-        return PLACEHOLDERS.profile;
+        if (PLACEHOLDERS[version]) {
+            return PLACEHOLDERS[version];
+        }
+
+        return null;
     }
 };

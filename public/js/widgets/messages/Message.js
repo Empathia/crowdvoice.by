@@ -66,7 +66,7 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
       if (message.data.senderEntity.images.notification) {
         message.element.find('.message-sender-image').attr('src', message.data.senderEntity.images.notification.url);
       } else {
-        message.element.find('.message-sender-image').attr('src', PLACEHOLDERS.profile);
+        message.element.find('.message-sender-image').attr('src', PLACEHOLDERS.notification);
       }
 
       message.element.find('.message-data .data-message-date').text(moment(new Date(message.data.createdAt).toISOString()).format('• MMMM Do, YYYY • h:mm a'));

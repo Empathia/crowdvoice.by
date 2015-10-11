@@ -219,7 +219,7 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
                 this.dom.updateAttr('src', this.avatarEl, this.data.images.card.url);
                 this.dom.updateAttr('alt', this.avatarEl, this.data.profileName + "’s avatar image");
             } else {
-                this.dom.updateAttr('src', this.avatarEl, PLACEHOLDERS.profile);
+                this.dom.updateAttr('src', this.avatarEl, PLACEHOLDERS.card);
             }
 
             this.dom.updateText(this.usernameEl, "@" + this.data.profileName);
