@@ -476,6 +476,30 @@ module.exports = {
     /**************************************************************************
      * ENTITIES
      *************************************************************************/
+    updateUser : function updateUser(args, callback) {
+        if (!args.profileName || (!args.data.email && !args.data.password) || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        var data = {};
+        if (args.data.email) {data.email = args.data.email;}
+        if (args.data.password) {data.password = args.data.password;}
+
+        $.ajax({
+            type : 'POST',
+            url : '/' + args.profileName + '/updateUser?_method=PUT',
+            headers : {'csrf-token' : this.token},
+            dataType : 'json',
+            data : data,
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
+    },
+
     /* Follow/Unfollow Entity
      * @argument args.profileName <required> [String] the entity profileName
      * @argument args.data.followerId <required> [String] Hashids.encode
