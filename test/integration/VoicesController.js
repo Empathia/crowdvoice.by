@@ -73,3 +73,109 @@ test('Follow a voice ( .follow() )', function (t) {
       })
   })
 })
+
+test('Invite to contribute ( .inviteToContribute() )', function (t) {
+  var cookies,
+    csrf,
+    agent = request.agent()
+
+  async.series([
+    function (next) {
+      agent
+        .get(urlBase + '/csrf')
+        .end(function (err, res) {
+          if (err) { t.fail(err) }
+
+          csrf = res.text
+
+          return next()
+        })
+    },
+
+    function (next) {
+      agent
+        .post(urlBase + '/session')
+        .send({
+          _csrf: csrf,
+          username: 'cersei',
+          password: '12345678'
+        })
+        .end(function (err, res) {
+          if (err) { t.fail(err) }
+
+          return next()
+        })
+    },
+  ], function(err) {
+    if (err) { t.fail(err) }
+
+    agent
+      .post(urlBase + '/cersei-lannister/walk-of-atonement/inviteToContribute')
+      .accept('application/json')
+      .send({
+        _csrf: csrf,
+        personId: hashids.encode(9), // Jon's ID
+        message: 'I know you want to',
+      })
+      .end(function (err, res) {
+        if (err) { t.fail(err) }
+
+        t.equal(res.status, 200, 'res.status')
+        t.equal(res.body.status, 'invited', 'res.body.status invited')
+
+        t.end()
+      })
+  })
+})
+
+test('Request to contribute ( .requestToContribute() )', function (t) {
+  var cookies,
+    csrf,
+    agent = request.agent()
+
+  async.series([
+    function (next) {
+      agent
+        .get(urlBase + '/csrf')
+        .end(function (err, res) {
+          if (err) { t.fail(err) }
+
+          csrf = res.text
+
+          return next()
+        })
+    },
+
+    function (next) {
+      agent
+        .post(urlBase + '/session')
+        .send({
+          _csrf: csrf,
+          username: 'cersei',
+          password: '12345678'
+        })
+        .end(function (err, res) {
+          if (err) { t.fail(err) }
+
+          return next()
+        })
+    },
+  ], function(err) {
+    if (err) { t.fail(err) }
+
+    agent
+      .post(urlBase + '/cersei-lannister/walk-of-atonement/requestToContribute')
+      .accept('application/json')
+      .send({
+        _csrf: csrf,
+        message: 'I know you want to me to join',
+      })
+      .end(function (err, res) {
+        if (err) { t.fail(err) }
+
+        t.equal(res.status, 200, 'res.status')
+
+        t.end()
+      })
+  })
+})
