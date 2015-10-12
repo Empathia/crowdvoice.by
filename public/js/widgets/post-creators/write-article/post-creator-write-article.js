@@ -43,6 +43,10 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
                 name : 'loaderSuccess'
             })).render(this.el.querySelector('.cv-post-creator__disable'));
 
+            this.appendChild(new CV.PostCreatorErrorTemplate({
+                name : 'loaderError'
+            })).render(this.el.querySelector('.cv-post-creator__disable'));
+
             this.appendChild(
                 new CV.PostCreatorPostButton({
                     name : 'postButton',
@@ -64,7 +68,6 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
             ).render(this.content);
 
             
-
             // Content
             this.articleContent = this.content.querySelector('.write-article-body-editable');
             this.articleTitle = this.content.querySelector('.editor-title');
@@ -123,12 +126,22 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
         _responseHandler : function _responseHandler(err, res){
             if (err) {
                 console.log(res.status + ' ' +res.statusText);
-                 this._enabledPostButton();
-                $(this.loadingStep).removeClass('active');
+                this._enabledPostButton();
+                $('.cv-loader').addClass('hidden');
+                this.loaderError.activate(); 
+                window.setTimeout(function() {
+                    $(this.loadingStep).removeClass('active');
+                }, 2000);
+                
                 return;
             }
-            $(this.loadingStep).removeClass('active');
-            console.log(res);
+            // Success feedack
+            $('.cv-loader').addClass('hidden');
+            this.loaderSuccess.activate(); 
+
+            window.setTimeout(function() {
+                window.location.reload();
+            }, 2000);
         },
         // Gets the <INPUT> IMAGE and sent it to the API
         _imageReceived : function _imageReceived(ev){
