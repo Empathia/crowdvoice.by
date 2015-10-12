@@ -20,7 +20,7 @@ CONFIG.database.logQueries = false
 
 var urlBase = 'http://localhost:3000'
 
-test('Follow an entity ( .follow() )', function (t) {
+test('Follow a person ( .follow() )', function (t) {
   var cookies,
     csrf,
     agent = request.agent()
@@ -68,6 +68,53 @@ test('Follow an entity ( .follow() )', function (t) {
         t.equal(res.status, 200, 'res.status')
         t.equal(res.body.status, 'followed', 'res.body.status followed')
         t.equal(res.body.status, 'unfollowed', 'res.body.status unfollowed')
+
+        t.end()
+      })
+  })
+})
+
+test('Render the /edit page ( .edit() )', function (t) {
+  var cookies,
+    csrf,
+    agent = request.agent()
+
+  async.series([
+    function (next) {
+      agent
+        .get(urlBase + '/csrf')
+        .end(function (err, res) {
+          if (err) { t.fail(err) }
+
+          csrf = res.text
+
+          return next()
+        })
+    },
+
+    function (next) {
+      agent
+        .post(urlBase + '/session')
+        .send({
+          _csrf: csrf,
+          username: 'cersei',
+          password: '12345678'
+        })
+        .end(function (err, res) {
+          if (err) { t.fail(err) }
+
+          return next()
+        })
+    },
+  ], function(err) {
+    if (err) { t.fail(err) }
+
+    agent
+      .get(urlBase + '/cersei-lannister/edit')
+      .end(function (err, res) {
+        if (err) { t.fail(err) }
+
+        t.equal(res.status, 200, 'res.status')
 
         t.end()
       })
