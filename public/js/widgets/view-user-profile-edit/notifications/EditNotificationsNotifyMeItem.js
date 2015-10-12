@@ -4,8 +4,7 @@ Class(CV, 'EditNotificationsNotifyMeItem').inherits(Widget)({
         <div>\
             <span class="notifications-notify-me__label"></span>\
             <div class="notifications-notify-me__options -float-right"></div>\
-        </div>\
-    ',
+        </div>',
 
     prototype : {
         data : {

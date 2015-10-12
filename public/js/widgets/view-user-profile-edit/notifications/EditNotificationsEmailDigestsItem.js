@@ -1,10 +1,9 @@
-Class(CV, 'EditNotificationsEmailDigestsItem').inherits(Widget)({
-    ELEMENT_CLASS : '-clearfix',
+Class(CV, 'EditNotificationsEmailDigestsItem').inherits(Widget).includes(CV.WidgetUtils)({
+    ELEMENT_CLASS : 'notifications-email-digests-item -clearfix',
     HTML : '\
         <div>\
             <div class="notifications-email-digests__options -float-right"></div>\
-        </div>\
-    ',
+        </div>',
 
     prototype : {
         init : function init(config) {
@@ -18,6 +17,10 @@ Class(CV, 'EditNotificationsEmailDigestsItem').inherits(Widget)({
                 this._unique = Math.random().toString().replace(/\./,'');
             }
 
+            this._setup()._bindEvents();
+        },
+
+        _setup : function _setup() {
             this.appendChild(new CV.UI.Checkbox({
                 name : 'checkbox',
                 data : {
@@ -39,6 +42,27 @@ Class(CV, 'EditNotificationsEmailDigestsItem').inherits(Widget)({
                     },
                 })).render(this.optionsWrapper);
             }, this);
+
+            if (this.checkbox.isChecked() === false) {
+                this.dom.addClass(this.el, ['off']);
+            }
+
+            return this;
+        },
+
+        _bindEvents : function _bindEvents() {
+            this._checkboxChangedHandlerRef = this._checkboxChangedHandler.bind(this);
+            this.checkbox.bind('changed', this._checkboxChangedHandlerRef);
+
+            return this;
+        },
+
+        _checkboxChangedHandler : function _checkboxChangedHandler(ev) {
+            if (ev.target.isChecked()) {
+                this.dom.removeClass(this.el, ['off']);
+            } else {
+                this.dom.addClass(this.el, ['off']);
+            }
         }
     }
 });
