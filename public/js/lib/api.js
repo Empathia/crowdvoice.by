@@ -539,6 +539,31 @@ module.exports = {
         });
     },
 
+    /* Update notification settings.
+     * @argument args.profileName <required> [String] the entity profileName
+     * @argument args.data.webSettings <required> [String]
+     * @argument args.data.emailSettings <required> [String]
+     */
+    updateNotificationSettings : function updateNotificationSettings(args, callback) {
+        if (!args.profileName || (!args.data.webSettings && !args.data.emailSettings) || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'PUT',
+            url : '/' + args.profileName + '/edit/updateNotificationSettings',
+            dataType : 'json',
+            data : args.data,
+            headers : {'csrf-token' : this.token},
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
     /* Follow/Unfollow Entity
      * @argument args.profileName <required> [String] the entity profileName
      * @argument args.data.followerId <required> [String] Hashids.encode
