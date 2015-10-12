@@ -1,5 +1,6 @@
 var BlackListFilter = require(__dirname + '/BlackListFilter');
 var EntitiesPresenter = require(path.join(process.cwd(), '/presenters/EntitiesPresenter.js'));
+var NotificationMailer = require(path.join(__dirname, '../mailers/NotificationMailer.js'));
 
 var VoicesController = Class('VoicesController').includes(BlackListFilter)({
   prototype : {
@@ -629,20 +630,28 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                 VoiceFollower.findById(voiceFollowerRecordId[0], function (err, voiceFollower) {
                   if (err) { return next(err); }
 
-                  FeedInjector().inject(follower.id, 'who entityFollowsVoice', voiceFollower[0], function (err) {
+                  User.find({ entity_id: req.activeVoice.ownerId }, function (err, user) {
                     if (err) { return next(err); }
 
-                    res.format({
-                      html: function () {
-                        req.flash('success', 'Voice has been followed.');
-                        res.redirect('/' + req.params.profileName + '/' + req.params.voice_slug)
-                      },
-                      json: function () {
-                        res.json({
-                          status: 'followed',
-                          entity: { id: follower.id }
+                    FeedInjector().inject(follower.id, 'who entityFollowsVoice', voiceFollower[0], function (err) {
+                      if (err) { return next(err); }
+
+                      NotificationMailer.newVoiceFollower(user[0], follower, req.activeVoice, function (err) {
+                        if (err) { return next(err); }
+
+                        res.format({
+                          html: function () {
+                            req.flash('success', 'Voice has been followed.');
+                            res.redirect('/' + req.params.profileName + '/' + req.params.voice_slug)
+                          },
+                          json: function () {
+                            res.json({
+                              status: 'followed',
+                              entity: { id: follower.id }
+                            });
+                          }
                         });
-                      }
+                      });
                     });
                   });
                 });

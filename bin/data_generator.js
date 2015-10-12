@@ -445,7 +445,13 @@ async.series([function(next) {
       notification = new NotificationSetting({
         entityId: id,
         webSettings: defaultSettings,
-        emailSettings: defaultSettings
+        emailSettings: _.defaults(defaultSettings, {
+          selfNewMessage: true,
+          selfNewInvitation: true,
+          selfNewRequest: true,
+          selfNewVoiceFollower: true,
+          selfNewEntityFollower: true
+        })
       });
       notification.save(next);
     }, next);

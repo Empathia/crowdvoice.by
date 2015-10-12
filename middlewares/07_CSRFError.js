@@ -11,7 +11,7 @@ if (CONFIG.enableRedis) {
     res.status(403).send(err);
   };
 } else {
-  module.exports = function(req, res, next) {
+  module.exports = function(err, req, res, next) {
     next();
   }
 }

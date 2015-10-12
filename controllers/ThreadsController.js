@@ -85,6 +85,7 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
 
         var thread;
         var invite;
+        var message;
 
         async.series([
           function(done) {
@@ -130,6 +131,8 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
               if (err) {
                 return done(err);
               }
+
+              message = result;
 
               done();
             });

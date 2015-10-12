@@ -376,10 +376,38 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
         params.type = 'message';
       }
 
-      var message = new Message(params);
+      var message = new Message(params),
+        thread = this;
 
       message.save(function(err, result) {
-        callback(err, message);
+        if (err) { return callback(err); }
+
+        // send message to person who received message / invitation / request
+
+        User.find({ entity_id: params.receiverEntityId }, function (err, user) {
+          if (params.type === 'message') {
+            NotificationMailer.newMessage(user[0], {
+              thread: thread,
+              message: message
+            }, function (err) {
+              callback(err, message);
+            });
+          } else if (params.type.match(/request_(voice|organization)/)) {
+            NotificationMailer.newRequest(user[0], {
+              thread: thread,
+              message: message
+            }, function (err) {
+              callback(err, message);
+            });
+          } else if (params.type.match(/invitation_(voice|organization)/)) {
+            NotificationMailer.newInvitation(user[0], {
+              thread: thread,
+              message: message
+            }, function (err) {
+              callback(err, message);
+            });
+          }
+        });
       });
     },
 
