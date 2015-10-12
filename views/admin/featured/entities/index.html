@@ -95,10 +95,9 @@
 
 	    $.ajax({
 	      type: "POST",
-	      //url:'/admin/featured/' + entityType + '/search',
-	      url:'/' + currentPerson.profileName + '/messages/searchPeople',
+	      url:'/admin/featured/' + entityType + '/search',
 	      headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
-	      data : {value : searchStr},
+	      data : {query : searchStr},
 	      success: function(data) {
 	        if (data.length > 0){
 
@@ -113,7 +112,7 @@
 	          }
 
 	        }
-	      }
+          }
 	    });
 
 	});
