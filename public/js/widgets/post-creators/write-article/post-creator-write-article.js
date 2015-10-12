@@ -39,6 +39,10 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
                 name : 'loader'
             })).render(this.el.querySelector('.cv-post-creator__disable'));
 
+            this.appendChild(new CV.PostCreatorSuccessTemplate({
+                name : 'loaderSuccess'
+            })).render(this.el.querySelector('.cv-post-creator__disable'));
+
             this.appendChild(
                 new CV.PostCreatorPostButton({
                     name : 'postButton',
@@ -119,6 +123,7 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
         _responseHandler : function _responseHandler(err, res){
             if (err) {
                 console.log(res.status + ' ' +res.statusText);
+                 this._enabledPostButton();
                 $(this.loadingStep).removeClass('active');
                 return;
             }
