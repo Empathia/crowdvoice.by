@@ -1,5 +1,7 @@
-var Settings = require('./notifications/data-notification-settings');
 var Labels = require('./notifications/data-notification-labels');
+var API = require('./../../lib/api');
+var Events = require('./../../lib/events');
+var Person = require('./../../lib/currentPerson');
 
 Class(CV, 'UserProfileEditNotificationsTab').inherits(Widget)({
     HTML : '\
@@ -13,6 +15,10 @@ Class(CV, 'UserProfileEditNotificationsTab').inherits(Widget)({
         </div>',
 
     prototype : {
+        data : {
+            notificationSettings : null
+        },
+
         /* Holds the EditNotificationsNotifyMeItem widget references.
          * @property _notifyMeItems <private> [Object]
          */
@@ -23,13 +29,13 @@ Class(CV, 'UserProfileEditNotificationsTab').inherits(Widget)({
             this.el = this.element[0];
             this._notifyMeItems = [];
 
-            this._setup();
+            this._setup()._bindEvents();
         },
 
 
         _setup : function _setup() {
             var notifyMeListElement = this.el.querySelector('[data-notify-me-list]');
-            var formattedSettings = this._formatSettings(Settings);
+            var formattedSettings = this._formatSettings(this.data.notificationSettings);
 
             Object.keys(formattedSettings).forEach(function(setting) {
                 this._notifyMeItems.push(this.appendChild(new CV.EditNotificationsNotifyMeItem({
@@ -51,6 +57,11 @@ Class(CV, 'UserProfileEditNotificationsTab').inherits(Widget)({
             notifyMeListElement = formattedSettings = null;
 
             return this;
+        },
+
+        _bindEvents : function _bindEvents() {
+            this._saveButtonClickHandlerRef = this._saveButtonClickHandler.bind(this);
+            Events.on(this.saveButton.el, 'click', this._saveButtonClickHandlerRef);
         },
 
         /* Format notifications settings data to handle and display the interface.
@@ -87,6 +98,16 @@ Class(CV, 'UserProfileEditNotificationsTab').inherits(Widget)({
             return results;
         },
 
+        _saveButtonClickHandler : function _saveButtonClickHandler() {
+            API.updateNotificationSettings({
+                profileName : Person.get().profileName,
+                data : this._dataPresenter()
+            }, function(err, res) {
+                console.log(err);
+                console.log(res);
+            });
+        },
+
         /* Formats the data to be sent to the server to update the notification
          * settings based on the interface checkboxes.
          * @method _dataPresenter <private> [Function]
@@ -105,6 +126,15 @@ Class(CV, 'UserProfileEditNotificationsTab').inherits(Widget)({
             });
 
             return data;
+        },
+
+        destroy : function destroy() {
+            Widget.prototype.destroy.call(this);
+
+            Events.off(this.saveButton.el, 'click', this._saveButtonClickHandlerRef);
+            this._saveButtonClickHandlerRef = null;
+
+            return null;
         }
     }
 });
