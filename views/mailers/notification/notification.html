@@ -2,7 +2,7 @@
 		<!--<%= JSON.stringify(params, null, 2) %>-->
 		<% var voiceInfo = params.notificationInfo.voice; %>
 		<% var doerInfo = params.notificationInfo.actionDoer; %>
-		<% var voiceDate = voiceInfo.createdAt;  %>
+		<% var voiceDate = new Date();  %>
 		<% var monthNames = ["January", "February", "March","April", "May", "June", "July","August", "September", "October","November", "December"];%>
 		<% var day = voiceDate.getDate(); %> 
 		<% var monthIndex = voiceDate.getMonth(); %>
@@ -26,7 +26,7 @@
 				            	<td style="padding: 0 25px; text-align: left;">
 					             	<div style="font-size: 14px; line-height: 38px; color: #b2b2b2;">
 						                <p style="font-size:18px;color:black;">
-						                	Hello Esra'a, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="blank_"><%= doerInfo.name + ' ' + doerInfo.lastname %></a> has created a Voice!
+						                	Hello <%= params.user.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="blank_"><%= doerInfo.name + ' ' + doerInfo.lastname %></a> has created a Voice!
 						                </p>
 					              	</div>
 				            	</td>
@@ -55,7 +55,7 @@
 			            		<td style="padding: 0 25px; text-align: left;">
 			              			<div style="font-size: 14px; line-height: 38px; color: #b2b2b2;">
 			                			<p style="font-size:18px;color:black;">
-			                				Hello Esra'a, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="blank_"><%= doerInfo.name + ' ' + doerInfo.lastname %></a> followed your Voice!
+			                				Hello <%= params.user.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="blank_"><%= doerInfo.name + ' ' + doerInfo.lastname %></a> followed your Voice!
 			                			</p>
 			              			</div>
 			            		</td>
@@ -75,26 +75,6 @@
 			          		</tr>
 			        	</tbody>
 			      	</table>
-	    	<% } %>
-	    	<!-- New Follower Notification-->
-	    	<% if(params.notificationInfo.itemType === 'entity' && params.notificationInfo.action === 'followed'){ %>
-
-	    	<% } %>
-	    	<!-- New Repost Notification-->
-	    	<% if(params.notificationInfo.itemType === 'entity' && params.notificationInfo.action === 'followed'){ %>
-
-	    	<% } %>
-	    	<!-- New Message Notification-->
-	    	<% if(params.notificationInfo.itemType === 'entity' && params.notificationInfo.action === 'followed'){ %>
-
-	    	<% } %>
-	    	<!-- New Request Notification-->
-	    	<% if(params.notificationInfo.itemType === 'entity' && params.notificationInfo.action === 'followed'){ %>
-
-	    	<% } %>
-	    	<!-- New Invitation Notification-->
-	    	<% if(params.notificationInfo.itemType === 'entity' && params.notificationInfo.action === 'followed'){ %>
-
 	    	<% } %>
 	    </div>
 	    <!-- Footer -->
