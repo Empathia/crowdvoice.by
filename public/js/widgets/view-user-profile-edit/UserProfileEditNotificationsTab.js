@@ -13,26 +13,33 @@ Class(CV, 'UserProfileEditNotificationsTab').inherits(Widget)({
         </div>',
 
     prototype : {
+        /* Holds the EditNotificationsNotifyMeItem widget references.
+         * @property _notifyMeItems <private> [Object]
+         */
+        _notifyMeItems : null,
+
         init : function init(config) {
             Widget.prototype.init.call(this, config);
             this.el = this.element[0];
+            this._notifyMeItems = [];
 
             this._setup();
         },
+
 
         _setup : function _setup() {
             var notifyMeListElement = this.el.querySelector('[data-notify-me-list]');
             var formattedSettings = this._formatSettings(Settings);
 
-            Object.keys(formattedSettings).forEach(function(setting, index) {
-                this.appendChild(new CV.EditNotificationsNotifyMeItem({
-                    name : 'notify-me-item_' + index,
+            Object.keys(formattedSettings).forEach(function(setting) {
+                this._notifyMeItems.push(this.appendChild(new CV.EditNotificationsNotifyMeItem({
+                    name : setting,
                     className : 'cv-items-list',
                     data : {
                         label : Labels[setting] || 'missing description',
                         options : formattedSettings[setting]
                     }
-                })).render(notifyMeListElement);
+                })).render(notifyMeListElement));
             }, this);
 
             this.appendChild(new CV.UI.Button({
@@ -40,6 +47,8 @@ Class(CV, 'UserProfileEditNotificationsTab').inherits(Widget)({
                 className : 'positive small',
                 data : {value : 'Save Changes'},
             })).render(this.el);
+
+            notifyMeListElement = formattedSettings = null;
 
             return this;
         },
@@ -72,7 +81,30 @@ Class(CV, 'UserProfileEditNotificationsTab').inherits(Widget)({
                     });
                 });
             });
+
+            settingHumanLabel = null;
+
             return results;
+        },
+
+        /* Formats the data to be sent to the server to update the notification
+         * settings based on the interface checkboxes.
+         * @method _dataPresenter <private> [Function]
+         * @return {webSettings: {...}, emailSettings: {...}}
+         */
+        _dataPresenter : function _dataPresenter() {
+            var data = {};
+
+            this._notifyMeItems.forEach(function(item) {
+                item.getSettingsState().forEach(function(option) {
+                    if (typeof data[option.type] === 'undefined') {
+                        data[option.type] = {};
+                    }
+                    data[option.type][item.name] = option.checked;
+                });
+            });
+
+            return data;
         }
     }
 });
