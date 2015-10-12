@@ -77,13 +77,24 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
         }
 
         if (!response.isAllowed) {
-          return next(new ForbiddenError());
+          return next(new ForbiddenError('Unauthorized.'));
         }
 
         res.locals.checkit = Checkit;
         res.locals.currentUser = req.user;
-        res.render(inflection.pluralize(req.entityType) + '/edit.html');
 
+        NotificationSetting.find({ entity_id: hashids.decode(req.currentPerson.id)[0] }, function (err, settings) {
+          if (err) { return next(err); }
+
+          var setting = {
+            webSettings: settings[0].webSettings,
+            emailSettings: settings[0].emailSettings,
+          }
+
+          res.locals.notificationSettings = setting;
+
+          res.render(inflection.pluralize(req.entityType) + '/edit.html');
+        })
       });
     },
 

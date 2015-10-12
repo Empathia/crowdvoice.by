@@ -1,6 +1,7 @@
 Class(CV.Views, 'UserProfileEdit').includes(NodeSupport, CV.WidgetUtils)({
     prototype : {
         _e : null,
+        notificationSettings : null,
 
         init : function init(config) {
             Object.keys(config || {}).forEach(function(propertyName) {
@@ -36,6 +37,7 @@ Class(CV.Views, 'UserProfileEdit').includes(NodeSupport, CV.WidgetUtils)({
                 name : 'notifications',
                 title : 'Notifications',
                 content : CV.UserProfileEditNotificationsTab,
+                contentData : {notificationSettings: this.notificationSettings}
             });
 
             this.tabs.addTab({
