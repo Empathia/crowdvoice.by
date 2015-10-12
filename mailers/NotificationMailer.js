@@ -59,7 +59,7 @@ var NotificationMailer = Module('NotificationMailer')({
 
   // Send notification about new message
   newMessage: function (user, info, callback) {
-    NotificationSetting.find({ entity_id: user.entityId }, function (err, setting) {
+    NotificationSetting.find({ entity_id: info.message.receiverEntityId }, function (err, setting) {
       if (err) { return callback(err) }
 
       if (!setting[0].emailSettings.selfNewMessage) {
@@ -96,8 +96,10 @@ var NotificationMailer = Module('NotificationMailer')({
         }
 
         // oh wait it's not read, well was it sent within the last 24 hours?
-        if (isUnread) {
-          var time = moment().diff(moment(messages[0].createdAt), 'hours')
+        // make sure it's unread AND there are at least 2 messages, otherwise it
+        // means that this is the first message and the mail needs to be sent
+        if (isUnread && messages[1]) {
+          var time = moment().diff(moment(info.thread.updatedAt), 'hours')
 
           // too soon, let's bail
           if (time <= 24) {
