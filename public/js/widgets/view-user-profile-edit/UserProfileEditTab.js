@@ -33,7 +33,7 @@ Class(CV, 'UserProfileEditTab').inherits(Widget)({
             this.checkitProfile = new Checkit({
                 name : 'required',
                 lastname : 'required',
-                profilename : 'required'
+                profilename : ['required', 'alphaDash']
             });
 
             this._setup()._bindEvents();
@@ -170,6 +170,25 @@ Class(CV, 'UserProfileEditTab').inherits(Widget)({
          * @return undefined
          */
         _checkProfileNameAvailability : function _checkProfileNameAvailability() {
+            var value = this.profilenameInput.getValue();
+
+            this.profilenameInput.clearState().updateHint();
+
+            if (!value) {
+                return;
+            }
+
+            var validate = this.checkitProfile.validateSync({
+                profilename : value
+            });
+
+            if (validate[0] && validate[0].errors.profilename) {
+                return this.profilenameInput.clearState().error().updateHint({
+                    hint: '(' + validate[0].errors.profilename.message + ')',
+                    className : '-color-negative'
+                });
+            }
+
             API.isProfileNameAvailable({
                 profileName : Person.get().profileName,
                 value : this.profilenameInput.getValue().trim()
@@ -264,6 +283,15 @@ Class(CV, 'UserProfileEditTab').inherits(Widget)({
                 if (err) {
                     this.saveButton.enable();
                     return this._displayErrorAlert('There was an error while updating your profile - (' + res.status + ')');
+                }
+
+                if (res.status === 'error') {
+                    var erroredKeys = Object.keys(res.errors).map(function(key) {
+                        return key;
+                    }).join(',' );
+
+                    this.saveButton.enable();
+                    return this._displayErrorAlert('There was an error while updating your profile - (' + erroredKeys + ')');
                 }
 
                 this.saveButton.enable();
