@@ -217,12 +217,11 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
           .exec(function (err, result) {
             if (err) { return next(err) }
 
-            var featuredVoices = Argon.Storage.Knex.processors[0](result),
-              featuredVoice
+            var featuredVoices = Argon.Storage.Knex.processors[0](result)
 
             async.each(featuredVoices, function (val, next) {
-              featuredVoice = new FeaturedVoice(val)
-              featuredVoice.position = realIds.indexOf(val)
+              var featuredVoice = new FeaturedVoice(val)
+              featuredVoice.position = realIds.indexOf(val.voiceId)
 
               featuredVoice.save(next)
             }, function (err) {

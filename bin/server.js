@@ -140,9 +140,7 @@ io.on('connection', function(socket) {
         .whereIn('receiver_entity_id', ids)
         .orWhereIn('sender_entity_id', ids)
         .exec(function (err, result) {
-          if (err) {
-            return console.log(err);
-          }
+          if (err) { return next(err); }
 
           var threads = Argon.Storage.Knex.processors[0](result);
 
@@ -171,9 +169,7 @@ io.on('connection', function(socket) {
             Message.find({
               thread_id: thread.id
             }, function (err, messages) {
-              if (err) {
-                return console.log(err);
-              }
+              if (err) { return next(err); }
 
               var isUnread;
 
@@ -218,7 +214,9 @@ io.on('connection', function(socket) {
             });
           }, function (err) {
             if (err) {
-              return console.log(err);
+              logger.log(err);
+              logger.log(err.stat);
+              return;
             }
 
             socket.emit('unreadMessagesCount', counter);
