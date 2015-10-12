@@ -14,8 +14,8 @@ Class(CV, 'EditNotificationsNotifyMeItem').inherits(Widget)({
         init : function init(config) {
             Widget.prototype.init.call(this, config);
             this.el = this.element[0];
-            this.optionsWrapper = this.el.querySelector('.notifications-notify-me__options');
 
+            var optionsWrapper = this.el.querySelector('.notifications-notify-me__options');
             this.el.querySelector('.notifications-notify-me__label').textContent = this.data.label;
 
             this.data.options.forEach(function(option) {
@@ -26,7 +26,7 @@ Class(CV, 'EditNotificationsNotifyMeItem').inherits(Widget)({
                         label: option.label,
                         checked: option.checked
                     },
-                })).render(this.optionsWrapper);
+                })).render(optionsWrapper);
             }, this);
         }
     }

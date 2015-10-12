@@ -62,7 +62,7 @@ Class(CV, 'MyVoicesTab').inherits(Widget)({
             this.data.voices.forEach(function(voice, index) {
                 this.appendChild(new CV.VoiceCoverMini({
                     name : 'voice_' + index,
-                    className : 'my-voices-item-list',
+                    className : 'my-voices-item-list cv-items-list',
                     data : voice
                 })).addActions();
                 fragment.appendChild(this['voice_' + index].el);
