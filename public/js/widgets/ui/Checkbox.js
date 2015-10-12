@@ -17,6 +17,7 @@ Class(CV.UI, 'Checkbox').inherits(Widget).includes(CV.WidgetUtils)({
     prototype : {
         data : {
             label : '',
+            checked : false
         },
 
         init : function init(config) {
@@ -31,6 +32,11 @@ Class(CV.UI, 'Checkbox').inherits(Widget).includes(CV.WidgetUtils)({
             if (this.data.label) {
                 this.dom.updateText(this.labelElement, this.data.label);
             }
+
+            if (this.data.checked) {
+                this.check();
+            }
+
             return this;
         },
 

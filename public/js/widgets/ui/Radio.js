@@ -17,6 +17,7 @@ Class(CV.UI, 'Radio').inherits(Widget).includes(CV.WidgetUtils)({
     prototype : {
         data : {
             label : '',
+            checked : false
         },
 
         init : function init(config) {
@@ -30,6 +31,10 @@ Class(CV.UI, 'Radio').inherits(Widget).includes(CV.WidgetUtils)({
         _setup : function _setup() {
             if (this.data.label) {
                 this.dom.updateText(this.labelElement, this.data.label);
+            }
+
+            if (this.data.checked) {
+                this.check();
             }
 
             if (this.data.attr) {
