@@ -15,7 +15,7 @@ var feedSettings = {
     voiceNewPublicContributor: true,
   },
   webSettings = feedSettings,
-  emailSettings = _.defaults(feedSettings, {
+  emailSettings = _.clone(feedSettings).defaults(feedSettings, {
     selfNewMessage: true,
     selfNewInvitation: true,
     selfNewRequest: true,
