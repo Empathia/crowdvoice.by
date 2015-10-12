@@ -1102,7 +1102,13 @@ async.series([function(next) {
         'https://www.youtube.com/watch?v=f4RGU2jXQiE'
       ];
 
-      async.timesLimit(process.argv[2] || 250, 1, function(id, nextPost) {
+      var times = process.argv[2]
+
+      if (!times || typeof times !== 'number') {
+        times = 250
+      }
+
+      async.timesLimit(times, 1, function(id, nextPost) {
         var post =  new Post();
 
         var type = casual['random_element'](['image', 'video', 'link']);

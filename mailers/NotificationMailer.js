@@ -1,5 +1,6 @@
 var mandrill = require('mandrill-api/mandrill'),
-  client = new mandrill.Mandrill(CONFIG.mandrill.key || false)
+  client = new mandrill.Mandrill(CONFIG.mandrill.key || false),
+  moment = require('moment')
 
 var EntitiesPresenter = require(path.join(__dirname, '../presenters/EntitiesPresenter.js')),
   VoicesPresenter = require(path.join(__dirname, '../presenters/VoicesPresenter.js'))
