@@ -178,7 +178,7 @@
 			var timeElapsed = moment(feed.createdAt).from(moment());
 			var feedEl = $(feedItemEl);
 
-			feedEl.find('.feed-item-image img').attr('src', feed.actionDoer.images && feed.actionDoer.images.small && feed.actionDoer.images.small.url);
+			feedEl.find('.feed-item-image img').attr('src', feed.actionDoer.images && feed.actionDoer.images.card && feed.actionDoer.images.card.url);
 			feedEl.find('.feed-item-time').text( moment(feed.createdAt).from(moment()) );
 			feedEl.find('.feed-item-title > a > b').text(feed.actionDoer.name + ' ' + feed.actionDoer.lastname);
 			feedEl.find('.feed-item-title > a').attr('href', '/' + feed.actionDoer.profileName);
