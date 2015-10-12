@@ -19,16 +19,16 @@ Class(CV, 'EditNotificationsNotifyMeItem').inherits(Widget)({
 
             this.el.querySelector('.notifications-notify-me__label').textContent = this.data.label;
 
-            this.appendChild(new CV.UI.Checkbox({
-                name : 'emailCheckbox',
-                className : '-mr1',
-                data : {label: 'Email'}
-            })).render(this.optionsWrapper);
-
-            this.appendChild(new CV.UI.Checkbox({
-                name : 'webCheckbox',
-                data : {label: 'Web'}
-            })).render(this.optionsWrapper);
+            this.data.options.forEach(function(option) {
+                this.appendChild(new CV.UI.Checkbox({
+                    name : option.label + 'Checkbox',
+                    className : '-mr1',
+                    data : {
+                        label: option.label,
+                        checked: option.checked
+                    },
+                })).render(this.optionsWrapper);
+            }, this);
         }
     }
 });

@@ -20,34 +20,25 @@ Class(CV, 'EditNotificationsEmailDigestsItem').inherits(Widget)({
 
             this.appendChild(new CV.UI.Checkbox({
                 name : 'checkbox',
-                data : {label: this.data.label}
+                data : {
+                    label: this.data.label,
+                    checked : this.data.checked
+                }
             })).render(this.el);
 
-            this.appendChild(new CV.UI.Radio({
-                name : 'dailyRadio',
-                className : '-mr1',
-                data : {
-                    label: 'Daily',
-                    attr : {name: this._unique}
-                },
-            })).render(this.optionsWrapper);
-
-            this.appendChild(new CV.UI.Radio({
-                name : 'weeklyRadio',
-                className : '-mr1',
-                data : {
-                    label: 'Weekly',
-                    attr : {name: this._unique}
-                }
-            })).render(this.optionsWrapper);
-
-            this.appendChild(new CV.UI.Radio({
-                name : 'MonthlyRadio',
-                data : {
-                    label: 'Montly',
-                    attr : {name: this._unique}
-                }
-            })).render(this.optionsWrapper);
+            this.data.options.forEach(function(option) {
+                this.appendChild(new CV.UI.Radio({
+                    name : option.label + 'Radio',
+                    className : '-mr1',
+                    data : {
+                        label: option.label,
+                        checked: option.checked,
+                        attr : {
+                            name: this._unique,
+                        }
+                    },
+                })).render(this.optionsWrapper);
+            }, this);
         }
     }
 });
