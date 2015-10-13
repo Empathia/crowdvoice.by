@@ -19,6 +19,9 @@ Class(CV, 'UserProfileEditNotificationsTab').inherits(Widget)({
             notificationSettings : null
         },
 
+        _errorAlert : null,
+        _successAlert : null,
+
         /* Holds the EditNotificationsNotifyMeItem widget references.
          * @property _notifyMeItems <private> [Object]
          */
@@ -62,6 +65,7 @@ Class(CV, 'UserProfileEditNotificationsTab').inherits(Widget)({
         _bindEvents : function _bindEvents() {
             this._saveButtonClickHandlerRef = this._saveButtonClickHandler.bind(this);
             Events.on(this.saveButton.el, 'click', this._saveButtonClickHandlerRef);
+            return this;
         },
 
         /* Format notifications settings data to handle and display the interface.
@@ -103,9 +107,14 @@ Class(CV, 'UserProfileEditNotificationsTab').inherits(Widget)({
                 profileName : Person.get().profileName,
                 data : this._dataPresenter()
             }, function(err, res) {
-                console.log(err);
-                console.log(res);
-            });
+                if (err) {
+                    return this._displayErrorAlert('There was a problem while trying to update your notification settings.');
+                }
+
+                if (res.status === 'updated settings') {
+                    this._displaySuccessAlert('Your notification settings have been updated.');
+                }
+            }.bind(this));
         },
 
         /* Formats the data to be sent to the server to update the notification
@@ -126,6 +135,42 @@ Class(CV, 'UserProfileEditNotificationsTab').inherits(Widget)({
             });
 
             return data;
+        },
+
+        /* Displays a success alert, if already exists it will update the message.
+         * @method _displaySuccessAlert <private> [Function]
+         * @argument message <required> [String] the message to display.
+         * @return undefined
+         */
+        _displaySuccessAlert : function _displaySuccessAlert(message) {
+            if (this._successAlert) {
+                return this._successAlert.update(message);
+            }
+
+            this.appendChild(new CV.Alert({
+                name : '_successAlert',
+                type : 'positive',
+                text : message,
+                className : '-mb1'
+            })).render(this.el, this.el.firstElementChild);
+        },
+
+        /* Displays an error alert, if already exists it will update the message.
+         * @method _displayErrorAlert <private> [Function]
+         * @argument message <required> [String] the message to display.
+         * @return undefined
+         */
+        _displayErrorAlert : function _displayErrorAlert(message) {
+            if (this._errorAlert) {
+                return this._errorAlert.update(message);
+            }
+
+            this.appendChild(new CV.Alert({
+                name : '_errorAlert',
+                type : 'negative',
+                text : message,
+                className : '-mb1'
+            })).render(this.el, this.el.firstElementChild);
         },
 
         destroy : function destroy() {
