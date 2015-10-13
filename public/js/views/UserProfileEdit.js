@@ -46,7 +46,7 @@ Class(CV.Views, 'UserProfileEdit').includes(NodeSupport, CV.WidgetUtils)({
                 content : CV.UserProfileEditOrganizationsTab,
             });
 
-            this.tabs.start();
+            this.tabs.addTabIndicator().start();
         }
     }
 });

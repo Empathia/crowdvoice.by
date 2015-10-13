@@ -44,7 +44,7 @@ Class(CV.Views, 'SearchView').includes(NodeSupport, CV.WidgetUtils)({
                 this.tabs.addTab(config);
             }, this);
 
-            this.tabs.start();
+            this.tabs.addTabIndicator().start();
         }
     }
 });

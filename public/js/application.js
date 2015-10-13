@@ -97,6 +97,7 @@ require('./widgets/tabs/TabsManager');
 require('./widgets/tabs/Tab');
 require('./widgets/tabs/TabNav');
 require('./widgets/tabs/TabContent');
+require('./widgets/tabs/TabIndicator');
 
 // components
 require('./widgets/cards/Card');

@@ -1,7 +1,7 @@
 Class(CV, 'TabNav').inherits(Widget).includes(CV.WidgetUtils)({
     HTML : '\
-        <div class="ui-tab menu-item -menu-tab -inline-block">\
-            <p class="-font-bold"></p>\
+        <div class="ui-tab -inline-block">\
+            <p></p>\
         </div>',
 
     prototype : {
