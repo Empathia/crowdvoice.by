@@ -1,3 +1,4 @@
+/* globals App */
 var Labels = require('./notifications/data-notification-labels');
 var API = require('./../../lib/api');
 var Events = require('./../../lib/events');
@@ -8,7 +9,7 @@ Class(CV, 'UserProfileEditNotificationsTab').inherits(Widget)({
         <div>\
             <div class="-mb5">\
                 <div class="form-field -mb0">\
-                    <label class="-p0">Notify Me</label>\
+                    <label class="cv-items-list" style="padding-top: 0;">Notify Me</label>\
                 </div>\
                 <div data-notify-me-list></div>\
             </div>\
@@ -143,6 +144,8 @@ Class(CV, 'UserProfileEditNotificationsTab').inherits(Widget)({
          * @return undefined
          */
         _displaySuccessAlert : function _displaySuccessAlert(message) {
+            App.getScrollableElement().scrollTop = 0;
+
             if (this._successAlert) {
                 return this._successAlert.update(message);
             }
@@ -161,6 +164,8 @@ Class(CV, 'UserProfileEditNotificationsTab').inherits(Widget)({
          * @return undefined
          */
         _displayErrorAlert : function _displayErrorAlert(message) {
+            App.getScrollableElement().scrollTop = 0;
+
             if (this._errorAlert) {
                 return this._errorAlert.update(message);
             }
