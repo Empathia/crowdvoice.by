@@ -104,10 +104,14 @@ Class(CV, 'UserProfileEditNotificationsTab').inherits(Widget)({
         },
 
         _saveButtonClickHandler : function _saveButtonClickHandler() {
+            this.saveButton.disable();
+
             API.updateNotificationSettings({
                 profileName : Person.get().profileName,
                 data : this._dataPresenter()
             }, function(err, res) {
+                this.saveButton.enable();
+
                 if (err) {
                     return this._displayErrorAlert('There was a problem while trying to update your notification settings.');
                 }
