@@ -67,11 +67,12 @@ module.exports = {
         }
 
         if (type === 'voice') {
-            if (!this.get().ownedVoices.length) {
+            var voices = this.get().voiceIds.concat(this.get().ownedVoices);
+            if (!voices.length) {
                 return false;
             }
 
-            return (this.get().ownedVoices.indexOf(id) !== -1);
+            return (voices.indexOf(id) !== -1);
         }
     },
 
