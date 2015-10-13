@@ -55,7 +55,7 @@ Class(CV.Views, 'MyVoices').includes(NodeSupport, CV.WidgetUtils)({
                 this.tabs.addTab(tab);
             }, this);
 
-            this.tabs.start();
+            this.tabs.addTabIndicator().start();
         }
     }
 });
