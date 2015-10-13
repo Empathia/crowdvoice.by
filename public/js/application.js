@@ -181,6 +181,7 @@ require('./widgets/voice/moderate/VoiceModerateButton');
 require('./widgets/voice/moderate/VoiceModerateManager');
 require('./widgets/voice/moderate/VoiceModerateDoneButton');
 require('./widgets/voice/moderate/VoiceModerateFooter');
+require('./widgets/voice/moderate/VoiceModerateDeleteUnmoderatedPostsDropdown');
 
 require('./widgets/voice/add-content/');
 
