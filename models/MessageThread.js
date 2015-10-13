@@ -278,6 +278,10 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
         })
       });
 
+      // send email to person who received message / invitation / request
+      this.bind('afterCreateMessage', function (msg) {
+      });
+
       this.bind('afterDestroyMessage', function(data) {
         if (thread.isPersonSender(data.personId)) {
           thread.messageCountSender--;
@@ -379,35 +383,95 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
       var message = new Message(params),
         thread = this;
 
-      message.save(function(err, result) {
-        if (err) { return callback(err); }
+      message.save(function (err) {
+        if (err) { return callback(err) }
 
-        // send message to person who received message / invitation / request
+        var receiverEntity,
+          realReceiverEntity,
+          receiverUser
 
-        User.find({ entity_id: params.receiverEntityId }, function (err, user) {
-          if (params.type === 'message') {
-            NotificationMailer.newMessage(user[0], {
-              thread: thread,
-              message: message
-            }, function (err) {
-              callback(err, message);
-            });
-          } else if (params.type.match(/request_(voice|organization)/)) {
-            NotificationMailer.newRequest(user[0], {
-              thread: thread,
-              message: message
-            }, function (err) {
-              callback(err, message);
-            });
-          } else if (params.type.match(/invitation_(voice|organization)/)) {
-            NotificationMailer.newInvitation(user[0], {
-              thread: thread,
-              message: message
-            }, function (err) {
-              callback(err, message);
-            });
-          }
-        });
+        async.series([
+          // get receiver entity, could be org or person
+          function (next) {
+            Entity.findById(message.receiverEntityId, function (err, entity) {
+              if (err) { return next(err) }
+
+              receiverEntity = entity[0]
+
+              return next()
+            })
+          },
+
+          // get real receiver entity, can only be person
+          function (next) {
+            if (receiverEntity.type === 'person') {
+              realReceiverEntity = receiverEntity
+              return next()
+            }
+
+            EntityOwner.find({ owned_id: receiverEntity.id }, function (err, ownership) {
+              if (err) { return next(err) }
+
+              Entity.findById(ownership[0].ownerId, function (err, entity) {
+                if (err) { return next(err) }
+
+                realReceiverEntity = entity[0]
+
+                return next()
+              })
+            })
+          },
+
+          // get user of real receiver entity
+          function (next) {
+            User.find({ entity_id: realReceiverEntity.id }, function (err, user) {
+              if (err) { return next(err) }
+
+              receiverUser = user[0]
+
+              return next()
+            })
+          },
+
+          // send emails
+          function (next) {
+            if (params.type === 'message') {
+
+              NotificationMailer.newMessage({
+                entity: receiverEntity,
+                realEntity: realReceiverEntity,
+                user: receiverUser,
+              }, {
+                thread: thread,
+                message: message
+              }, next);
+
+            } else if (params.type.match(/request_(voice|organization)/)) {
+
+              NotificationMailer.newRequest({
+                entity: receiverEntity,
+                realEntity: realReceiverEntity,
+                user: receiverUser,
+              }, {
+                thread: thread,
+                message: message
+              }, next);
+
+            } else if (params.type.match(/invitation_(voice|organization)/)) {
+
+              NotificationMailer.newInvitation({
+                entity: receiverEntity,
+                realEntity: realReceiverEntity,
+                user: receiverUser,
+              }, {
+                thread: thread,
+                message: message
+              }, next);
+            }
+          },
+        ], function (err) {
+          return callback(err, message)
+        })
       });
     },
 
