@@ -27,8 +27,7 @@ Class(CV, 'SavedPostsManager').inherits(Widget)({
             this.waterfall = new Waterfall({
                 containerElement : this.voicePostsWrapper,
                 columnWidth : 300,
-                gutter : 20,
-                centerItems : true
+                gutter : 20
             });
 
            return this;
