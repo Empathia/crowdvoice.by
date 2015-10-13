@@ -1,6 +1,12 @@
 var Scrapper = require(process.cwd() + '/lib/cvscrapper');
 var sanitizer = require('sanitize-html');
 
+var readability = require('readability-api');
+
+var rParser = new readability.parser();
+
+readability.configure(CONFIG.readability);
+
 var PostsController = Class('PostsController').includes(BlackListFilter)({
   prototype : {
     init : function (config){
@@ -16,14 +22,14 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
     },
 
     show : function show(req, res, next) {
+
       if (req.params.postId === 'edit') { next(); return; }
 
-      var post,
-        voice,
-        entity;
+      var post;
+      var readablePost;
 
       async.series([function(done) {
-        Post.findById(req.params.postId, function(err, result) {
+        Post.findById(hashids.decode(req.params.postId)[0], function(err, result) {
           if (err) {
             return done(err);
           }
@@ -37,64 +43,73 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           done();
         });
       }, function(done) {
-        Voice.findBySlug(req.params.voiceSlug, function(err, result) {
+        if (post.sourceType !== Post.SOURCE_TYPE_LINK && post.sourceService !== Post.SOURCE_SERVICE_LINK) {
+          return done();
+        }
+
+        db('ReadablePosts').where({'post_id' : post.id}).exec(function(err, result) {
           if (err) {
             return done(err);
           }
 
           if (result.length === 0) {
-            return done(new NotFoundError('Voice Not Found'));
+            return done();
           }
 
-          voice = new Voice(result[0]);
+          readablePost = result[0];
 
-          done();
-        })
-      }, function(done) {
-        Entity.find({'profile_name' : req.params.profileName}, function(err, result) {
-          if (err) {
-            return done(err);
-          }
-
-          if (result.length === 0) {
-            return done(new NotFoundError('Entity Not Found'));
-          }
-
-          entity = new Entity(result[0]);
-
-          done();
+          return done();
         });
+      }, function(done) {
+        if (readablePost) {
+          return done();
+        }
+
+        rParser.parse(post.sourceUrl, function(err, parsed) {
+          if (err) {
+            return done(err);
+          }
+
+          db('ReadablePosts')
+          .insert({
+            'post_id' : post.id,
+            data : parsed,
+            created_at : new Date(),
+            updated_at : new Date()
+          })
+          .returning('id').exec(function(err, returning) {
+            if (err) {
+              return done(err);
+            }
+
+            db('ReadablePosts').where({id : returning[0]}).exec(function(err, result) {
+              if (err) {
+                return done(err);
+              }
+
+              readablePost = result[0];
+
+              return done();
+            });
+          });
+        })
       }], function(err) {
         if (err) {
           return next(err)
         }
 
-        ACL.isAllowed('show', 'posts', req.role, {
-          post : post,
-          voice : voice,
-          entity : entity
-        }, function(err, isAllowed) {
-          if (err) {
-            return next(err);
+        res.locals.post = post;
+        res.locals.readablePost = readablePost;
+
+        res.format({
+          json : function() {
+            res.json(post.toJSON());
+          },
+          html : function() {
+            res.render('posts/show', { layout : 'login' });
           }
+        })
 
-          if (!isAllowed) {
-            return next(new ForbiddenError())
-          }
-
-          res.locals.entity = entity.toJSON();
-          res.locals.voice  = voice.toJSON();
-          res.locals.post   = post.toJSON();
-
-          res.format({
-            json : function() {
-              res.json(post.toJSON());
-            },
-            html : function() {
-              res.render('posts/show', {layout : 'application'});
-            }
-          })
-        });
       });
     },
 
