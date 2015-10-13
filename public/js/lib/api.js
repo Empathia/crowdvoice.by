@@ -557,7 +557,8 @@ module.exports = {
             type : 'PUT',
             url : '/' + args.profileName + '/edit/updateNotificationSettings',
             dataType : 'json',
-            data : args.data,
+            contentType : 'application/json',
+            data : JSON.stringify(args.data),
             headers : {'csrf-token' : this.token},
             success : function success(data) {callback(false, data);},
             error : function error(err) {callback(true, err);}
