@@ -16,44 +16,50 @@ var NotificationMailer = Module('NotificationMailer')({
 
   // Send feed notification with email
   notification: function (user, notificationInfo, callback) {
-    var template = new Thulium({ template: notificationViewFile }),
-      message = {
-        html: '',
-        subject: 'CrowdVoice.by - You have a new notification',
-        from_email: 'notifications@crowdvoice.by',
-        from_name: 'CrowdVoice.by',
-        to: [],
-        important: true,
-        auto_text: true,
-        inline_css: true,
-      }
+    Entity.findById(user.entityId, function (err, entity) {
+      if (err) { return callback(err) }
 
-    template.parseSync().renderSync({
-      params: {
-        user: user,
-        notificationInfo: notificationInfo,
-      },
-    })
+      var template = new Thulium({ template: notificationViewFile }),
+        message = {
+          html: '',
+          subject: 'CrowdVoice.by - You have a new notification',
+          from_email: 'notifications@crowdvoice.by',
+          from_name: 'CrowdVoice.by',
+          to: [],
+          important: true,
+          auto_text: true,
+          inline_css: true,
+        }
 
-    var view = template.view
+      template.parseSync().renderSync({
+        params: {
+          receiver: {
+            user: user,
+            entity: entity[0],
+          },
+          notificationInfo: notificationInfo,
+        },
+      })
 
-    message.html = view
-    message.to = [] // reset
+      var view = template.view
 
-    message.to.push({
-      email: user.email,
-      name: user.name,
-      type: 'to',
-    })
+      message.html = view
 
-    client.messages.send({ message: message, async: true }, function (result) {
-      logger.log('NotificationMailer notification():')
-      logger.log(result)
+      message.to.push({
+        email: user.email,
+        name: user.name,
+        type: 'to',
+      })
 
-      return callback(null, result)
-    }, function (err) {
-      logger.err('NotificationMailer notification(): A mandrill error occurred: ' + err.name + ' - ' + err.message)
-      return callback(err)
+      client.messages.send({ message: message, async: true }, function (result) {
+        logger.log('NotificationMailer notification():')
+        logger.log(result)
+
+        return callback(null, result)
+      }, function (err) {
+        logger.err('NotificationMailer notification(): A mandrill error occurred: ' + err.name + ' - ' + err.message)
+        return callback(err)
+      })
     })
   },
 
@@ -139,7 +145,6 @@ var NotificationMailer = Module('NotificationMailer')({
             var view = template.view
 
             message.html = view
-            message.to = [] // reset
 
             message.to.push({
               email: receiver.user.email,
@@ -201,7 +206,6 @@ var NotificationMailer = Module('NotificationMailer')({
           var view = template.view
 
           message.html = view
-          message.to = [] // reset
 
           message.to.push({
             email: receiver.user.email,
@@ -262,7 +266,6 @@ var NotificationMailer = Module('NotificationMailer')({
           var view = template.view
 
           message.html = view
-          message.to = [] // reset
 
           message.to.push({
             email: receiver.user.email,
@@ -322,7 +325,6 @@ var NotificationMailer = Module('NotificationMailer')({
           var view = template.view
 
           message.html = view
-          message.to = [] // reset
 
           message.to.push({
             email: user.email,
@@ -379,7 +381,6 @@ var NotificationMailer = Module('NotificationMailer')({
         var view = template.view
 
         message.html = view
-        message.to = [] // reset
 
         message.to.push({
           email: user.email,
