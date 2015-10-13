@@ -47,6 +47,14 @@ module.exports = {
                 return (organization.id === id);
             }));
         }
+
+        if (type === 'voice') {
+            if (!this.get().ownedVoices.length) {
+                return false;
+            }
+
+            return (this.get().ownedVoices.indexOf(id) !== -1);
+        }
     },
 
     /* Checks if currentPerson is member of a specific organization or a specific voice.
