@@ -522,7 +522,8 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           .where('voice_id', req.activeVoice.id) // correct voice
           .andWhere('approved', false) // unmoderated
           .andWhereRaw("created_at < '" + moment(req.body.olderThanDate).format() + "'") // older than
-          .del(function (err, affectedRows) {
+          .del()
+          .exec(function (err, affectedRows) {
             if (err) { return next(err); }
 
             res.json({
@@ -550,7 +551,8 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
             voice_id: req.activeVoice.id,
             approved: false
           })
-          .del(function (err, affectedRows) {
+          .del()
+          .exec(function (err, affectedRows) {
             if (err) { return next(err); }
 
             res.json({
