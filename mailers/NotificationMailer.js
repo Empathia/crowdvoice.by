@@ -58,8 +58,8 @@ var NotificationMailer = Module('NotificationMailer')({
   },
 
   // Send notification about new message
-  newMessage: function (user, info, callback) {
-    NotificationSetting.find({ entity_id: info.message.receiverEntityId }, function (err, setting) {
+  newMessage: function (receiver, info, callback) {
+    NotificationSetting.find({ entity_id: receiver.entity.id }, function (err, setting) {
       if (err) { return callback(err) }
 
       if (!setting[0].emailSettings.selfNewMessage) {
@@ -75,7 +75,7 @@ var NotificationMailer = Module('NotificationMailer')({
                    [info.message.threadId, info.message.receiverEntityId, 2]], function (err, messages) {
         if (err) { return callback(err); }
 
-        var isSender = new MessageThread(info.thread).isPersonSender(user.entityId)
+        var isSender = new MessageThread(info.thread).isPersonSender(receiver.entity.id)
           isReceiver = !isSender,
           isUnread = false
 
@@ -129,7 +129,7 @@ var NotificationMailer = Module('NotificationMailer')({
 
             template.parseSync().renderSync({
               params: {
-                user: user,
+                receiver: receiver,
                 thread: info.thread,
                 message: info.message,
                 sender: presented[0],
@@ -142,8 +142,8 @@ var NotificationMailer = Module('NotificationMailer')({
             message.to = [] // reset
 
             message.to.push({
-              email: user.email,
-              name: user.name,
+              email: receiver.user.email,
+              name: receiver.user.name,
               type: 'to',
             })
 
@@ -163,8 +163,8 @@ var NotificationMailer = Module('NotificationMailer')({
   },
 
   // Send on new invitation
-  newInvitation: function (user, info, callback) {
-    NotificationSetting.find({ entity_id: user.entityId }, function (err, setting) {
+  newInvitation: function (receiver, info, callback) {
+    NotificationSetting.find({ entity_id: receiver.entity.id }, function (err, setting) {
       if (err) { return callback(err) }
 
       if (!setting[0].emailSettings.selfNewInvitation) {
@@ -191,7 +191,7 @@ var NotificationMailer = Module('NotificationMailer')({
 
           template.parseSync().renderSync({
             params: {
-              user: user,
+              receiver: receiver,
               thread: info.thread,
               message: info.message,
               sender: presented[0],
@@ -204,8 +204,8 @@ var NotificationMailer = Module('NotificationMailer')({
           message.to = [] // reset
 
           message.to.push({
-            email: user.email,
-            name: user.name,
+            email: receiver.user.email,
+            name: receiver.user.name,
             type: 'to',
           })
 
@@ -224,8 +224,8 @@ var NotificationMailer = Module('NotificationMailer')({
   },
 
   // Send on new request
-  newRequest: function (user, info, callback) {
-    NotificationSetting.find({ entity_id: user.entityId }, function (err, setting) {
+  newRequest: function (receiver, info, callback) {
+    NotificationSetting.find({ entity_id: receiver.entity.id }, function (err, setting) {
       if (err) { return callback(err) }
 
       if (!setting[0].emailSettings.selfNewRequest) {
@@ -252,7 +252,7 @@ var NotificationMailer = Module('NotificationMailer')({
 
           template.parseSync().renderSync({
             params: {
-              user: user,
+              receiver: receiver,
               thread: info.thread,
               message: info.message,
               sender: presented[0],
@@ -265,8 +265,8 @@ var NotificationMailer = Module('NotificationMailer')({
           message.to = [] // reset
 
           message.to.push({
-            email: user.email,
-            name: user.name,
+            email: receiver.user.email,
+            name: receiver.user.name,
             type: 'to',
           })
 
