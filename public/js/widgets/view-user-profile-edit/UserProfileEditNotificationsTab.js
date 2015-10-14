@@ -1,3 +1,4 @@
+/* globals App */
 var Labels = require('./notifications/data-notification-labels');
 var API = require('./../../lib/api');
 var Events = require('./../../lib/events');
@@ -8,7 +9,7 @@ Class(CV, 'UserProfileEditNotificationsTab').inherits(Widget)({
         <div>\
             <div class="-mb5">\
                 <div class="form-field -mb0">\
-                    <label class="-p0">Notify Me</label>\
+                    <label class="cv-items-list" style="padding-top: 0;">Notify Me</label>\
                 </div>\
                 <div data-notify-me-list></div>\
             </div>\
@@ -18,6 +19,9 @@ Class(CV, 'UserProfileEditNotificationsTab').inherits(Widget)({
         data : {
             notificationSettings : null
         },
+
+        _errorAlert : null,
+        _successAlert : null,
 
         /* Holds the EditNotificationsNotifyMeItem widget references.
          * @property _notifyMeItems <private> [Object]
@@ -62,6 +66,7 @@ Class(CV, 'UserProfileEditNotificationsTab').inherits(Widget)({
         _bindEvents : function _bindEvents() {
             this._saveButtonClickHandlerRef = this._saveButtonClickHandler.bind(this);
             Events.on(this.saveButton.el, 'click', this._saveButtonClickHandlerRef);
+            return this;
         },
 
         /* Format notifications settings data to handle and display the interface.
@@ -99,13 +104,22 @@ Class(CV, 'UserProfileEditNotificationsTab').inherits(Widget)({
         },
 
         _saveButtonClickHandler : function _saveButtonClickHandler() {
+            this.saveButton.disable();
+
             API.updateNotificationSettings({
                 profileName : Person.get().profileName,
                 data : this._dataPresenter()
             }, function(err, res) {
-                console.log(err);
-                console.log(res);
-            });
+                this.saveButton.enable();
+
+                if (err) {
+                    return this._displayErrorAlert('There was a problem while trying to update your notification settings.');
+                }
+
+                if (res.status === 'updated settings') {
+                    this._displaySuccessAlert('Your notification settings have been updated.');
+                }
+            }.bind(this));
         },
 
         /* Formats the data to be sent to the server to update the notification
@@ -126,6 +140,46 @@ Class(CV, 'UserProfileEditNotificationsTab').inherits(Widget)({
             });
 
             return data;
+        },
+
+        /* Displays a success alert, if already exists it will update the message.
+         * @method _displaySuccessAlert <private> [Function]
+         * @argument message <required> [String] the message to display.
+         * @return undefined
+         */
+        _displaySuccessAlert : function _displaySuccessAlert(message) {
+            App.getScrollableElement().scrollTop = 0;
+
+            if (this._successAlert) {
+                return this._successAlert.update(message);
+            }
+
+            this.appendChild(new CV.Alert({
+                name : '_successAlert',
+                type : 'positive',
+                text : message,
+                className : '-mb1'
+            })).render(this.el, this.el.firstElementChild);
+        },
+
+        /* Displays an error alert, if already exists it will update the message.
+         * @method _displayErrorAlert <private> [Function]
+         * @argument message <required> [String] the message to display.
+         * @return undefined
+         */
+        _displayErrorAlert : function _displayErrorAlert(message) {
+            App.getScrollableElement().scrollTop = 0;
+
+            if (this._errorAlert) {
+                return this._errorAlert.update(message);
+            }
+
+            this.appendChild(new CV.Alert({
+                name : '_errorAlert',
+                type : 'negative',
+                text : message,
+                className : '-mb1'
+            })).render(this.el, this.el.firstElementChild);
         },
 
         destroy : function destroy() {

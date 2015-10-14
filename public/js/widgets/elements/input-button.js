@@ -29,6 +29,8 @@ Class(CV, 'InputButton').inherits(Widget)({
 
         init : function(config){
             Widget.prototype.init.call(this, config);
+            var inputButton = this;
+
             this.el = this.element[0];
             this.resultsElement = this.element.find('.search-results');
 
@@ -59,6 +61,19 @@ Class(CV, 'InputButton').inherits(Widget)({
             if( this.buttonLabel){
                 this.buttonEl.text(this.buttonLabel);
             }
+
+            $(document).keyup(function(e) {
+                 if (e.keyCode == 27) { // escape key maps to keycode `27`
+                    inputButton.reset();
+                }
+            });
+        },
+
+        reset : function reset (){
+            this.disableButton();
+            this.element.find('.search-results').empty();
+            this.element.find('.search-results').hide();
+            this.inputEl.find('input').val('');
         },
 
         getResults : function getResults() {

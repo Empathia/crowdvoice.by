@@ -58,7 +58,44 @@ module.exports = function(req, res, next) {
 
             req.role = 'Anonymous';
 
-            next();
+            async.series([
+              // .ownedOrganizations, always empty
+              function (next) {
+                res.locals.currentPerson.ownedOrganizations = [];
+                req.currentPerson.ownedOrganizations = [];
+
+                return next();
+              },
+
+              // .organizations
+              function (next) {
+                Entity.findById(currentUser.entityId, function (err, currentPerson) {
+                  EntityMembership.find({
+                    member_id: currentPerson[0].id,
+                    is_anonymous: true,
+                  }, function (err, members) {
+                    if (err) { return next(err); }
+
+                    var ids = members.map(function (record) {
+                      return record.entityId;
+                    });
+
+                    Entity.whereIn('id', ids, function (err, organizations) {
+                      if (err) { return next(err); }
+
+                      EntitiesPresenter.build(organizations, null, function (err, presented) {
+                        if (err) { return next(err); }
+
+                        res.locals.currentPerson.organizations = presented;
+                        req.currentPerson.organizations = presented;
+
+                        return next();
+                      });
+                    });
+                  });
+                });
+              },
+            ], next);
           });
         });
       });
@@ -151,29 +188,6 @@ module.exports = function(req, res, next) {
               return done();
             });
 
-          }, function(done) {
-
-            // Get the names of the voices owned and published
-            Voice.find({
-              owner_id: person.id,
-              status: Voice.STATUS_PUBLISHED
-            }, function (err, voices) {
-              if (err) { return done(err); }
-
-              async.map(voices, function (voice, next) {
-                next(null, {
-                  id: hashids.encode(voice.id),
-                  name: voice.title
-                });
-              }, function (err, voiceTitles) {
-                if (err) { return done(err); }
-
-                res.locals.currentPerson.voiceNames = voiceTitles;
-                req.currentPerson.voiceNames = voiceTitles;
-
-                done();
-              });
-            });
           }, function (done) {
             // Get Voices owned directly by user or owned by organizations that
             // user is owner of
@@ -193,6 +207,20 @@ module.exports = function(req, res, next) {
 
                 res.locals.currentPerson.ownedVoices = result;
                 req.currentPerson.ownedVoices = result;
+
+                // add voices {id,name} of organization currentUser owns
+                // to req.locals.currentPerson.voiceNames
+
+                var voiceTitles = voices.map(function(item) {
+                  return {
+                    id : hashids.encode(item.id),
+                    name : item.title
+                  }
+                });
+
+                console.log('VOICES', voiceTitles)
+
+                res.locals.currentPerson.voiceNames = voiceTitles;
 
                 return done();
               });

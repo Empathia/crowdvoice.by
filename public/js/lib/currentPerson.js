@@ -42,10 +42,22 @@ module.exports = {
      * @return [Boolean]
      */
     ownerOf : function ownerOf(type, id) {
+        if (!this.get()) {
+            return false;
+        }
+
         if (type === 'organization') {
             return (this.get().ownedOrganizations.some(function(organization) {
                 return (organization.id === id);
             }));
+        }
+
+        if (type === 'voice') {
+            if (!this.get().ownedVoices.length) {
+                return false;
+            }
+
+            return (this.get().ownedVoices.indexOf(id) !== -1);
         }
     },
 
@@ -67,11 +79,12 @@ module.exports = {
         }
 
         if (type === 'voice') {
-            if (!this.get().ownedVoices.length) {
+            var voices = this.get().voiceIds.concat(this.get().ownedVoices);
+            if (!voices.length) {
                 return false;
             }
 
-            return (this.get().ownedVoices.indexOf(id) !== -1);
+            return (voices.indexOf(id) !== -1);
         }
     },
 

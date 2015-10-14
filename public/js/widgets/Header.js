@@ -41,20 +41,20 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
          * @return undefined
          */
         setup : function setup() {
-          if (!Person.get()) {
-              this._setupVisitor();
-          } else {
-              if (Person.anon()) {
-                  this._setupAnonymous();
-              } else {
-                  this._setupForCurrentPerson();
-              }
-          }
+            if (!Person.get()) {
+                this._setupVisitor();
+            } else {
+                if (Person.anon()) {
+                    this._setupAnonymous();
+                } else {
+                    this._setupForCurrentPerson();
+                }
+            }
 
-          this.appendChild(new CV.SearchButton({
-              name : 'searchButton',
-              className : 'header-actions-button'
-          })).render(this.buttonActionsWrapper);
+            this.appendChild(new CV.SearchButton({
+                name : 'searchButton',
+                className : 'header-actions-button'
+            })).render(this.buttonActionsWrapper);
         },
 
         /* Append the ui for not logged in users

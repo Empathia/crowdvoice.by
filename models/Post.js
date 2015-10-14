@@ -188,6 +188,18 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
                 .resize(340)
                 .stream()
             }
+          },
+          big: function(readStream) {
+            return readStream.pipe(
+              sharp()
+                .resize(2560,1113)
+                .interpolateWith(sharp.interpolator.nohalo)
+                .progressive()
+                .flatten()
+                .background('#FFFFFF')
+                .quality(100)
+                .blur(25)
+            );
           }
         },
         bucket: 'crowdvoice.by',

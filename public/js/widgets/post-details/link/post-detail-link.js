@@ -60,13 +60,15 @@ Class(CV, 'PostDetailLink').inherits(CV.PostDetail)({
         update : function update(data) {
             this.postDetailHeader.update(data);
 
-            if (this._isProtocolCompatible(data.sourceUrl)) {
-                this.iframe.activate().update(data.sourceUrl);
-                this.noncompatible.deactivate();
-            } else {
-                this.noncompatible.activate().update(data.sourceUrl);
-                this.iframe.deactivate().update('');
-            }
+            this.iframe.activate().update(location.pathname + data.id);
+
+            // if (this._isProtocolCompatible(data.sourceUrl)) {
+            //     this.iframe.activate().update(data.sourceUrl);
+            //     this.noncompatible.deactivate();
+            // } else {
+            //     this.noncompatible.activate().update(data.sourceUrl);
+            //     this.iframe.deactivate().update('');
+            // }
         },
 
         updatedPosts : function updatedPosts() {

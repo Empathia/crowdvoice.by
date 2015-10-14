@@ -214,6 +214,40 @@ module.exports = {
         });
      },
 
+     /* Saves new article to voice.
+     * @argument args.userSlug <required> [String] the voice owner profileName
+     * @argument args.voiceSlug <required> [String] the voice slug
+     * @argument args.articleTitle <required> [String] the article title
+     * @argument args.articleContent <required> [String] article html content
+     * @argument callback <required> [Function]
+     */
+     voiceNewArticle : function voiceNewArticle(args, callback) {
+        if (!args.userSlug || !args.voiceSlug || !args.articleTitle || !args.articleContent || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        var postData = {
+          title: args.articleTitle,
+          content: args.articleContent,
+          publishedAt: args.articleDate,
+          imagePath : args.articleImage
+        }
+
+        $.ajax({
+            type : 'POST',
+            url : '/' + args.userSlug + '/' + args.voiceSlug +'/saveArticle',
+            headers : {'csrf-token' : this.token},
+            cache : false,
+            data : postData,
+            dataType : 'json',
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); },
+        });
+    },
     /* Invite user to become contributor of voice.
      * @argument args.profileName <required> [String] the voice owner profileName
      * @argument args.voiceSlug <required> [String] the voice slug
@@ -286,6 +320,63 @@ module.exports = {
         $.ajax({
             type : 'POST',
             url : '/' + args.profileName + '/' + args.voiceSlug + '/upload',
+            headers : {'csrf-token' : this.token},
+            data : args.data,
+            cache : false,
+            contentType : false,
+            processData : false,
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
+    },
+    /* Upload a photo to be added into a specific article.
+     * @argument args.profileName <required> [String] the voice owner profileName
+     * @argument args.voiceSlug <required> [String] the voice slug
+     * @argument args.data <required> [FormData] the image as FormData
+     * @argument callback <required> [Function]
+     */
+    uploadArticleImage : function uploadArticleImage(args, callback) {
+        if (!args.profileName || !args.voiceSlug || !args.data || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+
+        $.ajax({
+            type : 'POST',
+            url : '/' + args.profileName + '/' + args.voiceSlug + '/uploadPostImage',
+            headers : {'csrf-token' : this.token},
+            data : args.data,
+            cache : false,
+            contentType : false,
+            processData : false,
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
+    },
+
+    /* Upload a photo to be added into a specific article.
+     * @argument args.profileName <required> [String] the voice owner profileName
+     * @argument args.voiceSlug <required> [String] the voice slug
+     * @argument args.data <required> [FormData] the image as FormData
+     * @argument callback <required> [Function]
+     */
+    uploadArticleImage : function uploadArticleImage(args, callback) {
+        if (!args.profileName || !args.voiceSlug || !args.data || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+
+        $.ajax({
+            type : 'POST',
+            url : '/' + args.profileName + '/' + args.voiceSlug + '/uploadPostImage',
             headers : {'csrf-token' : this.token},
             data : args.data,
             cache : false,
@@ -447,7 +538,56 @@ module.exports = {
         });
     },
 
-    /* Search for Posts in Sources
+    /* Deletes all posts that have not yet been moderated,
+     * i.e. a approved = false in the DB, older than the provided Date string,
+     * i.e. created_at < provided date in the DB.
+     * @argument args.profileName <required> [String] the voice owner profileName
+     * @argument args.voiceSlug <required> [String] the voice slug
+     * @argument args.olderThanDate <required> [Date String]
+     */
+    deletePostsOlderThan : function deletePostsOlderThan(args, callback) {
+        if (!args.profileName || !args.voiceSlug || !args.data.olderThanDate || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            method : 'POST',
+            url : '/' + args.profileName + '/' + args.voiceSlug + '/moderate/deleteOlderThan?_method=DELETE',
+            headers : {'csrf-token': this.token},
+            data : args.data,
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
+    },
+
+    /* Deletes all posts that have not yet been moderated, i.e. a approved = false in the DB.
+     * @argument args.profileName <required> [String] the voice owner profileName
+     * @argument args.voiceSlug <required> [String] the voice slug
+     */
+    deleteAllUnmoderatedPosts : function deleteAllUnmoderatedPosts(args, callback) {
+        if (!args.profileName || !args.voiceSlug || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            method : 'POST',
+            url : '/' + args.profileName + '/' + args.voiceSlug + '/moderate/deleteAllUnmoderated?_method=DELETE',
+            headers : {'csrf-token': this.token},
+            data : args.data,
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
+    },
+
+   /* Search for Posts in Sources
      * @argument args.profileName <required> [String] the voice owner profileName
      * @argument args.voiceSlug <required> [String] the voice slug
      * @argument args.source <required> [String] the source to search on ['googleNews', 'youtube']
@@ -557,7 +697,8 @@ module.exports = {
             type : 'PUT',
             url : '/' + args.profileName + '/edit/updateNotificationSettings',
             dataType : 'json',
-            data : args.data,
+            contentType : 'application/json',
+            data : JSON.stringify(args.data),
             headers : {'csrf-token' : this.token},
             success : function success(data) {callback(false, data);},
             error : function error(err) {callback(true, err);}

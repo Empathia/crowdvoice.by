@@ -12,6 +12,7 @@ Class(CV, 'App').includes(NodeSupport)({
         notifications : null,
 
         _socket : null,
+        _scrollableElement : null,
 
         /* Updates currentPerson Registry
          * Fetch Topics and updates the Topics Registry
@@ -40,12 +41,14 @@ Class(CV, 'App').includes(NodeSupport)({
 
             this.header.setup();
 
+            this._scrollableElement = document.querySelector('.yield');
+
             //************* tmp generator **********************
 
             //var feedGen = new CV.feedGenerator({
             //    type : 'feed app'
             //});
-//
+
             //feedGen.bind('ready', function(){
             //    new CV.NotificationsManager({
             //        notifications : feedGen.feedItems
@@ -90,6 +93,15 @@ Class(CV, 'App').includes(NodeSupport)({
         addInteractiveSidebar : function addInteractiveSidebar() {
             this.sidebar.enableInteraction();
             return this;
+        },
+
+        /* Returns the scrollable element for the main content.
+         * This method can be useful to get properties or run methods for the
+         * scrollable area. ex. scrollTop = 0, after showing an alert message.
+         * @method getScrollableElement <public> [Function]
+         */
+        getScrollableElement : function getScrollableElement() {
+            return this._scrollableElement;
         },
 
         /* Display the CreateVoiceModal.

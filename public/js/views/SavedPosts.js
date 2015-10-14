@@ -15,8 +15,8 @@ Class(CV, 'SavedPosts').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport
 
         _addManager : function _addManager() {
             this.container.insertAdjacentHTML('afterbegin', '\
-                <div class="saved-posts-intro">\
-                    <h1 class="-font-bold -m0">Saved Posts</h1>\
+                <div class="page-heading">\
+                    <h1 class="page-heading__title -m0">Saved Posts</h1>\
                 </div>');
 
             this.appendChild(new CV.SavedPostsManager({

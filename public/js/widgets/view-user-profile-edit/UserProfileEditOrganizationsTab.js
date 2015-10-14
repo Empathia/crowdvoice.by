@@ -44,8 +44,14 @@ Class(CV, 'UserProfileEditOrganizationsTab').inherits(Widget)({
         _setup : function _setup() {
             this._updateLabel();
 
-            this.appendChild(new CV.PopoverLeave({
-                name : 'leavePopover'
+            this.appendChild(new CV.PopoverConfirm({
+                name : 'leavePopover',
+                data : {
+                    confirm : {
+                        label : 'Leave',
+                        className : '-color-negative'
+                    }
+                }
             }));
 
             this.appendChild(new CV.PopoverBlocker({
@@ -83,7 +89,7 @@ Class(CV, 'UserProfileEditOrganizationsTab').inherits(Widget)({
             this._leaveOrganizationIntentRef = this._leaveOrganizationIntent.bind(this);
             this.bind(this.constructor.LEAVE_ORGANIZATION_EVENT_NAME, this._leaveOrganizationIntentRef);
 
-            this.leavePopover.bind('leave', this._popOverLeaveClickHandler.bind(this));
+            this.leavePopover.bind('confirm', this._popOverLeaveClickHandler.bind(this));
             this.leavePopover.bind('cancel', this._popOverCancelClickHandler.bind(this));
 
             return this;
