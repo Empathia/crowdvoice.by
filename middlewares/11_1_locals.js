@@ -74,7 +74,7 @@ module.exports = function(req, res, next) {
                     member_id: currentPerson[0].id,
                     is_anonymous: true,
                   }, function (err, members) {
-                    if (err) { console.log(err); return next(err); }
+                    if (err) { return next(err); }
 
                     var ids = members.map(function (record) {
                       return record.entityId;
