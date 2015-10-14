@@ -1,3 +1,4 @@
+/* globals App */
 var API = require('../../../lib/api');
 var Events = require('../../../lib/events');
 
@@ -80,6 +81,7 @@ Class(CV, 'PostCreatorUploadFile').inherits(CV.PostCreator)({
          */
         _handlePostButtonClick : function _handlePostButtonClick() {
             var postEditedData = this._previewPostWidget.getEditedData();
+            this._disablePostButton();
 
             API.postCreate({
                 profileName : App.Voice.data.owner.profileName,
@@ -190,7 +192,9 @@ Class(CV, 'PostCreatorUploadFile').inherits(CV.PostCreator)({
         },
 
         /* Sets the widget state as image uploaded.
+         * Creates a new EditablePost widget using the data passed.
          * @method _statusImageUploaded <private> [Function]
+         * @return PostCreatorUploadFile
          */
         _statusImageUploaded : function statusImageUploaded(postData) {
             this.headerStatus.uploadedImage();
@@ -198,7 +202,7 @@ Class(CV, 'PostCreatorUploadFile').inherits(CV.PostCreator)({
             this.uploadingTemplate.deactivate();
 
             if (this._previewPostWidget) {
-                this._previewPostWidget.unedit().destroy();
+                this._previewPostWidget = this._previewPostWidget.unedit().destroy();
             }
 
             postData.name = '_previewPostWidget';

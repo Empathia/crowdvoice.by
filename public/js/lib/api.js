@@ -358,6 +358,35 @@ module.exports = {
         });
     },
 
+    /* Upload a photo to be added into a specific article.
+     * @argument args.profileName <required> [String] the voice owner profileName
+     * @argument args.voiceSlug <required> [String] the voice slug
+     * @argument args.data <required> [FormData] the image as FormData
+     * @argument callback <required> [Function]
+     */
+    uploadArticleImage : function uploadArticleImage(args, callback) {
+        if (!args.profileName || !args.voiceSlug || !args.data || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+
+        $.ajax({
+            type : 'POST',
+            url : '/' + args.profileName + '/' + args.voiceSlug + '/uploadPostImage',
+            headers : {'csrf-token' : this.token},
+            data : args.data,
+            cache : false,
+            contentType : false,
+            processData : false,
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
+    },
+
     /* Creates a Post on the current Voice.
      * @argument args.profileName <required> [String] the voice owner profileName
      * @argument args.voiceSlug <required> [String] the voice slug

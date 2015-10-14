@@ -37,7 +37,6 @@ Class(CV, 'VoiceModerateFooter').inherits(Widget).includes(CV.WidgetUtils)({
             this.dom.updateText(this.totalPostsElement, this.totalPosts);
 
             if (Person.get() && Person.ownerOf('voice', App.Voice.data.id)) {
-                console.log('render dropdown');
                 this.appendChild(new CV.VoiceModerateDeleteUnmoderatedPostsDropdown({
                     name : 'deleteDropdown',
                     className : '-inline-block -ml1',
@@ -77,5 +76,3 @@ Class(CV, 'VoiceModerateFooter').inherits(Widget).includes(CV.WidgetUtils)({
         }
     }
 });
-
-
