@@ -194,7 +194,7 @@ require('./widgets/voice/contributors/ManageContributors');
 require('./widgets/voice/contributors/ManageContributorsList');
 
 // popovers
-require('./widgets/popovers/PopoverLeave');
+require('./widgets/popovers/PopoverConfirm');
 require('./widgets/popovers/unsave');
 require('./widgets/popovers/share');
 

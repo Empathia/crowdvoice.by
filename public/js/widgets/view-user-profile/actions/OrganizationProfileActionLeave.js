@@ -32,8 +32,14 @@ Class(CV, 'OrganizationProfileActionLeave').inherits(Widget)({
                 name : 'spinner'
             })).render(this.spinnerWrapper);
 
-            this.appendChild(new CV.PopoverLeave({
-                name : 'leavePopover'
+            this.appendChild(new CV.PopoverConfirm({
+                name : 'leavePopover',
+                data : {
+                    confirm : {
+                        label : 'Leave',
+                        className : '-color-negative'
+                    }
+                }
             }));
 
             this.appendChild(new CV.PopoverBlocker({
@@ -50,7 +56,7 @@ Class(CV, 'OrganizationProfileActionLeave').inherits(Widget)({
             this._clickHandlerRef = this._clickHandler.bind(this);
             Events.on(this.leaveButton, 'click', this._clickHandlerRef);
 
-            this.leavePopover.bind('leave', this._leaveHandlerRef.bind(this));
+            this.leavePopover.bind('confirm', this._leaveHandlerRef.bind(this));
             this.leavePopover.bind('cancel', this._cancelHandlerRef.bind(this));
             return this;
         },
