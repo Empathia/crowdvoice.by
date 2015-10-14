@@ -58,6 +58,24 @@ Class(CV, 'VoiceModerateDeleteUnmoderatedPostsDropdown').inherits(Widget)({
                 className : 'moderate-dropdown-delete-all-option ui-vertical-list-item -block'
             })).element[0]);
             this.deleteAll.element.text('All unmoderated posts');
+            this.deleteAll.element[0].setAttribute('data-delete-all', true);
+
+            this.appendChild(new CV.PopoverConfirm({
+                name : 'confirmPopover',
+                data : {
+                    confirm : {
+                        label : 'Delete Posts',
+                        className : '-color-negative'
+                    }
+                }
+            }));
+
+            this.appendChild(new CV.PopoverBlocker({
+                name : 'popover',
+                className : 'unfollow-popover',
+                placement : 'top-left',
+                content : this.confirmPopover.el
+            }));
 
             return this;
         },
@@ -67,15 +85,62 @@ Class(CV, 'VoiceModerateDeleteUnmoderatedPostsDropdown').inherits(Widget)({
             this._options.forEach(function(option) {
                 option.element.on('click', this._clickHandlerRef);
             }, this);
+            this.deleteAll.element.on('click', this._clickHandlerRef);
 
-            this._deleteAllClickHandlerRef = this._deleteAllClickHandler.bind(this);
-            this.deleteAll.element.on('click', this._deleteAllClickHandlerRef);
+            this._popOverConfirmClickHandlerRef = this._popOverConfirmClickHandler.bind(this);
+            this.confirmPopover.bind('confirm', this._popOverConfirmClickHandlerRef);
+
+            this._popOverCancelClickHandlerRef = this._popOverCancelClickHandler.bind(this);
+            this.confirmPopover.bind('cancel', this._popOverCancelClickHandlerRef);
+
             return this;
         },
 
+        /* Handles the click event on the dropdown items.
+         * @method _clickHandler <private> [Function]
+         * @return undefined
+         */
         _clickHandler : function _clickHandler(ev) {
-            var subtractNumber = ~~ev.target.getAttribute('data-subtract-number');
-            var subtractString = ev.target.getAttribute('data-subtract-string');
+            ev.stopPropagation();
+            this._currentOptionToExecute = ev.target;
+            this.popover.render(ev.target).activate();
+        },
+
+        /* Handles the popover 'cancel' custom event.
+         * Just close the popover.
+         * @method _popOverCancelClickHandler <private> [Function]
+         * @return undefined
+         */
+        _popOverCancelClickHandler : function _popOverCancelClickHandler(ev) {
+            ev.stopPropagation();
+            this.popover.deactivate();
+        },
+
+        /* Handles the popover 'confirm' custom event.
+         * Checks which server request should be made based on this._currentOptionToExecute
+         * dataset.
+         * @method _popOverConfirmClickHandler <private> [Function]
+         * @return undefined
+         */
+        _popOverConfirmClickHandler : function _popOverConfirmClickHandler(ev) {
+            ev.stopPropagation();
+            this.popover.deactivate();
+            this.dropdown.deactivate();
+
+            if (this._currentOptionToExecute.getAttribute('data-delete-all')) {
+                return this._deleteAllRequest();
+            }
+
+            return this._deleteOlderThanRequest(this._currentOptionToExecute);
+        },
+
+        /* Deletes all unmoderated posts olther than.
+         * @method _deleteOlderThanRequest <private> [Function]
+         * @return undefined
+         */
+        _deleteOlderThanRequest : function _deleteOlderThanRequest(element) {
+            var subtractNumber = ~~element.getAttribute('data-subtract-number');
+            var subtractString = element.getAttribute('data-subtract-string');
             var olderThanDate = moment().subtract(subtractNumber, subtractString);
 
             API.deletePostsOlderThan({
@@ -99,7 +164,11 @@ Class(CV, 'VoiceModerateDeleteUnmoderatedPostsDropdown').inherits(Widget)({
             }.bind(this));
         },
 
-        _deleteAllClickHandler : function _deleteAllClickHandler() {
+        /* Deletes all the unmoderated posts.
+         * @method _deleteAllRequest <private>
+         * @return undefined
+         */
+        _deleteAllRequest : function _deleteAllRequest() {
             API.deleteAllUnmoderatedPosts({
                 profileName : App.Voice.data.owner.profileName,
                 voiceSlug : App.Voice.data.slug
@@ -161,18 +230,14 @@ Class(CV, 'VoiceModerateDeleteUnmoderatedPostsDropdown').inherits(Widget)({
         },
 
         destroy : function destroy() {
-            Widget.prototype.destroy.call(this);
-
             this._options.forEach(function(option) {
                 option.element.off('click', this._clickHandlerRef);
             }, this);
+            this.deleteAll.element.off('click', this._clickHandlerRef);
             this._clickHandlerRef = null;
 
-            this.deleteAll.element.off('click', this._deleteAllClickHandlerRef);
-            this._deleteAllClickHandlerRef = null;
-
+            Widget.prototype.destroy.call(this);
             return null;
-
         }
     }
 });
