@@ -82,6 +82,21 @@ Class(CV, 'TabsManager').includes(NodeSupport, CustomEventSupport)({
             }
         },
 
+        /* Adds the interactive tab indicator which updates its position when a
+         * tab gets activated.
+         * @method addTabIndicator <public> [Function]
+         * @return TabsManager
+         */
+        addTabIndicator : function addTabIndicator() {
+            if (typeof this.tabIndicator === 'undefined') {
+                this.appendChild(new CV.TabIndicator({
+                    name : 'tabIndicator'
+                })).render(this.nav);
+            }
+
+            return this;
+        },
+
         /* Listener of CV.Tab beforeActivate.
          * Updates the hash of useHash is truthy.
          * Deactivate the other children tabs.
@@ -97,6 +112,10 @@ Class(CV, 'TabsManager').includes(NodeSupport, CustomEventSupport)({
                     child.deactivate();
                 }
             });
+
+            if (this.tabIndicator) {
+                this.tabIndicator.update(ev.target.nav.el);
+            }
         }
     }
 });

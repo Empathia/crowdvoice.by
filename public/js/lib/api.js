@@ -447,7 +447,56 @@ module.exports = {
         });
     },
 
-    /* Search for Posts in Sources
+    /* Deletes all posts that have not yet been moderated,
+     * i.e. a approved = false in the DB, older than the provided Date string,
+     * i.e. created_at < provided date in the DB.
+     * @argument args.profileName <required> [String] the voice owner profileName
+     * @argument args.voiceSlug <required> [String] the voice slug
+     * @argument args.olderThanDate <required> [Date String]
+     */
+    deletePostsOlderThan : function deletePostsOlderThan(args, callback) {
+        if (!args.profileName || !args.voiceSlug || !args.data.olderThanDate || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            method : 'POST',
+            url : '/' + args.profileName + '/' + args.voiceSlug + '/moderate/deleteOlderThan?_method=DELETE',
+            headers : {'csrf-token': this.token},
+            data : args.data,
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
+    },
+
+    /* Deletes all posts that have not yet been moderated, i.e. a approved = false in the DB.
+     * @argument args.profileName <required> [String] the voice owner profileName
+     * @argument args.voiceSlug <required> [String] the voice slug
+     */
+    deleteAllUnmoderatedPosts : function deleteAllUnmoderatedPosts(args, callback) {
+        if (!args.profileName || !args.voiceSlug || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            method : 'POST',
+            url : '/' + args.profileName + '/' + args.voiceSlug + '/moderate/deleteAllUnmoderated?_method=DELETE',
+            headers : {'csrf-token': this.token},
+            data : args.data,
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
+    },
+
+   /* Search for Posts in Sources
      * @argument args.profileName <required> [String] the voice owner profileName
      * @argument args.voiceSlug <required> [String] the voice slug
      * @argument args.source <required> [String] the source to search on ['googleNews', 'youtube']
@@ -536,6 +585,32 @@ module.exports = {
             data : data,
             success : function success(data) { callback(false, data); },
             error : function error(err) { callback(true, err); }
+        });
+    },
+
+    /* Update notification settings.
+     * @argument args.profileName <required> [String] the entity profileName
+     * @argument args.data.webSettings <required> [String]
+     * @argument args.data.emailSettings <required> [String]
+     */
+    updateNotificationSettings : function updateNotificationSettings(args, callback) {
+        if (!args.profileName || (!args.data.webSettings && !args.data.emailSettings) || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'PUT',
+            url : '/' + args.profileName + '/edit/updateNotificationSettings',
+            dataType : 'json',
+            contentType : 'application/json',
+            data : JSON.stringify(args.data),
+            headers : {'csrf-token' : this.token},
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
         });
     },
 

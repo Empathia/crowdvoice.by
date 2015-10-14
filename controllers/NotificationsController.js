@@ -127,9 +127,9 @@ var NotificationsController = Class('NotificationsController')({
           NotificationSetting.find({ entity_id: entity[0].id }, function (err, setting) {
             if (err) { return next(err) }
 
-            var newSetting = new NotificationSetting(setting[0])
-            newSetting.webSettings = _.extend(setting[0].webSettings, req.body.webSettings)
-            newSetting.emailSettings = _.extend(setting[0].emailSettings, req.body.emailSettings)
+             var newSetting = new NotificationSetting(setting[0])
+            _.extend(newSetting.webSettings, req.body.webSettings)
+            _.extend(newSetting.emailSettings, req.body.emailSettings)
 
             newSetting.save(function (err) {
               if (err) { return next(err) }
