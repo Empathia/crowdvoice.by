@@ -2,7 +2,22 @@
  *  inner pages
  * =========================================================================== */
 body.page-inner .cv-main-header .cv-main-logo-type {
-  padding-left: 1.5rem;
+  padding-left: 32px;
+  transform: translateX(0);
+  transition: transform 300ms ease-in-out;
+  will-change: transform;
+}
+.app-wrapper.-is-paused .cv-main-header .cv-main-logo-type {
+  transform: translateX(-28px);
+}
+
+body.page-inner .cv-main-sidebar .cv-main-logo-type {
+  transform: translateX(28px);
+  transition: transform 300ms ease-in-out;
+  will-change: transform;
+}
+body.page-inner .cv-main-sidebar.-is-expanded .cv-main-logo-type {
+  transform: translateX(0);
 }
 
 /* =========================================================================== *
@@ -13,7 +28,8 @@ body.page-voice .cv-main-header {
   transition: transform 200ms @ease;
 
   &.hide {
-    transform: translateY(-@cv-header-height) translateZ(0) !important;
+    transform: translateY(-@cv-header-height) translateZ(0);
+    .voice-footer {background-color: @color-white}
   }
 }
 

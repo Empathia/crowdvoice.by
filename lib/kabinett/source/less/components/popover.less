@@ -40,6 +40,12 @@
     margin-left: unit(-@popover-arrow-size, px);
   }
 
+  /* top-left */
+  &@{-}top-left @{ns}-popover__arrow {
+    top: 100%;
+    left: 20px;
+  }
+
   /* top-right */
   &@{-}top-right @{ns}-popover__arrow {
     top: 100%;
@@ -47,7 +53,8 @@
   }
 
   &@{-}top @{ns}-popover__arrow,
-  &@{-}top-right @{ns}-popover__arrow {
+  &@{-}top-right @{ns}-popover__arrow,
+  &@{-}top-left @{ns}-popover__arrow {
     &::before {border-top-color: inherit}
     &::after {
       margin-top: -1px;
@@ -172,6 +179,12 @@
       left: 50%;
       bottom: 100%;
       transform: translate(-50%, -15px);
+    }
+
+    &@{-}top-left {
+      left: 0;
+      bottom: 100%;
+      transform: translate(5px,-15px);
     }
 
     &@{-}top-right {

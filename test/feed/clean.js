@@ -2,7 +2,7 @@ require('neonode-core')
 
 // assuming you already ran `knex migrate:latest` (ran by test command in package.json)
 // ATM we only need in the DB the entity followers and the voice followers, since
-// these are the ones that are required (because _createEntity looks for followers that way)
+// these are the ones that are required (because _createRecord looks for followers that way)
 
 var entityFollowers = [
     {

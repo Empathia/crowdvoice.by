@@ -3,6 +3,9 @@
 
 </div>
 
+<div class="invite-users">
+</div>
+<br class="-clear-after">
 <div class="admin-users-list" id="pos-container" >
 
 	<% featuredEntities.forEach(function(featuredEntity){ %>
@@ -16,12 +19,14 @@
 
 					<div class="admin-info">
 						<article role="article" class="card-mini has-meta">
-							<a href="/<%= entity.profileName %>" class="-float-left" data-author-anchor="" title="">
+							<a href="/<%= entity.profileName %>" class="-float-left entity-image" data-author-anchor="" title="">
 								<img class="card-mini-avatar -rounded" alt="avatar image" width="36" height="36" src="<%= entity.images.small.url %>">
 							</a>
 							<div class="card-mini-info">
 								<div>
-									<a href="/<%= entity.profileName %>" class="card-mini-fullname -font-semi-bold -tdn" data-author-anchor="" title="profile"><%= entity.name %> <% if (entity.lastname){ %><%= entity.lastname %><% } %></a>
+									<a href="/<%= entity.profileName %>" class="card-mini-fullname -font-semi-bold -tdn" data-author-anchor="" title="profile">
+										<%= entity.name %> <% if (entity.lastname){ %><%= entity.lastname %><% } %>
+									</a>
 									<p class="card-mini-username"> · @<%= entity.profileName %></p>
 								</div>
 								<div class="card-info-meta">
@@ -34,12 +39,12 @@
 
 					<div class="admin-actions">
 
-						<a href="/<%= entity.profileName %>" target="_blank"><button class="cv-button small">Reorder</button></a>
+						<a href="#" target="_blank"><button class="cv-button action-profile drag-reorder small">Reorder</button></a>
 						<a >
 
 							<form class="form-profile" action="/admin/featured/<%= entityType %>/<%= entity.id %>?_method=DELETE" method="POST" enctype="multipart/form-data">
 	      						<input type="hidden" name="_csrf" value="<%= csrfToken %>">
-	      						<input type="hidden" name="entityId" value="<%= entity.id %>">
+	      						<input type="hidden" name="entityId" class="entityId" value="<%= entity.id %>">
 								<button class="cv-button small">Remove from featured</button>
 							</form>
 
@@ -59,6 +64,154 @@
 </div>
 
 <script>
+
+	var selectedUser;
+  	var alertInvite = null;
+
+	var searchInput = new CV.InputButton({
+		style     : 'primary',
+		placeholder : 'Search users...',
+		title     : "Invite users to join this organization",
+		buttonLabel : "Invite"
+	}).render($('.invite-users'));
+	searchInput.disableButton();
+
+	var personElBase = $('<div class="person" id=""></div>');
+
+	searchInput.inputEl.find('input').on('keyup', function(e){
+
+		if (e.keyCode == 27) {
+			searchInput.reset();
+		}
+
+	    var searchStr = $(this).val().toLowerCase();
+	    var inputSearch = $(this);
+
+	    if (searchStr == ""){
+	      searchInput.element.find('.search-results').hide();
+	      return false;
+	    }
+
+	    $.ajax({
+	      type: "POST",
+	      url:'/admin/featured/' + entityType + '/search',
+	      headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
+	      data : {query : searchStr},
+	      success: function(data) {
+	      	console.log(data);
+	        if (data[entityType].length > 0){
+
+	          searchInput.element.find('.search-results').show();
+	          showUsers(data[entityType]);
+
+	        } else {
+
+	          searchInput.element.find('.search-results').hide();
+	          if ( inputSearch.val() != "" ){
+	            searchInput.disableButton();
+	          }
+
+	        }
+          }
+	    });
+
+	});
+
+	searchInput.buttonEl.on('click', function(){
+
+		$.ajax({
+			type: "POST",
+            url : '/admin/featured/' + entityType + '/new',
+			headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
+			data : {
+				entityId : selectedUser.id
+			},
+		  	success : function success(data) {
+
+			    console.log('success');
+			    var newEnt = $('.admin-user:first-child').clone();
+
+			    newEnt.appendTo($('.admin-users-list'));
+
+			    var eName = selectedUser.name;
+			    if(selectedUser.lastname){
+			    	eName = eName + " " + selectedUser.lastname;
+			    }
+
+			    newEnt.attr('id', selectedUser.id);
+
+			    newEnt.find('.entity-image').attr('href', '/'+selectedUser.profileName);
+			    newEnt.find('.entity-image img').attr('src', '/uploads/development/entity_' + selectedUser.id + '/image_small.jpeg');
+			    newEnt.find('.admin-actions form').attr('action', '/admin/featured/<%= entityType %>/' + selectedUser.id + '?_method=DELETE');
+			    newEnt.find('.admin-actions form .entityId').val(selectedUser.id);
+			    newEnt.find('.card-mini-fullname').text(eName);
+			    newEnt.find('.card-mini-fullname').attr('href', '/'+selectedUser.profileName);
+			    newEnt.find('.card-mini-username').text(' · @' + selectedUser.profileName);
+			    newEnt.find('.location').text(selectedUser.location + ' · ');
+			    newEnt.find('.joined-at').text('Joined on'+  moment(selectedUser.createdAt).format('MMM, YYYY') );
+
+			    console.log('featured entity added');
+
+			    reorder();
+
+			},
+			error : function error(err) {
+			    console.log(err);
+			}
+		});
+
+	});
+
+
+	function showUsers(persons){
+
+	    searchInput.element.find('.search-results').empty();
+	    console.log(persons);
+
+		var entityIds = getFeaturedIds();
+
+	    persons.forEach(function(person){
+
+	    	//var fruits = ["Banana", "Orange", "Apple", "Mango"];
+			//var a = fruits.indexOf("Apple");
+
+			console.log(entityIds.indexOf(person.id));
+
+			if(entityIds.indexOf(person.id) != -1){
+				return false;
+			}
+
+	      	var personEl = personElBase.clone();
+	      	personEl.attr('id', person.id);
+
+	      	if(person.lastname){
+	      		personEl.text(person.name + ' ' + person.lastname);
+	  		}else{
+	  			personEl.text(person.name);
+	  		}
+
+	     	personEl.on('click', function(){
+	        	setSelectedUser(person);
+	      	});
+
+	      	searchInput.element.find('.search-results').append(personEl);
+
+	    });
+
+	}
+
+	function setSelectedUser(person){
+		console.log(person);
+		searchInput.enableButton();
+		selectedUser = person;
+		searchInput.inputEl.find('input').val( searchInput.element.find('.search-results').find('#'+selectedUser.id).text() );
+		searchInput.element.find('.search-results').empty();
+		searchInput.element.find('.search-results').hide();
+	}
+
+
+	//*******************************
+
 	var featuredEntities = <%= JSON.stringify(featuredEntities) %>;
 
 	var entityType = <%= JSON.stringify(entityType) %>;
@@ -82,37 +235,29 @@
 	}
 
 	dragula([document.querySelector('.admin-users-list')])
-	.on('drag', function (el) {
-	    el.querySelector('.admin-actions').style.display = "none";
-	 })
-	.on('drop', function (el) {
+		.on('drag', function (el) {
+		    el.querySelector('.admin-actions').style.display = "none";
+		 })
+		.on('drop', function (el) {
+		    el.querySelector('.admin-actions').style.display = "inherit";
+			reorder();
+	 	 });
 
-		var nodes = document.querySelectorAll('.admin-user:not(.gu-mirror)');
-		var entityIds = [];
+	function reorder(){
+	 	console.log('reorder f()');
 
-		//console.log(nodes);
-
-		Array.prototype.forEach.call(nodes, function( node ){
-			entityIds.push(node.id);
-
-		});
-
-		reorder(entityIds);
+		var entityIds = getFeaturedIds();
 		console.log(entityIds);
-
-
- 	 });
-
-	 function reorder(ids){
 
 	 	$.ajax({
             type : 'POST',
             url : '/admin/featured/' + entityType + '/updatePositions',
             headers : {'csrf-token' : $('meta[name="csrf-token"]').attr('content')},
-            data : {entityIds : ids},
+            data : {entityIds : entityIds},
             dataType : 'json',
             success : function success(data) {
-                console.log('success');
+
+                console.log('reorder success');
             },
             error : function error(err) {
                 console.log('error');
@@ -120,7 +265,18 @@
             }
         });
 
-	 }
+	}
+
+	function getFeaturedIds () {
+		var nodes = document.querySelectorAll('.admin-user:not(.gu-mirror)');
+		var entityIds = [];
+
+		Array.prototype.forEach.call(nodes, function( node ){
+			entityIds.push(node.id);
+		});
+
+		return entityIds;
+	}
 
 </script>
 

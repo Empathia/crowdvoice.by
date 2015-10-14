@@ -31,7 +31,7 @@ window.CV = {UI: {}, Views: {}};
 require('./lib/widget-utils.js');
 require('./lib/Widget.js');
 require('./lib/image-halt');
-require('./lib/responsive-width');
+require('./lib/ResponsiveWidth');
 require('./app');
 
 // Global Widgets
@@ -39,6 +39,7 @@ require('./widgets/ui/Modal');
 require('./widgets/ui/Input');
 require('./widgets/ui/Button');
 require('./widgets/ui/Checkbox');
+require('./widgets/ui/Radio');
 require('./widgets/ui/Close');
 require('./widgets/ui/InputButton');
 require('./widgets/ui/InputButtonResults');
@@ -78,7 +79,8 @@ require('./widgets/incognito/button');
 require('./widgets/loader');
 
 // generic widgets
-require('./widgets/Popover.js');
+require('./widgets/EmptyState');
+require('./widgets/Popover');
 require('./widgets/PopoverBlocker');
 require('./widgets/responsive-slider.js');
 require('./widgets/InputClearable');
@@ -91,10 +93,11 @@ require('./widgets/dropdowns/voice-status');
 require('./widgets/dropdowns/voice-ownership');
 require('./widgets/dropdowns/voice-ownership-admin');
 require('./widgets/dropdowns/CurrentPersonEntitiesCheckboxes');
-require('./widgets/tabs/manager');
-require('./widgets/tabs/tab');
-require('./widgets/tabs/tab-nav');
-require('./widgets/tabs/tab-content');
+require('./widgets/tabs/TabsManager');
+require('./widgets/tabs/Tab');
+require('./widgets/tabs/TabNav');
+require('./widgets/tabs/TabContent');
+require('./widgets/tabs/TabIndicator');
 
 // components
 require('./widgets/cards/Card');
@@ -117,19 +120,39 @@ require('./widgets/voice-cover/actions/VoiceCoverActionsArchive');
 require('./widgets/category-cover');
 
 // views
-require('./views/home');
+require('./views/Home');
 require('./widgets/voice/voice-helper.js');
-require('./views/voice');
-require('./views/search');
-require('./widgets/search-view/voices-tab');
-require('./widgets/search-view/users-tab');
-require('./widgets/search-view/organizations-tab');
-require('./views/savedPosts');
-require('./widgets/saved-posts/onboarding');
-require('./widgets/saved-posts/manager');
-require('./views/myVoices');
-require('./widgets/my-voices-view/MyVoicesOnboarding');
-require('./widgets/my-voices-view/VoiceTab');
+require('./views/Search');
+require('./widgets/view-search/voices-tab');
+require('./widgets/view-search/users-tab');
+require('./widgets/view-search/organizations-tab');
+require('./views/Voice');
+require('./views/SavedPosts');
+require('./widgets/view-saved-posts/onboarding');
+require('./widgets/view-saved-posts/manager');
+require('./views/MyVoices');
+require('./widgets/view-my-voices/MyVoicesOnboarding');
+require('./widgets/view-my-voices/VoiceTab');
+require('./views/UserProfile');
+require('./views/OrganizationProfile');
+require('./widgets/view-user-profile/UserProfileTabNav');
+require('./widgets/view-user-profile/UserProfileVoicesTab');
+require('./widgets/view-user-profile/UserProfileFollowersTab');
+require('./widgets/view-user-profile/UserProfileFollowingTab');
+require('./widgets/view-user-profile/OrganizationProfileMembersTab');
+require('./widgets/view-user-profile/actions/UserProfileActionFollow');
+require('./widgets/view-user-profile/actions/UserProfileActionFollowMultiple');
+require('./widgets/view-user-profile/actions/UserProfileActionMessage');
+require('./widgets/view-user-profile/actions/UserProfileMoreActions');
+require('./widgets/view-user-profile/actions/OrganizationProfileActionLeave');
+require('./widgets/view-user-profile/actions/OrganizationProfileMoreActions');
+require('./views/UserProfileEdit');
+require('./widgets/view-user-profile-edit/UserProfileEditTab');
+require('./widgets/view-user-profile-edit/UserProfileEditAccountTab');
+require('./widgets/view-user-profile-edit/UserProfileEditNotificationsTab');
+require('./widgets/view-user-profile-edit/UserProfileEditOrganizationsTab');
+require('./widgets/view-user-profile-edit/notifications/EditNotificationsNotifyMeItem');
+require('./widgets/view-user-profile-edit/notifications/EditNotificationsEmailDigestsItem');
 
 require('./widgets/voice/posts-registry');
 require('./widgets/voice/Onboarding');
@@ -158,6 +181,7 @@ require('./widgets/voice/moderate/VoiceModerateButton');
 require('./widgets/voice/moderate/VoiceModerateManager');
 require('./widgets/voice/moderate/VoiceModerateDoneButton');
 require('./widgets/voice/moderate/VoiceModerateFooter');
+require('./widgets/voice/moderate/VoiceModerateDeleteUnmoderatedPostsDropdown');
 
 require('./widgets/voice/add-content/');
 
@@ -170,6 +194,7 @@ require('./widgets/voice/contributors/ManageContributors');
 require('./widgets/voice/contributors/ManageContributorsList');
 
 // popovers
+require('./widgets/popovers/PopoverConfirm');
 require('./widgets/popovers/unsave');
 require('./widgets/popovers/share');
 
@@ -262,6 +287,7 @@ require('./widgets/forms/report.js');
 require('./widgets/forms/block.js');
 
 require('./widgets/elements/image.js');
+require('./widgets/elements/UploadImage');
 require('./widgets/elements/button.js');
 require('./widgets/elements/check.js');
 require('./widgets/elements/input.js');

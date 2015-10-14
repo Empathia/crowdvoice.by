@@ -178,7 +178,7 @@
 			var timeElapsed = moment(feed.createdAt).from(moment());
 			var feedEl = $(feedItemEl);
 
-			feedEl.find('.feed-item-image img').attr('src', feed.actionDoer.images && feed.actionDoer.images.small && feed.actionDoer.images.small.url);
+			feedEl.find('.feed-item-image img').attr('src', feed.actionDoer.images && feed.actionDoer.images.card && feed.actionDoer.images.card.url);
 			feedEl.find('.feed-item-time').text( moment(feed.createdAt).from(moment()) );
 			feedEl.find('.feed-item-title > a > b').text(feed.actionDoer.name + ' ' + feed.actionDoer.lastname);
 			feedEl.find('.feed-item-title > a').attr('href', '/' + feed.actionDoer.profileName);
@@ -241,7 +241,21 @@
 			  		}
 		        typeWidget.showMeta();
 		        break;
-		      default:
+            case 'became public member':
+              if (feed.itemType === 'entity') {
+                feedEl.find('.feed-item-title > span').text(feed.action + ' of ' + feed.entity.type);
+                typeWidget = new CV.CardMini({data:feed.entity}).render(feedEl.find('.feed-item-list'));
+                typeWidget.showMeta();
+              }
+              break;
+            case 'became public contributor':
+                if (feed.itemType === 'voice') {
+                  feedEl.find('.feed-item-title > span').text(feed.action + ' of a ' + feed.itemType);
+                  typeWidget = new CV.VoiceCoverMini({data:feed.voice}).render(feedEl.find('.feed-item-list'));
+                  typeWidget.showMeta();
+                }
+                break
+          default:
 		        // \_||_/
 		    }
 

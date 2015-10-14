@@ -5,10 +5,11 @@
  * @argument person.username <required> [String]
  */
 
+var Events = require('./../../lib/events');
 var moment = require('moment');
 
-Class(CV, 'CardMiniClean').inherits(Widget).includes(CV.WidgetUtils)({
-    ELEMENT_CLASS : 'card-mini',
+Class(CV, 'CardMiniClean').inherits(Widget).includes(CV.WidgetUtils, BubblingSupport)({
+    ELEMENT_CLASS : 'card-mini -rel',
 
     HTML : '\
         <article role="article">\
@@ -19,6 +20,7 @@ Class(CV, 'CardMiniClean').inherits(Widget).includes(CV.WidgetUtils)({
                     <p class="card-mini-username"></p>\
                 </div>\
             </div>\
+            <div class="action -abs"></div>\
         </article>\
     ',
 
@@ -29,6 +31,8 @@ Class(CV, 'CardMiniClean').inherits(Widget).includes(CV.WidgetUtils)({
         </div>',
 
     prototype : {
+        _actions : null,
+
         init : function init(config) {
             Widget.prototype.init.call(this, config);
 
@@ -36,6 +40,8 @@ Class(CV, 'CardMiniClean').inherits(Widget).includes(CV.WidgetUtils)({
             this.avatarElement = this.el.querySelector('.card-mini-avatar');
             this.fullNameElement = this.el.querySelector('.card-mini-fullname');
             this.usernameElement = this.el.querySelector('.card-mini-username');
+            this.actionsElement = this.el.querySelector('.action');
+            this._actions = [];
 
             this._setup();
         },
@@ -72,6 +78,30 @@ Class(CV, 'CardMiniClean').inherits(Widget).includes(CV.WidgetUtils)({
                 this.el.querySelector('[data="joined-at"]'),
                 'Joined on ' + moment(this.data.createdAt).format('MMM, YYYY')
             );
+        },
+
+        addButtonAction : function addButtonAction(data) {
+            if (this.children[data.name]) {
+                console.warn('Generic action button, name already defined.');
+                return this;
+            }
+
+            this._actions.push(data);
+
+            this.appendChild(new CV.UI.Button({
+                name : data.name,
+                className : data.className,
+                data : {value: data.value}
+            })).render(this.actionsElement);
+
+            Events.on(this[data.name].el, 'click', this._dispatchActionEvent.bind(this, data));
+            return this;
+        },
+
+        _dispatchActionEvent : function _dispatchActionEvent(data) {
+            if (this._actions.indexOf(data) >= 0) {
+                this.dispatch(data.eventName, {data: this});
+            }
         }
     }
 });

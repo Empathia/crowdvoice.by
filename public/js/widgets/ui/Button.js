@@ -7,6 +7,11 @@ Class(CV.UI, 'Button').inherits(Widget).includes(CV.WidgetUtils)({
         },
 
         init : function init(config) {
+            if (config.data && config.data.href) {
+                this.element = $('<a class="cv-button"/>');
+                this.element[0].setAttribute('href', config.data.href);
+            }
+
             Widget.prototype.init.call(this, config);
             this.el = this.element[0];
             this.updateText(this.data.value);

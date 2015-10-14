@@ -509,7 +509,56 @@ module.exports = {
         });
     },
 
-    /* Search for Posts in Sources
+    /* Deletes all posts that have not yet been moderated,
+     * i.e. a approved = false in the DB, older than the provided Date string,
+     * i.e. created_at < provided date in the DB.
+     * @argument args.profileName <required> [String] the voice owner profileName
+     * @argument args.voiceSlug <required> [String] the voice slug
+     * @argument args.olderThanDate <required> [Date String]
+     */
+    deletePostsOlderThan : function deletePostsOlderThan(args, callback) {
+        if (!args.profileName || !args.voiceSlug || !args.data.olderThanDate || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            method : 'POST',
+            url : '/' + args.profileName + '/' + args.voiceSlug + '/moderate/deleteOlderThan?_method=DELETE',
+            headers : {'csrf-token': this.token},
+            data : args.data,
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
+    },
+
+    /* Deletes all posts that have not yet been moderated, i.e. a approved = false in the DB.
+     * @argument args.profileName <required> [String] the voice owner profileName
+     * @argument args.voiceSlug <required> [String] the voice slug
+     */
+    deleteAllUnmoderatedPosts : function deleteAllUnmoderatedPosts(args, callback) {
+        if (!args.profileName || !args.voiceSlug || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            method : 'POST',
+            url : '/' + args.profileName + '/' + args.voiceSlug + '/moderate/deleteAllUnmoderated?_method=DELETE',
+            headers : {'csrf-token': this.token},
+            data : args.data,
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
+    },
+
+   /* Search for Posts in Sources
      * @argument args.profileName <required> [String] the voice owner profileName
      * @argument args.voiceSlug <required> [String] the voice slug
      * @argument args.source <required> [String] the source to search on ['googleNews', 'youtube']
@@ -538,6 +587,95 @@ module.exports = {
     /**************************************************************************
      * ENTITIES
      *************************************************************************/
+    /* Save Entity data.
+     * @argument args.profileName <required> [String] the entity profileName
+     * @argument args.data.image <optional> [File] entity's image
+     * @argument args.data.background <optional> [File] entity's background
+     * @argument args.data.name <optional> [String] entity's name
+     * @argument args.data.lastname <optional> [String] entity's lastname
+     * @argument args.data.profileName <optional> [String] entity's profileName
+     * @argument args.data.description <optional> [String] entity's description
+     * @argument args.data.location <optional> [String] entity's location
+     * @argument callback <required> [Function]
+     */
+    updateEntity : function updateEntity(args, callback) {
+        if (!args.profileName || !args.data || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'PUT',
+            url : '/' + args.profileName,
+            headers : {'csrf-token' : this.token},
+            contentType : false,
+            processData : false,
+            dataType : 'json',
+            data : args.data,
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
+    },
+
+    /* Save User data.
+     * @argument args.profileName <required> [String] the entity profileName
+     * @argument args.data.email <optional> [String] entity's email
+     * @argument args.data.password <optional> [String] entity's password
+     * @argument callback <required> [Function]
+     */
+    updateUser : function updateUser(args, callback) {
+        if (!args.profileName || (!args.data.email && !args.data.password) || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        var data = {};
+        if (args.data.email) {data.email = args.data.email;}
+        if (args.data.password) {data.password = args.data.password;}
+
+        $.ajax({
+            type : 'PUT',
+            url : '/' + args.profileName + '/updateUser',
+            headers : {'csrf-token' : this.token},
+            dataType : 'json',
+            data : data,
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
+    },
+
+    /* Update notification settings.
+     * @argument args.profileName <required> [String] the entity profileName
+     * @argument args.data.webSettings <required> [String]
+     * @argument args.data.emailSettings <required> [String]
+     */
+    updateNotificationSettings : function updateNotificationSettings(args, callback) {
+        if (!args.profileName || (!args.data.webSettings && !args.data.emailSettings) || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'PUT',
+            url : '/' + args.profileName + '/edit/updateNotificationSettings',
+            dataType : 'json',
+            contentType : 'application/json',
+            data : JSON.stringify(args.data),
+            headers : {'csrf-token' : this.token},
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
     /* Follow/Unfollow Entity
      * @argument args.profileName <required> [String] the entity profileName
      * @argument args.data.followerId <required> [String] Hashids.encode
@@ -560,6 +698,94 @@ module.exports = {
             headers : {'csrf-token' : this.token},
             success : function success(data) {callback(false, data);},
             error : function error(err) {callback(true, err);}
+        });
+    },
+
+    /* Gets :profileName's Published Voices
+     * @argument args.profileName <required> [String] the voice owner profileName
+     * @argument callback <required> [Function]
+     */
+    getEntityVoices : function getEntityVoices(args, callback) {
+        if (!args.profileName || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : "GET",
+            url :'/' + args.profileName + '/voices',
+            headers : {'csrf-token' : this.token},
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
+    },
+
+    /* Gets :profileName's followers
+     * @argument args.profileName <required> [String] the voice owner profileName
+     * @argument callback <required> [Function]
+     */
+    getEntityFollowers : function getEntityFollowers(args, callback) {
+        if (!args.profileName || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : "GET",
+            url :'/' + args.profileName + '/followers',
+            headers : {'csrf-token' : this.token},
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
+    },
+
+    /* Get published voices followed by :profileName
+     * @argument args.profileName <required> [String] the voice owner profileName
+     * @argument callback <required> [Function]
+     */
+    getEntityFollowedVoices : function getEntityFollowedVoices(args, callback) {
+        if (!args.profileName || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : "GET",
+            url :'/' + args.profileName + '/voicesFollowed',
+            headers : {'csrf-token' : this.token},
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
+    },
+
+    /* Get people and organizations followed by :profileName
+     * @argument args.profileName <required> [String] the voice owner profileName
+     * @argument callback <required> [Function]
+     */
+    getEntityFollowedEntities : function getEntityFollowedEntities(args, callback) {
+        if (!args.profileName || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : "GET",
+            url :'/' + args.profileName + '/entitiesFollowed',
+            headers : {'csrf-token' : this.token},
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
         });
     },
 
@@ -618,6 +844,31 @@ module.exports = {
         });
     },
 
+    /**************************************************************************
+     * ORGANIZATIONS
+     *************************************************************************/
+    /* Get people and organizations followed by :profileName
+     * @argument args.profileName <required> [String] the voice owner profileName
+     * @argument callback <required> [Function]
+     */
+    getOrganizationMembers : function getOrganizationMembers(args, callback) {
+        if (!args.profileName || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : "GET",
+            url :'/' + args.profileName + '/members',
+            headers : {'csrf-token' : this.token},
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
+    },
+
     /* Creates a new Organization.
      * @argument args.data <required> [Object] organization data
      * @argument callback <required> [Function]
@@ -639,6 +890,34 @@ module.exports = {
             contentType : false,
             processData : false,
             data : args.data,
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
+    },
+
+    /* Remove entity from organization. Must be part of organization in order to do so.
+     * @argument args.profileName <required> [String] profileName of current user.
+     * @argument args.data.entityId <required> [hashid] entity ID of current user.
+     * @argument args.data.orgId <required> [hashid] entity ID of organization to be removed from.
+     * @argument callback <required> [Function]
+     */
+    leaveOrganization : function leaveOrganization(args, callback) {
+        if (!args.profileName || !args.data || !args.data.entityId || !args.data.orgId || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type: "POST",
+            url : '/' + args.profileName + '/leaveOrganization',
+            headers : {'csrf-token' : this.token},
+            data : {
+                entityId : args.data.entityId,
+                orgId : args.data.orgId
+            },
             success : function success(data) { callback(false, data); },
             error : function error(err) { callback(true, err); }
         });

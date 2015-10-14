@@ -47,6 +47,14 @@ module.exports = {
                 return (organization.id === id);
             }));
         }
+
+        if (type === 'voice') {
+            if (!this.get().ownedVoices.length) {
+                return false;
+            }
+
+            return (this.get().ownedVoices.indexOf(id) !== -1);
+        }
     },
 
     /* Checks if currentPerson is member of a specific organization or a specific voice.
@@ -67,11 +75,12 @@ module.exports = {
         }
 
         if (type === 'voice') {
-            if (!this.get().ownedVoices.length) {
+            var voices = this.get().voiceIds.concat(this.get().ownedVoices);
+            if (!voices.length) {
                 return false;
             }
 
-            return (this.get().ownedVoices.indexOf(id) !== -1);
+            return (voices.indexOf(id) !== -1);
         }
     },
 
@@ -118,9 +127,9 @@ module.exports = {
     },
 
     /* Tries to retrieves a specific version of the person images,
-     * if not found it will return a placeholder instead so we do get errors
-     * or empty images
-     * @return [String] image path
+     * if it doest not exists it will try to return a placeholder instead
+     * otherwhise it will return null.
+     * @return [String] image_path
      */
     getImage : function getImage(version) {
         var images = this.get().images;
@@ -129,6 +138,10 @@ module.exports = {
             return images[version].url;
         }
 
-        return PLACEHOLDERS.profile;
+        if (PLACEHOLDERS[version]) {
+            return PLACEHOLDERS[version];
+        }
+
+        return null;
     }
 };

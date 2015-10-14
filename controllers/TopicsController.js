@@ -163,7 +163,7 @@ var TopicsController = Class('TopicsController')({
           db('Voices')
             .whereIn('id', voicesIds)
             .andWhere('deleted', false)
-            .exec(callbac);
+            .exec(callback);
         },
 
         function (voices, callback) {

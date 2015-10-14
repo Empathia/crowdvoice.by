@@ -52,7 +52,7 @@ CV.Thread = Class(CV, 'Thread').includes(Widget)({
       if (this.threadPartner.images.small) {
         this.element.find('img').attr('src', this.threadPartner.images.small.url);
       } else {
-        this.element.find('img').attr('src', PLACEHOLDERS.profile);
+        this.element.find('img').attr('src', PLACEHOLDERS.small);
       }
 
       //console.log('setup ');

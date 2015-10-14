@@ -1,6 +1,7 @@
 var BlackListFilter = require(__dirname + '/BlackListFilter');
 var VoicesPresenter = require(path.join(process.cwd(), '/presenters/VoicesPresenter.js'));
 var FeedPresenter = require(__dirname + '/../presenters/FeedPresenter.js');
+var NotificationMailer = require(path.join(__dirname, '../mailers/NotificationMailer.js'));
 
 var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
@@ -76,13 +77,24 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
         }
 
         if (!response.isAllowed) {
-          return next(new ForbiddenError());
+          return next(new ForbiddenError('Unauthorized.'));
         }
 
         res.locals.checkit = Checkit;
         res.locals.currentUser = req.user;
-        res.render(inflection.pluralize(req.entityType) + '/edit.html');
 
+        NotificationSetting.find({ entity_id: hashids.decode(req.currentPerson.id)[0] }, function (err, settings) {
+          if (err) { return next(err); }
+
+          var setting = {
+            webSettings: settings[0].webSettings,
+            emailSettings: settings[0].emailSettings,
+          }
+
+          res.locals.notificationSettings = setting;
+
+          res.render(inflection.pluralize(req.entityType) + '/edit.html');
+        })
       });
     },
 
@@ -142,14 +154,30 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
             }
           ], function (err) {
             if (err) {
-              res.locals.errors = err;
-              req.errors = err;
-              logger.log(err);
-
-              res.render(inflection.pluralize(req.entityType) + '/edit.html');
+              res.format({
+                html: function() {
+                  res.locals.errors = err;
+                  req.errors = err;
+                  logger.log(err);
+                  res.render(inflection.pluralize(req.entityType) + '/edit.html');
+                },
+                json: function() {
+                  res.json({
+                    status : 'error',
+                    errors : err
+                  });
+                }
+              });
             } else {
-              req.flash('success', 'Your profile has been updated.');
-              res.redirect('/' + entity.profileName + '/edit');
+              res.format({
+                html: function() {
+                  req.flash('success', 'Your profile has been updated.');
+                  res.redirect('/' + entity.profileName + '/edit');
+                },
+                json: function() {
+                  res.json({status : 'success'});
+                }
+              });
             }
           });
         });
@@ -192,14 +220,30 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
         user.save(function(err, result) {
           if (err) {
-            res.locals.errors = err;
-            req.errors = err;
-            logger.log(err);
-
-            res.render(inflection.pluralize(req.entityType) + '/edit.html');
+            res.format({
+              html: function() {
+                res.locals.errors = err;
+                req.errors = err;
+                logger.log(err);
+                res.render(inflection.pluralize(req.entityType) + '/edit.html');
+              },
+              json: function() {
+                res.json({
+                  status : 'error',
+                  errors : err
+                });
+              }
+            });
           } else {
-            req.flash('success', 'Your account details have been updated.');
-            res.redirect('/' + entity.profileName + '/edit');
+            res.format({
+              html: function() {
+                req.flash('success', 'Your account details have been updated.');
+                res.redirect('/' + entity.profileName + '/edit');
+              },
+              json: function() {
+                res.json({status : 'success'});
+              }
+            });
           }
         });
       });
@@ -260,20 +304,28 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
                 EntityFollower.findById(entityFollowerRecordId[0], function (err, entityFollower) {
                   if (err) { return next(err); }
 
-                  FeedInjector().inject(follower.id, 'who entityFollowsEntity', entityFollower[0], function (err) {
+                  User.find({ entity_id: entity.id }, function (err, user) {
                     if (err) { return next(err); }
 
-                    res.format({
-                      html: function() {
-                        req.flash('success', 'Followed successfully.');
-                        res.redirect('/' + entity.profileName);
-                      },
-                      json: function() {
-                        res.json({
-                          status: 'followed',
-                          entity: { id: follower.id }
+                    FeedInjector().inject(follower.id, 'who entityFollowsEntity', entityFollower[0], function (err) {
+                      if (err) { return next(err); }
+
+                      NotificationMailer.newEntityFollower(user[0], follower, entity, function (err) {
+                        if (err) { return next(err); }
+
+                        res.format({
+                          html: function() {
+                            req.flash('success', 'Followed successfully.');
+                            res.redirect('/' + entity.profileName);
+                          },
+                          json: function() {
+                            res.json({
+                              status: 'followed',
+                              entity: { id: follower.id }
+                            });
+                          }
                         });
-                      }
+                      });
                     });
                   });
                 });
@@ -687,7 +739,6 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
           });
       });
     }
-
   }
 });
 
