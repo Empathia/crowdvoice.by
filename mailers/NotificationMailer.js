@@ -347,15 +347,15 @@ var NotificationMailer = Module('NotificationMailer')({
   },
 
   // Send on entity following you
-  newEntityFollower: function (user, newFollowerEntity, followedEntity, callback) {
-    NotificationSetting.find({ entity_id: user.entityId }, function (err, setting) {
+  newEntityFollower: function (receiver, newFollowerEntity, callback) {
+    NotificationSetting.find({ entity_id: receiver.entity.id }, function (err, setting) {
       if (err) { return callback(err) }
 
       if (!setting[0].emailSettings.selfNewEntityFollower) {
         return callback();
       }
 
-      EntitiesPresenter.build([newFollowerEntity, followedEntity], null, function (err, presented) {
+      EntitiesPresenter.build([newFollowerEntity], null, function (err, presented) {
         if (err) { return callback(err); }
 
         var template = new Thulium({ template: newEntityFollowerViewFile }),
@@ -372,9 +372,8 @@ var NotificationMailer = Module('NotificationMailer')({
 
         template.parseSync().renderSync({
           params: {
-            user: user,
+            receiver: receiver,
             follower: presented[0],
-            followed: presented[1],
           },
         })
 
@@ -383,8 +382,8 @@ var NotificationMailer = Module('NotificationMailer')({
         message.html = view
 
         message.to.push({
-          email: user.email,
-          name: user.name,
+          email: receiver.user.email,
+          name: receiver.user.name,
           type: 'to',
         })
 
