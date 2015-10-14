@@ -297,38 +297,113 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
                 });
               });
             } else {
-              // follow
-              follower.followEntity(entity, function (err, entityFollowerRecordId) {
-                if (err) { return next(err); }
+              var entityFollowerRecordId,
+                entityFollowerRecord;
 
-                EntityFollower.findById(entityFollowerRecordId[0], function (err, entityFollower) {
-                  if (err) { return next(err); }
-
-                  User.find({ entity_id: entity.id }, function (err, user) {
+              async.series([
+                // follow and respond to front end
+                function (next) {
+                  follower.followEntity(entity, function (err, recordId) {
                     if (err) { return next(err); }
 
-                    FeedInjector().inject(follower.id, 'who entityFollowsEntity', entityFollower[0], function (err) {
-                      if (err) { return next(err); }
+                    entityFollowerRecordId = recordId[0];
 
-                      NotificationMailer.newEntityFollower(user[0], follower, entity, function (err) {
-                        if (err) { return next(err); }
-
-                        res.format({
-                          html: function() {
-                            req.flash('success', 'Followed successfully.');
-                            res.redirect('/' + entity.profileName);
-                          },
-                          json: function() {
-                            res.json({
-                              status: 'followed',
-                              entity: { id: follower.id }
-                            });
-                          }
+                    res.format({
+                      html: function() {
+                        req.flash('success', 'Followed ' + entity.type + ' successfully.');
+                        res.redirect('/' + entity.profileName);
+                      },
+                      json: function() {
+                        res.json({
+                          status: 'followed',
+                          entity: { id: follower.id }
                         });
-                      });
+                      }
                     });
+
+                    return next();
                   });
-                });
+                },
+
+                // get follower info
+                function (next) {
+                  EntityFollower.findById(entityFollowerRecordId, function (err, entityFollower) {
+                    if (err) { next(err); }
+
+                    entityFollowerRecord = entityFollower[0];
+
+                    return next();
+                  });
+                },
+
+                // generate feed and notifications
+                function (next) {
+                  FeedInjector().inject(follower.id, 'who entityFollowsEntity', entityFollowerRecord, function (err) {
+                    if (err) { return next(err); }
+
+                    var receiverEntity,
+                      realReceiverEntity,
+                      receiverUser
+
+                    async.series([
+                      // get receiver entity, could be org or person
+                      function (next) {
+                        Entity.findById(entityFollowerRecord.followedId, function (err, entity) {
+                          if (err) { return next(err) }
+
+                          receiverEntity = entity[0]
+
+                          return next()
+                        })
+                      },
+
+                      // get real receiver entity, can only be person
+                      function (next) {
+                        if (receiverEntity.type === 'person') {
+                          realReceiverEntity = receiverEntity
+                          return next()
+                        }
+
+                        EntityOwner.find({ owned_id: receiverEntity.id }, function (err, ownership) {
+                          if (err) { return next(err) }
+
+                          Entity.findById(ownership[0].ownerId, function (err, entity) {
+                            if (err) { return next(err) }
+
+                            realReceiverEntity = entity[0]
+
+                            return next()
+                          })
+                        })
+                      },
+
+                      // get user of real receiver entity
+                      function (next) {
+                        User.find({ entity_id: realReceiverEntity.id }, function (err, user) {
+                          if (err) { return next(err) }
+
+                          receiverUser = user[0]
+
+                          return next()
+                        })
+                      },
+
+                      // send email
+                      function (next) {
+                        NotificationMailer.newEntityFollower({
+                          entity: receiverEntity,
+                          realEntity: realReceiverEntity,
+                          user: receiverUser,
+                        }, follower, next);
+                      },
+                    ], next);
+                  });
+                },
+              ], function (err) {
+                if (err) {
+                  logger.error(err);
+                  logger.error(err.stat);
+                }
               });
             }
           });
