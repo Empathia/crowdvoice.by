@@ -26,7 +26,7 @@
 			            		<td style="padding: 0 25px; text-align: left;">
 			              			<div style="font-size: 14px; line-height: 38px; color: #b2b2b2;">
 			                			<p style="font-size:18px;color:black;">
-			                				Hello <%= params.user.username %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="blank_"><%= doerInfo.name + ' ' + doerInfo.lastname %></a> followed your Voice!
+			                				Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="blank_"><%= doerInfo.name + ' ' + doerInfo.lastname %></a> followed your Voice!
 			                			</p>
 			              			</div>
 			            		</td>
@@ -55,7 +55,7 @@
 			            		<td style="padding: 0 25px; text-align: left;">
 			              			<div style="font-size: 14px; line-height: 38px; color: #b2b2b2;">
 			                			<p style="font-size:18px;color:black;">
-			                				Hello <%= params.user.username %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="blank_"><%= doerInfo.name %></a> followed your Voice!
+			                				Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="blank_"><%= doerInfo.name %></a> followed your Voice!
 			                			</p>
 			              			</div>
 			            		</td>

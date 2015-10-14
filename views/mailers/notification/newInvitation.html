@@ -23,7 +23,7 @@
 				          <tr>
 				            <td style="padding: 0 25px; text-align: left;">
 				              <div style="font-size: 14px; line-height: 38px; color: #b2b2b2;">
-				                <p style="font-size:18px;color:black;">Hello <%= params.user.username %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="blank_"><%= doerInfo.name + ' ' + doerInfo.lastname %></a> has sent you an invitation:</p>
+				                <p style="font-size:18px;color:black;">Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="blank_"><%= doerInfo.name + ' ' + doerInfo.lastname %></a> has sent you an invitation:</p>
 				              </div>
 				            </td>
 				          </tr>
