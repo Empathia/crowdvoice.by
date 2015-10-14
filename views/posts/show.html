@@ -2,10 +2,19 @@
 
 </style>
 
-
 <div class="readable">
+<% if (readablePost) { %>
     <h1><%= readablePost.data.title %></h1>
     <article>
         <%= readablePost.data.content %>
     </article>
+<% } else { %>
+    <% if (post.image.exists('big')) { %>
+        <img src="<%= post.image.url('big') %>" />
+    <% } %>
+    <h1><%= post.title %></h1>
+    <div class="description">
+        <%= post.description %>
+    </div>
+<% } %>
 </div>

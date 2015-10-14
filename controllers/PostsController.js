@@ -61,7 +61,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           return done();
         });
       }, function(done) {
-        if (readablePost) {
+        if (!readablePost) {
           return done();
         }
 

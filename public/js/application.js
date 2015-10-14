@@ -227,6 +227,8 @@ require('./widgets/post-details/media/post-detail-media');
 require('./widgets/post-details/media/header');
 require('./widgets/post-details/media/thumb');
 require('./widgets/post-details/media/info');
+// post detail Text
+require('./widgets/post-details/post-detail-text');
 
 // editable posts
 require('./widgets/posts/edit/EditablePost');
