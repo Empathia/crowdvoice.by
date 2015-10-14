@@ -58,7 +58,44 @@ module.exports = function(req, res, next) {
 
             req.role = 'Anonymous';
 
-            next();
+            async.series([
+              // .ownedOrganizations, always empty
+              function (next) {
+                res.locals.currentPerson.ownedOrganizations = [];
+                req.currentPerson.ownedOrganizations = [];
+
+                return next();
+              },
+
+              // .organizations
+              function (next) {
+                Entity.findById(currentUser.entityId, function (err, currentPerson) {
+                  EntityMembership.find({
+                    member_id: currentPerson[0].id,
+                    is_anonymous: true,
+                  }, function (err, members) {
+                    if (err) { return next(err); }
+
+                    var ids = members.map(function (record) {
+                      return record.entityId;
+                    });
+
+                    Entity.whereIn('id', ids, function (err, organizations) {
+                      if (err) { return next(err); }
+
+                      EntitiesPresenter.build(organizations, null, function (err, presented) {
+                        if (err) { return next(err); }
+
+                        res.locals.currentPerson.organizations = presented;
+                        req.currentPerson.organizations = presented;
+
+                        return next();
+                      });
+                    });
+                  });
+                });
+              },
+            ], next);
           });
         });
       });
