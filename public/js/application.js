@@ -97,6 +97,7 @@ require('./widgets/tabs/TabsManager');
 require('./widgets/tabs/Tab');
 require('./widgets/tabs/TabNav');
 require('./widgets/tabs/TabContent');
+require('./widgets/tabs/TabIndicator');
 
 // components
 require('./widgets/cards/Card');
@@ -180,6 +181,7 @@ require('./widgets/voice/moderate/VoiceModerateButton');
 require('./widgets/voice/moderate/VoiceModerateManager');
 require('./widgets/voice/moderate/VoiceModerateDoneButton');
 require('./widgets/voice/moderate/VoiceModerateFooter');
+require('./widgets/voice/moderate/VoiceModerateDeleteUnmoderatedPostsDropdown');
 
 require('./widgets/voice/add-content/');
 
@@ -192,7 +194,7 @@ require('./widgets/voice/contributors/ManageContributors');
 require('./widgets/voice/contributors/ManageContributorsList');
 
 // popovers
-require('./widgets/popovers/PopoverLeave');
+require('./widgets/popovers/PopoverConfirm');
 require('./widgets/popovers/unsave');
 require('./widgets/popovers/share');
 

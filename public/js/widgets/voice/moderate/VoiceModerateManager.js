@@ -49,6 +49,7 @@ Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
 
             this.appendChild(new CV.VoiceModerateFooter({
                 name : 'footer',
+                scrollableArea : this.voicePostsWrapper,
                 totalPosts : this._getTotalPostCount(App.Voice.postsCountUnapproved)
             })).render(this.el);
 

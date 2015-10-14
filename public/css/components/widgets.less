@@ -183,16 +183,16 @@ a.cv-button{
   }
 }
 
-.cv-button.danger {
-  background-color: @color-danger;
-  border-color: shade(@color-danger, 20);
+.cv-button.negative {
+  background-color: @color-negative;
+  border-color: @color-negative-dark;
   box-shadow: inset 0 -2px 0 rgba(0,0,0,.2);
   color: @color-white;
   fill: @color-white;
 
   &:hover:enabled {
-    border-color: shade(@color-danger, 20);
-    background-color: tint(@color-danger, 14);
+    border-color: @color-negative-dark;
+    background-color: @color-negative-light;
     color: @color-white;
     fill: @color-white;
   }

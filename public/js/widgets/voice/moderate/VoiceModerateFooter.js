@@ -1,9 +1,11 @@
-/* jshint multistr: true */
+/* globals App */
+var Person = require('./../../../lib/currentPerson');
+
 Class(CV, 'VoiceModerateFooter').inherits(Widget).includes(CV.WidgetUtils)({
     HTML : '\
     <footer class="voice-moderate-footer -clearfix">\
         <div class="-float-left moderate-footer-left" data-container="left">\
-            <div data-container="total">\
+            <div data-container="total" class="-inline-block" style="margin-top: 3px;">\
                 <b>{{TOTAL}}</b> posts in moderation queue.\
             </div>\
         </div>\
@@ -13,6 +15,7 @@ Class(CV, 'VoiceModerateFooter').inherits(Widget).includes(CV.WidgetUtils)({
     prototype : {
         /* options */
         totalPosts : 0,
+        scrollableArea : null,
 
         el : null,
         leftElementWrapper : null,
@@ -32,6 +35,15 @@ Class(CV, 'VoiceModerateFooter').inherits(Widget).includes(CV.WidgetUtils)({
 
         _setup : function _setup() {
             this.dom.updateText(this.totalPostsElement, this.totalPosts);
+
+            if (Person.get() && Person.ownerOf('voice', App.Voice.data.id)) {
+                console.log('render dropdown');
+                this.appendChild(new CV.VoiceModerateDeleteUnmoderatedPostsDropdown({
+                    name : 'deleteDropdown',
+                    className : '-inline-block -ml1',
+                    scrollableArea : this.scrollableArea
+                })).render(this.leftElementWrapper);
+            }
 
             this.appendChild(
                 new CV.VoiceModerateDoneButton({
