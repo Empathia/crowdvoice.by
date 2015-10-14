@@ -364,7 +364,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
       }, function (err, response) {
         if (err) { return next(err) }
 
-        if (req.role !== 'Admin' || !response.isAllowed) {
+        if (!response.isAllowed) {
           return next(new ForbiddenError('Unauthorized.'));
         }
 
