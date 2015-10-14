@@ -1,5 +1,4 @@
 <pre style="white-space: inherit;">
-		<!--<%= JSON.stringify(params, null, 2) %>-->
 		<% var voiceInfo = params.notificationInfo.voice; %>
 		<% var doerInfo = params.notificationInfo.actionDoer; %>
 
@@ -8,7 +7,6 @@
 		<% var day = voiceDate.getDate(); %> 
 		<% var monthIndex = voiceDate.getMonth(); %>
 		<% var year = voiceDate.getFullYear(); var voiceImage; %>
-		<% if(voiceInfo.images.length == undefined){ voiceImage = CONFIG.siteUrl[application.env]+'/img/img-placeholder.png'; }else{ voiceImage = CONFIG.siteUrl[application.env]+voiceInfo.images.small.url;} %>
 </pre>
 <!-- Change image url -->
 <div style="background-color:#F7F9FA !important;background: url('<%= CONFIG.siteUrl[application.env]+'/img/cv-mailtemplate.png'%>')right top;background-repeat: no-repeat; text-align: center; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; height: 100%;">
@@ -21,13 +19,14 @@
 	    <div style="display: inline-block; width: 550px; padding: 30px 0 30px 0; background-color: #FFFFFF; color: #4c4b49; border-radius: 0px;border-top:10px solid;border-top-color:#FF9400;box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.5);">
 	    	<!-- New voice published notification-->
 	    	<% if(params.notificationInfo.itemType === 'voice' && params.notificationInfo.action === 'published'){ %>
+	    		<% if(Object.getOwnPropertyNames(voiceInfo.images).length === 0){ voiceImage = CONFIG.siteUrl[application.env]+'/img/img-placeholder.png'; }else{ voiceImage = CONFIG.siteUrl[application.env]+voiceInfo.images.small.url;} %>
 					<table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 0 0 0 -3px;">
 				        <tbody>
 				          	<tr>
 				            	<td style="padding: 0 25px; text-align: left;">
 					             	<div style="font-size: 14px; line-height: 38px; color: #b2b2b2;">
 						                <p style="font-size:18px;color:black;">
-						                	Hello <%= params.user.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="blank_"><%= doerInfo.name + ' ' + doerInfo.lastname %></a> has created a Voice!
+						                	Hello <%= params.user.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="blank_"><%= doerInfo.name + ' '%><%if(doerInfo.lastname === null){}else{%><%=doerInfo.lastname%><%} %></a> has created a Voice!
 						                </p>
 					              	</div>
 				            	</td>
@@ -42,41 +41,136 @@
 					            </td>
 					            <td style="padding-right:25px;">
 					            	<a href="<%= CONFIG.siteUrl[application.env] +'/'+ voiceInfo.owner.profileName +'/'+ voiceInfo.slug %>" target="blank_" style="font-size:13px;color:#4D4D4D;text-align:left;font-weight:bold;"><%= voiceInfo.title %></a>
-					            	<p style="font-size:12px;color:#A1B0B3;">by @<%= doerInfo.name + ' ' + doerInfo.lastname %></p>
+					            	<p style="font-size:12px;color:#A1B0B3;">by @<%= doerInfo.name + ' '%><%if(doerInfo.lastname === null){}else{%><%=doerInfo.lastname%><%} %></p>
 					            </td>
 					        </tr>
 				        </tbody>
 			      	</table>
 	    	<% } %>
-	    	<!-- Voice new follower notification -->
+	    	<!-- User you follows starts following a voice notification-->
 	    	<% if(params.notificationInfo.itemType === 'voice' && params.notificationInfo.action === 'followed'){ %>
-			      	<table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 0 0 0 -3px;">
-			        	<tbody>
-			          		<tr>
-			            		<td style="padding: 0 25px; text-align: left;">
-			              			<div style="font-size: 14px; line-height: 38px; color: #b2b2b2;">
-			                			<p style="font-size:18px;color:black;">
-			                				Hello <%= params.user.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="blank_"><%= doerInfo.name + ' ' + doerInfo.lastname %></a> followed your Voice!
-			                			</p>
-			              			</div>
-			            		</td>
-			          		</tr>
-			        	</tbody>
+	    		<% if(Object.getOwnPropertyNames(voiceInfo.images).length === 0){ voiceImage = CONFIG.siteUrl[application.env]+'/img/img-placeholder.png'; }else{ voiceImage = CONFIG.siteUrl[application.env]+voiceInfo.images.small.url;} %>
+	    			<table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 0 0 0 -3px;">
+				        <tbody>
+				          	<tr>
+				            	<td style="padding: 0 25px; text-align: left;">
+					             	<div style="font-size: 14px; line-height: 38px; color: #b2b2b2;">
+						                <p style="font-size:18px;color:black;">
+						                	Hello <%= params.user.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="blank_"><%= doerInfo.name + ' '%><%if(doerInfo.lastname === null){}else{%><%=doerInfo.lastname%><%} %></a> has followed a Voice!
+						                </p>
+					              	</div>
+				            	</td>
+				          	</tr>
+				        </tbody>
 			      	</table>
 			       	<table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 10px 0 0 -3px;padding:0px 20px">
-			        	<tbody>
-			          		<tr style="background-color:#F7F9FA;">
-			            		<td style="padding: 25px 0px 25px 25px;">
-			                		<img style="width:52px;height:52px;border-radius:5px;"src="<%= voiceImage %>"/>
-			            		</td>
-			            		<td style="padding-right:25px;">
-			              			<a href="<%= CONFIG.siteUrl[application.env] +'/'+ voiceInfo.owner.profileName +'/'+ voiceInfo.slug %>" target="blank_" style="font-size:13px;color:#4D4D4D;text-align:left;font-weight:bold;"><%= voiceInfo.title %></a>
-			              			<p style="font-size:12px;color:#A1B0B3;">by <%= voiceInfo.owner.name + ' ' + voiceInfo.owner.lastname %></p>
-			            		</td>
-			          		</tr>
-			        	</tbody>
+				        <tbody>
+					        <tr style="background-color:#F7F9FA;">
+					            <td style="padding: 25px 0px 25px 25px;">
+					            	<img style="width:52px;height:52px;border-radius:5px;"src="<%= voiceImage %>"/>
+					            </td>
+					            <td style="padding-right:25px;">
+					            	<a href="<%= CONFIG.siteUrl[application.env] +'/'+ voiceInfo.owner.profileName +'/'+ voiceInfo.slug %>" target="blank_" style="font-size:13px;color:#4D4D4D;text-align:left;font-weight:bold;"><%= voiceInfo.title %></a>
+					            	<p style="font-size:12px;color:#A1B0B3;">by @<%= voiceInfo.owner.name + ' '%><%if(voiceInfo.owner.lastname === null){}else{%><%=voiceInfo.owner.lastname%><%} %></p>
+					            </td>
+					        </tr>
+				        </tbody>
 			      	</table>
 	    	<% } %>
+	    	<!-- User/Organization you follows archive a voice notification-->
+	    	<% if(params.notificationInfo.itemType === 'voice' && params.notificationInfo.action === 'archived'){ %>
+	    		<% if(Object.getOwnPropertyNames(voiceInfo.images).length === 0){ voiceImage = CONFIG.siteUrl[application.env]+'/img/img-placeholder.png'; }else{ voiceImage = CONFIG.siteUrl[application.env]+voiceInfo.images.small.url;} %>
+	    			<table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 0 0 0 -3px;">
+				        <tbody>
+				          	<tr>
+				            	<td style="padding: 0 25px; text-align: left;">
+					             	<div style="font-size: 14px; line-height: 38px; color: #b2b2b2;">
+						                <p style="font-size:18px;color:black;">
+						                	Hello <%= params.user.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="blank_"><%= doerInfo.name + ' '%><%if(doerInfo.lastname === null){}else{%><%=doerInfo.lastname%><%} %></a> has archived a Voice!
+						                </p>
+					              	</div>
+				            	</td>
+				          	</tr>
+				        </tbody>
+			      	</table>
+			       	<table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 10px 0 0 -3px;padding:0px 20px">
+				        <tbody>
+					        <tr style="background-color:#F7F9FA;">
+					            <td style="padding: 25px 0px 25px 25px;">
+					            	<img style="width:52px;height:52px;border-radius:5px;"src="<%= voiceImage %>"/>
+					            </td>
+					            <td style="padding-right:25px;">
+					            	<a href="<%= CONFIG.siteUrl[application.env] +'/'+ voiceInfo.owner.profileName +'/'+ voiceInfo.slug %>" target="blank_" style="font-size:13px;color:#4D4D4D;text-align:left;font-weight:bold;"><%= voiceInfo.title %></a>
+					            	<p style="font-size:12px;color:#A1B0B3;">by @<%= voiceInfo.owner.name + ' '%><%if(voiceInfo.owner.lastname === null){}else{%><%=voiceInfo.owner.lastname%><%} %></p>
+					            </td>
+					        </tr>
+				        </tbody>
+			      	</table>
+	    	<% } %>
+	    	<!-- User/organization you follow changed his/her avatar -->
+	    	<% if(params.notificationInfo.itemType === 'entity' && params.notificationInfo.action === 'changed avatar'){%>
+					<table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 0 0 0 -3px;">
+				        <tbody>
+				          	<tr>
+				            	<td style="padding: 0 25px; text-align: left;">
+					             	<div style="font-size: 14px; line-height: 38px; color: #b2b2b2;">
+						                <p style="font-size:18px;color:black;">
+						                	Hello <%= params.user.username %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="blank_"><%= doerInfo.name + ' '%><%if(doerInfo.lastname === null){}else{%><%=doerInfo.lastname%><%} %></a> has a new avatar!
+						                </p>
+					              	</div>
+				            	</td>
+				          	</tr>
+				        </tbody>
+			      	</table>
+	    	<% }%>
+	    	<!-- User/organization you follow changed his/her background -->
+	    	<% if(params.notificationInfo.itemType === 'entity' && params.notificationInfo.action === 'changed background'){%>
+					<table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 0 0 0 -3px;">
+				        <tbody>
+				          	<tr>
+				            	<td style="padding: 0 25px; text-align: left;">
+					             	<div style="font-size: 14px; line-height: 38px; color: #b2b2b2;">
+						                <p style="font-size:18px;color:black;">
+						                	Hello <%= params.user.username %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="blank_"><%= doerInfo.name + ' '%><%if(doerInfo.lastname === null){}else{%><%=doerInfo.lastname%><%} %></a> has a new background image!
+						                </p>
+					              	</div>
+				            	</td>
+				          	</tr>
+				        </tbody>
+			      	</table>
+	    	<% }%>
+	    	<!-- User you follow starts following another user notification-->
+	    	<% if(params.notificationInfo.itemType === 'entity' && params.notificationInfo.action === 'followed'){ %>
+					<table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 0 0 0 -3px;">
+				        <tbody>
+				          	<tr>
+				            	<td style="padding: 0 25px; text-align: left;">
+					             	<div style="font-size: 14px; line-height: 38px; color: #b2b2b2;">
+						                <p style="font-size:18px;color:black;">
+						                	Hello <%= params.user.username %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="blank_"><%= doerInfo.name + ' '%><%if(doerInfo.lastname === null){}else{%><%=doerInfo.lastname%><%} %></a> is now following a new user!
+						                </p>
+					              	</div>
+				            	</td>
+				          	</tr>
+				        </tbody>
+			      	</table>
+			       	<table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 10px 0 0 -3px;padding:0px 20px">
+				        <tbody>
+					        <tr style="background-color:#F7F9FA;">
+					            <td style="padding: 25px 0px 25px 25px;">
+					            	<img style="width:52px;height:52px;border-radius:5px;"src="<%= CONFIG.siteUrl[application.env] + params.notificationInfo.entity.images.card.url %>"/>
+					            </td>
+					            <td style="padding-right:25px;">
+					            	<a href="<%= CONFIG.siteUrl[application.env] +'/'+ params.notificationInfo.entity.profileName %>" target="blank_" style="font-size:13px;color:#4D4D4D;text-align:left;font-weight:bold;"><%= params.notificationInfo.entity.name + ' ' + params.notificationInfo.entity.lastname %></a>
+					            </td>
+					        </tr>
+				        </tbody>
+			      	</table>
+	    	<% } %>
+	    	<!-- Organization has a new public member notification -->
+	    	<% if(params.notificationInfo.itemType === 'entity' && params.notificationInfo.action === 'became a public member'){%>
+					<%= JSON.stringify(params, null, 2) %>
+	    	<% }%>
 	    </div>
 	    <!-- Footer -->
 	    <div style="font-size: 13px; padding: 30px 0 0 0; color: #66635c;text-align:center;">
