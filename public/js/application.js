@@ -204,6 +204,7 @@ require('./widgets/posts/post');
 require('./widgets/posts/post-image');
 require('./widgets/posts/post-video');
 require('./widgets/posts/post-link');
+require('./widgets/posts/post-text');
 require('./widgets/posts/actions/save');
 require('./widgets/posts/actions/share');
 
@@ -226,6 +227,8 @@ require('./widgets/post-details/media/post-detail-media');
 require('./widgets/post-details/media/header');
 require('./widgets/post-details/media/thumb');
 require('./widgets/post-details/media/info');
+// post detail Text
+require('./widgets/post-details/post-detail-text');
 
 // editable posts
 require('./widgets/posts/edit/EditablePost');
