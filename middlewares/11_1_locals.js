@@ -194,6 +194,18 @@ module.exports = function(req, res, next) {
                 res.locals.currentPerson.ownedVoices = result;
                 req.currentPerson.ownedVoices = result;
 
+                // add voices {id,name} of organization currentUser owns
+                // to req.locals.currentPerson.voiceNames
+
+                var voiceTitles = voices.map(function(item) {
+                  return {
+                    id : hashids.encode(item.id),
+                    name : item.title
+                  }
+                });
+
+                res.locals.currentPerson.voiceNames.concat(voiceTitles);
+
                 return done();
               });
             });
