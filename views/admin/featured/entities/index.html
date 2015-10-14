@@ -39,7 +39,7 @@
 
 					<div class="admin-actions">
 
-						<a href="#" target="_blank"><button class="cv-button action-profile small">Reorder</button></a>
+						<a href="#" target="_blank"><button class="cv-button action-profile drag-reorder small">Reorder</button></a>
 						<a >
 
 							<form class="form-profile" action="/admin/featured/<%= entityType %>/<%= entity.id %>?_method=DELETE" method="POST" enctype="multipart/form-data">
@@ -76,15 +76,14 @@
 	}).render($('.invite-users'));
 	searchInput.disableButton();
 
-	searchInput.buttonEl.on('click', function(){
-
-
-
-  	});
-
 	var personElBase = $('<div class="person" id=""></div>');
 
-	searchInput.inputEl.find('input').on('keyup', function(){
+	searchInput.inputEl.find('input').on('keyup', function(e){
+
+		if (e.keyCode == 27) {
+			searchInput.reset();
+		}
+
 	    var searchStr = $(this).val().toLowerCase();
 	    var inputSearch = $(this);
 
@@ -99,10 +98,11 @@
 	      headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
 	      data : {query : searchStr},
 	      success: function(data) {
-	        if (data.length > 0){
+	      	console.log(data);
+	        if (data[entityType].length > 0){
 
 	          searchInput.element.find('.search-results').show();
-	          showUsers(data);
+	          showUsers(data[entityType]);
 
 	        } else {
 
@@ -142,20 +142,17 @@
 
 			    newEnt.find('.entity-image').attr('href', '/'+selectedUser.profileName);
 			    newEnt.find('.entity-image img').attr('src', '/uploads/development/entity_' + selectedUser.id + '/image_small.jpeg');
-
 			    newEnt.find('.admin-actions form').attr('action', '/admin/featured/<%= entityType %>/' + selectedUser.id + '?_method=DELETE');
 			    newEnt.find('.admin-actions form .entityId').val(selectedUser.id);
-
-
 			    newEnt.find('.card-mini-fullname').text(eName);
 			    newEnt.find('.card-mini-fullname').attr('href', '/'+selectedUser.profileName);
 			    newEnt.find('.card-mini-username').text(' · @' + selectedUser.profileName);
-
-			    newEnt.find('.location').text(electedUser.location + ' · ');
+			    newEnt.find('.location').text(selectedUser.location + ' · ');
 			    newEnt.find('.joined-at').text('Joined on'+  moment(selectedUser.createdAt).format('MMM, YYYY') );
 
+			    console.log('featured entity added');
 
-
+			    reorder();
 
 			},
 			error : function error(err) {
@@ -169,16 +166,36 @@
 	function showUsers(persons){
 
 	    searchInput.element.find('.search-results').empty();
+	    console.log(persons);
+
+		var entityIds = getFeaturedIds();
 
 	    persons.forEach(function(person){
-	      var personEl = personElBase.clone();
-	      personEl.attr('id', person.id);
-	      personEl.text(person.name + ' ' + person.lastname);
-	      personEl.on('click', function(){
-	        //setSelectedUser( this.getAttribute("id") );
-	        setSelectedUser(person);
-	      });
-	      searchInput.element.find('.search-results').append(personEl);
+
+	    	//var fruits = ["Banana", "Orange", "Apple", "Mango"];
+			//var a = fruits.indexOf("Apple");
+
+			console.log(entityIds.indexOf(person.id));
+
+			if(entityIds.indexOf(person.id) != -1){
+				return false;
+			}
+
+	      	var personEl = personElBase.clone();
+	      	personEl.attr('id', person.id);
+
+	      	if(person.lastname){
+	      		personEl.text(person.name + ' ' + person.lastname);
+	  		}else{
+	  			personEl.text(person.name);
+	  		}
+
+	     	personEl.on('click', function(){
+	        	setSelectedUser(person);
+	      	});
+
+	      	searchInput.element.find('.search-results').append(personEl);
+
 	    });
 
 	}
@@ -218,37 +235,29 @@
 	}
 
 	dragula([document.querySelector('.admin-users-list')])
-	.on('drag', function (el) {
-	    el.querySelector('.admin-actions').style.display = "none";
-	 })
-	.on('drop', function (el) {
+		.on('drag', function (el) {
+		    el.querySelector('.admin-actions').style.display = "none";
+		 })
+		.on('drop', function (el) {
+		    el.querySelector('.admin-actions').style.display = "inherit";
+			reorder();
+	 	 });
 
-		var nodes = document.querySelectorAll('.admin-user:not(.gu-mirror)');
-		var entityIds = [];
+	function reorder(){
+	 	console.log('reorder f()');
 
-		//console.log(nodes);
-
-		Array.prototype.forEach.call(nodes, function( node ){
-			entityIds.push(node.id);
-
-		});
-
-		reorder(entityIds);
+		var entityIds = getFeaturedIds();
 		console.log(entityIds);
-
-
- 	 });
-
-	 function reorder(ids){
 
 	 	$.ajax({
             type : 'POST',
             url : '/admin/featured/' + entityType + '/updatePositions',
             headers : {'csrf-token' : $('meta[name="csrf-token"]').attr('content')},
-            data : {entityIds : ids},
+            data : {entityIds : entityIds},
             dataType : 'json',
             success : function success(data) {
-                console.log('success');
+
+                console.log('reorder success');
             },
             error : function error(err) {
                 console.log('error');
@@ -256,7 +265,18 @@
             }
         });
 
-	 }
+	}
+
+	function getFeaturedIds () {
+		var nodes = document.querySelectorAll('.admin-user:not(.gu-mirror)');
+		var entityIds = [];
+
+		Array.prototype.forEach.call(nodes, function( node ){
+			entityIds.push(node.id);
+		});
+
+		return entityIds;
+	}
 
 </script>
 
