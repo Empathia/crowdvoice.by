@@ -151,29 +151,6 @@ module.exports = function(req, res, next) {
               return done();
             });
 
-          }, function(done) {
-
-            // Get the names of the voices owned and published
-            Voice.find({
-              owner_id: person.id,
-              status: Voice.STATUS_PUBLISHED
-            }, function (err, voices) {
-              if (err) { return done(err); }
-
-              async.map(voices, function (voice, next) {
-                next(null, {
-                  id: hashids.encode(voice.id),
-                  name: voice.title
-                });
-              }, function (err, voiceTitles) {
-                if (err) { return done(err); }
-
-                res.locals.currentPerson.voiceNames = voiceTitles;
-                req.currentPerson.voiceNames = voiceTitles;
-
-                done();
-              });
-            });
           }, function (done) {
             // Get Voices owned directly by user or owned by organizations that
             // user is owner of
@@ -204,7 +181,9 @@ module.exports = function(req, res, next) {
                   }
                 });
 
-                res.locals.currentPerson.voiceNames.concat(voiceTitles);
+                console.log('VOICES', voiceTitles)
+
+                res.locals.currentPerson.voiceNames = voiceTitles;
 
                 return done();
               });
