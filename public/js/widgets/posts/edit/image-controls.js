@@ -1,22 +1,22 @@
-/* jshint multistr: true */
 Class(CV, 'PostEditImageControls').inherits(Widget)({
     HTML : '\
     <div class="post-edit-image-controls">\
-        <div class="post-edit-images-nav ui-btn-group">\
-            <button class="images-nav-prev ui-btn -color-bg-white -color-grey -sm">\
+        <div class="post-edit-images-nav cv-button-group multiple -pr1">\
+            <button class="images-nav-prev cv-button tiny -p0">\
                 <svg class="post-edit-images-nav-svg">\
                     <use xlink:href="#svg-arrow-left"></use>\
                 </svg>\
             </button>\
-            <button class="images-nav-next ui-btn -color-bg-white -color-grey -sm">\
+            <button class="images-nav-next cv-button tiny -p0">\
                 <svg class="post-edit-images-nav-svg">\
                     <use xlink:href="#svg-arrow-right"></use>\
                 </svg>\
             </button>\
         </div>\
-        <button class="image-remove ui-btn -color-bg-white -color-grey -sm">\
-            Remove\
-        </button>\
+        <div class="cv-button-group multiple">\
+            <button class="image-replace cv-button tiny">Replace</button>\
+            <button class="image-remove cv-button tiny">Remove</button>\
+        </div>\
     </div>',
 
     prototype : {
@@ -32,6 +32,7 @@ Class(CV, 'PostEditImageControls').inherits(Widget)({
             this.el = this.element[0];
             this.imagesNav = this.el.querySelector('.post-edit-images-nav');
             this.imageRemove = this.el.querySelector('.image-remove');
+            this.imageReplace = this.el.querySelector('.image-replace');
 
             this._imagesLen = this.images.length;
 
