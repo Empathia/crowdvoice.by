@@ -302,9 +302,9 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
     upload : function upload(req, res, next) {
       ACL.isAllowed('upload', 'posts', req.role, {
-        currentPerson : req.currentPerson,
-        voiceSlug : req.params.voiceSlug,
-        profileName : req.params.profileName
+        currentPerson: req.currentPerson,
+        activeVoice: req.activeVoice,
+        voiceOwnerProfile: req.params.profileName
       }, function(err, response) {
         if (err) { return next(err); }
 
