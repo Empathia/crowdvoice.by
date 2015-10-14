@@ -1,6 +1,8 @@
+/* globals App */
 var rome = require('rome');
 var moment = require('moment');
 var autosize = require('autosize');
+var API = require('./../../../lib/api');
 
 Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSupport, BubblingSupport)({
     MAX_LENGTH_TITLE : 65,
@@ -331,7 +333,10 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
             this.imageControls.bind('nextImage', this._nextImageRef);
 
             this._removeImageRef = this._removeImage.bind(this);
-            this.imageControls.bind('removeImages', this._removeImageRef);
+            this.imageControls.bind('removeImage', this._removeImageRef);
+
+            this._replaceImageRef = this._replaceImage.bind(this);
+            this.imageControls.bind('replaceImage', this._replaceImageRef);
 
             this.el.insertAdjacentHTML('afterbegin', this.constructor.HTML_ADD_COVER_BUTTON);
             this._showImageRef = this._showImage.bind(this);
@@ -377,6 +382,28 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
             this.hideImageWrapper();
             this._resetPostImage();
             this.addCoverButton.classList.add('active');
+        },
+
+        _replaceImage : function _replaceImage(ev) {
+            var data = new FormData();
+            data.append('image',  ev.image);
+
+            API.uploadArticleImage({
+                profileName : App.Voice.data.owner.profileName,
+                voiceSlug : App.Voice.data.slug,
+                data : data,
+            }, function(err, res) {
+                this.images.push(res);
+                this._imagesLen = this.images.length;
+                this._currentImageIndex = (this._imagesLen - 1);
+                this._updatePostImage();
+
+                if (this.imageControls) {
+                    this.imageControls.updateImages(this.images);
+                } else {
+                    this._addImageControls();
+                }
+            }.bind(this));
         },
 
         /* Shows the post.imageContainer, updates the image data to be send and hides addCoverButton
