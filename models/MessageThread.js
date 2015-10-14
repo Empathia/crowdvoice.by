@@ -278,10 +278,6 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
         })
       });
 
-      // send email to person who received message / invitation / request
-      this.bind('afterCreateMessage', function (msg) {
-      });
-
       this.bind('afterDestroyMessage', function(data) {
         if (thread.isPersonSender(data.personId)) {
           thread.messageCountSender--;
