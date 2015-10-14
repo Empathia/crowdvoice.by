@@ -179,6 +179,7 @@ require('./widgets/posts/post');
 require('./widgets/posts/post-image');
 require('./widgets/posts/post-video');
 require('./widgets/posts/post-link');
+require('./widgets/posts/post-text');
 require('./widgets/posts/actions/save');
 require('./widgets/posts/actions/share');
 

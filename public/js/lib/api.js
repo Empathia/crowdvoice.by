@@ -217,7 +217,7 @@ module.exports = {
      /* Saves new article to voice.
      * @argument args.userSlug <required> [String] the voice owner profileName
      * @argument args.voiceSlug <required> [String] the voice slug
-     * @argument args.articleTitle <required> [String] the article title 
+     * @argument args.articleTitle <required> [String] the article title
      * @argument args.articleContent <required> [String] article html content
      * @argument callback <required> [Function]
      */
@@ -225,15 +225,24 @@ module.exports = {
         if (!args.userSlug || !args.voiceSlug || !args.articleTitle || !args.articleContent || !callback) {
             throw new Error('Missing required params');
         }
+
         if ((typeof callback).toLowerCase() !== "function") {
             throw new Error('Callback should be a function');
         }
+
+        var postData = {
+          title: args.articleTitle,
+          content: args.articleContent,
+          publishedAt: args.articleDate,
+          imagePath : args.articleImage
+        }
+
         $.ajax({
             type : 'POST',
             url : '/' + args.userSlug + '/' + args.voiceSlug +'/saveArticle',
             headers : {'csrf-token' : this.token},
             cache : false,
-            data : {title: args.articleTitle, content: args.articleContent, publishedAt: args.articleDate},
+            data : postData,
             dataType : 'json',
             success : function success(data) { callback(false, data); },
             error : function error(err) { callback(true, err); },
@@ -334,7 +343,7 @@ module.exports = {
         if ((typeof callback).toLowerCase() !== "function") {
             throw new Error('Callback should be a function');
         }
-        
+
 
         $.ajax({
             type : 'POST',

@@ -30,7 +30,7 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
 
             // Voice and user slugs
             this.voiceSlug = App.Voice.data.slug;
-            this.userSlug = App.Voice.data.owner.profileName;     
+            this.userSlug = App.Voice.data.owner.profileName;
 
             this.addCloseButton()._setup()._bindEvents()._disablePostButton();
         },
@@ -67,13 +67,13 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
                 })
             ).render(this.content);
 
-            
+
             // Content
             this.articleContent = this.content.querySelector('.write-article-body-editable');
             this.articleTitle = this.content.querySelector('.editor-title');
             this.coverButton = this.editor.editorHeader.coverButton;
             this.coverImage = this.editor.editorHeader.el;
-            
+
 
             return this;
         },
@@ -97,7 +97,7 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
 
             return this;
         },
-        // Saves the article 
+        // Saves the article
         _buttonClick : function _buttonClick(ev){
             // Disables button and activates the loader
             this._disablePostButton();
@@ -111,7 +111,7 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
                     articleContent : $(this.articleContent).html(),
                     articleImage : this.articleImage.path,
                     articleDate : this.postDate.timePickerInput.value
-                }, this._responseHandler.bind(this)); 
+                }, this._responseHandler.bind(this));
             }else{
                 API.voiceNewArticle({
                     userSlug : this.userSlug,
@@ -120,7 +120,7 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
                     articleContent : $(this.articleContent).html(),
                     articleImage : '',
                     articleDate : this.postDate.timePickerInput.value
-                }, this._responseHandler.bind(this)); 
+                }, this._responseHandler.bind(this));
             }
         },
         _responseHandler : function _responseHandler(err, res){
@@ -128,16 +128,16 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
                 console.log(res.status + ' ' +res.statusText);
                 this._enabledPostButton();
                 $('.cv-loader').addClass('hidden');
-                this.loaderError.activate(); 
+                this.loaderError.activate();
                 window.setTimeout(function() {
                     $(this.loadingStep).removeClass('active');
                 }, 2000);
-                
+
                 return;
             }
             // Success feedack
             $('.cv-loader').addClass('hidden');
-            this.loaderSuccess.activate(); 
+            this.loaderSuccess.activate();
 
             window.setTimeout(function() {
                 window.location.reload();
@@ -173,7 +173,7 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
                 this._enabledPostButton();
             } else {
                 this._disablePostButton();
-            }           
+            }
         },
         /* Enables the Post Button.
          * @method _enabledPostButton <private> [Function]

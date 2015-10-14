@@ -494,8 +494,27 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         post.save(function (err) {
           if (err) { return next(err); }
 
-          PostsPresenter.build([post], req.currentPerson, function (err, presentedPost) {
-            return res.json(presentedPost[0]);
+          var imagePath = '';
+
+          if (req.body.imagePath && req.body.imagePath !== '') {
+            imagePath = process.cwd() + '/public' + req.body.imagePath;
+          }
+
+          post.uploadImage('image', imagePath, function() {
+            post.save(function(err, resave) {
+              if (err) { return next(err); }
+
+              PostsPresenter.build([post], req.currentPerson, function(err, posts) {
+                if (err) { return next(err); }
+
+                if (req.body.imagePath) {
+                  fs.unlinkSync(process.cwd() + '/public' + req.body.imagePath);
+                  logger.log('Deleted tmp image: ' + process.cwd() + '/public' + req.body.imagePath);
+                }
+
+                return res.json(posts[0]);
+              });
+            });
           });
         });
       });
