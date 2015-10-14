@@ -288,8 +288,8 @@ var NotificationMailer = Module('NotificationMailer')({
   },
 
   // Send on new follow of your voice
-  newVoiceFollower: function (user, newFollowerEntity, followedVoice, callback) {
-    NotificationSetting.find({ entity_id: user.entityId }, function (err, setting) {
+  newVoiceFollower: function (receiver, newFollowerEntity, followedVoice, callback) {
+    NotificationSetting.find({ entity_id: receiver.entity.id }, function (err, setting) {
       if (err) { return callback(err) }
 
       if (!setting[0].emailSettings.selfNewVoiceFollower) {
@@ -316,7 +316,7 @@ var NotificationMailer = Module('NotificationMailer')({
 
           template.parseSync().renderSync({
             params: {
-              user: user,
+              receiver: receiver,
               follower: presentedEntity[0],
               voice: presentedVoice[0],
             },
@@ -327,8 +327,8 @@ var NotificationMailer = Module('NotificationMailer')({
           message.html = view
 
           message.to.push({
-            email: user.email,
-            name: user.name,
+            email: receiver.user.email,
+            name: receiver.user.name,
             type: 'to',
           })
 
