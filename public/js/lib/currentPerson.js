@@ -42,6 +42,10 @@ module.exports = {
      * @return [Boolean]
      */
     ownerOf : function ownerOf(type, id) {
+        if (!this.get()) {
+            return false;
+        }
+
         if (type === 'organization') {
             return (this.get().ownedOrganizations.some(function(organization) {
                 return (organization.id === id);
