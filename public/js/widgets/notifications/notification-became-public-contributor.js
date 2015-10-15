@@ -1,4 +1,4 @@
-Class(CV, 'NotificationNewPosts').inherits(CV.Notification)({
+Class(CV, 'NotificationBecamePublicContributor').inherits(CV.Notification)({
     ELEMENT_CLASS : 'cv-notification created',
     HTML : '\
         <div>\
@@ -28,10 +28,11 @@ Class(CV, 'NotificationNewPosts').inherits(CV.Notification)({
 
             this.dom.updateAttr('src', this.mainAvatarElement, this.actionDoer.images.small.url);
 
-            if (this.itemType === 'voice'){
-                new CV.VoiceCoverMini({data:this.voice}).render(this.entityVoice);
-                this.dom.updateText(this.mainText, this.actionDoer.name + ' ' + this.actionDoer.lastname + ' added new posts to the voice:');
-            }
+            this.appendChild(new CV.VoiceCoverMini({
+                data: this.voice
+            })).render(this.entityVoice);
+
+            this.dom.updateText(this.mainText, this.actionDoer.name + ' ' + this.actionDoer.lastname + ' became a public contributor of a voice:');
         }
     }
 });

@@ -48,6 +48,7 @@ require('./widgets/ui/InputButtonResultsItem');
 // notifications
 require('./widgets/notifications/manager');
 require('./widgets/notifications/notification');
+require('./widgets/notifications/notification-became-public-contributor');
 require('./widgets/notifications/notification-followed');
 require('./widgets/notifications/notification-created');
 require('./widgets/notifications/notification-new-posts');
