@@ -124,7 +124,7 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
           return next(new ForbiddenError('Unauthorized. Must be Admin.'))
         }
 
-        var featured = new FeaturedPerson({
+        var featured = new global['Featured' + inflection.transform(req.params.entityType, ['capitalize', 'singularize'])]({
           entityId: hashids.decode(req.body.entityId)[0],
           position: 0,
         })
