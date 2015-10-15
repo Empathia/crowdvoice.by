@@ -209,8 +209,8 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
          * @return Card [Object]
          */
         _setupDefaultElements : function _setupDefaultElements() {
-            if (this.data.backgrounds.card) {
-                this.dom.updateBgImage(this.profileCoverEl, this.data.backgrounds.card.url);
+            if (this.data.backgrounds.bluredCard) {
+                this.dom.updateBgImage(this.profileCoverEl, this.data.backgrounds.bluredCard.url);
             } else {
                 this.profileCoverEl.classList.add('-colored-background');
             }
