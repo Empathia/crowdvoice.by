@@ -44,11 +44,9 @@ Class(CV, 'VoiceModerateFooter').inherits(Widget).includes(CV.WidgetUtils)({
                 })).render(this.leftElementWrapper);
             }
 
-            this.appendChild(
-                new CV.VoiceModerateDoneButton({
-                    name : 'button'
-                })
-            ).render(this.rightElementWrapper);
+            this.appendChild(new CV.VoiceModerateDoneButton({
+                name : 'button'
+            })).render(this.rightElementWrapper);
 
             return this;
         },

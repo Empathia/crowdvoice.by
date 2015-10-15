@@ -15,15 +15,18 @@ Class(CV, 'PostEditImageControls').inherits(Widget)({
                 </svg>\
             </button>\
         </div>\
+        <input type="file" name="image" accept="image/*" class="-hide"/>\
         <div class="cv-button-group multiple">\
             <button class="image-replace cv-button tiny">Replace</button>\
-            <input type="file" name="image" accept="image/*" class="-hide"/>\
             <button class="image-remove cv-button tiny">Remove</button>\
         </div>\
     </div>',
 
     prototype : {
         images : null,
+        /* The Post sourceType
+         */
+        sourceType : null,
 
         _imagesLen : 0,
         prevButton : null,
@@ -41,6 +44,12 @@ Class(CV, 'PostEditImageControls').inherits(Widget)({
             this.inputFile = this.el.querySelector('input[type="file"]');
             this.prevButton = this.el.querySelector('.images-nav-prev');
             this.nextButton = this.el.querySelector('.images-nav-next');
+
+            if (this.sourceType === 'image' || this.sourceType === 'video') {
+                // images and videos require an image, so we disable the
+                // remove image action.
+                this.removeButton.parentElement.removeChild(this.removeButton);
+            }
 
             this.updateImages(this.images)._bindEvents();
         },
