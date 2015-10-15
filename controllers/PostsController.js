@@ -416,7 +416,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         if (!response.isAllowed) { return next(new ForbiddenError('Unauthorized.')); }
 
         var sp = new SavedPost({
-          entityId: hashids.decode(req.currentPerson.id)[0],
+          entityId: response.person.id,
           postId: hashids.decode(req.params.postId)[0]
         });
 
@@ -447,7 +447,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         var person = req.currentPerson;
 
         SavedPost.find({
-          'entity_id' : hashids.decode(req.currentPerson.id)[0],
+          'entity_id' : response.person.id,
           'post_id' : hashids.decode(req.params.postId)[0]
         }, function(err, result) {
           if (err) { next(err); return; }
