@@ -61,7 +61,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           return done();
         });
       }, function(done) {
-        if (readablePost) {
+        if (!readablePost) {
           return done();
         }
 
@@ -475,8 +475,8 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
       ACL.isAllowed('create', 'posts', req.role, {
         currentPerson : req.currentPerson,
-        voiceSlug : req.params.voiceSlug,
-        profileName : req.params.profileName
+        activeVoice : req.activeVoice,
+        voiceOwnerProfile : req.params.profileName
       }, function (err, response) {
         if (err) { return next(err); }
 
@@ -497,8 +497,9 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         var post = new Post({
           title: req.body.title,
           description: sanitizer(req.body.content),
-          ownerId: response.currentPerson.id,
-          voiceId: response.voice.id,
+          ownerId: response.postOwner.id,
+          voiceId: req.activeVoice.id,
+          publishedAt : req.body.publishedAt,
           approved: approved,
           sourceType: Post.SOURCE_TYPE_TEXT,
           sourceUrl: null, // required if sourceType !== Post.SOURCE_TYPE_TEXT
@@ -508,8 +509,27 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         post.save(function (err) {
           if (err) { return next(err); }
 
-          PostsPresenter.build([post], function (err, presentedPost) {
-            return res.json(presentedPost[0]);
+          var imagePath = '';
+
+          if (req.body.imagePath && req.body.imagePath !== '') {
+            imagePath = process.cwd() + '/public' + req.body.imagePath;
+          }
+
+          post.uploadImage('image', imagePath, function() {
+            post.save(function(err, resave) {
+              if (err) { return next(err); }
+
+              PostsPresenter.build([post], req.currentPerson, function(err, posts) {
+                if (err) { return next(err); }
+
+                if (req.body.imagePath) {
+                  fs.unlinkSync(process.cwd() + '/public' + req.body.imagePath);
+                  logger.log('Deleted tmp image: ' + process.cwd() + '/public' + req.body.imagePath);
+                }
+
+                return res.json(posts[0]);
+              });
+            });
           });
         });
       });

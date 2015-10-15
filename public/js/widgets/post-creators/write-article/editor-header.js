@@ -7,7 +7,7 @@ Class(CV, 'PostCreatorWriteArticleEditorHeader').inherits(Widget)({
 
     HTML : '\
         <div class="-rel">\
-            <textarea class="editor-title -block -font-bold" placeholder="Title">Suspendisse Dictum Feugiat Nisl Ut (H1)</textarea>\
+            <textarea class="editor-title -block -font-bold" placeholder="Title"></textarea>\
         </div>\
     ',
 
