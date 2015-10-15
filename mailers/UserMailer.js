@@ -90,12 +90,10 @@ var UserMailer = Module('UserMailer')({
     var viewFile = fs.readFileSync('./views/mailers/user/passwordReset.html', 'utf8');
 
     var template = new Thulium({
-      params: {
-        template: viewFile
-      }
+      template : viewFile
     });
 
-    template.parseSync().renderSync({ user: user });
+    template.parseSync().renderSync({user : user});
 
     var view = template.view;
 

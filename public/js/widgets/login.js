@@ -126,7 +126,7 @@ Class(CV, 'Login').inherits(Widget)({
       <form action="" method="post" accept-charset="utf-8">\
         <div class="form-field">\
           <div class="cv-input">\
-            <input type="password" class="password" placeholder="YOUR PASSWORD">\
+            <input name="password" type="password" class="password" placeholder="YOUR NEW PASSWORD">\
           </div>\
         </div>\
         <div class="cv-check">\
@@ -431,13 +431,3 @@ Class(CV, 'Login').inherits(Widget)({
     }
 
 });
-
-
-
-
-
-
-
-
-
-
