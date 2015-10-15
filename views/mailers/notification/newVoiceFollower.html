@@ -7,19 +7,19 @@
 		<% var day = voiceDate.getDate(); %> 
 		<% var monthIndex = voiceDate.getMonth(); %>
 		<% var year = voiceDate.getFullYear(); var voiceImage; %>
-		<% if(Object.getOwnPropertyNames(voiceInfo.images).length === 0)){ voiceImage = CONFIG.siteUrl[application.env]+'/img/img-placeholder.png'; }else{ voiceImage = CONFIG.siteUrl[application.env]+voiceInfo.images.small.url;} %>
+		<% if(Object.getOwnPropertyNames(voiceInfo.images).length === 0){ voiceImage = CONFIG.siteUrl[application.env]+'/img/img-placeholder.png'; }else{ voiceImage = CONFIG.siteUrl[application.env]+voiceInfo.images.small.url;} %>
 </pre>
 <!-- Change image url -->
 <div style="background-color:#F7F9FA !important;background: url('<%= CONFIG.siteUrl[application.env]+'/img/cv-mailtemplate.png'%>')right top;background-repeat: no-repeat; text-align: center; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; height: 100%;">
 	<!-- Header -->
 	<div style="padding: 30px 0 25px 0; text-align: center;">
 		<p style="font-size:36px;color:#454B4D">CrowdVoice.by</p>
-		<p style="font-size:12px;color:#A1B0B3;"><%= monthNames[monthIndex] + ' ' + day +', ' + year %>  •  <a style="color:#A1B0B3"href="#" target="blank_">View in Browser</a></p>
+		<p style="font-size:12px;color:#A1B0B3;"><%= monthNames[monthIndex] + ' ' + day +', ' + year %></p>
 	</div>
 	<center style="padding: 0 0 40px 0;">
 	    <div style="display: inline-block; width: 550px; padding: 30px 0 30px 0; background-color: #FFFFFF; color: #4c4b49; border-radius: 0px;border-top:10px solid;border-top-color:#FF9400;box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.5);">
 	    	<!-- Notification when VOICE gets followed by USER -->
-	    	<% if(params.follower.type === 'person') {%>
+	    	<% if(params.follower.type === 'person') { %>
 			      	<table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 0 0 0 -3px;">
 			        	<tbody>
 			          		<tr>
@@ -82,7 +82,7 @@
 	      <a target="blank_" href="https://twitter.com/CrowdVoice" style="padding: 0px 10px;text-decoration:none;vertical-align:super;"><img src="<%= CONFIG.siteUrl[application.env] %>/img/icons/icon-circle-twitter.png"/></a>
 	      <a target="blank_" href="<%= CONFIG.siteUrl[application.env] %>" style="padding: 0px 10px;text-decoration:none;vertical-align: -webkit-baseline-middle;"><img src="<%= CONFIG.siteUrl[application.env] %>/img/icons/icon-logo-cv.png"/></a>
 	      <a target="blank_" href="https://www.facebook.com/crowdvoice" style="padding: 0px 10px;text-decoration:none;vertical-align:super;"><img src="<%= CONFIG.siteUrl[application.env] %>/img/icons/icon-circle-facebook.png"/></a>
-	      <a href="#" style="font-size:12px;color:#8A9699;display:block;margin-top:25px;">Manage your Notifications Settings</a>
+	      <a href="<%= CONFIG.siteUrl[application.env] + '/' + params.receiver.entity.profileName %>/edit#notifications" style="font-size:12px;color:#8A9699;display:block;margin-top:25px;">Manage your Notifications Settings</a>
 	      <p style="font-size:12px;color:A1B0B3;">© Majal, 2015. All Rights Reserved</p>
 	    </div>
 	</center>
