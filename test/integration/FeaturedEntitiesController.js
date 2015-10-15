@@ -145,3 +145,61 @@ test('Re-order featured organizations ( .updatePositions() )', function (t) {
     })
   })
 })
+
+test('Create new featured organization ( .create() )', function (t) {
+  var cookies,
+    csrf,
+    agent = request.agent()
+
+  async.series([
+    function (next) {
+      agent
+        .get(urlBase + '/csrf')
+        .end(function (err, res) {
+          if (err) { t.fail(err) }
+
+          csrf = res.text
+
+          return next()
+        })
+    },
+
+    function (next) {
+      agent
+        .post(urlBase + '/session')
+        .send({
+          _csrf: csrf,
+          username: 'cersei',
+          password: '12345678'
+        })
+        .end(function (err, res) {
+          if (err) { t.fail(err) }
+
+          return next()
+        })
+    },
+  ], function(err) {
+    if (err) { t.fail(err) }
+
+    agent
+      .post(urlBase + '/admin/featured/organizations/new')
+      .accept('application/json')
+      .send({
+        _csrf: csrf,
+        entityId: 'AVolB9X1b3Ym', // House Baratheon
+      })
+      .end(function (err, res) {
+        if (err) { console.log(err); t.fail(err) }
+
+        t.equal(res.status, 200, 'res.status')
+
+        FeaturedOrganization.find({ entity_id: 24 }, function (err, result) {
+          if (err) { return t.fail(err) }
+
+          t.equal(result.length, 1, 'one record in the DB')
+
+          t.end()
+        })
+      })
+  })
+})
