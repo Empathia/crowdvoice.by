@@ -218,8 +218,6 @@ module.exports = function(req, res, next) {
                   }
                 });
 
-                console.log('VOICES', voiceTitles)
-
                 res.locals.currentPerson.voiceNames = voiceTitles;
 
                 return done();
