@@ -21,10 +21,8 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
             </div>\
         </div>',
 
-    HTML_ADD_COVER_BUTTON : '\
-        <button class="post-edit-add-cover-button ui-btn -color-bg-white -color-grey -sm">\
-            Add Cover\
-        </button>',
+    HTML_ADD_COVER_BUTTON : '<button class="post-edit-add-cover-button cv-button tiny">Add Cover</button>',
+    HTML_UPLOAD_COVER_BUTTON : '<button class="post-edit-upload-cover-button cv-button tiny">Upload Cover</button>',
 
     /* Creates a specific Post by type using the Strategy Pattern.
      * The Post type should be one of the knows post types available.
@@ -50,11 +48,13 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
 
         /* preview post creation props */
         images : null,
+        imagesToBeRemove : null,
         imagePath : '',
 
         /* private props */
         _currentImageIndex : 0,
         _imagesLen : 0,
+        _DO_NOT_DISPLAY_COVER_IMAGE : false,
 
         /* Checks if we receive an Array of images on the initial config object,
          * if so it means that we may have to show the controls to allow the user selecting a cover image
@@ -81,13 +81,39 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
 
             if (this.images) {
                 this._imagesLen = this.images.length;
+                this.imagesToBeRemove = this.images.slice();
             } else {
+                // create empty array so it does not break, postPresenter
+                // expects this.images.toBe(Array)
                 this.images = [];
+                this.imagesToBeRemove = [];
             }
 
             if (this._imagesLen) {
+                // it is a very new Post and has 1 or more images
                 this._currentImageIndex = 0;
                 this._updatePostImage()._addImageControls();
+            } else {
+                if (this.postImages && this.postImages.medium) {
+                    // it is an existing Post (moderation)
+                    // add the existing image to the array so it allows the
+                    // user to replace the image if she want.
+                    this.images.push({
+                        format: this.postImages.medium.meta.format,
+                        height: this.postImages.medium.meta.height,
+                        width: this.postImages.medium.meta.width,
+                        path: this.postImages.medium.url
+                    });
+
+                    this._currentImageIndex = 0;
+                } else {
+                    // it is a very new Post with no images.
+                    // display the upload button so the user can upload.
+                    // an image from its current device.
+                    this._showUploadCoverButton();
+                }
+
+                this._addImageControls();
             }
 
             return this;
@@ -98,6 +124,23 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
          * @returns PostModel data + imagesArray extra props [Object]
          */
         getEditedData : function getEditedData() {
+            var imagePath = '';
+
+            if (this.postImages) {
+                // Editing an existing Post? (moderation)
+                if (this._DO_NOT_DISPLAY_COVER_IMAGE === true) {
+                    // post without image
+                    imagePath = this.imagePath;
+                } else {
+                    // post with current image (if replaced), otherwise
+                    // post with old image
+                    imagePath = this.imagePath || this.postImages.medium.url;
+                }
+            } else {
+                // Editing a very new post.
+                imagePath = this.imagePath;
+            }
+
             return {
                 title : this.format.truncate(this.titleElement.value, this.constructor.MAX_LENGTH_TITLE),
                 description : this.format.truncate(this.descriptionElement.value, this.constructor.MAX_LENGTH_DESCRIPTION),
@@ -112,8 +155,8 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
                 sourceUrl : this.sourceUrl,
 
                 // extra props
-                images : this.images.map(function(item) {return item.path;}),
-                imagePath : (this.postImages && this.postImages.medium.url) || this.imagePath,
+                images : this.imagesToBeRemove.map(function(item) {return item.path;}),
+                imagePath : imagePath,
             };
         },
 
@@ -301,6 +344,7 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
             this.setImageHeight(height);
             this.setCoverImage(this.imagePath);
 
+            this._postDimensionsChanged();
             return this;
         },
 
@@ -312,6 +356,33 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
             this.imagePath = '';
             this.imageWidth = null;
             this.imageHeight = null;
+            this._DO_NOT_DISPLAY_COVER_IMAGE = true;
+        },
+
+        /* Shows the Upload Cover Button.
+         * This button is displayed only when the Posts has 0 images.
+         * The button allows the user to choose an image from its device to be
+         * displayed as the cover image of the Post.
+         * @method _showUploadCoverButton <private> [Function]
+         * @return EditablePost
+         */
+        _showUploadCoverButton : function _showUploadCoverButton() {
+            this.el.insertAdjacentHTML('afterbegin', this.constructor.HTML_UPLOAD_COVER_BUTTON);
+            this.uploadCoverButton = this.el.querySelector('.post-edit-upload-cover-button');
+            this.uploadCoverButton.classList.add('active');
+            this._triggerUploadImageRef = this._triggerUploadImage.bind(this);
+            this.uploadCoverButton.addEventListener('click', this._triggerUploadImageRef);
+            return this;
+        },
+
+        /* Open the 'select file' window.
+         * This will trigger the click event on imageControls.replaceButton, so the flow
+         * for replace and upload is the same thing.
+         * @method _triggerUploadImage <private> [Function]
+         */
+        _triggerUploadImage : function _triggerUploadImage(ev) {
+            ev.stopPropagation();
+            this.imageControls.replaceButton.click();
         },
 
         /* Adds the image controls (next,prev,remove,add) to handle the cover and subscribe its events.
@@ -319,12 +390,11 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
          * @return EditablePost
          */
         _addImageControls : function _addImageControls() {
-            this.appendChild(
-                new CV.PostEditImageControls({
-                    name : 'imageControls',
-                    images : this.images
-                })
-            ).render(this.imageWrapperElement);
+            this.appendChild(new CV.PostEditImageControls({
+                name : 'imageControls',
+                images : this.images,
+                sourceType : this.sourceType
+            })).render(this.imageWrapperElement);
 
             this._prevImageRef = this._prevImage.bind(this);
             this.imageControls.bind('prevImage', this._prevImageRef);
@@ -340,7 +410,7 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
 
             this.el.insertAdjacentHTML('afterbegin', this.constructor.HTML_ADD_COVER_BUTTON);
             this._showImageRef = this._showImage.bind(this);
-            this.addCoverButton = this.el.parentNode.querySelector('.post-edit-add-cover-button');
+            this.addCoverButton = this.el.querySelector('.post-edit-add-cover-button');
             this.addCoverButton.addEventListener('click', this._showImageRef);
 
             return this;
@@ -382,11 +452,17 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
             this.hideImageWrapper();
             this._resetPostImage();
             this.addCoverButton.classList.add('active');
+            this._postDimensionsChanged();
         },
 
+        /* Uploads a new image.
+         * @argument ev <required> [Object]
+         * @argument ev.image <required> [File] the image to be uploaded.
+         * Should be a File, useually taken from an input file.
+         * @return undefined
+         */
         _replaceImage : function _replaceImage(ev) {
-            var data = new FormData();
-            data.append('image',  ev.image);
+            var data = new FormData(); data.append('image',  ev.image);
 
             API.uploadArticleImage({
                 profileName : App.Voice.data.owner.profileName,
@@ -394,9 +470,14 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
                 data : data,
             }, function(err, res) {
                 this.images.push(res);
+                this.imagesToBeRemove.push(res);
                 this._imagesLen = this.images.length;
                 this._currentImageIndex = (this._imagesLen - 1);
                 this._updatePostImage();
+
+                if (this.uploadCoverButton) {
+                    this.uploadCoverButton.classList.remove('active');
+                }
 
                 if (this.imageControls) {
                     this.imageControls.updateImages(this.images);
