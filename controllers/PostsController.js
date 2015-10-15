@@ -416,9 +416,10 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         if (!response.isAllowed) { return next(new ForbiddenError('Unauthorized.')); }
 
         var sp = new SavedPost({
-          entityId: req.currentPerson.id,
+          entityId: hashids.decode(req.currentPerson.id)[0],
           postId: hashids.decode(req.params.postId)[0]
         });
+
         sp.save(function(err) {
           if (err) { return next(err); }
 
