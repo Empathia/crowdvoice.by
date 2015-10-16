@@ -24,7 +24,8 @@ var data = {
   entities : {},
   organizations : {},
   voices : {},
-  topics : {}
+  topics : {},
+  invitations : {},
 };
 
 async.series([function(next) {
@@ -129,7 +130,7 @@ async.series([function(next) {
         profileName : 'cersei-lannister',
         isAnonymous : false,
         isAdmin     : true,
-        description : 'Cersei Lannister is the eldest child of Tywin and Joanna Lannister by mere moments, and the twin sister of Jaime Lannister.',
+        description : 'Cersei Lannister is the eldest child of Tywin and Joanna Lannister by mere moments, and the twin sister of Jamie Lannister.',
         location : 'King\'s Landing'
       },
       user : data.users.cersei,
@@ -143,7 +144,7 @@ async.series([function(next) {
         lastname    : 'Lannister',
         profileName : 'jamie-lannister',
         isAnonymous : false,
-        description : 'Ser Jaime Lannister, known as the Kingslayer, is a knight from House Lannister.',
+        description : 'Ser Jamie Lannister, known as the Kingslayer, is a knight from House Lannister.',
         location : 'King\'s Landing'
       },
       user : data.users.jamie,
@@ -889,6 +890,41 @@ async.series([function(next) {
 
 }, function(next) {
 
+  // Invitations
+
+  var invitations = [
+    {
+      data: {
+        invitatorEntityId: data.entities['cersei-lannister'].id,
+        invitedEntityId: data.entities['arya-stark'].id,
+      },
+      invitator: data.entities['cersei-lannister'].name,
+      invited: data.entities['arya-stark'].name,
+    },
+    {
+      data: {
+        invitatorEntityId: data.entities['jon-snow'].id,
+        invitedEntityId: data.entities['jamie-lannister'].id,
+      },
+      invitator: data.entities['jon-snow'].name,
+      invited: data.entities['jamie-lannister'].name,
+    },
+  ];
+
+  async.each(invitations, function (invite, done) {
+    var invitation = new InvitationRequest(invite.data);
+
+    invitation.save(function (err) {
+      if (err) { return done(err); }
+
+      data.invitations[invite.invitator + '-to-' + invite.invited] = invitation;
+
+      return done();
+    });
+  }, next);
+
+}, function(next) {
+
   // FeaturedVoices
   var featured = [
     data.voices.winterfell,
@@ -1043,11 +1079,13 @@ async.series([function(next) {
   }, function(done) {
     data.entities['tyrion-lannister'].followEntity(data.organizations['house-lannister'], done);
   }], next);
+
 }, function(next) {
 
   // Threads And Messages
 
   async.series([function(done) {
+
     MessageThread.findOrCreate({
       senderPerson : data.entities['tyrion-lannister'],
       senderEntity : data.entities['tyrion-lannister'],
@@ -1084,6 +1122,51 @@ async.series([function(next) {
         }, doneMessage);
       }], done);
     })
+
+  }, function (done) {
+
+    MessageThread.findOrCreate({
+      senderPerson : data.entities['cersei-lannister'],
+      senderEntity : data.entities['cersei-lannister'],
+      receiverEntity : data.entities['arya-stark'],
+    }, function (err, thread) {
+      if (err) { return done(err); }
+
+      async.series([
+        function (doneMessage) {
+          thread.createMessage({
+            senderPersonId: data.entities['cersei-lannister'].id,
+            message: 'Would you be interested in this offer?',
+            type: 'invitation_organization',
+            invitationRequestId: data.invitations['Cersei-to-Arya'].id,
+            organizationId: data.organizations['house-lannister'].id,
+          }, doneMessage);
+        },
+      ], done);
+    });
+
+  }, function (done) {
+
+    MessageThread.findOrCreate({
+      senderPerson : data.entities['jon-snow'],
+      senderEntity : data.entities['jon-snow'],
+      receiverEntity : data.entities['jamie-lannister'],
+    }, function (err, thread) {
+      if (err) { return done(err); }
+
+      async.series([
+        function (doneMessage) {
+          thread.createMessage({
+            senderPersonId: data.entities['jon-snow'].id,
+            message: 'Would you be interested in this offer?',
+            type: 'invitation_voice',
+            invitationRequestId: data.invitations['Jon-to-Jamie'].id,
+            voiceId: data.voices['white-walkers'].id,
+          }, doneMessage);
+        },
+      ], done);
+    });
+
   }], next);
 }, function(next) {
 
