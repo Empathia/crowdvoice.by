@@ -267,7 +267,7 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
                           invite.destroy(next);
                         });
                       },
-                    ], next);
+                    ], done);
                   }, function(err) {
                     if (err) { return next(err); }
 
