@@ -57,7 +57,7 @@ var NotificationMailer = Module('NotificationMailer')({
 
         return callback(null, result)
       }, function (err) {
-        logger.err('NotificationMailer notification(): A mandrill error occurred: ' + err.name + ' - ' + err.message)
+        logger.error('NotificationMailer notification(): A mandrill error occurred: ' + err.name + ' - ' + err.message)
         return callback(err)
       })
     })
@@ -158,7 +158,7 @@ var NotificationMailer = Module('NotificationMailer')({
 
               return callback(null, result)
             }, function (err) {
-              logger.err('NotificationMailer newMessage(): A mandrill error occurred: ' + err.name + ' - ' + err.message)
+              logger.error('NotificationMailer newMessage(): A mandrill error occurred: ' + err.name + ' - ' + err.message)
               return callback(err)
             })
           })
@@ -263,7 +263,7 @@ var NotificationMailer = Module('NotificationMailer')({
 
               return callback(null, result)
             }, function (err) {
-              logger.err('NotificationMailer newInvitation(): A mandrill error occurred: ' + err.name + ' - ' + err.message)
+              logger.error('NotificationMailer newInvitation(): A mandrill error occurred: ' + err.name + ' - ' + err.message)
               return callback(err)
             })
           })
@@ -368,7 +368,7 @@ var NotificationMailer = Module('NotificationMailer')({
 
               return callback(null, result)
             }, function (err) {
-              logger.err('NotificationMailer newRequest(): A mandrill error occurred: ' + err.name + ' - ' + err.message)
+              logger.error('NotificationMailer newRequest(): A mandrill error occurred: ' + err.name + ' - ' + err.message)
               return callback(err)
             })
           })
@@ -428,7 +428,7 @@ var NotificationMailer = Module('NotificationMailer')({
 
             return callback(null, result)
           }, function (err) {
-            logger.err('NotificationMailer newVoiceFollower(): A mandrill error occurred: ' + err.name + ' - ' + err.message)
+            logger.error('NotificationMailer newVoiceFollower(): A mandrill error occurred: ' + err.name + ' - ' + err.message)
             return callback(err)
           })
         })
@@ -483,7 +483,7 @@ var NotificationMailer = Module('NotificationMailer')({
 
           return callback(null, result)
         }, function (err) {
-          logger.err('NotificationMailer newEntityFollower(): A mandrill error occurred: ' + err.name + ' - ' + err.message)
+          logger.error('NotificationMailer newEntityFollower(): A mandrill error occurred: ' + err.name + ' - ' + err.message)
           return callback(err)
         });
       });
