@@ -13,64 +13,74 @@ require(path.join(__dirname, '../../presenters/PostsPresenter'))
 
 application._serverStart()
 
-var request = require('superagent')
-var test = require('tape-catch')
+// COMMENT IF YOU WANT LOGGER OUTPUT
+logger.log = function () {}
+
+var login = require(path.join(__dirname, 'login.js')),
+  expect = require('chai').expect
 
 CONFIG.database.logQueries = false
 
 var urlBase = 'http://localhost:3000'
 
-test('Follow an entity ( .follow() )', function (t) {
-  var cookies,
-    csrf,
-    agent = request.agent()
+describe('ThreadsController', function () {
 
-  async.series([
-    function (next) {
-      agent
-        .get(urlBase + '/csrf')
-        .end(function (err, res) {
-          if (err) { t.fail(err) }
+  describe('#create', function () {
 
-          csrf = res.text
+    it('Create new thread', function (done) {
+      login('cersei', function (err, agent, csrf) {
+        agent
+          .post(urlBase + '/cersei-lannister/messages')
+          .accept('application/json')
+          .send({
+            _csrf: csrf,
+            type: 'message',
+            senderEntityId: hashids.encode(3), // Cersei
+            receiverEntityId: hashids.encode(17), // Robert
+            message: 'Hey, what\'s up? Wanna catch up over coffee?',
+          })
+          .end(function (err, res) {
+            if (err) { return done(err) }
 
-          return next()
-        })
-    },
+            expect(res.status).to.equal(200)
 
-    function (next) {
-      agent
-        .post(urlBase + '/session')
-        .send({
-          _csrf: csrf,
-          username: 'cersei',
-          password: '12345678'
-        })
-        .end(function (err, res) {
-          if (err) { t.fail(err) }
-
-          return next()
-        })
-    },
-  ], function(err) {
-    if (err) { t.fail(err) }
-
-    agent
-      .post(urlBase + '/cersei-lannister/messages')
-      .accept('application/json')
-      .send({
-        _csrf: csrf,
-        type: 'message',
-        senderEntityId: hashids.encode(3), // Cersei
-        receiverEntityId: hashids.encode(17), // Robert
-        message: 'Hey, what\'s up? Wanna catch up over coffee?',
+            return done()
+          })
       })
-      .end(function (err, res) {
-        if (err) { t.fail(err) }
+    })
 
-        t.equal(res.status, 200, 'res.status')
-
-        t.end()
-      })
   })
+
+  describe('#destroy', function () {
+
+    it('Delete invitations of hidden messages', function (done) {
+      login('cersei', function (err, agent, csrf) {
+        agent
+          .del(urlBase + '/cersei-lannister/messages/' + hashids.encode(2))
+          .accept('application/json')
+          .send({
+            _csrf: csrf,
+          })
+          .end(function (err, res) {
+            if (err) { console.log(err); done(err); return }
+
+            expect(res.status).to.equal(200)
+            expect(res.body.status).to.equal('ok')
+
+            InvitationRequest.find({
+              invitator_entity_id: 3, // Cersei
+              invited_entity_id: 11, // Arya
+            }, function (err, result) {
+              if (err) { return done(err) }
+
+              expect(result.length).to.equal(0)
+
+              return done()
+            })
+          })
+      })
+    })
+
+  })
+
 })
