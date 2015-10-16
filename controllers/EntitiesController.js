@@ -134,22 +134,40 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
               entity.save(done);
             },
             function (done) {
-              if (!req.files.image || req.files.image === 'undefined') { return done(); }
-              entity.uploadImage('image', req.files.image.path, function (err) {
+              if (!req.files.image) { return done(); }
+              entity.uploadImage('image', req.files.image.path, function(err) {
                 if (err) { return done(err); }
 
                 FeedInjector().inject(hashids.decode(req.currentPerson.id)[0], 'item entityUpdatesAvatar', entity, done);
               });
             },
             function (done) {
-              if (!req.files.background || req.files.background === 'undefined') { return done(); }
-              entity.uploadImage('background', req.files.background.path, function (err) {
+              if (!req.files.background) { return done(); }
+              entity.uploadImage('background', req.files.background.path, function(err) {
                 if (err) { return done(err); }
 
                 FeedInjector().inject(hashids.decode(req.currentPerson.id)[0], 'item entityUpdatesBackground', entity, done);
               });
             },
-            function (done) {
+            // Delete image
+            function(done) {
+              if (req.body.image && req.body.image === 'undefined') {
+                entity.imageBaseUrl = null;
+                entity.imageMeta = {};
+              }
+
+              done();
+            },
+            // Delete background
+            function(done) {
+              if (req.body.background && req.body.background === 'undefined') {
+                entity.backgroundBaseUrl = null;
+                entity.backgroundMeta = {};
+              }
+
+              done();
+            },
+            function(done) {
               entity.save(done);
             }
           ], function (err) {
