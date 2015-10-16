@@ -361,6 +361,24 @@
 		}
 	});
 
+
+
+	$.ajax({
+		type : 'POST',
+		url : '/' + currentPerson.profileName + '/notifications/markAllAsRead?_method=DELETE',
+		headers : { 'csrf-token' : $('meta[name="csrf-token"]').attr('content') },
+		success : function success(data) {
+			//find
+			console.log('All notifications marked as read');
+			$('.header-notification-button').find('.ui-badge').hide();
+          	$('.header-notification-button').removeClass('has-new-notifications');
+		},
+		error : function error(err) {
+			console.log(err);
+		}
+	});
+
+
 	var buttonDiscover = new CV.Button({
 		style   : 'primary small full',
 		type    : 'single',

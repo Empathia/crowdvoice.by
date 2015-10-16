@@ -61,7 +61,6 @@
 <script>
 
 	var voices = <%= JSON.stringify(featuredVoices) %>;
-	console.log(voices);
 
 	var selectedVoice;
 	var voiceElBase = $('<div class="person" id=""></div>');
@@ -120,7 +119,7 @@
 	      headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
 	      data : {query : searchStr},
 	      success: function(data) {
-	      	console.log(data);
+
 	        if (data['voices'].length > 0){
 
 	          searchInput.element.find('.search-results').show();
@@ -151,7 +150,6 @@
 			},
 		  	success : function success(data) {
 
-			    console.log('success');
 			    var newEnt = $('.admin-user:first-child').clone();
 
 			    var oName = selectedVoice.owner.name;
@@ -173,7 +171,6 @@
 			    newEnt.find('.author-username').text(oName);
 			    newEnt.find('.author-anchor').attr('href', '/'+selectedVoice.owner.profileName);
 
-			    console.log('featured entity added');
 
 			    reorder();
 
@@ -189,13 +186,11 @@
 	function showUsers(persons){
 
 	    searchInput.element.find('.search-results').empty();
-	    console.log(persons);
 
 		var entityIds = getFeaturedIds();
 
 	    persons.forEach(function(person){
 
-			console.log(entityIds.indexOf(person.id));
 
 			if(entityIds.indexOf(person.id) != -1){
 				return false;
@@ -217,7 +212,6 @@
 	}
 
 	function setselectedVoice(voice){
-		console.log(voice);
 		searchInput.enableButton();
 		selectedVoice = voice;
 		searchInput.inputEl.find('input').val( searchInput.element.find('.search-results').find('#'+selectedVoice.id).text() );
@@ -226,10 +220,8 @@
 	}
 
 	function reorder(){
-	 	console.log('reorder f()');
 
 		var voiceIds = getFeaturedIds();
-		console.log(voiceIds);
 
 	 	$.ajax({
             type : 'POST',
@@ -242,8 +234,10 @@
                 console.log('reorder success');
             },
             error : function error(err) {
+
                 console.log('error');
                 console.log(err);
+
             }
         });
 
