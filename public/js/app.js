@@ -28,6 +28,7 @@ Class(CV, 'App').includes(NodeSupport)({
 
             Person.set(window.currentPerson);
             Topics.fetch();
+            window.CardHoverWidget = new CV.CardHover().render(document.body);
 
             this.appendChild(new CV.Header({
                 name : 'header',

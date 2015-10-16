@@ -85,6 +85,10 @@ Class(CV, 'VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
             if (moment().diff(moment(this.data.updatedAt), 'days') <= 21) {
                 this.addNewBadge();
             }
+
+            this.authorAnchors.forEach(function(anchor) {
+                window.CardHoverWidget.register(anchor, this.data.owner);
+            }, this);
         },
 
         /* Update the widget's elements values with the received config
@@ -179,6 +183,15 @@ Class(CV, 'VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
             });
 
             return this;
+        },
+
+        destroy : function destroy() {
+            this.authorAnchors.forEach(function(anchor) {
+                window.CardHoverWidget.unregister(anchor);
+            }, this);
+
+            Widget.prototype.destroy.call(this);
+            return null;
         }
     }
 });

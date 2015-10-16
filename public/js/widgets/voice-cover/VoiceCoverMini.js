@@ -59,6 +59,8 @@ Class(CV, 'VoiceCoverMini').inherits(Widget).includes(CV.WidgetUtils)({
         },
 
         _setup : function _setup() {
+            window.CardHoverWidget.register(this.authorAnchor, this.data.owner);
+
             this.voiceAnchors.forEach(function(anchor) {
                 this.dom.updateAttr('href', anchor, '/' + this.data.owner.profileName + '/' + this.data.slug + '/');
                 this.dom.updateAttr('title', anchor, this.data.title + ' voice');
@@ -106,6 +108,12 @@ Class(CV, 'VoiceCoverMini').inherits(Widget).includes(CV.WidgetUtils)({
             }, this);
 
            return this;
+        },
+
+        destroy : function destroy() {
+            window.CardHoverWidget.unregister(this.authorAnchor);
+            Widget.prototype.destroy.call(this);
+            return null;
         }
     }
 });
