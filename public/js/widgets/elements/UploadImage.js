@@ -41,7 +41,7 @@ Class(CV, 'UploadImage').inherits(CV.Image)({
                 buttonsGroup.appendChild(this.removeBgButton);
                 parentElement.insertBefore(buttonsGroup, parentElement.firstChild);
 
-                Events.on(this.removeBgButton, 'click', this.reset.bind(this));
+                Events.on(this.removeBgButton, 'click', this.removeImage.bind(this));
             }
         }
     }

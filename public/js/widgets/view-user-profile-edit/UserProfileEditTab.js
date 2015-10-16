@@ -46,6 +46,7 @@ Class(CV, 'UserProfileEditTab').inherits(Widget)({
                 data : {
                     title : 'Profile Picture',
                     accept : 'image/*',
+                    showRemoveButton : true,
                     buttonWrapperClassName : '-pl1',
                     buttonHint : 'JPG, GIF or PNG'
                 }
@@ -363,13 +364,21 @@ Class(CV, 'UserProfileEditTab').inherits(Widget)({
          */
         _getDataPresenter : function _getDataPresenter() {
             var data = new FormData();
-            data.append('image', this.profileImage.getFile());
-            data.append('background', this.backgroundImage.getFile());
+
             data.append('name', this.nameInput.getValue().trim());
             data.append('lastname', this.lastnameInput.getValue().trim());
             data.append('profileName', this.profilenameInput.getValue().trim());
             data.append('description', this.descriptionInput.getValue().trim());
             data.append('location', this.locationInput.getValue().trim());
+
+            if (this.profileImage.imageRemoved || this.profileImage.getFile()) {
+                data.append('image', this.profileImage.getFile());
+            }
+
+            if (this.backgroundImage.imageRemoved || this.backgroundImage.getFile()) {
+                data.append('background', this.backgroundImage.getFile());
+            }
+
             return data;
         }
     }

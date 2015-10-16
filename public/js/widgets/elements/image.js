@@ -17,6 +17,11 @@ Class(CV, 'Image').inherits(Widget).includes(CV.WidgetUtils)({
             title  : ''
         },
 
+        /* Holds if the removeImage method was called to clear the values.
+         * @property imageRemoved <public> [Boolean]
+         */
+        imageRemoved : false,
+
         init : function init(config) {
             Widget.prototype.init.call(this, config);
             this.el = this.element[0];
@@ -34,6 +39,17 @@ Class(CV, 'Image').inherits(Widget).includes(CV.WidgetUtils)({
             return this;
         },
 
+        /* Sets the property `imageRemoved` as true, resets the uploadedFile
+         * and removes the preview background image. Useful if you are relaying
+         * on the `imageRemoved` flag to determinate a different user's intention.
+         * @method removeImage <public>
+         */
+        removeImage : function removeImage() {
+            this.imageRemoved = true;
+            this.reset();
+            return this;
+        },
+
         /* Sets error state feedback.
          * @method error <public>
          */
@@ -44,12 +60,6 @@ Class(CV, 'Image').inherits(Widget).includes(CV.WidgetUtils)({
 
         getFile : function getFile() {
             return this.uploadFile.files[0];
-        },
-
-        getFormData : function getFormData(as) {
-            var data = new FormData();
-            data.append(as || 'image',  this.getFile());
-            return data;
         },
 
         /* Resets the uploadedFile and removes the preview background image.
@@ -112,6 +122,7 @@ Class(CV, 'Image').inherits(Widget).includes(CV.WidgetUtils)({
             if (f.type.match('image.*')) {
                 r.onload = function(e) {
                     this.setImage(e.target.result);
+                    this.imageRemoved = false;
                     r.onload = null;
                 }.bind(this);
                 return r.readAsDataURL(f);
