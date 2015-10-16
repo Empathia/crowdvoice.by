@@ -231,40 +231,47 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
                 return next(new NotFoundError('Thread Not Found'));
               }
 
-              thread = thread[0];
-
-              thread = new MessageThread(thread);
+              thread = new MessageThread(thread[0]);
 
               var senderOrReceiver = thread.isPersonSender(currentPersonId) ? 'Sender' : 'Receiver';
 
               thread['hiddenFor' + senderOrReceiver] = true;
 
               thread.save(function(err, result) {
-                if (err) {
-                  return next(err);
-                }
+                if (err) { return next(err); }
 
                 Message.find({'thread_id' : thread.id}, function(err, messages) {
+                  if (err) { return next(err); }
+
                   async.each(messages, function(message, done) {
-                    message = new Message(message);
+                    async.series([
+                      // mark post as hidden
+                      function (next) {
+                        message = new Message(message);
 
-                    var senderOrReceiver = message.isPersonSender(currentPersonId) ? 'Sender' : 'Receiver';
+                        var senderOrReceiver = message.isPersonSender(currentPersonId) ? 'Sender' : 'Receiver';
 
-                    message['hiddenFor' + senderOrReceiver] = true;
+                        message['hiddenFor' + senderOrReceiver] = true;
 
-                    message.save(function(err, messageSaveResult) {
-                      if (err) {
-                        return done(err);
-                      }
+                        message.save(next);
+                      },
 
-                      done();
-                    });
+                      function (next) {
+                        if (!message.invitationRequestId) {
+                          return next();
+                        }
+
+                        InvitationRequest.findById(message.invitationRequestId, function (err, invitation) {
+                          var invite = new InvitationRequest(invitation[0]);
+
+                          invite.destroy(next);
+                        });
+                      },
+                    ], next);
                   }, function(err) {
-                    if (err) {
-                      return next(err);
-                    }
+                    if (err) { return next(err); }
 
-                    res.json({status : 'ok'});
+                    res.json({ status: 'ok' });
                   })
                 })
               })
