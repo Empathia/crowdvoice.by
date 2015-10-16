@@ -23,8 +23,6 @@ Class(CV, 'PostCreatorUploadFile').inherits(CV.PostCreator)({
         init : function init(config) {
             CV.PostCreator.prototype.init.call(this, config);
 
-            console.log('new PostCreatorUploadFile');
-
             this.el = this.element[0];
             this.inputFile = this.el.querySelector('input[type="file"]');
             this.header = this.el.querySelector('.cv-post-creator__header');

@@ -209,7 +209,7 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
             var posts = this.queuePanel.children.map(function(post) {
                 return post.getEditedData();
             });
-            console.log(posts);
+
             API.postCreate({
                 profileName : App.Voice.data.owner.profileName,
                 voiceSlug : App.Voice.data.slug,
