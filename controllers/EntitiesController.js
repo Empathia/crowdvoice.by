@@ -125,8 +125,8 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
             name: req.body.name || entity.name,
             lastname: req.body.lastname || entity.lastname,
             profileName: req.body.profileName || entity.profileName,
-            description: req.body.description || entity.description,
-            location: req.body.location || entity.location
+            description: req.body.description || '',
+            location: req.body.location || ''
           });
 
           async.series([
@@ -134,7 +134,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
               entity.save(done);
             },
             function (done) {
-              if (!req.files.image) { return done(); }
+              if (!req.files.image || req.files.image === 'undefined') { return done(); }
               entity.uploadImage('image', req.files.image.path, function (err) {
                 if (err) { return done(err); }
 
@@ -142,7 +142,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
               });
             },
             function (done) {
-              if (!req.files.background) { return done(); }
+              if (!req.files.background || req.files.background === 'undefined') { return done(); }
               entity.uploadImage('background', req.files.background.path, function (err) {
                 if (err) { return done(err); }
 
