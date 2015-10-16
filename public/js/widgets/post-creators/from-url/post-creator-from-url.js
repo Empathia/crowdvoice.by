@@ -176,7 +176,10 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
             }
 
             this.appendChild(CV.EditablePost.create(post));
-            this._previewPostWidget.render(this.content).edit();
+            this._previewPostWidget
+                .render(this.content)
+                .edit()
+                .addImageControls();
 
             this._activateIconType(post.sourceType);
             this._enabledPostButton().enable();
