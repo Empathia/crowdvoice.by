@@ -1,4 +1,4 @@
-var Events = require('./../../lib/events');
+var Events = require('./../../../lib/events');
 
 Class(CV, 'CardActionJoin').inherits(Widget)({
     ELEMENT_CLASS : 'card-actions-item',

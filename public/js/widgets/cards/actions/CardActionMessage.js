@@ -1,7 +1,7 @@
-var Person = require('./../../lib/currentPerson');
-var Events = require('./../../lib/events');
+var Person = require('./../../../lib/currentPerson');
+var Events = require('./../../../lib/events');
 
-Class(CV, 'CardActionMessage').inherits(Widget)({
+Class(CV, 'CardActionMessage').inherits(Widget).includes(BubblingSupport)({
     ELEMENT_CLASS : 'card-actions-item',
     HTML : '\
         <div>\
@@ -62,6 +62,16 @@ Class(CV, 'CardActionMessage').inherits(Widget)({
         _close : function _close() {
             this.sendMessagePopover.deactivate();
             this.deactivate();
+        },
+
+        _activate : function _activate() {
+            Widget.prototype._activate.call(this);
+            this.dispatch('card:action:popover:active');
+        },
+
+        _deactivate : function _deactivate() {
+            Widget.prototype._deactivate.call(this);
+            this.dispatch('card:action:popover:deactive');
         },
 
         destroy : function destroy() {

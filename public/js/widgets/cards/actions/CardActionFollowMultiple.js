@@ -1,4 +1,4 @@
-var API = require('../../lib/api');
+var API = require('./../../../lib/api');
 
 Class(CV, 'CardActionFollowMultiple').inherits(Widget)({
     ELEMENT_CLASS : 'card-actions-item card-actions-follow-button',

@@ -5,7 +5,7 @@
  * Each Modal handles its own logic.
  */
 
-var Person = require('./../../lib/currentPerson');
+var Person = require('./../../../lib/currentPerson');
 
 Class(CV, 'CardInviteToPopover').inherits(Widget)({
     ELEMENT_CLASS : 'ui-vertical-list hoverable -list-clean',
@@ -111,16 +111,16 @@ Class(CV, 'CardInviteToPopover').inherits(Widget)({
 
             if (this._hasVoices) {
                 this._hasVoices = null;
-                this.contributeItem = null;
                 this.contributeItem.removeEventListener('click', this._inviteToVoiceClickHandlerRef);
                 this._inviteToVoiceClickHandlerRef = null;
+                this.contributeItem = null;
             }
 
             if (this._ownOrganizations) {
                 this._ownOrganizations = null;
-                this.memberButton = null;
                 this.memberButton.removeEventListener('click', this._inviteToOrgClickHandlerRef);
                 this._inviteToOrgClickHandlerRef = null;
+                this.memberButton = null;
             }
 
             return null;

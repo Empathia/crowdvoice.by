@@ -1,5 +1,5 @@
-var API = require('../../lib/api');
-var Person = require('../../lib/currentPerson');
+var API = require('./../../../lib/api');
+var Person = require('./../../../lib/currentPerson');
 
 Class(CV, 'CardActionFollow').inherits(Widget)({
     ELEMENT_CLASS : 'card-actions-item card-actions-follow-button',

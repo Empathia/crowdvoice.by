@@ -1,4 +1,4 @@
-Class(CV, 'CardActionInvite').inherits(Widget)({
+Class(CV, 'CardActionInvite').inherits(Widget).includes(BubblingSupport)({
     ELEMENT_CLASS : 'card-actions-item',
     HTML : '\
         <div>\
@@ -45,6 +45,16 @@ Class(CV, 'CardActionInvite').inherits(Widget)({
          */
         _clickHandler : function _clickHandler() {
             this.inviteToPopover.activate();
+        },
+
+        _activate : function _activate() {
+            Widget.prototype._activate.call(this);
+            this.dispatch('card:action:popover:active');
+        },
+
+        _deactivate : function _deactivate() {
+            Widget.prototype._deactivate.call(this);
+            this.dispatch('card:action:popover:deactive');
         },
 
         destroy : function destroy() {
