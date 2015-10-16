@@ -35,8 +35,6 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
         init : function init(config) {
             CV.PostCreator.prototype.init.call(this, config);
 
-            console.log('new PostCreatorFromUrl');
-
             this.el = this.element[0];
             this.header = this.el.querySelector('.cv-post-creator__header');
             this.content = this.el.querySelector('.cv-post-creator__content');
@@ -190,7 +188,8 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
          */
         _handlePostButtonClick : function _handlePostButtonClick() {
             var postEditedData = this._previewPostWidget.getEditedData();
-            console.log(postEditedData);
+            this._disablePostButton();
+
             API.postCreate({
                 profileName : App.Voice.data.owner.profileName,
                 voiceSlug : App.Voice.data.slug,
