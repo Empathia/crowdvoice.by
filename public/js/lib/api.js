@@ -606,7 +606,7 @@ module.exports = {
         $.ajax({
             type : 'GET',
             dataType : 'json',
-            url : '/' + args.profileName + '/' + args.voiceSlug + '/' + args.source + '/' + args.query,
+            url : '/' + args.profileName + '/' + args.voiceSlug + '/' + args.source + '/' + encodeURIComponent(args.query),
             headers : {'csrf-token' : this.token},
             success : function success(data) { callback(false, data); },
             error : function error(err) { callback(true, err); }
