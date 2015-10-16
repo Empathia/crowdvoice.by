@@ -102,15 +102,18 @@ require('./widgets/tabs/TabIndicator');
 
 // components
 require('./widgets/cards/Card');
+require('./widgets/cards/CardSmall');
 require('./widgets/cards/CardMini');
 require('./widgets/cards/CardMiniClean');
-require('./widgets/cards/CardActionFollow');
-require('./widgets/cards/CardActionFollowMultiple');
-require('./widgets/cards/CardActionMessage');
-require('./widgets/cards/CardActionInvite');
-require('./widgets/cards/CardActionJoin');
-require('./widgets/cards/CardUnfollowPopover');
-require('./widgets/cards/CardInviteToPopover');
+require('./widgets/cards/CardHover');
+require('./widgets/cards/CardHoverItem');
+require('./widgets/cards/actions/CardActionFollow');
+require('./widgets/cards/actions/CardActionFollowMultiple');
+require('./widgets/cards/actions/CardActionMessage');
+require('./widgets/cards/actions/CardActionInvite');
+require('./widgets/cards/actions/CardActionJoin');
+require('./widgets/cards/actions/CardUnfollowPopover');
+require('./widgets/cards/actions/CardInviteToPopover');
 
 require('./widgets/voice-cover/VoiceCover');
 require('./widgets/voice-cover/VoiceCoverMini');

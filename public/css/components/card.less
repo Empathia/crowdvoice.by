@@ -232,3 +232,59 @@
   font-size: 11px;
   color: @color-neutral-mid;
 }
+
+/* =========================================================================== *
+ * card-small
+ * =========================================================================== */
+.card-small {
+  padding-top: 32px;
+
+  &.has-actions .card_info-wrapper {
+    padding-bottom: 60px;
+  }
+
+  .card-inner {
+    min-height: initial;
+  }
+
+  .card_info-wrapper {
+    padding: 0 20px;
+  }
+
+  .card_avatar {
+    width: 64px;
+    height: 64px;
+    margin-top: -32px;
+    position: relative;
+  }
+
+  .card_fullname {
+    margin: 0;
+  }
+
+  .card_stats {
+    padding: 0 0 5px;
+  }
+
+  .card_description {
+    font-size: 11px;
+    margin: 15px 0 15px;
+    color: @color-neutral-xx-mid;
+
+    &:empty {
+      margin: 0;
+    }
+  }
+}
+
+/* =========================================================================== *
+ * card-hover
+ * =========================================================================== */
+.widget-card-hover-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 250px;
+  padding: 0 0 10px;
+  display: none;
+}
