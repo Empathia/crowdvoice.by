@@ -10,6 +10,10 @@ module.exports = function(err, req, res, next) {
 
   logger.error(err.stack);
 
+  if (err.errors) {
+    logger.log(err.errors);
+  }
+
   res.format({
     html : function() {
       if (err.name && err.name === 'NotFoundError') {

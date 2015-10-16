@@ -302,9 +302,9 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
     upload : function upload(req, res, next) {
       ACL.isAllowed('upload', 'posts', req.role, {
-        currentPerson : req.currentPerson,
-        voiceSlug : req.params.voiceSlug,
-        profileName : req.params.profileName
+        currentPerson: req.currentPerson,
+        activeVoice: req.activeVoice,
+        voiceOwnerProfile: req.params.profileName
       }, function(err, response) {
         if (err) { return next(err); }
 
@@ -364,7 +364,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
       }, function (err, response) {
         if (err) { return next(err) }
 
-        if (req.role !== 'Admin' || !response.isAllowed) {
+        if (!response.isAllowed) {
           return next(new ForbiddenError('Unauthorized.'));
         }
 
@@ -416,9 +416,10 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         if (!response.isAllowed) { return next(new ForbiddenError('Unauthorized.')); }
 
         var sp = new SavedPost({
-          entityId: req.currentPerson.id,
+          entityId: response.person.id,
           postId: hashids.decode(req.params.postId)[0]
         });
+
         sp.save(function(err) {
           if (err) { return next(err); }
 
@@ -446,7 +447,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         var person = req.currentPerson;
 
         SavedPost.find({
-          'entity_id' : hashids.decode(req.currentPerson.id)[0],
+          'entity_id' : response.person.id,
           'post_id' : hashids.decode(req.params.postId)[0]
         }, function(err, result) {
           if (err) { next(err); return; }

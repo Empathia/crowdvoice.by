@@ -55,14 +55,15 @@ var SessionsController = Class('SessionsController')({
     },
 
     resetPassword : function resetPassword(req, res, next) {
-      if (req.currentPerson) {
-        req.flash('info', 'You must be logged out in order to perform the previous action.');
+      if (!req.currentPerson) {
+        req.flash('info', 'You must be logged in in order to perform the previous action.');
         return res.redirect('/');
       }
 
       res.format({
         html : function() {
-          var user = new User(req.currentUser);
+
+          var user = new User(req.user);
 
           user.password = req.body.password;
 
@@ -114,9 +115,9 @@ var SessionsController = Class('SessionsController')({
           req.logIn(user, function (err) {
             if (err) { return next(err); }
 
-            if (req.params.reset) {
+            if (req.query.reset) {
               req.flash('success', 'Welcome to CrowdVoice.by.');
-              return res.render('session/resetPassword', {layout : 'login'});
+              return res.render('sessions/resetPassword.html', {layout : 'login'});
             } else {
               req.flash('success', 'Welcome to CrowdVoice.by.');
               return res.redirect('/');
