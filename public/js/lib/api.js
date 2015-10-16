@@ -635,7 +635,7 @@ module.exports = {
         if ((typeof callback).toLowerCase() !== "function") {
             throw new Error('Callback should be a function');
         }
-
+        // debugger;
         $.ajax({
             type : 'PUT',
             url : '/' + args.profileName,
