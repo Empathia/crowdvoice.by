@@ -69,12 +69,29 @@
 }
 .home-stats{
   background-color: #2E3233;
+  background-image: url("/img/home-wave-left.png"), url("/img/home-wave-right.png");
+  background-position: left bottom, right top;
+  background-repeat: no-repeat;
   padding-top:125px;
   padding-bottom:125px;
   color:white;
-  p.statsTitle{
+  article{
+    text-align: center;
+    margin-top:45px;
+    .stats-col{
+      padding: 0px 50px;
+    }
+    .stats-col:not(:last-child){
+        border-right: 1px solid #454B4D;
+    }
+  }
+  p{
     font-size: 48px;
     text-align: center;
+  }
+  p.stats-label{
+    color:#8A9699;
+    font-size: 14px;
   }
 }
 .homepage-intro-banner {
@@ -124,9 +141,15 @@
 
   .heading-right {
     padding-top: 1rem;
+    margin-left:15px;
   }
 }
-
+.betweenDivs.cv-button.large{
+    position: absolute;
+    margin-top: -30px;
+    margin-left: 50%;
+    line-height: 50px;
+}
 /* =========================================================================== *
  *  category list
  * =========================================================================== */
@@ -184,6 +207,11 @@
 .homepage-organization-cards {
   padding-top: 100px;
   padding-bottom: 80px;
+
+  div.heading-right{
+      margin-top:13px;
+      margin-left: 15px;
+  }
 
   .widget-card {
     padding-left: 1rem;
