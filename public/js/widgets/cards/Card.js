@@ -67,7 +67,7 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
     ',
 
     HTML_STATS_ORGANIZATION : '\
-        <div class="-row">\
+        <div class="-row -fs0">\
             <div class="card-stat-item -col-3">\
                 <p class="stats-number card_total-voices-text -font-bold"></p>\
                 <p class="stats-label card_total-voices-label-text">Voices</p>\
@@ -87,7 +87,7 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
         </div>',
 
     HTML_STATS_PERSON : '\
-        <div class="-row">\
+        <div class="-row -fs0">\
             <div class="card-stat-item -col-3">\
                 <p class="stats-number card_total-voices-text -font-bold"></p>\
                 <p class="stats-label card_total-voices-label-text">Voices</p>\
