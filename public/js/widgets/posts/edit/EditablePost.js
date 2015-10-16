@@ -79,43 +79,6 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
             parent.insertBefore(wrapper, parent.childNodes[position]);
             this.el = wrapper;
 
-            if (this.images) {
-                this._imagesLen = this.images.length;
-                this.imagesToBeRemove = this.images.slice();
-            } else {
-                // create empty array so it does not break, postPresenter
-                // expects this.images.toBe(Array)
-                this.images = [];
-                this.imagesToBeRemove = [];
-            }
-
-            if (this._imagesLen) {
-                // it is a very new Post and has 1 or more images
-                this._currentImageIndex = 0;
-                this._updatePostImage()._addImageControls();
-            } else {
-                if (this.postImages && this.postImages.medium) {
-                    // it is an existing Post (moderation)
-                    // add the existing image to the array so it allows the
-                    // user to replace the image if she want.
-                    this.images.push({
-                        format: this.postImages.medium.meta.format,
-                        height: this.postImages.medium.meta.height,
-                        width: this.postImages.medium.meta.width,
-                        path: this.postImages.medium.url
-                    });
-
-                    this._currentImageIndex = 0;
-                } else {
-                    // it is a very new Post with no images.
-                    // display the upload button so the user can upload.
-                    // an image from its current device.
-                    this._showUploadCoverButton();
-                }
-
-                this._addImageControls();
-            }
-
             return this;
         },
 
@@ -158,6 +121,51 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
                 images : this.imagesToBeRemove.map(function(item) {return item.path;}),
                 imagePath : imagePath,
             };
+        },
+
+        /* Display the ImageControls to remove/replace the Post Image.
+         * @method addImageControls <public> [Function]
+         * @return EditablePost
+         */
+        addImageControls : function addImageControls() {
+            if (this.images) {
+                this._imagesLen = this.images.length;
+                this.imagesToBeRemove = this.images.slice();
+            } else {
+                // create empty array so it does not break, postPresenter
+                // expects this.images.toBe(Array)
+                this.images = [];
+                this.imagesToBeRemove = [];
+            }
+
+            if (this._imagesLen) {
+                // it is a very new Post and has 1 or more images
+                this._currentImageIndex = 0;
+                this._updatePostImage()._addImageControls();
+            } else {
+                if (this.postImages && this.postImages.medium) {
+                    // it is an existing Post (moderation)
+                    // add the existing image to the array so it allows the
+                    // user to replace the image if she want.
+                    this.images.push({
+                        format: this.postImages.medium.meta.format,
+                        height: this.postImages.medium.meta.height,
+                        width: this.postImages.medium.meta.width,
+                        path: this.postImages.medium.url
+                    });
+
+                    this._currentImageIndex = 0;
+                } else {
+                    // it is a very new Post with no images.
+                    // display the upload button so the user can upload.
+                    // an image from its current device.
+                    this._showUploadCoverButton();
+                }
+
+                this._addImageControls();
+            }
+
+            return this;
         },
 
         /* Changes the title and description HTMLElements into TextAreas.

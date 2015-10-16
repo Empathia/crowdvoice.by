@@ -68,12 +68,14 @@ Class(CV, 'PostCreatorFromSourcesQueue').inherits(Widget).includes(BubblingSuppo
 
         addPost : function addPost(postData) {
             this.hideOnboarding();
+
             postData.name = 'post_' + this._index;
-            this.appendChild(CV.EditablePost.create(postData)).render(this.list, this.list.firstChild);
-            this['post_' + this._index].edit({
-                appendCalendarTo : this.parent.el
-            });
-            this['post_' + this._index].addRemoveButton();
+            this.appendChild(CV.EditablePost.create(postData))
+                .render(this.list, this.list.firstChild)
+                .edit({appendCalendarTo: this.parent.el})
+                .addImageControls()
+                .addRemoveButton();
+
             this.loader.deactivate();
 
             this._index++;

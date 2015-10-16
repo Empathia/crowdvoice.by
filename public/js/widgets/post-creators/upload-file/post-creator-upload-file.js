@@ -206,7 +206,10 @@ Class(CV, 'PostCreatorUploadFile').inherits(CV.PostCreator)({
             }
 
             postData.name = '_previewPostWidget';
-            this.appendChild(CV.EditablePost.create(postData)).edit().render(this.content);
+            this.appendChild(CV.EditablePost.create(postData))
+                .edit()
+                .addImageControls()
+                .render(this.content);
 
             this._enabledPostButton();
             return this;
