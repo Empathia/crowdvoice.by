@@ -39,7 +39,7 @@ Class('HomepageStats').inherits(Widget)({
         }
       });
 
-      this.render(document.querySelector('section.homepage-intro > .stats'));
+      this.render(document.querySelector('section.home-stats > .stats'));
 
       var socket = App.getSocket();
 

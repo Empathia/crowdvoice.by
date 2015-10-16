@@ -1,6 +1,7 @@
 .homepage-intro,
 .homepage-featured-voices,
 .homepage-organization-cards,
+.home-stats,
 .homepage-category-list {
   padding-left: @cv-sidebar-width;
   padding-right: 2rem;
@@ -26,9 +27,9 @@
   padding-bottom: 110px;
   background-color: @color-white;
   background-image: url("/img/views/home/illustration-30-b.jpg");
-  background-position: 125% 50%;
+  background-position: 223% 25%;
   background-repeat: no-repeat;
-  background-size: 60%;
+  background-size: 70%;
 
   .intro-description {
     font-size: 17px;
@@ -38,6 +39,14 @@
 
   .intro-description-text {
     font-size: 1em;
+  }
+
+  .cv-button{
+    text-align: center;
+    span{
+      font-size: 12px;
+      color: #FFDAA6;
+    }
   }
 
   .stats {
@@ -58,7 +67,33 @@
     }
   }
 }
-
+.home-stats{
+  background-color: #2E3233;
+  background-image: url("/img/home-wave-left.png"), url("/img/home-wave-right.png");
+  background-position: left bottom, right top;
+  background-repeat: no-repeat;
+  padding-top:125px;
+  padding-bottom:125px;
+  color:white;
+  article{
+    text-align: center;
+    margin-top:45px;
+    .stats-col{
+      padding: 0px 50px;
+    }
+    .stats-col:not(:last-child){
+        border-right: 1px solid #454B4D;
+    }
+  }
+  p{
+    font-size: 48px;
+    text-align: center;
+  }
+  p.stats-label{
+    color:#8A9699;
+    font-size: 14px;
+  }
+}
 .homepage-intro-banner {
   font-size: 1rem;
 
@@ -106,9 +141,15 @@
 
   .heading-right {
     padding-top: 1rem;
+    margin-left:15px;
   }
 }
-
+.betweenDivs.cv-button.large{
+    position: absolute;
+    margin-top: -30px;
+    margin-left: 50%;
+    line-height: 50px;
+}
 /* =========================================================================== *
  *  category list
  * =========================================================================== */
@@ -166,6 +207,11 @@
 .homepage-organization-cards {
   padding-top: 100px;
   padding-bottom: 80px;
+
+  div.heading-right{
+      margin-top:13px;
+      margin-left: 15px;
+  }
 
   .widget-card {
     padding-left: 1rem;
