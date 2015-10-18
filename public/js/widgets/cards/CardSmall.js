@@ -5,58 +5,57 @@ var Autolinker = require( 'autolinker' );
 Class(CV, 'CardSmall').inherits(Widget).includes(CV.WidgetUtils, BubblingSupport)({
     ELEMENT_CLASS : 'widget-card card-small',
     HTML : '\
-    <article role="article">\
-        <div class="card-inner">\
-            <div class="card_background-image-wrapper -img-cover -text-center">\
-                <img class="card_avatar -rounded" alt="{{author.full_name}}’s avatar image"/>\
-                <p class="card_username -rel">\
-                    <a class="card_username-link"></a>\
-                </p>\
-                <h3 class="card_fullname -rel -font-bold">OpenGovFoundation</h3>\
-                <div class="card_stats -rel"></div>\
+        <article role="article">\
+            <div class="card-inner">\
+                <div class="card_background-image-wrapper -img-cover -text-center">\
+                    <img class="card_avatar -rounded" alt="{{author.full_name}}’s avatar image"/>\
+                </div>\
+                <div class="card_info-wrapper">\
+                    <p class="card_username -rel">\
+                        <a class="card_username-link"></a>\
+                    </p>\
+                    <h3 class="card_fullname -rel -font-bold">OpenGovFoundation</h3>\
+                    <p class="card_description"></p>\
+                    <div class="card_stats -rel"></div>\
+                </div>\
+                <div class="card_actions">\
+                    <div class="-row -full-height"></div>\
+                </div>\
             </div>\
-            <div class="card_info-wrapper">\
-                <p class="card_description"></p>\
-            </div>\
-            <div class="card_actions">\
-                <div class="-row -full-height"></div>\
-            </div>\
-        </div>\
-    </article>\
-    ',
+        </article>',
 
     HTML_STATS_ORGANIZATION : '\
         <div class="-row">\
-            <div class="card-stat-item -col-3">\
-                <p class="stats-number card_total-voices-text -font-bold"></p>\
+            <div class="card-stat-item">\
+                <p class="stats-number card_total-voices-text -font-semi-bold"></p>\
                 <p class="stats-label card_total-voices-label-text">Voices</p>\
             </div>\
-            <div class="card-stat-item -col-3">\
-                <p class="stats-number card_total-followers-text -font-bold"></p>\
+            <div class="card-stat-item">\
+                <p class="stats-number card_total-followers-text -font-semi-bold"></p>\
                 <p class="stats-label card_total-followers-label-text">Followers</p>\
             </div>\
-            <div class="card-stat-item -col-3">\
-                <p class="stats-number card_total-following-text -font-bold"></p>\
+            <div class="card-stat-item">\
+                <p class="stats-number card_total-following-text -font-semi-bold"></p>\
                 <p class="stats-label card_total-following-label-text">Following</p>\
             </div>\
-            <div class="card-stat-item -col-3 card_collaborations-wrapper">\
-                <p class="stats-number card_collaborations-text -font-bold"></p>\
+            <div class="card-stat-item last">\
+                <p class="stats-number card_collaborations-text -font-semi-bold"></p>\
                 <p class="stats-label card_collaborations-label-text">Members</p>\
             </div>\
         </div>',
 
     HTML_STATS_PERSON : '\
         <div class="-row">\
-            <div class="card-stat-item -col-3">\
-                <p class="stats-number card_total-voices-text -font-bold"></p>\
+            <div class="card-stat-item">\
+                <p class="stats-number card_total-voices-text -font-semi-bold"></p>\
                 <p class="stats-label card_total-voices-label-text">Voices</p>\
             </div>\
-            <div class="card-stat-item -col-3">\
-                <p class="stats-number card_total-followers-text -font-bold"></p>\
+            <div class="card-stat-item">\
+                <p class="stats-number card_total-followers-text -font-semi-bold"></p>\
                 <p class="stats-label card_total-followers-label-text">Followers</p>\
             </div>\
-            <div class="card-stat-item -col-3">\
-                <p class="stats-number card_total-following-text -font-bold"></p>\
+            <div class="card-stat-item last">\
+                <p class="stats-number card_total-following-text -font-semi-bold"></p>\
                 <p class="stats-label card_total-following-label-text">Following</p>\
             </div>\
         </div>',
@@ -124,7 +123,8 @@ Class(CV, 'CardSmall').inherits(Widget).includes(CV.WidgetUtils, BubblingSupport
             } else {
                 this.appendChild(new CV.CardActionFollowMultiple({
                     name : 'followButton',
-                    entity :  this.data
+                    entity :  this.data,
+                    followingAsText : 'Following...'
                 })).render(this.actionsEl);
             }
             this._totalCountActions++;

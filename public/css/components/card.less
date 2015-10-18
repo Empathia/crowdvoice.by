@@ -1,7 +1,4 @@
 .widget-card {
-  margin-bottom: 1px;
-  padding-top: 44px;
-
   &.has-actions {
     .card_info-wrapper {
       padding-bottom: 80px;
@@ -14,14 +11,15 @@
 
 .card-inner {
   position: relative;
-  min-height: 450px;
-  border: 1px solid fade(@color-black, 20%);
+  min-height: 445px;
+  border: 1px solid rgba(0,0,0,.1);
   border-radius: 8px;
   background-color: @color-white;
   box-shadow: 0 1px 2px fade(@color-black, 10%);
 }
 
 .card_background-image-wrapper {
+  height: 110px;
   margin: -1px -1px 0 -1px;
   border-radius: inherit;
   border-bottom-left-radius: 0;
@@ -31,13 +29,14 @@
 }
 
 .card_info-wrapper {
-  padding: 25px 30px 20px;
-  text-align: center;
+  padding: 18px 20px 20px;
 }
 
 .card_avatar {
   width: 88px;
-  margin-top: -44px;
+  position: absolute;
+  right: 20px;
+  bottom: -25px;
   border: 2px solid @color-white;
   background-color: @color-white;
 }
@@ -48,58 +47,69 @@
 
 .card_username-link {
   font-size: 11px;
-  color: @color-white;
-  opacity: 0.8;
+  color: @color-neutral-mid;
   text-decoration: none;
 }
 
 .card_fullname {
-  font-size: 18px;
+  font-size: 19px;
   line-height: 27px;
-  margin: 5px 0 0;
-  padding: 0 1em;
+  margin: 0;;
   white-space: normal;
-  color: @color-white;
+  color: @color-neutral-x-dark;
 }
 
-.card_stats {
-  padding: 10px 0 20px;
-  color: @color-white;
+.card_meta-location {
+  margin: 5px 0 0 0;
+  color: @color-neutral-mid;
 }
 
-.card-stat-item {
-  float: none;
-  display: inline-block;
-  padding: 6px 0 13px;
+.card_meta-svg {
+  width: 14px;
+  height: 14px;
+  margin-right: 4px;
+  fill: @color-neutral-light;
+}
+
+.card_meta-location-text {
+  font-size: 11px;
+  line-height: 14px;
 }
 
 .card_description {
-  margin-bottom: 1.7rem;
+  margin: 10px 0 0 0;
   white-space: normal;
 
   a {color: inherit}
 }
 
-.card_meta-location {margin-right: 1rem}
-.card_meta-joined-at {margin-left: 1rem}
-.card_meta-svg {
-  width: 14px;
-  height: 14px;
-  margin-right: .5rem;
-  fill: @color-neutral-light;
+.card_stats {
+  margin: 34px 0 0 0;
 }
-.card_meta-joined-at-text,
-.card_meta-location-text {
-  font-size: 11px;
-  line-height: 14px;
+
+.card-stat-item {
+  float: left;
+  margin-right: 20px;
+
+  &.last {margin-right: 0;}
+}
+
+.card-stat-item > .stats-number {
+  font-size: 16px;
+  text-align: left;
+  color: @color-neutral-dark;
+}
+
+.card-stat-item > .stats-label {
+  text-align: left;
   color: @color-neutral-mid;
 }
 
-.card_meta-location {}
-.card_meta-location-text {}
-
-.card_meta-joined-at {}
-.card_meta-joined-at-text {}
+.follow-status {
+  font-size: 10px;
+  border: 1px solid @color-neutral-light;
+  color: @color-neutral-mid;
+}
 
 /* actions */
 .card_actions {
@@ -237,43 +247,50 @@
  * card-small
  * =========================================================================== */
 .card-small {
-  padding-top: 32px;
-
-  &.has-actions .card_info-wrapper {
-    padding-bottom: 60px;
+  .card_background-image-wrapper {
+    height: 80px;
   }
 
   .card-inner {
     min-height: initial;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.15);
   }
 
   .card_info-wrapper {
-    padding: 0 20px;
+    padding: 0 15px 20px;
   }
 
   .card_avatar {
     width: 64px;
     height: 64px;
-    margin-top: -32px;
-    position: relative;
+    right: 15px;
   }
 
   .card_fullname {
-    margin: 0;
-  }
-
-  .card_stats {
-    padding: 0 0 5px;
+    font-size: 15px;
+    line-height: 23px;
   }
 
   .card_description {
-    font-size: 11px;
-    margin: 15px 0 15px;
-    color: @color-neutral-xx-mid;
+    font-size: 10px;
+    color: @color-neutral-dark;
+  }
 
-    &:empty {
-      margin: 0;
-    }
+  .card_stats {
+    margin-top: 10px;
+  }
+
+  .card-stat-item {
+    margin-right: 11px;
+    &.last {margin-right: 0;}
+  }
+
+  .card-stat-item > .stats-number {
+    font-size: 13px;
+  }
+
+  .card-stat-item > .stats-label {
+    font-size: 10px;
   }
 }
 
@@ -284,7 +301,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 250px;
-  padding: 0 0 10px;
+  width: 230px;
+  padding: 10px 0;
   display: none;
 }

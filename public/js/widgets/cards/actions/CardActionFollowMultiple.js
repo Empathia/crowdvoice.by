@@ -7,14 +7,14 @@ Class(CV, 'CardActionFollowMultiple').inherits(Widget)({
         <svg class="card-activity-svg -s16">\
             <use xlink:href="#svg-user-follow"></use>\
         </svg>\
-        <p class="card-actions-label">Follow As...</p>',
+        <p class="card-actions-label">{follow-as-text}</p>',
 
     FOLLOWING_AS_TEXT : '\
         <div class="following-button-single-state">\
             <svg class="card-activity-svg -s16">\
                 <use xlink:href="#svg-user-following"></use>\
             </svg>\
-            <p class="card-actions-label">Following As...</p>\
+            <p class="card-actions-label">{following-as-text}</p>\
         </div>',
 
     prototype : {
@@ -22,6 +22,9 @@ Class(CV, 'CardActionFollowMultiple').inherits(Widget)({
          * @property entity <required> [EntityModel]
          */
         entity : null,
+
+        followAsText : 'Follow As...',
+        followingAsText : 'Following As...',
 
         init : function init(config) {
             Widget.prototype.init.call(this, config);
@@ -105,9 +108,9 @@ Class(CV, 'CardActionFollowMultiple').inherits(Widget)({
          */
         _updateButtonState : function _updateButtonState() {
             if (this.dropdown.getSelection().length) {
-                this.dropdown.setLabel(this.constructor.FOLLOWING_AS_TEXT);
+                this.dropdown.setLabel(this.constructor.FOLLOWING_AS_TEXT.replace(/{following-as-text}/, this.followingAsText));
             } else {
-                this.dropdown.setLabel(this.constructor.FOLLOW_AS_TEXT);
+                this.dropdown.setLabel(this.constructor.FOLLOW_AS_TEXT.replace(/{follow-as-text}/, this.followAsText));
             }
             return this;
         }
