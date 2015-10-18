@@ -71,6 +71,16 @@ Class(CV.UI, 'Checkbox').inherits(Widget).includes(CV.WidgetUtils)({
             this.dispatch('changed');
         },
 
+        _enable : function _enable() {
+            Widget.prototype._enable.call(this);
+            this.checkbox.removeAttribute('disabled');
+        },
+
+        _disable : function _disable() {
+            Widget.prototype._disable.call(this);
+            this.checkbox.setAttribute('disabled', true);
+        },
+
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
             Events.on(this.checkbox, 'change', this._clickHandlerRef);
