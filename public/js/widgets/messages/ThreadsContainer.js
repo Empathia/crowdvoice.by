@@ -10,16 +10,12 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
     searchUsersResultEl : null,
 
     currentThread : null,
-
     unreadMessages : 0,
 
-
     init : function init(config) {
-
       Widget.prototype.init.call(this, config);
 
       var container = this;
-
       this.listElement = this.element.find('.messages-list');
       this.noMessagesEl = this.element.find('.no-messages');
       this.messagesBodyContainerEl = this.element.find('.messages-body-container');
@@ -47,7 +43,6 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
 
       // New Conversation Button
       if (this.currentPerson.organizations.length > 0) {
-
         // Show select widget if currentPerson owns or is member of organizations
         this.newConversationOptions = {};
 
@@ -69,7 +64,6 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
           style   : 'small',
           options: this.newConversationOptions
         }).render($('.messages-new'));
-
 
         this.newMessageButton.element.find('li:first-child').bind('click', function() {
           //console.log('myself');
@@ -129,8 +123,8 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
         return false;
       });
 
-      this.searchField.element.find('input').on('keyup', function(){
-        var searchStr = $(this).val();
+      this.searchField.element.find('input').on('keyup', function(ev){
+        var searchStr = ev.target.value.toLowerCase();
         container.listElement.find('.message-side').each(function( index, value ) {
 
           var userStr = $(this).find('h3').text().toLowerCase();
@@ -155,7 +149,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
 
         $.ajax({
           type: "POST",
-          url:'/' + currentPersonProfileName + '/messages/searchPeople',
+          url:'/' + currentPerson.profileName + '/messages/searchPeople',
           headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
           data : {value : inputSearch.val()},
           success: function(data) {
@@ -257,7 +251,6 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
     },
 
     hideSideBar : function hideSideBar() {
-
       var container = this;
 
       this.element.addClass('no-sidebar');
@@ -485,6 +478,5 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
       var height = $('.messages-conversation > .msgs').height();
       $('.messages-conversation').scrollTop(height);
     }
-
   }
 });
