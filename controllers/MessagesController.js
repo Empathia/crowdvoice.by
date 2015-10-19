@@ -150,7 +150,7 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
                       return doneSeries(err);
                     }
 
-                    message.type = 'invitation_rejected_voice';
+                    message.type = 'invitation_accepted_voice';
 
                     message.save(function(err, response) {
                       if (err) {
