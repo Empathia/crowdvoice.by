@@ -62,7 +62,7 @@ describe('ThreadsController', function () {
             _csrf: csrf,
           })
           .end(function (err, res) {
-            if (err) { console.log(err); done(err); return }
+            if (err) { return done(err) }
 
             expect(res.status).to.equal(200)
             expect(res.body.status).to.equal('ok')

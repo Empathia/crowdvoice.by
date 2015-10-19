@@ -123,116 +123,115 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
           if (err) { return next(err); }
 
           if (!isAllowed) {
-            return next(new ForbiddenError('Unauthorized.'))
+            return next(new ForbiddenError())
           }
 
           async.series([
             // accept
             function (done) {
-              if (req.body.action === 'accept') {
-
-                async.series([function(doneSeries) {
-                  if (!voice) {
-                    return doneSeries();
-                  }
-
-                  var voiceCollaborator = new VoiceCollaborator({
-                    voiceId : voice.id,
-                    collaboratorId : hashids.decode(req.currentPerson.id)[0]
-                  });
-
-                  if (req.body.anonymous) {
-                    voiceCollaborator.isAnonymous = true;
-                  }
-
-                  voiceCollaborator.save(function(err, result) {
-                    if (err) {
-                      return doneSeries(err);
-                    }
-
-                    message.type = 'invitation_rejected_voice';
-
-                    message.save(function(err, response) {
-                      if (err) {
-                        return doneSeries(err);
-                      }
-
-                      invitationRequest.destroy(function (err) {
-                        if (err) { return doneSeries(err); }
-
-                        // if new member is not anonymous, i.e. is public
-                        if (!req.body.anonymous) {
-                          FeedInjector().inject(voiceCollaborator.collaboratorId, 'item voiceNewPublicContributor', voiceCollaborator, doneSeries);
-                        } else {
-                          return doneSeries();
-                        }
-                      });
-                    });
-                  });
-                }, function(doneSeries) {
-                  if (!organization) {
-                    return doneSeries();
-                  }
-
-                  var entityMembership = new EntityMembership({
-                    entityId : organization.id,
-                    memberId : hashids.decode(req.currentPerson.id)[0]
-                  });
-
-                  if (req.body.anonymous) {
-                    entityMembership.isAnonymous = true;
-                  }
-
-                  entityMembership.save(function(err, result) {
-                    if (err) {
-                      return doneSeries(err);
-                    }
-
-                    message.type = 'invitation_accepted_organization';
-
-                    message.save(function(err, response) {
-                      if (err) {
-                        return doneSeries(err);
-                      }
-
-                      invitationRequest.destroy(function (err) {
-                        if (err) { return doneSeries(err); }
-
-                        // if new member is not anonymous, i.e. is public
-                        if (!req.body.anonymous) {
-                          FeedInjector().inject(entityMembership.memberId, 'item entityBecomesOrgPublicMember', entityMembership, doneSeries);
-                        } else {
-                          return doneSeries();
-                        }
-                      });
-                    });
-                  });
-
-                }], done);
-              } else {
+              if (req.body.action !== 'accept') {
                 return done();
               }
+
+              async.series([function(doneSeries) {
+                if (!voice) {
+                  return doneSeries();
+                }
+
+                var voiceCollaborator = new VoiceCollaborator({
+                  voiceId : voice.id,
+                  collaboratorId : hashids.decode(req.currentPerson.id)[0]
+                });
+
+                if (req.body.anonymous) {
+                  voiceCollaborator.isAnonymous = true;
+                }
+
+                voiceCollaborator.save(function(err, result) {
+                  if (err) {
+                    return doneSeries(err);
+                  }
+
+                  message.type = 'invitation_accepted_voice';
+
+                  message.save(function(err, response) {
+                    if (err) {
+                      return doneSeries(err);
+                    }
+
+                    invitationRequest.destroy(function (err) {
+                      if (err) { return doneSeries(err); }
+
+                      // if new member is not anonymous, i.e. is public
+                      if (!req.body.anonymous) {
+                        FeedInjector().inject(voiceCollaborator.collaboratorId, 'item voiceNewPublicContributor', voiceCollaborator, doneSeries);
+                      } else {
+                        return doneSeries();
+                      }
+                    });
+                  });
+                });
+              }, function(doneSeries) {
+                if (!organization) {
+                  return doneSeries();
+                }
+
+                var entityMembership = new EntityMembership({
+                  entityId : organization.id,
+                  memberId : hashids.decode(req.currentPerson.id)[0]
+                });
+
+                if (req.body.anonymous) {
+                  entityMembership.isAnonymous = true;
+                }
+
+                entityMembership.save(function(err, result) {
+                  if (err) {
+                    return doneSeries(err);
+                  }
+
+                  message.type = 'invitation_accepted_organization';
+
+                  message.save(function(err, response) {
+                    if (err) {
+                      return doneSeries(err);
+                    }
+
+                    invitationRequest.destroy(function (err) {
+                      if (err) { return doneSeries(err); }
+
+                      // if new member is not anonymous, i.e. is public
+                      if (!req.body.anonymous) {
+                        FeedInjector().inject(entityMembership.memberId, 'item entityBecomesOrgPublicMember', entityMembership, doneSeries);
+                      } else {
+                        return doneSeries();
+                      }
+                    });
+                  });
+                });
+
+              }], done);
             },
 
             // ignore
             function (done) {
-              if (req.body.action === 'ignore') {
-                if (voice) {
-                  message.type = 'invitation_rejected_voice';
-                } else {
-                  message.type = 'invitation_rejected_organization';
-                }
-
-                message.save(function(err, response) {
-                  if (err) {
-                    return done(err);
-                  }
-
-                  invitationRequest.destroy(done);
-                });
-              } else {
+              if (req.body.action !== 'ignore') {
                 done();
               }
+
+              if (voice) {
+                message.type = 'invitation_rejected_voice';
+              } else {
+                message.type = 'invitation_rejected_organization';
+              }
+
+              message.save(function(err, response) {
+                if (err) {
+                  return done(err);
+                }
+
+                invitationRequest.destroy(done);
+              });
             }
           ], function (err) {
             if (err) {
