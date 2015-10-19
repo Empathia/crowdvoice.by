@@ -1,4 +1,5 @@
 var moment = require('moment');
+var API = require('./../../lib/api');
 var Person = require('./../../lib/currentPerson');
 var PLACEHOLDERS = require('./../../lib/placeholders');
 
@@ -126,84 +127,53 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
             // ************   Message button actions *******************
 
             messageActions.accept.on('click', function(){
-              var url = '/' + message.threadContainer.currentPerson.profileName + '/messages/' + message.data.threadId + '/' + message.data.id  +'/answerInvite';
-
               console.log('-- Accept --');
-              console.log('url: ' + url);
-              console.log('message Id: ' + message.data.id);
-              console.log('thread Id: ' + message.data.threadId);
-              console.log('message Type: ' + message.data.type);
 
-              $.ajax({
-                  type : 'POST',
-                  headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
-                  url : url,
-                  dataType : 'json',
-                  data : {
-                    action : 'accept'
-                  },
-                  success : function() {
-                      messageActions.element.hide();
-                      message.element.find('.message-notification > p').html('Invitation Accepted.');
-                  },
-                  error : function(err) {
-                      console.error(err);
-                  }
+              API.threatAnswerInvitation({
+                profileName: message.threadContainer.currentPerson.profileName,
+                threadId: message.data.threadId,
+                messageId: message.data.id,
+                data : {action: 'accept'}
+              }, function(err, res) {
+                if (err) {
+                  return console.log(res);
+                }
+                messageActions.element.hide();
+                message.element.find('.message-notification > p').html('Invitation Accepted.');
               });
             });
 
             messageActions.anonymous.on('click', function(){
-              var url = '/' + message.threadContainer.currentPerson.profileName + '/messages/' + message.data.threadId + '/' + message.data.id  +'/answerInvite';
-
               console.log('-- Accept As anon --');
-              console.log('url: ' + url);
-              console.log('message Id: ' + message.data.id);
-              console.log('thread Id: ' + message.data.threadId);
-              console.log('message Type: ' + message.data.type);
 
-              $.ajax({
-                  type : 'POST',
-                  headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
-                  url : url,
-                  dataType : 'json',
-                  data : {
-                    action : 'accept',
-                    anonymous : true
-                  },
-                  success : function() {
-                      messageActions.element.hide();
-                      message.element.find('.message-notification > p').html('Invitation Accepted.');
-                  },
-                  error : function(err) {
-                      console.error(err);
-                  }
+              API.threatAnswerInvitation({
+                profileName: message.threadContainer.currentPerson.profileName,
+                threadId: message.data.threadId,
+                messageId: message.data.id,
+                data : {action: 'accept', anonymous: true}
+              }, function(err, res) {
+                if (err) {
+                  return console.log(res);
+                }
+                messageActions.element.hide();
+                message.element.find('.message-notification > p').html('Invitation Accepted.');
               });
             });
 
             messageActions.refuse.on('click', function(){
-              var url = '/' + message.threadContainer.currentPerson.profileName + '/messages/' + message.data.threadId + '/' + message.data.id  +'/answerInvite';
-
               console.log('-- Refuse --');
-              console.log('url: ' + url);
-              console.log('message Id: ' + message.data.id);
-              console.log('thread Id: ' + message.data.threadId);
-              console.log('message Type: ' + message.data.type);
 
-              $.ajax({
-                  type : 'POST',
-                  headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
-                  url : url,
-                  dataType : 'json',
-                  data : {
-                    action : 'ignore'
-                  },
-                  success : function() {
-                      messageActions.element.hide();
-                      message.element.find('.message-notification > p').html('Invitation rejected.');
-                  },
-                  error : function(err) {
-                      console.error(err);
-                  }
+              API.threatAnswerInvitation({
+                profileName: message.threadContainer.currentPerson.profileName,
+                threadId: message.data.threadId,
+                messageId: message.data.id,
+                data : {action: 'ignore'}
+              }, function(err, res) {
+                if (err) {
+                  return console.log(res);
+                }
+                messageActions.element.hide();
+                message.element.find('.message-notification > p').html('Invitation rejected.');
               });
             });
           }
