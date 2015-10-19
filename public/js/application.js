@@ -162,6 +162,7 @@ require('./widgets/voice/posts-registry');
 require('./widgets/voice/Onboarding');
 require('./widgets/voice/VoiceHeader');
 require('./widgets/voice/VoiceFooter');
+require('./widgets/voice/VoiceFilterPostsDropdown');
 require('./widgets/voice/footer/share-buttons-group');
 require('./widgets/voice/footer/share-button');
 require('./widgets/voice/footer/embed-button');

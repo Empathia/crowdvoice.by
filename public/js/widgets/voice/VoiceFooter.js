@@ -64,6 +64,10 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
                 scrollableArea : this.voiceScrollableArea
             })).render(this.element);
 
+            this.appendChild(new CV.VoiceFilterPostsDropdown({
+                name : 'filterDropdown'
+            })).render(this.actionsColumn);
+
             if (Person.get() && (!Person.anon()) && (!Person.memberOf('voice', this.voice.id))) {
                 if (Person.get().ownedOrganizations.length) {
                     this.appendChild(new CV.VoiceFollowMultipleButton({

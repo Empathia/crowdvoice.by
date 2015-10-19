@@ -1,4 +1,4 @@
-
+/* globals App */
 /* Subclass of VoicePostLayers
  * Declares the required abstract methods to handle the Voice Posts on Normal Mode
  */
@@ -31,6 +31,7 @@ Class(CV, 'VoicePostLayersVoiceAbstract').inherits(CV.VoicePostLayers)({
          */
         addPosts : function addPosts(layer, postsData) {
             layer.addPosts(postsData);
+            layer.filterPosts(App.Voice.voiceFooter.filterDropdown.getSelectedSourceTypes());
         },
 
         /* Implementation to remove/destroy posts from a layer.
