@@ -1,3 +1,5 @@
+var moment = require('moment');
+var Person = require('./../../lib/currentPerson');
 var PLACEHOLDERS = require('./../../lib/placeholders');
 
 CV.Message = new Class(CV, 'Message').inherits(Widget)({
@@ -15,10 +17,10 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
             </div>\
           </div>',
 
-  INVITATION_ORGANIZATION_HTML : '<p>You were invited to become a member of {organizationName}.\
+  INVITATION_ORGANIZATION_HTML : '<p>You were invited to become a member of {organizationName}. \
     Accepting this invitation will grant you privilege of posting and moderating content on all the Voices by <a href="{url}">{organizationName}</a.</p>',
 
-  INVITATION_VOICE_HTML : '<p>You were invited to become a contributor of {organizationName}.\
+  INVITATION_VOICE_HTML : '<p>You were invited to become a contributor of {organizationName}. \
     Accepting this invitation will grant you privilege of posting and moderating content on the Voices <a href="{url}">{organizationName}</a.</p>',
 
   REQUEST_ORGANIZATION_HTML : '<p>{name} has requested to become a member of {organizationName}. \
@@ -27,20 +29,18 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
   REQUEST_VOICE_HTML : '<p>{name} has requested to become a contributor for {organizationName}. \
     If you grant access, {name} will be able to post and moderate content of this Voice.<br><a href="{url}">Go to this Voice\'s settings ›</a></p>',
 
-  INVITATION_ACCEPTED_VOICE_HTML : '<p></p>',
+  INVITATION_ACCEPTED_VOICE_HTML : '<p>Invitation to {voiceTitle} accepted.</p>',
 
-  INVITATION_ACCEPTED_ORGANIZATION_HTML : '<p></p>',
+  INVITATION_ACCEPTED_ORGANIZATION_HTML : '<p>Invitation to {organizationName} accepted.</p>',
 
-  INVITATION_REJECTED_VOICE_HTML : '<p></p>',
+  INVITATION_REJECTED_VOICE_HTML : '<p>Invitation to {voiceTitle} rejected.</p>',
 
-  INVITATION_REJECTED_ORGANIZATION_HTML : '<p></p>',
+  INVITATION_REJECTED_ORGANIZATION_HTML : '<p>Invitation to {organizationName} rejected.</p>',
 
   prototype : {
     data : {},
     init : function init(config) {
       Widget.prototype.init.call(this, config);
-
-      var message = this;
 
       if (this.type === 'message') {
         this.element.find('.message-data .message-notification').remove();
@@ -49,8 +49,6 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
 
     setup : function setup() {
       var message = this;
-      //console.log(this);
-
       var participant;
 
       if (message.data.senderEntity.id !== message.parent.parent.currentPerson.id) {
@@ -70,58 +68,48 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
       message.element.find('.message-data .data-message-date').text(moment(new Date(message.data.createdAt).toISOString()).format('• MMMM Do, YYYY • h:mm a'));
       message.element.find('.message-data .data-message-text').text(message.data.message);
 
-      if (message.type != 'message' && message.type != 'report') {
-        var messageNotificationElement = $(message.constructor[message.type.toUpperCase() + '_HTML']);
+      if (message.type !== 'message' && message.type !== 'report') {
+        var text = this.constructor[this.type.toUpperCase() + '_HTML'];
 
-        var text = messageNotificationElement.html();
-
-        if (message.data.senderEntity.id !== currentPerson.id) {
+        if (Person.is(message.data.senderEntity.id) === false) {
           switch(message.type) {
             case 'invitation_organization':
-              text = text
-                      .replace(/{organizationName}/g, message.data.organization.name)
-                      .replace(/{url}/, '/' + message.data.organization.profileName)
+              text = text.replace(/{organizationName}/g, message.data.organization.name)
+                      .replace(/{url}/, '/' + message.data.organization.profileName);
               break;
             case 'invitation_voice':
-              text = text
-                      .replace(/{organizationName}/g, message.data.voice.title)
-                      .replace(/{url}/, '/' + message.data.voice.slug)
+              text = text.replace(/{organizationName}/g, message.data.voice.title)
+                      .replace(/{url}/, '/' + message.data.voice.slug);
               break;
             case 'request_organization':
               text = text
                       .replace(/{name}/g, message.data.senderEntity.name + ' ' + message.data.senderEntity.lastname)
                       .replace(/{organizationName}/g, message.data.organization.name + ' ' + message.data.organization.lastname)
-                      .replace(/{url}/, '/' + message.data.organization.profileName + '/edit')
+                      .replace(/{url}/, '/' + message.data.organization.profileName + '/edit');
               break;
             case 'request_voice':
-              text = text
-                      .replace(/{name}/g, message.data.senderEntity.name + ' ' + message.data.senderEntity.lastname)
+              text = text.replace(/{name}/g, message.data.senderEntity.name + ' ' + message.data.senderEntity.lastname)
                       .replace(/{organizationName}/g, message.data.voice.title)
-                      .replace(/{url}/g, '/' + message.data.voice.slug)
+                      .replace(/{url}/g, '/' + message.data.voice.slug);
               break;
             case 'invitation_accepted_voice':
-              text = 'Invitation to ' + message.data.voice.title + ' accepted';
+              text = text.replace(/{voiceTitle}/, message.data.voice.title);
               break;
 
             case 'invitation_accepted_organization':
-              text = 'Invitation to ' + message.data.organization.name + ' accepted';
+              text = text.replace(/{organizationName}/, message.data.organization.name);
               break;
 
             case 'invitation_rejected_voice':
-              text = 'Invitation to ' + message.data.voice.title + ' rejected';
+              text = text.replace(/{voiceTitle}/, message.data.voice.title);
               break;
 
             case 'invitation_rejected_organization':
-              text = 'Invitation to ' + message.data.organization.name + ' rejected';
+              text = text.replace(/{organizationName}/, message.data.organization.name);
               break;
           }
 
-          //console.log('type: ' +message.type);
-
           if (message.type === "invitation_organization" || message.type === "invitation_voice") {
-
-            //console.log('in');
-
             var btnMultipleOptions = {
               "1": {label: 'Accept', name: 'accept'},
               "2": {label: 'Accept as an Anonymous Member', name: 'anonymous'},
@@ -154,7 +142,7 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
                   data : {
                     action : 'accept'
                   },
-                  success : function(data) {
+                  success : function() {
                       messageActions.element.hide();
                       message.element.find('.message-notification > p').html('Invitation Accepted.');
                   },
@@ -162,7 +150,6 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
                       console.error(err);
                   }
               });
-
             });
 
             messageActions.anonymous.on('click', function(){
@@ -183,7 +170,7 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
                     action : 'accept',
                     anonymous : true
                   },
-                  success : function(data) {
+                  success : function() {
                       messageActions.element.hide();
                       message.element.find('.message-notification > p').html('Invitation Accepted.');
                   },
@@ -210,45 +197,47 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
                   data : {
                     action : 'ignore'
                   },
-                  success : function(data) {
+                  success : function() {
                       messageActions.element.hide();
                       message.element.find('.message-notification > p').html('Invitation rejected.');
                   },
                   error : function(err) {
                       console.error(err);
                   }
-              })
-
+              });
             });
-
           }
-
         } else {
 
           switch(message.type) {
+            case 'invitation_voice':
+              text = '<p>You invited ' + message.thread.data.receiverEntity.name + ' to become a contributor of ' + message.data.voice.title + '.</p>';
+              break;
+
+            case 'invitation_organization':
+              text = '<p>You invited ' + message.thread.data.receiverEntity.name + ' to become a member of ' + message.data.organization.name + '.</p>';
+              break;
+
             case 'invitation_accepted_voice':
-              text = 'Invitation to ' + message.data.voice.title + ' accepted';
+              text = text.replace(/{voiceTitle}/, message.data.voice.title);
               break;
 
             case 'invitation_accepted_organization':
-              text = 'Invitation to ' + message.data.organization.name + ' accepted';
+              text = text.replace(/{organizationName}/, message.data.organization.name);
               break;
 
             case 'invitation_rejected_voice':
-              text = 'Your invitation to ' + message.data.voice.title + ' was rejected';
+              text = text.replace(/{voiceTitle}/, message.data.voice.title);
               break;
 
             case 'invitation_rejected_organization':
-              text = 'Invitation to ' + message.data.organization.name + ' rejected';
+              text = text.replace(/{organizationName}/, message.data.organization.name);
               break;
           }
-
         }
 
-        messageNotificationElement.html(text);
-
-        this.element.find('.message-data .message-notification').prepend(messageNotificationElement);
+        this.element.find('.message-data .message-notification').prepend(text);
       }
     }
   }
-})
+});
