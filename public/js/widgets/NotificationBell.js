@@ -21,10 +21,6 @@ Class('NotificationBell').inherits(Widget)({
       var bell = this;
       var notifications = null;
 
-      //var feedGen = new CV.feedGenerator({
-      //    type : 'feed app'
-      //});
-
       $.ajax({
           type : 'GET',
           dataType : 'json',
@@ -42,14 +38,17 @@ Class('NotificationBell').inherits(Widget)({
       });
 
       var socket = this.parent.parent.getSocket();
-      socket.emit('getNotifications');
 
-       setInterval(function() {
-         socket.emit('getNotifications');
-       }, 30000);
+      if (!/feed/.test(window.location.href)){
+        socket.emit('getNotifications');
+      }
+
+      setInterval(function() {
+        socket.emit('getNotifications');
+      }, 30000);
 
       socket.on('notifications', function(data) {
-        //console.log(data);
+
         if (data > 0) {
           bell.element.find('.ui-badge').show().html(data);
           bell.element.addClass('has-new-notifications');
@@ -64,7 +63,7 @@ Class('NotificationBell').inherits(Widget)({
             url : '/' + currentPerson.profileName + '/notifications',
             headers : {'csrf-token' : this.token},
             success : function success(data) {
-              //console.log(data);
+
               notifications.update(data.reverse());
 
             },
@@ -77,7 +76,6 @@ Class('NotificationBell').inherits(Widget)({
       });
 
       bell.element.on('click', function() {
-        //socket.emit('readNotifications');
 
         if(notifications){
           notifications.open ? notifications.hide() : notifications.show();

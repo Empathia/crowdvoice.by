@@ -163,6 +163,7 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
         //Gets the API response and puts the image as background for the header
         _imageUploaded : function _imageUploaded(image){
             this.articleImage = image;
+            $(this.articleTitle).addClass('editor-title-bg');
             $(this.coverImage).css('background-image', 'url('+this.articleImage.path+')');
             $(this.coverImage).css('background-size', 'cover');
             $(this.coverImage).css('background-repeat', 'no-repeat');

@@ -3,9 +3,10 @@
 
 </div>
 
-<div class="invite-users">
+<div class="add-users">
 </div>
 <br class="-clear-after">
+
 <div class="admin-users-list" id="pos-container" >
 
 	<% featuredEntities.forEach(function(featuredEntity){ %>
@@ -37,6 +38,7 @@
 						</article>
 					</div>
 
+
 					<div class="admin-actions">
 
 						<a href="#" target="_blank"><button class="cv-button action-profile drag-reorder small">Reorder</button></a>
@@ -65,19 +67,50 @@
 
 <script>
 
+	var featuredEntities = <%= JSON.stringify(featuredEntities) %>;
+
+	var entityType = <%= JSON.stringify(entityType) %>;
+
 	var selectedUser;
-  	var alertInvite = null;
-
-	var searchInput = new CV.InputButton({
-		style     : 'primary',
-		placeholder : 'Search users...',
-		title     : "Invite users to join this organization",
-		buttonLabel : "Invite"
-	}).render($('.invite-users'));
-	searchInput.disableButton();
-
 	var personElBase = $('<div class="person" id=""></div>');
 
+	var headerEl = document.querySelector('header .header-actions');
+	headerEl.innerHTML = '<h2>Featured <%= entityType %></h2>';
+
+	var flash = <%= JSON.stringify(flash) %>;
+
+	// Show flash message action
+  	if (flash.success){
+
+  		var nEl= document.querySelector('.notifications');
+		nEl.innerHTML = '<p>' + flash.success + '</p>';
+
+	  	nEl.style.display = 'block';
+	  	setTimeout(function(){
+	  		$(nEl).fadeOut(500);
+	  	}, 2000);
+
+	}
+
+	dragula([document.querySelector('.admin-users-list')])
+		.on('drag', function (el) {
+		    el.querySelector('.admin-actions').style.display = "none";
+		 })
+		.on('drop', function (el) {
+		    el.querySelector('.admin-actions').style.display = "inherit";
+			reorder();
+	 	 });
+
+	// Add search widget
+	var searchInput = new CV.InputButton({
+		style     : 'primary',
+		placeholder : 'Search ' + entityType + '...',
+		title     : "Add featured " + entityType,
+		buttonLabel : "Add"
+	}).render($('.add-users'));
+	searchInput.disableButton();
+
+	// Search event
 	searchInput.inputEl.find('input').on('keyup', function(e){
 
 		if (e.keyCode == 27) {
@@ -98,7 +131,7 @@
 	      headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
 	      data : {query : searchStr},
 	      success: function(data) {
-	      	console.log(data);
+
 	        if (data[entityType].length > 0){
 
 	          searchInput.element.find('.search-results').show();
@@ -117,6 +150,7 @@
 
 	});
 
+	// Invite event
 	searchInput.buttonEl.on('click', function(){
 
 		$.ajax({
@@ -128,7 +162,6 @@
 			},
 		  	success : function success(data) {
 
-			    console.log('success');
 			    var newEnt = $('.admin-user:first-child').clone();
 
 			    newEnt.appendTo($('.admin-users-list'));
@@ -141,7 +174,7 @@
 			    newEnt.attr('id', selectedUser.id);
 
 			    newEnt.find('.entity-image').attr('href', '/'+selectedUser.profileName);
-			    newEnt.find('.entity-image img').attr('src', '/uploads/development/entity_' + selectedUser.id + '/image_small.jpeg');
+			    newEnt.find('.entity-image img').attr('src', selectedUser.images.small.url);
 			    newEnt.find('.admin-actions form').attr('action', '/admin/featured/<%= entityType %>/' + selectedUser.id + '?_method=DELETE');
 			    newEnt.find('.admin-actions form .entityId').val(selectedUser.id);
 			    newEnt.find('.card-mini-fullname').text(eName);
@@ -149,8 +182,6 @@
 			    newEnt.find('.card-mini-username').text(' · @' + selectedUser.profileName);
 			    newEnt.find('.location').text(selectedUser.location + ' · ');
 			    newEnt.find('.joined-at').text('Joined on'+  moment(selectedUser.createdAt).format('MMM, YYYY') );
-
-			    console.log('featured entity added');
 
 			    reorder();
 
@@ -162,20 +193,14 @@
 
 	});
 
-
+	// Display users on search dropdown
 	function showUsers(persons){
 
 	    searchInput.element.find('.search-results').empty();
-	    console.log(persons);
 
 		var entityIds = getFeaturedIds();
 
 	    persons.forEach(function(person){
-
-	    	//var fruits = ["Banana", "Orange", "Apple", "Mango"];
-			//var a = fruits.indexOf("Apple");
-
-			console.log(entityIds.indexOf(person.id));
 
 			if(entityIds.indexOf(person.id) != -1){
 				return false;
@@ -201,53 +226,18 @@
 	}
 
 	function setSelectedUser(person){
-		console.log(person);
+
 		searchInput.enableButton();
 		selectedUser = person;
 		searchInput.inputEl.find('input').val( searchInput.element.find('.search-results').find('#'+selectedUser.id).text() );
 		searchInput.element.find('.search-results').empty();
 		searchInput.element.find('.search-results').hide();
-	}
-
-
-	//*******************************
-
-	var featuredEntities = <%= JSON.stringify(featuredEntities) %>;
-
-	var entityType = <%= JSON.stringify(entityType) %>;
-	console.log(entityType);
-	var headerEl = document.querySelector('header .header-actions');
-	headerEl.innerHTML = '<h2>Featured <%= entityType %></h2>';
-
-	var flash = <%= JSON.stringify(flash) %>;
-
-
-  	if (flash.success){
-
-  		var nEl= document.querySelector('.notifications');
-		nEl.innerHTML = '<p>' + flash.success + '</p>';
-
-	  	nEl.style.display = 'block';
-	  	setTimeout(function(){
-	  		$(nEl).fadeOut(500);
-	  	}, 2000);
 
 	}
-
-	dragula([document.querySelector('.admin-users-list')])
-		.on('drag', function (el) {
-		    el.querySelector('.admin-actions').style.display = "none";
-		 })
-		.on('drop', function (el) {
-		    el.querySelector('.admin-actions').style.display = "inherit";
-			reorder();
-	 	 });
 
 	function reorder(){
-	 	console.log('reorder f()');
 
 		var entityIds = getFeaturedIds();
-		console.log(entityIds);
 
 	 	$.ajax({
             type : 'POST',
@@ -260,8 +250,10 @@
                 console.log('reorder success');
             },
             error : function error(err) {
+
                 console.log('error');
                 console.log(err);
+
             }
         });
 
