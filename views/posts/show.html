@@ -1,5 +1,78 @@
 <style media="screen">
+    .description, article{
+            padding: 50px 100px;
+    }
+    .image-header{
+            border-bottom: 1px solid #b8b8c1;
+            position: relative; 
+            width: 100%;
+            height: 320px;
+    }
+    .image-header > img {
+        width: 100%;
+        height: 100%;
+    }
+    .image-header > h1.title {
+        color:white;
+        text-shadow:black 3px 3px; 
+    }
+    .image-header > h1{
+        font-size: 48px;
+        position: absolute; 
+        top: 80px; 
+        left: 100px; 
+        max-width: 100%;
+        line-height: 45px;
+    }
 
+    .description p {
+        text-align: justify;
+    }
+
+    .description h1, article h1{
+        font-weight: bold;
+        font-size: 24px;
+    }
+
+    .description h2, article h2{
+        font-weight: bold;
+        font-size: 22px;
+    }
+    .description h3, article h3{
+        font-weight: bold;
+        font-size: 18px;
+    }
+    .description h4, article h4{
+        font-weight: bold;
+        font-size: 16px;
+    }
+    .description h5, article h5{
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .description h6, article h6{
+        font-weight: bold;
+        font-size: 10px;
+    }
+    
+    @media only screen and (max-width: 665px){
+        .image-header > h1{
+            font-size: 40px;
+            top: 70px;
+            left: 80px;
+        }
+    }
+    @media only screen and (max-width: 461px){
+        .image-header > h1{
+            top: 30px;
+        }
+    }
+    @media only screen and (max-width: 403px){
+        .image-header > h1{
+            font-size: 35px;
+            top: 40px;
+        }
+    }
 </style>
 
 <div class="readable">
@@ -9,10 +82,16 @@
         <%= readablePost.data.content %>
     </article>
 <% } else { %>
-    <% if (post.image.exists('big')) { %>
-        <img src="<%= post.image.url('big') %>" />
-    <% } %>
-    <h1><%= post.title %></h1>
+    <div class="image-header">
+        <% if (post.image.exists('big')) { %>
+            <img src="<%= post.image.url('big') %>" />
+            <h1 class="title"><%= post.title %></h1>
+        <% } else {%>
+            <h1><%= post.title %></h1>
+        <% } %>
+    </div>
+    
+    
     <div class="description">
         <%= post.description %>
     </div>
