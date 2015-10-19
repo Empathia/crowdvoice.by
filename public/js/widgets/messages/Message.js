@@ -27,8 +27,6 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
   REQUEST_VOICE_HTML : '<p>{name} has requested to become a contributor for {organizationName}. \
     If you grant access, {name} will be able to post and moderate content of this Voice.<br><a href="{url}">Go to this Voice\'s settings ›</a></p>',
 
-  REPORT : '<p>This is an organization report for <a href="{url}">{organizationName} ›</a>.</p>',
-
   INVITATION_ACCEPTED_VOICE_HTML : '<p></p>',
 
   INVITATION_ACCEPTED_ORGANIZATION_HTML : '<p></p>',
@@ -71,22 +69,6 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
 
       message.element.find('.message-data .data-message-date').text(moment(new Date(message.data.createdAt).toISOString()).format('• MMMM Do, YYYY • h:mm a'));
       message.element.find('.message-data .data-message-text').text(message.data.message);
-
-      //console.log('type: ' +message.type);
-
-      if ( message.type == 'report') {
-        var messageNotificationElement = $(message.constructor.REPORT);
-        var text = messageNotificationElement.html();
-
-        text = text
-            .replace('{organizationName}', message.data.organization.name)
-            .replace('{url}', '/' + message.data.organization.profileName);
-
-        messageNotificationElement.html(text);
-
-        this.element.find('.message-data .message-notification').prepend(messageNotificationElement);
-
-      }
 
       if (message.type != 'message' && message.type != 'report') {
         var messageNotificationElement = $(message.constructor[message.type.toUpperCase() + '_HTML']);
