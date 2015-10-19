@@ -2,7 +2,8 @@
 var Options = [
     {label: 'Images', value: 'image'},
     {label: 'Videos', value: 'video'},
-    {label: 'External Links', value: 'link'}
+    {label: 'Links', value: 'link'},
+    {label: 'Articles', value: 'text'}
 ];
 
 Class(CV, 'VoiceFilterPostsDropdown').inherits(Widget)({
