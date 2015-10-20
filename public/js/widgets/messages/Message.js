@@ -66,7 +66,7 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
         message.element.find('.message-sender-image').attr('src', PLACEHOLDERS.notification);
       }
 
-      message.element.find('.message-data .data-message-date').text(moment(new Date(message.data.createdAt).toISOString()).format('• MMMM Do, YYYY • h:mm a'));
+      message.element.find('.message-data .data-message-date').text(moment(new Date(message.data.createdAt).toISOString()).format('• MMMM Do, YYYY • h:mm A'));
       message.element.find('.message-data .data-message-text').text(message.data.message);
 
       if (message.type !== 'message' && message.type !== 'report') {
@@ -189,7 +189,11 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
               break;
 
             case 'request_voice':
-              text = '<p>You requested to become a contributor for {voiceTitle}</p>'.replace(/{voiceTitle}/, message.data.voice.title);
+              text = '<p>You has requested to become a contributor for {voiceTitle}.</p>'.replace(/{voiceTitle}/, message.data.voice.title);
+              break;
+
+            case 'request_organization':
+              text = '<p>You has requested to become a member of {organizationName}.</p>'.replace(/{organizationName}/, message.data.organization.name);
               break;
 
             case 'invitation_accepted_voice':
