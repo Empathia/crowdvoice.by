@@ -235,7 +235,7 @@ module.exports = {
           content: args.articleContent,
           publishedAt: args.articleDate,
           imagePath : args.articleImage
-        }
+        };
 
         $.ajax({
             type : 'POST',
@@ -329,34 +329,6 @@ module.exports = {
             error : function error(err) { callback(true, err); }
         });
     },
-    /* Upload a photo to be added into a specific article.
-     * @argument args.profileName <required> [String] the voice owner profileName
-     * @argument args.voiceSlug <required> [String] the voice slug
-     * @argument args.data <required> [FormData] the image as FormData
-     * @argument callback <required> [Function]
-     */
-    uploadArticleImage : function uploadArticleImage(args, callback) {
-        if (!args.profileName || !args.voiceSlug || !args.data || !callback) {
-            throw new Error('Missing required params');
-        }
-
-        if ((typeof callback).toLowerCase() !== "function") {
-            throw new Error('Callback should be a function');
-        }
-
-
-        $.ajax({
-            type : 'POST',
-            url : '/' + args.profileName + '/' + args.voiceSlug + '/uploadPostImage',
-            headers : {'csrf-token' : this.token},
-            data : args.data,
-            cache : false,
-            contentType : false,
-            processData : false,
-            success : function success(data) { callback(false, data); },
-            error : function error(err) { callback(true, err); }
-        });
-    },
 
     /* Upload a photo to be added into a specific article.
      * @argument args.profileName <required> [String] the voice owner profileName
@@ -372,7 +344,6 @@ module.exports = {
         if ((typeof callback).toLowerCase() !== "function") {
             throw new Error('Callback should be a function');
         }
-
 
         $.ajax({
             type : 'POST',
@@ -1011,6 +982,34 @@ module.exports = {
             error : function error(err) {callback(true, err);}
         });
      },
+
+     /* Answer to an invitation.
+      * @argument args.profileName <required> [String] currentPerson profileName
+      * @argument args.threadId <required> [String]
+      * @argument args.messageId <required> [String]
+      * @argument args.data.action <required> ('accepted', 'ignore')
+      * @argument args.data.anonymous <optional>
+      * @argument callback <required> [Function]
+      */
+    threatAnswerInvitation : function threatAnswerInvitation(args, callback) {
+        if (!args.profileName || !args.threadId || !args.messageId || !args.data.action || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'POST',
+            url : '/' + args.profileName + '/messages/' + args.threadId + '/' + args.messageId  +'/answerInvite',
+            headers : {'csrf-token' : this.token},
+            dataType : 'json',
+            data : args.data,
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
 
     /* Invite user to become part of organization or contributor of voice.
      * @argument args.profileName <required> [String] currentPerson profileName

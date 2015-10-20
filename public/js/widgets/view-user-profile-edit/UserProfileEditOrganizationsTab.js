@@ -62,7 +62,7 @@ Class(CV, 'UserProfileEditOrganizationsTab').inherits(Widget)({
             }));
 
             Person.get().organizations.forEach(function(organization, index) {
-                this.appendChild(new CV.CardMiniClean({
+                this.appendChild(new CV.CardMini({
                     name : 'card_' + index,
                     className : 'cv-items-list',
                     data : organization

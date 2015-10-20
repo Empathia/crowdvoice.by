@@ -1,3 +1,110 @@
-<pre>
-<%= JSON.stringify(params, null, 2) %>
+<pre style="white-space: inherit;">
+		<% var doerInfo = params.sender; %>
+
+		<% var voiceDate = new Date();  %>
+		<% var monthNames = ["January", "February", "March","April", "May", "June", "July","August", "September", "October","November", "December"];%>
+		<% var day = voiceDate.getDate(); %> 
+		<% var monthIndex = voiceDate.getMonth(); %>
+		<% var year = voiceDate.getFullYear(); var voiceImage; %>
 </pre>
+<!-- Change image url -->
+<div style="background-color:#F7F9FA !important;background: url('<%= CONFIG.siteUrl[application.env]+'/img/cv-mailtemplate.png'%>')right top;background-repeat: no-repeat; text-align: center; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; height: 100%;">
+	<!-- Header -->
+	<div style="padding: 30px 0 25px 0; text-align: center;">
+		<p style="font-size:36px;color:#454B4D">CrowdVoice.by</p>
+		<p style="font-size:12px;color:#A1B0B3;"><%= monthNames[monthIndex] + ' ' + day +', ' + year %></p>
+	</div>
+	<center style="padding: 0 0 40px 0;">
+	    <div style="display: inline-block; width: 550px; padding: 30px 0 30px 0; background-color: #FFFFFF; color: #4c4b49; border-radius: 0px;border-top:10px solid;border-top-color:#FF9400;box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.5);">
+				<!-- Invitation to organization -->
+				    <table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 0 0 0 -3px;">
+				      <tbody>
+				          <tr>
+				            <td style="padding: 0 25px; text-align: left;">
+				              <div style="font-size: 14px; line-height: 38px; color: #b2b2b2;">
+				                <p style="font-size:18px;color:black;">Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="blank_"><%= doerInfo.name + ' ' + doerInfo.lastname %></a> has sent you an invitation:</p>
+				              </div>
+				            </td>
+				          </tr>
+				      </tbody>
+				    </table>
+				   <!-- New invitation to join a new ORGANIZATION -->
+	    		<% if(params.message.type == 'invitation_organization'){ %>
+	    		<% if(Object.getOwnPropertyNames(params.invitationOrganization.images).length === 0){ voiceImage = CONFIG.siteUrl[application.env]+'/img/img-placeholder.png'; }else{ voiceImage = CONFIG.siteUrl[application.env]+params.invitationOrganization.images.small.url;} %>
+				    <table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 10px 0 0 -3px;">
+				        <tbody>
+				          	<tr>
+					            <td style="padding: 0px 0 80px 25px;">
+					                <img width="52" height="52" style="border-radius:50%;display:block;margin-left:auto;margin-right:auto;" src="<%= CONFIG.siteUrl[application.env]+ doerInfo.images.card.url %>"/>
+					            </td>
+					            <td style="padding-right:25px;">  
+					                <table width="100%" cellspacing="0" cellpadding="0" border="0" style="font-size:15px;color:#454B4D;text-align:left;background-color:#F7F9FA;padding:20px;">
+					                  	<tbody>
+                                      		<tr>
+                                       			<td>
+                                        			<p><%= params.message.message %><br><br></p>
+                                        		</td>
+                                      		</tr>
+					                    	<tr>
+					                      		<td colspan="">
+					                          		<img width="52" height="52" style="border-radius:5px;float:left;"src="<%= voiceImage %>"/>
+					                        		<p style="margin-left:59px;margin-top:5px;font-size:12px;color:#A1B0B3;"><a href="<%= CONFIG.siteUrl[application.env] + '/' + params.invitationOrganization.profileName%>" target="blank_" style="font-size:13px;color:#4D4D4D;text-align:left;vertical-align:middle;font-weight:bold;"><%= params.invitationOrganization.name %></a><!--<br><br>by The International Planned Parenthood Federation--></p>
+					                      		</td>
+					                    	</tr>
+					                  	</tbody>
+					                </table>
+					            </td>
+				          	</tr>
+				        </tbody>
+				    </table>
+				<% } %>
+				<% if(params.message.type == 'invitation_voice'){%>
+				<% if(Object.getOwnPropertyNames(params.invitationVoice.images).length === 0){ voiceImage = CONFIG.siteUrl[application.env]+'/img/img-placeholder.png'; }else{ voiceImage = CONFIG.siteUrl[application.env]+params.invitationVoice.images.small.url;} %>
+					<table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 10px 0 0 -3px;">
+				        <tbody>
+				          	<tr>
+					            <td style="padding: 0px 0 80px 25px;">
+					                <img width="52" height="52" style="border-radius:50%;display:block;margin-left:auto;margin-right:auto;" src="<%= CONFIG.siteUrl[application.env]+ doerInfo.images.card.url %>"/>
+					            </td>
+					            <td style="padding-right:25px;">  
+					                <table width="100%" cellspacing="0" cellpadding="0" border="0" style="font-size:15px;color:#454B4D;text-align:left;background-color:#F7F9FA;padding:20px;">
+					                  	<tbody>
+                                      		<tr>
+                                       			<td>
+                                        			<p><%= params.message.message %><br><br></p>
+                                        		</td>
+                                      		</tr>
+					                    	<tr>
+					                      		<td colspan="">
+					                          		<img width="52" height="52" style="border-radius:5px;float:left;"src="<%= voiceImage %>"/>
+					                        		<p style="margin-left:59px;margin-top:5px;font-size:12px;color:#A1B0B3;"><a href="<%= CONFIG.siteUrl[application.env] +'/'+ params.invitationVoice.owner.profileName +'/'+ params.invitationVoice.slug %>" target="blank_" style="font-size:13px;color:#4D4D4D;text-align:left;vertical-align:middle;font-weight:bold;"><%= params.invitationVoice.title %></a><<br><br>by <%= params.invitationVoice.owner.name + ' '%><%if(params.invitationVoice.owner.lastname === null){}else{%><%=params.invitationVoice.owner.lastname%><%} %></p>
+					                      		</td>
+					                    	</tr>
+					                  	</tbody>
+					                </table>
+					            </td>
+				          	</tr>
+				        </tbody>
+				    </table>
+				<% } %>
+				    <!-- Layout Button Separator -->
+				    <hr style="border-top:1px solid #DFE4E6;margin-top:50px;">
+
+				    <!-- Layout Buttons area -->
+				    <div style="font-size: 15px; line-height: 23px; color: #a6a39d;; padding: 30px;margin-top:20px">
+				    <!-- Invitation notitification reply button
+				      <a style="text-decoration:none;color:white;background-color:#FF9400;padding:17px 60px;border-radius:5px;border-bottom:5px solid #E68600;margin-right:10px" href="#">Accept</a>-->
+				      <a style="text-decoration:none;color:#737D80;background-color:white;padding:17px 45px;border-radius:5px;border:1px solid #D8D8D8;border-bottom:5px solid #D8D8D8;margin-left:10px;" href="<%= CONFIG.siteUrl[application.env] + '/' + params.receiver.entity.profileName %>/messages">View Invitation</a>
+				    </div>
+	    </div>
+	    <!-- Footer -->
+	    <div style="font-size: 13px; padding: 30px 0 0 0; color: #66635c;text-align:center;">
+	      <a target="blank_" href="https://twitter.com/CrowdVoice" style="padding: 0px 10px;text-decoration:none;vertical-align:super;"><img src="<%= CONFIG.siteUrl[application.env] %>/img/icons/icon-circle-twitter.png"/></a>
+	      <a target="blank_" href="<%= CONFIG.siteUrl[application.env] %>" style="padding: 0px 10px;text-decoration:none;vertical-align: -webkit-baseline-middle;"><img src="<%= CONFIG.siteUrl[application.env] %>/img/icons/icon-logo-cv.png"/></a>
+	      <a target="blank_" href="https://www.facebook.com/crowdvoice" style="padding: 0px 10px;text-decoration:none;vertical-align:super;"><img src="<%= CONFIG.siteUrl[application.env] %>/img/icons/icon-circle-facebook.png"/></a>
+	      <a href="<%= CONFIG.siteUrl[application.env] + '/' + params.receiver.entity.profileName %>/edit#notifications" style="font-size:12px;color:#8A9699;display:block;margin-top:25px;">Manage your Notifications Settings</a>
+	      <p style="font-size:12px;color:A1B0B3;">© Majal, 2015. All Rights Reserved</p>
+	    </div>
+	</center>
+</div>
+

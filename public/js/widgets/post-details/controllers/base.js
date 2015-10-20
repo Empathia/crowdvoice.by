@@ -20,12 +20,12 @@ Class(CV, 'PostDetailController').includes(NodeSupport, CustomEventSupport)({
         init : function init(config) {
             this.socket = config.socket;
             this.appendChild(CV.PostDetail.create({name: 'widget', data: config.data}));
-            this._type = this.widget.data.sourceType; /* link || image || video */
+            this._type = this.widget.data.sourceType; /* link || image || video || text */
 
-            if (this._type === "image" || this._type === "video") {
-                this._type = ["image", "video"];
+            if (this._type === 'image' || this._type === 'video') {
+                this._type = ['image', 'video'];
             } else {
-                this._type = [this._type];
+                this._type = ['link', 'text'];
             }
 
             this.keys = this.registry.getKeys();

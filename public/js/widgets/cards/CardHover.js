@@ -76,6 +76,10 @@ Class(CV, 'CardHover').inherits(Widget).includes(CV.WidgetUtils)({
                 this._cardWidget = this._cardWidget.destroy();
             }
 
+            if (this.el.nextElementSibling) {
+                document.body.appendChild(this.el);
+            }
+
             this.appendChild(new CV.CardSmall({
                 name : '_cardWidget',
                 data : data

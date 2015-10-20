@@ -33,20 +33,13 @@ Class(CV, 'OrganizationProfileMoreActions').inherits(Widget)({
                 className : 'ui-vertical-list-item -block'
             })).element.text('Request Membership');
 
-            this.appendChild(new Widget({
-                name : 'dropdownReportClaim',
-                className : 'ui-vertical-list-item -block'
-            })).element.text('Report/Claim');
-
             this.settingsDropdown.addContent(this.dropdownRequestMembership.element[0]);
-            this.settingsDropdown.addContent(this.dropdownReportClaim.element[0]);
 
             return this;
         },
 
         _bindEvents : function _bindEvents() {
             Events.on(this.dropdownRequestMembership.element[0], 'click', this._showRequestMembership.bind(this));
-            Events.on(this.dropdownReportClaim.element[0], 'click', this._showReportClaim.bind(this));
         },
 
         _showRequestMembership : function _showRequestMembership() {
@@ -63,22 +56,6 @@ Class(CV, 'OrganizationProfileMoreActions').inherits(Widget)({
 
             requestAnimationFrame(function() {
                 requestMembershipModal.activate();
-            });
-        },
-
-        _showReportClaim : function _showReportClaim() {
-            var reportModal = new CV.UI.Modal({
-                title : 'Report/Claim',
-                name : 'reportModal',
-                action : CV.Report,
-                width : 650,
-                data : {
-                    profileName : this.entity.profileName
-                }
-            }).render(document.body);
-
-            requestAnimationFrame(function() {
-                reportModal.activate();
             });
         }
     }

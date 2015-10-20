@@ -26,78 +26,66 @@
 
 var Person = require('./../../lib/currentPerson');
 var PLACEHOLDERS = require('./../../lib/placeholders');
-var moment = require('moment');
 var Autolinker = require( 'autolinker' );
 
 Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
     ELEMENT_CLASS : 'widget-card',
     HTML : '\
-    <article role="article">\
-        <div class="card-inner">\
-            <div class="card_background-image-wrapper -img-cover -text-center">\
-                <img class="card_avatar -rounded" alt="{{author.full_name}}’s avatar image"/>\
-                <p class="card_username -rel">\
-                    <a class="card_username-link"></a>\
-                </p>\
-                <h3 class="card_fullname -rel -font-bold">OpenGovFoundation</h3>\
-                <div class="card_stats -rel"></div>\
-            </div>\
-            <div class="card_info-wrapper">\
-                <p class="card_description"></p>\
-                <div class="card_meta">\
-                    <div class="card_meta-location -inline">\
-                        <svg class="card_meta-svg">\
-                            <use xlink:href="#svg-location"></use>\
-                        </svg>\
+        <article role="article">\
+            <div class="card-inner">\
+                <div class="card_background-image-wrapper -img-cover -text-center">\
+                    <img class="card_avatar -rounded" alt="{{author.full_name}}’s avatar image"/>\
+                </div>\
+                <div class="card_info-wrapper">\
+                    <p class="card_username -rel -m0">\
+                        <a class="card_username-link"></a>\
+                    </p>\
+                    <h3 class="card_fullname -rel -font-bold"></h3>\
+                    <div class="card_meta-location -nw -ellipsis">\
+                        <svg class="card_meta-svg"><use xlink:href="#svg-location"></use></svg>\
                         <span class="card_meta-location-text"></span>\
                     </div>\
-                    <div class="card_meta-joined-at -inline">\
-                        <svg class="card_meta-svg">\
-                            <use xlink:href="#svg-clock"></use>\
-                        </svg>\
-                        <time class="card_meta-joined-at-text" datetime=""></time>\
-                    </div>\
+                    <p class="card_description"></p>\
+                    <div class="card_stats -rel"></div>\
+                </div>\
+                <div class="card_actions">\
+                    <div class="-row -full-height"></div>\
                 </div>\
             </div>\
-            <div class="card_actions">\
-                <div class="-row -full-height"></div>\
-            </div>\
-        </div>\
-    </article>\
-    ',
+        </article>',
 
     HTML_STATS_ORGANIZATION : '\
-        <div class="-row -fs0">\
-            <div class="card-stat-item -col-3">\
-                <p class="stats-number card_total-voices-text -font-bold"></p>\
+        <div class="-row">\
+            <div class="card-stat-item">\
+                <p class="stats-number card_total-voices-text -font-semi-bold"></p>\
                 <p class="stats-label card_total-voices-label-text">Voices</p>\
             </div>\
-            <div class="card-stat-item -col-3">\
-                <p class="stats-number card_total-followers-text -font-bold"></p>\
+            <div class="card-stat-item">\
+                <p class="stats-number card_total-followers-text -font-semi-bold"></p>\
                 <p class="stats-label card_total-followers-label-text">Followers</p>\
             </div>\
-            <div class="card-stat-item -col-3">\
-                <p class="stats-number card_total-following-text -font-bold"></p>\
+            <div class="card-stat-item">\
+                <p class="stats-number card_total-following-text -font-semi-bold"></p>\
                 <p class="stats-label card_total-following-label-text">Following</p>\
             </div>\
-            <div class="card-stat-item -col-3 card_collaborations-wrapper">\
-                <p class="stats-number card_collaborations-text -font-bold"></p>\
+            <div class="card-stat-item last">\
+                <p class="stats-number card_collaborations-text -font-semi-bold"></p>\
                 <p class="stats-label card_collaborations-label-text">Members</p>\
             </div>\
         </div>',
 
     HTML_STATS_PERSON : '\
-        <div class="-row -fs0">\
-            <div class="card-stat-item -col-3">\
-                <p class="stats-number card_total-voices-text -font-bold"></p>\
+        <div class="-row">\
+            <div class="card-stat-item">\
+                <p class="stats-number card_total-voices-text -font-semi-bold"></p>\
                 <p class="stats-label card_total-voices-label-text">Voices</p>\
             </div>\
-            <div class="card-stat-item -col-3">\
-                <p class="stats-number card_total-followers-text -font-bold"></p>\
+            <div class="card-stat-item">\
+                <p class="stats-number card_total-followers-text -font-semi-bold"></p>\
                 <p class="stats-label card_total-followers-label-text">Followers</p>\
             </div>\
-            <div class="card-stat-item -col-3">\
-                <p class="stats-number card_total-following-text -font-bold"></p>\
+            <div class="card-stat-item last">\
+                <p class="stats-number card_total-following-text -font-semi-bold"></p>\
                 <p class="stats-label card_total-following-label-text">Following</p>\
             </div>\
         </div>',
@@ -126,7 +114,6 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
             this.statsWrapper = this.el.querySelector('.card_stats');
             this.descriptionEl = this.el.querySelector('.card_description');
             this.locationEl = this.el.querySelector('.card_meta-location-text');
-            this.joinedAtEl = this.el.querySelector('.card_meta-joined-at-text');
             this.actionsEl = this.el.querySelector('.card_actions .-row');
 
             if (this.data.type === "organization") {
@@ -209,8 +196,8 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
          * @return Card [Object]
          */
         _setupDefaultElements : function _setupDefaultElements() {
-            if (this.data.backgrounds.bluredCard) {
-                this.dom.updateBgImage(this.profileCoverEl, this.data.backgrounds.bluredCard.url);
+            if (this.data.backgrounds.card) {
+                this.dom.updateBgImage(this.profileCoverEl, this.data.backgrounds.card.url);
             } else {
                 this.profileCoverEl.classList.add('-colored-background');
             }
@@ -237,12 +224,10 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
             }
 
             if (this.data.location) {
-                this.dom.updateText(this.locationEl, this.data.location);
+                this.dom.updateText(this.locationEl, 'from ' + this.data.location);
             } else {
                 this.locationEl.parentNode.classList.add('-hide');
             }
-
-            this.dom.updateText(this.joinedAtEl, moment(this.data.createdAt).format('MMM YYYY'));
 
             this.dom.updateText(this.statsWrapper.querySelector('.card_total-voices-text'), this.format.numberUS(this.data.voicesCount));
             this.dom.updateText(this.statsWrapper.querySelector('.card_total-followers-text'), this.format.numberUS(this.data.followersCount));

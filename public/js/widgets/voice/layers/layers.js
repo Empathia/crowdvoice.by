@@ -53,6 +53,10 @@ Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
             return this._bindEvents().__bindEvents();
         },
 
+        getLayers : function getLayers() {
+            return this._layers;
+        },
+
         _bindEvents : function _bindEvents() {
             this._loadLayerRef = this.loadLayer.bind(this);
 

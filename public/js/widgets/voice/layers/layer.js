@@ -147,6 +147,40 @@ Class(CV, 'VoicePostsLayer').inherits(Widget).includes(BubblingSupport)({
             return this;
         },
 
+        /* Filter the displayed Posts by sourceType.
+         * The available sourceTypes are: ['image', 'video', 'link']
+         * @argument sourceTypes <optional> [Array] the sourceTypes to display.
+         *  if omitted it will show all of them.
+         */
+        filterPosts : function filterPosts(sourceTypes) {
+            var showAll = false;
+
+            if (!sourceTypes) {
+                showAll = true;
+            }
+
+            function showAllFn(post) {
+                post.el.style.display = 'block';
+            }
+
+            function filterFn(post) {
+                if (sourceTypes.indexOf(post.sourceType) < 0) {
+                    post.el.style.display = 'none';
+                } else {
+                    post.el.style.display = 'block';
+                }
+            }
+
+            if (showAll) {
+                this._postWidgets.forEach(showAllFn);
+            } else {
+                this._postWidgets.forEach(filterFn);
+            }
+
+            this.waterfall.layout();
+            this.parent.loadImagesVisibleOnViewport();
+        },
+
         /* Returns its children Posts instances.
          * @method getPosts <public> [Function]
          * @return [this._postWidgets]

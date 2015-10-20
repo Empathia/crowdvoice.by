@@ -1,34 +1,29 @@
-
-<main role="main" class="-rel">
-
-
-
-
-  <section class="messages-main">
-
-    <div class="messages-sidebar">
+<main role="main" class="-rel -overflow-hidden -full-height">
+  <section class="messages-main -full-height">
+    <div class="messages-sidebar -float-left -full-height">
       	<div class="messages-sidebar-header -clear-after">
       		<div class="messages-search -col-5"></div>
       		<div class="messages-new -pl1 -col-7"></div>
       	</div>
     	<div class="white-grad side-grad"><div></div></div>
-
       	<div class="messages-list">
-
       	</div>
     </div>
-    <div class="messages-body">
-	<div class="no-messages">
-		<p>Select a conversation from the list to start messaging.</p>
-	</div>
-    <div class="messages-body-container">
-
+    <div class="messages-body -full-height">
+      <div class="no-messages -table -full-width -full-height">
+        <div class="-table-cell -vam -text-center">
+          <div class="no-messages__inner">
+            <p class="no-messages-text -color-neutral-mid">Select a conversation from the list to start messaging.</p>
+          </div>
+        </div>
+      </div>
+    <div class="messages-body-container -full-height">
     	<div class="messages-body-header">
     		<div class="m-action">
     			<span class="conversation-title">Conversation with Pepe Pecas <a href="#">one link</a> and after a while <a href="#"><b>another bold</b></a></span>
       			<div class="action-icon delete-thread">
-      				<svg class="">
-      					<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-trash"></use>
+      				<svg class="delete-thread-svg -s16">
+      					<use xlink:href="#svg-trash"></use>
       				</svg>
       			</div>
       		</div>
@@ -47,7 +42,7 @@
     			</div>
       		</div>
     	</div>
-    	<div class="messages-container">
+    	<div class="messages-container -rel">
     		<div class="white-grad"><div></div></div>
     		<div class="messages-conversation">
     			<div class="msgs">
@@ -55,33 +50,18 @@
     			</div>
     		</div>
 
-    		<div class="message-create">
-
-    		</div>
+    		<div class="message-create"></div>
     	</div>
 
     </div>
     </div>
-
   </section>
-
 </main>
 
 <script>
-  // App
-  var ns = [];
-  <% if (typeof notifications !== "undefined") { %>
-    ns = <%= JSON.stringify(notifications) %>;
-  <% } %>
-  var App = new CV.App({
-    notifications : ns,
-    currentPerson : currentPerson
-  });
-
-  App.addInteractiveSidebar();
+  var App = new CV.App().addInteractiveSidebar();
 
   $( document ).ready(function() {
-
     var threadsContainer = new CV.ThreadsContainer({
       name : 'threadContainer',
       element : $(document.querySelector('.messages-main')),
@@ -92,36 +72,10 @@
     var threadHash = window.location.hash.substr(1);
 
     if (threadHash){
-    	threadsContainer.element.find('.messages-list #'+threadHash).click();
+      threadsContainer.element.find('.messages-list #'+threadHash).click();
     }
+  });
 
-	});
-
-	var searchElement = document.querySelector('.messages-search');
-	var createElement = $(document.querySelector('.message-create'));
-
-	var messagesMainEl = $(document.querySelector('.messages-main'));
-	var messagesContainerEl = $(document.querySelector('.messages-container'));
-	var noMessagesEl = $(document.querySelector('.no-messages'));
-	var messagesBodyHeaderEl = $(document.querySelector('.messages-body-header'));
-	var messagesBodyContainerEl = $(document.querySelector('.messages-body-container'));
-	var threadListEl = $(document.querySelector('.messages-list'));
-	var messageListEl = $(document.querySelector('.msgs'));
-
-	var searchUsersResultEl = $(document.querySelector('.search-users-result'));
-
-	var threads = <%= JSON.stringify(threads) %>;
-
-	var threadsObj = {};
-
-	var currentThreadID;
-	var currentPersonID = '<%= currentPerson.id %>';
-	var otherPersonID;
-	var currentPersonProfileName = '<%= currentPerson.profileName %>';
-	var token = '<%= csrfToken %>';
-	var relatedPersons;
-	var isNewThread = false;
-
-	var mi = 1;
-
+  var threadListEl = $(document.querySelector('.messages-list'));
+  var searchUsersResultEl = $(document.querySelector('.search-users-result'));
 </script>
