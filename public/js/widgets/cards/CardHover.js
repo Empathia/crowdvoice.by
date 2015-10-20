@@ -72,6 +72,8 @@ Class(CV, 'CardHover').inherits(Widget).includes(CV.WidgetUtils)({
             var bounds = el.getBoundingClientRect();
             var cardHeight, cardWidth, top, left, transform, transition;
 
+            this.active = true;
+
             if (this._cardWidget) {
                 this._cardWidget = this._cardWidget.destroy();
             }
@@ -141,6 +143,8 @@ Class(CV, 'CardHover').inherits(Widget).includes(CV.WidgetUtils)({
                 this._cardWidget = this._cardWidget.destroy();
             }
 
+            this.active = false;
+
             inlineStyle(this.el, {
                 display: 'none',
                 opacity: '0',
@@ -180,7 +184,9 @@ Class(CV, 'CardHover').inherits(Widget).includes(CV.WidgetUtils)({
         },
 
         _yieldScrollHandler : function _yieldScrollHandler() {
-            this.hide();
+            if (this.active) {
+                this.hide();
+            }
         },
 
         _mouseEnterHandler : function _mouseEnterHandler() {
