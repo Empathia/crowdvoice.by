@@ -38,7 +38,6 @@ Class(CV, 'VoicePostIndicator').inherits(Widget).includes(CV.WidgetUtils)({
             this.el.dataset.timestamp = moment(this.label).format('x') * 1000;
 
             this.dom.updateText(this.labelElement, moment(this.label).format('MMM DD, YYYY'));
-            this.el.style.zIndex = this.zIndex;
         },
 
         /* Sets the indicator position and dimensions.
@@ -73,6 +72,14 @@ Class(CV, 'VoicePostIndicator').inherits(Widget).includes(CV.WidgetUtils)({
             return this;
         },
 
+        addIndex : function addIndex() {
+            this.el.style.zIndex = this.zIndex;
+        },
+
+        removeIndex : function removeIndex() {
+            this.el.style.zIndex = 'initial';
+        },
+
         /* Returns its date as timestamp
          * @public
          */
@@ -85,7 +92,6 @@ Class(CV, 'VoicePostIndicator').inherits(Widget).includes(CV.WidgetUtils)({
          */
         _getLastYValue : function _getLastYValue() {
             return this.constructor.registeredYValues[this.constructor.registeredYValues.length - 1];
-
         },
 
         destroy : function destroy() {

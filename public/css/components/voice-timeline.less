@@ -6,7 +6,8 @@
   height: 16px;
   overflow: hidden;
 
-  &:hover {
+  &:hover,
+  &.active {
     .cv-voice-timeline-feedback-wrapper {transform: translate(0, 0);}
     .cv-voice-timeline-feedback {border-radius: 8px 0 0 8px;}
     .cv-voice-timeline-clock {transform: scale(1);}
@@ -72,6 +73,9 @@
 
 .voice-timeline-popover {
   width: 330px;
+  top: 10px;
+
+  .ui-popover__arrow {display: none}
 
   .ui-popover-body {
     height: 330px;

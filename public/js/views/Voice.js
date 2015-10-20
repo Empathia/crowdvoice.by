@@ -46,6 +46,7 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
             }, this);
 
             this._window = window;
+            this._body = document.body;
             this.postsCountApproved = this._formatPostsCountObject(this.postsCount.approved);
             this.postsCountUnapproved = this._formatPostsCountObject(this.postsCount.unapproved);
             this.postCount = this._getTotalPostCount(this.postsCountApproved);
@@ -250,12 +251,34 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
             var y = 0;
             var el;
 
+            this.voiceFooter.el.style.pointerEvents = 'none';
+            this.voiceHeader.el.style.pointerEvents = 'none';
+            this.voiceAddContent.el.style.pointerEvents = 'none';
+
             if (!this._listenScrollEvent) {
-                return void 0;
+                return;
             }
 
             if (!scrollingUpwards) {
                 y = this.voicePostLayersManager._windowInnerHeight - 1;
+
+                this.voicePostLayersManager.getLayers().forEach(function(layer) {
+                    var indicators = layer.getIndicators();
+                    if (indicators.length) {
+                        indicators.forEach(function(indicator) {
+                            indicator.removeIndex();
+                        });
+                    }
+                });
+            } else {
+                this.voicePostLayersManager.getLayers().forEach(function(layer) {
+                    var indicators = layer.getIndicators();
+                    if (indicators.length) {
+                        indicators.forEach(function(indicator) {
+                            indicator.addIndex();
+                        });
+                    }
+                });
             }
 
             el = document.elementFromPoint(this._layersOffsetLeft, y);
@@ -273,6 +296,9 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
             }
 
             this._scrollTimer = this._window.setTimeout(function() {
+                this.voiceFooter.el.style.pointerEvents = '';
+                this.voiceHeader.el.style.pointerEvents = '';
+                this.voiceAddContent.el.style.pointerEvents = '';
                 this.voicePostLayersManager.loadImagesVisibleOnViewport();
             }.bind(this), this._scrollTime);
         },
