@@ -801,7 +801,10 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
           var thread,
             invited,
-            invitationRequest;
+            invitationRequest,
+            answer = {
+              status: 'invited'
+            };
 
           async.series([
             // get entity of invited
@@ -817,8 +820,11 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
             // get a thread
             function (next) {
+              var currentPerson = new Entity(req.currentPerson);
+              currentPerson.id = hashids.decode(currentPerson.id)[0];
+
               MessageThread.findOrCreate({
-                senderPerson: response.owner,
+                senderPerson: currentPerson,
                 senderEntity: response.owner,
                 receiverEntity: invited
               }, function (err, result) {
@@ -832,19 +838,51 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
             // make or find invitation request
             function (next) {
-              invitationRequest = new InvitationRequest({
-                invitatorEntityId: response.owner.id,
-                invitedEntityId: hashids.decode(req.body.personId)[0]
-              });
+              db('Messages')
+                .where('thread_id', thread.id)
+                .andWhere('sender_person_id', hashids.decode(req.currentPerson.id)[0])
+                .andWhere('sender_entity_id', req.activeVoice.ownerId)
+                .andWhere('receiver_entity_id', invited.id)
+                .andWhere('invitation_request_id', 'is not', null)
+                .andWhere(function () {
+                  this
+                    .where('voice_id', 'is not', null)
+                    .andWhere('voice_id', '=', req.activeVoice.id)
+                })
+                .orderBy('created_at', 'desc')
+                .exec(function (err, rows) {
+                  if (err) { return next(err); }
 
-              invitationRequest.save(next);
+                  var messages = Argon.Storage.Knex.processors[0](rows),
+                    message = new Message(messages[0]);
+
+                  if (messages.length < 1) {
+                    invitationRequest = new InvitationRequest({
+                      invitatorEntityId: response.owner.id,
+                      invitedEntityId: invited.id
+                    });
+
+                    invitationRequest.save(next);
+                  } else {
+                    answer.status = 'already invited';
+
+                    InvitationRequest.findById(message.invitationRequestId, function (err, invitation) {
+                      if (err) { return next(err); }
+
+                      invitationRequest = invitation[0];
+
+                      message.destroy(next);
+                    });
+                  }
+                });
             },
 
             // make invitation message
             function (next) {
               thread.createMessage({
                 type: 'invitation_voice',
-                senderPersonId: response.owner.id,
+                senderPersonId: hashids.decode(req.currentPerson.id)[0],
+                senderEntityId: req.activeVoice.ownerId,
                 voiceId: response.voice.id,
                 invitationRequestId: invitationRequest.id,
                 message: req.body.message
@@ -857,7 +895,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           ], function (err) { // async.series
             if (err) { return next(err); }
 
-            res.json({ status: 'invited' });
+            res.json(answer);
           });
         });
       });
