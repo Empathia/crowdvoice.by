@@ -7,6 +7,7 @@
  * contributor gets removed and it will also handle when a new contributor gets
  * added.
  */
+var Person = require('./../../../lib/currentPerson');
 var Events = require('./../../../lib/events');
 var API = require('./../../../lib/api');
 var GeminiScrollbar = require('gemini-scrollbar');
@@ -87,6 +88,9 @@ Class(CV, 'ManageContributors').inherits(Widget).includes(CV.WidgetUtils)({
             this._contributorIds = this.data.contributors.map(function(user) {
                 return user.id;
             });
+            if (Person.get()) {
+                this._contributorIds.push(Person.get().id);
+            }
             this._contributorIds.push(this.data.voice.owner.id);
 
             this._contributorsLength = this.data.contributors.length;
