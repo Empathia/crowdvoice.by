@@ -853,8 +853,6 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                 .exec(function (err, rows) {
                   if (err) { return next(err); }
 
-                  console.log('!!!!!!', rows)
-
                   var messages = Argon.Storage.Knex.processors[0](rows),
                     message = new Message(messages[0]);
 
