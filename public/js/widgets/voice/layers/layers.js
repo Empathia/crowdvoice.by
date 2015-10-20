@@ -8,7 +8,7 @@
  * - VoicePostLayersModerateAbstract : To handle the Voice Posts as on Moderation Mode
  */
 var moment = require('moment');
-var Velocity = require('velocity-animate');
+var ScrollTo = require('./../../../lib/scrollto');
 
 Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
     HTML : '<section class="voice-posts -rel"></section>',
@@ -164,11 +164,11 @@ Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
             var _this = this;
 
             if (!layer) {
-                return void 0;
+                return;
             }
 
             if (layer === this.getCurrentMonthLayer()) {
-                return void 0;
+                return;
             }
 
             this.parent._listenScrollEvent = false;
@@ -179,11 +179,11 @@ Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
                 }
             });
 
-            Velocity(layer.el, 'scroll', {
-                container : _this.scrollableArea,
-                duration : 600,
-                easing : 'linear',
-                complete : function() {
+            ScrollTo(this.scrollableArea, {
+                x: 0,
+                y: layer.el.getBoundingClientRect().top,
+                duration: 600,
+                onComplete: function() {
                     _this.parent._listenScrollEvent = true;
                     _this.scrollTo(_this.getScrollTop() + 2);
                 }
