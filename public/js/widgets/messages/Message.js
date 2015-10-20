@@ -188,6 +188,10 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
               text = '<p>You invited ' + message.thread.data.receiverEntity.name + ' to become a member of ' + message.data.organization.name + '.</p>';
               break;
 
+            case 'request_voice':
+              text = '<p>You requested to become a contributor for {voiceTitle}</p>'.replace(/{voiceTitle}/, message.data.voice.title);
+              break;
+
             case 'invitation_accepted_voice':
               text = text.replace(/{voiceTitle}/, message.data.voice.title);
               break;
