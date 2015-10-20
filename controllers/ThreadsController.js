@@ -110,6 +110,7 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
 
             db('Messages')
               .where('thread_id', thread.id)
+              .andWhere('sender_person_id', response.senderPerson.id)
               .andWhere('sender_entity_id', response.senderEntity.id)
               .andWhere('receiver_entity_id', response.receiverEntity.id)
               .andWhere('invitation_request_id', 'is not', null)
@@ -146,7 +147,6 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
                     return done();
                   });
                 } else {
-                  refreshedInvitationMessage = true;
                   payload.invitationRequestId = message.invitationRequestId;
 
                   message.destroy(done);
