@@ -25,7 +25,7 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
     Accepting this invitation will grant you privilege of posting and moderating content on the Voices <a href="{url}">{organizationName}</a.</p>',
 
   REQUEST_ORGANIZATION_HTML : '<p>{name} has requested to become a member of {organizationName}. \
-    If you grant access, {name} will be able to post and moderate content on all the Voices of {organizationName}.<br><a href="{url}">Go to this Voice\'s settings ›</a></p>',
+    If you grant access, {name} will be able to post and moderate content on all the Voices of {organizationName}. <a href="{url}">Go to this Organization\'s settings ›</a></p>',
 
   REQUEST_VOICE_HTML : '<p>{name} has requested to become a contributor for {organizationName}. \
     If you grant access, {name} will be able to post and moderate content of this Voice.<br><a href="{url}">Go to this Voice\'s settings ›</a></p>',
@@ -85,7 +85,7 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
             case 'request_organization':
               text = text
                       .replace(/{name}/g, message.data.senderEntity.name + ' ' + message.data.senderEntity.lastname)
-                      .replace(/{organizationName}/g, message.data.organization.name + ' ' + message.data.organization.lastname)
+                      .replace(/{organizationName}/g, message.data.organization.name)
                       .replace(/{url}/, '/' + message.data.organization.profileName + '/edit');
               break;
             case 'request_voice':
