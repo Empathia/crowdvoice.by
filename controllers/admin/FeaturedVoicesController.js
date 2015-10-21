@@ -123,7 +123,7 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
           return next(new ForbiddenError('Unauthorized. Must be Admin.'))
         }
 
-        var featured = new FeaturedPerson({
+        var featured = new FeaturedVoice({
           voiceId: hashids.decode(req.body.voiceId)[0],
           position: 0,
         })
