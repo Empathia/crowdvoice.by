@@ -1,5 +1,6 @@
 var moment = require('moment');
 var Velocity = require('velocity-animate');
+var Events = require('./../../../lib/events');
 
 Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
     HTML : '\
@@ -88,7 +89,10 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
             this.readAndUpdateRef = this._readAndUpdate.bind(this);
 
             this.scrollHandlerRef = this._scrollHandler.bind(this);
-            this.scrollableArea.addEventListener('scroll', this.scrollHandlerRef, false);
+            Events.on(this.scrollableArea, 'scroll', this.scrollHandlerRef);
+
+            this.resizeHandlerRef = this.updateVars.bind(this);
+            Events.on(this._window, 'resize', this.resizeHandlerRef);
 
             return this;
         },
@@ -182,8 +186,11 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
 
-            this.scrollableArea.removeEventListener('scroll', this.scrollHandlerRef, false);
+            Events.off(this.scrollableArea, 'scroll', this.scrollHandlerRef);
             this.scrollHandlerRef = null;
+
+            Events.off(this._window, 'resize', this.resizeHandlerRef);
+            this.resizeHandlerRef = null;
         }
     }
 });
