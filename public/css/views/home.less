@@ -99,21 +99,26 @@
   padding-top:125px;
   padding-bottom:125px;
   color:white;
-  article{
+
+  .statsTitle, .stats-number{
+    font-size: 48px;
+    text-align: center;
+  }
+
+  .stats{
     text-align: center;
     margin-top:45px;
+
     .stats-col{
       padding: 0px 50px;
     }
+
     .stats-col:not(:last-child){
         border-right: 1px solid #454B4D;
     }
   }
-  p{
-    font-size: 48px;
-    text-align: center;
-  }
-  p.stats-label{
+
+  .stats-label{
     color:#8A9699;
     font-size: 14px;
   }
@@ -234,7 +239,7 @@
 }
  @media only screen and (max-width: 958px){
         .home-stats{
-          article{
+          .stats{
             .stats-col{
               width: 40%;
               border-right:0 !important;
