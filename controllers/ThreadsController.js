@@ -30,7 +30,10 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
 
             res.format({
               html : function() {
-                return res.render('threads/index.html', {layout : 'application', threads : threads});
+                return res.render('threads/index.html', {
+                  pageName : 'page-inner page-threads',
+                  threads : threads
+                });
               },
               json : function() {
                 return res.json(result);
