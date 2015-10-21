@@ -58,9 +58,10 @@ Class(CV, 'PostDetailLink').inherits(CV.PostDetail)({
          * @argumetn data <required> [PostEntity]
          */
         update : function update(data) {
-            this.postDetailHeader.update(data);
+            var url = '/' + data.voice.owner.profileName + '/' + data.voice.slug + '/' + data.id;
 
-            this.iframe.activate().update(location.pathname + data.id);
+            this.postDetailHeader.update(data);
+            this.iframe.activate().update(url);
 
             // if (this._isProtocolCompatible(data.sourceUrl)) {
             //     this.iframe.activate().update(data.sourceUrl);

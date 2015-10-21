@@ -100,21 +100,21 @@ Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
          * @method getScrollHeight <protected> [Function]
          */
         getScrollHeight : function getScrollHeight() {
-            return this.scrollableArea.scrollHeight;
+            throw new Error('VoicePostLayers.prototype.getScrollHeight not implemented');
         },
 
         /* Gets the scroll top of the scrollable area.
          * @method getScrollTop <protected> [Function]
          */
         getScrollTop : function getScrollTop() {
-            return this.scrollableArea.scrollTop;
+            throw new Error('VoicePostLayers.prototype.getScrollTop not implemented');
         },
 
         /* Scroll to a y position of the scrollable area.
          * @method getScrollTo <protected> [Function]
          */
-        scrollTo : function scrollTo(y) {
-            this.scrollableArea.scrollTop = y;
+        scrollTo : function scrollTo() {
+            throw new Error('VoicePostLayers.prototype.scrollTo not implemented');
         },
 
         /* Implementation of remove posts.

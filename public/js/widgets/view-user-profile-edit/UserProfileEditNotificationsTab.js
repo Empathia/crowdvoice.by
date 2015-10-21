@@ -148,7 +148,7 @@ Class(CV, 'UserProfileEditNotificationsTab').inherits(Widget)({
          * @return undefined
          */
         _displaySuccessAlert : function _displaySuccessAlert(message) {
-            App.getScrollableElement().scrollTop = 0;
+            App.scrollTo(0, 0);
 
             if (this._successAlert) {
                 return this._successAlert.update(message);
@@ -168,7 +168,7 @@ Class(CV, 'UserProfileEditNotificationsTab').inherits(Widget)({
          * @return undefined
          */
         _displayErrorAlert : function _displayErrorAlert(message) {
-            App.getScrollableElement().scrollTop = 0;
+            App.scrollTo(0, 0);
 
             if (this._errorAlert) {
                 return this._errorAlert.update(message);

@@ -32,11 +32,6 @@ Class(CV, 'PostCreatorUploadFile').inherits(CV.PostCreator)({
             this.addCloseButton()._setup()._bindEvents()._disablePostButton();
         },
 
-        _activate : function _activate(ev) {
-            Widget.prototype._activate.call(this);
-            this.inputFile.click(ev);
-        },
-
         _setup : function _setup() {
             this.appendChild(new CV.PostCreatorUploadingTemplate({
                 name : 'uploadingTemplate'
@@ -221,6 +216,11 @@ Class(CV, 'PostCreatorUploadFile').inherits(CV.PostCreator)({
         _disablePostButton : function _disablePostButton() {
             this.postButton.disable();
             return this;
+        },
+
+        _activate : function _activate(ev) {
+            CV.PostCreator.prototype._activate.call(this);
+            this.inputFile.click(ev);
         },
 
         destroy : function destroy() {

@@ -1,17 +1,15 @@
+/* globals App */
 var API = require('./../../../lib/api');
 
-/* jshint multistr: true */
 Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
-
     ELEMENT_CLASS : 'cv-post-creator post-creator-write-article',
 
     HTML : '\
-    <div>\
-        <header class="cv-post-creator__header -clearfix"></header>\
-        <div class="cv-post-creator__content -abs"></div>\
-        <div class="cv-post-creator__disable article"></div>\
-    </div>\
-    ',
+        <div>\
+            <header class="cv-post-creator__header -clearfix"></header>\
+            <div class="cv-post-creator__content -abs"></div>\
+            <div class="cv-post-creator__disable article"></div>\
+        </div>',
 
     prototype : {
 
@@ -28,12 +26,9 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
             this.content = this.el.querySelector('.cv-post-creator__content');
             this.loadingStep = this.el.querySelector('.cv-post-creator__disable');
 
-            // Voice and user slugs
-            this.voiceSlug = App.Voice.data.slug;
-            this.userSlug = App.Voice.data.owner.profileName;
-
             this.addCloseButton()._setup()._bindEvents()._disablePostButton();
         },
+
         _setup : function _setup() {
             this.appendChild(new CV.Loader({
                 name : 'loader'
@@ -47,26 +42,19 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
                 name : 'loaderError'
             })).render(this.el.querySelector('.cv-post-creator__disable'));
 
-            this.appendChild(
-                new CV.PostCreatorPostButton({
-                    name : 'postButton',
-                    className : '-rel -float-right -full-height -color-border-grey-light'
-                })
-            ).render(this.header);
+            this.appendChild(new CV.PostCreatorPostButton({
+                name : 'postButton',
+                className : '-rel -float-right -full-height -color-border-grey-light'
+            })).render(this.header);
 
-            this.appendChild(
-                new CV.PostCreatorWriteArticlePostDate({
-                    name : 'postDate',
-                    className : '-overflow-hidden -full-height'
-                })
-            ).render(this.header);
+            this.appendChild(new CV.PostCreatorWriteArticlePostDate({
+                name : 'postDate',
+                className : '-overflow-hidden -full-height'
+            })).render(this.header);
 
-            this.appendChild(
-                new CV.PostCreatorWriteArticleEditor({
-                    name : 'editor'
-                })
-            ).render(this.content);
-
+            this.appendChild(new CV.PostCreatorWriteArticleEditor({
+                name : 'editor'
+            })).render(this.content);
 
             // Content
             this.articleContent = this.content.querySelector('.write-article-body-editable');
@@ -74,9 +62,9 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
             this.coverButton = this.editor.editorHeader.coverButton;
             this.coverImage = this.editor.editorHeader.el;
 
-
             return this;
         },
+
         /* Binds the events.
          * @method _bindEvents <private> [Function]
          * @return [PostCreatorFromUrl]
@@ -84,7 +72,6 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
         _bindEvents : function _bindEvents() {
             CV.PostCreator.prototype._bindEvents.call(this);
 
-            // To catch the dispatch event in Post Button
             this._buttonClickRef = this._buttonClick.bind(this);
             this.postButton.bind('buttonClick', this._buttonClickRef);
 
@@ -97,16 +84,17 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
 
             return this;
         },
+
         // Saves the article
-        _buttonClick : function _buttonClick(ev){
+        _buttonClick : function _buttonClick(){
             // Disables button and activates the loader
             this._disablePostButton();
             $(this.loadingStep).addClass('active');
 
             if(this.articleImage !== null){
                 API.voiceNewArticle({
-                    userSlug : this.userSlug,
-                    voiceSlug : this.voiceSlug,
+                    userSlug : App.Voice.data.owner.profileName,
+                    voiceSlug : App.Voice.data.slug,
                     articleTitle : $(this.articleTitle).val(),
                     articleContent : $(this.articleContent).html(),
                     articleImage : this.articleImage.path,
@@ -114,8 +102,8 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
                 }, this._responseHandler.bind(this));
             }else{
                 API.voiceNewArticle({
-                    userSlug : this.userSlug,
-                    voiceSlug : this.voiceSlug,
+                    userSlug : App.Voice.data.owner.profileName,
+                    voiceSlug : App.Voice.data.slug,
                     articleTitle : $(this.articleTitle).val(),
                     articleContent : $(this.articleContent).html(),
                     articleImage : '',
@@ -123,6 +111,7 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
                 }, this._responseHandler.bind(this));
             }
         },
+
         _responseHandler : function _responseHandler(err, res){
             if (err) {
                 console.log(res.status + ' ' +res.statusText);
@@ -143,15 +132,16 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
                 window.location.reload();
             }, 2000);
         },
+
         // Gets the <INPUT> IMAGE and sent it to the API
         _imageReceived : function _imageReceived(ev){
             var imageData = new FormData();
             imageData.append('image', ev.data);
 
             API.uploadArticleImage({
-                    profileName : this.userSlug,
-                    voiceSlug : this.voiceSlug,
-                    data : imageData
+                profileName : App.Voice.data.owner.profileName,
+                voiceSlug : App.Voice.data.slug,
+                data : imageData
             }, function (err, res){
                 if (err) {
                     console.log(res.status + ' ' +res.statusText);
@@ -160,6 +150,7 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
                 this._imageUploaded(res);
             }.bind(this));
         },
+
         //Gets the API response and puts the image as background for the header
         _imageUploaded : function _imageUploaded(image){
             this.articleImage = image;
@@ -168,6 +159,7 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
             $(this.coverImage).css('background-size', 'cover');
             $(this.coverImage).css('background-repeat', 'no-repeat');
         },
+
         _contentFilled : function _contentFilled(){
             var contentText = this.articleContent.querySelector('p');
             if(($(this.articleContent).children().size() > 0 && $(contentText).text().length > 0) && $(this.articleTitle).val().length){
@@ -176,6 +168,7 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
                 this._disablePostButton();
             }
         },
+
         /* Enables the Post Button.
          * @method _enabledPostButton <private> [Function]
          * @return [PostCreatorFromUrl]
@@ -197,9 +190,9 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
         destroy : function destroy() {
             CV.PostCreator.prototype.destroy.call(this);
 
-            this.el = null;
-            this.header = null;
-            this.content = null;
+            $(this.articleTitle).off('change keyup paste',this._contentFilledRef);
+            $(this.articleContent).off('change keyup paste',this._contentFilledRef);
+            this._contentFilledRef = null;
         }
     }
 });

@@ -37,6 +37,8 @@ Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
         /* Public method to start the thing after being rendered.
          */
         setup : function setup() {
+            App.hideScrollbar();
+
             this.appendChild(new CV.VoicePostLayersModerateAbstract({
                 name : 'layersManager',
                 id : App.Voice.data.id,
@@ -172,6 +174,8 @@ Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
 
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
+
+            App.showScrollbar();
 
             this.voicePostsWrapper.removeEventListener('scroll', this._scrollHandlerRef);
             this._scrollHandlerRef = null;

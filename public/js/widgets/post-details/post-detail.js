@@ -1,3 +1,4 @@
+/* globals App */
 var Events = require('./../../lib/events');
 
 Class(CV, 'PostDetail').inherits(Widget).includes(CV.WidgetUtils, BubblingSupport)({
@@ -53,6 +54,16 @@ Class(CV, 'PostDetail').inherits(Widget).includes(CV.WidgetUtils, BubblingSuppor
             if (charCode === 27) { // ESC
                 this.deactivate();
             }
+        },
+
+        _activate : function _activate() {
+            Widget.prototype._activate.call(this);
+            App.hideScrollbar();
+        },
+
+        _deactivate : function _deactivate() {
+            Widget.prototype._deactivate.call(this);
+            App.showScrollbar();
         },
 
         destroy : function destroy() {

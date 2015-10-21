@@ -74,27 +74,47 @@ var NotificationsController = Class('NotificationsController')({
        * req.body = {}
        */
 
-      ACL.isAllowed('markAllAsRead', 'notifications', req.role, {}, function (err, isAllowed) {
+      ACL.isAllowed('markAllAsRead', 'notifications', req.role, {
+        currentPerson: req.currentPerson,
+      }, function (err, response) {
         if (err) { return next(err) }
 
-        if (!isAllowed) {
-          return next(new ForbiddenError('Unauthorized.'))
+        if (!response.isAllowed) {
+          return next(new ForbiddenError())
         }
 
-        Notification.find({
-          follower_id: response.follower.id,
-          read: false,
-        }, function (err, notifications) {
-          if (err) { return next(err) }
-
-          async.each(notifications, function (notification, next) {
-            notification.read = true
-            notification.save(next)
-          }, function (err) {
-            if (err) { return next(err) }
-
-            return res.json({ status: 'ok' })
+        EntityOwner.find({
+          owner_id: response.follower.id
+        }, function (err, owners) {
+          var ids = owners.map(function (owner) {
+            return owner.ownedId
           })
+          ids.push(response.follower.id)
+
+          db('Notifications')
+            .whereIn('follower_id', ids)
+            .andWhere('read', false)
+            .exec(function (err, rows) {
+              if (err) { return next(err) }
+
+              var ids = rows.map(function (row) {
+                return row.id
+              })
+
+              db('Notifications')
+                .whereIn('id', ids)
+                .update({
+                  read: true,
+                })
+                .exec(function (err, affectedRows) {
+                  if (err) { return next(err) }
+
+                  res.json({
+                    status: 'ok',
+                    affectedNotifications: affectedRows,
+                  })
+                })
+            })
         })
       })
     },
@@ -127,7 +147,7 @@ var NotificationsController = Class('NotificationsController')({
           NotificationSetting.find({ entity_id: entity[0].id }, function (err, setting) {
             if (err) { return next(err) }
 
-             var newSetting = new NotificationSetting(setting[0])
+            var newSetting = new NotificationSetting(setting[0])
             _.extend(newSetting.webSettings, req.body.webSettings)
             _.extend(newSetting.emailSettings, req.body.emailSettings)
 
