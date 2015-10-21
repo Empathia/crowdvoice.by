@@ -26,6 +26,7 @@ var data = {
   voices : {},
   topics : {},
   invitations : {},
+  feedActions: {}
 };
 
 async.series([function(next) {
@@ -978,6 +979,72 @@ async.series([function(next) {
     });
 
     featuredOrganization.save(nextOrganization);
+  }, next);
+}, function(next) {
+
+  // Feed actions
+  var actions = [
+    // Jon followed voices
+    {
+      itemType: 'voice',
+      itemId: data.voices.meereen.id,
+      action: 'followed',
+      who: 9, // Jon
+    },
+    {
+      itemType: 'voice',
+      itemId: data.voices.winterfell.id,
+      action: 'followed',
+      who: 9,
+    },
+    {
+      itemType: 'voice',
+      itemId: data.voices['casterly-rock'].id,
+      action: 'followed',
+      who: 9,
+    }
+  ];
+
+  async.each(actions, function(action, nextAction) {
+    var feedAction = new FeedAction(action);
+
+    feedAction.save(function (err) {
+      if (err) { return nextAction(err); }
+
+      data.feedActions[feedAction.who + '-' +
+        feedAction.action + '-' +
+        feedAction.itemType + '-' +
+        feedAction.itemId] = feedAction;
+
+      return nextAction();
+    })
+  }, next);
+}, function(next) {
+
+  // Notifications
+  var notifications = [
+    // Jon followed voices
+    {
+      actionId: data.feedActions['9-followed-voice-9'].id,
+      followerId: 3, // Cersei
+      read: false
+    },
+    {
+      actionId: data.feedActions['9-followed-voice-13'].id,
+      followerId: 3,
+      read: false
+    },
+    {
+      actionId: data.feedActions['9-followed-voice-15'].id,
+      followerId: 22, // House Lannister
+      read: false
+    }
+  ];
+
+  async.each(notifications, function (notif, nextNotif) {
+    var notification = new Notification(notif);
+
+    notification.save(nextNotif)
   }, next);
 }, function(next) {
 
