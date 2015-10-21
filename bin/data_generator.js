@@ -927,7 +927,6 @@ async.series([function(next) {
 
   // FeaturedVoices
   var featured = [
-    data.voices.winterfell,
     data.voices.meereen,
     data.voices['second-trial-by-combat'],
     data.voices['blackwater-battle'],
