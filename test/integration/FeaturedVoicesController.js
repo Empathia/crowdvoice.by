@@ -13,72 +13,86 @@ require(path.join(__dirname, '../../presenters/PostsPresenter'))
 
 application._serverStart()
 
-var request = require('superagent')
-var test = require('tape-catch')
+// COMMENT IF YOU WANT LOGGER OUTPUT
+logger.log = function () {}
+
+var login = require(path.join(__dirname, 'login.js')),
+  expect = require('chai').expect
 
 CONFIG.database.logQueries = false
 
 var urlBase = 'http://localhost:3000'
 
-test('Re-order featured voices ( .updatePositions() )', function (t) {
-  var cookies,
-    csrf,
-    agent = request.agent()
+describe('FeaturedVoicesController', function () {
 
-  async.series([
-    function (next) {
-      agent
-        .get(urlBase + '/csrf')
-        .end(function (err, res) {
-          if (err) { t.fail(err) }
+  describe('#updatePositions', function () {
 
-          csrf = res.text
+    it('Re-order featured voices', function (done) {
+      login('cersei', function (err, agent, csrf) {
+        if (err) { return done(err) }
 
-          return next()
+        FeaturedVoice.all(function (err, featured) {
+          if (err) { return done(err) }
+
+          var hashedIds = featured.sort(function (a, b) {
+            return a.position - b.position
+          }).map(function (val) {
+            return hashids.encode(val.entityId)
+          })
+
+          agent
+            .post(urlBase + '/admin/featured/voices/updatePositions')
+            .accept('application/json')
+            .send({
+              _csrf: csrf,
+              voiceIds: hashedIds,
+            })
+            .end(function (err, res) {
+              if (err) { return done(err) }
+
+              expect(res.status).to.equal(200)
+              expect(res.body.status).to.equal('updated positions')
+
+              return done()
+            })
         })
-    },
-
-    function (next) {
-      agent
-        .post(urlBase + '/session')
-        .send({
-          _csrf: csrf,
-          username: 'cersei',
-          password: '12345678'
-        })
-        .end(function (err, res) {
-          if (err) { t.fail(err) }
-
-          return next()
-        })
-    },
-  ], function(err) {
-    if (err) { t.fail(err) }
-
-    FeaturedVoice.all(function (err, featured) {
-      if (err) { t.fail(err) }
-
-      var hashedIds = featured.sort(function (a, b) {
-        return a.position - b.position
-      }).map(function (val) {
-        return hashids.encode(val.entityId)
       })
-
-      agent
-        .post(urlBase + '/admin/featured/voices/updatePositions')
-        .accept('application/json')
-        .send({
-          _csrf: csrf,
-          voiceIds: hashedIds,
-        })
-        .end(function (err, res) {
-          if (err) { t.fail(err) }
-
-          t.equal(res.status, 200, 'res.status')
-          t.equal(res.body.status, 'updated positions', 'res.body.status "updated positions"')
-
-          t.end()
-        })
     })
+
   })
+
+  describe('#create', function () {
+
+    it('Create featured voice', function (done) {
+      login('cersei', function (err, agent, csrf) {
+        if (err) { return done(err) }
+
+        agent
+          .post(urlBase + '/admin/featured/voices/new')
+          .accept('application/json')
+          .send({
+            _csrf: csrf,
+            voiceId: hashids.encode(13), // Winterfell
+          })
+          .end(function (err, res) {
+            if (err) { return done(err) }
+
+            expect(res.status).to.equal(200)
+
+            FeaturedVoice.find({
+              voice_id: 13, // Winterfell
+            }, function (err, voices) {
+              if (err) { return done(err) }
+
+              expect(voices.length).to.equal(1)
+              expect(voices[0].voiceId).to.equal(13)
+
+              return done()
+            })
+          })
+      })
+    })
+
+  })
+
 })
