@@ -46,7 +46,6 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
 
       payload.type = payload.type || 'message';
 
-      // Decode HashIds data
       if (payload.senderEntityId) {
         payload.senderEntityId = hashids.decode(payload.senderEntityId)[0];
       } else {
@@ -83,28 +82,12 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
           return next(new ForbiddenError());
         }
 
-        var thread;
-        var invite;
-        var message;
+        var thread,
+          invite,
+          message,
+          refreshedInvitationMessage = false;
 
         async.series([
-          function(done) {
-            if (payload.type.search('invitation') !== -1) {
-              invite = new InvitationRequest({
-                invitatorEntityId: response.senderEntity.id,
-                invitedEntityId: response.receiverEntity.id
-              });
-              invite.save(function (err) {
-                if (err) { return done(err); }
-
-                payload.invitationRequestId = invite.id;
-
-                done();
-              });
-            } else {
-              done();
-            }
-          },
           function(done) {
             MessageThread.findOrCreate({
               senderPerson : response.senderPerson,
@@ -119,7 +102,58 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
 
               done();
             })
-          }, function(done) {
+          },
+          function(done) {
+            if (!payload.type.match(/invitation_(voice|organization)/)) {
+              return done();
+            }
+
+            db('Messages')
+              .where('thread_id', thread.id)
+              .andWhere('sender_person_id', response.senderPerson.id)
+              .andWhere('sender_entity_id', response.senderEntity.id)
+              .andWhere('receiver_entity_id', response.receiverEntity.id)
+              .andWhere('invitation_request_id', 'is not', null)
+              .andWhere(function () {
+                this
+                  .where(function () {
+                    this
+                      .where('organization_id', 'is not', null)
+                      .andWhere('organization_id', '=', payload.organizationId)
+                  })
+                  .orWhere(function () {
+                    this
+                      .where('voice_id', 'is not', null)
+                      .andWhere('voice_id', '=', payload.voiceId)
+                  })
+              })
+              .orderBy('created_at', 'desc')
+              .exec(function (err, rows) {
+                if (err) { return done(err); }
+
+                var messages = Argon.Storage.Knex.processors[0](rows),
+                  message = new Message(messages[0]);
+
+                if (messages.length < 1) {
+                  var invite = new InvitationRequest({
+                    invitatorEntityId: response.senderEntity.id,
+                    invitedEntityId: response.receiverEntity.id
+                  });
+                  invite.save(function (err) {
+                    if (err) { return done(err); }
+
+                    payload.invitationRequestId = invite.id;
+
+                    return done();
+                  });
+                } else {
+                  payload.invitationRequestId = message.invitationRequestId;
+
+                  message.destroy(done);
+                }
+              });
+          },
+          function(done) {
             thread.createMessage({
               senderPersonId : hashids.decode(req.currentPerson.id)[0],
               type : payload.type,
@@ -153,7 +187,7 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
               }
             });
           });
-        })
+        });
       })
     },
 
