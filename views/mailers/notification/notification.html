@@ -114,9 +114,15 @@
 				          	<tr>
 				            	<td style="padding: 0 25px; text-align: left;">
 					             	<div style="font-size: 14px; line-height: 38px; color: #b2b2b2;">
-						                <p style="font-size:18px;color:black;">
-						                	Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="blank_"><%= doerInfo.name + ' '%><%if(doerInfo.lastname === null){}else{%><%=doerInfo.lastname%><%} %></a> has a new avatar!
-						                </p>
+					             		<% if(params.notificationInfo.entity.type === 'organization'){ %>
+												 <p style="font-size:18px;color:black;">
+								                	Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ params.notificationInfo.entity.profileName %>" target="blank_"><%= params.notificationInfo.entity.name %><%if(params.notificationInfo.entity.lastname === null){}else{%><%=params.notificationInfo.entity.lastname%><%} %></a> has a new avatar!
+								                </p>
+					             		<% } else {%>
+								                <p style="font-size:18px;color:black;">
+								                	Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="blank_"><%= doerInfo.name + ' '%><%if(doerInfo.lastname === null){}else{%><%=doerInfo.lastname%><%} %></a> has a new avatar!
+								                </p>
+						                <% } %>
 					              	</div>
 				            	</td>
 				          	</tr>
@@ -130,9 +136,15 @@
 				          	<tr>
 				            	<td style="padding: 0 25px; text-align: left;">
 					             	<div style="font-size: 14px; line-height: 38px; color: #b2b2b2;">
-						                <p style="font-size:18px;color:black;">
-						                	Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="blank_"><%= doerInfo.name + ' '%><%if(doerInfo.lastname === null){}else{%><%=doerInfo.lastname%><%} %></a> has a new background image!
-						                </p>
+					             		<% if(params.notificationInfo.entity.type === 'organization'){ %>
+												 <p style="font-size:18px;color:black;">
+								                	Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ params.notificationInfo.entity.profileName %>" target="blank_"><%= params.notificationInfo.entity.name %><%if(params.notificationInfo.entity.lastname === null){}else{%><%=params.notificationInfo.entity.lastname%><%} %></a> has a new background image!
+								                </p>
+					             		<% } else {%>
+								                <p style="font-size:18px;color:black;">
+								                	Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="blank_"><%= doerInfo.name + ' '%><%if(doerInfo.lastname === null){}else{%><%=doerInfo.lastname%><%} %></a> has a new background image!
+								                </p>
+						                <% } %>
 					              	</div>
 				            	</td>
 				          	</tr>
