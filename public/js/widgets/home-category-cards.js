@@ -19,7 +19,7 @@ Class('CategoryCards').inherits(Widget).includes(CV.WidgetUtils)({
                     <p class="featured-text"><span>FEATURED VOICES</span></p>\
                     <div class="voice-card-container">\
                     </div>\
-                    <a href="" class="all-voices categories_link">See all Voices &nbsp;<span>></span></a>\
+                    <p class="all-voices"><a href="" class="categories_link">See all Voices &nbsp;<span>></span></a></p>\
                 </div>\
             </div>\
         </div>\
