@@ -2,10 +2,12 @@ Class(CV, 'VoiceCoverTitle').inherits(Widget).includes(CV.WidgetUtils)({
     HTML : '\
         <article class="cv-voice-cover mini -clearfix" role="article">\
             <img class="voice-cover -float-left" width="32" height="32"/>\
-            <div class="voice-content">\
-                <a href="{{voice-url}}" class="voice-link"><p class="voice-cover-title -font-semi-bold -tdn">\
-                    {{voice-title}}\
-                </p></a>\
+            <div class="voice-content -table">\
+                <div class="-table-cell -vam">\
+                    <p class="voice-title-link"><a href="{{voice-url}}" class="voice-link">\
+                        {{voice-title}}\
+                    </a></p>\
+                </div>\
             </div>\
             <div class="action"></div>\
         </article>',
@@ -26,7 +28,7 @@ Class(CV, 'VoiceCoverTitle').inherits(Widget).includes(CV.WidgetUtils)({
                     console.log(JSON.stringify(this.data,null ,2));             
                     this.dom.updateAttr('src', this.el.querySelector('.voice-cover'), this.data.images.small.url); 
                     this.dom.updateAttr('href', this.el.querySelector('.voice-link'), this.data.slug);
-                    this.dom.updateText(this.el.querySelector('.voice-cover-title'), this.data.title);              
+                    this.dom.updateText(this.el.querySelector('.voice-link'), this.data.title);              
         }
     }
 });

@@ -199,63 +199,7 @@
   float: left;
   width: 33.333%;
   text-align: center;
-  .card-body{
-      padding:50px 25px 0px 25px;
-      .card-wrapper{
-        background: white;
-        border-radius:5px;
-        padding-left: 21px;
-        padding-right: 21px;
-        padding-top: 33px;
-        padding-bottom: 33px;
 
-        .featured-text{
-          margin-top: 26px;
-          margin-bottom: 32px;
-          text-align: center;
-          border-bottom: 1px solid #E7EAEC;
-          line-height: 0.1em;
-          color: #A1B0B3;
-          span{
-            background-color: white;
-            padding-left: 10px;
-            padding-right: 10px;
-          }
-        }
-
-        a.all-voices{
-          color: #ff9400;
-          cursor: pointer;
-          margin-top: 21px;
-          span{
-            font-size: 10px;
-            vertical-align: baseline;
-          }
-        }
-        a{
-          text-decoration: none;
-        }
-        a:hover{
-          text-decoration: underline;
-        }
-        .voice-card-container{
-          margin-bottom: 36px;
-          .cv-voice-cover:not(:last-child){
-            margin-bottom: 15px;
-          }
-          .voice-content{
-            padding-top:5px;
-              .voice-cover-title{
-                text-align: left;
-                color:#454b4d;
-              }
-              .voice-cover-title:hover{
-                color:#ff9400;
-              }
-          }
-        }
-      }
-  }
 
   .categories_link {
     display: inline-block;
@@ -284,6 +228,38 @@
     display: inline-block;
     padding-top: 16px;
    }
+}
+ @media only screen and (max-width: 958px){
+        .home-stats{
+          article{
+            .stats-col{
+              width: 40%;
+              border-right:0 !important;
+              margin: 0px 10px;
+            }
+            .stats-col:nth-child(-n+2){
+              border-bottom:1px solid #454B4D;
+              padding: 10px 0px;
+            }
+          }
+        }
+}
+ @media only screen and (max-width: 887px){
+        .homepage-category-list-item{
+          width: 50%;
+        }
+}
+ @media only screen and (max-width: 787px){
+        .page-home{
+          .-float-left.-mr1{
+            margin-bottom:13px;
+          }
+        }
+}
+@media only screen and (max-width: 744px){
+        .homepage-category-list-item{
+          width: 100%;
+        }
 }
 
 /* =========================================================================== *

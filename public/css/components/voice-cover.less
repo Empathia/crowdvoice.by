@@ -171,3 +171,69 @@
     right: 16px;
   }
 }
+/*************************************************
+* Voice Cover Title
+**************************************************/
+.card-body{
+  padding:50px 25px 0px 25px;
+
+  .card-wrapper{
+        background: white;
+        border-radius:5px;
+        padding-left: 21px;
+        padding-right: 21px;
+        padding-top: 33px;
+        padding-bottom: 33px;
+
+        .featured-text{
+          margin-top: 26px;
+          margin-bottom: 32px;
+          text-align: center;
+          border-bottom: 1px solid #E7EAEC;
+          line-height: 0.1em;
+          color: #A1B0B3;
+          span{
+            background-color: white;
+            padding-left: 10px;
+            padding-right: 10px;
+          }
+        }
+
+        a.all-voices{
+          color: #ff9400;
+          cursor: pointer;
+          margin-top: 21px;
+          span{
+            font-size: 10px;
+            vertical-align: baseline;
+          }
+        }
+        a{
+          text-decoration: none;
+        }
+        a:hover{
+          text-decoration: underline;
+        }
+        .voice-card-container{
+          margin-bottom: 36px;
+          .cv-voice-cover:not(:last-child){
+            margin-bottom: 15px;
+          }
+          .voice-content{
+            height: 32px;
+            .voice-title-link{
+              line-height: 13px;
+              text-align: left;
+            }
+            .voice-link{
+              color:#454b4d;
+              font-weight: 600;
+            }
+            .voice-link:hover{
+              color:#ff9400;
+            }
+          }
+        }
+  }
+}
+    
