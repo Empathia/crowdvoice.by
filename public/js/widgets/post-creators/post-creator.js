@@ -1,3 +1,4 @@
+/* globals App */
 var Events = require('./../../lib/events');
 
 Class(CV, 'PostCreator').inherits(Widget).includes(CV.WidgetUtils)({
@@ -68,6 +69,16 @@ Class(CV, 'PostCreator').inherits(Widget).includes(CV.WidgetUtils)({
          */
         _closeButtonClickHander : function _closeButtonClickHander() {
             this.deactivate();
+        },
+
+        _activate : function _activate() {
+            Widget.prototype._activate.call(this);
+            App.hideScrollbar();
+        },
+
+        _deactivate : function _deactivate() {
+            Widget.prototype._deactivate.call(this);
+            App.showScrollbar();
         },
 
         destroy : function destroy() {

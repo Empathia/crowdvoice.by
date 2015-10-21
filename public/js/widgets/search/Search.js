@@ -1,3 +1,4 @@
+/* globals App */
 var API = require('../../lib/api');
 var Gemini = require('gemini-scrollbar');
 
@@ -23,8 +24,7 @@ Class(CV, 'Search').inherits(Widget)({
                 </div>\
                 <div class="gm-scroll-view"></div>\
             </div>\
-        </div>\
-    ',
+        </div>',
 
     prototype : {
         _lastSearchQuery : '',
@@ -130,7 +130,13 @@ Class(CV, 'Search').inherits(Widget)({
 
         _activate : function _activate() {
             Widget.prototype._activate.call(this);
+            App.hideScrollbar();
             this.input.getElement().focus();
+        },
+
+        _deactivate : function _deactivate() {
+            Widget.prototype._deactivate.call(this);
+            App.showScrollbar();
         },
 
         destroy : function destroy() {

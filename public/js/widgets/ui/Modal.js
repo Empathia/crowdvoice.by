@@ -1,3 +1,4 @@
+/* globals App */
 var Events = require('./../../lib/events');
 var transitionEnd = require('./../../lib/ontransitionend');
 
@@ -108,6 +109,11 @@ Class(CV.UI, 'Modal').inherits(Widget).includes(CV.WidgetUtils)({
             }
         },
 
+        _activate : function _activate() {
+            Widget.prototype._activate.call(this);
+            App.hideScrollbar();
+        },
+
         _beforeDestroyHandler : function _beforeDestroyHandler() {
             this.deactivate();
             transitionEnd(this.modalElement, function() {
@@ -116,6 +122,7 @@ Class(CV.UI, 'Modal').inherits(Widget).includes(CV.WidgetUtils)({
         },
 
         destroy : function destroy() {
+            App.showScrollbar();
             Events.off(this.innerElement, 'click', this._clickHandlerRef);
             this._destroyRef = this.modalElement = this.el = null;
             Widget.prototype.destroy.call(this);

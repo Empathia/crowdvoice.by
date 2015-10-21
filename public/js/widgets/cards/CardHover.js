@@ -160,8 +160,8 @@ Class(CV, 'CardHover').inherits(Widget).includes(CV.WidgetUtils)({
         _bindEvents : function _bindEvents() {
             Events.on(window, 'resize', this._updateVariables);
 
-            this._yieldScrollHandlerRef = this._yieldScrollHandler.bind(this);
-            Events.on(document.querySelector('.yield'), 'scroll', this._yieldScrollHandlerRef);
+            this._yieldScrollHandlerRef = this._scrollHandler.bind(this);
+            Events.on(window, 'scroll', this._yieldScrollHandlerRef);
 
             this._mouseEnterHandlerRef = this._mouseEnterHandler.bind(this);
             Events.on(this.el, 'mouseenter', this._mouseEnterHandlerRef);
@@ -179,12 +179,14 @@ Class(CV, 'CardHover').inherits(Widget).includes(CV.WidgetUtils)({
         },
 
         _updateVariables : function _updateVariables() {
-            this._clientHeightHalf = (document.body.clientHeight / 2);
-            this._clientWidth = document.body.clientWidth;
+            this._clientHeightHalf = (window.innerHeight / 2);
+            this._clientWidth = window.innerWidth;
         },
 
-        _yieldScrollHandler : function _yieldScrollHandler() {
+        _scrollHandler : function _scrollHandler() {
             if (this.active) {
+                this._isHoverCard = false;
+                this._DO_NOT_CLOSE = false;
                 this.hide();
             }
         },

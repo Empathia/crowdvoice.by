@@ -290,19 +290,16 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
 
         _activate : function _activate() {
             CV.PostCreator.prototype._activate.call(this);
-
             this.input.getElement().focus();
         },
 
         _enable : function _enable() {
-            Widget.prototype._enable.call(this);
-
+            CV.PostCreator.prototype._enable.call(this);
             this.input.getElement().focus();
         },
 
         _disable  : function _disable() {
-            Widget.prototype._disable.call(this);
-
+            CV.PostCreator.prototype._disable.call(this);
             this.input.getElement().blur();
         },
 

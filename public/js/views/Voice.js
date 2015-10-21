@@ -90,7 +90,7 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
                 element : document.getElementsByClassName('cv-main-header')[0],
                 backgroundElement : this.backgroundElement,
                 footerVoiceTitle : document.getElementsByClassName('voice-footer-meta-wrapper')[0],
-                scrollableArea : document.querySelector('.yield')
+                scrollableArea : this.scrollableArea
             }));
 
             return this;
