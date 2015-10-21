@@ -94,7 +94,7 @@
 				    <div style="font-size: 15px; line-height: 23px; color: #a6a39d;; padding: 30px;margin-top:20px">
 				    <!-- Invitation notitification reply button
 				      <a style="text-decoration:none;color:white;background-color:#FF9400;padding:17px 60px;border-radius:5px;border-bottom:5px solid #E68600;margin-right:10px" href="#">Accept</a>-->
-				      <a style="text-decoration:none;color:#737D80;background-color:white;padding:17px 45px;border-radius:5px;border:1px solid #D8D8D8;border-bottom:5px solid #D8D8D8;margin-left:10px;" href="<%= CONFIG.siteUrl[application.env] + '/' + params.receiver.entity.profileName %>/messages">View Invitation</a>
+				      <a style="text-decoration:none;color:#737D80;background-color:white;padding:17px 45px;border-radius:5px;border:1px solid #D8D8D8;border-bottom:5px solid #D8D8D8;margin-left:10px;" href="<%= CONFIG.siteUrl[application.env] + '/' + params.receiver.entity.profileName + '/messages#' + params.thread.id %>">View Invitation</a>
 				    </div>
 	    </div>
 	    <!-- Footer -->
