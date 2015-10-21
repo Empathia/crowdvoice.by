@@ -22,14 +22,38 @@
 /* =========================================================================== *
  *  intro
  * =========================================================================== */
+ .cv-main-content{
+    background-image: url("/img/views/home/illustration-30-b.jpg");
+    background-position: 310% -2%;
+    background-repeat: no-repeat;
+    background-size: 80%;
+ }
+ .page-home{
+    .sidebar-link.active{
+      border-left: 5px solid #ff9400;
+    }
+    .sidebar-link-help-support{
+      bottom: inherit;
+      margin-top:54px;
+    }
+    // Buttons separation
+    .-float-left.-mr1{
+      margin-right: 27px;
+    }
+    // Orangee button padding
+    .cv-button.primary.large{
+      padding:17px 35px 8px 35px;
+    }
+    // White button padding
+    .cv-button.large.learn{
+      padding: 24px 64px 25px 64px;
+      font-size: 14px;
+    }
+ }
 .homepage-intro {
   padding-top: 65px;
-  padding-bottom: 110px;
-  background-color: @color-white;
-  background-image: url("/img/views/home/illustration-30-b.jpg");
-  background-position: 223% 25%;
-  background-repeat: no-repeat;
-  background-size: 70%;
+  padding-bottom: 30px;
+  background-color: transparent;
 
   .intro-description {
     font-size: 17px;
@@ -38,7 +62,7 @@
   }
 
   .intro-description-text {
-    font-size: 1em;
+    font-size: 1.125em;
   }
 
   .cv-button{
@@ -144,11 +168,16 @@
     margin-left:15px;
   }
 }
-.betweenDivs.cv-button.large{
+/* =========================================================================== *
+ *  Button between divs
+ * =========================================================================== */
+.betweenDivs{
     position: absolute;
     margin-top: -30px;
     margin-left: 50%;
     line-height: 50px;
+    font-size: 16px;
+    height: 58px;
 }
 /* =========================================================================== *
  *  category list
@@ -169,8 +198,64 @@
 .homepage-category-list-item {
   float: left;
   width: 33.333%;
-  padding-bottom: 100px;
   text-align: center;
+  .card-body{
+      padding:50px 25px 0px 25px;
+      .card-wrapper{
+        background: white;
+        border-radius:5px;
+        padding-left: 21px;
+        padding-right: 21px;
+        padding-top: 33px;
+        padding-bottom: 33px;
+
+        .featured-text{
+          margin-top: 26px;
+          margin-bottom: 32px;
+          text-align: center;
+          border-bottom: 1px solid #E7EAEC;
+          line-height: 0.1em;
+          color: #A1B0B3;
+          span{
+            background-color: white;
+            padding-left: 10px;
+            padding-right: 10px;
+          }
+        }
+
+        a.all-voices{
+          color: #ff9400;
+          cursor: pointer;
+          margin-top: 21px;
+          span{
+            font-size: 10px;
+            vertical-align: baseline;
+          }
+        }
+        a{
+          text-decoration: none;
+        }
+        a:hover{
+          text-decoration: underline;
+        }
+        .voice-card-container{
+          margin-bottom: 36px;
+          .cv-voice-cover:not(:last-child){
+            margin-bottom: 15px;
+          }
+          .voice-content{
+            padding-top:5px;
+              .voice-cover-title{
+                text-align: left;
+                color:#454b4d;
+              }
+              .voice-cover-title:hover{
+                color:#ff9400;
+              }
+          }
+        }
+      }
+  }
 
   .categories_link {
     display: inline-block;
@@ -185,7 +270,7 @@
   }
 
   .categories_link-wrapper {
-    padding-top: 10px;
+    padding-top: 35px;
   }
 
   .categories_title {

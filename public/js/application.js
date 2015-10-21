@@ -118,10 +118,12 @@ require('./widgets/cards/actions/CardInviteToPopover');
 require('./widgets/voice-cover/VoiceCover');
 require('./widgets/voice-cover/VoiceCoverMini');
 require('./widgets/voice-cover/VoiceCoverMiniClean');
+require('./widgets/voice-cover/VoiceCoverTitle');
 require('./widgets/voice-cover/actions/VoiceCoverActions');
 require('./widgets/voice-cover/actions/VoiceCoverActionsEdit');
 require('./widgets/voice-cover/actions/VoiceCoverActionsArchive');
 require('./widgets/category-cover');
+require('./widgets/home-category-cards');
 
 // views
 require('./views/Home');

@@ -1,0 +1,32 @@
+Class(CV, 'VoiceCoverTitle').inherits(Widget).includes(CV.WidgetUtils)({
+    HTML : '\
+        <article class="cv-voice-cover mini -clearfix" role="article">\
+            <img class="voice-cover -float-left" width="32" height="32"/>\
+            <div class="voice-content">\
+                <a href="{{voice-url}}" class="voice-link"><p class="voice-cover-title -font-semi-bold -tdn">\
+                    {{voice-title}}\
+                </p></a>\
+            </div>\
+            <div class="action"></div>\
+        </article>',
+
+    prototype : {
+        /* VoiceEntity
+         * @property data <required> [Object]
+         */
+        data : {},
+
+        init : function init(config) {
+            Widget.prototype.init.call(this, config);
+            this.el = this.element[0];
+            this._setup();
+        },
+
+        _setup : function _setup() { 
+                    console.log(JSON.stringify(this.data,null ,2));             
+                    this.dom.updateAttr('src', this.el.querySelector('.voice-cover'), this.data.images.small.url); 
+                    this.dom.updateAttr('href', this.el.querySelector('.voice-link'), this.data.slug);
+                    this.dom.updateText(this.el.querySelector('.voice-cover-title'), this.data.title);              
+        }
+    }
+});
