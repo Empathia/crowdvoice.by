@@ -24,11 +24,10 @@ Class(CV, 'VoiceCoverTitle').inherits(Widget).includes(CV.WidgetUtils)({
             this._setup();
         },
 
-        _setup : function _setup() { 
-                    console.log(JSON.stringify(this.data,null ,2));             
-                    this.dom.updateAttr('src', this.el.querySelector('.voice-cover'), this.data.images.small.url); 
-                    this.dom.updateAttr('href', this.el.querySelector('.voice-link'), this.data.slug);
-                    this.dom.updateText(this.el.querySelector('.voice-link'), this.data.title);              
+        _setup : function _setup() {             
+            this.dom.updateAttr('src', this.el.querySelector('.voice-cover'), this.data.images.small.url); 
+            this.dom.updateAttr('href', this.el.querySelector('.voice-link'), this.data.slug);
+            this.dom.updateText(this.el.querySelector('.voice-link'), this.data.title);              
         }
     }
 });

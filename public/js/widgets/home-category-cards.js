@@ -41,8 +41,7 @@ Class('CategoryCards').inherits(Widget).includes(CV.WidgetUtils)({
          
             this.anchorElements.forEach(function(anchor) {
                 this.dom.updateAttr('href', anchor, '/topic/' + this.slug);
-                this.dom.updateAttr('alt', anchor, this.name);
-                
+                this.dom.updateAttr('alt', anchor, this.name);      
             }, this);
 
             var data =[
@@ -52,10 +51,10 @@ Class('CategoryCards').inherits(Widget).includes(CV.WidgetUtils)({
                         ];
 
             data.forEach(function(data, index) {
-                    this.appendChild(new CV.VoiceCoverTitle({
-                        name: 'voice_' + index,
-                        data: data
-                    })).render(this.el.querySelector('.voice-card-container'));
+                this.appendChild(new CV.VoiceCoverTitle({
+                    name: 'voice_' + index,
+                    data: data
+                })).render(this.el.querySelector('.voice-card-container'));
             }, this);
         }
     }
