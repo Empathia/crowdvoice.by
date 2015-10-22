@@ -59,7 +59,8 @@
 </main>
 
 <script>
-  var App = new CV.App().addInteractiveSidebar();
+  var App = new CV.App();
+  App.addInteractiveSidebar();
 
   $( document ).ready(function() {
     var threadsContainer = new CV.ThreadsContainer({

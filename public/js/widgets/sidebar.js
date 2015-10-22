@@ -42,51 +42,49 @@ Class(CV, 'Sidebar').inherits(Widget)({
             return this;
         },
 
-        _updateSidebarCount : function _updateSidebarCount() {
+        setup : function setup(){
             var socket = App.getSocket();
-            var containerClass = this.messageLinkContainer.className;
-            var unreadValueContainer = this.sidebarUnreadMessagesEl.querySelector('.sidebar-link-badge');
-            var containerActive = false;
-            var dataCache;
 
             setInterval(function() {
                 socket.emit('getUnreadMessagesCount');
             }, 1000);
 
             socket.on('unreadMessagesCount', function(data) {
-
-                if(data > 0){
-                    if (containerActive === false){
-                        // Changes the class of the container and sets the notification number
-                        this.messageLinkContainer.className = this.messageLinkContainer.className + ' unreadActive';
-                        unreadValueContainer.innerHTML = data;
-                        // Sets the flag value for the container class change
-                        containerActive = true;
-                        // Saves the previous data value
-                        dataCache = data;
-                    }
-
-                    if(dataCache < data || dataCache > data){
-                        // Updates the notification number
-                        unreadValueContainer.textContent = data;
-                        // Saves the new value for the dataCache comparison
-                        dataCache = data;
-                    }
-                } else {
-                    this.messageLinkContainer.className = containerClass;
-                    containerActive = false;
-                    dataCache = null;
-                }
-
+                this._updateSidebarCount(data);
             }.bind(this));
         },
 
-        _bindEvents : function _bindEvents() {
-            this._updateSidebarCountRef = this._updateSidebarCount.bind(this);
+        _updateSidebarCount : function _updateSidebarCount(data) {
+            /* 
+            * Adds the unread message notification icon for the sidebar
+            */
+            var containerClass = this.messageLinkContainer.className;
+            var unreadValueContainer = this.sidebarUnreadMessagesEl.querySelector('.sidebar-link-badge');
+            var containerActive = false;
+            var dataCache;
 
+            if(data > 0){
+                if (containerActive === false){
+                    this.messageLinkContainer.className = this.messageLinkContainer.className + ' unreadActive';
+                    unreadValueContainer.innerHTML = data;
+                    containerActive = true;
+                    dataCache = data;
+                }
+
+                if(dataCache < data || dataCache > data){
+                    unreadValueContainer.textContent = data;
+                    dataCache = data;
+                }
+            } else {
+                this.messageLinkContainer.className = containerClass;
+                containerActive = false;
+                dataCache = null;
+            }
+        },
+
+        _bindEvents : function _bindEvents() {
             this._mouseEnterHandlerRef = this._mouseEnterHandler.bind(this);
             this.el.addEventListener('mouseenter', this._mouseEnterHandlerRef);
-            this.el.addEventListener('mouseenter', this._updateSidebarCountRef);
 
             this._mouseLeaveHandlerRef = this._mouseLeaveHandler.bind(this);
             this.el.addEventListener('mouseleave', this._mouseLeaveHandlerRef);
@@ -108,11 +106,6 @@ Class(CV, 'Sidebar').inherits(Widget)({
             if (this._mouseEnterHandlerRef) {
                 this.el.removeEventListener('mouseenter', this._mouseEnterHandlerRef);
                 this._mouseEnterHandlerRef = null;
-            }
-
-            if (this._updateSidebarCountRef) {
-                this.el.removeEventListener('mouseenter', this._updateSidebarCountRef);
-                this._updateSidebarCountRef = null;
             }
 
             if (this._mouseLeaveHandlerRef) {
