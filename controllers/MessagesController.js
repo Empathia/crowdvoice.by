@@ -216,7 +216,7 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
             // ignore
             function (done) {
               if (req.body.action !== 'ignore') {
-                done();
+                return done();
               }
 
               if (voice) {
