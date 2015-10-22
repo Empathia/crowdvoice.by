@@ -1142,6 +1142,33 @@ module.exports = {
     },
 
     /**************************************************************************
+     * NOTIFICATIONS
+     *************************************************************************/
+    /* Mark a particular notification as read for the current user.
+     * @argument args.profileName <required> [String] currentPerson profileName
+     * @argument args.data.notificationId <required> [Function] Hashids.encode notificationId
+     * @argument callback <required> [Function]
+     */
+    markNotificationAsRead : function markNotificationAsRead(args, callback) {
+        if (!args.profileName || !args.data.notificationId || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'POST',
+            url : '/' + args.profileName + '/notifications/markAsRead?_method=DELETE',
+            headers : {'csrf-token' : this.token},
+            data : {notificationId: args.data.notificationId},
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
+    /**************************************************************************
      * MISC
      *************************************************************************/
     /* Returns the registered topics. [Array]
