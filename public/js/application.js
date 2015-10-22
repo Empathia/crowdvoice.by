@@ -46,25 +46,24 @@ require('./widgets/ui/InputButtonResults');
 require('./widgets/ui/InputButtonResultsItem');
 
 // notifications
-require('./widgets/notifications/manager');
-require('./widgets/notifications/notification');
-require('./widgets/notifications/notification-became-public-contributor');
-require('./widgets/notifications/notification-followed');
-require('./widgets/notifications/notification-created');
-require('./widgets/notifications/notification-new-posts');
-require('./widgets/notifications/notification-changed-avatar');
-require('./widgets/notifications/notification-changed-background');
-require('./widgets/notifications/notification-new-description');
-require('./widgets/notifications/notification-new-title');
-require('./widgets/notifications/notification-read-more');
-require('./widgets/notifications/notification-flash');
-require('./widgets/notifications/notification-published');
-require('./widgets/notifications/notification-archived');
-require('./widgets/notifications/notification-became-a-public-member');
-require('./widgets/notifications/notification-became-a-public-contributor');
-require('./widgets/notifications/-notification-message');
-require('./widgets/notifications/-notification-invite');
-require('./widgets/notifications/-notification-request');
+require('./widgets/notifications/NotificationsManager');
+require('./widgets/notifications/Notification');
+require('./widgets/notifications/NotificationItem');
+require('./widgets/notifications/NotificationReadMore');
+// require('./widgets/notifications/notification-flash');
+
+// feed items
+require('./widgets/feed/FeedItem');
+require('./widgets/feed/FeedChangedAvatar');
+require('./widgets/feed/FeedChangedBackground');
+require('./widgets/feed/FeedNewPosts');
+require('./widgets/feed/FeedFollowed');
+require('./widgets/feed/FeedPublished');
+require('./widgets/feed/FeedBecamePublicContributor');
+require('./widgets/feed/FeedArchived');
+require('./widgets/feed/FeedBecamePublicMember');
+require('./widgets/feed/FeedNewDescription');
+require('./widgets/feed/FeedNewTitle');
 
 // search
 require('./widgets/search/Search');
@@ -157,6 +156,11 @@ require('./widgets/view-user-profile-edit/UserProfileEditNotificationsTab');
 require('./widgets/view-user-profile-edit/UserProfileEditOrganizationsTab');
 require('./widgets/view-user-profile-edit/notifications/EditNotificationsNotifyMeItem');
 require('./widgets/view-user-profile-edit/notifications/EditNotificationsEmailDigestsItem');
+require('./views/Feed');
+require('./widgets/view-feed/FeedSidebar');
+require('./widgets/view-feed/FeedSidebarStats');
+require('./widgets/view-feed/FeedOnboarding');
+require('./widgets/view-feed/FeedAnonymousOnboarding');
 
 require('./widgets/voice/posts-registry');
 require('./widgets/voice/Onboarding');
