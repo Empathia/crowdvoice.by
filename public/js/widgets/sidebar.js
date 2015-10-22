@@ -17,7 +17,6 @@ Class(CV, 'Sidebar').inherits(Widget)({
             this._yield = document.body.querySelector('.app-wrapper');
 
             this.messageLinkContainer = this.el.querySelector('.sidebar-link-messages');
-            this.sidebarUnreadMessagesEl = this.messageLinkContainer.querySelector('.unread');
 
             this._checkAndActivateCurrentLink();
         },
@@ -58,6 +57,8 @@ Class(CV, 'Sidebar').inherits(Widget)({
             /* 
             * Adds the unread message notification icon for the sidebar
             */
+            this.sidebarUnreadMessagesEl = this.messageLinkContainer.querySelector('.unread');
+            
             var containerClass = this.messageLinkContainer.className;
             var unreadValueContainer = this.sidebarUnreadMessagesEl.querySelector('.sidebar-link-badge');
             var containerActive = false;
