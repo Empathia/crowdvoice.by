@@ -1144,6 +1144,29 @@ module.exports = {
     /**************************************************************************
      * NOTIFICATIONS
      *************************************************************************/
+    /* Get the current user/org's notifications.
+     * @argument args.profileName <required> [String] currentPerson profileName
+     * @argument callback <required> [Function]
+     */
+    getNotifications : function getNotifications(args, callback) {
+        if (!args.profileName || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'GET',
+            dataType : 'json',
+            url : '/' + args.profileName + '/notifications',
+            headers : {'csrf-token' : this.token},
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
     /* Mark a particular notification as read for the current user.
      * @argument args.profileName <required> [String] currentPerson profileName
      * @argument args.data.notificationId <required> [Function] Hashids.encode notificationId
