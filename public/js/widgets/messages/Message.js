@@ -189,11 +189,11 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
               break;
 
             case 'request_voice':
-              text = '<p>You has requested to become a contributor for {voiceTitle}.</p>'.replace(/{voiceTitle}/, message.data.voice.title);
+              text = '<p>You have requested to become a contributor for {voiceTitle}.</p>'.replace(/{voiceTitle}/, message.data.voice.title);
               break;
 
             case 'request_organization':
-              text = '<p>You has requested to become a member of {organizationName}.</p>'.replace(/{organizationName}/, message.data.organization.name);
+              text = '<p>You have requested to become a member of {organizationName}.</p>'.replace(/{organizationName}/, message.data.organization.name);
               break;
 
             case 'invitation_accepted_voice':
