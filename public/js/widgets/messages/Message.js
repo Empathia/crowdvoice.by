@@ -27,8 +27,8 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
   REQUEST_ORGANIZATION_HTML : '<p>{name} has requested to become a member of {organizationName}. \
     If you grant access, {name} will be able to post and moderate content on all the Voices of {organizationName}. <a href="{url}">Go to this Organization\'s settings ›</a></p>',
 
-  REQUEST_VOICE_HTML : '<p>{name} has requested to become a contributor for {organizationName}. \
-    If you grant access, {name} will be able to post and moderate content of this Voice.<br><a href="{url}">Go to this Voice\'s settings ›</a></p>',
+  REQUEST_VOICE_HTML : '<p>{name} has requested to become a contributor for {voiceTitle}. \
+    If you grant access, {name} will be able to post and moderate content of this Voice. <a href="{url}">Go to this Voice\'s settings ›</a></p>',
 
   INVITATION_ACCEPTED_VOICE_HTML : '<p>Invitation to {voiceTitle} accepted.</p>',
 
@@ -67,7 +67,7 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
       }
 
       message.element.find('.message-data .data-message-date').text(moment(new Date(message.data.createdAt).toISOString()).format('• MMMM Do, YYYY • h:mm A'));
-      message.element.find('.message-data .data-message-text').text(message.data.message);
+      message.element.find('.message-data .data-message-text')[0].insertAdjacentHTML('beforeend', message.data.message);
 
       if (message.type !== 'message' && message.type !== 'report') {
         var text = this.constructor[this.type.toUpperCase() + '_HTML'];
@@ -90,8 +90,8 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
               break;
             case 'request_voice':
               text = text.replace(/{name}/g, message.data.senderEntity.name + ' ' + message.data.senderEntity.lastname)
-                      .replace(/{organizationName}/g, message.data.voice.title)
-                      .replace(/{url}/g, '/' + message.data.voice.slug);
+                      .replace(/{voiceTitle}/g, message.data.voice.title)
+                      .replace(/{url}/g, '/' + Person.get().profileName + '/' + message.data.voice.slug);
               break;
             case 'invitation_accepted_voice':
               text = text.replace(/{voiceTitle}/, message.data.voice.title);
