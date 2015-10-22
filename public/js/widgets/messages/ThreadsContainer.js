@@ -22,7 +22,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
       this.noMessagesEl = this.element.find('.no-messages');
       this.messagesBodyContainerEl = this.element.find('.messages-body-container');
       this.messagesContainerEl = this.element.find('.messages-container');
-      this.messageListEl = this.element.find('.msgs');
+      this.messageListEl = this.element.find('.unread');
       this.messagesBodyHeaderEl = this.element.find('.messages-body-header');
       this.searchUsersResultEl = this.element.find('.search-users-result');
 
@@ -168,6 +168,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
 
     updateSidebarCount : function updateSidebarCount() {
       if(this.unreadMessages > 0){
+        console.log(this.sidebarMessagesEl);
         this.sidebarMessagesEl.addClass('has-messages');
         this.sidebarMessagesEl.find('.sidebar-link-badge').text(this.unreadMessages);
       } else {
