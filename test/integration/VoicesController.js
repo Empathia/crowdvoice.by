@@ -203,4 +203,44 @@ describe('VoicesController', function () {
 
   })
 
+  describe('#update', function () {
+
+    it('Update voice owned by organization you own', function (done) {
+      login('cersei', function (err, agent, csrf) {
+        agent
+          .put(urlBase + '/house-lannister/casterly-rock')
+          .accept('application/json')
+          .send({
+            _csrf: csrf,
+            image: 'undefined',
+            title: 'Casterly Rock',
+            slug: 'casterly-rock',
+            description: 'This is a new and completely unique description.',
+            topics: 'd6wb1XVgRvzm',
+            type: 'TYPE_PUBLIC',
+            status: 'STATUS_PUBLISHED',
+            locationName: 'Casterly Rock',
+            latitude: '4.815',
+            longitude: '162.342',
+            anonymously: 'false',
+            ownerId: 'dWK6yYeyk8P4'
+          })
+          .end(function (err, res) {
+            if (err) { return done(err) }
+
+            expect(res.status).to.equal(200)
+
+            Voice.findById(15, function (err, voice) {
+              if (err) { done(err) }
+
+              expect(voice[0].description).to.equal('This is a new and completely unique description.')
+
+              return done();
+            })
+          })
+      })
+    })
+
+  })
+
 })
