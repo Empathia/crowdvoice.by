@@ -208,7 +208,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
 
             this.appendChild(new CV.DetectLocation({
                 name : 'detectLocation',
-                label : 'Detect Location',
+                label : 'Use Current Location',
                 requireGoogleMaps : true
             })).render(this.el.querySelector('[data-location-wrapper]'));
 

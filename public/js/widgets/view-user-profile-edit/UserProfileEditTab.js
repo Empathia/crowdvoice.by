@@ -142,7 +142,7 @@ Class(CV, 'UserProfileEditTab').inherits(Widget)({
 
             this.appendChild(new CV.DetectLocation({
                 name : 'detectLocation',
-                label : 'Detect',
+                label : 'Use Current Location',
                 requireGoogleMaps : true
             })).render(this.locationInput.inputWrapper);
 
