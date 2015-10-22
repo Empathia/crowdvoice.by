@@ -558,7 +558,7 @@ module.exports = {
         });
     },
 
-   /* Search for Posts in Sources
+    /* Search for Posts in Sources
      * @argument args.profileName <required> [String] the voice owner profileName
      * @argument args.voiceSlug <required> [String] the voice slug
      * @argument args.source <required> [String] the source to search on ['googleNews', 'youtube']
@@ -1115,6 +1115,27 @@ module.exports = {
                 query : args.query,
                 exclude : args.exclude || []
             },
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
+    /**************************************************************************
+     * DISCOVER
+     *************************************************************************/
+    /* Return the voices with the most followers.
+     * @argument callback <required> [Function]
+     */
+    getTrendingVoices : function getTrendingVoices(callback) {
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'GET',
+            url : '/discover/trending/voices',
+            headers : {'csrf-token' : this.token},
+            dataType : 'json',
             success : function success(data) {callback(false, data);},
             error : function error(err) {callback(true, err);}
         });
