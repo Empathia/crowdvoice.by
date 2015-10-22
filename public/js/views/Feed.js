@@ -23,6 +23,8 @@ Class(CV.Views, 'Feed').includes(NodeSupport, CV.WidgetUtils)({
                     name: 'onboarding'
                 })).render(this.el.querySelector('.profile-body'));
 
+                this.sidebar.fetchTopVoices();
+
                 return;
             }
 
