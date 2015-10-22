@@ -241,10 +241,11 @@ require('./widgets/post-details/post-detail-text');
 
 // editable posts
 require('./widgets/posts/edit/EditablePost');
-require('./widgets/posts/edit/editable-post-link.js');
-require('./widgets/posts/edit/editable-post-video.js');
-require('./widgets/posts/edit/editable-post-image.js');
-require('./widgets/posts/edit/image-controls.js');
+require('./widgets/posts/edit/EditablePostLink');
+require('./widgets/posts/edit/EditablePostVideo');
+require('./widgets/posts/edit/EditablePostImage');
+require('./widgets/posts/edit/EditablePostText');
+require('./widgets/posts/edit/EditablePostImageControls');
 
 // moderate actions
 require('./widgets/posts/moderate/remove-button.js');
