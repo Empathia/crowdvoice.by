@@ -22,7 +22,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
       this.noMessagesEl = this.element.find('.no-messages');
       this.messagesBodyContainerEl = this.element.find('.messages-body-container');
       this.messagesContainerEl = this.element.find('.messages-container');
-      this.messageListEl = this.element.find('.unread');
+      this.messageListEl = this.element.find('.msgs');
       this.messagesBodyHeaderEl = this.element.find('.messages-body-header');
       this.searchUsersResultEl = this.element.find('.search-users-result');
 
@@ -99,8 +99,6 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
           container.addThread(thread);
         });
 
-        this.updateSidebarCount();
-
       } else {
         this.hideSideBar();
       }
@@ -166,17 +164,6 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
       });
     },
 
-    updateSidebarCount : function updateSidebarCount() {
-      if(this.unreadMessages > 0){
-        console.log(this.sidebarMessagesEl);
-        this.sidebarMessagesEl.addClass('has-messages');
-        this.sidebarMessagesEl.find('.sidebar-link-badge').text(this.unreadMessages);
-      } else {
-        this.sidebarMessagesEl.removeClass('has-messages');
-      }
-
-    },
-
     addThread : function addThread(threadData) {
       var container = this;
 
@@ -191,8 +178,6 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
 
       thread.bind('updated', function(){
         container.unreadMessages -= this.unreadCount;
-
-        container.updateSidebarCount();
       });
 
       thread.threadContainer = this;
