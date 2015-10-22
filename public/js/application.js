@@ -49,7 +49,7 @@ require('./widgets/ui/InputButtonResultsItem');
 require('./widgets/notifications/NotificationsManager');
 require('./widgets/notifications/Notification');
 require('./widgets/notifications/NotificationItem');
-// require('./widgets/notifications/notification-read-more');
+require('./widgets/notifications/NotificationReadMore');
 // require('./widgets/notifications/notification-flash');
 
 // feed items

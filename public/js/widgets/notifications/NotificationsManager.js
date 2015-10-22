@@ -23,12 +23,21 @@ Class(CV, 'NotificationsManager').inherits(Widget)({
          *  `notificationId` that holds the encoded notificationId.
          * @return NotificationsManager
          */
-        update : function update(notifications){
+        update : function update(notifications) {
             this.empty();
+
+            if (notifications.length > 4) {
+                notifications = notifications.splice(0, 4);
+            }
 
             notifications.forEach(function(n) {
                 this.appendChild(CV.Notification.create(n.action, n.notificationId)).render(this.elAll);
             }, this);
+
+            this.appendChild(new CV.NotificationReadMore({
+                name : 'read_more'
+            })).render(this.elAll);
+
             return this;
         },
 

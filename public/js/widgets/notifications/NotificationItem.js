@@ -25,8 +25,6 @@ Class(CV, 'NotificationItem').inherits(CV.Notification)({
         },
 
         _setup : function _setup() {
-            this.el.classList.add(this.notificationId);
-
             this.appendChild(
                 CV.FeedItem.create({data: this.data})
             ).render(this.el.querySelector('.cv-notification__info'));
