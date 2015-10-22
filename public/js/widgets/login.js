@@ -45,17 +45,17 @@ Class(CV, 'Login').inherits(Widget)({
                 </div>\
             </div>\
             <div class="form-field">\
-                <input type="text" class="ui-input -lg -block email" name="email" value="" placeholder="my@email.com">\
+                <input type="email" class="ui-input -lg -block email" name="email" value="" placeholder="Your Email">\
             </div>\
             <div class="form-field">\
-                <input type="password" class="ui-input -lg -block password" name="password" value="" placeholder="Password">\
+                <input type="password" class="ui-input -lg -block password" name="password" value="" placeholder="Your Password">\
             </div>\
             <div class="cv-check" style="display: none;">\
               <input type="checkbox" class="input-checkbox isAnonymous" name="isAnonymous" value="true" checked>\
               <span class="label">Is Anonymous?</span>\
             </div>\
             <input type="hidden" name="_csrf" class="form-token" value="">\
-            <button class="cv-button primary -m0 -block">Create User</button>\
+            <button class="cv-button primary -m0 -block">Sign Up Now!</button>\
         </form>\
         <p class="cv-login__bottom-help-text">Already have an account? <a href="/login">Sign in!</a></p>\
     ',
@@ -284,23 +284,6 @@ Class(CV, 'Login').inherits(Widget)({
             login.errorsEl.show();
             this.buttonEl.attr('disabled', true);
             this.buttonEl.addClass('disabled');
-
-            //var formValidation = login.validate();
-            //var validForm = formValidation[1];
-            //var formErrors = formValidation[0];
-            //
-            //if (!validForm){
-            //  login.errorsEl.empty();
-            //  login.errorsEl.show();
-            //
-            //  for (var error in formErrors.errors) {
-            //      var replaceStr = error;
-            //      var errorStr = formErrors.errors[error].message.replace(replaceStr, '<b>'+replaceStr+'</b>');
-            //      login.errorsEl.append('<p>' + errorStr + '</p>')
-            //  }
-            //  return false;
-            //  e.preventDefault;
-            //}
           } else {
             delete(this.errors[fieldType]);
 
