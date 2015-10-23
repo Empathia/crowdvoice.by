@@ -50,8 +50,8 @@ Class(CV, 'PostDetailMediaInfo').inherits(Widget).includes(CV.WidgetUtils)({
         update : function update(data) {
             this.dom.updateText(this.dateElement, moment(data.publishedAt).format('MMM DD, YYYY'));
             this.dom.updateAttr('datetime', this.dateElement, data.publishedAt);
-            this.dom.updateText(this.titleElement, data.title);
-            this.dom.updateText(this.descriptionElement, data.description);
+            this.dom.updateHTML(this.titleElement, data.title);
+            this.dom.updateHTML(this.descriptionElement, data.description);
             this.updateSaves(data);
 
             this.actionSave.update(data);
