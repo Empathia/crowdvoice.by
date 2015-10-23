@@ -13,62 +13,51 @@ require(path.join(__dirname, '../../presenters/PostsPresenter'))
 
 application._serverStart()
 
-var request = require('superagent')
-var test = require('tape-catch')
+// COMMENT IF YOU WANT LOGGER OUTPUT
+logger.log = function () {}
+
+var login = require(path.join(__dirname, 'login.js')),
+  expect = require('chai').expect
 
 CONFIG.database.logQueries = false
 
 var urlBase = 'http://localhost:3000'
 
-test('Request memberhsip ( .requestMembership() )', function (t) {
-  var cookies,
-    csrf,
-    agent = request.agent()
+describe('OrganizationsController', function () {
 
-  async.series([
-    function (next) {
-      agent
-        .get(urlBase + '/csrf')
-        .end(function (err, res) {
-          if (err) { t.fail(err) }
+  describe('#requestMembership', function () {
 
-          csrf = res.text
+    it('Request membership with no errors', function (done) {
+      login('jon', function (err, agent, csrf) {
+        if (err) { return done(err) }
 
-          return next()
-        })
-    },
+        agent
+          .post(urlBase + '/house-targaryen/requestMembership')
+          .accept('application/json')
+          .send({
+            _csrf: csrf,
+            orgId: hashids.encode(23), // House Targaryen
+            message: 'I wanna join you so bad!'
+          })
+          .end(function (err, res) {
+            if (err) { return done(err) }
 
-    function (next) {
-      agent
-        .post(urlBase + '/session')
-        .send({
-          _csrf: csrf,
-          username: 'jon',
-          password: '12345678'
-        })
-        .end(function (err, res) {
-          if (err) { t.fail(err) }
+            expect(res.status).to.equal(200)
 
-          return next()
-        })
-    },
-  ], function(err) {
-    if (err) { t.fail(err) }
-
-    agent
-      .post(urlBase + '/house-targaryen/requestMembership')
-      .accept('application/json')
-      .send({
-        _csrf: csrf,
-        orgId: hashids.encode(23), // House Targaryen's ID
-        message: 'I wanna join you so bad!'
+            return done()
+          })
       })
-      .end(function (err, res) {
-        if (err) { t.fail(err) }
+    })
 
-        t.equal(res.status, 200, 'res.status')
-
-        t.end()
-      })
   })
+
+  /*
+  describe('#members', function () {
+
+    it('Return all members (also anonymous members)', function (done) {
+    })
+
+  })
+  */
+
 })
