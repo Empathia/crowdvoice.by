@@ -13,7 +13,7 @@ Class(CV, 'PostCreatorWriteArticlePostDate').inherits(Widget)({
                     <span class="write-article-title -font-bold">Write an Article</span>\
                     <span class="ui-has-tooltip">\
                         (?)\
-                        <span class="ui-tooltip -right -nw">Add a new article to the voice</span>\
+                        <span class="ui-tooltip -right -nw">Write a new article for this voice.</span>\
                     </span>\
                 </div>\
                 <div class="write-article-post-date-wrapper -float-right">\
