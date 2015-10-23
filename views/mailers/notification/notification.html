@@ -19,7 +19,7 @@
 	    <div style="display: inline-block; width: 550px; padding: 30px 0 30px 0; background-color: #FFFFFF; color: #4c4b49; border-radius: 0px;border-top:10px solid;border-top-color:#FF9400;box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.5);">
 	    	<!-- New voice published notification-->
 	    	<% if(params.notificationInfo.itemType === 'voice' && params.notificationInfo.action === 'published'){ %>
-	    		<% if(Object.getOwnPropertyNames(voiceInfo.images).length === 0){ voiceImage = CONFIG.siteUrl[application.env]+'/img/img-placeholder.png'; }else{ voiceImage = CONFIG.siteUrl[application.env]+voiceInfo.images.small.url;} %>
+	    		<% if(Object.getOwnPropertyNames(voiceInfo.images).length === 0){ voiceImage = CONFIG.siteUrl[application.env]+'/img/img-placeholder.png'; }else{ voiceImage = voiceInfo.images.small.url;} %>
 					<table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 0 0 0 -3px;">
 				        <tbody>
 				          	<tr>
@@ -49,7 +49,7 @@
 	    	<% } %>
 	    	<!-- User you follows starts following a voice notification-->
 	    	<% if(params.notificationInfo.itemType === 'voice' && params.notificationInfo.action === 'followed'){ %>
-	    		<% if(Object.getOwnPropertyNames(voiceInfo.images).length === 0){ voiceImage = CONFIG.siteUrl[application.env]+'/img/img-placeholder.png'; }else{ voiceImage = CONFIG.siteUrl[application.env]+voiceInfo.images.small.url;} %>
+	    		<% if(Object.getOwnPropertyNames(voiceInfo.images).length === 0){ voiceImage = CONFIG.siteUrl[application.env]+'/img/img-placeholder.png'; }else{ voiceImage = voiceInfo.images.small.url;} %>
 	    			<table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 0 0 0 -3px;">
 				        <tbody>
 				          	<tr>
@@ -79,7 +79,7 @@
 	    	<% } %>
 	    	<!-- User/Organization you follows archive a voice notification-->
 	    	<% if(params.notificationInfo.itemType === 'voice' && params.notificationInfo.action === 'archived'){ %>
-	    		<% if(Object.getOwnPropertyNames(voiceInfo.images).length === 0){ voiceImage = CONFIG.siteUrl[application.env]+'/img/img-placeholder.png'; }else{ voiceImage = CONFIG.siteUrl[application.env]+voiceInfo.images.small.url;} %>
+	    		<% if(Object.getOwnPropertyNames(voiceInfo.images).length === 0){ voiceImage = CONFIG.siteUrl[application.env]+'/img/img-placeholder.png'; }else{ voiceImage = voiceInfo.images.small.url;} %>
 	    			<table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 0 0 0 -3px;">
 				        <tbody>
 				          	<tr>
@@ -158,7 +158,7 @@
 				        <tbody>
 					        <tr style="background-color:#F7F9FA;">
 					            <td style="padding: 25px 0px 25px 25px;">
-					            	<img style="width:52px;height:52px;border-radius:5px;"src="<%= CONFIG.siteUrl[application.env] + params.notificationInfo.entity.images.card.url %>"/>
+					            	<img style="width:52px;height:52px;border-radius:5px;"src="<%= params.notificationInfo.entity.images.card.url %>"/>
 					            </td>
 					            <td style="padding-right:25px;">
 					            	<a href="<%= CONFIG.siteUrl[application.env] +'/'+ params.notificationInfo.entity.profileName %>" target="blank_" style="font-size:13px;color:#4D4D4D;text-align:left;font-weight:bold;"><%= params.notificationInfo.entity.name + ' ' + params.notificationInfo.entity.lastname %></a>
@@ -184,7 +184,7 @@
 				        <tbody>
 					        <tr style="background-color:#F7F9FA;">
 					            <td style="padding: 25px 0px 25px 25px;">
-					            	<img style="width:52px;height:52px;border-radius:5px;"src="<%= CONFIG.siteUrl[application.env] + doerInfo.images.small.url %>"/>
+					            	<img style="width:52px;height:52px;border-radius:5px;"src="<%= doerInfo.images.small.url %>"/>
 					            </td>
 					            <td style="padding-right:25px;">
 					            	<a href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="blank_" style="font-size:13px;color:#4D4D4D;text-align:left;font-weight:bold;"><%= doerInfo.name + ' ' + doerInfo.lastname %></a>
@@ -195,7 +195,7 @@
 	    	<% } %>
 	    	<!-- Voice has new posts notification -->
 	    	<% if(params.notificationInfo.itemType === 'voice' && params.notificationInfo.action === 'new posts'){%>
-	    		<% if(Object.getOwnPropertyNames(voiceInfo.images).length === 0){ voiceImage = CONFIG.siteUrl[application.env]+'/img/img-placeholder.png'; }else{ voiceImage = CONFIG.siteUrl[application.env]+voiceInfo.images.small.url;} %>
+	    		<% if(Object.getOwnPropertyNames(voiceInfo.images).length === 0){ voiceImage = CONFIG.siteUrl[application.env]+'/img/img-placeholder.png'; }else{ voiceImage = voiceInfo.images.small.url;} %>
 	    			<table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 0 0 0 -3px;">
 				      <tbody>
 				          <tr>
@@ -238,7 +238,7 @@
 				        <tbody>
 					        <tr style="background-color:#F7F9FA;">
 					            <td style="padding: 25px 0px 25px 25px;">
-					            	<img style="width:52px;height:52px;border-radius:5px;"src="<%= CONFIG.siteUrl[application.env] + doerInfo.images.small.url %>"/>
+					            	<img style="width:52px;height:52px;border-radius:5px;"src="<%= doerInfo.images.small.url %>"/>
 					            </td>
 					            <td style="padding-right:25px;">
 					            	<a href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="blank_" style="font-size:13px;color:#4D4D4D;text-align:left;font-weight:bold;"><%= doerInfo.name + ' ' + doerInfo.lastname %></a>
