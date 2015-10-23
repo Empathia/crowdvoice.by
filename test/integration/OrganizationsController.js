@@ -23,12 +23,14 @@ CONFIG.database.logQueries = false
 
 var urlBase = 'http://localhost:3000'
 
-describe('VoicesController', function () {
+describe('OrganizationsController', function () {
 
   describe('#requestMembership', function () {
 
     it('Request membership with no errors', function (done) {
       login('jon', function (err, agent, csrf) {
+        if (err) { return done(err) }
+
         agent
           .post(urlBase + '/house-targaryen/requestMembership')
           .accept('application/json')
