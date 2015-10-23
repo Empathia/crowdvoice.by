@@ -30,12 +30,12 @@
 				    </table>
 				   <!-- New invitation to join a new ORGANIZATION -->
 	    		<% if(params.message.type == 'invitation_organization'){ %>
-	    		<% if(Object.getOwnPropertyNames(params.invitationOrganization.images).length === 0){ voiceImage = CONFIG.siteUrl[application.env]+'/img/img-placeholder.png'; }else{ voiceImage = CONFIG.siteUrl[application.env]+params.invitationOrganization.images.small.url;} %>
+	    		<% if(Object.getOwnPropertyNames(params.invitationOrganization.images).length === 0){ voiceImage = CONFIG.siteUrl[application.env]+'/img/img-placeholder.png'; }else{ voiceImage = params.invitationOrganization.images.small.url;} %>
 				    <table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 10px 0 0 -3px;">
 				        <tbody>
 				          	<tr>
 					            <td style="padding: 0px 0 80px 25px;">
-					                <img width="52" height="52" style="border-radius:50%;display:block;margin-left:auto;margin-right:auto;" src="<%= CONFIG.siteUrl[application.env]+ doerInfo.images.card.url %>"/>
+					                <img width="52" height="52" style="border-radius:50%;display:block;margin-left:auto;margin-right:auto;" src="<%= doerInfo.images.card.url %>"/>
 					            </td>
 					            <td style="padding-right:25px;">  
 					                <table width="100%" cellspacing="0" cellpadding="0" border="0" style="font-size:15px;color:#454B4D;text-align:left;background-color:#F7F9FA;padding:20px;">
@@ -59,12 +59,12 @@
 				    </table>
 				<% } %>
 				<% if(params.message.type == 'invitation_voice'){%>
-				<% if(Object.getOwnPropertyNames(params.invitationVoice.images).length === 0){ voiceImage = CONFIG.siteUrl[application.env]+'/img/img-placeholder.png'; }else{ voiceImage = CONFIG.siteUrl[application.env]+params.invitationVoice.images.small.url;} %>
+				<% if(Object.getOwnPropertyNames(params.invitationVoice.images).length === 0){ voiceImage = CONFIG.siteUrl[application.env]+'/img/img-placeholder.png'; }else{ voiceImage = params.invitationVoice.images.small.url;} %>
 					<table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 10px 0 0 -3px;">
 				        <tbody>
 				          	<tr>
 					            <td style="padding: 0px 0 80px 25px;">
-					                <img width="52" height="52" style="border-radius:50%;display:block;margin-left:auto;margin-right:auto;" src="<%= CONFIG.siteUrl[application.env]+ doerInfo.images.card.url %>"/>
+					                <img width="52" height="52" style="border-radius:50%;display:block;margin-left:auto;margin-right:auto;" src="<%= doerInfo.images.card.url %>"/>
 					            </td>
 					            <td style="padding-right:25px;">  
 					                <table width="100%" cellspacing="0" cellpadding="0" border="0" style="font-size:15px;color:#454B4D;text-align:left;background-color:#F7F9FA;padding:20px;">
