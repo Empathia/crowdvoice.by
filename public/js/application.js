@@ -208,14 +208,14 @@ require('./widgets/popovers/unsave');
 require('./widgets/popovers/share');
 
 // posts
-require('./widgets/posts/modules/images');
-require('./widgets/posts/post');
-require('./widgets/posts/post-image');
-require('./widgets/posts/post-video');
-require('./widgets/posts/post-link');
-require('./widgets/posts/post-text');
-require('./widgets/posts/actions/save');
-require('./widgets/posts/actions/share');
+require('./widgets/posts/modules/PostModuleImages');
+require('./widgets/posts/Post');
+require('./widgets/posts/PostImage');
+require('./widgets/posts/PostVideo');
+require('./widgets/posts/PostLink');
+require('./widgets/posts/PostText');
+require('./widgets/posts/actions/PostActionSave');
+require('./widgets/posts/actions/PostActionShare');
 
 // post detail
 require('./widgets/post-details/controllers/base');

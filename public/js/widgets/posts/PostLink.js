@@ -1,9 +1,9 @@
 var moment = require('moment');
 var Events = require('./../../lib/events');
 
-Class(CV, 'PostImage').inherits(CV.Post)({
+Class(CV, 'PostLink').inherits(CV.Post)({
     HTML : '\
-    <article class="post-card image">\
+    <article class="post-card link">\
         <div class="post-card-image-wrapper">\
             <svg class="post-card-svg-magnifier">\
                 <use xlink:href="#svg-magnifier"></use>\
@@ -28,7 +28,7 @@ Class(CV, 'PostImage').inherits(CV.Post)({
     </article>\
     ',
 
-    ICON : '<svg class="post-card-meta-icon"><use xlink:href="#svg-image"></use></svg>',
+    ICON : '<svg class="post-card-meta-icon"><use xlink:href="#svg-link"></use></svg>',
 
     prototype : {
         /* PRIVATE properties */
@@ -66,7 +66,6 @@ Class(CV, 'PostImage').inherits(CV.Post)({
             //     this.dom.updateText(a, this.sourceService + " ");
             //     this.dom.updateText(this.sourceElement, 'from ');
             //     this.sourceElement.appendChild(a);
-
             // } else {
                 this.el.querySelector('.post-card-meta').insertAdjacentHTML('afterbegin', this.constructor.ICON);
                 this.dom.updateText(this.sourceElement, 'posted ');
@@ -75,8 +74,8 @@ Class(CV, 'PostImage').inherits(CV.Post)({
             this.dom.updateText(this.dateTimeElement, moment(this.publishedAt).format('MMM DD, YYYY'));
             this.dom.updateAttr('datetime', this.dateTimeElement, this.publishedAt);
 
-            this.dom.updateText(this.titleElement, this.title);
-            this.dom.updateText(this.descriptionElement, this.description);
+            this.dom.updateHTML(this.titleElement, this.title);
+            this.dom.updateHTML(this.descriptionElement, this.description);
 
             this.dom.updateText(this.el.querySelector('.post-card-activity-saved .post-card-activity-label'), this.totalSaves);
 
