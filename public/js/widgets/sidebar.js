@@ -46,7 +46,7 @@ Class(CV, 'Sidebar').inherits(Widget)({
 
             setInterval(function() {
                 socket.emit('getUnreadMessagesCount');
-            }, 1000);
+            }, 60000);
 
             socket.on('unreadMessagesCount', function(data) {
                 this._updateSidebarCount(data);
