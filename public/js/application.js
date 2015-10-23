@@ -218,26 +218,25 @@ require('./widgets/posts/actions/PostActionSave');
 require('./widgets/posts/actions/PostActionShare');
 
 // post detail
-require('./widgets/post-details/controllers/base');
-require('./widgets/post-details/controllers/approved');
-require('./widgets/post-details/controllers/unapproved');
-require('./widgets/post-details/controllers/saved');
-require('./widgets/post-details/navigation');
-require('./widgets/post-details/post-detail');
-require('./widgets/post-details/actions/save');
-require('./widgets/post-details/actions/share');
-// post detail link
-require('./widgets/post-details/link/post-detail-link');
-require('./widgets/post-details/link/header');
-require('./widgets/post-details/link/iframe');
-require('./widgets/post-details/link/noncompatible');
-// post detail media
-require('./widgets/post-details/media/post-detail-media');
-require('./widgets/post-details/media/header');
-require('./widgets/post-details/media/thumb');
-require('./widgets/post-details/media/info');
-// post detail Text
-require('./widgets/post-details/post-detail-text');
+require('./widgets/post-details/controllers/PostDetailController');
+require('./widgets/post-details/controllers/PostDetailControllerApproved');
+require('./widgets/post-details/controllers/PostDetailControllerUnapproved');
+require('./widgets/post-details/controllers/PostDetailControllerSaved');
+require('./widgets/post-details/PostDetailNavigation');
+require('./widgets/post-details/PostDetail');
+require('./widgets/post-details/actions/PostDetailActionsSave');
+require('./widgets/post-details/actions/PostDetailActionsShare');
+// post detail link (link, text)
+require('./widgets/post-details/link/PostDetailLink');
+require('./widgets/post-details/PostDetailText');
+require('./widgets/post-details/link/PostDetailLinkHeader');
+require('./widgets/post-details/link/PostDetailLinkIframe');
+require('./widgets/post-details/link/PostDetailLinkNonCompatible');
+// post detail media (video, image)
+require('./widgets/post-details/media/PostDetailMedia');
+require('./widgets/post-details/media/PostDetailMediaHeader');
+require('./widgets/post-details/media/PostDetailMediaThumb');
+require('./widgets/post-details/media/PostDetailMediaInfo');
 
 // editable posts
 require('./widgets/posts/edit/EditablePost');
