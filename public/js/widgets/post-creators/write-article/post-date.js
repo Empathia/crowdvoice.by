@@ -13,11 +13,11 @@ Class(CV, 'PostCreatorWriteArticlePostDate').inherits(Widget)({
                     <span class="write-article-title -font-bold">Write an Article</span>\
                     <span class="ui-has-tooltip">\
                         (?)\
-                        <span class="ui-tooltip -right -nw">Tootlip Message</span>\
+                        <span class="ui-tooltip -right -nw">Add a new article to the voice</span>\
                     </span>\
                 </div>\
                 <div class="write-article-post-date-wrapper -float-right">\
-                    Post date\
+                    <span class="date-label">Post date</span>\
                     <div class="write-article-date-picker -inline-block">\
                         <button class="post-date-picker-button cv-button primary tiny -m0 -float-right">\
                             <svg class="post-edit-date-picker-calendar -color-white">\
