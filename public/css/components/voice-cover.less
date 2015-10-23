@@ -174,80 +174,111 @@
 /*************************************************
 * Voice Cover Title
 **************************************************/
-.card-body{
-  padding:50px 25px 0px 25px;
+.topics-list-item {
+  float: left;
+  width: 33.333%;
+  text-align: center;
+  .card-body{
+    padding:50px 25px 0px 25px;
 
-  .card-wrapper{
-        background: white;
-        border-radius:5px;
-        padding-left: 21px;
-        padding-right: 21px;
-        padding-top: 33px;
-        padding-bottom: 33px;
+    .card-wrapper{
+      background: white;
+      border-radius:5px;
+      padding: 33px 21px;
+      box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.1);
+      min-height: 490px;
+      width: 300px;
 
-        .featured-text{
-          margin-top: 26px;
-          margin-bottom: 32px;
-          text-align: center;
-          border-bottom: 1px solid #E7EAEC;
-          line-height: 0px;
-          color: #A1B0B3;
+      .featured-text{
+        margin-top: 26px;
+        margin-bottom: 32px;
+        text-align: center;
+        border-bottom: 1px solid #E7EAEC;
+        line-height: 0px;
+        color: #A1B0B3;
 
-          .middle-line{
-            background-color: white;
-            padding-left: 5px;
-            padding-right: 5px;
-            font-size: 10px;
-          }
+        .middle-line{
+          background-color: white;
+          padding-left: 10px;
+          padding-right: 10px;
+          font-size: 10px;
         }
+      }
 
-        .all-voices{
-          text-align: left;
-
-           .categories_link{
-            color: #ff9400;
-            cursor: pointer;
-
-            .arrow{
-              font-size: 10px;
-              vertical-align: baseline;
-            }
-          }
-        }
-
-        .categories_link.categories_title, .voice-link{
+      .all-voices{
+        text-align: left;
+        font-size: 13px;
+        a.topics_link{
+          color: #ff9400;
+          cursor: pointer;
           text-decoration: none;
+          .arrow{
+            font-size: 13px;
+            vertical-align: baseline;
+          }
         }
-
-        .categories_link.categories_title:hover, .voice-link:hover{
+        a.topics_link:hover{
           text-decoration: underline;
         }
+      }
 
-        .voice-card-container{
-          margin-bottom: 36px;
-          
-          .cv-voice-cover:not(:last-child){
-            margin-bottom: 15px;
+      .topics_link {
+        display: inline-block;
+        color: @color-neutral-xx-dark;
+      }
+
+      .topics-icon {
+        width: 160px;
+        height: 160px;
+        background-size: 100%;
+        background-repeat: no-repeat;
+      }
+
+      .topics_link-wrapper {
+        padding-top: 35px;
+      }
+
+      .topics_title {
+        font-size: 22px;
+        &:extend(.-text-center);
+      }
+
+      .topics_link.topics_title, .voice-link{
+        text-decoration: none;
+      }
+
+      .topics_link.topics_title:hover, .voice-link:hover{
+        text-decoration: underline;
+      }
+
+      .voice-card-container{
+        margin-bottom: 36px;
+        padding:0px 9px;
+            
+        .cv-voice-cover:not(:last-child){
+              margin-bottom: 15px;
+        }
+            
+        .voice-content{
+          height: 32px;
+              
+          .voice-title-link{
+            line-height: 13px;
+            text-align: left;
           }
-          
-          .voice-content{
-            height: 32px;
-            
-            .voice-title-link{
-              line-height: 13px;
-              text-align: left;
-            }
-            
-            .voice-link{
-              color:#454b4d;
-              font-weight: 600;
-            }
-            
-            .voice-link:hover{
-              color:#ff9400;
-            }
+              
+          .voice-link{
+            color:#454b4d;
+            font-weight: 600;
+          }
+              
+          .voice-link:hover{
+            color:#ff9400;
           }
         }
+      }
+    }
   }
 }
+
     

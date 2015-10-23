@@ -7,19 +7,19 @@
  */
 Class('CategoryCards').inherits(Widget).includes(CV.WidgetUtils)({
     HTML : '\
-        <div class="homepage-category-list-item">\
+        <div class="topics-list-item">\
             <div class="card-body">\
                 <div class="card-wrapper">\
-                    <a class="categories_link" href="#" alt="">\
-                        <div class="homepage-category-cover"></div>\
+                    <a class="topics_link" href="#" alt="">\
+                        <div class="topics-icon"></div>\
                     </a>\
-                    <p class="categories_link-wrapper">\
-                        <a class="categories_link categories_title -font-bold" href="#" alt=""></a>\
+                    <p class="topics_link-wrapper">\
+                        <a class="topics_link topics_title -font-bold" href="#" alt=""></a>\
                     </p>\
                     <p class="featured-text"><span class="middle-line">FEATURED VOICES</span></p>\
                     <div class="voice-card-container">\
                     </div>\
-                    <p class="all-voices"><a href="" class="categories_link">See all Voices &nbsp;<span class="arrow">></span></a></p>\
+                    <p class="all-voices"><a href="" class="topics_link">See all Voices &nbsp;<span class="arrow">›</span></a></p>\
                 </div>\
             </div>\
         </div>\
@@ -34,10 +34,10 @@ Class('CategoryCards').inherits(Widget).includes(CV.WidgetUtils)({
             Widget.prototype.init.call(this, config);
 
             this.el = this.element[0];
-            this.anchorElements = [].slice.call(this.el.querySelectorAll('.categories_link'), 0);
+            this.anchorElements = [].slice.call(this.el.querySelectorAll('.topics_link'), 0);
 
-            this.dom.updateBgImage(this.el.querySelector('.homepage-category-cover'), this.images.icon.url);
-            this.dom.updateText(this.el.querySelector('.categories_title'), this.name);
+            this.dom.updateBgImage(this.el.querySelector('.topics-icon'), this.images.icon.url);
+            this.dom.updateText(this.el.querySelector('.topics_title'), this.name);
          
             this.anchorElements.forEach(function(anchor) {
                 this.dom.updateAttr('href', anchor, '/topic/' + this.slug);

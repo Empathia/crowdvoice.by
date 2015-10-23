@@ -96,8 +96,8 @@
   background-image: url("/img/home-wave-left.png"), url("/img/home-wave-right.png");
   background-position: left bottom, right top;
   background-repeat: no-repeat;
-  padding-top:125px;
-  padding-bottom:125px;
+  padding-top:75px;
+  padding-bottom:108px;
   color:white;
 
   .statsTitle, .stats-number{
@@ -107,10 +107,10 @@
 
   .stats{
     text-align: center;
-    margin-top:45px;
+    margin-top:53px;
 
     .stats-col{
-      padding: 0px 50px;
+      padding: 15px 50px;
     }
 
     .stats-col:not(:last-child){
@@ -121,6 +121,7 @@
   .stats-label{
     color:#8A9699;
     font-size: 14px;
+    font-weight: bold;
   }
 }
 .homepage-intro-banner {
@@ -191,15 +192,19 @@
  *  category list
  * =========================================================================== */
 .homepage-category-list {
-  padding-top: 64px;
+  padding-top: 87px;
   padding-bottom: 100px;
   background-color: @color-neutral-xx-light;
+  .homepage-category-list-row{
+    max-width: 1000px;
+    margin:auto;
+  }
 }
 
 .homepage-category-list-heading {
   font-size: 40px;
   line-height: 55px;
-  margin: 46px auto 12px;
+  margin: 0px auto 12px;
   max-width: 800px;
 }
 
@@ -237,39 +242,69 @@
     padding-top: 16px;
    }
 }
- @media only screen and (max-width: 958px){
-        .home-stats{
-          .stats{
-            .stats-col{
-              width: 40%;
-              border-right:0 !important;
-              margin: 0px 10px;
-            }
-            .stats-col:nth-child(-n+2){
-              border-bottom:1px solid #454B4D;
-              padding: 10px 0px;
-            }
-          }
-        }
+@media only screen and (max-width: 480px){
+  .topics-list-item{
+    .card-body{
+      .card-wrapper{
+        width: 240px;
+      }
+    }
+  }
+  .home-stats{ 
+    .stats{ 
+      .stats-col{
+        padding:0px;
+      }
+    }
+  }
 }
- @media only screen and (max-width: 887px){
-        .homepage-category-list-item{
-          width: 50%;
-        }
+@media only screen and (max-width: 768px){
+  .topics-list-item{
+    width: 100%;
+    .card-body{
+      .card-wrapper{
+        width: 500px;
+      }
+    }
+  }
 }
- @media only screen and (max-width: 787px){
-        .page-home{
-          .-float-left.-mr1{
-            margin-bottom:13px;
-          }
-        }
+@media only screen and (max-width: 800px){
+   .home-stats{
+    .stats{
+      .stats-col{
+        width: 40%;
+        border-right:0 !important;
+        margin: 0px 10px;
+      }
+      .stats-col:nth-child(-n+2){
+        border-bottom:1px solid #454B4D;
+        padding: 10px 0px;
+      }
+    }
+  }
+  .topics-list-item{
+    width: 100%;
+    .card-body{
+      .card-wrapper{
+        width: 260px;
+      }
+    }
+  }
+  .page-home{
+    .-float-left.-mr1{
+       margin-bottom:13px;
+    }
+  }
 }
-@media only screen and (max-width: 744px){
-        .homepage-category-list-item{
-          width: 100%;
-        }
+@media only screen and (max-width: 1024px){
+  .topics-list-item{
+    .card-body{
+      .card-wrapper{
+        width: 100%;
+      }
+    }
+  }
 }
-
 /* =========================================================================== *
  *  organization cards
  * =========================================================================== */

@@ -21,7 +21,7 @@ Class('HomepageStats').inherits(Widget)({
           return <article role="article" className="stats -row">
               <div className="stats-col -inline-block">
                 <p className="stats-number -font-bold">{this.data.cities}</p>
-                <p className="stats-label">Cities</p>
+                <p className="stats-label">Countries</p>
               </div>
               <div className="stats-col -inline-block">
                 <p className="stats-number -font-bold">{this.data.organizations}</p>
@@ -29,11 +29,11 @@ Class('HomepageStats').inherits(Widget)({
               </div>
               <div className="stats-col -inline-block">
                 <p className="stats-number -font-bold">{this.data.voices}</p>
-                <p className="stats-label">Voices created</p>
+                <p className="stats-label">Voices Created</p>
               </div>
               <div className="stats-col -inline-block">
                 <p className="stats-number -font-bold">{this.data.posts}</p>
-                <p className="stats-label">Posts published</p>
+                <p className="stats-label">Posts Published</p>
               </div>
             </article>
         }
