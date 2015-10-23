@@ -59,6 +59,7 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
             // Content
             this.articleContent = this.content.querySelector('.write-article-body-editable');
             this.articleTitle = this.content.querySelector('.editor-title');
+
             this.coverButton = this.editor.editorHeader.coverButton;
             this.coverImage = this.editor.editorHeader.el;
 
@@ -155,9 +156,8 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
         _imageUploaded : function _imageUploaded(image){
             this.articleImage = image;
             $(this.articleTitle).addClass('editor-title-bg');
+            $(this.coverImage).addClass('-img-cover');
             $(this.coverImage).css('background-image', 'url('+this.articleImage.path+')');
-            $(this.coverImage).css('background-size', 'cover');
-            $(this.coverImage).css('background-repeat', 'no-repeat');
         },
 
         _contentFilled : function _contentFilled(){
