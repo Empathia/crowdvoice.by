@@ -1,0 +1,46 @@
+.page-feed {}
+
+.feed__account-dropdown {
+  margin-top: 7px;
+  .form-field {
+    margin: 0;
+    > .cv-select {
+      margin: 0;
+    }
+  }
+}
+
+/******************************************************************************
+  FEED LIST
+ *****************************************************************************/
+.feed__list {
+  border-top: 1px solid @color-neutral-x-light;
+
+  .cv-feed-item {
+    padding: 9px 0 20px;
+  }
+}
+
+/******************************************************************************
+  TOP VOICES
+ *****************************************************************************/
+.feed__top-voices-title {
+  padding-top: 60px;
+}
+
+.feed__top-voices-list {
+  min-height: 170px;
+
+  .cv-loader {
+    top: 100px;
+    left: 50%;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 300ms linear, visibility 300ms linear;
+
+    &.disable {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+}

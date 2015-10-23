@@ -203,13 +203,11 @@ Class(CV, 'VoicePostsLayer').inherits(Widget).includes(BubblingSupport)({
 
         arrangeBringToFront : function arrangeBringToFront() {
             this.el.style.zIndex = 1;
-
             return this;
         },
 
         arrangeReset : function arrangeReset() {
             this.el.style.zIndex = "";
-
             return this;
         },
 

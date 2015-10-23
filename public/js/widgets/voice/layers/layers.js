@@ -284,14 +284,14 @@ Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
             }
 
             if (dateString === this._currentMonthString) {
-                return void 0;
+                return;
             }
 
             this._currentMonthString = dateString;
 
             // prevent to append childs if the layer is already filled
             if (this['postsLayer_' + dateString].getPosts().length) {
-                return void 0;
+                return;
             }
 
             // load from cache

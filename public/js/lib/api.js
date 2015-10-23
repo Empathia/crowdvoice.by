@@ -558,7 +558,7 @@ module.exports = {
         });
     },
 
-   /* Search for Posts in Sources
+    /* Search for Posts in Sources
      * @argument args.profileName <required> [String] the voice owner profileName
      * @argument args.voiceSlug <required> [String] the voice slug
      * @argument args.source <required> [String] the source to search on ['googleNews', 'youtube']
@@ -1115,6 +1115,77 @@ module.exports = {
                 query : args.query,
                 exclude : args.exclude || []
             },
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
+    /**************************************************************************
+     * DISCOVER
+     *************************************************************************/
+    /* Return the voices with the most followers.
+     * @argument callback <required> [Function]
+     */
+    getTrendingVoices : function getTrendingVoices(callback) {
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'GET',
+            url : '/discover/trending/voices',
+            headers : {'csrf-token' : this.token},
+            dataType : 'json',
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
+    /**************************************************************************
+     * NOTIFICATIONS
+     *************************************************************************/
+    /* Get the current user/org's notifications.
+     * @argument args.profileName <required> [String] currentPerson profileName
+     * @argument callback <required> [Function]
+     */
+    getNotifications : function getNotifications(args, callback) {
+        if (!args.profileName || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'GET',
+            dataType : 'json',
+            url : '/' + args.profileName + '/notifications',
+            headers : {'csrf-token' : this.token},
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
+    /* Mark a particular notification as read for the current user.
+     * @argument args.profileName <required> [String] currentPerson profileName
+     * @argument args.data.notificationId <required> [Function] Hashids.encode notificationId
+     * @argument callback <required> [Function]
+     */
+    markNotificationAsRead : function markNotificationAsRead(args, callback) {
+        if (!args.profileName || !args.data.notificationId || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'POST',
+            url : '/' + args.profileName + '/notifications/markAsRead?_method=DELETE',
+            headers : {'csrf-token' : this.token},
+            data : {notificationId: args.data.notificationId},
             success : function success(data) {callback(false, data);},
             error : function error(err) {callback(true, err);}
         });
