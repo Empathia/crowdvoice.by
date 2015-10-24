@@ -121,7 +121,6 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
                 $('.cv-loader').addClass('hidden');
                 
                 window.setTimeout(function() {
-                    console.log($(this.loadingStep));
                     $(this.loadingStep).removeClass('active');
                 }.bind(this), 2000);
 
