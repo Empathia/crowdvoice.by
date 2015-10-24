@@ -15,7 +15,7 @@ Class(CV, 'Sidebar').inherits(Widget)({
             this.el = this.element;
             this.linkElements = [].slice.call(this.el.querySelectorAll('.sidebar-link'), 0);
             this._yield = document.body.querySelector('.app-wrapper');
-
+            this.containerActive = false;
             this.messageLinkContainer = this.el.querySelector('.sidebar-link-messages');
 
             this._checkAndActivateCurrentLink();
@@ -52,33 +52,29 @@ Class(CV, 'Sidebar').inherits(Widget)({
                 this._updateSidebarCount(data);
             }.bind(this));
         },
-
+        /* 
+        * Adds the unread message notification icon for the sidebar
+        */
         _updateSidebarCount : function _updateSidebarCount(data) {
-            /* 
-            * Adds the unread message notification icon for the sidebar
-            */
             this.sidebarUnreadMessagesEl = this.messageLinkContainer.querySelector('.unread');
-            
-            var containerClass = this.messageLinkContainer.className;
+            var linkContainerEl = $(this.messageLinkContainer);
             var unreadValueContainer = this.sidebarUnreadMessagesEl.querySelector('.sidebar-link-badge');
-            var containerActive = false;
             var dataCache;
 
             if(data > 0){
-                if (containerActive === false){
-                    this.messageLinkContainer.className = this.messageLinkContainer.className + ' unreadActive';
+                if (this.containerActive === false){
+                    linkContainerEl.addClass('unreadActive');
                     unreadValueContainer.innerHTML = data;
-                    containerActive = true;
+                    this.containerActive = true;
                     dataCache = data;
                 }
-
                 if(dataCache < data || dataCache > data){
                     unreadValueContainer.textContent = data;
                     dataCache = data;
                 }
             } else {
-                this.messageLinkContainer.className = containerClass;
-                containerActive = false;
+                linkContainerEl.removeClass('unreadActive');
+                this.containerActive = false;
                 dataCache = null;
             }
         },
