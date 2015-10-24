@@ -63,7 +63,7 @@ Class(CV, 'Sidebar').inherits(Widget)({
 
             if(data > 0){
                 if (this.containerActive === false){
-                    linkContainerEl.addClass('unreadActive');
+                    linkContainerEl.addClass('-has-messages');
                     unreadValueContainer.innerHTML = data;
                     this.containerActive = true;
                     dataCache = data;
@@ -73,7 +73,7 @@ Class(CV, 'Sidebar').inherits(Widget)({
                     dataCache = data;
                 }
             } else {
-                linkContainerEl.removeClass('unreadActive');
+                linkContainerEl.removeClass('-has-messages');
                 this.containerActive = false;
                 dataCache = null;
             }

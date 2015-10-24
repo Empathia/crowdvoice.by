@@ -183,7 +183,9 @@
   .unread {display: none}
   .read {display: block}
 }
-.sidebar-link-messages.unreadActive {
-   .unread {display: block}
-  .read {display: none}
+.sidebar-link-messages{
+  &.-has-messages{
+    .unread {display: block}
+    .read {display: none}
+  }
 }
