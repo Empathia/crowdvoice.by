@@ -11,10 +11,6 @@ Class(CV, 'PostCreatorWriteArticlePostDate').inherits(Widget)({
             <div class="-full-height">\
                 <div class="write-article-title-wrapper -inline-block">\
                     <span class="write-article-title -font-bold">Write an Article</span>\
-                    <span class="ui-has-tooltip">\
-                        (?)\
-                        <span class="ui-tooltip -right -nw">Write a new article for this voice.</span>\
-                    </span>\
                 </div>\
                 <div class="write-article-post-date-wrapper -float-right">\
                     <span class="date-label">Post date</span>\

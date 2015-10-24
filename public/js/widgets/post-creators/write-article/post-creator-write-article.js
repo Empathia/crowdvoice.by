@@ -115,13 +115,15 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
 
         _responseHandler : function _responseHandler(err, res){
             if (err) {
+                this.loaderError.activate();
                 console.log(res.status + ' ' +res.statusText);
                 this._enabledPostButton();
                 $('.cv-loader').addClass('hidden');
-                this.loaderError.activate();
+                
                 window.setTimeout(function() {
+                    console.log($(this.loadingStep));
                     $(this.loadingStep).removeClass('active');
-                }, 2000);
+                }.bind(this), 2000);
 
                 return;
             }
