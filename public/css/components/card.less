@@ -1,5 +1,8 @@
 .widget-card {
   &.has-actions {
+    .card-inner {
+      min-height: 470px;
+    }
     .card_info-wrapper {
       padding-bottom: 80px;
     }
@@ -11,7 +14,7 @@
 
 .card-inner {
   position: relative;
-  min-height: 470px;
+  min-height: 400px;
   border: 1px solid rgba(0,0,0,.1);
   border-radius: 8px;
   background-color: @color-white;
@@ -91,6 +94,7 @@
 
 .card-stat-item {
   float: left;
+  text-decoration: none;
   margin-right: 20px;
 
   &.last {margin-right: 0;}

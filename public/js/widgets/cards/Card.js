@@ -56,38 +56,38 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
 
     HTML_STATS_ORGANIZATION : '\
         <div class="-row">\
-            <div class="card-stat-item">\
-                <p class="stats-number card_total-voices-text -font-semi-bold"></p>\
-                <p class="stats-label card_total-voices-label-text">Voices</p>\
-            </div>\
-            <div class="card-stat-item">\
-                <p class="stats-number card_total-followers-text -font-semi-bold"></p>\
-                <p class="stats-label card_total-followers-label-text">Followers</p>\
-            </div>\
-            <div class="card-stat-item">\
-                <p class="stats-number card_total-following-text -font-semi-bold"></p>\
-                <p class="stats-label card_total-following-label-text">Following</p>\
-            </div>\
-            <div class="card-stat-item last">\
-                <p class="stats-number card_collaborations-text -font-semi-bold"></p>\
-                <p class="stats-label card_collaborations-label-text">Members</p>\
-            </div>\
+            <a class="card-stat-item" data-stats-voices>\
+                <p class="stats-number -font-semi-bold"></p>\
+                <p class="stats-label">Voices</p>\
+            </a>\
+            <a class="card-stat-item" data-stats-followers>\
+                <p class="stats-number -font-semi-bold"></p>\
+                <p class="stats-label">Followers</p>\
+            </a>\
+            <a class="card-stat-item" data-stats-following>\
+                <p class="stats-number -font-semi-bold"></p>\
+                <p class="stats-label">Following</p>\
+            </a>\
+            <a class="card-stat-item last" data-stats-members>\
+                <p class="stats-number -font-semi-bold"></p>\
+                <p class="stats-label">Members</p>\
+            </a>\
         </div>',
 
     HTML_STATS_PERSON : '\
         <div class="-row">\
-            <div class="card-stat-item">\
-                <p class="stats-number card_total-voices-text -font-semi-bold"></p>\
-                <p class="stats-label card_total-voices-label-text">Voices</p>\
-            </div>\
-            <div class="card-stat-item">\
-                <p class="stats-number card_total-followers-text -font-semi-bold"></p>\
-                <p class="stats-label card_total-followers-label-text">Followers</p>\
-            </div>\
-            <div class="card-stat-item last">\
-                <p class="stats-number card_total-following-text -font-semi-bold"></p>\
-                <p class="stats-label card_total-following-label-text">Following</p>\
-            </div>\
+            <a class="card-stat-item" data-stats-voices>\
+                <p class="stats-number -font-semi-bold"></p>\
+                <p class="stats-label">Voices</p>\
+            </a>\
+            <a class="card-stat-item" data-stats-followers>\
+                <p class="stats-number -font-semi-bold"></p>\
+                <p class="stats-label">Followers</p>\
+            </a>\
+            <a class="card-stat-item last" data-stats-following>\
+                <p class="stats-number -font-semi-bold"></p>\
+                <p class="stats-label">Following</p>\
+            </a>\
         </div>',
 
     MAX_DESCRIPTION_LENGTH : 180,
@@ -117,10 +117,8 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
             this.actionsEl = this.el.querySelector('.card_actions .-row');
 
             if (this.data.type === "organization") {
-                this.statsWrapper.insertAdjacentHTML('afterbegin', this.constructor.HTML_STATS_ORGANIZATION);
                 this._setupOrganizationElements();
             } else {
-                this.statsWrapper.insertAdjacentHTML('afterbegin', this.constructor.HTML_STATS_PERSON);
                 this._setupUserElements();
             }
 
@@ -210,7 +208,7 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
             }
 
             this.dom.updateText(this.usernameEl, "@" + this.data.profileName);
-            this.dom.updateAttr('href', this.usernameEl, '/' + this.data.profileName);
+            this.dom.updateAttr('href', this.usernameEl, '/' + this.data.profileName + '/');
 
             var fullname = this.data.name + (this.data.lastname ? (' ' + this.data.lastname) : '');
             this.dom.updateText(this.fullNameEl, fullname);
@@ -229,23 +227,49 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
                 this.locationEl.parentNode.classList.add('-hide');
             }
 
-            this.dom.updateText(this.statsWrapper.querySelector('.card_total-voices-text'), this.format.numberUS(this.data.voicesCount));
-            this.dom.updateText(this.statsWrapper.querySelector('.card_total-followers-text'), this.format.numberUS(this.data.followersCount));
-            this.dom.updateText(this.statsWrapper.querySelector('.card_total-following-text'), this.format.numberUS(this.data.followingCount));
-
             return this;
         },
 
         _setupOrganizationElements : function _setupOrganizationElements() {
-            this.dom.updateText(
-                this.statsWrapper.querySelector('.card_collaborations-text'),
-                this.format.numberUS(this.data.membershipCount)
-            );
+            var voices, followers, following, members;
+
+            this.statsWrapper.insertAdjacentHTML('afterbegin', this.constructor.HTML_STATS_ORGANIZATION);
+
+            voices = this.statsWrapper.querySelector('[data-stats-voices]');
+            followers = this.statsWrapper.querySelector('[data-stats-followers]');
+            following = this.statsWrapper.querySelector('[data-stats-following]');
+            members = this.statsWrapper.querySelector('[data-stats-members]');
+
+            this.dom.updateAttr('href', voices, '/' + this.data.profileName + '/#voices');
+            this.dom.updateAttr('href', followers, '/' + this.data.profileName + '/#followers');
+            this.dom.updateAttr('href', following, '/' + this.data.profileName + '/#following');
+            this.dom.updateAttr('href', members, '/' + this.data.profileName + '/#members');
+
+            this.dom.updateText(voices.querySelector('.stats-number'), this.format.numberUS(this.data.voicesCount));
+            this.dom.updateText(followers.querySelector('.stats-number'), this.format.numberUS(this.data.followersCount));
+            this.dom.updateText(following.querySelector('.stats-number'), this.format.numberUS(this.data.followingCount));
+            this.dom.updateText(members.querySelector('.stats-number'), this.format.numberUS(this.data.membershipCount));
 
             return this;
         },
 
         _setupUserElements : function _setupUserElements() {
+            var voices, followers, following;
+
+            this.statsWrapper.insertAdjacentHTML('afterbegin', this.constructor.HTML_STATS_PERSON);
+
+            voices = this.statsWrapper.querySelector('[data-stats-voices]');
+            followers = this.statsWrapper.querySelector('[data-stats-followers]');
+            following = this.statsWrapper.querySelector('[data-stats-following]');
+
+            this.dom.updateAttr('href', voices, '/' + this.data.profileName + '/#voices');
+            this.dom.updateAttr('href', followers, '/' + this.data.profileName + '/#followers');
+            this.dom.updateAttr('href', following, '/' + this.data.profileName + '/#following');
+
+            this.dom.updateText(voices.querySelector('.stats-number'), this.format.numberUS(this.data.voicesCount));
+            this.dom.updateText(followers.querySelector('.stats-number'), this.format.numberUS(this.data.followersCount));
+            this.dom.updateText(following.querySelector('.stats-number'), this.format.numberUS(this.data.followingCount));
+
             return this;
         }
     }
