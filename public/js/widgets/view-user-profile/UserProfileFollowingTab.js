@@ -130,15 +130,16 @@ Class(CV, 'UserProfileFollowingTab').inherits(Widget)({
         },
 
          _renderUserResults : function _renderUserResults(entities) {
+             var fragment = document.createDocumentFragment();
              this.parent.parent.nav.increaseCounter(entities.length);
 
              if (entities.length) {
                 this._entities = [];
                 entities.forEach(function(entity, index) {
-                    this.appendChild(new CV.Card({
+                    fragment.appendChild(this.appendChild(new CV.Card({
                         name : 'entity_' + index,
                         data : entity
-                    })).render(this.cardsContainer);
+                    })).el);
                     this._entities.push(this['entity_' + index]);
                 }, this);
 
@@ -147,6 +148,8 @@ Class(CV, 'UserProfileFollowingTab').inherits(Widget)({
                     items : this._entities.map(function(ch) {return ch.el;}),
                     minWidth : 300
                 }).setup();
+
+                this.cardsContainer.appendChild(fragment);
              } else {
                 this.appendChild(new CV.EmptyState({
                     name : 'empty',
@@ -162,15 +165,16 @@ Class(CV, 'UserProfileFollowingTab').inherits(Widget)({
         },
 
         _renderVoicesResults : function _renderVoicesResults(voices) {
+            var fragment = document.createDocumentFragment();
             this.parent.parent.nav.increaseCounter(voices.length);
 
             if (voices.length) {
                 this._voices = [];
                 voices.forEach(function(voice, index) {
-                    this.appendChild(new CV.VoiceCover({
+                    fragment.appendChild(this.appendChild(new CV.VoiceCover({
                         name : 'voice_' + index,
                         data : voice
-                    })).render(this.voicesContainer);
+                    })).el);
                     this._voices.push(this['voice_' + index]);
                 }, this);
 
@@ -179,6 +183,8 @@ Class(CV, 'UserProfileFollowingTab').inherits(Widget)({
                     items : this._voices.map(function(ch) {return ch.el;}),
                     minWidth : 300
                 }).setup();
+
+                this.voicesContainer.appendChild(fragment);
             } else {
                 this.appendChild(new CV.EmptyState({
                     name : 'empty',

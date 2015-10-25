@@ -51,14 +51,15 @@ Class(CV, 'OrganizationProfileMembersTab').inherits(Widget)({
         },
 
         _renderResults : function _renderResults(users) {
+            var fragment = document.createDocumentFragment();
             this.parent.parent.nav.updateCounter(users.length);
 
             if (users.length) {
                 users.forEach(function(user, index) {
-                    this.appendChild(new CV.Card({
+                    fragment.appendChild(this.appendChild(new CV.Card({
                         name : 'user_' + index,
                         data : user
-                    })).render(this.containerElement);
+                    })).el);
                 }, this);
 
                 this._responsiveWidth = new CV.ResponsiveWidth({
@@ -66,6 +67,8 @@ Class(CV, 'OrganizationProfileMembersTab').inherits(Widget)({
                     items : this.children.map(function(ch) {return ch.el;}),
                     minWidth : 300
                 }).setup();
+
+                this.containerElement.appendChild(fragment);
             } else {
                 this.appendChild(new CV.EmptyState({
                     name : 'empty',

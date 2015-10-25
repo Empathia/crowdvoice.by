@@ -52,14 +52,16 @@ Class(CV, 'UserProfileFollowersTab').inherits(Widget)({
         },
 
          _renderResults : function _renderResults(followers) {
+             var fragment = document.createDocumentFragment();
+
              this.parent.parent.nav.updateCounter(followers.length);
 
              if (followers.length) {
                  followers.forEach(function(follower, index) {
-                     this.appendChild(new CV.Card({
+                     fragment.appendChild(this.appendChild(new CV.Card({
                          name : 'follower_' + index,
                          data : follower
-                     })).render(this.containerElement);
+                     })).el);
                  }, this);
 
                  this._responsiveWidth = new CV.ResponsiveWidth({
@@ -67,6 +69,8 @@ Class(CV, 'UserProfileFollowersTab').inherits(Widget)({
                      items : this.children.map(function(ch) {return ch.el;}),
                      minWidth : 300
                  }).setup();
+
+                 this.containerElement.appendChild(fragment);
              } else {
                 this.appendChild(new CV.EmptyState({
                     name : 'empty',
