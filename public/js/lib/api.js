@@ -1195,6 +1195,60 @@ module.exports = {
         });
     },
 
+    /* The voices with the most posts.
+     * @argument callback <required> [Function]
+     */
+    getTrendingUpdatedVoices : function getTrendingUpdatedVoices(callback) {
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'GET',
+            url : '/discover/trending/updatedVoices',
+            headers : {'csrf-token' : this.token},
+            dataType : 'json',
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
+    /* The people with the most followers. Anonymous users can't follow or be followed thus they are excluded.
+     * @argument callback <required> [Function]
+     */
+    getTrendingPeople : function getTrendingPeople(callback) {
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'GET',
+            url : '/discover/trending/people',
+            headers : {'csrf-token' : this.token},
+            dataType : 'json',
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
+    /* The organizations with the most followers.
+     * @argument callback <required> [Function]
+     */
+    getTrendingOrganizations : function getTrendingOrganizations(callback) {
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'GET',
+            url : '/discover/trending/organizations',
+            headers : {'csrf-token' : this.token},
+            dataType : 'json',
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
     /**************************************************************************
      * NOTIFICATIONS
      *************************************************************************/
