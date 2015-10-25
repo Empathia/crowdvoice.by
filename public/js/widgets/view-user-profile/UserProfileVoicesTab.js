@@ -22,7 +22,7 @@ Class(CV, 'UserProfileVoicesTab').inherits(Widget)({
             this.el = this.element[0];
             this.containerElement = this.el.querySelector('[data-container]');
 
-            this.loader = new CV.Loader().render(this.containerElement);
+            this.loader = new CV.Loading().render(this.containerElement).center().setStyle({top: '100px'});
         },
 
         fetch : function fetch() {
@@ -31,8 +31,6 @@ Class(CV, 'UserProfileVoicesTab').inherits(Widget)({
             }
 
             this._fetching = true;
-            console.time('vr');
-            console.log('%cvoices request', 'color: red');
             API.getEntityVoices({
                 profileName : this.data.entity.profileName,
             }, this._handleFetchResults.bind(this));
@@ -79,9 +77,6 @@ Class(CV, 'UserProfileVoicesTab').inherits(Widget)({
             }
 
             this.loader.disable();
-
-            console.timeEnd('vr');
-            console.log('%cvoices rendered', 'color: red');
         },
 
         _activate : function _activate() {

@@ -15,7 +15,9 @@ Class(CV, 'DiscoverTrendingUsersTab').inherits(Widget)({
         init : function init(config) {
             Widget.prototype.init.call(this, config);
             this.el = this.element[0];
-            this.loader = new CV.Loader().render(this.el);
+            this.loader = new CV.Loading().render(this.el).center().setStyle({
+                top: '100px'
+            });
         },
 
         /* Fetch /discover/trending/people and call method to render them.

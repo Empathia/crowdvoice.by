@@ -9,9 +9,9 @@ Class(CV, 'PostCreatorUploadingTemplate').inherits(Widget)({
         init : function init(config) {
             Widget.prototype.init.call(this, config);
 
-            this.appendChild(new CV.Loader({
+            this.appendChild(new CV.Loading({
                 name : 'loader'
-            })).render(this.element);
+            })).render(this.element).center();
         }
     }
 });

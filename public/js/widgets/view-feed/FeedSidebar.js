@@ -6,10 +6,11 @@ Class(CV, 'FeedSidebar').inherits(Widget)({
             Widget.prototype.init.call(this, config);
             this.voicesList = this.el.querySelector('.feed__top-voices-list');
 
-            this.appendChild(new CV.Loader({
-                name : 'loader',
-                className : 'grey'
-            })).render(this.voicesList);
+            this.appendChild(new CV.Loading({
+                name : 'loader'
+            })).render(this.voicesList).center().setStyle({
+                top: '74px'
+            });
         },
 
         /* Fetch and render the first 6 trending voices.

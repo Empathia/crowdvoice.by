@@ -49,9 +49,9 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
          * @return [PostCreatorFromUrl]
          */
         _setup : function _setup() {
-            this.appendChild(new CV.Loader({
+            this.appendChild(new CV.Loading({
                 name : 'loader'
-            })).render(this.el.querySelector('.cv-post-creator__disable'));
+            })).render(this.el.querySelector('.cv-post-creator__disable')).center();
 
             this.appendChild(new CV.PostCreatorErrorTemplate({
                 name : 'errorTemplate'

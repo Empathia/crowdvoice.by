@@ -21,7 +21,6 @@ Class(CV, 'DiscoverRecommendedSectionItem').inherits(Widget).includes(CV.WidgetU
             this.headingElement = this.el.querySelector('[data-heading]');
             this.containerElement = this.el.querySelector('[data-container]');
 
-            this.loader = new CV.Loader().render(this.containerElement);
             this._setup();
         },
 
@@ -62,7 +61,6 @@ Class(CV, 'DiscoverRecommendedSectionItem').inherits(Widget).includes(CV.WidgetU
             }).setup();
 
             this.containerElement.appendChild(fragment);
-            this.loader.disable();
 
             return this;
         },
@@ -85,7 +83,6 @@ Class(CV, 'DiscoverRecommendedSectionItem').inherits(Widget).includes(CV.WidgetU
             }).setup();
 
             this.containerElement.appendChild(fragment);
-            this.loader.disable();
 
             return this;
         },

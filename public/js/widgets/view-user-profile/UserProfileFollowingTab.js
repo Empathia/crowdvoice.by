@@ -36,9 +36,9 @@ Class(CV, 'UserProfileFollowingTab').inherits(Widget)({
             this.cardsContainer = this.el.querySelector('[data-cards-container]');
             this.voicesContainer = this.el.querySelector('[data-voices-container]');
 
-            this.appendChild(new CV.Loader({
+            this.appendChild(new CV.Loading({
                 name : 'loader'
-            })).render(this.cardsContainer);
+            })).render(this.cardsContainer).center().setStyle({top: '100px'});
 
             this._createDropdown();
         },
@@ -82,9 +82,6 @@ Class(CV, 'UserProfileFollowingTab').inherits(Widget)({
 
             this._fetchingUsers = true;
 
-            console.time('fr');
-            console.log('%cfollowing request', 'color: orange');
-
             API.getEntityFollowedEntities({
                 profileName : this.data.entity.profileName,
             }, this._handleFetchUsersResults.bind(this));
@@ -96,9 +93,6 @@ Class(CV, 'UserProfileFollowingTab').inherits(Widget)({
             }
 
             this._fetchingVoices = true;
-
-            console.time('fr2');
-            console.log('%cfollowing request2', 'color: orange');
 
             API.getEntityFollowedVoices({
                 profileName : this.data.entity.profileName,
@@ -159,9 +153,6 @@ Class(CV, 'UserProfileFollowingTab').inherits(Widget)({
              }
 
             this.loader.disable();
-
-            console.timeEnd('fr');
-            console.log('%cfollowing rendered', 'color: orange');
         },
 
         _renderVoicesResults : function _renderVoicesResults(voices) {
@@ -194,9 +185,6 @@ Class(CV, 'UserProfileFollowingTab').inherits(Widget)({
             }
 
             this.loader.disable();
-
-            console.timeEnd('fr2');
-            console.log('%cfollowing rendered2', 'color: orange');
         },
 
         _showUsers : function _showUsers() {

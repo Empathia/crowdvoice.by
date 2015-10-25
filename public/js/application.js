@@ -76,7 +76,7 @@ require('./widgets/sidebar.js');
 require('./widgets/NotificationBell.js');
 require('./widgets/Header');
 require('./widgets/incognito/button');
-require('./widgets/loader');
+require('./widgets/Loading');
 
 // generic widgets
 require('./widgets/EmptyState');

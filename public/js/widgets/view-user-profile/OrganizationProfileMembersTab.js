@@ -22,7 +22,7 @@ Class(CV, 'OrganizationProfileMembersTab').inherits(Widget)({
             this.el = this.element[0];
             this.containerElement = this.el.querySelector('[data-container]');
 
-            this.loader = new CV.Loader().render(this.containerElement);
+            this.loader = new CV.Loading().render(this.containerElement).center().setStyle({top: '100px'});
         },
 
         fetch : function fetch() {
@@ -31,8 +31,7 @@ Class(CV, 'OrganizationProfileMembersTab').inherits(Widget)({
             }
 
             this._fetching = true;
-            console.time('mr');
-            console.log('%cmembers request', 'color: purple');
+
             API.getOrganizationMembers({
                 profileName : this.data.entity.profileName,
             }, this._handleFetchResults.bind(this));
@@ -78,9 +77,6 @@ Class(CV, 'OrganizationProfileMembersTab').inherits(Widget)({
             }
 
             this.loader.disable();
-
-            console.timeEnd('mr');
-            console.log('%cmembers rendered', 'color: purple');
         },
 
         _activate : function _activate() {
