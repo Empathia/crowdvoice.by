@@ -40,7 +40,9 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
                     <p class="card_username -rel -m0">\
                         <a class="card_username-link"></a>\
                     </p>\
-                    <h3 class="card_fullname -rel -font-bold"></h3>\
+                    <h3 class="card_fullname -rel -font-bold">\
+                        <a class="card_fullname-link -tdn"></a>\
+                    </h3>\
                     <div class="card_meta-location -nw -ellipsis">\
                         <svg class="card_meta-svg"><use xlink:href="#svg-location"></use></svg>\
                         <span class="card_meta-location-text"></span>\
@@ -110,7 +112,7 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
             this.profileCoverEl = this.el.querySelector('.card_background-image-wrapper');
             this.avatarEl = this.el.querySelector('.card_avatar');
             this.usernameEl = this.el.querySelector('.card_username-link');
-            this.fullNameEl = this.el.querySelector('.card_fullname');
+            this.fullNameEl = this.el.querySelector('.card_fullname-link');
             this.statsWrapper = this.el.querySelector('.card_stats');
             this.descriptionEl = this.el.querySelector('.card_description');
             this.locationEl = this.el.querySelector('.card_meta-location-text');
@@ -209,9 +211,12 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
 
             this.dom.updateText(this.usernameEl, "@" + this.data.profileName);
             this.dom.updateAttr('href', this.usernameEl, '/' + this.data.profileName + '/');
+            this.dom.updateAttr('title', this.usernameEl, "@" + this.data.profileName + '’s profile');
 
             var fullname = this.data.name + (this.data.lastname ? (' ' + this.data.lastname) : '');
             this.dom.updateText(this.fullNameEl, fullname);
+            this.dom.updateAttr('href', this.fullNameEl, '/' + this.data.profileName + '/');
+            this.dom.updateAttr('title', this.fullNameEl, fullname + '’s profile');
 
             var description = Autolinker.link(this.format.truncate(this.data.description || '', this.constructor.MAX_DESCRIPTION_LENGTH, true));
 
@@ -232,6 +237,10 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
 
         _setupOrganizationElements : function _setupOrganizationElements() {
             var voices, followers, following, members;
+            var total_voices = this.format.numberUS(this.data.voicesCount);
+            var total_followers = this.format.numberUS(this.data.followersCount);
+            var total_following = this.format.numberUS(this.data.followingCount);
+            var total_members = this.format.numberUS(this.data.membershipCount);
 
             this.statsWrapper.insertAdjacentHTML('afterbegin', this.constructor.HTML_STATS_ORGANIZATION);
 
@@ -245,16 +254,24 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
             this.dom.updateAttr('href', following, '/' + this.data.profileName + '/#following');
             this.dom.updateAttr('href', members, '/' + this.data.profileName + '/#members');
 
-            this.dom.updateText(voices.querySelector('.stats-number'), this.format.numberUS(this.data.voicesCount));
-            this.dom.updateText(followers.querySelector('.stats-number'), this.format.numberUS(this.data.followersCount));
-            this.dom.updateText(following.querySelector('.stats-number'), this.format.numberUS(this.data.followingCount));
-            this.dom.updateText(members.querySelector('.stats-number'), this.format.numberUS(this.data.membershipCount));
+            this.dom.updateAttr('title', voices, total_voices + ' Voices');
+            this.dom.updateAttr('title', followers, total_followers + ' Followers');
+            this.dom.updateAttr('title', following, total_following + ' Following');
+            this.dom.updateAttr('title', members, total_members + ' Members');
+
+            this.dom.updateText(voices.querySelector('.stats-number'), total_voices);
+            this.dom.updateText(followers.querySelector('.stats-number'), total_followers);
+            this.dom.updateText(following.querySelector('.stats-number'), total_following);
+            this.dom.updateText(members.querySelector('.stats-number'), total_members);
 
             return this;
         },
 
         _setupUserElements : function _setupUserElements() {
             var voices, followers, following;
+            var total_voices = this.format.numberUS(this.data.voicesCount);
+            var total_followers = this.format.numberUS(this.data.followersCount);
+            var total_following = this.format.numberUS(this.data.followingCount);
 
             this.statsWrapper.insertAdjacentHTML('afterbegin', this.constructor.HTML_STATS_PERSON);
 
@@ -266,9 +283,13 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
             this.dom.updateAttr('href', followers, '/' + this.data.profileName + '/#followers');
             this.dom.updateAttr('href', following, '/' + this.data.profileName + '/#following');
 
-            this.dom.updateText(voices.querySelector('.stats-number'), this.format.numberUS(this.data.voicesCount));
-            this.dom.updateText(followers.querySelector('.stats-number'), this.format.numberUS(this.data.followersCount));
-            this.dom.updateText(following.querySelector('.stats-number'), this.format.numberUS(this.data.followingCount));
+            this.dom.updateAttr('title', voices, total_voices + ' Voices');
+            this.dom.updateAttr('title', followers, total_followers + ' Followers');
+            this.dom.updateAttr('title', following, total_following + ' Following');
+
+            this.dom.updateText(voices.querySelector('.stats-number'), total_voices);
+            this.dom.updateText(followers.querySelector('.stats-number'), total_followers);
+            this.dom.updateText(following.querySelector('.stats-number'), total_following);
 
             return this;
         }
