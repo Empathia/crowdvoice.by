@@ -3,7 +3,7 @@
 
   <section class="voice-intro -rel">
     <h1 class="voice-heading -font-bold -color-white -m0"><%= voice.title %></h1>
-    <div class="voice-info__author -inline-block">
+    <div class="voice-info__author -inline-block -clickable">
       <img class="-rounded" width="18" height="18" src="<%= voice.owner.images.small.url %>">
       <span class="voice-info__author-name -inline-block">
         by <%= voice.owner.name + ' ' + (voice.owner.lastname || '') %>

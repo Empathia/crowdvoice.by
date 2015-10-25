@@ -51,6 +51,8 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
             this.postsCountUnapproved = this._formatPostsCountObject(this.postsCount.unapproved);
             this.postCount = this._getTotalPostCount(this.postsCountApproved);
 
+            window.CardHoverWidget.register(document.querySelector('.voice-info__author'), this.data.owner);
+
             if (this.postCount === 0) {
                 this._showOnboarding();
             } else {
@@ -350,6 +352,8 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
 
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
+
+            window.CardHoverWidget.unregister(document.querySelector('.voice-info__author'));
 
             this.scrollableArea.removeEventListener('scroll', this._scrollHandlerRef);
             this._scrollHandlerRef = null;
