@@ -1123,6 +1123,60 @@ module.exports = {
     /**************************************************************************
      * DISCOVER
      *************************************************************************/
+    /* The latest voices that have been created.
+     * @argument callback <required> [Function]
+     */
+    getNewVoices : function getNewVoices(callback) {
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'GET',
+            url : '/discover/new/voices',
+            headers : {'csrf-token' : this.token},
+            dataType : 'json',
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
+    /* The latest people that have been created. Does not return anonymous entities.
+     * @argument callback <required> [Function]
+     */
+    getNewPeople : function getNewPeople(callback) {
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'GET',
+            url : '/discover/new/people',
+            headers : {'csrf-token' : this.token},
+            dataType : 'json',
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
+    /* The latest organizaitons that have been created.
+     * @argument callback <required> [Function]
+     */
+    getNewOrganizations : function getNewOrganizations(callback) {
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'GET',
+            url : '/discover/new/organizaiton',
+            headers : {'csrf-token' : this.token},
+            dataType : 'json',
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
     /* Return the voices with the most followers.
      * @argument callback <required> [Function]
      */
