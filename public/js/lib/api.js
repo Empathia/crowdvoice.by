@@ -142,7 +142,7 @@ module.exports = {
     /* Request to contribute to a voice.
      * @argument args.profileName <required> [String] the voice owner profileName
      * @argument args.voiceSlug <required> [String] the voice slug
-     * @argument args.data.message <required> [Text] the message to send to the organizaiton
+     * @argument args.data.message <required> [Text] the message to send to the organization
      * @argument callback <required> [Function]
      */
     voiceRequestToContribute : function voiceRequestToContribute(args, callback) {
@@ -926,7 +926,7 @@ module.exports = {
     /* Request invitation for membership of organization.
      * @argument args.profileName <required> [String] profileName of organization
      * @argument args.data.orgId <required> [hashid] entity ID of organization tp request membership of
-     * @argument args.data.message <required> [Text] the message to send to the organizaiton
+     * @argument args.data.message <required> [Text] the message to send to the organization
      * @argument callback <required> [Function]
      */
     requestMembership : function requestMembership(args, callback) {
@@ -1159,7 +1159,7 @@ module.exports = {
         });
     },
 
-    /* The latest organizaitons that have been created.
+    /* The latest organizations that have been created.
      * @argument callback <required> [Function]
      */
     getNewOrganizations : function getNewOrganizations(callback) {
@@ -1169,7 +1169,7 @@ module.exports = {
 
         $.ajax({
             type : 'GET',
-            url : '/discover/new/organizaiton',
+            url : '/discover/new/organizations',
             headers : {'csrf-token' : this.token},
             dataType : 'json',
             success : function success(data) {callback(false, data);},
