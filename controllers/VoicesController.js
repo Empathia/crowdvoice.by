@@ -843,6 +843,8 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                 .andWhere('sender_person_id', hashids.decode(req.currentPerson.id)[0])
                 .andWhere('sender_entity_id', req.activeVoice.ownerId)
                 .andWhere('receiver_entity_id', invited.id)
+                .andWhere('type', 'not like', 'invitation_accepted%')
+                .andWhere('type', 'not like', 'invitation_rejected%')
                 .andWhere('invitation_request_id', 'is not', null)
                 .andWhere(function () {
                   this
