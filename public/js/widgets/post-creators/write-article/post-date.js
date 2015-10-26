@@ -11,13 +11,10 @@ Class(CV, 'PostCreatorWriteArticlePostDate').inherits(Widget)({
             <div class="-full-height">\
                 <div class="write-article-title-wrapper -inline-block">\
                     <span class="write-article-title -font-bold">Write an Article</span>\
-                    <span class="ui-has-tooltip">\
-                        (?)\
-                        <span class="ui-tooltip -right -nw">Tootlip Message</span>\
-                    </span>\
+                    <div class="input-error-message -on-error -abs -color-negative">You entered an invalid URL. Please double check it.</div>\
                 </div>\
                 <div class="write-article-post-date-wrapper -float-right">\
-                    Post date\
+                    <span class="date-label">Post date</span>\
                     <div class="write-article-date-picker -inline-block">\
                         <button class="post-date-picker-button cv-button primary tiny -m0 -float-right">\
                             <svg class="post-edit-date-picker-calendar -color-white">\
@@ -43,6 +40,7 @@ Class(CV, 'PostCreatorWriteArticlePostDate').inherits(Widget)({
             this.el = this.element[0];
             this.timePickerInput = this.el.querySelector('.write-article-date-picker .cv-input');
             this.timePickerButton = this.el.querySelector('.post-date-picker-button');
+            this.errorFeedback = this.el.querySelector('.input-error-message');
 
             this._setup()._bindEvents();
         },
