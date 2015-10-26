@@ -1,193 +1,57 @@
 <main role="main" class="cv-main-content discover-page -rel">
-
-  <section class="profile-voices-intro">
-      <h1 class="profile-heading -inline-block -font-bold -m0">Newest</h1>
-      <div class="profile-select-options -inline-block">
-
-      </div>
-
-      <article role="article" class="profile-menu -row -rel">
-        <div class="profile-tabs">
-          <div class="menu-item active -menu-tab -inline-block">
-            <p class="-font-bold">Voices</p>
-          </div>
-          <div class="menu-item -menu-tab -inline-block">
-            <p class="-font-bold">People</p>
-          </div>
-          <div class="menu-item -menu-tab -inline-block">
-            <p class="-font-bold">Organizations</p>
-          </div>
-
-        </div>
-
-      </article>
-
+  <section class="page-heading">
+    <h1 class="page-heading__title -m0 -inline-block">Newest</h1>
+    <div class="profile-select-options -inline-block"></div>
+    <div class="profile-menu -row -rel"></div>
   </section>
 
-  <section class="profile-body profile-menu-content -rel">
-
-    <div class="active -menu-tab-content">
-      <div class="-row discover-voices-container">
-        <!-- voices -->
-      </div>
-    </div>
-
-    <div class="-menu-tab-content">
-    	<div class="-row discover-people-container">
-        	<!-- people -->
-      	</div>
-    </div>
-
-    <div class="-menu-tab-content">
-    	<div class="-row discover-organizations-container">
-        	<!-- organizations -->
-      	</div>
-    </div>
-
-  </section>
-
+  <section class="profile-body profile-menu-content -rel"></section>
 </main>
 
 <script>
-	// App
-	var ns = [];
-	<% if (typeof notifications !== "undefined") { %>
-		ns = <%= JSON.stringify(notifications) %>;
-	<% } %>
-		var App = new CV.App({
-		notifications : ns,
-		currentPerson : currentPerson
-	});
-	App.addInteractiveSidebar();
+  var App = new CV.App();
+  App.addInteractiveSidebar();
+  var DiscoverNew = new CV.Views.DiscoverNew();
 
-	var allTimes = {
-		"1": {label: 'This week', name: 'thisweek'},
-		"2": {label: 'Last week', name: 'lastweek'},
-		"3": {label: 'Two weeks ago', name: 'twoweeks'},
-		"4": {label: 'Three weeks ago', name: 'threeweeks'}
-	};
+  /*
+  // TODO: add filter
+  var allTimes = {
+    "1": {label: 'This week', name: 'thisweek'},
+    "2": {label: 'Last week', name: 'lastweek'},
+    "3": {label: 'Two weeks ago', name: 'twoweeks'},
+    "4": {label: 'Three weeks ago', name: 'threeweeks'}
+  };
 
-	var selectTime = new CV.Select({
-		style : 'tiny',
-		label : 'Showing All',
-		name  : 'selectTime',
-		options: allTimes
-	}).render($('.profile-select-options'));
+  var selectTime = new CV.Select({
+    style : 'tiny',
+    label : 'Showing All',
+    name  : 'selectTime',
+    options: allTimes
+  }).render($('.profile-select-options'));
 
-	selectTime.thisweek.on('click', function(){
-		filterItems(0);
-	});
-	selectTime.lastweek.on('click', function(){
-		filterItems(1);
-	});
-	selectTime.twoweeks.on('click', function(){
-		filterItems(2);
-	});
-	selectTime.threeweeks.on('click', function(){
-		filterItems(3);
-	});
-	function filterItems(weekNum){
-		var currentTime = moment();
-		var timeDiff;
-		items.forEach(function(item){
-
-			timeDiff = currentTime.diff(moment(item.createdAt), 'weeks');
-			if (timeDiff == weekNum){
-				itemsContainer.find('.id-'+ item.id).show();
-			} else {
-				itemsContainer.find('.id-'+ item.id).hide();
-			}
-
-		});
-	}
-
-	var responsives = {
-    	'voices' 		: null,
-    	'people' 		: null,
-    	'organizations' : null
-    }
-
-	var items = [];
-
-	function renderData(data, instance, className){
-
-		//data.forEach(function (item, index) {
-		//  var itemEl = $('<div class="-col-4 -pr1"></div>');
-		//  var newInstance = new instance(item).render( itemEl);
-		//  $('.discover-' + className + '-container').append(itemEl);
-		//  newInstance.element.addClass('id-' + item.id);
-		//  //console.log(item.createdAt);
-		//});
-
-        var itemsWrapper = document.querySelector('.discover-' + className + '-container');
-        var itemsElements = [];
-
-        data.forEach(function(item, index) {
-          var itemWidget = new instance({data: item}).render(itemsWrapper);
-			itemWidget.element.addClass('id-' + item.id);
-
-            itemsElements.push(itemWidget.el);
-        });
-
-        responsives[className] = new CV.ResponsiveWidth({
-            container : itemsWrapper,
-            items : [].slice.call(itemsElements, 0),
-            minWidth : 300
-        }).setup();
-
-	}
-
-	function getData(url, instance, className){
-		$.ajax({
-			type: "GET",
-			url: url,
-			headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
-			data : {},
-			dataType : 'json',
-			success: function(data) {
-			  	items = items.concat(data);
-			  	renderData(data, instance, className);
-			}
-		});
-	}
-
-	getData('/discover/new/voices', CV.VoiceCover, 'voices');
-	getData('/discover/new/people', CV.Card, 'people');
-	getData('/discover/new/organizations', CV.Card, 'organizations');
-
-
-	var itemsContainer;
-  $( document ).ready(function() {
-  	itemsContainer = $('.profile-body');
-    createMenuActions('.profile-menu', '.profile-menu-content');
-
-    function createMenuActions(menuContainer, contentContainer){
-      $( menuContainer ).find('.-menu-tab').each(function( index ) {
-        var elContent = $( contentContainer + ' .-menu-tab-content:nth-child(' + (index + 1) + ')');
-        $(this).on('click', createCallback(this, index, elContent, menuContainer, contentContainer));
-      });
-    }
-
-    function createCallback( tab, index, elContent, menuContainer, contentContainer ){
-      return function(){
-        $(menuContainer + ' .-menu-tab').removeClass('active');
-        $(this).addClass('active');
-        $(contentContainer + ' .-menu-tab-content').removeClass('active');
-        $(elContent).addClass('active');
-        responsives['voices'].setup();
-        responsives['people'].setup();
-        responsives['organizations'].setup();
-      }
-    }
-
-
+  selectTime.thisweek.on('click', function(){
+    filterItems(0);
   });
-
-
-
+  selectTime.lastweek.on('click', function(){
+    filterItems(1);
+  });
+  selectTime.twoweeks.on('click', function(){
+    filterItems(2);
+  });
+  selectTime.threeweeks.on('click', function(){
+    filterItems(3);
+  });
+  function filterItems(weekNum){
+    var currentTime = moment();
+    var timeDiff;
+    items.forEach(function(item){
+      timeDiff = currentTime.diff(moment(item.createdAt), 'weeks');
+      if (timeDiff == weekNum){
+        itemsContainer.find('.id-'+ item.id).show();
+      } else {
+        itemsContainer.find('.id-'+ item.id).hide();
+      }
+    });
+  }
+  */
 </script>
-
-
-
-
-

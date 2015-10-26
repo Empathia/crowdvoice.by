@@ -13,110 +13,78 @@ require(path.join(__dirname, '../../presenters/PostsPresenter'))
 
 application._serverStart()
 
-var request = require('superagent')
-var test = require('tape-catch')
+// COMMENT IF YOU WANT LOGGER OUTPUT
+logger.log = function () {}
+
+var login = require(path.join(__dirname, 'login.js')),
+  expect = require('chai').expect
 
 CONFIG.database.logQueries = false
 
 var urlBase = 'http://localhost:3000'
 
-test('Follow a person ( .follow() )', function (t) {
-  var cookies,
-    csrf,
-    agent = request.agent()
+describe('EntitiesController', function () {
 
-  async.series([
-    function (next) {
-      agent
-        .get(urlBase + '/csrf')
-        .end(function (err, res) {
-          if (err) { t.fail(err) }
+  describe('#edit', function () {
 
-          csrf = res.text
+    it('Open edit page', function (done) {
+      login('cersei', function (err, agent, csrf) {
+        if (err) { return done(err) }
 
-          return next()
-        })
-    },
+        agent
+          .get(urlBase + '/cersei-lannister/edit')
+          .end(function (err, res) {
+            if (err) { return done(err) }
 
-    function (next) {
-      agent
-        .post(urlBase + '/session')
-        .send({
-          _csrf: csrf,
-          username: 'cersei',
-          password: '12345678'
-        })
-        .end(function (err, res) {
-          if (err) { t.fail(err) }
+            expect(res.status).to.equal(200)
 
-          return next()
-        })
-    },
-  ], function(err) {
-    if (err) { t.fail(err) }
-
-    agent
-      .post(urlBase + '/jon-snow/follow')
-      .accept('application/json')
-      .send({
-        _csrf: csrf,
-        followerId : hashids.encode(3) // cersei's ID
+            return done()
+          })
       })
-      .end(function (err, res) {
-        if (err) { t.fail(err) }
+    })
 
-        t.equal(res.status, 200, 'res.status')
-        t.equal(res.body.status, 'followed', 'res.body.status followed')
-        t.equal(res.body.status, 'unfollowed', 'res.body.status unfollowed')
+    it('Open edit page of organization you own', function (done) {
+      login('cersei', function (err, agent, csrf) {
+        if (err) { return done(err) }
 
-        t.end()
+        agent
+          .get(urlBase + '/house-lannister/edit')
+          .end(function (err, res) {
+            if (err) { return done(err) }
+
+            expect(res.status).to.equal(200)
+
+            return done()
+          })
       })
+    })
+
   })
-})
 
-test('Render the /edit page ( .edit() )', function (t) {
-  var cookies,
-    csrf,
-    agent = request.agent()
+  describe('#follow', function () {
 
-  async.series([
-    function (next) {
-      agent
-        .get(urlBase + '/csrf')
-        .end(function (err, res) {
-          if (err) { t.fail(err) }
+    it('Follow with no errors', function (done) {
+      login('cersei', function (err, agent, csrf) {
+        if (err) { return done(err) }
 
-          csrf = res.text
+        agent
+          .post(urlBase + '/jon-snow/follow')
+          .accept('application/json')
+          .send({
+            _csrf: csrf,
+            followerId : hashids.encode(3) // Cersei
+          })
+          .end(function (err, res) {
+            if (err) { return done(err) }
 
-          return next()
-        })
-    },
+            expect(res.status).to.equal(200)
+            expect(res.body.status).to.equal('followed')
 
-    function (next) {
-      agent
-        .post(urlBase + '/session')
-        .send({
-          _csrf: csrf,
-          username: 'cersei',
-          password: '12345678'
-        })
-        .end(function (err, res) {
-          if (err) { t.fail(err) }
-
-          return next()
-        })
-    },
-  ], function(err) {
-    if (err) { t.fail(err) }
-
-    agent
-      .get(urlBase + '/cersei-lannister/edit')
-      .end(function (err, res) {
-        if (err) { t.fail(err) }
-
-        t.equal(res.status, 200, 'res.status')
-
-        t.end()
+            return done()
+          })
       })
+    })
+
   })
+
 })

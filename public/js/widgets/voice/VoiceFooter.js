@@ -47,12 +47,14 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
                 this.dom.updateAttr('href', this.byAnchor, '/' + this.voice.owner.profileName);
             }
 
-            this.dom.updateAttr('alt', this.byAnchor, this.voice.owner.name + ' ' + this.voice.owner.lastname + '’s profile page');
+            this.dom.updateAttr('title', this.byAnchor, this.voice.owner.name + ' ' + this.voice.owner.lastname + '’s profile page');
             if (this.voice.owner.type === 'organization' || this.voice.owner.isAnonymous){
                 this.dom.updateText(this.byAnchor, this.voice.owner.name);
             } else {
                 this.dom.updateText(this.byAnchor, this.voice.owner.name + ' ' + this.voice.owner.lastname);
             }
+
+            window.CardHoverWidget.register(this.byAnchor, this.voice.owner);
 
             this.dom.updateText(this.el.querySelector('[data-stats-post-count]'), this.format.numberUS(this.postCount) + ' posts');
             this.dom.updateText(this.el.querySelector('[data-stats-followers]'), this.format.numberUS(this.followerCount) + ' followers');

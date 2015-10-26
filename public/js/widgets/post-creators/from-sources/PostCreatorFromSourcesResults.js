@@ -1,6 +1,4 @@
-/* jshint multistr: true */
 Class(CV, 'PostCreatorFromSourcesResults').inherits(Widget).includes(CV.WidgetUtils)({
-
     ELEMENT_CLASS : 'from-sources-content-left',
 
     HTML : '\
@@ -35,7 +33,7 @@ Class(CV, 'PostCreatorFromSourcesResults').inherits(Widget).includes(CV.WidgetUt
             this.noResults = this.el.querySelector('.from-sources-no-results');
             this.noResultsQuery = this.noResults.querySelector('[data-query]');
 
-            this.loader = new CV.Loader().render(this.el);
+            this.loader = new CV.Loading().render(this.el).center();
 
             this._bindEvents();
         },
@@ -80,7 +78,7 @@ Class(CV, 'PostCreatorFromSourcesResults').inherits(Widget).includes(CV.WidgetUt
         },
 
         setSearchingState : function setSearchingState() {
-            this.loader.activate();
+            this.loader.enable();
             this.resultsWrapper.classList.remove('active');
             this.noResults.classList.remove('active');
             return this;
@@ -88,7 +86,7 @@ Class(CV, 'PostCreatorFromSourcesResults').inherits(Widget).includes(CV.WidgetUt
 
         setResultsState : function setResultsState() {
             this.resultsWrapper.classList.add('active');
-            this.loader.deactivate();
+            this.loader.disable();
             this.noResults.classList.remove('active');
             return this;
         },
@@ -100,7 +98,7 @@ Class(CV, 'PostCreatorFromSourcesResults').inherits(Widget).includes(CV.WidgetUt
             );
             this.noResults.classList.add('active');
             this.resultsWrapper.classList.remove('active');
-            this.loader.deactivate();
+            this.loader.disable();
             return this;
         }
     }

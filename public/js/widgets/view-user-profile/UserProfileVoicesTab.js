@@ -22,7 +22,7 @@ Class(CV, 'UserProfileVoicesTab').inherits(Widget)({
             this.el = this.element[0];
             this.containerElement = this.el.querySelector('[data-container]');
 
-            this.loader = new CV.Loader().render(this.containerElement);
+            this.loader = new CV.Loading().render(this.containerElement).center().setStyle({top: '100px'});
         },
 
         fetch : function fetch() {
@@ -31,8 +31,6 @@ Class(CV, 'UserProfileVoicesTab').inherits(Widget)({
             }
 
             this._fetching = true;
-            console.time('vr');
-            console.log('%cvoices request', 'color: red');
             API.getEntityVoices({
                 profileName : this.data.entity.profileName,
             }, this._handleFetchResults.bind(this));
@@ -51,14 +49,16 @@ Class(CV, 'UserProfileVoicesTab').inherits(Widget)({
         },
 
         _renderResults : function _renderResults(voices) {
+            var fragment = document.createDocumentFragment();
+
             this.parent.parent.nav.updateCounter(voices.length);
 
             if (voices.length) {
                 voices.forEach(function(voice, index) {
-                    this.appendChild(new CV.VoiceCover({
+                    fragment.appendChild(this.appendChild(new CV.VoiceCover({
                         name : 'voice_' + index,
                         data : voice
-                    })).render(this.containerElement);
+                    })).el);
                 }, this);
 
                 this._responsiveWidth = new CV.ResponsiveWidth({
@@ -66,6 +66,8 @@ Class(CV, 'UserProfileVoicesTab').inherits(Widget)({
                     items : this.children.map(function(ch) {return ch.el;}),
                     minWidth : 300
                 }).setup();
+
+                this.containerElement.appendChild(fragment);
             } else {
                 this.appendChild(new CV.EmptyState({
                     name : 'empty',
@@ -75,9 +77,6 @@ Class(CV, 'UserProfileVoicesTab').inherits(Widget)({
             }
 
             this.loader.disable();
-
-            console.timeEnd('vr');
-            console.log('%cvoices rendered', 'color: red');
         },
 
         _activate : function _activate() {

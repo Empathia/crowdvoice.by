@@ -30,9 +30,9 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
         },
 
         _setup : function _setup() {
-            this.appendChild(new CV.Loader({
+            this.appendChild(new CV.Loading({
                 name : 'loader'
-            })).render(this.el.querySelector('.cv-post-creator__disable'));
+            })).render(this.el.querySelector('.cv-post-creator__disable')).center();
 
             this.appendChild(new CV.PostCreatorSuccessTemplate({
                 name : 'loaderSuccess'
@@ -118,8 +118,10 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
                 this.loaderError.activate();
                 console.log(res.status + ' ' +res.statusText);
                 this._enabledPostButton();
-                $('.cv-loader').addClass('hidden');
-                
+
+                this.loader.disable();
+                this.loaderError.activate();
+
                 window.setTimeout(function() {
                     $(this.loadingStep).removeClass('active');
                 }.bind(this), 2000);
@@ -127,7 +129,7 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
                 return;
             }
             // Success feedack
-            $('.cv-loader').addClass('hidden');
+            this.loader.disable();
             this.loaderSuccess.activate();
 
             window.setTimeout(function() {

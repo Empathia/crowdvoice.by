@@ -22,7 +22,7 @@ Class(CV, 'UserProfileFollowersTab').inherits(Widget)({
             this.el = this.element[0];
             this.containerElement = this.el.querySelector('[data-container]');
 
-            this.loader = new CV.Loader().render(this.containerElement);
+            this.loader = new CV.Loading().render(this.containerElement).center().setStyle({top: '100px'});
         },
 
         fetch : function fetch() {
@@ -32,8 +32,6 @@ Class(CV, 'UserProfileFollowersTab').inherits(Widget)({
 
             this._fetching = true;
 
-            console.time('wr');
-            console.log('%cfollowers request', 'color: green');
             API.getEntityFollowers({
                 profileName : this.data.entity.profileName,
             }, this._handleFetchResults.bind(this));
@@ -52,14 +50,16 @@ Class(CV, 'UserProfileFollowersTab').inherits(Widget)({
         },
 
          _renderResults : function _renderResults(followers) {
+             var fragment = document.createDocumentFragment();
+
              this.parent.parent.nav.updateCounter(followers.length);
 
              if (followers.length) {
                  followers.forEach(function(follower, index) {
-                     this.appendChild(new CV.Card({
+                     fragment.appendChild(this.appendChild(new CV.Card({
                          name : 'follower_' + index,
                          data : follower
-                     })).render(this.containerElement);
+                     })).el);
                  }, this);
 
                  this._responsiveWidth = new CV.ResponsiveWidth({
@@ -67,6 +67,8 @@ Class(CV, 'UserProfileFollowersTab').inherits(Widget)({
                      items : this.children.map(function(ch) {return ch.el;}),
                      minWidth : 300
                  }).setup();
+
+                 this.containerElement.appendChild(fragment);
              } else {
                 this.appendChild(new CV.EmptyState({
                     name : 'empty',
@@ -76,8 +78,6 @@ Class(CV, 'UserProfileFollowersTab').inherits(Widget)({
              }
 
              this.loader.disable();
-             console.timeEnd('wr');
-             console.log('%cfollowers rendered', 'color: green');
         },
 
         _activate : function _activate() {
