@@ -26,7 +26,7 @@
 				            	<td style="padding: 0 25px; text-align: left;">
 					             	<div style="font-size: 14px; line-height: 38px; color: #b2b2b2;">
 						                <p style="font-size:18px;color:black;">
-						                	Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="blank_"><%= doerInfo.name + ' '%><%if(doerInfo.lastname === null){}else{%><%=doerInfo.lastname%><%} %></a> has created a Voice!
+						                	Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="_blank"><%= doerInfo.name + ' '%><%if(doerInfo.lastname === null){}else{%><%=doerInfo.lastname%><%} %></a> has created a Voice!
 						                </p>
 					              	</div>
 				            	</td>
@@ -40,7 +40,7 @@
 					            	<img style="width:52px;height:52px;border-radius:5px;"src="<%= voiceImage %>"/>
 					            </td>
 					            <td style="padding-right:25px;">
-					            	<a href="<%= CONFIG.siteUrl[application.env] +'/'+ voiceInfo.owner.profileName +'/'+ voiceInfo.slug %>" target="blank_" style="font-size:13px;color:#4D4D4D;text-align:left;font-weight:bold;"><%= voiceInfo.title %></a>
+					            	<a href="<%= CONFIG.siteUrl[application.env] +'/'+ voiceInfo.owner.profileName +'/'+ voiceInfo.slug %>" target="_blank" style="font-size:13px;color:#4D4D4D;text-align:left;font-weight:bold;"><%= voiceInfo.title %></a>
 					            	<p style="font-size:12px;color:#A1B0B3;">by @<%= doerInfo.name + ' '%><%if(doerInfo.lastname === null){}else{%><%=doerInfo.lastname%><%} %></p>
 					            </td>
 					        </tr>
@@ -56,7 +56,7 @@
 				            	<td style="padding: 0 25px; text-align: left;">
 					             	<div style="font-size: 14px; line-height: 38px; color: #b2b2b2;">
 						                <p style="font-size:18px;color:black;">
-						                	Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="blank_"><%= doerInfo.name + ' '%><%if(doerInfo.lastname === null){}else{%><%=doerInfo.lastname%><%} %></a> has followed a Voice!
+						                	Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="_blank"><%= doerInfo.name + ' '%><%if(doerInfo.lastname === null){}else{%><%=doerInfo.lastname%><%} %></a> has followed a Voice!
 						                </p>
 					              	</div>
 				            	</td>
@@ -70,7 +70,7 @@
 					            	<img style="width:52px;height:52px;border-radius:5px;"src="<%= voiceImage %>"/>
 					            </td>
 					            <td style="padding-right:25px;">
-					            	<a href="<%= CONFIG.siteUrl[application.env] +'/'+ voiceInfo.owner.profileName +'/'+ voiceInfo.slug %>" target="blank_" style="font-size:13px;color:#4D4D4D;text-align:left;font-weight:bold;"><%= voiceInfo.title %></a>
+					            	<a href="<%= CONFIG.siteUrl[application.env] +'/'+ voiceInfo.owner.profileName +'/'+ voiceInfo.slug %>" target="_blank" style="font-size:13px;color:#4D4D4D;text-align:left;font-weight:bold;"><%= voiceInfo.title %></a>
 					            	<p style="font-size:12px;color:#A1B0B3;">by @<%= voiceInfo.owner.name + ' '%><%if(voiceInfo.owner.lastname === null){}else{%><%=voiceInfo.owner.lastname%><%} %></p>
 					            </td>
 					        </tr>
@@ -86,7 +86,7 @@
 				            	<td style="padding: 0 25px; text-align: left;">
 					             	<div style="font-size: 14px; line-height: 38px; color: #b2b2b2;">
 						                <p style="font-size:18px;color:black;">
-						                	Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="blank_"><%= doerInfo.name + ' '%><%if(doerInfo.lastname === null){}else{%><%=doerInfo.lastname%><%} %></a> has archived a Voice!
+						                	Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="_blank"><%= doerInfo.name + ' '%><%if(doerInfo.lastname === null){}else{%><%=doerInfo.lastname%><%} %></a> has archived a Voice!
 						                </p>
 					              	</div>
 				            	</td>
@@ -100,7 +100,7 @@
 					            	<img style="width:52px;height:52px;border-radius:5px;"src="<%= voiceImage %>"/>
 					            </td>
 					            <td style="padding-right:25px;">
-					            	<a href="<%= CONFIG.siteUrl[application.env] +'/'+ voiceInfo.owner.profileName +'/'+ voiceInfo.slug %>" target="blank_" style="font-size:13px;color:#4D4D4D;text-align:left;font-weight:bold;"><%= voiceInfo.title %></a>
+					            	<a href="<%= CONFIG.siteUrl[application.env] +'/'+ voiceInfo.owner.profileName +'/'+ voiceInfo.slug %>" target="_blank" style="font-size:13px;color:#4D4D4D;text-align:left;font-weight:bold;"><%= voiceInfo.title %></a>
 					            	<p style="font-size:12px;color:#A1B0B3;">by @<%= voiceInfo.owner.name + ' '%><%if(voiceInfo.owner.lastname === null){}else{%><%=voiceInfo.owner.lastname%><%} %></p>
 					            </td>
 					        </tr>
@@ -116,11 +116,11 @@
 					             	<div style="font-size: 14px; line-height: 38px; color: #b2b2b2;">
 					             		<% if(params.notificationInfo.entity.type === 'organization'){ %>
 												 <p style="font-size:18px;color:black;">
-								                	Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ params.notificationInfo.entity.profileName %>" target="blank_"><%= params.notificationInfo.entity.name %><%if(params.notificationInfo.entity.lastname === null){}else{%><%=params.notificationInfo.entity.lastname%><%} %></a> has a new avatar!
+								                	Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ params.notificationInfo.entity.profileName %>" target="_blank"><%= params.notificationInfo.entity.name %><%if(params.notificationInfo.entity.lastname === null){}else{%><%=params.notificationInfo.entity.lastname%><%} %></a> has a new avatar!
 								                </p>
 					             		<% } else {%>
 								                <p style="font-size:18px;color:black;">
-								                	Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="blank_"><%= doerInfo.name + ' '%><%if(doerInfo.lastname === null){}else{%><%=doerInfo.lastname%><%} %></a> has a new avatar!
+								                	Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="_blank"><%= doerInfo.name + ' '%><%if(doerInfo.lastname === null){}else{%><%=doerInfo.lastname%><%} %></a> has a new avatar!
 								                </p>
 						                <% } %>
 					              	</div>
@@ -138,11 +138,11 @@
 					             	<div style="font-size: 14px; line-height: 38px; color: #b2b2b2;">
 					             		<% if(params.notificationInfo.entity.type === 'organization'){ %>
 												 <p style="font-size:18px;color:black;">
-								                	Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ params.notificationInfo.entity.profileName %>" target="blank_"><%= params.notificationInfo.entity.name %><%if(params.notificationInfo.entity.lastname === null){}else{%><%=params.notificationInfo.entity.lastname%><%} %></a> has a new background image!
+								                	Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ params.notificationInfo.entity.profileName %>" target="_blank"><%= params.notificationInfo.entity.name %><%if(params.notificationInfo.entity.lastname === null){}else{%><%=params.notificationInfo.entity.lastname%><%} %></a> has a new background image!
 								                </p>
 					             		<% } else {%>
 								                <p style="font-size:18px;color:black;">
-								                	Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="blank_"><%= doerInfo.name + ' '%><%if(doerInfo.lastname === null){}else{%><%=doerInfo.lastname%><%} %></a> has a new background image!
+								                	Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="_blank"><%= doerInfo.name + ' '%><%if(doerInfo.lastname === null){}else{%><%=doerInfo.lastname%><%} %></a> has a new background image!
 								                </p>
 						                <% } %>
 					              	</div>
@@ -159,7 +159,7 @@
 				            	<td style="padding: 0 25px; text-align: left;">
 					             	<div style="font-size: 14px; line-height: 38px; color: #b2b2b2;">
 						                <p style="font-size:18px;color:black;">
-						                	Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="blank_"><%= doerInfo.name + ' '%><%if(doerInfo.lastname === null){}else{%><%=doerInfo.lastname%><%} %></a> is now following a new user!
+						                	Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="_blank"><%= doerInfo.name + ' '%><%if(doerInfo.lastname === null){}else{%><%=doerInfo.lastname%><%} %></a> is now following a new user!
 						                </p>
 					              	</div>
 				            	</td>
@@ -173,7 +173,7 @@
 					            	<img style="width:52px;height:52px;border-radius:5px;"src="<%= params.notificationInfo.entity.images.card.url %>"/>
 					            </td>
 					            <td style="padding-right:25px;">
-					            	<a href="<%= CONFIG.siteUrl[application.env] +'/'+ params.notificationInfo.entity.profileName %>" target="blank_" style="font-size:13px;color:#4D4D4D;text-align:left;font-weight:bold;"><%= params.notificationInfo.entity.name + ' ' + params.notificationInfo.entity.lastname %></a>
+					            	<a href="<%= CONFIG.siteUrl[application.env] +'/'+ params.notificationInfo.entity.profileName %>" target="_blank" style="font-size:13px;color:#4D4D4D;text-align:left;font-weight:bold;"><%= params.notificationInfo.entity.name + ' ' + params.notificationInfo.entity.lastname %></a>
 					            </td>
 					        </tr>
 				        </tbody>
@@ -186,7 +186,7 @@
 				          <tr>
 				            <td style="padding: 0 25px; text-align: left;">
 				              <div style="font-size: 14px; line-height: 38px; color: #b2b2b2;">
-				                <p style="font-size:18px;color:black;">Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ params.notificationInfo.entity.profileName %>" target="blank_"><%= params.notificationInfo.entity.name %></a> has a new member:</p>
+				                <p style="font-size:18px;color:black;">Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ params.notificationInfo.entity.profileName %>" target="_blank"><%= params.notificationInfo.entity.name %></a> has a new member:</p>
 				              </div>
 				            </td>
 				          </tr>
@@ -199,7 +199,7 @@
 					            	<img style="width:52px;height:52px;border-radius:5px;"src="<%= doerInfo.images.small.url %>"/>
 					            </td>
 					            <td style="padding-right:25px;">
-					            	<a href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="blank_" style="font-size:13px;color:#4D4D4D;text-align:left;font-weight:bold;"><%= doerInfo.name + ' ' + doerInfo.lastname %></a>
+					            	<a href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="_blank" style="font-size:13px;color:#4D4D4D;text-align:left;font-weight:bold;"><%= doerInfo.name + ' ' + doerInfo.lastname %></a>
 					            </td>
 					        </tr>
 				        </tbody>
@@ -226,7 +226,7 @@
 					            	<img style="width:52px;height:52px;border-radius:5px;"src="<%= voiceImage %>"/>
 					            </td>
 					            <td style="padding-right:25px;">
-					            	<a href="<%= CONFIG.siteUrl[application.env] +'/'+ voiceInfo.owner.profileName +'/'+ voiceInfo.slug %>" target="blank_" style="font-size:13px;color:#4D4D4D;text-align:left;font-weight:bold;"><%= voiceInfo.title %></a>
+					            	<a href="<%= CONFIG.siteUrl[application.env] +'/'+ voiceInfo.owner.profileName +'/'+ voiceInfo.slug %>" target="_blank" style="font-size:13px;color:#4D4D4D;text-align:left;font-weight:bold;"><%= voiceInfo.title %></a>
 					            	<p style="font-size:12px;color:#A1B0B3;">by @<%= voiceInfo.owner.name + ' '%><%if(voiceInfo.owner.lastname === null){}else{%><%=voiceInfo.owner.lastname%><%} %></p>
 					            </td>
 					        </tr>
@@ -240,7 +240,7 @@
 				          <tr>
 				            <td style="padding: 0 25px; text-align: left;">
 				              <div style="font-size: 14px; line-height: 38px; color: #b2b2b2;">
-				                <p style="font-size:18px;color:black;">Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ voiceInfo.owner.profileName +'/'+ voiceInfo.slug %>" target="blank_"><%= voiceInfo.title %></a> has a new contributor:</p>
+				                <p style="font-size:18px;color:black;">Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ voiceInfo.owner.profileName +'/'+ voiceInfo.slug %>" target="_blank"><%= voiceInfo.title %></a> has a new contributor:</p>
 				              </div>
 				            </td>
 				          </tr>
@@ -253,7 +253,7 @@
 					            	<img style="width:52px;height:52px;border-radius:5px;"src="<%= doerInfo.images.small.url %>"/>
 					            </td>
 					            <td style="padding-right:25px;">
-					            	<a href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="blank_" style="font-size:13px;color:#4D4D4D;text-align:left;font-weight:bold;"><%= doerInfo.name + ' ' + doerInfo.lastname %></a>
+					            	<a href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="_blank" style="font-size:13px;color:#4D4D4D;text-align:left;font-weight:bold;"><%= doerInfo.name + ' ' + doerInfo.lastname %></a>
 					            </td>
 					        </tr>
 				        </tbody>
@@ -262,9 +262,9 @@
 	    </div>
 	    <!-- Footer -->
 	    <div style="font-size: 13px; padding: 30px 0 0 0; color: #66635c;text-align:center;">
-	      <a target="blank_" href="https://twitter.com/CrowdVoice" style="padding: 0px 10px;text-decoration:none;vertical-align:super;"><img src="<%= CONFIG.siteUrl[application.env] %>/img/icons/icon-circle-twitter.png"/></a>
-	      <a target="blank_" href="<%= CONFIG.siteUrl[application.env] %>" style="padding: 0px 10px;text-decoration:none;vertical-align: middle;"><img src="<%= CONFIG.siteUrl[application.env] %>/img/icons/icon-logo-cv.png"/></a>
-	      <a target="blank_" href="https://www.facebook.com/crowdvoice" style="padding: 0px 10px;text-decoration:none;vertical-align:super;"><img src="<%= CONFIG.siteUrl[application.env] %>/img/icons/icon-circle-facebook.png"/></a>
+	      <a target="_blank" href="https://twitter.com/CrowdVoice" style="padding: 0px 10px;text-decoration:none;vertical-align:super;"><img src="<%= CONFIG.siteUrl[application.env] %>/img/icons/icon-circle-twitter.png"/></a>
+	      <a target="_blank" href="<%= CONFIG.siteUrl[application.env] %>" style="padding: 0px 10px;text-decoration:none;vertical-align: middle;"><img src="<%= CONFIG.siteUrl[application.env] %>/img/icons/icon-logo-cv.png"/></a>
+	      <a target="_blank" href="https://www.facebook.com/crowdvoice" style="padding: 0px 10px;text-decoration:none;vertical-align:super;"><img src="<%= CONFIG.siteUrl[application.env] %>/img/icons/icon-circle-facebook.png"/></a>
 	      <a href="<%= CONFIG.siteUrl[application.env] + '/' + params.receiver.entity.profileName %>/edit#notifications" style="font-size:12px;color:#8A9699;display:block;margin-top:25px;">Manage your Notifications Settings</a>
 	      <p style="font-size:12px;color:A1B0B3;">© Majal, 2015. All Rights Reserved</p>
 	    </div>

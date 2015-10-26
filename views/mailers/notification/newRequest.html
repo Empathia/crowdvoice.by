@@ -22,7 +22,7 @@
 				          <tr>
 				            <td style="padding: 0 25px; text-align: left;">
 				              <div style="font-size: 14px; line-height: 38px; color: #b2b2b2;">
-				                <p style="font-size:18px;color:black;">Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="blank_"><%= doerInfo.name + ' ' + doerInfo.lastname %></a> has sent you a request:</p>
+				                <p style="font-size:18px;color:black;">Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="_blank"><%= doerInfo.name + ' ' + doerInfo.lastname %></a> has sent you a request:</p>
 				              </div>
 				            </td>
 				          </tr>
@@ -49,7 +49,7 @@
 					                    	<tr>
 					                      		<td colspan="">
 					                          		<img width="52" height="52" style="border-radius:5px;float:left;"src="<%= voiceImage %>"/>
-					                        		<p style="margin-left:59px;margin-top:5px;font-size:12px;color:#A1B0B3;"><a href="<%= CONFIG.siteUrl[application.env] +'/'+ params.requestOrganization.profileName%>" target="blank_" style="font-size:13px;color:#4D4D4D;text-align:left;vertical-align:middle;font-weight:bold;"><%= params.requestOrganization.name %></a></p>
+					                        		<p style="margin-left:59px;margin-top:5px;font-size:12px;color:#A1B0B3;"><a href="<%= CONFIG.siteUrl[application.env] +'/'+ params.requestOrganization.profileName%>" target="_blank" style="font-size:13px;color:#4D4D4D;text-align:left;vertical-align:middle;font-weight:bold;"><%= params.requestOrganization.name %></a></p>
 					                      		</td>
 					                    	</tr>
 					                  	</tbody>
@@ -80,7 +80,7 @@
 					                    	<tr>
 					                      		<td colspan="">
 					                          		<img width="52" height="52" style="border-radius:5px;float:left;"src="<%= voiceImage %>"/>
-					                        		<p style="margin-left:59px;margin-top:5px;font-size:12px;color:#A1B0B3;"><a href="<%= CONFIG.siteUrl[application.env] +'/'+ params.requestVoice.owner.profileName +'/'+ params.requestVoice.slug %>" target="blank_" style="font-size:13px;color:#4D4D4D;text-align:left;vertical-align:middle;font-weight:bold;"><%= params.requestVoice.title %></a><br><br>by <%= params.requestVoice.owner.name +' '+ params.requestVoice.owner.lastname%></p>
+					                        		<p style="margin-left:59px;margin-top:5px;font-size:12px;color:#A1B0B3;"><a href="<%= CONFIG.siteUrl[application.env] +'/'+ params.requestVoice.owner.profileName +'/'+ params.requestVoice.slug %>" target="_blank" style="font-size:13px;color:#4D4D4D;text-align:left;vertical-align:middle;font-weight:bold;"><%= params.requestVoice.title %></a><br><br>by <%= params.requestVoice.owner.name +' '+ params.requestVoice.owner.lastname%></p>
 					                      		</td>
 					                    	</tr>
 					                  	</tbody>
@@ -102,9 +102,9 @@
 	    </div>
 	    <!-- Footer -->
 	    <div style="font-size: 13px; padding: 30px 0 0 0; color: #66635c;text-align:center;">
-	      <a target="blank_" href="https://twitter.com/CrowdVoice" style="padding: 0px 10px;text-decoration:none;vertical-align:super;"><img src="<%= CONFIG.siteUrl[application.env] %>/img/icons/icon-circle-twitter.png"/></a>
-	      <a target="blank_" href="<%= CONFIG.siteUrl[application.env] %>" style="padding: 0px 10px;text-decoration:none;vertical-align: middle;"><img src="<%= CONFIG.siteUrl[application.env] %>/img/icons/icon-logo-cv.png"/></a>
-	      <a target="blank_" href="https://www.facebook.com/crowdvoice" style="padding: 0px 10px;text-decoration:none;vertical-align:super;"><img src="<%= CONFIG.siteUrl[application.env] %>/img/icons/icon-circle-facebook.png"/></a>
+	      <a target="_blank" href="https://twitter.com/CrowdVoice" style="padding: 0px 10px;text-decoration:none;vertical-align:super;"><img src="<%= CONFIG.siteUrl[application.env] %>/img/icons/icon-circle-twitter.png"/></a>
+	      <a target="_blank" href="<%= CONFIG.siteUrl[application.env] %>" style="padding: 0px 10px;text-decoration:none;vertical-align: middle;"><img src="<%= CONFIG.siteUrl[application.env] %>/img/icons/icon-logo-cv.png"/></a>
+	      <a target="_blank" href="https://www.facebook.com/crowdvoice" style="padding: 0px 10px;text-decoration:none;vertical-align:super;"><img src="<%= CONFIG.siteUrl[application.env] %>/img/icons/icon-circle-facebook.png"/></a>
 	      <a href="<%= CONFIG.siteUrl[application.env] + '/' + params.receiver.entity.profileName %>/edit#notifications" style="font-size:12px;color:#8A9699;display:block;margin-top:25px;">Manage your Notifications Settings</a>
 	      <p style="font-size:12px;color:A1B0B3;">© Majal, 2015. All Rights Reserved</p>
 	    </div>
