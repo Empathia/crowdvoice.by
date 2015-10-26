@@ -45,7 +45,7 @@ Class(CV.UI, 'DropdownVoiceOwnershipAdmin').inherits(Widget).includes(CV.WidgetU
         },
 
         _setup : function _setup() {
-            this._createItem((this.owner.name + ' ' + this.owner.lastname).trim(), this.owner.id);
+            this._createItem((this.owner.name).trim(), this.owner.id);
 
             if (this.owner.ownedOrganizations){
                 this.owner.ownedOrganizations.forEach(function(organization) {

@@ -43,7 +43,7 @@ Class(CV, 'FeedItem').inherits(Widget).includes(CV.WidgetUtils)({
          * @return name + lastname || name
          */
         getName : function getName() {
-            return this.data.actionDoer.name + (this.data.actionDoer.lastname ? ' ' + this.data.actionDoer.lastname : '');
+            return this.data.actionDoer.name;
         },
 
         /* Returns the actionDoer small avatar url.

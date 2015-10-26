@@ -59,7 +59,7 @@ Class(CV, 'CardMini').inherits(Widget).includes(CV.WidgetUtils, BubblingSupport)
 
             this.dom.updateAttr('src', this.avatarElement, this.data.images && this.data.images.small && this.data.images.small.url);
 
-            var fullname = this.data.name + (this.data.lastname ? (' ' + this.data.lastname) : '');
+            var fullname = this.data.name;
             this.dom.updateAttr('alt', this.avatarElement, this.data.profileName + "’s avatar image");
             this.dom.updateText(this.fullNameElement, fullname);
 

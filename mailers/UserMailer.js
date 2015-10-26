@@ -34,7 +34,7 @@ var UserMailer = Module('UserMailer')({
 
     message.to.push({
       "email" : user.email,
-      "name" : entity.name + ' ' + entity.lastname,
+      "name" : entity.name,
       "type" : "to"
     })
 

@@ -28,13 +28,10 @@ Class(CV, 'Login').inherits(Widget)({
         <p class="-mb3">Sign up and create Voices, post content, follow users, organizations and more!</p>\
         <form action="" method="post" accept-charset="utf-8">\
             <div class="form-field">\
-                <input type="text" class="ui-input -lg -block username" name="username" value="" placeholder="Username" autofocus>\
+                <input type="email" class="ui-input -lg -block email" name="email" value="" placeholder="Your Email">\
             </div>\
             <div class="form-field">\
-                <input type="text" class="ui-input -lg -block name" name="name" value="" placeholder="Name">\
-            </div>\
-            <div class="form-field">\
-                <input type="text" class="ui-input -lg -block lastname" name="lastname" value="" placeholder="Lastname">\
+                <input type="password" class="ui-input -lg -block password" name="password" value="" placeholder="Your Password">\
             </div>\
             <div class="form-field -row">\
                 <div class="-col-4">\
@@ -43,16 +40,6 @@ Class(CV, 'Login').inherits(Widget)({
                 <div class="-col-8">\
                     <input type="text" class="ui-input -lg -block profileName" name="profileName" value="" placeholder="profile-name">\
                 </div>\
-            </div>\
-            <div class="form-field">\
-                <input type="email" class="ui-input -lg -block email" name="email" value="" placeholder="Your Email">\
-            </div>\
-            <div class="form-field">\
-                <input type="password" class="ui-input -lg -block password" name="password" value="" placeholder="Your Password">\
-            </div>\
-            <div class="cv-check" style="display: none;">\
-              <input type="checkbox" class="input-checkbox isAnonymous" name="isAnonymous" value="true" checked>\
-              <span class="label">Is Anonymous?</span>\
             </div>\
             <input type="hidden" name="_csrf" class="form-token" value="">\
             <button class="cv-button primary -m0 -block">Sign Up Now!</button>\
@@ -67,7 +54,7 @@ Class(CV, 'Login').inherits(Widget)({
             <div class="input-pair">\
               <div class="form-field">\
                 <div class="cv-input">\
-                  <input type="text" class="username" name="username" value="" placeholder="USERNAME" autofocus>\
+                  <input type="text" class="username" name="username" value="" placeholder="EMAIL or PROFILE NAME" autofocus>\
                 </div>\
               </div>\
               <div class="form-field">\
@@ -175,33 +162,9 @@ Class(CV, 'Login').inherits(Widget)({
 
             if (this.formType === 'signup') {
 
-              this.element.find("input.name, input.lastname").blur(function() {
-                  if ($("input.name").val() != "" && $("input.lastname").val() != ""){
-                    if ($("input.profileName").val() == ""){
-                      var profileName = $("input.name").val() +"-"+ $("input.lastname").val();
-                      //profileName = profileName.replace(/ /g, "_");
-                      $("input.profileName").val(profileName.toLowerCase().replace(/ /g, "-")).change();
-                    }
-                  }
-              });
-
               this.element.find("input.profileName").blur(function() {
-                  var pValue = $(this).val().toLowerCase().replace(/ /g, "_");
+                  var pValue = $(this).val().toLowerCase().replace(/ /g, "-");
                   $(this).val(pValue).change();
-              });
-
-              this.formEl.find('.username').on('keyup input paste', function(e) {
-                $.ajax({
-                  type: "POST",
-                  url: '/signup/check-username',
-                  headers: { 'csrf-token': login.formToken },
-                  data: { field : 'username' , value : ($(e.target).val()).trim()},
-                  success: function(data) {
-                    //{username: "available/unavailable"}
-                    login.validateFields(data.username, 'username', '<p><b>Username</b> is already taken.</p>');
-                  },
-                  dataType: 'json',
-                });
               });
 
               this.formEl.find('.profileName').on('keyup input paste', function(e) {
@@ -318,18 +281,12 @@ Class(CV, 'Login').inherits(Widget)({
           switch(this.formType) {
               case 'signup':
                 checkit = new Checkit({
-                  'Username'      : 'required',
-                  'Name'          : 'required',
-                  'Lastname'      : 'required',
                   'ProfileName'   : 'required',
                   'Email'         : ['required','email'],
                   'Password'      : ['required', 'minLength:8']
                 });
 
                 body = {
-                  'Username'      : this.formEl.find('.username').val(),
-                  'Name'          : this.formEl.find('.name').val(),
-                  'Lastname'      : this.formEl.find('.lastname').val(),
                   'ProfileName'   : this.formEl.find('.profileName').val(),
                   'Email'         : this.formEl.find('.email').val(),
                   'Password'      : this.formEl.find('.password').val(),

@@ -1,31 +1,6 @@
 var User = Class('User').inherits(Argon.KnexModel)({
 
   validations : {
-    username: [
-      'required',
-      {
-        rule: function(val) {
-          if (val.search(/\s/) !== -1) {
-            throw new Checkit.FieldError('Username cannot contain spaces.');
-          };
-        },
-        message : 'Username cannot contain spaces.'
-      },
-      {
-        rule: function (val) {
-          val = val.toLowerCase().trim()
-          var query = db('Users').where('username', '=', val);
-
-          if (this.target.id) {
-            query.andWhere('id', '!=', this.target.id);
-          }
-          return query.then(function(resp) {
-            if (resp.length > 0) throw new Checkit.FieldError('This username is already in use.')
-          });
-        },
-        message: 'This username is already in use.'
-      }
-    ],
     email: [
       'email', 'required',
       {
@@ -51,7 +26,7 @@ var User = Class('User').inherits(Argon.KnexModel)({
   })),
 
   prototype : {
-    username: null,
+    email : null,
     password: null,
     token:    null,
     deleted : false,
@@ -125,7 +100,6 @@ var User = Class('User').inherits(Argon.KnexModel)({
             var shadowEntity = new Entity({
               id : result.id,
               name : result.name,
-              lastname : result.lastname,
               profileName : person.profileName,
               isAnonymous : result.is_anonymous,
               createdAt : result.created_at,

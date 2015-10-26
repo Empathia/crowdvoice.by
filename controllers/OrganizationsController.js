@@ -148,7 +148,6 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
           var org = new Entity({
             type: 'organization',
             name: req.body.title,
-            lastname: null,
             profileName: req.body.profileName,
             isAnonymous: false,
             isAdmin: false,
