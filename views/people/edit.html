@@ -8,7 +8,8 @@
 </main>
 
 <script>
-  var App = new CV.App().addInteractiveSidebar();
+  var App = new CV.App();
+  App.addInteractiveSidebar();
   var UserProfileEdit = new CV.Views.UserProfileEdit({
     _e : <%= JSON.stringify(currentUser.email) %>,
     backgroundImage : <%= JSON.stringify(currentPerson.background.url('card')) %>,

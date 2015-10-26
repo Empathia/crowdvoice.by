@@ -10,7 +10,8 @@
 <script>
   var App = new CV.App({
     currentPerson : currentPerson
-  }).addInteractiveSidebar();
+  });
+  App.addInteractiveSidebar();
 
   var MyVoices = new CV.Views.MyVoices({
     el : document.querySelector('.cv-main-content'),

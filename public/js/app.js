@@ -79,6 +79,7 @@ Class(CV, 'App').includes(NodeSupport)({
          */
         addInteractiveSidebar : function addInteractiveSidebar() {
             this.sidebar.enableInteraction();
+            this.sidebar.setup();
             return this;
         },
 
