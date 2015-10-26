@@ -39,7 +39,6 @@ Tellurium.suite('Entity Model')(function () {
       type: 'person',
       name: 'John' + uid(16),
       profileName: 'john' + uid(16),
-      lastname: 'Doe',
       isAnonymous: false
     };
     spec.registry.organizationData = {
@@ -149,20 +148,6 @@ Tellurium.suite('Entity Model')(function () {
       });
     });
 
-    this.specify('lastname should have a length <= 512')(function (spec) {
-      var data = spec.registry.entityData, entity;
-
-      data.lastname = '';
-      for (var i = 0; i < 513; i+=1) {
-        data.lastname += 'a';
-      }
-      entity = new Entity(data);
-      entity.isValid(function (valid) {
-        spec.assert(valid).toBe(false);
-        spec.completed();
-      });
-    });
-
     this.specify('should not save if its not boolean')(function (spec) {
       var data = spec.registry.entityData, entity;
 
@@ -255,7 +240,6 @@ Tellurium.suite('Entity Model')(function () {
     var entityData = {
       type: 'person',
       name: 'John',
-      lastname: 'Doe',
       isAnonymous: false
     };
 

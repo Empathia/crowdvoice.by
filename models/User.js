@@ -100,7 +100,6 @@ var User = Class('User').inherits(Argon.KnexModel)({
             var shadowEntity = new Entity({
               id : result.id,
               name : result.name,
-              lastname : result.lastname,
               profileName : person.profileName,
               isAnonymous : result.is_anonymous,
               createdAt : result.created_at,

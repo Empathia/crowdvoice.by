@@ -119,7 +119,6 @@ Admin.EntitiesController = Class(Admin, 'EntitiesController')({
           var entity = new Entity(result[0]);
 
           entity.name = req.body.name || entity.name;
-          entity.lastname = req.body.lastname || entity.lastname;
           entity.profileName = req.body.profileName || entity.profileName;
           entity.description = req.body.description || entity.description;
           entity.location = req.body.location || entity.location;

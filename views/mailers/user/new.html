@@ -1,7 +1,7 @@
 <pre>
 <% var entityDate = new Date();  %>
 <% var monthNames = ["January", "February", "March","April", "May", "June", "July","August", "September", "October","November", "December"];%>
-<% var day = entityDate.getDate(); %> 
+<% var day = entityDate.getDate(); %>
 <% var monthIndex = entityDate.getMonth(); %>
 <% var year = entityDate.getFullYear(); %>
 </pre>
@@ -29,8 +29,8 @@
                   Before you can start using CrowdVoice.by we need you to activate your account. To do so, please click on the link below or copy and paste it in your browser.<br><br>
 
                   <b>Activation link:</b><br>
-                  <a href="<%= CONFIG.siteUrl[application.env] %>/session?username=<%= user.username %>&token=<%= user.token %>" style="font-size:13px;color:#FF9400;word-break: break-all;">
-                    <%= CONFIG.siteUrl[application.env] %>/session?username=<%= user.username %>&token=<%= user.token %>
+                  <a href="<%= CONFIG.siteUrl[application.env] %>/session?token=<%= user.token %>" style="font-size:13px;color:#FF9400;word-break: break-all;">
+                    <%= CONFIG.siteUrl[application.env] %>/session?token=<%= user.token %>
                   </a>
                 </p>
               </div>

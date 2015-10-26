@@ -27,7 +27,7 @@
 								<div class="meta">
 									<div class="author -inline-block">By
 										<a class="author-anchor" href="/<%= voice.owner.profileName %>" title="<%= voice.owner.profileName %> profile">
-											<span class="author-username"><%= voice.owner.name %> <% if (voice.owner.lastname) { %> <%= voice.owner.lastname %> <% } %></span>
+											<span class="author-username"><%= voice.owner.name %></span>
 										</a>
 									</div>
 								</div>
@@ -153,9 +153,6 @@
 			    var newEnt = $('.admin-user:first-child').clone();
 
 			    var oName = selectedVoice.owner.name;
-			    if(selectedVoice.owner.lastname){
-			    	oName = oName + " " + selectedVoice.owner.lastname;
-			    }
 
 			    newEnt.appendTo($('.admin-voices-list'));
 
@@ -255,24 +252,3 @@
 	}
 
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

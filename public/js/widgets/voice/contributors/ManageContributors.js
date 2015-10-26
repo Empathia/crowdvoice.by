@@ -205,7 +205,7 @@ Class(CV, 'ManageContributors').inherits(Widget).includes(CV.WidgetUtils)({
          */
         _setSelectedUser : function _setSelectedUser(ev) {
             this._selectedUser = ev.data;
-            var userName = ev.data.name + ' ' + ev.data.lastname;
+            var userName = ev.data.name;
 
             this.searchInput.button.enable();
             this.searchInput.input.setValue(userName);

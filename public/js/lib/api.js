@@ -592,7 +592,6 @@ module.exports = {
      * @argument args.data.image <optional> [File] entity's image
      * @argument args.data.background <optional> [File] entity's background
      * @argument args.data.name <optional> [String] entity's name
-     * @argument args.data.lastname <optional> [String] entity's lastname
      * @argument args.data.profileName <optional> [String] entity's profileName
      * @argument args.data.description <optional> [String] entity's description
      * @argument args.data.location <optional> [String] entity's location

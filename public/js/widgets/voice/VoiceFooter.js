@@ -47,11 +47,11 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
                 this.dom.updateAttr('href', this.byAnchor, '/' + this.voice.owner.profileName);
             }
 
-            this.dom.updateAttr('title', this.byAnchor, this.voice.owner.name + ' ' + this.voice.owner.lastname + '’s profile page');
+            this.dom.updateAttr('title', this.byAnchor, this.voice.owner.name + '’s profile page');
             if (this.voice.owner.type === 'organization' || this.voice.owner.isAnonymous){
                 this.dom.updateText(this.byAnchor, this.voice.owner.name);
             } else {
-                this.dom.updateText(this.byAnchor, this.voice.owner.name + ' ' + this.voice.owner.lastname);
+                this.dom.updateText(this.byAnchor, this.voice.owner.name);
             }
 
             window.CardHoverWidget.register(this.byAnchor, this.voice.owner);

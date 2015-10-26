@@ -5,7 +5,7 @@
 	headerEl.innerHTML = '<h2>Edit User</h2>';
 </script>
 
-<h3>Currently editing the <strong><a><%= user.username %></a></strong> username.</h3>
+<h3>Currently editing the <strong><a><%= user.email %></a></strong> username.email</h3>
 <hr>
 <div class="form-container">
    <div class="form-notifications-profile"></div>
@@ -14,13 +14,7 @@
       <div class="-width-50">
          <div class="-col-12 placeholder-main">
             <div class="form-field">
-               <label>Name<span></span></label>
-               <div class="cv-input small -w-50 form-name">
-                  <input type="text" name="username" value="<%= user.username %>">
-               </div>
-            </div>
-            <div class="form-field">
-               <label>Slug<span></span></label>
+               <label>Email<span></span></label>
                <div class="cv-input small -w-50 form-lastname">
                   <input type="text" name="email" value="<%= user.email %>">
                </div>

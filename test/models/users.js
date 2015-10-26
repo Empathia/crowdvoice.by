@@ -40,7 +40,6 @@ Tellurium.suite('User Model')(function () {
       type: 'person',
       name: 'John' + uid(16),
       profileName: 'john' + uid(16),
-      lastname: 'Doe',
       isAnonymous: false
     };
   });

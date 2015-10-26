@@ -101,8 +101,7 @@ async.series([function(next) {
     {
       data : {
         type        : 'person',
-        name        : 'Tyrion',
-        lastname    : 'Lannister',
+        name        : 'Tyrion Lannister',
         profileName : 'tyrion-lannister',
         isAnonymous : false,
         isAdmin     : true,
@@ -116,8 +115,7 @@ async.series([function(next) {
     {
       data : {
         type        : 'person',
-        name        : 'Cersei',
-        lastname    : 'Lannister',
+        name        : 'Cersei Lannister',
         profileName : 'cersei-lannister',
         isAnonymous : false,
         isAdmin     : true,
@@ -131,8 +129,7 @@ async.series([function(next) {
     {
       data : {
         type        : 'person',
-        name        : 'Jamie',
-        lastname    : 'Lannister',
+        name        : 'Jamie Lannister',
         profileName : 'jamie-lannister',
         isAnonymous : false,
         description : 'Ser Jamie Lannister, known as the Kingslayer, is a knight from House Lannister.',
@@ -145,8 +142,7 @@ async.series([function(next) {
     {
       data : {
         type        : 'person',
-        name        : 'Daenerys',
-        lastname    : 'Targaryen',
+        name        : 'Daenerys Targaryen',
         profileName : 'daenerys-targaryen',
         isAnonymous : false,
         description : 'Daenerys Targaryen, known as Daenerys Stormborn and Dany, is one of the last confirmed members of House Targaryen.',
@@ -159,8 +155,7 @@ async.series([function(next) {
     {
       data : {
         type        : 'person',
-        name        : 'Jon',
-        lastname    : 'Snow',
+        name        : 'Jon Snow',
         profileName : 'jon-snow',
         isAnonymous : false,
         description : 'Jon Snow is the bastard son of Eddard Stark, by a mother whose identity is a source of speculation.',
@@ -173,8 +168,7 @@ async.series([function(next) {
     {
       data : {
         type        : 'person',
-        name        : 'Arya',
-        lastname    : 'Stark',
+        name        : 'Arya Stark',
         profileName : 'arya-stark',
         isAnonymous : false,
         description : 'Arya Stark is the third child and second daughter of Lord Eddard Stark and Lady Catelyn Tully.',
@@ -187,8 +181,7 @@ async.series([function(next) {
     {
       data : {
         type        : 'person',
-        name        : 'Eddard',
-        lastname    : 'Stark',
+        name        : 'Eddard Stark',
         profileName : 'eddard-stark',
         isAnonymous : false,
         description : 'Eddard Stark, also affectionately called "Ned", is the head of House Stark, Lord of Winterfell.',
@@ -201,8 +194,7 @@ async.series([function(next) {
     {
       data : {
         type        : 'person',
-        name        : 'Stannis',
-        lastname    : 'Baratheon',
+        name        : 'Stannis Baratheon',
         profileName : 'stannis-baratheon',
         isAnonymous : false,
         description : 'Stannis Baratheon is the head of House Baratheon of Dragonstone and the Lord of Dragonstone.',
@@ -215,8 +207,7 @@ async.series([function(next) {
     {
       data : {
         type        : 'person',
-        name        : 'Robert',
-        lastname    : 'Baratheon',
+        name        : 'Robert Baratheon',
         profileName : 'robert-baratheon',
         isAnonymous : false,
         description : 'King Robert I Baratheon is the Lord of the Seven Kingdoms of Westeros and the head of House Baratheon of King\'s Landing.',
@@ -229,8 +220,7 @@ async.series([function(next) {
     {
       data : {
         type        : 'person',
-        name        : 'Joffrey',
-        lastname    : 'Baratheon',
+        name        : 'Joffrey Baratheon',
         profileName : 'joffrey-baratheon',
         isAnonymous : false,
         description : 'Prince Joffrey Baratheon is known to the Seven Kingdoms as the eldest son and heir of King Robert Baratheon and Queen Cersei Lannister.',
@@ -275,7 +265,6 @@ async.series([function(next) {
               var shadowEntity = new Entity({
                 type : 'person',
                 name : 'Anonymous',
-                lastname : null,
                 profileName : 'anonymous_' + hashids.encode(entityInstance.id + new Date().getTime() + Math.round(Math.random() * 1000)),
                 isAnonymous : true
               });
@@ -310,7 +299,6 @@ async.series([function(next) {
       data : {
         type        : 'organization',
         name        : 'House Stark',
-        lastname    : null,
         profileName : 'house-stark',
         isAnonymous : false,
         description : 'House Stark was one of the Great Houses of Westeros, ruling over the vast region known as the North from their seat in Winterfell.',
@@ -325,7 +313,6 @@ async.series([function(next) {
       data : {
         type        : 'organization',
         name        : 'House Lannister',
-        lastname    : null,
         profileName : 'house-lannister',
         isAnonymous : false,
         description : 'House Lannister of Casterly Rock is one of the Great Houses of Westeros.',
@@ -340,7 +327,6 @@ async.series([function(next) {
       data : {
         type        : 'organization',
         name        : 'House Targaryen',
-        lastname    : null,
         profileName : 'house-targaryen',
         isAnonymous : false,
         description : 'House Targaryen is one of the former Great Houses of Westeros and the previous ruling royal house of the Seven Kingdoms.',
@@ -355,7 +341,6 @@ async.series([function(next) {
       data : {
         type        : 'organization',
         name        : 'House Baratheon',
-        lastname    : null,
         profileName : 'house-baratheon',
         isAnonymous : false,
         description : 'House Baratheon is one of the Great Houses of Westeros, although also one of the youngest.',

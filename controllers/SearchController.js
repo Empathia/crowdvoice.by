@@ -147,7 +147,7 @@ var SearchController = Class('SearchController')({
         setweight(to_tsvector("Voices".title), \'A\') || \
         setweight(to_tsvector("Voices".description), \'B\') || \
         setweight(to_tsvector("Voices".location_name), \'C\') || \
-        setweight(to_tsvector("Entities".name || "Entities".lastname), \'C\') \
+        setweight(to_tsvector("Entities".name), \'C\') \
         AS document \
         FROM "Voices" \
         JOIN "Entities" ON "Entities".id = "Voices".owner_id \
@@ -181,7 +181,7 @@ var SearchController = Class('SearchController')({
     _searchPeople : function _searchPeople(query, exclude, currentPerson, callback) {
       db.raw('SELECT * FROM ( \
         SELECT "Entities".*, \
-        setweight(to_tsvector("Entities".name || "Entities".lastname), \'A\') || \
+        setweight(to_tsvector("Entities".name), \'A\') || \
         setweight(to_tsvector("Entities".profile_name), \'B\') || \
         setweight(to_tsvector("Entities".description), \'C\') || \
         setweight(to_tsvector("Entities".location), \'D\') \
@@ -217,7 +217,7 @@ var SearchController = Class('SearchController')({
     _searchOrganizations : function _searchOrganizations(query, exclude, currentPerson, callback) {
       db.raw('SELECT * FROM ( \
         SELECT "Entities".*, \
-        setweight(to_tsvector(concat("Entities".name, "Entities".lastname)), \'A\') || \
+        setweight(to_tsvector("Entities".name), \'A\') || \
         setweight(to_tsvector("Entities".profile_name), \'B\') || \
         setweight(to_tsvector("Entities".description), \'C\') || \
         setweight(to_tsvector("Entities".location), \'D\') \

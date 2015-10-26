@@ -5,7 +5,7 @@
 	headerEl.innerHTML = '<h2>Edit User</h2>';
 </script>
 
-<h3>Currently editing the <strong><a href="/<%= person.profileName %>" target="_blank"><%= person.name %> <%= person.lastname %></a></strong> profile.</h3>
+<h3>Currently editing the <strong><a href="/<%= person.profileName %>" target="_blank"><%= person.name %></a></strong> profile.</h3>
 <hr>
 <div class="form-container">
    <div class="form-notifications-profile"></div>
@@ -49,15 +49,6 @@
                      <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-search"></use>
                   </svg>
                   <input type="text" name="name" value="<%= person.name %>">
-               </div>
-            </div>
-            <div class="form-field">
-               <label>Last Name<span></span></label>
-               <div class="cv-input small -w-50 form-lastname">
-                  <svg class="search-svg">
-                     <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-search"></use>
-                  </svg>
-                  <input type="text" name="lastname" value="<%= person.lastname %>">
                </div>
             </div>
             <div class="form-field">
