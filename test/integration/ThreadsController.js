@@ -60,9 +60,9 @@ describe('ThreadsController', function () {
               .send({
                 _csrf: csrf,
                 type: 'invitation_organization',
-                senderEntityId: 'K8adgKWgZPlo', // Cersei
-                receiverEntityId: 'x8nMyJNy5jXD', // Robert
-                organizationId: 'dWK6yYeyk8P4', // House Lannister
+                senderEntityId: hashids.encode(3), // Cersei
+                receiverEntityId: hashids.encode(17), // Robert
+                organizationId: hashids.encode(22), // House Lannister
                 message: 'I think this is an offer you cannot turn down...',
               })
               .end(function (err, res) {
@@ -81,9 +81,9 @@ describe('ThreadsController', function () {
               .send({
                 _csrf: csrf,
                 type: 'invitation_organization',
-                senderEntityId: 'K8adgKWgZPlo', // Cersei
-                receiverEntityId: 'x8nMyJNy5jXD', // Robert
-                organizationId: 'dWK6yYeyk8P4', // House Lannister
+                senderEntityId: hashids.encode(3), // Cersei
+                receiverEntityId: hashids.encode(17), // Robert
+                organizationId: hashids.encode(22), // House Lannister
                 message: 'Just re-sending it, you know...',
               })
               .end(function (err, res) {
@@ -102,9 +102,9 @@ describe('ThreadsController', function () {
               .send({
                 _csrf: csrf,
                 type: 'invitation_organization',
-                senderEntityId: 'K8adgKWgZPlo', // Cersei
-                receiverEntityId: 'x8nMyJNy5jXD', // Robert
-                organizationId: 'dWK6yYeyk8P4', // House Lannister
+                senderEntityId: hashids.encode(3), // Cersei
+                receiverEntityId: hashids.encode(17), // Robert
+                organizationId: hashids.encode(22), // House Lannister
                 message: 'The real final invitation',
               })
               .end(function (err, res) {
