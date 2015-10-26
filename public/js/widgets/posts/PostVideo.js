@@ -30,7 +30,7 @@ Class(CV, 'PostVideo').inherits(CV.Post)({
     </article>\
     ',
 
-    ICON : '<svg class="post-card-meta-icon"><use xlink:href="#svg-play"></use></svg>',
+    ICON : '<svg class="post-card-meta-icon"><use xlink:href="#svg-video"></use></svg>',
 
     prototype : {
         /* PRIVATE properties */
