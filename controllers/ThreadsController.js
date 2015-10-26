@@ -116,6 +116,8 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
               .andWhere('sender_person_id', response.senderPerson.id)
               .andWhere('sender_entity_id', response.senderEntity.id)
               .andWhere('receiver_entity_id', response.receiverEntity.id)
+              .andWhere('type', 'not like', 'invitation_accepted%')
+              .andWhere('type', 'not like', 'invitation_rejected%')
               .andWhere('invitation_request_id', 'is not', null)
               .andWhere(function () {
                 this
