@@ -173,11 +173,12 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
         },
 
         _contentFilled : function _contentFilled(){
-            var contentText = $(this.articleContent.find('p'));
+            var editorObject = this.editor.editorBody.editor.serialize();
+            var editorContent = $(editorObject["element-0"].value);
 
-            if((this.articleContent.children().size() > 0 && contentText.text().length > 0) && this.articleTitle.val().length){
+            if( editorContent.text().length > 0 && this.articleTitle.val().length ){
                 this._enabledPostButton();
-            } else {
+            }else{
                 this._disablePostButton();
             }
         },
