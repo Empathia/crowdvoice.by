@@ -87,7 +87,7 @@
     var cardsList = cardsHolder.querySelector('.slider-list');
 
     categories.map(function(item) {
-        var card = new CategoryCover(item);
+        var card = new CV.CategoryCover(item);
         card.element[0].classList.add('slider-item');
         return card.render(cardsList);
     });

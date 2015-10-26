@@ -19,7 +19,8 @@
 </main>
 
 <script>
-  var App = new CV.App().addInteractiveSidebar();
+  var App = new CV.App();
+  App.addInteractiveSidebar();
   var Feed = new CV.Views.Feed({
     el: document.querySelector('.cv-main-content'),
     feedItems: <%= JSON.stringify(feed) %>

@@ -1250,6 +1250,63 @@ module.exports = {
     },
 
     /**************************************************************************
+     * BROWSE
+     *************************************************************************/
+    /* Voices that have been featured.
+     * @argument callback <required> [Function]
+     */
+    getBrowseFeaturedVoices : function getBrowseFeaturedVoices(callback) {
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'GET',
+            url : '/browse/featured/voices',
+            headers : {'csrf-token' : this.token},
+            dataType : 'json',
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
+    /* People that have been featured.
+     * @argument callback <required> [Function]
+     */
+    getBrowseFeaturedPeople : function getBrowseFeaturedPeople(callback) {
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'GET',
+            url : '/browse/featured/people',
+            headers : {'csrf-token' : this.token},
+            dataType : 'json',
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
+    /* Organizations that have been featured.
+     * @argument callback <required> [Function]
+     */
+    getBrowseFeaturedOrganizations : function getBrowseFeaturedOrganizations(callback) {
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'GET',
+            url : '/browse/featured/organizations',
+            headers : {'csrf-token' : this.token},
+            dataType : 'json',
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
+    /**************************************************************************
      * NOTIFICATIONS
      *************************************************************************/
     /* Get the current user/org's notifications.

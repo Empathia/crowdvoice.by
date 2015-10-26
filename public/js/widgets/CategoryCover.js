@@ -5,7 +5,7 @@
  * image_cover  {String} path to the main cover image
  * url          {String} topic's permalink
  */
-Class('CategoryCover').inherits(Widget).includes(CV.WidgetUtils)({
+Class(CV, 'CategoryCover').inherits(Widget).includes(CV.WidgetUtils)({
     HTML : '\
         <div class="homepage-category-list-item">\
             <a class="categories_link" href="#" alt="">\

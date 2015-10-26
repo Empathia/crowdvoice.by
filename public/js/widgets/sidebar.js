@@ -15,6 +15,8 @@ Class(CV, 'Sidebar').inherits(Widget)({
             this.el = this.element;
             this.linkElements = [].slice.call(this.el.querySelectorAll('.sidebar-link'), 0);
             this._yield = document.body.querySelector('.app-wrapper');
+            this.containerActive = false;
+            this.messageLinkContainer = this.el.querySelector('.sidebar-link-messages');
 
             this._checkAndActivateCurrentLink();
         },
@@ -37,6 +39,44 @@ Class(CV, 'Sidebar').inherits(Widget)({
             });
 
             return this;
+        },
+
+        setup : function setup(){
+            var socket = App.getSocket();
+
+            setInterval(function() {
+                socket.emit('getUnreadMessagesCount');
+            }, 60000);
+
+            socket.on('unreadMessagesCount', function(data) {
+                this._updateSidebarCount(data);
+            }.bind(this));
+        },
+        /* 
+        * Adds the unread message notification icon for the sidebar
+        */
+        _updateSidebarCount : function _updateSidebarCount(data) {
+            this.sidebarUnreadMessagesEl = this.messageLinkContainer.querySelector('.unread');
+            var linkContainerEl = $(this.messageLinkContainer);
+            var unreadValueContainer = this.sidebarUnreadMessagesEl.querySelector('.sidebar-link-badge');
+            var dataCache;
+
+            if(data > 0){
+                if (this.containerActive === false){
+                    linkContainerEl.addClass('-has-messages');
+                    unreadValueContainer.innerHTML = data;
+                    this.containerActive = true;
+                    dataCache = data;
+                }
+                if(dataCache < data || dataCache > data){
+                    unreadValueContainer.textContent = data;
+                    dataCache = data;
+                }
+            } else {
+                linkContainerEl.removeClass('-has-messages');
+                this.containerActive = false;
+                dataCache = null;
+            }
         },
 
         _bindEvents : function _bindEvents() {

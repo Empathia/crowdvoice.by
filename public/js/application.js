@@ -120,7 +120,7 @@ require('./widgets/voice-cover/VoiceCoverMiniClean');
 require('./widgets/voice-cover/actions/VoiceCoverActions');
 require('./widgets/voice-cover/actions/VoiceCoverActionsEdit');
 require('./widgets/voice-cover/actions/VoiceCoverActionsArchive');
-require('./widgets/category-cover');
+require('./widgets/CategoryCover');
 
 // views
 require('./views/Home');
@@ -142,6 +142,10 @@ require('./views/DiscoverRecommended');
 require('./widgets/view-discover-recommended/DiscoverRecommendedOnboarding');
 require('./widgets/view-discover-recommended/DiscoverRecommendedSection');
 require('./widgets/view-discover-recommended/DiscoverRecommendedSectionItem');
+require('./views/DiscoverBrowse');
+require('./widgets/view-discover-browse/DiscoverBrowseVoicesTab');
+require('./widgets/view-discover-browse/DiscoverBrowsePeopleTab');
+require('./widgets/view-discover-browse/DiscoverBrowseOrganizationsTab');
 require('./views/Voice');
 require('./views/SavedPosts');
 require('./widgets/view-saved-posts/onboarding');

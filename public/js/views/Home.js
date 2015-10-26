@@ -35,7 +35,7 @@ Class(CV, 'HomeView').includes(NodeSupport, CV.WidgetUtils)({
             /* CATEGORIES */
             var categoriesHolder = document.querySelector('.homepage-category-list-row');
             this.categoriesData.forEach(function(category) {
-                new CategoryCover(category).render(categoriesHolder);
+                new CV.CategoryCover(category).render(categoriesHolder);
             });
 
             /* ORGANIZATIONS */

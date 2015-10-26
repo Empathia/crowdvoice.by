@@ -99,8 +99,6 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
           container.addThread(thread);
         });
 
-        this.updateSidebarCount();
-
       } else {
         this.hideSideBar();
       }
@@ -166,16 +164,6 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
       });
     },
 
-    updateSidebarCount : function updateSidebarCount() {
-      if(this.unreadMessages > 0){
-        this.sidebarMessagesEl.addClass('has-messages');
-        this.sidebarMessagesEl.find('.sidebar-link-badge').text(this.unreadMessages);
-      } else {
-        this.sidebarMessagesEl.removeClass('has-messages');
-      }
-
-    },
-
     addThread : function addThread(threadData) {
       var container = this;
 
@@ -190,8 +178,6 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
 
       thread.bind('updated', function(){
         container.unreadMessages -= this.unreadCount;
-
-        container.updateSidebarCount();
       });
 
       thread.threadContainer = this;
