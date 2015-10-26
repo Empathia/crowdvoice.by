@@ -267,25 +267,25 @@ require('./widgets/posts/moderate/vote-buttons.js');
 require('./widgets/voice/VoiceRequestToContribute');
 
 // post creators
-require('./widgets/post-creators/post-creator.js');
-require('./widgets/post-creators/post-button.js');
-require('./widgets/post-creators/uploading.js');
-require('./widgets/post-creators/error.js');
-require('./widgets/post-creators/success.js');
+require('./widgets/post-creators/PostCreator');
+require('./widgets/post-creators/PostCreatorPostButton');
+require('./widgets/post-creators/PostCreatorUploadingTemplate');
+require('./widgets/post-creators/PostCreatorErrorTemplate');
+require('./widgets/post-creators/PostCreatorSuccessTemplate');
 
-require('./widgets/post-creators/from-url/post-creator-from-url.js');
-require('./widgets/post-creators/from-url/source-icons.js');
+require('./widgets/post-creators/from-url/PostCreatorFromUrl');
+require('./widgets/post-creators/from-url/PostCreatorFromUrlSourceIcons');
 
-require('./widgets/post-creators/from-sources/post-creator-from-sources.js');
-require('./widgets/post-creators/from-sources/sources-dropdown.js');
-require('./widgets/post-creators/from-sources/sources-dropdown-option.js');
-require('./widgets/post-creators/from-sources/sources-results.js');
-require('./widgets/post-creators/from-sources/sources-queue.js');
-require('./widgets/post-creators/from-sources/source-youtube.js');
-require('./widgets/post-creators/from-sources/source-google-news.js');
+require('./widgets/post-creators/from-sources/PostCreatorFromSources');
+require('./widgets/post-creators/from-sources/PostCreatorFromSourcesDropdown');
+require('./widgets/post-creators/from-sources/PostCreatorFromSourcesDropdownOption');
+require('./widgets/post-creators/from-sources/PostCreatorFromSourcesResults');
+require('./widgets/post-creators/from-sources/PostCreatorFromSourcesQueue');
+require('./widgets/post-creators/from-sources/PostCreatorFromSourcesYoutube');
+require('./widgets/post-creators/from-sources/PostCreatorFromSourcesGoogleNews');
 
-require('./widgets/post-creators/upload-file/post-creator-upload-file.js');
-require('./widgets/post-creators/upload-file/header-messages.js');
+require('./widgets/post-creators/upload-file/PostCreatorUploadFile');
+require('./widgets/post-creators/upload-file/PostCreatorUploadFileHeaderMessages');
 
 require('./widgets/post-creators/write-article/post-creator-write-article');
 require('./widgets/post-creators/write-article/post-date');
