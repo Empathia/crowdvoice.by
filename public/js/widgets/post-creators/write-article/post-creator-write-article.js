@@ -24,7 +24,8 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
             this.el = this.element[0];
             this.header = this.el.querySelector('.cv-post-creator__header');
             this.content = this.el.querySelector('.cv-post-creator__content');
-            this.loadingStep = this.el.querySelector('.cv-post-creator__disable');
+            this.loadingStep = $(this.el.querySelector('.cv-post-creator__disable'));
+
 
             this.addCloseButton()._setup()._bindEvents()._disablePostButton();
         },
@@ -57,11 +58,13 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
             })).render(this.content);
 
             // Content
-            this.articleContent = this.content.querySelector('.write-article-body-editable');
-            this.articleTitle = this.content.querySelector('.editor-title');
+            this.articleContent = $(this.content.querySelector('.write-article-body-editable'));
+            this.articleTitle = $(this.content.querySelector('.editor-title'));
 
+            // Image placeholder, error feedback placeholder &  button
+            this.coverImage = $(this.editor.editorHeader.el);
+            this.errorFeedback = $(this.postDate.errorFeedback);
             this.coverButton = this.editor.editorHeader.coverButton;
-            this.coverImage = this.editor.editorHeader.el;
 
             return this;
         },
@@ -80,24 +83,27 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
             this.coverButton.bind('fileUploaded', this._imageReceivedRef);
 
             this._contentFilledRef = this._contentFilled.bind(this);
-            $(this.articleTitle).on('change keyup paste',this._contentFilledRef);
-            $(this.articleContent).on('change keyup paste',this._contentFilledRef);
+            this.articleTitle.on('change keyup paste',this._contentFilledRef);
+            this.articleContent.on('change keyup paste',this._contentFilledRef);
 
             return this;
         },
 
-        // Saves the article
+        /* Add the data from the DOM 
+         * And sents it to voiceNewArticle
+         * API Endpoint
+         */
         _buttonClick : function _buttonClick(){
             // Disables button and activates the loader
             this._disablePostButton();
-            $(this.loadingStep).addClass('active');
+            this.loadingStep.addClass('active');
 
             if(this.articleImage !== null){
                 API.voiceNewArticle({
                     userSlug : App.Voice.data.owner.profileName,
                     voiceSlug : App.Voice.data.slug,
-                    articleTitle : $(this.articleTitle).val(),
-                    articleContent : $(this.articleContent).html(),
+                    articleTitle : this.articleTitle.val(),
+                    articleContent : this.articleContent.html(),
                     articleImage : this.articleImage.path,
                     articleDate : this.postDate.timePickerInput.value
                 }, this._responseHandler.bind(this));
@@ -105,8 +111,8 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
                 API.voiceNewArticle({
                     userSlug : App.Voice.data.owner.profileName,
                     voiceSlug : App.Voice.data.slug,
-                    articleTitle : $(this.articleTitle).val(),
-                    articleContent : $(this.articleContent).html(),
+                    articleTitle : this.articleTitle.val(),
+                    articleContent : this.articleContent.html(),
                     articleImage : '',
                     articleDate : this.postDate.timePickerInput.value
                 }, this._responseHandler.bind(this));
@@ -116,14 +122,15 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
         _responseHandler : function _responseHandler(err, res){
             if (err) {
                 this.loaderError.activate();
-                console.log(res.status + ' ' +res.statusText);
                 this._enabledPostButton();
 
                 this.loader.disable();
                 this.loaderError.activate();
+                this.errorFeedback.text('An error has occurred: ' + res.status + ' ' + res.statusText);
+                this.el.classList.add('has-error');
 
                 window.setTimeout(function() {
-                    $(this.loadingStep).removeClass('active');
+                    this.loadingStep.removeClass('active');
                 }.bind(this), 2000);
 
                 return;
@@ -148,24 +155,27 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
                 data : imageData
             }, function (err, res){
                 if (err) {
-                    console.log(res.status + ' ' +res.statusText);
+                    console.log(res.status + ' ' + res.statusText);
+                    this.errorFeedback.text('An error has occurred while uploading your image: ' + res.status + ' ' + res.statusText);
+                    this.el.classList.add('has-error');
                     return;
                 }
                 this._imageUploaded(res);
             }.bind(this));
         },
 
-        //Gets the API response and puts the image as background for the header
+        //Gets the API response and applies the header background 
         _imageUploaded : function _imageUploaded(image){
             this.articleImage = image;
-            $(this.articleTitle).addClass('editor-title-bg');
-            $(this.coverImage).addClass('-img-cover');
-            $(this.coverImage).css('background-image', 'url('+this.articleImage.path+')');
+            this.articleTitle.addClass('editor-title-bg');
+            this.coverImage.addClass('-img-cover');
+            this.coverImage.css('background-image', 'url(' + this.articleImage.path + ')');
         },
 
         _contentFilled : function _contentFilled(){
-            var contentText = this.articleContent.querySelector('p');
-            if(($(this.articleContent).children().size() > 0 && $(contentText).text().length > 0) && $(this.articleTitle).val().length){
+            var contentText = $(this.articleContent.find('p'));
+
+            if((this.articleContent.children().size() > 0 && contentText.text().length > 0) && this.articleTitle.val().length){
                 this._enabledPostButton();
             } else {
                 this._disablePostButton();
@@ -193,8 +203,8 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
         destroy : function destroy() {
             CV.PostCreator.prototype.destroy.call(this);
 
-            $(this.articleTitle).off('change keyup paste',this._contentFilledRef);
-            $(this.articleContent).off('change keyup paste',this._contentFilledRef);
+            this.articleTitle.off('change keyup paste',this._contentFilledRef);
+            this.articleContent.off('change keyup paste',this._contentFilledRef);
             this._contentFilledRef = null;
         }
     }
