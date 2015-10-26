@@ -23,7 +23,7 @@ Class(CV, 'PostCreatorFromSourcesQueue').inherits(Widget).includes(BubblingSuppo
             this.onboarding = this.el.querySelector('.from-sources-queue-onboarding');
             this.success = this.el.querySelector('.from-sources-queue-success');
 
-            this.loader = new CV.Loader().render(this.el);
+            this.loader = new CV.Loading().render(this.el).center().disable();
 
             this._deleteFromQueueRef = this._deleteFromQueue.bind(this);
             this.bind('post:moderate:delete', this._deleteFromQueueRef);
@@ -48,7 +48,7 @@ Class(CV, 'PostCreatorFromSourcesQueue').inherits(Widget).includes(BubblingSuppo
 
         setAddingPost : function setAddingPost() {
             this.hideOnboarding();
-            this.loader.activate();
+            this.loader.enable();
             return this;
         },
 
@@ -76,7 +76,7 @@ Class(CV, 'PostCreatorFromSourcesQueue').inherits(Widget).includes(BubblingSuppo
                 .addImageControls()
                 .addRemoveButton();
 
-            this.loader.deactivate();
+            this.loader.disable();
 
             this._index++;
         },

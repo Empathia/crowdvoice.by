@@ -1,5 +1,3 @@
-/* jshint multistr: true */
-
 /* Class CV.Post Main Class.
  * Creates a new Post Widget of the type passed on the params.
  * @usage CV.Post.create({type: 'someKnownPostType', ...}).render(...);

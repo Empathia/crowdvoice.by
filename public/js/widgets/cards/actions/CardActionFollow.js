@@ -1,7 +1,7 @@
 var API = require('./../../../lib/api');
 var Person = require('./../../../lib/currentPerson');
 
-Class(CV, 'CardActionFollow').inherits(Widget)({
+Class(CV, 'CardActionFollow').inherits(Widget).includes(BubblingSupport)({
     ELEMENT_CLASS : 'card-actions-item card-actions-follow-button',
 
     HTML_FOLLOW : '\
@@ -164,6 +164,16 @@ Class(CV, 'CardActionFollow').inherits(Widget)({
             };
 
             this.el.addEventListener('mouseleave', mouseLeave);
+        },
+
+        _activate : function _activate() {
+            Widget.prototype._activate.call(this);
+            this.dispatch('card:action:popover:active');
+        },
+
+        _deactivate : function _deactivate() {
+            Widget.prototype._deactivate.call(this);
+            this.dispatch('card:action:popover:deactive');
         },
 
         destroy : function destroy() {

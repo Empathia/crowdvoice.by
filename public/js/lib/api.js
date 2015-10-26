@@ -142,7 +142,7 @@ module.exports = {
     /* Request to contribute to a voice.
      * @argument args.profileName <required> [String] the voice owner profileName
      * @argument args.voiceSlug <required> [String] the voice slug
-     * @argument args.data.message <required> [Text] the message to send to the organizaiton
+     * @argument args.data.message <required> [Text] the message to send to the organization
      * @argument callback <required> [Function]
      */
     voiceRequestToContribute : function voiceRequestToContribute(args, callback) {
@@ -926,7 +926,7 @@ module.exports = {
     /* Request invitation for membership of organization.
      * @argument args.profileName <required> [String] profileName of organization
      * @argument args.data.orgId <required> [hashid] entity ID of organization tp request membership of
-     * @argument args.data.message <required> [Text] the message to send to the organizaiton
+     * @argument args.data.message <required> [Text] the message to send to the organization
      * @argument callback <required> [Function]
      */
     requestMembership : function requestMembership(args, callback) {
@@ -1123,6 +1123,60 @@ module.exports = {
     /**************************************************************************
      * DISCOVER
      *************************************************************************/
+    /* The latest voices that have been created.
+     * @argument callback <required> [Function]
+     */
+    getNewVoices : function getNewVoices(callback) {
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'GET',
+            url : '/discover/new/voices',
+            headers : {'csrf-token' : this.token},
+            dataType : 'json',
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
+    /* The latest people that have been created. Does not return anonymous entities.
+     * @argument callback <required> [Function]
+     */
+    getNewPeople : function getNewPeople(callback) {
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'GET',
+            url : '/discover/new/people',
+            headers : {'csrf-token' : this.token},
+            dataType : 'json',
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
+    /* The latest organizations that have been created.
+     * @argument callback <required> [Function]
+     */
+    getNewOrganizations : function getNewOrganizations(callback) {
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'GET',
+            url : '/discover/new/organizations',
+            headers : {'csrf-token' : this.token},
+            dataType : 'json',
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
     /* Return the voices with the most followers.
      * @argument callback <required> [Function]
      */
@@ -1134,6 +1188,60 @@ module.exports = {
         $.ajax({
             type : 'GET',
             url : '/discover/trending/voices',
+            headers : {'csrf-token' : this.token},
+            dataType : 'json',
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
+    /* The voices with the most posts.
+     * @argument callback <required> [Function]
+     */
+    getTrendingUpdatedVoices : function getTrendingUpdatedVoices(callback) {
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'GET',
+            url : '/discover/trending/updatedVoices',
+            headers : {'csrf-token' : this.token},
+            dataType : 'json',
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
+    /* The people with the most followers. Anonymous users can't follow or be followed thus they are excluded.
+     * @argument callback <required> [Function]
+     */
+    getTrendingPeople : function getTrendingPeople(callback) {
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'GET',
+            url : '/discover/trending/people',
+            headers : {'csrf-token' : this.token},
+            dataType : 'json',
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
+    /* The organizations with the most followers.
+     * @argument callback <required> [Function]
+     */
+    getTrendingOrganizations : function getTrendingOrganizations(callback) {
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'GET',
+            url : '/discover/trending/organizations',
             headers : {'csrf-token' : this.token},
             dataType : 'json',
             success : function success(data) {callback(false, data);},

@@ -1,5 +1,6 @@
 /* globals App */
 var API = require('../../../lib/api');
+var Events = require('../../../lib/events');
 var Velocity = require('velocity-animate');
 
 Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
@@ -25,7 +26,8 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
 
         _currentSource : '',
         _addedPostsCounter : 0,
-        _inputKeyPressHandlerRef : null,
+        _inputKeyUpHandlerRef : null,
+        _inputKeyUpTimer : null,
         _inputLastValue : null,
         _postsAdded : false,
 
@@ -92,8 +94,8 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
             this._sourceChangedRef = this._sourceChanged.bind(this);
             this.sourcesDropdown.bind('sourceChanged', this._sourceChangedRef);
 
-            this._inputKeyPressHandlerRef = this._inputKeyPressHandler.bind(this);
-            this.input.getElement().addEventListener('keypress', this._inputKeyPressHandlerRef);
+            this._inputKeyUpHandlerRef = this._inputKeyUpHandler.bind(this);
+            Events.on(this.input.getElement(), 'keyup', this._inputKeyUpHandlerRef);
 
             this._addPostRef = this._addPost.bind(this);
             this.resultsPanel.bind('addPost', this._addPostRef);
@@ -106,27 +108,27 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
             return this;
         },
 
-        /* Handles the keypress event on the input. We are only interested on the ENTER key.
-         * @method _inputKeyPressHandler <private> [Function]
+        /* Handles the keyup event on the input. It will debounce the event for 500ms.
+         * @method _inputKeyUpHandler <private> [Function]
          */
-        _inputKeyPressHandler : function _inputKeyPressHandler(ev) {
-            var inputValue;
+        _inputKeyUpHandler : function _inputKeyUpHandler() {
+            window.clearTimeout(this._inputKeyUpTimer);
+            this._inputKeyUpTimer = window.setTimeout(this._validateInputValue.bind(this), 500);
+        },
 
-            if (ev.keyCode !== 13) {
-                return void 0;
-            }
-
-            inputValue = this.input.getValue();
+        _validateInputValue : function _validateInputValue() {
+            var inputValue = this.input.getValue();
+            this._inputKeyUpTimer = null;
 
             if (inputValue.length <= 2) {
-                return void 0;
+                return;
             }
 
-            // if (inputValue === this._inputLastValue) {
-            //     return void 0;
-            // }
+            if (inputValue === this._inputLastValue) {
+                return;
+            }
 
-            // this._inputLastValue = inputValue;
+            this._inputLastValue = inputValue;
 
             this.disable()._removeErrorState()._disablePostButton()._setSearching()._request(inputValue);
         },
@@ -381,16 +383,10 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
         },
 
         destroy : function destroy() {
-            this.input.getElement().removeEventListener('keypress', this._inputKeyPressHandlerRef);
-            this._inputKeyPressHandlerRef = null;
+            Events.off(this.input.getElement(), 'keyup', this._inputKeyUpHandlerRef);
+            this._inputKeyUpHandlerRef = null;
 
             CV.PostCreator.prototype.destroy.call(this);
-
-            this.el = null;
-            this.header = null;
-            this.content = null;
-            this.inputWrapper = null;
-
             return null;
         }
     }

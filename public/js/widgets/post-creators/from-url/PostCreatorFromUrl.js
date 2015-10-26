@@ -1,9 +1,9 @@
 /* globals App */
 var API = require('../../../lib/api');
+var Events = require('../../../lib/events');
 var Checkit = require('checkit');
 
 Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
-
     ELEMENT_CLASS : 'cv-post-creator post-creator-from-url',
 
     HTML : '\
@@ -11,10 +11,8 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
         <div class="input-error-message -on-error -abs -color-negative"></div>\
         <header class="cv-post-creator__header -clearfix"></header>\
         <div class="cv-post-creator__content -abs"></div>\
-        <div class="cv-post-creator__disable">\
-        </div>\
-    </div>\
-    ',
+        <div class="cv-post-creator__disable"></div>\
+    </div>',
 
     DEFAULT_ERROR_MESSAGE : 'You entered an invalid URL. Please double check it.',
 
@@ -27,7 +25,8 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
         inputWrapper : null,
         errorMessage : null,
 
-        _inputKeyPressHandlerRef : null,
+        _inputKeyUpHandlerRef : null,
+        _inputKeyUpTimer : null,
         _inputLastValue : null,
         _checkitUrl : null,
         _previewPostWidget : null,
@@ -49,9 +48,9 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
          * @return [PostCreatorFromUrl]
          */
         _setup : function _setup() {
-            this.appendChild(new CV.Loader({
+            this.appendChild(new CV.Loading({
                 name : 'loader'
-            })).render(this.el.querySelector('.cv-post-creator__disable'));
+            })).render(this.el.querySelector('.cv-post-creator__disable')).center();
 
             this.appendChild(new CV.PostCreatorErrorTemplate({
                 name : 'errorTemplate'
@@ -83,7 +82,7 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
             this.header.appendChild(this.inputWrapper);
 
             this._checkitUrl = new Checkit({
-                url : ['required', 'url']
+                url : ['required', 'url', 'minLength:4']
             });
 
             return this;
@@ -96,28 +95,31 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
         _bindEvents : function _bindEvents() {
             CV.PostCreator.prototype._bindEvents.call(this);
 
-            this._inputKeyPressHandlerRef = this._inputKeyPressHandler.bind(this);
-            this.input.getElement().addEventListener('keypress', this._inputKeyPressHandlerRef);
+            this._inputKeyUpHandlerRef = this._inputKeyUpHandler.bind(this);
+            Events.on(this.input.getElement(), 'keyup', this._inputKeyUpHandlerRef);
 
             this.postButton.bind('buttonClick', this._handlePostButtonClick.bind(this));
 
             return this;
         },
 
-        /* Handles the keypress event on the input. We are only interested on the ENTER key.
-         * @method _inputKeyPressHandler <private> [Function]
+        /* Handles the keyup event on the input. It will debounce the event for 500ms.
+         * @method _inputKeyUpHandler <private> [Function]
          */
-        _inputKeyPressHandler : function _inputKeyPressHandler(ev) {
+        _inputKeyUpHandler : function _inputKeyUpHandler() {
+            this._removeErrorState();
+            window.clearTimeout(this._inputKeyUpTimer);
+            this._inputKeyUpTimer = window.setTimeout(this._validateInputValue.bind(this), 500);
+        },
+
+        _validateInputValue : function _validateInputValue() {
             var inputValue, checkitResponse;
 
-            if (ev.keyCode !== 13) {
-                return void 0;
-            }
-
+            this._inputKeyUpTimer = null;
             inputValue = this.input.getValue();
 
             if (inputValue === this._inputLastValue) {
-                return void 0;
+                return;
             }
 
             this._inputLastValue = inputValue;
@@ -304,20 +306,10 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
         },
 
         destroy : function destroy() {
+            Events.off(this.input.getElement(), 'keyup', this._inputKeyUpHandlerRef);
+            this._inputKeyUpHandlerRef = null;
+
             CV.PostCreator.prototype.destroy.call(this);
-
-            this.el = null;
-            this.header = null;
-            this.content = null;
-            this.iconTypes = null;
-            this.postButton = null;
-            this.inputWrapper = null;
-            this.errorMessage = null;
-
-            this._inputKeyPressHandlerRef = null;
-            this._inputLastValue = null;
-            this._checkitUrl = null;
-            this._previewPostWidget = null;
 
             return null;
         }

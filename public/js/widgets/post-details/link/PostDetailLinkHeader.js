@@ -45,7 +45,7 @@ Class(CV, 'PostDetailLinkHeader').inherits(Widget).includes(CV.WidgetUtils)({
         },
 
         update : function update(data) {
-            this.dom.updateText(this.titleElement, data.title);
+            this.dom.updateHTML(this.titleElement, data.title);
             this.dom.updateText(this.dateElement, moment(data.publishedAt).format('MMM DD, YYYY'));
             this.dom.updateAttr('datetime', this.dateElement, data.publishedAt);
             this.dom.updateAttr('href', this.viewOriginalBtn, data.sourceUrl);
