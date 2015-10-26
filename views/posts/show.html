@@ -3,14 +3,10 @@
             padding: 50px 100px;
     }
     .image-header{
-            border-bottom: 1px solid #b8b8c1;
-            position: relative; 
-            width: 100%;
-            height: 320px;
-    }
-    .image-header > img {
-        width: 100%;
-        height: 100%;
+        background-image: url('<%= post.image.url('big') %>');
+        border-bottom: 1px solid #b8b8c1;
+        height: 320px;
+            
     }
     .image-header > h1.title {
         color:white;
@@ -82,16 +78,13 @@
         <%= readablePost.data.content %>
     </article>
 <% } else { %>
-    <div class="image-header">
+    <div class="image-header -img-cover -rel">
         <% if (post.image.exists('big')) { %>
-            <img src="<%= post.image.url('big') %>" />
             <h1 class="title"><%= post.title %></h1>
         <% } else {%>
             <h1><%= post.title %></h1>
         <% } %>
     </div>
-    
-    
     <div class="description">
         <%= post.description %>
     </div>
