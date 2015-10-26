@@ -114,4 +114,28 @@ describe('PostsController', function () {
 
   })
 
+  describe('#preview', function () {
+
+    it('From URL: Invalid YouTube URL should not crash server', function (done) {
+      login('cersei', function (err, agent, csrf) {
+        if (err) { return done(err) }
+
+        agent
+          .post(urlBase + '/cersei-lannister/dead-of-arryn/preview')
+          .accept('application/json')
+          .send({
+            _csrf: csrf,
+            url: 'https://www.youtube.com/watch?v=M4Txn4FtV4', // missing an "o" at end
+          })
+          .end(function (err, res) {
+            expect(res.status).to.equal(400)
+            expect(res.body.status).to.equal('There was an error in the request')
+
+            return done()
+          })
+      })
+    })
+
+  })
+
 })
