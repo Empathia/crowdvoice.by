@@ -42,7 +42,7 @@ Class(CV.Views, 'DiscoverBrowse').includes(NodeSupport, CV.WidgetUtils)({
 
             var topicsHolder = document.querySelector('.homepage-category-list-row');
             this.topicsData.forEach(function(topic) {
-                this.appendChild(new CV.CategoryCover(topic)).render(topicsHolder);
+                this.appendChild(new CV.CategoryCards(topic)).render(topicsHolder);
             }, this);
         }
     }
