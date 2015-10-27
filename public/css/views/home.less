@@ -242,53 +242,6 @@
     padding-top: 16px;
    }
 }
-@media only screen and (max-width: 480px){
-  .topics-list-item .card-body .card-wrapper{
-    width: 240px;
-  }
-  .home-stats .stats .stats-col{
-    padding:0px;
-  }
-}
-@media only screen and (max-width: 768px){
-  .topics-list-item{
-    width: 100%;
-    .card-body .card-wrapper{
-      width: 500px;
-    }
-  }
-}
-@media only screen and (max-width: 800px){
-   .home-stats{
-    .stats{
-      .stats-col{
-        width: 40%;
-        border-right:0 !important;
-        margin: 0px 10px;
-      }
-      .stats-col:nth-child(-n+2){
-        border-bottom:1px solid #454B4D;
-        padding: 10px 0px;
-      }
-    }
-  }
-  .topics-list-item{
-    width: 100%;
-    .card-body .card-wrapper{
-      width: 260px;
-    }
-  }
-  .page-home{
-    .-float-left.-mr1{
-      margin-bottom:13px;
-    }
-  }
-}
-@media only screen and (max-width: 1024px){
-  .topics-list-item .card-body .card-wrapper{
-    width: 100%;
-  }
-}
 /* =========================================================================== *
  *  organization cards
  * =========================================================================== */
@@ -304,5 +257,28 @@
   .widget-card {
     padding-left: 1rem;
     padding-right: 1rem;
+  }
+}
+/* =========================================================================== *
+ *  Media queries - Home Stats
+ * =========================================================================== */
+@media only screen and (max-width: 480px){
+  .home-stats .stats .stats-col{
+    padding:0px;
+  }
+}
+@media only screen and (max-width: 800px){
+  .home-stats{
+    .stats{
+      .stats-col{
+        width: 40%;
+        border-right:0 !important;
+        margin: 0px 10px;
+      }
+      .stats-col:nth-child(-n+2){
+        border-bottom:1px solid #454B4D;
+        padding: 10px 0px;
+      }
+    }
   }
 }

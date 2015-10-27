@@ -122,8 +122,9 @@ require('./widgets/voice-cover/VoiceCoverTitle');
 require('./widgets/voice-cover/actions/VoiceCoverActions');
 require('./widgets/voice-cover/actions/VoiceCoverActionsEdit');
 require('./widgets/voice-cover/actions/VoiceCoverActionsArchive');
+require('./widgets/CategoryCards');
 require('./widgets/category-cover');
-require('./widgets/home-category-cards');
+
 
 // views
 require('./views/Home');
