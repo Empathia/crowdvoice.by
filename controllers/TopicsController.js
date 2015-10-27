@@ -1,5 +1,50 @@
 var TopicsController = Class('TopicsController')({
+
   prototype : {
+
+    // GET /topic/:topicSlug/newestVoices
+    newestVoices : function (req, res, next) {
+      async.waterfall([
+        // get our topic, by slug
+        function (next) {
+          Topic.find({ slug: req.params.topicSlug }, next)
+        },
+
+        // find records related to our topic
+        function (topic, next) {
+          VoiceTopic.find({ topic_id: topic[0].id }, next)
+        },
+
+        // get voices by topic
+        function (voiceTopic, next) {
+          var ids = voiceTopic.map(function (val) {
+            return val.voiceId
+          })
+
+          db('Voices')
+            .whereIn('id', ids)
+            .andWhere('status', Voice.STATUS_PUBLISHED)
+            .andWhere('deleted', false)
+            .orderBy('created_at', 'desc')
+            .limit(3)
+            .exec(function (err, rows) {
+              if (err) { return next(err) }
+
+              return next(null, Argon.Storage.Knex.processors[0](rows))
+            })
+        },
+      ], function (err, voices) {
+        if (err) { return next(err) }
+
+        VoicesPresenter.build(voices, req.currentPerson, function (err, presented) {
+          if (err) { return next(err) }
+
+          return res.json({
+            voices: presented,
+          })
+        })
+      })
+    },
 
     people : function (req, res, next) {
       async.waterfall([
@@ -280,6 +325,7 @@ var TopicsController = Class('TopicsController')({
       });
     }
   }
+
 });
 
 module.exports = new TopicsController();
