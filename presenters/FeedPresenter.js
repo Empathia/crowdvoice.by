@@ -47,13 +47,6 @@ var FeedPresenter = Module('FeedPresenter')({
           }
         },
 
-        // itemId
-        function (next) {
-          actionInst.itemId = hashids.encode(action.itemId)
-
-          return next()
-        },
-
         // actionDoer
         function (next) {
           Entity.findById(action.who, function (err, entity) {
@@ -72,6 +65,9 @@ var FeedPresenter = Module('FeedPresenter')({
         },
       ], function (err) {
         if (err) { return callback(err) }
+
+        delete actionInst.itemId
+        delete actionInst.who
 
         result.push(actionInst)
 
