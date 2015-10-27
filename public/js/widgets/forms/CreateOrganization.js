@@ -9,8 +9,8 @@ Class(CV, 'CreateOrganization').inherits(Widget).includes(CV.WidgetUtils)({
         <div>\
             <div class="-col-12 placeholder-main"></div>\
             <div class="-col-12">\
-                <div data-location class="-col-10"></div>\
-                <div data-detect class="-col-2 -pl1"></div>\
+                <div data-location class="-col-8"></div>\
+                <div data-detect class="-col-4 -pl1"></div>\
             </div>\
             <div class="-col-3 -pr1 placeholder-logo"></div>\
             <div class="-col-9 -pl1 placeholder-background"></div>\
@@ -84,7 +84,7 @@ Class(CV, 'CreateOrganization').inherits(Widget).includes(CV.WidgetUtils)({
 
             this.appendChild(new CV.DetectLocation({
                 name : 'detectLocation',
-                label : 'Detect',
+                label : 'Use Current Location',
                 requireGoogleMaps : true
             })).render(this.el.querySelector('[data-detect]'));
 
