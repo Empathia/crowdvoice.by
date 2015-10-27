@@ -14,9 +14,15 @@ Class(CV, 'FeedFollowed').inherits(CV.FeedItem)({
             this.updateAvatar();
 
             if (this.data.itemType === 'entity' && Person.is(this.data.entity.id)) {
-                this.setText(this.getName() + ' followed you.');
+                this.setText(this.constructor.stringLink({
+                    href: this.getProfileUrl(),
+                    text: this.getName()
+                }) + ' followed you.');
             } else {
-                this.setText(this.getName() + ' followed:');
+                this.setText(this.constructor.stringLink({
+                    href: this.getProfileUrl(),
+                    text: this.getName()
+                }) + ' followed:');
 
                 if (this.data.itemType === 'entity') {
                     this.appendChild(new CV.CardMini({

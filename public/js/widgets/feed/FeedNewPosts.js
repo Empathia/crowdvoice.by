@@ -10,7 +10,10 @@ Class(CV, 'FeedNewPosts').inherits(CV.FeedItem)({
             CV.FeedItem.prototype.init.call(this, config);
 
             this.updateAvatar();
-            this.setText(this.getName() + ' added new posts to the voice:');
+            this.setText(this.constructor.stringLink({
+                href: this.getProfileUrl(),
+                text: this.getName()
+            }) + ' added new posts to the voice:');
 
             this.appendChild(new CV.VoiceCoverMini({
                 name: 'voice-cover',
