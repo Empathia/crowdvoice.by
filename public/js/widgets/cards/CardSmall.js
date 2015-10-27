@@ -184,7 +184,7 @@ Class(CV, 'CardSmall').inherits(Widget).includes(CV.WidgetUtils, BubblingSupport
             this.dom.updateAttr('href', this.usernameEl, '/' + this.data.profileName + '/');
             this.dom.updateAttr('title', this.usernameEl, "@" + this.data.profileName + '’s profile');
 
-            var fullname = this.data.name + (this.data.lastname ? (' ' + this.data.lastname) : '');
+            var fullname = this.data.name;
             this.dom.updateText(this.fullNameEl, fullname);
             this.dom.updateAttr('href', this.fullNameEl, '/' + this.data.profileName + '/');
             this.dom.updateAttr('title', this.fullNameEl, fullname + '’s profile');

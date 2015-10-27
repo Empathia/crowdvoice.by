@@ -297,7 +297,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
 
       persons.forEach(function(person) {
         if (person.isAnonymous === false) {
-          var userStr = person.name + ' ' + person.lastname;
+          var userStr = person.name;
 
           var liStr = $('<li data-partner-id="' + person.id + '" data-partner-name="' + userStr + '">' + userStr + '</li>');
 

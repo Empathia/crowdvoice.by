@@ -126,7 +126,7 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
                 label         : 'Multiple',
                 name          : 'select',
                 accountImage  : Person.getImage('small'),
-                accountName   : Person.get().name + ' ' + Person.get().lastname,
+                accountName   : Person.get().name,
                 options       : allMulti
             })).render(this.loginActionsWrapper);
 
