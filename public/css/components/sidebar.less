@@ -162,11 +162,6 @@
   transition: fill 240ms ease;
 }
 
-.sidebar-link-badge.ui-badge {
-  left: 31px;
-  top: 0;
-}
-
 .sidebar-link-label {
   padding-left: .5em;
   line-height: 1.25em;
@@ -186,13 +181,32 @@
   width: 100%;
 }
 
+/* read/unread messages */
 .sidebar-link-messages {
-  .unread {display: none}
   .read {display: block}
-}
-.sidebar-link-messages{
-  &.-has-messages{
+  .unread {display: none}
+
+  &.active {
+    .sidebar-link-badge {border-color: @color-primary}
+  }
+
+  &.-has-messages {
     .unread {display: block}
     .read {display: none}
+
+    .sidebar-link-badge {
+      transform: scale(1);
+      transition: none;
+    }
   }
 }
+
+.sidebar-link-badge {
+  left: 31px;
+  top: 0;
+  transform: scale(0);
+  transition: transform 300ms ease;
+
+  &.-updated {animation: ui-zoomitbig 300ms ease;}
+}
+

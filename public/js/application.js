@@ -72,7 +72,7 @@ require('./widgets/search/SearchResultsManager');
 require('./widgets/search/SearchResultsGroup');
 require('./widgets/search/SearchResultsViewAllButton');
 // other
-require('./widgets/sidebar.js');
+require('./widgets/Sidebar');
 require('./widgets/NotificationBell.js');
 require('./widgets/Header');
 require('./widgets/incognito/button');

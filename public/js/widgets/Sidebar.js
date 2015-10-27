@@ -1,10 +1,13 @@
-Class(CV, 'Sidebar').inherits(Widget)({
+/* globals App */
+var Person = require('./../lib/currentPerson');
+var animationEnd = require('./../lib/onanimationend');
+
+Class(CV, 'Sidebar').inherits(Widget).includes(CV.WidgetUtils)({
 
     IS_EXPANDED_CLASSNAME : '-is-expanded',
     IS_PAUSED_CLASSNAME : '-is-paused',
 
     prototype : {
-
         el : null,
         linkElements : null,
         _yield : null,
@@ -15,8 +18,6 @@ Class(CV, 'Sidebar').inherits(Widget)({
             this.el = this.element;
             this.linkElements = [].slice.call(this.el.querySelectorAll('.sidebar-link'), 0);
             this._yield = document.body.querySelector('.app-wrapper');
-            this.containerActive = false;
-            this.messageLinkContainer = this.el.querySelector('.sidebar-link-messages');
 
             this._checkAndActivateCurrentLink();
         },
@@ -42,40 +43,59 @@ Class(CV, 'Sidebar').inherits(Widget)({
         },
 
         setup : function setup(){
-            var socket = App.getSocket();
-
-            setInterval(function() {
-                socket.emit('getUnreadMessagesCount');
-            }, 60000);
-
-            socket.on('unreadMessagesCount', function(data) {
-                this._updateSidebarCount(data);
-            }.bind(this));
+            this._setupMessageCountListener();
+            return;
         },
-        /* 
-        * Adds the unread message notification icon for the sidebar
-        */
-        _updateSidebarCount : function _updateSidebarCount(data) {
-            this.sidebarUnreadMessagesEl = this.messageLinkContainer.querySelector('.unread');
-            var linkContainerEl = $(this.messageLinkContainer);
-            var unreadValueContainer = this.sidebarUnreadMessagesEl.querySelector('.sidebar-link-badge');
-            var dataCache;
 
-            if(data > 0){
-                if (this.containerActive === false){
-                    linkContainerEl.addClass('-has-messages');
-                    unreadValueContainer.innerHTML = data;
-                    this.containerActive = true;
-                    dataCache = data;
+        /* Start/get the socket reference and subscribe to the `unreadMessagesCount` event.
+         * This will keep track of how many unread message Person have and update
+         * the sidebar message counter bubble as feedback.
+         * @method _setupMessageCountListener <private> [Function]
+         * @return undefined
+         */
+        _getUnreadMessageCountPollingMS : 30000,
+        _setupMessageCountListener : function _setupMessageCountListener() {
+            if (!Person.get()) {
+                return;
+            }
+
+            var socket = App.getSocket();
+            this.messageLinkContainer = this.el.querySelector('.sidebar-link-messages');
+            this.unreadMessagesBadgeElement = this.messageLinkContainer.querySelector('.sidebar-link-badge');
+            this.unreadMessagesLastValue = 0;
+
+            setTimeout(function() {
+                socket.emit('getUnreadMessagesCount');
+            }, 1000);
+
+            window.setInterval(function() {
+                socket.emit('getUnreadMessagesCount');
+            }, this._getUnreadMessageCountPollingMS);
+
+            socket.on('unreadMessagesCount', this._updateSidebarCount.bind(this));
+        },
+
+        /* Updates the unreadMessagesBadgeElement contents.
+         * Toggles the read/unread link contents.
+         * @method _updateSidebarCount <private> [Function]
+         * @argument data <required> [Number] total unread messages
+         */
+        _updateSidebarCount : function _updateSidebarCount(data) {
+            if (this.unreadMessagesLastValue !== data) {
+                this.unreadMessagesLastValue = data;
+
+                this.dom.updateText(this.unreadMessagesBadgeElement, data);
+                this.dom.addClass(this.unreadMessagesBadgeElement, ['-updated']);
+
+                animationEnd(this.unreadMessagesBadgeElement, function() {
+                    this.dom.removeClass(this.unreadMessagesBadgeElement, ['-updated']);
+                }.bind(this));
+
+                if (data > 0) {
+                    this.dom.addClass(this.messageLinkContainer, ['-has-messages']);
+                } else {
+                    this.dom.removeClass(this.messageLinkContainer, ['-has-messages']);
                 }
-                if(dataCache < data || dataCache > data){
-                    unreadValueContainer.textContent = data;
-                    dataCache = data;
-                }
-            } else {
-                linkContainerEl.removeClass('-has-messages');
-                this.containerActive = false;
-                dataCache = null;
             }
         },
 
