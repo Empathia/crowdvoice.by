@@ -1,6 +1,6 @@
 var Events = require('./../../../lib/events');
 
-Class(CV, 'CardActionJoin').inherits(Widget)({
+Class(CV, 'CardActionJoin').inherits(Widget).includes(BubblingSupport)({
     ELEMENT_CLASS : 'card-actions-item',
     HTML : '\
         <div>\
@@ -19,12 +19,16 @@ Class(CV, 'CardActionJoin').inherits(Widget)({
         },
 
         _bindEvents : function _bindEvents() {
+            this._deactivateModalHandler = this._deactivate.bind(this);
+
             this._clickHandlerRef = this._clickHandler.bind(this);
             Events.on(this.el, 'click', this._clickHandlerRef);
         },
 
         _clickHandler : function _clickHandler() {
-            this.requestMembershipModal = new CV.UI.Modal({
+            this.activate();
+
+            this.appendChild(new CV.UI.Modal({
                 title : 'Request Membership',
                 name : 'requestMembershipModal',
                 action : CV.RequestMembership,
@@ -33,11 +37,23 @@ Class(CV, 'CardActionJoin').inherits(Widget)({
                     orgId : this.entity.id,
                     profileName : this.entity.profileName
                 }
-            }).render(document.body);
+            })).render(document.body);
+
+            this.requestMembershipModal.bind('deactivate', this._deactivateModalHandler);
 
             requestAnimationFrame(function() {
                 this.requestMembershipModal.activate();
             }.bind(this));
+        },
+
+        _activate : function _activate() {
+            Widget.prototype._activate.call(this);
+            this.dispatch('card:action:popover:active');
+        },
+
+        _deactivate : function _deactivate() {
+            Widget.prototype._deactivate.call(this);
+            this.dispatch('card:action:popover:deactive');
         }
     }
 });

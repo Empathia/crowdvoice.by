@@ -32,7 +32,6 @@ Class(CV, 'UserProfileEditTab').inherits(Widget)({
 
             this.checkitProfile = new Checkit({
                 name : 'required',
-                lastname : 'required',
                 profilename : ['required', 'alphaDash']
             });
 
@@ -84,19 +83,19 @@ Class(CV, 'UserProfileEditTab').inherits(Widget)({
                 }
             })).render(this.mainElement);
 
-            this.appendChild(new CV.UI.Input({
-                name : 'lastnameInput',
-                className : 'user-profile-edit-tab__input-last-name',
-                data : {
-                    label : 'Your Last Name',
-                    hint : '',
-                    attr  : {
-                        value : Person.get().lastname,
-                        type: 'text'
-                    },
-                    inputClassName : '-md -block'
-                }
-            })).render(this.mainElement);
+            // this.appendChild(new CV.UI.Input({
+            //     name : 'lastnameInput',
+            //     className : 'user-profile-edit-tab__input-last-name',
+            //     data : {
+            //         label : 'Your Last Name',
+            //         hint : '',
+            //         attr  : {
+            //             value : Person.get().lastname,
+            //             type: 'text'
+            //         },
+            //         inputClassName : '-md -block'
+            //     }
+            // })).render(this.mainElement);
 
             this.appendChild(new CV.UI.Input({
                 name : 'profilenameInput',
@@ -133,7 +132,7 @@ Class(CV, 'UserProfileEditTab').inherits(Widget)({
                     label : 'Location',
                     hint : '',
                     attr  : {
-                        value : Person.get().location,
+                        value : (Person.get().location === null ? '' :  Person.get().location),
                         type: 'text'
                     },
                     inputClassName : 'user-profile-edit-tab__input-location -md -inline-block'
@@ -142,7 +141,7 @@ Class(CV, 'UserProfileEditTab').inherits(Widget)({
 
             this.appendChild(new CV.DetectLocation({
                 name : 'detectLocation',
-                label : 'Detect',
+                label : 'Use Current Location',
                 requireGoogleMaps : true
             })).render(this.locationInput.inputWrapper);
 
@@ -261,7 +260,6 @@ Class(CV, 'UserProfileEditTab').inherits(Widget)({
         _sendFormHandler : function _sendFormHandler() {
             var validate = this.checkitProfile.validateSync({
                 name: this.nameInput.getValue().trim(),
-                lastname: this.lastnameInput.getValue().trim(),
                 profilename: this.profilenameInput.getValue().trim()
             });
 
@@ -297,7 +295,6 @@ Class(CV, 'UserProfileEditTab').inherits(Widget)({
 
                 this.saveButton.enable();
                 this.nameInput.clearState().updateHint();
-                this.lastnameInput.clearState().updateHint();
                 this.profilenameInput.clearState().updateHint();
 
                 if (res.status === 'success') {
@@ -366,7 +363,6 @@ Class(CV, 'UserProfileEditTab').inherits(Widget)({
             var data = new FormData();
 
             data.append('name', this.nameInput.getValue().trim());
-            data.append('lastname', this.lastnameInput.getValue().trim());
             data.append('profileName', this.profilenameInput.getValue().trim());
             data.append('description', this.descriptionInput.getValue().trim());
             data.append('location', this.locationInput.getValue().trim());

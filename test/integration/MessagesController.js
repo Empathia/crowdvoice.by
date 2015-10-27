@@ -13,61 +13,164 @@ require(path.join(__dirname, '../../presenters/PostsPresenter'))
 
 application._serverStart()
 
-var request = require('superagent')
-var test = require('tape-catch')
+// COMMENT IF YOU WANT LOGGER OUTPUT
+logger.log = function () {}
+
+var login = require(path.join(__dirname, 'login.js')),
+  expect = require('chai').expect
 
 CONFIG.database.logQueries = false
 
 var urlBase = 'http://localhost:3000'
 
-test('Create new message ( .create() )', function (t) {
-  var cookies,
-    csrf,
-    agent = request.agent()
+describe('MessagesController', function () {
 
-  async.series([
-    function (next) {
-      agent
-        .get(urlBase + '/csrf')
-        .end(function (err, res) {
-          if (err) { t.fail(err) }
+  describe('#create', function () {
 
-          csrf = res.text
+    it('Create message in pre-existing conversation', function (done) {
+      login('tyrion', function (err, agent, csrf) {
+        if (err) { return done(err) }
 
-          return next()
-        })
-    },
+        agent
+          .post(urlBase + '/tyrion-lannister/messages/6xOVBlryjQ0a')
+          .accept('application/json')
+          .send({
+            _csrf: csrf,
+            message: 'So anyway, weird conversation huh?',
+          })
+          .end(function (err, res) {
+            if (err) { return done(err) }
 
-    function (next) {
-      agent
-        .post(urlBase + '/session')
-        .send({
-          _csrf: csrf,
-          username: 'tyrion',
-          password: '12345678'
-        })
-        .end(function (err, res) {
-          if (err) { t.fail(err) }
+            expect(res.status).to.equal(200)
 
-          return next()
-        })
-    },
-  ], function(err) {
-    if (err) { t.fail(err) }
-
-    agent
-      .post(urlBase + '/tyrion-lannister/messages/6xOVBlryjQ0a')
-      .accept('application/json')
-      .send({
-        _csrf: csrf,
-        message: 'So anyway, weird conversation huh?',
+            return done()
+          })
       })
-      .end(function (err, res) {
-        if (err) { t.fail(err) }
+    })
 
-        t.equal(res.status, 200, 'res.status')
-
-        t.end()
-      })
   })
+
+  describe('#answerInvite', function () {
+
+    it('"Accept > Leave > Accept > Error" shouldn\'t happen', function (done) {
+      async.series([
+        function (nextSeries) {
+          login('cersei', function (err, agent, csrf) {
+            if (err) { return nextSeries(err) }
+
+            agent
+              .post(urlBase + '/cersei-lannister/messages')
+              .accept('application/json')
+              .send({
+                _csrf: csrf,
+                type: 'invitation_organization',
+                senderEntityId: hashids.encode(3), // Cersei
+                receiverEntityId: hashids.encode(17), // Robert
+                organizationId: hashids.encode(22), // House Lannister
+                message: 'I think this is an offer you cannot turn down...',
+              })
+              .end(function (err, res) {
+                if (err) { return nextSeries(err) }
+
+                expect(res.status).to.equal(200)
+
+                return nextSeries()
+              })
+          })
+        },
+
+        function (nextSeries) {
+          login('robert', function (err, agent, csrf) {
+            if (err) { return nextSeries(err) }
+
+            agent
+              .post(urlBase + '/robert-baratheon/messages/d6wb1XVgRvzm/jd36BpEg4Mbe/answerInvite')
+              .accept('application/json')
+              .send({
+                _csrf: csrf,
+                action: 'accept',
+              })
+              .end(function (err, res) {
+                if (err) { return nextSeries(err) }
+
+                expect(res.status).to.equal(200)
+
+                return nextSeries()
+              })
+          })
+        },
+
+        function (nextSeries) {
+          login('robert', function (err, agent, csrf) {
+            if (err) { return nextSeries(err) }
+
+            agent
+              .post(urlBase + '/robert-baratheon/leaveOrganization')
+              .accept('application/json')
+              .send({
+                _csrf: csrf,
+                orgId: hashids.encode(22), // House Lannister
+                entityId: hashids.encode(17), // Robert
+              })
+              .end(function (err, res) {
+                if (err) { return nextSeries(err) }
+
+                expect(res.status).to.equal(200)
+
+                return nextSeries()
+              })
+          })
+        },
+
+        function (nextSeries) {
+          login('cersei', function (err, agent, csrf) {
+            if (err) { return nextSeries(err) }
+
+            agent
+              .post(urlBase + '/cersei-lannister/messages')
+              .accept('application/json')
+              .send({
+                _csrf: csrf,
+                type: 'invitation_organization',
+                senderEntityId: hashids.encode(3), // Cersei
+                receiverEntityId: hashids.encode(17), // Robert
+                organizationId: hashids.encode(22), // House Lannister
+                message: 'I think this is an offer you cannot turn down...',
+              })
+              .end(function (err, res) {
+                if (err) { return nextSeries(err) }
+
+                expect(res.status).to.equal(200)
+
+                return nextSeries()
+              })
+          })
+        },
+
+        function (nextSeries) {
+          login('robert', function (err, agent, csrf) {
+            if (err) { return nextSeries(err) }
+
+            agent
+              .post(urlBase + '/robert-baratheon/messages/d6wb1XVgRvzm/QLP8gxJ13z6D/answerInvite')
+              .accept('application/json')
+              .send({
+                _csrf: csrf,
+                action: 'accept',
+              })
+              .end(function (err, res) {
+                if (err) { return nextSeries(err) }
+
+                expect(res.status).to.equal(200)
+
+                return nextSeries()
+              })
+          })
+        },
+
+      ], done)
+    })
+
+  })
+
 })

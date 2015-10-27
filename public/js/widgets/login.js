@@ -11,73 +11,50 @@ Class(CV, 'Login').inherits(Widget)({
             <img src="/img/icons/icon-close.png">\
           </div>\
           <div class="login-content">\
-            <img src="/img/cv-logo-login.png">\
-            <h2>CrowdVoice.by</h2>\
-            <div class="form-errors">\
-            </div>\
-            <br><br>\
+            <a href="/" class="logo -tdn">\
+                <svg class="cv-main-logo__svg">\
+                    <use xlink:href="#svg-logo"></use>\
+                </svg>\
+            </a>\
+            <div class="cv-login__logo-type -font-bold -color-black">CrowdVoice.by</div>\
+            <div class="form-errors"></div>\
             <div class="form-container"></div>\
           </div>\
         </div>\
     ',
 
     FORM_SIGNUP : '\
-        <h1>It\'s time to raise your voice!</h1>\
-        <p>Sign up to CrowdVoice.by and create Voices, post content, follow users, organizations and more!</p>\
-        <br>\
+        <div class="cv-login__heading -font-light">It\'s time to raise your voice!</div>\
+        <p class="-mb3">Sign up and create Voices, post content, follow users, organizations and more!</p>\
         <form action="" method="post" accept-charset="utf-8">\
             <div class="form-field">\
-              <div class="cv-input">\
-                <input type="text" class="username" name="username" value="" placeholder="Username" autofocus><br>\
-              </div>\
+                <input type="email" class="ui-input -lg -block email" name="email" value="" placeholder="Your Email">\
             </div>\
             <div class="form-field">\
-              <div class="cv-input">\
-                <input type="text" class="name" name="name" value="" placeholder="Name"><br>\
-              </div>\
-            </div>\
-            <div class="form-field">\
-              <div class="cv-input">\
-                <input type="text" class="lastname" name="lastname" value="" placeholder="Lastname"><br>\
-              </div>\
+                <input type="password" class="ui-input -lg -block password" name="password" value="" placeholder="Your Password">\
             </div>\
             <div class="form-field -row">\
-              <div class="-col-6"><span class="-dim">http://www.crowdvoice.by/</span></div>\
-              <div class="-col-6">\
-                <div class="cv-input">\
-                  <input type="text" class="profileName" name="profileName" value="" placeholder="profile-name"><br>\
+                <div class="-col-4">\
+                    <span class="cv-login__profile-handler-pre">http://crowdvoice.by/</span>\
                 </div>\
-              </div>\
-            </div>\
-            <div class="form-field">\
-              <div class="cv-input">\
-                <input type="text" class="email" name="email" value="" placeholder="my@email.com"><br>\
-              </div>\
-            </div>\
-            <div class="form-field">\
-              <div class="cv-input">\
-                <input type="password" class="password" name="password" value="" placeholder="Password"><br>\
-              </div>\
-            </div>\
-            <div class="cv-check" style="display: none;">\
-              <input type="checkbox" class="input-checkbox isAnonymous" name="isAnonymous" value="true" checked>\
-              <span class="label">Is Anonymous?</span>\
+                <div class="-col-8">\
+                    <input type="text" class="ui-input -lg -block profileName" name="profileName" value="" placeholder="profile-name">\
+                </div>\
             </div>\
             <input type="hidden" name="_csrf" class="form-token" value="">\
-            <button class="cv-button primary full">Create User</button>\
+            <button class="cv-button primary -m0 -block">Sign Up Now!</button>\
         </form>\
-        <br>\
-        <p>Already have an account? <a href="/login">Sign in!</a></p>\
+        <p class="cv-login__bottom-help-text">Already have an account? <a href="/login">Sign in!</a></p>\
     ',
 
     FORM_LOGIN : '\
-        <h1>Welcome back! :)</h1>\
+        <div class="cv-login__heading -font-light">Welcome back! :)</div>\
         <br>\
         <form action="" method="post" accept-charset="utf-8">\
             <div class="input-pair">\
               <div class="form-field">\
                 <div class="cv-input">\
-                  <input type="text" class="username" name="username" value="" placeholder="USERNAME" autofocus>\
+                  <input type="text" class="username" name="username" value="" placeholder="EMAIL or PROFILE NAME" autofocus>\
                 </div>\
               </div>\
               <div class="form-field">\
@@ -97,37 +74,31 @@ Class(CV, 'Login').inherits(Widget)({
             </div>\
             <br><br>\
             <input type="hidden" name="_csrf"  class="form-token" value="">\
-            <button class="cv-button primary full">Sign In</button>\
+            <button class="cv-button primary -m0 -block">Sign In</button>\
         </form>\
-        <br>\
-        <p>Don\'t have an account yet? <a href="/signup">Sign Up!</a></p>\
+        <p class="cv-login__bottom-help-text">Don\'t have an account yet? <a href="/signup">Sign Up!</a></p>\
     ',
 
     FORM_FORGOT_PASSWORD : '\
-      <h1>It\'s ok. It happens.</h1>\
-      <p>Please enter the email address you used to sign up and we will send you instructions to reset your password to gain back access to CrowdVoice.by.</p>\
-      <br>\
+      <div class="cv-login__heading -font-light">It\'s ok. It happens.</div>\
+      <p style="width: 400px; margin: 0 auto; margin-bottom: 3em;">Please enter the email address you used to sign up and we will send you instructions to reset your password to gain back access to CrowdVoice.by.</p>\
       <form action="" method="post" accept-charset="utf-8">\
         <div class="form-field">\
-          <div class="cv-input">\
-            <input type="text" class="email" name="email" placeholder="YOUR EMAIL">\
-          </div>\
+            <input type="email" class="ui-input -lg -block email" name="email" placeholder="Your Email">\
         </div>\
         <input type="hidden" name="_csrf" class="form-token" value="">\
-        <button class="cv-button primary full">Submit</button>\
+        <button class="cv-button primary -m0 -block">Submit</button>\
       </form>\
     ',
 
     FORM_RESET_PASSWORD : '\
-      <h1>Type in a new password.</h1>\
+      <p class="cv-login__heading -font-light">Type in a new password.</p>\
       <p>This time make sure you choose something you will remember.<br>\
       Actually, you might want to read <a href="#">this article</a>. It will help :)</p>\
       <br>\
       <form action="" method="post" accept-charset="utf-8">\
         <div class="form-field">\
-          <div class="cv-input">\
-            <input name="password" type="password" class="password" placeholder="YOUR NEW PASSWORD">\
-          </div>\
+            <input name="password" type="password" class="ui-input -lg -block password" placeholder="Your new password">\
         </div>\
         <div class="cv-check">\
           <input type="checkbox" class="input-checkbox">\
@@ -135,7 +106,7 @@ Class(CV, 'Login').inherits(Widget)({
         </div>\
         <br><br>\
         <input type="hidden" name="_csrf" class="form-token" value="">\
-        <button class="cv-button primary full">Reset Password</button>\
+        <button class="cv-button primary -m0 -block">Reset Password</button>\
       </form>\
     ',
 
@@ -154,7 +125,6 @@ Class(CV, 'Login').inherits(Widget)({
             var login = this;
             var closeEl = this.element.find('.close-login');
             this.errorsEl = this.element.find('.form-errors');
-
 
             if (this.loginError && this.loginError.error){
               login.errorsEl.show();
@@ -192,35 +162,9 @@ Class(CV, 'Login').inherits(Widget)({
 
             if (this.formType === 'signup') {
 
-              this.element.find("input.name, input.lastname").blur(function() {
-                  if ($("input.name").val() != "" && $("input.lastname").val() != ""){
-                    if ($("input.profileName").val() == ""){
-                      var profileName = $("input.name").val() +"-"+ $("input.lastname").val();
-                      //profileName = profileName.replace(/ /g, "_");
-                      $("input.profileName").val(profileName.toLowerCase().replace(/ /g, "-")).change();
-                    }
-                  }
-              });
-
               this.element.find("input.profileName").blur(function() {
-                  var pValue = $(this).val().toLowerCase().replace(/ /g, "_");
+                  var pValue = $(this).val().toLowerCase().replace(/ /g, "-");
                   $(this).val(pValue).change();
-              });
-
-
-
-              this.formEl.find('.username').on('keyup input paste', function(e) {
-                $.ajax({
-                  type: "POST",
-                  url: '/signup/check-username',
-                  headers: { 'csrf-token': login.formToken },
-                  data: { field : 'username' , value : ($(e.target).val()).trim()},
-                  success: function(data) {
-                    //{username: "available/unavailable"}
-                    login.validateFields(data.username, 'username', '<p><b>Username</b> is already taken.</p>');
-                  },
-                  dataType: 'json',
-                });
               });
 
               this.formEl.find('.profileName').on('keyup input paste', function(e) {
@@ -237,7 +181,6 @@ Class(CV, 'Login').inherits(Widget)({
                   dataType: 'json',
                 });
               });
-
             }
 
             setTimeout(function(){
@@ -273,7 +216,6 @@ Class(CV, 'Login').inherits(Widget)({
                 }else{
                   login.formEl.submit();
                 }
-
             });
 
             this.checkEl.on('click', function(){
@@ -284,9 +226,6 @@ Class(CV, 'Login').inherits(Widget)({
               }
               login.element.find('.cv-input input')[0].focus();
             });
-
-
-
         },
 
         validateFields : function(status, fieldType, message){
@@ -297,7 +236,6 @@ Class(CV, 'Login').inherits(Widget)({
             profileName : "<p><b>Profilename</b> is already taken.</p>"
           }
           if (status != 'available'){
-
             this.errors[fieldType] = true;
 
             login.errorsEl.empty();
@@ -309,25 +247,6 @@ Class(CV, 'Login').inherits(Widget)({
             login.errorsEl.show();
             this.buttonEl.attr('disabled', true);
             this.buttonEl.addClass('disabled');
-
-
-            //var formValidation = login.validate();
-            //var validForm = formValidation[1];
-            //var formErrors = formValidation[0];
-            //
-            //if (!validForm){
-            //  login.errorsEl.empty();
-            //  login.errorsEl.show();
-            //
-            //  for (var error in formErrors.errors) {
-            //      var replaceStr = error;
-            //      var errorStr = formErrors.errors[error].message.replace(replaceStr, '<b>'+replaceStr+'</b>');
-            //      login.errorsEl.append('<p>' + errorStr + '</p>')
-            //  }
-            //  return false;
-            //  e.preventDefault;
-            //}
-
           } else {
             delete(this.errors[fieldType]);
 
@@ -343,7 +262,6 @@ Class(CV, 'Login').inherits(Widget)({
               }
               login.errorsEl.show();
             }
-
           }
         },
 
@@ -363,18 +281,12 @@ Class(CV, 'Login').inherits(Widget)({
           switch(this.formType) {
               case 'signup':
                 checkit = new Checkit({
-                  'Username'      : 'required',
-                  'Name'          : 'required',
-                  'Lastname'      : 'required',
                   'ProfileName'   : 'required',
                   'Email'         : ['required','email'],
                   'Password'      : ['required', 'minLength:8']
                 });
 
                 body = {
-                  'Username'      : this.formEl.find('.username').val(),
-                  'Name'          : this.formEl.find('.name').val(),
-                  'Lastname'      : this.formEl.find('.lastname').val(),
                   'ProfileName'   : this.formEl.find('.profileName').val(),
                   'Email'         : this.formEl.find('.email').val(),
                   'Password'      : this.formEl.find('.password').val(),
@@ -427,7 +339,5 @@ Class(CV, 'Login').inherits(Widget)({
         hide : function(){
             this.element.removeClass('active');
         }
-
     }
-
 });

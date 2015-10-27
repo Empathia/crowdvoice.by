@@ -83,8 +83,7 @@ Admin.UsersController = Class(Admin, 'UsersController')({
         async.series([function(done) {
           person = new Entity({
             type : 'person',
-            name : req.body.name,
-            lastname : req.body.lastname,
+            name : req.body.profileName.split('-').join(' '),
             profileName : req.body.profileName,
             isAnonymous : false
           });
@@ -93,7 +92,6 @@ Admin.UsersController = Class(Admin, 'UsersController')({
         }, function(done) {
           user = new User({
             entityId : person.id,
-            username : req.body.username,
             email : req.body.email,
             password : req.body.password
           });
@@ -111,7 +109,6 @@ Admin.UsersController = Class(Admin, 'UsersController')({
           anonymous = new Entity({
             type : 'person',
             name : 'Anonymous',
-            lastname : 'anonymous',
             profileName : 'anonymous_' + hashids.encode(person.id),
             isAnonymous : true
           });
@@ -226,7 +223,6 @@ Admin.UsersController = Class(Admin, 'UsersController')({
 
           var user = new User(result[0]);
 
-          user.username = req.body.username;
           user.email = req.body.email;
           //user.password = req.body.password;
 

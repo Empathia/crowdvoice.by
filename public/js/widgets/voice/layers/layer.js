@@ -1,4 +1,3 @@
-/* jshint multistr: true */
 var moment = require('moment');
 var Waterfall = require('../../../lib/waterfall');
 
@@ -39,11 +38,57 @@ Class(CV, 'VoicePostsLayer').inherits(Widget).includes(BubblingSupport)({
             this.el.dataset.date = this.dateString;
             this.el.querySelector('.cv-voice-posts-layer__detector').dataset.date = this.dateString;
 
+            this.addLoaders();
+
             this.waterfall = new Waterfall({
                 containerElement : this.postContainerElement,
                 columnWidth : this.columnWidth,
                 gutter : 20
             });
+        },
+
+        addLoaders : function addLoaders() {
+            if (this.loadingTop) {
+                this.loadingTop.enable();
+            } else {
+                this.appendChild(new CV.Loading({
+                    name : 'loadingTop'
+                })).center().setStyle({
+                    top: '150px',
+                    zIndex: 1
+                }).render(this.el);
+            }
+
+            if (this.loadingMiddle) {
+                this.loadingMiddle.enable();
+            } else {
+                this.appendChild(new CV.Loading({
+                    name : 'loadingMiddle'
+                })).center().setStyle({
+                    zIndex: 1
+                }).render(this.el);
+            }
+
+            if (this.loadingBottom) {
+                this.loadingBottom.enable();
+            } else {
+                this.appendChild(new CV.Loading({
+                    name : 'loadingBottom'
+                })).center().setStyle({
+                    top: 'initial',
+                    bottom: '150px',
+                    zIndex: 1
+                }).render(this.el);
+            }
+
+            return this;
+        },
+
+        hideLoaders : function hideLoaders() {
+            this.loadingTop.disable();
+            this.loadingMiddle.disable();
+            this.loadingBottom.disable();
+            return this;
         },
 
         /* Updates the layer's height, relayout posts and update indicators. Should be called when the window dimensions are changed.
@@ -90,6 +135,8 @@ Class(CV, 'VoicePostsLayer').inherits(Widget).includes(BubblingSupport)({
          * @return [VoicePostsLayer]
          */
         addPosts : function addPosts(posts) {
+            this.addLoaders();
+
             var frag = document.createDocumentFragment();
             var i = 0;
             var len = posts.length;
@@ -109,17 +156,17 @@ Class(CV, 'VoicePostsLayer').inherits(Widget).includes(BubblingSupport)({
             this.waterfall.addItems([].slice.call(frag.childNodes, 0));
             this.postContainerElement.appendChild(frag);
             this.waterfall.layout();
-
             this._addPostIndicators(this._postWidgets);
+            this.hideLoaders();
 
             this._finalHeightIsKnow = true;
-
-            frag = i = len = post = null;
 
             return this;
         },
 
         addEditablePosts : function addEditablePosts(posts) {
+            this.addLoaders();
+
             var frag = document.createDocumentFragment();
             var i = 0;
             var len = posts.length;
@@ -137,12 +184,10 @@ Class(CV, 'VoicePostsLayer').inherits(Widget).includes(BubblingSupport)({
             this.waterfall.addItems([].slice.call(frag.childNodes, 0));
             this.postContainerElement.appendChild(frag);
             this.waterfall.layout();
-
             this._addPostIndicators(this._postWidgets);
+            this.hideLoaders();
 
             this._finalHeightIsKnow = true;
-
-            frag = i = len = post = null;
 
             return this;
         },
@@ -203,13 +248,11 @@ Class(CV, 'VoicePostsLayer').inherits(Widget).includes(BubblingSupport)({
 
         arrangeBringToFront : function arrangeBringToFront() {
             this.el.style.zIndex = 1;
-
             return this;
         },
 
         arrangeReset : function arrangeReset() {
             this.el.style.zIndex = "";
-
             return this;
         },
 

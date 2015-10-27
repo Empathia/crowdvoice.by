@@ -15,9 +15,8 @@
 </main>
 
 <script>
-  new CV.App({
-    currentPerson : currentPerson
-  }).addInteractiveSidebar();
+  var App = new CV.App();
+  App.addInteractiveSidebar();
 
   new CV.Views.SearchView({
     searchResults : <%= JSON.stringify(searchResults) %>

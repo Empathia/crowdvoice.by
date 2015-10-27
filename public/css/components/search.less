@@ -1,5 +1,5 @@
 .cv-search-overlay {
-  z-index: 3;
+  z-index: 2;
   display: none;
   position: fixed;
   background-color: rgba(255,255,255,0.98);
@@ -34,16 +34,8 @@
     left: 2px;
   }
 
-  .cv-loader {
-    z-index: 1;
-    right: 20px;
-    top: 35px;
+  .cv-loading {
     visibility: hidden;
-    transform: scale(.4);
-
-    .ball-spin-fade-loader > div {
-      background-color: @color-black;
-    }
 
     &.active {
       visibility: visible;

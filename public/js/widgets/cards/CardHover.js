@@ -72,8 +72,14 @@ Class(CV, 'CardHover').inherits(Widget).includes(CV.WidgetUtils)({
             var bounds = el.getBoundingClientRect();
             var cardHeight, cardWidth, top, left, transform, transition;
 
+            this.active = true;
+
             if (this._cardWidget) {
                 this._cardWidget = this._cardWidget.destroy();
+            }
+
+            if (this.el.nextElementSibling) {
+                document.body.appendChild(this.el);
             }
 
             this.appendChild(new CV.CardSmall({
@@ -137,6 +143,8 @@ Class(CV, 'CardHover').inherits(Widget).includes(CV.WidgetUtils)({
                 this._cardWidget = this._cardWidget.destroy();
             }
 
+            this.active = false;
+
             inlineStyle(this.el, {
                 display: 'none',
                 opacity: '0',
@@ -152,8 +160,8 @@ Class(CV, 'CardHover').inherits(Widget).includes(CV.WidgetUtils)({
         _bindEvents : function _bindEvents() {
             Events.on(window, 'resize', this._updateVariables);
 
-            this._yieldScrollHandlerRef = this._yieldScrollHandler.bind(this);
-            Events.on(document.querySelector('.yield'), 'scroll', this._yieldScrollHandlerRef);
+            this._yieldScrollHandlerRef = this._scrollHandler.bind(this);
+            Events.on(window, 'scroll', this._yieldScrollHandlerRef);
 
             this._mouseEnterHandlerRef = this._mouseEnterHandler.bind(this);
             Events.on(this.el, 'mouseenter', this._mouseEnterHandlerRef);
@@ -171,12 +179,16 @@ Class(CV, 'CardHover').inherits(Widget).includes(CV.WidgetUtils)({
         },
 
         _updateVariables : function _updateVariables() {
-            this._clientHeightHalf = (document.body.clientHeight / 2);
-            this._clientWidth = document.body.clientWidth;
+            this._clientHeightHalf = (window.innerHeight / 2);
+            this._clientWidth = window.innerWidth;
         },
 
-        _yieldScrollHandler : function _yieldScrollHandler() {
-            this.hide();
+        _scrollHandler : function _scrollHandler() {
+            if (this.active) {
+                this._isHoverCard = false;
+                this._DO_NOT_CLOSE = false;
+                this.hide();
+            }
         },
 
         _mouseEnterHandler : function _mouseEnterHandler() {

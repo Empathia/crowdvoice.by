@@ -99,7 +99,7 @@ var SessionsController = Class('SessionsController')({
         }
 
         if (!user) {
-          req.flash('error', 'Invalid Username or Password!');
+          req.flash('error', 'Invalid email/profile name or Password!');
           return res.redirect('/login');
         }
 
@@ -143,7 +143,7 @@ var SessionsController = Class('SessionsController')({
         }
 
         if (!user || user.deleted) {
-          req.flash('error', 'Invalid Username or Password!');
+          req.flash('error', 'Invalid email/profile name or Password!');
           return res.redirect('/login');
         }
 

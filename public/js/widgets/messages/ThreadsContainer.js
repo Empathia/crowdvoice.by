@@ -1,3 +1,5 @@
+var Person = require('./../../lib/currentPerson');
+
 CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
   prototype : {
     threads : [],
@@ -49,14 +51,14 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
         this.newConversationOptions[this.currentPerson.id] = {
           name : "myself",
           label: "Myself"
-        }
+        };
 
         this.currentPerson.organizations.forEach(function(organization) {
           container.newConversationOptions[organization.id] = {
             label : organization.name,
             name : organization.profileName
-          }
-        })
+          };
+        });
 
         this.newMessageButton = new CV.Select({
           label : 'New as...',
@@ -97,8 +99,6 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
           container.addThread(thread);
         });
 
-        this.updateSidebarCount();
-
       } else {
         this.hideSideBar();
       }
@@ -125,7 +125,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
 
       this.searchField.element.find('input').on('keyup', function(ev){
         var searchStr = ev.target.value.toLowerCase();
-        container.listElement.find('.message-side').each(function( index, value ) {
+        container.listElement.find('.message-side').each(function() {
 
           var userStr = $(this).find('h3').text().toLowerCase();
 
@@ -142,14 +142,14 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
         var searchStr = $(this).val().toLowerCase();
         var inputSearch = $(this);
 
-        if (searchStr == ""){
+        if (searchStr === "") {
           searchUsersResultEl.hide();
           return false;
         }
 
         $.ajax({
           type: "POST",
-          url:'/' + currentPerson.profileName + '/messages/searchPeople',
+          url:'/' + Person.get().profileName + '/messages/searchPeople',
           headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
           data : {value : inputSearch.val()},
           success: function(data) {
@@ -162,16 +162,6 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
       this.messagesBodyHeaderEl.find('.delete-thread').on('click', function(){
         container.deleteThread($(this).attr('data-id'));
       });
-    },
-
-    updateSidebarCount : function updateSidebarCount() {
-      if(this.unreadMessages > 0){
-        this.sidebarMessagesEl.addClass('has-messages');
-        this.sidebarMessagesEl.find('.sidebar-link-badge').text(this.unreadMessages);
-      } else {
-        this.sidebarMessagesEl.removeClass('has-messages');
-      }
-
     },
 
     addThread : function addThread(threadData) {
@@ -188,8 +178,6 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
 
       thread.bind('updated', function(){
         container.unreadMessages -= this.unreadCount;
-
-        container.updateSidebarCount();
       });
 
       thread.threadContainer = this;
@@ -211,7 +199,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
         type: "DELETE",
         url: deleteThreadUrl,
         headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
-        success: function(data) {
+        success: function() {
           console.log('Thread deleted');
         }
       });
@@ -220,7 +208,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
 
       // this.listElement.find('#'+threadId).remove();
 
-      if (this.listElement.find('.message-side').length == 0){
+      if (this.listElement.find('.message-side').length === 0){
         container.hideSideBar();
         container.showUnselectedScreen();
 
@@ -255,9 +243,9 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
 
       this.element.addClass('no-sidebar');
 
-      var messageText = 'To contact a user, message them on their profile card when rolling over their avatar or message them from their profile page. You can also <a href="#" class="new-message">compose a new message here</a> and search for the user you wish to contact.'
+      var messageText = 'To contact a user, message them on their profile card when rolling over their avatar or message them from their profile page. You can also <a href="#" class="new-message">compose a new message here</a> and search for the user you wish to contact.';
 
-      this.noMessagesEl.prepend('<h1>No messages</h1>');
+      this.noMessagesEl.find('.no-messages__inner').prepend('<h1>You have no messages.</h1>');
       this.noMessagesEl.find('p').html(messageText);
 
       this.noMessagesEl.find('a.new-message').on('click', function(){
@@ -268,7 +256,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
 
     showSideBar : function showSideBar(){
       var container = this;
-      var messageText = 'Please select a thread from the list on the left or <a href="#" class="new-message">compose a new message</a>.'
+      var messageText = 'Please select a thread from the list on the left or <a href="#" class="new-message">compose a new message</a>.';
 
       this.noMessagesEl.find('h1').remove();
       this.noMessagesEl.find('p').html(messageText);
@@ -308,8 +296,8 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
       this.searchUsersResultEl.show();
 
       persons.forEach(function(person) {
-        if (person.isAnonymous == false){
-          var userStr = person.name + ' ' + person.lastname;
+        if (person.isAnonymous === false) {
+          var userStr = person.name;
 
           var liStr = $('<li data-partner-id="' + person.id + '" data-partner-name="' + userStr + '">' + userStr + '</li>');
 
@@ -358,8 +346,8 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
       this.currentThreadId = null;
 
       if (this.senderEntityIsOrg ){
-        this.messagesBodyHeaderEl.find('span.conversation-title').html('Conversation with '
-          + otherPersonName +
+        this.messagesBodyHeaderEl.find('span.conversation-title').html('Conversation with ' +
+          otherPersonName +
           ' <span>- As an Organization (<b>'+ this.senderEntityOrgName +'<b>)</span>');
       } else {
         this.messagesBodyHeaderEl.find('span.conversation-title').text('Conversation with ' + otherPersonName);
@@ -376,15 +364,15 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
 
       var foundIt = false;
 
-      container.listElement.find('.message-side').each(function( index, value ) {
+      container.listElement.find('.message-side').each(function() {
         //this.senderEntityIsOrg
         //console.log($(this).attr('is-organization'));
         if (container.senderEntityIsOrg){
-          if ($(this).attr('data-partner-id') == partnerId && $(this).attr('is-organization')){
+          if ($(this).attr('data-partner-id') === partnerId && $(this).attr('is-organization')){
             foundIt = true;
           }
         } else {
-          if ($(this).attr('data-partner-id') == partnerId){
+          if ($(this).attr('data-partner-id') === partnerId){
             foundIt = true;
           }
         }
@@ -457,24 +445,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
         });
     },
 
-    getHeight : function getHeight(){
-      return(window.innerHeight)?
-        window.innerHeight:
-        document.documentElement.clientHeight||document.body.clientHeight||0;
-    },
-
     refresh : function refresh() {
-      var padDiff = 0;
-
-      var chatHeight = this.getHeight() - $('.cv-main-header').outerHeight();
-      $('.messages-sidebar, .messages-body, .messages-body-container').height(chatHeight - padDiff);
-
-      var sideMessagesHeight = chatHeight - padDiff - $('.messages-sidebar-header').outerHeight();
-      $('.messages-list').css({'overflow-y':'scroll', 'height': sideMessagesHeight+'px'});
-
-      var bodyMessagesHeight = chatHeight - padDiff - ($('.messages-body-header').outerHeight() + $('.message-create').outerHeight());
-      $('.messages-conversation').height(bodyMessagesHeight);
-
       var height = $('.messages-conversation > .msgs').height();
       $('.messages-conversation').scrollTop(height);
     }

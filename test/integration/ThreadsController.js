@@ -49,6 +49,114 @@ describe('ThreadsController', function () {
       })
     })
 
+    it('"Refresh" invitation_organization message instead of duplicating', function (done) {
+      login('cersei', function (err, agent, csrf) {
+        // send our invitations
+        async.series([
+          function (next) {
+            agent
+              .post(urlBase + '/cersei-lannister/messages')
+              .accept('application/json')
+              .send({
+                _csrf: csrf,
+                type: 'invitation_organization',
+                senderEntityId: hashids.encode(3), // Cersei
+                receiverEntityId: hashids.encode(17), // Robert
+                organizationId: hashids.encode(22), // House Lannister
+                message: 'I think this is an offer you cannot turn down...',
+              })
+              .end(function (err, res) {
+                if (err) { return done(err) }
+
+                expect(res.status).to.equal(200)
+
+                return next()
+              })
+          },
+
+          function (next) {
+            agent
+              .post(urlBase + '/cersei-lannister/messages')
+              .accept('application/json')
+              .send({
+                _csrf: csrf,
+                type: 'invitation_organization',
+                senderEntityId: hashids.encode(3), // Cersei
+                receiverEntityId: hashids.encode(17), // Robert
+                organizationId: hashids.encode(22), // House Lannister
+                message: 'Just re-sending it, you know...',
+              })
+              .end(function (err, res) {
+                if (err) { return done(err) }
+
+                expect(res.status).to.equal(200)
+
+                return next()
+              })
+          },
+
+          function (next) {
+            agent
+              .post(urlBase + '/cersei-lannister/messages')
+              .accept('application/json')
+              .send({
+                _csrf: csrf,
+                type: 'invitation_organization',
+                senderEntityId: hashids.encode(3), // Cersei
+                receiverEntityId: hashids.encode(17), // Robert
+                organizationId: hashids.encode(22), // House Lannister
+                message: 'The real final invitation',
+              })
+              .end(function (err, res) {
+                if (err) { return done(err) }
+
+                expect(res.status).to.equal(200)
+
+                return next()
+              })
+          },
+        ], function (err) { // async.series
+          if (err) { return done(err) }
+
+          // check that records check out
+
+          async.series([
+            // invitation requests
+            function (next) {
+              InvitationRequest.find({
+                invited_entity_id: 17, // Robert
+                invitator_entity_id: 3, // Cersei
+              }, function (err, invitations) {
+                if (err) { return next(err) }
+
+                expect(invitations.length).to.equal(1)
+
+                return next()
+              })
+            },
+
+            // messages
+            function (next) {
+              Message.find({
+                type: 'invitation_organization',
+                sender_person_id: 3, // Cersei
+                sender_entity_id: 3,
+                receiver_entity_id: 17, // Robert
+                organization_id: 22, // House Lannister
+              }, function (err, messages) {
+                if (err) { return next(err) }
+
+                expect(messages.length).to.equal(1)
+                expect(messages[0].message).to.equal('The real final invitation')
+
+                return next()
+              })
+            },
+          ], done)
+        })
+      })
+    })
+
   })
 
   describe('#destroy', function () {
@@ -62,7 +170,7 @@ describe('ThreadsController', function () {
             _csrf: csrf,
           })
           .end(function (err, res) {
-            if (err) { console.log(err); done(err); return }
+            if (err) { return done(err) }
 
             expect(res.status).to.equal(200)
             expect(res.body.status).to.equal('ok')

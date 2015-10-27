@@ -76,7 +76,7 @@ Class(CV, 'CardActionFollowMultiple').inherits(Widget)({
          * @argument res <required> [Object] the server response.
          * @return undefined
          */
-        _responseHandler : function _responseHandler(checkboxWidget, err, res) {
+        _responseHandler : function _responseHandler(checkboxWidget, err) {
             if (err) {
                 /* revert silently without forcing it to dispatch the change event,
                  * since we are listening the change event to tell the server to

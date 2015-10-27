@@ -4,11 +4,6 @@
 @import (inline) "../../node_modules/sanitize.css/dist/sanitize.css";
 
 /* =========================================================================== *
- *  vendor :: loaders.css - Delightful, performance-focused pure css loading animations.
- * =========================================================================== */
-@import (inline) "../../node_modules/loaders.css/loaders.css";
-
-/* =========================================================================== *
  *  vendor :: gemini-scrollbar :: Custom overlay-scrollbars with native scrolling mechanism.
  * =========================================================================== */
 @import (inline) "../../node_modules/gemini-scrollbar/gemini-scrollbar.css";
@@ -24,10 +19,9 @@
  * cv globals / general styles
  * =========================================================================== */
 
- /*******************************************
-                @color palette
-*******************************************/
-
+/* =========================================================================== *
+ * color palette
+ * =========================================================================== */
 @import 'variables';
 
 // Color Utilities : .mixin-color (color, name) : creates the following class selectors.
@@ -37,10 +31,6 @@
 .mixin-color(@color-neutral-mid, neutral-mid);
 .mixin-color(@color-negative, negative);
 .mixin-color(@color-positive, positive);
-
-html, body, .app-wrapper, .yield {
-  height: 100%;
-}
 
 header{
   &.-is-admin{
@@ -83,10 +73,8 @@ header{
         max-width: 300px;
       }
     }
-
   }
   .admin-user{
-
     &:first-child{
       border-top: 1px solid #d8d8d8;
     }
@@ -118,19 +106,13 @@ header{
         opacity: 100;
       }
     }
-
   }
-
-}
-
-.app-wrapper {
-  overflow: hidden;
 }
 
 .app-wrapper::after {
   z-index: 1;
   content: '';
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
@@ -155,10 +137,7 @@ a {
 }
 
 .app-wrapper > .yield {
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
   padding-top: @cv-header-height;
-  will-change: transform;
 }
 
 .dark-background,
@@ -211,8 +190,10 @@ a {
  * cv components
  * =========================================================================== */
 @import './components/search';
+@import './components/feed-item';
 @import './components/notifications';
 @import './components/alert';
+@import './components/loading';
 @import './components/header';
 @import './components/sidebar';
 @import './components/footer';
@@ -269,8 +250,10 @@ a {
 @import './views/profile';
 @import './views/about';
 @import './views/login';
-@import './views/messages';
+@import './views/threads';
 @import './views/search';
 @import './views/saved-posts';
 @import './views/my-voices';
 @import './views/edit-profile';
+@import './views/feed';
+@import './views/discover-recommended';

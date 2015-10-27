@@ -14,7 +14,6 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
       }
     ],
     name: ['required', 'minLength:1', 'maxLength:512'],
-    lastname: ['minLength:1', 'maxLength:512'],
     isAnonymous: ['boolean'],
     profileName: [
       'required',
@@ -37,7 +36,7 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
         db(reqObj.model.storage.tableName)
           .where('is_anonymous', '=', false)
           .andWhere('type', '=', 'person')
-          .andWhereRaw("(name like ? OR lastname like ? OR profile_name like ?)",['%' + reqObj.params.value + '%', '%' + reqObj.params.value + '%', '%' + reqObj.params.value + '%'])
+          .andWhereRaw("(name like ? OR profile_name like ?)",['%' + reqObj.params.value + '%', '%' + reqObj.params.value + '%'])
           .andWhere('id', '!=', reqObj.params.currentPersonId)
           .exec(callback)
       },
@@ -131,7 +130,6 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
     id: null,
     type: null,
     name: null,
-    lastname: null,
     profileName: null,
     isAnonymous: false,
     description : '',

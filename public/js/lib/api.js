@@ -142,7 +142,7 @@ module.exports = {
     /* Request to contribute to a voice.
      * @argument args.profileName <required> [String] the voice owner profileName
      * @argument args.voiceSlug <required> [String] the voice slug
-     * @argument args.data.message <required> [Text] the message to send to the organizaiton
+     * @argument args.data.message <required> [Text] the message to send to the organization
      * @argument callback <required> [Function]
      */
     voiceRequestToContribute : function voiceRequestToContribute(args, callback) {
@@ -235,7 +235,7 @@ module.exports = {
           content: args.articleContent,
           publishedAt: args.articleDate,
           imagePath : args.articleImage
-        }
+        };
 
         $.ajax({
             type : 'POST',
@@ -329,34 +329,6 @@ module.exports = {
             error : function error(err) { callback(true, err); }
         });
     },
-    /* Upload a photo to be added into a specific article.
-     * @argument args.profileName <required> [String] the voice owner profileName
-     * @argument args.voiceSlug <required> [String] the voice slug
-     * @argument args.data <required> [FormData] the image as FormData
-     * @argument callback <required> [Function]
-     */
-    uploadArticleImage : function uploadArticleImage(args, callback) {
-        if (!args.profileName || !args.voiceSlug || !args.data || !callback) {
-            throw new Error('Missing required params');
-        }
-
-        if ((typeof callback).toLowerCase() !== "function") {
-            throw new Error('Callback should be a function');
-        }
-
-
-        $.ajax({
-            type : 'POST',
-            url : '/' + args.profileName + '/' + args.voiceSlug + '/uploadPostImage',
-            headers : {'csrf-token' : this.token},
-            data : args.data,
-            cache : false,
-            contentType : false,
-            processData : false,
-            success : function success(data) { callback(false, data); },
-            error : function error(err) { callback(true, err); }
-        });
-    },
 
     /* Upload a photo to be added into a specific article.
      * @argument args.profileName <required> [String] the voice owner profileName
@@ -372,7 +344,6 @@ module.exports = {
         if ((typeof callback).toLowerCase() !== "function") {
             throw new Error('Callback should be a function');
         }
-
 
         $.ajax({
             type : 'POST',
@@ -587,7 +558,7 @@ module.exports = {
         });
     },
 
-   /* Search for Posts in Sources
+    /* Search for Posts in Sources
      * @argument args.profileName <required> [String] the voice owner profileName
      * @argument args.voiceSlug <required> [String] the voice slug
      * @argument args.source <required> [String] the source to search on ['googleNews', 'youtube']
@@ -621,7 +592,6 @@ module.exports = {
      * @argument args.data.image <optional> [File] entity's image
      * @argument args.data.background <optional> [File] entity's background
      * @argument args.data.name <optional> [String] entity's name
-     * @argument args.data.lastname <optional> [String] entity's lastname
      * @argument args.data.profileName <optional> [String] entity's profileName
      * @argument args.data.description <optional> [String] entity's description
      * @argument args.data.location <optional> [String] entity's location
@@ -955,7 +925,7 @@ module.exports = {
     /* Request invitation for membership of organization.
      * @argument args.profileName <required> [String] profileName of organization
      * @argument args.data.orgId <required> [hashid] entity ID of organization tp request membership of
-     * @argument args.data.message <required> [Text] the message to send to the organizaiton
+     * @argument args.data.message <required> [Text] the message to send to the organization
      * @argument callback <required> [Function]
      */
     requestMembership : function requestMembership(args, callback) {
@@ -1011,6 +981,34 @@ module.exports = {
             error : function error(err) {callback(true, err);}
         });
      },
+
+     /* Answer to an invitation.
+      * @argument args.profileName <required> [String] currentPerson profileName
+      * @argument args.threadId <required> [String]
+      * @argument args.messageId <required> [String]
+      * @argument args.data.action <required> ('accepted', 'ignore')
+      * @argument args.data.anonymous <optional>
+      * @argument callback <required> [Function]
+      */
+    threatAnswerInvitation : function threatAnswerInvitation(args, callback) {
+        if (!args.profileName || !args.threadId || !args.messageId || !args.data.action || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'POST',
+            url : '/' + args.profileName + '/messages/' + args.threadId + '/' + args.messageId  +'/answerInvite',
+            headers : {'csrf-token' : this.token},
+            dataType : 'json',
+            data : args.data,
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
 
     /* Invite user to become part of organization or contributor of voice.
      * @argument args.profileName <required> [String] currentPerson profileName
@@ -1116,6 +1114,242 @@ module.exports = {
                 query : args.query,
                 exclude : args.exclude || []
             },
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
+    /**************************************************************************
+     * DISCOVER
+     *************************************************************************/
+    /* The latest voices that have been created.
+     * @argument callback <required> [Function]
+     */
+    getNewVoices : function getNewVoices(callback) {
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'GET',
+            url : '/discover/new/voices',
+            headers : {'csrf-token' : this.token},
+            dataType : 'json',
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
+    /* The latest people that have been created. Does not return anonymous entities.
+     * @argument callback <required> [Function]
+     */
+    getNewPeople : function getNewPeople(callback) {
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'GET',
+            url : '/discover/new/people',
+            headers : {'csrf-token' : this.token},
+            dataType : 'json',
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
+    /* The latest organizations that have been created.
+     * @argument callback <required> [Function]
+     */
+    getNewOrganizations : function getNewOrganizations(callback) {
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'GET',
+            url : '/discover/new/organizations',
+            headers : {'csrf-token' : this.token},
+            dataType : 'json',
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
+    /* Return the voices with the most followers.
+     * @argument callback <required> [Function]
+     */
+    getTrendingVoices : function getTrendingVoices(callback) {
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'GET',
+            url : '/discover/trending/voices',
+            headers : {'csrf-token' : this.token},
+            dataType : 'json',
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
+    /* The voices with the most posts.
+     * @argument callback <required> [Function]
+     */
+    getTrendingUpdatedVoices : function getTrendingUpdatedVoices(callback) {
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'GET',
+            url : '/discover/trending/updatedVoices',
+            headers : {'csrf-token' : this.token},
+            dataType : 'json',
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
+    /* The people with the most followers. Anonymous users can't follow or be followed thus they are excluded.
+     * @argument callback <required> [Function]
+     */
+    getTrendingPeople : function getTrendingPeople(callback) {
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'GET',
+            url : '/discover/trending/people',
+            headers : {'csrf-token' : this.token},
+            dataType : 'json',
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
+    /* The organizations with the most followers.
+     * @argument callback <required> [Function]
+     */
+    getTrendingOrganizations : function getTrendingOrganizations(callback) {
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'GET',
+            url : '/discover/trending/organizations',
+            headers : {'csrf-token' : this.token},
+            dataType : 'json',
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
+    /**************************************************************************
+     * BROWSE
+     *************************************************************************/
+    /* Voices that have been featured.
+     * @argument callback <required> [Function]
+     */
+    getBrowseFeaturedVoices : function getBrowseFeaturedVoices(callback) {
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'GET',
+            url : '/browse/featured/voices',
+            headers : {'csrf-token' : this.token},
+            dataType : 'json',
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
+    /* People that have been featured.
+     * @argument callback <required> [Function]
+     */
+    getBrowseFeaturedPeople : function getBrowseFeaturedPeople(callback) {
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'GET',
+            url : '/browse/featured/people',
+            headers : {'csrf-token' : this.token},
+            dataType : 'json',
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
+    /* Organizations that have been featured.
+     * @argument callback <required> [Function]
+     */
+    getBrowseFeaturedOrganizations : function getBrowseFeaturedOrganizations(callback) {
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'GET',
+            url : '/browse/featured/organizations',
+            headers : {'csrf-token' : this.token},
+            dataType : 'json',
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
+    /**************************************************************************
+     * NOTIFICATIONS
+     *************************************************************************/
+    /* Get the current user/org's notifications.
+     * @argument args.profileName <required> [String] currentPerson profileName
+     * @argument callback <required> [Function]
+     */
+    getNotifications : function getNotifications(args, callback) {
+        if (!args.profileName || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'GET',
+            dataType : 'json',
+            url : '/' + args.profileName + '/notifications',
+            headers : {'csrf-token' : this.token},
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
+    /* Mark a particular notification as read for the current user.
+     * @argument args.profileName <required> [String] currentPerson profileName
+     * @argument args.data.notificationId <required> [Function] Hashids.encode notificationId
+     * @argument callback <required> [Function]
+     */
+    markNotificationAsRead : function markNotificationAsRead(args, callback) {
+        if (!args.profileName || !args.data.notificationId || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'POST',
+            url : '/' + args.profileName + '/notifications/markAsRead?_method=DELETE',
+            headers : {'csrf-token' : this.token},
+            data : {notificationId: args.data.notificationId},
             success : function success(data) {callback(false, data);},
             error : function error(err) {callback(true, err);}
         });

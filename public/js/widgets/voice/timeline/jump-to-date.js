@@ -1,12 +1,13 @@
 var moment = require('moment');
 var GeminiScrollbar = require('gemini-scrollbar');
+var Events = require('./../../../lib/events');
+var inlineStyle = require('./../../../lib/inline-style');
 
 Class(CV, 'VoiceTimelineJumpToDate').inherits(Widget)({
     prototype : {
         /* OPTIONS */
         postsCount : 0,
         container : null,
-        clockElement : null,
 
         /* PRIVATE */
         el : null,
@@ -22,17 +23,14 @@ Class(CV, 'VoiceTimelineJumpToDate').inherits(Widget)({
         },
 
         _autoSetup : function _autoSetup() {
-            this.appendChild(
-                new CV.PopoverBlocker({
-                    name : 'jumpToDatePopover',
-                    className : 'voice-timeline-popover -color-border-grey-light',
-                    title : 'Jump to',
-                    placement : 'bottom',
-                    toggler : this.clockElement,
-                    showCloseButton : true,
-                    hasScrollbar : true
-                })
-            ).render(this.container);
+            this.appendChild(new CV.PopoverBlocker({
+                name : 'jumpToDatePopover',
+                className : 'voice-timeline-popover -color-border-grey-light',
+                title : 'Jump to',
+                placement : 'bottom',
+                showCloseButton : true,
+                hasScrollbar : true
+            })).render(this.container);
 
             this.__createJumpToDateOptions(this.postsCount);
 
@@ -98,12 +96,26 @@ Class(CV, 'VoiceTimelineJumpToDate').inherits(Widget)({
          * @method _bindEvents <private> [Function]
          */
         _bindEvents : function _bindEvents() {
+            this._activatePopoverRef = this._activatePopover.bind(this);
+            Events.on(this.container, 'click', this._activatePopoverRef);
             this._handleActivateRef = this._handleActivate.bind(this);
-            this.jumpToDatePopover.bind('activate', this._handleActivateRef);
+            this.bind('jumpto:popover:position', this._handleActivateRef);
             this._handleDeactivateRef = this._handleDeactivate.bind(this);
             this.jumpToDatePopover.bind('deactivate', this._handleDeactivateRef);
 
             return this;
+        },
+
+        _activatePopover : function _activatePopover(ev) {
+            var popover = this.jumpToDatePopover.el;
+
+            this.jumpToDatePopover.activate();
+
+            inlineStyle(this.jumpToDatePopover.el, {
+                left: ev.pageX + 'px'
+            });
+
+            this.dispatch('jumpto:popover:position');
         },
 
         /* Popover activate handler
@@ -116,27 +128,22 @@ Class(CV, 'VoiceTimelineJumpToDate').inherits(Widget)({
             var farRight = left + width;
             var w = window.innerWidth;
             var diff = farRight - w;
-            var togglerLeft = this.jumpToDatePopover.toggler.getBoundingClientRect().left;
 
             if (diff > 0) {
-                popover.style.msTransform = 'translateX(' + ((diff + 10) * -1) + 'px)';
-                popover.style.webkitTransform = 'translateX(' + ((diff + 10) * -1) + 'px)';
-                popover.style.transform = 'translateX(' + ((diff + 10) * -1) + 'px)';
+                var transform = 'translateX(' + ((diff + 10) * -1) + 'px)';
+                inlineStyle(popover, {
+                    msTransform: transform,
+                    webkitTransform: transform,
+                    transform: transform
+                });
             }
 
             if (left < 0) {
                 popover.style.left = '10px';
             }
 
-            var arrowLeft = this.jumpToDatePopover.arrowElement.getBoundingClientRect().left;
-            this.jumpToDatePopover.arrowElement.style.msTransform = 'translateX(' + (togglerLeft - arrowLeft - 2) + 'px)';
-            this.jumpToDatePopover.arrowElement.style.webkitTransform = 'translateX(' + (togglerLeft - arrowLeft - 2) + 'px)';
-            this.jumpToDatePopover.arrowElement.style.transform = 'translateX(' + (togglerLeft - arrowLeft - 2) + 'px)';
-
             this.parent.activate();
             this.scrollbar.update();
-
-            left = width = farRight = w = diff = togglerLeft = arrowLeft = null;
         },
 
         /* Popover deactivate handler
@@ -175,7 +182,6 @@ Class(CV, 'VoiceTimelineJumpToDate').inherits(Widget)({
 
             this.postsCount = null;
             this.container = null;
-            this.clockElement = null;
 
             this.el = null;
             this._optionChilds = [];

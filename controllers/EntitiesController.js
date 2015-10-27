@@ -123,7 +123,6 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
           entity.setProperties({
             name: req.body.name || entity.name,
-            lastname: req.body.lastname || entity.lastname,
             profileName: req.body.profileName || entity.profileName,
             description: req.body.description || '',
             location: req.body.location || ''

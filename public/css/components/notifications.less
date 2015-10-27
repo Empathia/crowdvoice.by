@@ -1,21 +1,15 @@
 .cv-notifications {
   z-index: 2;
   position: fixed;
-  top: 5em;
-  right: 1.2em;
+  top: 6em;
+  right: 1em;
   will-change: transform;
-  /*height: 92%;*/
   overflow-y: auto;
-  padding-left: 10px;
-  padding-top: 10px;
+  padding: 0 5px;
   display: none;
-  .cv-notifications-container{
-    /*background: rgba(255,255,255, .7);
-    box-shadow: -8px 0px 6px rgba(255,255,255, .5);*/
-    padding-right: 20px;
-  }
+
   .cv-notification {
-    width: 560px;
+    width: 400px;
     margin-bottom: 1rem;
   }
 }
@@ -26,66 +20,20 @@
   background: @color-white;
   border-radius: 4px;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-  .notification-entity-voice{
-    &.-empty{
-      padding-top: 0px;
-      padding-left: 0px;
-    }
-    padding-top: 15px;
-    padding-left: 40px;
-    a{
-      color: #4d4d4d;
-      font-weight: bold;
-      -webkit-font-smoothing: antialiased;
-    }
-    p{
-      color: #A1B0B3;
-      font-size: 11px;
-    }
-    img{
-      border-radius: 4px;
-    }
-  }
 }
 
 .cv-notification__info {
-  padding: 20px;
+  padding: 10px;
   margin-right: 41px;
-  &.-is-link{
-    margin-right: 0px;
-    text-align: center;
-    &:hover {
-      border-radius: 4px 4px;
-    }
-    h4{
-      margin: 0px;
-    }
+
+  &.-is-link:hover {
+    border-radius: 4px 4px;
   }
+
   &:hover {
     box-shadow: 0 0 0 1px @color-primary;
     border-radius: 4px 0 0 4px;
   }
-
-}
-
-.cv-notification__info-main {
-  .main-avatar,
-  .main-text {
-    display: inline-block;
-  }
-
-  .main-avatar {
-    width: 28px;
-    height: 28px;
-  }
-
-  .main-text {
-    margin: 3px 0 0 10px;
-  }
-}
-
-.cv-notification__info-extra {
-  margin: 10px 0 0 38px;
 }
 
 .cv-notification__close {
@@ -106,13 +54,3 @@
     border-radius: 0 4px 4px 0;
   }
 }
-
-/* message */
-.cv-notification.message .cv-notification__info-extra {
-  font-size: 11px;
-  color: @color-neutral-mid;
-
-  &:before {content: '“'}
-  &:after {content: '...”'}
-}
-

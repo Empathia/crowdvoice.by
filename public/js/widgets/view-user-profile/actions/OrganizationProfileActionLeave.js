@@ -28,9 +28,14 @@ Class(CV, 'OrganizationProfileActionLeave').inherits(Widget)({
         },
 
         _setup : function _setup() {
-            this.appendChild(new CV.Loader({
-                name : 'spinner'
-            })).render(this.spinnerWrapper);
+            this.appendChild(new CV.Loading({
+                name : 'spinner',
+                size: 20
+            })).render(this.spinnerWrapper).setStyle({
+                webkitTransformOrigin: '0 0',
+                msTransformOrigin: '0 0',
+                transformOrigin: '0 0',
+            });
 
             this.appendChild(new CV.PopoverConfirm({
                 name : 'leavePopover',

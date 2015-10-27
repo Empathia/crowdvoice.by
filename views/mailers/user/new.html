@@ -1,12 +1,12 @@
 <pre>
 <% var entityDate = new Date();  %>
 <% var monthNames = ["January", "February", "March","April", "May", "June", "July","August", "September", "October","November", "December"];%>
-<% var day = entityDate.getDate(); %> 
+<% var day = entityDate.getDate(); %>
 <% var monthIndex = entityDate.getMonth(); %>
 <% var year = entityDate.getFullYear(); %>
 </pre>
 <!-- Change Background Image -->
-<div style="background-color:#F7F9FA !important;background: url('http://img42.com/kveXP+')right top;background-repeat: no-repeat; text-align: center; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; height: 100%;">
+<div style="background-color:#F7F9FA !important;background: url('<%= CONFIG.siteUrl[application.env]+'/img/cv-mailtemplate.png'%>')right top;background-repeat: no-repeat; text-align: center; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; height: 100%;">
 
   <!-- Layout Header title and links -->
   <div style="padding: 30px 0 25px 0; text-align: center;">
@@ -29,8 +29,8 @@
                   Before you can start using CrowdVoice.by we need you to activate your account. To do so, please click on the link below or copy and paste it in your browser.<br><br>
 
                   <b>Activation link:</b><br>
-                  <a href="<%= CONFIG.siteUrl[application.env] %>/session?username=<%= user.username %>&token=<%= user.token %>" style="font-size:13px;color:#FF9400;word-break: break-all;">
-                    <%= CONFIG.siteUrl[application.env] %>/session?username=<%= user.username %>&token=<%= user.token %>
+                  <a href="<%= CONFIG.siteUrl[application.env] %>/session?token=<%= user.token %>" style="font-size:13px;color:#FF9400;word-break: break-all;">
+                    <%= CONFIG.siteUrl[application.env] %>/session?token=<%= user.token %>
                   </a>
                 </p>
               </div>
@@ -43,9 +43,9 @@
 
     <!-- Layout footer -->
       <div style="font-size: 13px; padding: 30px 0 0 0; color: #66635c;text-align:center;">
-        <a target="blank_" href="https://twitter.com/CrowdVoice" style="padding: 0px 10px;text-decoration:none;vertical-align:super;"><img src="<%= CONFIG.siteUrl[application.env] %>/img/icons/icon-circle-twitter.png"/></a>
-        <a target="blank_" href="<%= CONFIG.siteUrl[application.env] %>" style="padding: 0px 10px;text-decoration:none;vertical-align: -webkit-baseline-middle;"><img src="<%= CONFIG.siteUrl[application.env] %>/img/icons/icon-logo-cv.png"/></a>
-        <a target="blank_" href="https://www.facebook.com/crowdvoice" style="padding: 0px 10px;text-decoration:none;vertical-align:super;"><img src="<%= CONFIG.siteUrl[application.env] %>/img/icons/icon-circle-facebook.png"/></a>
+        <a target="_blank" href="https://twitter.com/CrowdVoice" style="padding: 0px 10px;text-decoration:none;vertical-align:super;"><img src="<%= CONFIG.siteUrl[application.env] %>/img/icons/icon-circle-twitter.png"/></a>
+        <a target="_blank" href="<%= CONFIG.siteUrl[application.env] %>" style="padding: 0px 10px;text-decoration:none;vertical-align: middle;"><img src="<%= CONFIG.siteUrl[application.env] %>/img/icons/icon-logo-cv.png"/></a>
+        <a target="_blank" href="https://www.facebook.com/crowdvoice" style="padding: 0px 10px;text-decoration:none;vertical-align:super;"><img src="<%= CONFIG.siteUrl[application.env] %>/img/icons/icon-circle-facebook.png"/></a>
         <p style="font-size:12px;color:A1B0B3;">© Majal, 2015. All Rights Reserved</p>
       </div>
   </center>

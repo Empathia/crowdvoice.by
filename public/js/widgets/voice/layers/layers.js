@@ -8,7 +8,7 @@
  * - VoicePostLayersModerateAbstract : To handle the Voice Posts as on Moderation Mode
  */
 var moment = require('moment');
-var Velocity = require('velocity-animate');
+var ScrollTo = require('./../../../lib/scrollto');
 
 Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
     HTML : '<section class="voice-posts -rel"></section>',
@@ -100,21 +100,21 @@ Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
          * @method getScrollHeight <protected> [Function]
          */
         getScrollHeight : function getScrollHeight() {
-            return this.scrollableArea.scrollHeight;
+            throw new Error('VoicePostLayers.prototype.getScrollHeight not implemented');
         },
 
         /* Gets the scroll top of the scrollable area.
          * @method getScrollTop <protected> [Function]
          */
         getScrollTop : function getScrollTop() {
-            return this.scrollableArea.scrollTop;
+            throw new Error('VoicePostLayers.prototype.getScrollTop not implemented');
         },
 
         /* Scroll to a y position of the scrollable area.
          * @method getScrollTo <protected> [Function]
          */
-        scrollTo : function scrollTo(y) {
-            this.scrollableArea.scrollTop = y;
+        scrollTo : function scrollTo() {
+            throw new Error('VoicePostLayers.prototype.scrollTo not implemented');
         },
 
         /* Implementation of remove posts.
@@ -164,11 +164,11 @@ Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
             var _this = this;
 
             if (!layer) {
-                return void 0;
+                return;
             }
 
             if (layer === this.getCurrentMonthLayer()) {
-                return void 0;
+                return;
             }
 
             this.parent._listenScrollEvent = false;
@@ -179,11 +179,11 @@ Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
                 }
             });
 
-            Velocity(layer.el, 'scroll', {
-                container : _this.scrollableArea,
-                duration : 600,
-                easing : 'linear',
-                complete : function() {
+            ScrollTo(this.scrollableArea, {
+                x: 0,
+                y: layer.el.getBoundingClientRect().top,
+                duration: 600,
+                onComplete: function() {
                     _this.parent._listenScrollEvent = true;
                     _this.scrollTo(_this.getScrollTop() + 2);
                 }
@@ -284,14 +284,14 @@ Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
             }
 
             if (dateString === this._currentMonthString) {
-                return void 0;
+                return;
             }
 
             this._currentMonthString = dateString;
 
             // prevent to append childs if the layer is already filled
             if (this['postsLayer_' + dateString].getPosts().length) {
-                return void 0;
+                return;
             }
 
             // load from cache

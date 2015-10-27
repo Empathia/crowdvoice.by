@@ -124,19 +124,22 @@ var NotificationMailer = Module('NotificationMailer')({
             var template = new Thulium({ template: newMessageViewFile }),
               message = {
                 html: '',
-                subject: 'CrowdVoice.by - You have received a new message from ' + sender[0].name + (sender[0].lastname ? ' ' + sender[0].lastname : ''),
+                subject: 'CrowdVoice.by - You have received a new message from ' + sender[0].name,
                 from_email: 'notifications@crowdvoice.by',
                 from_name: 'CrowdVoice.by',
                 to: [],
                 important: true,
                 auto_text: true,
                 inline_css: true,
-              }
+              },
+              realThread = _.clone(info.thread)
+
+            realThread.id = hashids.encode(realThread.id)
 
             template.parseSync().renderSync({
               params: {
                 receiver: receiver,
-                thread: info.thread,
+                thread: realThread,
                 message: info.message,
                 sender: presented[0],
               },
@@ -227,19 +230,22 @@ var NotificationMailer = Module('NotificationMailer')({
             var template = new Thulium({ template: newInvitationViewFile }),
               message = {
                 html: '',
-                subject: 'CrowdVoice.by - You have received a new invitation from ' + sender[0].name + (sender[0].lastname ? ' ' + sender[0].lastname : ''),
+                subject: 'CrowdVoice.by - You have received a new invitation from ' + sender[0].name,
                 from_email: 'notifications@crowdvoice.by',
                 from_name: 'CrowdVoice.by',
                 to: [],
                 important: true,
                 auto_text: true,
                 inline_css: true,
-              }
+              },
+              realThread = _.clone(info.thread)
+
+            realThread.id = hashids.encode(realThread.id)
 
             template.parseSync().renderSync({
               params: {
                 receiver: receiver,
-                thread: info.thread,
+                thread: realThread,
                 message: info.message,
                 sender: presented[0],
                 invitationVoice: invitationVoice,
@@ -332,19 +338,22 @@ var NotificationMailer = Module('NotificationMailer')({
             var template = new Thulium({ template: newRequestViewFile }),
               message = {
                 html: '',
-                subject: 'CrowdVoice.by - You have received a new request from ' + sender[0].name + (sender[0].lastname ? ' ' + sender[0].lastname : ''),
+                subject: 'CrowdVoice.by - You have received a new request from ' + sender[0].name,
                 from_email: 'notifications@crowdvoice.by',
                 from_name: 'CrowdVoice.by',
                 to: [],
                 important: true,
                 auto_text: true,
                 inline_css: true,
-              }
+              },
+              realThread = _.clone(info.thread)
+
+            realThread.id = hashids.encode(realThread.id)
 
             template.parseSync().renderSync({
               params: {
                 receiver: receiver,
-                thread: info.thread,
+                thread: realThread,
                 message: info.message,
                 sender: presented[0],
                 requestVoice: requestVoice,

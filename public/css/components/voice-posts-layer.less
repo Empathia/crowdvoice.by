@@ -31,9 +31,10 @@
   width: 40px;
   white-space: nowrap;
   overflow: hidden;
+  pointer-events: none;
 
   .cv-voice-posts-layer.first & {
-    top: 4em;
+    top: 25px;
   }
 }
 
@@ -42,12 +43,13 @@
   font-size: .8rem;
   width: 100%;
   opacity: 0;
+  pointer-events: auto;
 
   &.active {
-    border-top-width: 1px;
-    border-color: @color-grey-light;
-    color: @color-grey-light;
-    opacity: 1;
+    // border-top-width: 1px;
+    // border-color: @color-grey-light;
+    // color: @color-grey-light;
+    opacity: .5;
   }
 }
 

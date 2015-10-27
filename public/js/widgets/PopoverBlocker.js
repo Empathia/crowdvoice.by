@@ -1,4 +1,4 @@
-/* jshint multistr: true */
+/* globals App */
 /* @class CV.PopoverBlocker – Creates pop overs that when activated they will be placed on top of every content,
  *
  * @options
@@ -202,6 +202,8 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
         _activate : function _activate() {
             Widget.prototype._activate.call(this);
 
+            App.hideScrollbar();
+
             this._placeElement();
             this.container.appendChild(this.backdropElement);
 
@@ -215,6 +217,8 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
          */
         _deactivate : function _deactivate() {
             Widget.prototype._deactivate.call(this);
+
+            App.showScrollbar();
 
             this._unplaceElement();
             this.backdropElement.classList.remove('active');

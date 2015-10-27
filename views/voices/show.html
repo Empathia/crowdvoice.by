@@ -3,7 +3,7 @@
 
   <section class="voice-intro -rel">
     <h1 class="voice-heading -font-bold -color-white -m0"><%= voice.title %></h1>
-    <div class="voice-info__author -inline-block">
+    <div class="voice-info__author -inline-block -clickable">
       <img class="-rounded" width="18" height="18" src="<%= voice.owner.images.small.url %>">
       <span class="voice-info__author-name -inline-block">
         by <%= voice.owner.name + ' ' + (voice.owner.lastname || '') %>
@@ -14,19 +14,10 @@
 </main>
 
 <script>
-  // App
-  var ns = [];
-  <% if (typeof notifications !== "undefined") { %>
-    ns = <%= JSON.stringify(notifications) %>;
-  <% } %>
-  var App = new CV.App({
-    notifications : ns,
-    currentPerson : currentPerson
-  });
+  var App = new CV.App();
   App.addInteractiveSidebar();
   App.socketStart();
 
-  // Voice
   App.appendChild(new CV.VoiceView({
     name                  : 'Voice',
     data                  : <%= JSON.stringify(voice) %>,
@@ -34,7 +25,7 @@
     backgroundElement     : document.querySelector('.voice-background-cover'),
     followerCount         : <%= voice.followers.length %>,
     aboutBoxButtonElement : document.querySelector('.voice-about-show-btn'),
-    scrollableArea        : document.querySelector('.yield'),
+    scrollableArea        : window,
     postsCount            : <%= JSON.stringify(postsCount) %>,
     allowPosting          : <%= allowPosting %>,
     allowPostEditing      : <%= allowPostEditing %>,

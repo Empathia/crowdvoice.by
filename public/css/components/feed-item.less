@@ -1,0 +1,42 @@
+.cv-feed-item__info-main {
+  position: relative;
+  min-height: 28px;
+
+  .main-avatar,
+  .main-text {
+    display: inline-block;
+  }
+
+  .main-avatar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 28px;
+    height: 28px;
+  }
+
+  .main-text {
+    margin: 3px 0 0 38px;
+  }
+}
+
+.cv-feed-item__info-extra {
+  margin: 10px 0 0 38px;
+  &:empty {margin: 0;}
+}
+
+.cv-feed-item__time {
+  font-size: 11px;
+  line-height: 1;
+  text-align: right;
+  color: @color-neutral-mid;
+}
+
+/* message */
+.cv-feed-item.message .cv-feed-item__info-extra {
+  font-size: 11px;
+  color: @color-neutral-mid;
+
+  &:before {content: '“'}
+  &:after {content: '...”'}
+}

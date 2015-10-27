@@ -1,5 +1,9 @@
 <!doctype html>
-<html lang="en">
+<% if (typeof pageName !== "undefined") { %>
+<html lang="en" class="<%= pageName %>">
+<% } else { %>
+<html lang="en" class="page-inner">
+<% } %>
 <head>
   <meta charset="UTF-8">
   <meta content="authenticity_token" name="csrf-param" />
@@ -13,11 +17,7 @@
   <script src="/socket.io/socket.io.js"></script>
   <script src="/dist/bundle.js"></script>
 </head>
-<% if (typeof pageName !== "undefined") { %>
-<body class="<%= pageName %>">
-<% } else { %>
-<body class="page-inner">
-<% } %>
+<body>
   <svg width="0" height="0" style="position: absolute;"><defs><linearGradient x1="31.38%" y1="0%" x2="74.816%" y2="100%" id="bea"><stop stop-color="#3AE0D0" offset="0%"/><stop stop-color="#EE8100" offset="100%"/></linearGradient><filter x="-50%" y="-50%" width="200%" height="200%" filterUnits="objectBoundingBox" id="beb"><feOffset dy="1" in="SourceAlpha" result="shadowOffsetOuter1"/><feGaussianBlur stdDeviation=".5" in="shadowOffsetOuter1" result="shadowBlurOuter1"/><feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.175 0" in="shadowBlurOuter1" result="shadowMatrixOuter1"/><feMerge><feMergeNode in="shadowMatrixOuter1"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><symbol viewBox="0 0 32 36" id="svg-logo"><g fill="none" fill-rule="evenodd"><path stroke-opacity=".247" stroke="#000" fill="url(#bea)" d="M15.988 0L32 9v18l-16.012 9L0 27V9z"/><text fill="#fff" filter="url(#beb)" font-family="Open Sans" font-size="17" font-weight="526"><tspan x="5" y="25" fill="#FFF">CV</tspan></text></g></symbol></svg>
   <%= renderPartial('shared/svg/sprite.svg') %>
   <div class="app-wrapper">
@@ -55,7 +55,7 @@
           </span>
         </a>
         <% if (currentPerson) { %>
-          <a href="/<%= currentPerson.profileName %>/feed" class="sidebar-link">
+          <a href="/<%= currentPerson.profileName %>/feed/" class="sidebar-link">
             <svg class="sidebar-link-svg"><use xlink:href="#svg-activity"></use></svg>
             <span class="sidebar-link-label">My Feed</span>
           </a>
@@ -65,21 +65,21 @@
             <span class="sidebar-link-label">Home</span>
           </a>
         <% } %>
-        <a href="/page/about" class="sidebar-link">
+        <a href="/page/about/" class="sidebar-link">
           <svg class="sidebar-link-svg"><use xlink:href="#svg-info"></use></svg>
           <span class="sidebar-link-label">About</span>
         </a>
         <% if (currentPerson) { %>
           <h4 class="sidebar-heading -upper">My Stuff</h4>
-          <a href="/<%= currentPerson.profileName %>/myvoices" class="sidebar-link">
+          <a href="/<%= currentPerson.profileName %>/myvoices/" class="sidebar-link">
             <svg class="sidebar-link-svg"><use xlink:href="#svg-my-voices"></use></svg>
             <span class="sidebar-link-label">My Voices</span>
           </a>
-          <a href="/<%= currentPerson.profileName %>/savedPosts" class="sidebar-link">
+          <a href="/<%= currentPerson.profileName %>/savedPosts/" class="sidebar-link">
             <svg class="sidebar-link-svg"><use xlink:href="#svg-saved-posts"></use></svg>
             <span class="sidebar-link-label">Saved Posts</span>
           </a>
-          <a href="/<%= currentPerson.profileName %>/messages" class="sidebar-link sidebar-link-messages -rel">
+          <a href="/<%= currentPerson.profileName %>/messages/" class="sidebar-link sidebar-link-messages -rel">
             <div class="read">
               <svg class="sidebar-link-svg"><use xlink:href="#svg-messages-read"></use></svg>
               <span class="sidebar-link-label">Messages</span>
@@ -92,19 +92,19 @@
           </a>
         <% } %>
         <h4 class="sidebar-heading -upper">Discover</h4>
-        <a href="/discover/trending" class="sidebar-link">
+        <a href="/discover/trending/" class="sidebar-link">
           <svg class="sidebar-link-svg"><use xlink:href="#svg-trending"></use></svg>
           <span class="sidebar-link-label">Trending</span>
         </a>
-        <a href="/discover/new" class="sidebar-link">
+        <a href="/discover/new/" class="sidebar-link">
           <svg class="sidebar-link-svg"><use xlink:href="#svg-star"></use></svg>
           <span class="sidebar-link-label">New</span>
         </a>
-        <a href="/discover/recommended" class="sidebar-link">
+        <a href="/discover/recommended/" class="sidebar-link">
           <svg class="sidebar-link-svg"><use xlink:href="#svg-thumbs-up"></use></svg>
           <span class="sidebar-link-label">Recommended</span>
         </a>
-        <a href="/discover/browse" class="sidebar-link">
+        <a href="/discover/browse/" class="sidebar-link">
           <svg class="sidebar-link-svg"><use xlink:href="#svg-browse"></use></svg>
           <span class="sidebar-link-label">Browse</span>
         </a>

@@ -1,393 +1,88 @@
-<main role="main" class="cv-main-content myvoices-page -rel">
+<main role="main" class="cv-main-content -rel -row">
+  <div class="-col-9 -pr2">
+    <div class="page-heading cv-items-list">
+      <h1 class="page-heading__title -mt0 -inline-block">My Feed</h1>
+      <div class="feed__account-dropdown -ml1 profile-select-options -inline-block"></div>
+    </div>
+    <div class="profile-body -rel"></div>
+  </div>
 
-	<div class="-col-9 -pr1">
-	  <section class="profile-voices-intro">
-	      <h1 class="profile-heading -inline-block -font-bold -m0">My Feed</h1>
-	      <div class="profile-select-options -inline-block">
-
-	      </div>
-	      <br>
-	      <article role="article" class="profile-menu -row -rel"></article>
-	  </section>
-
-	  <section class="profile-body -rel">
-
-	    <div class="feed-item" style="display: none;">
-	    	<div class="feed-item-time">3 hours</div>
-	    	<div class="feed-item-image">
-	    		<img class="voice-cover" width="48" height="48" src="/uploads/development/voice_6/image_small.jpeg">
-	    	</div>
-	    	<div class="feed-item-content">
-	    		<div class="feed-item-title">
-		    		<a href="#"><b>Esra'a Al Shafei</b></a> followed organizations.
-		  		</div>
-	    		<div class="feed-item-list1"></div>
-	    	</div>
-	    </div>
-
-	  </section>
-	</div>
-	<div class="-col-3 -pl1">
-		<section class="profile-voices-intro">
-	      <h3 class="profile-heading -inline-block -font-bold -m0">Top Voices</h3>
-	      <br>
-	      <article role="article" class="profile-menu -row -rel"></article>
-	  </section>
-
-	  <section class="profile-sidebar -rel">
-	  	<div class="voices-list">
-	  	</div>
-	  	<br>
-	  	<div class="voices-button">
-	  		<a href="/discover/trending"></a>
-	  	</div>
-	  	<br>
-	  	<div class="voices-stats">
-
-				<div class="-col-6">
-					<div class="profile-stat stat-voices">
-						<div class="stat-num"></div>
-						<p>Voices</p>
-						<span>you created or are contributing on</span>
-					</div>
-				</div>
-				<div class="-col-6">
-					<div class="profile-stat stat-organizations">
-						<div class="stat-num"></div>
-						<p>Organizations</p>
-						<span>that you own or are a member of</span>
-					</div>
-				</div>
-
-	  	</div>
-
-
-	  </section>
-	</div>
+  <div class="-col-3 -pl2" data-feed-sidebar>
+    <div class="feed__top-voices-title page-heading cv-items-list">
+      <h3 class="profile-heading -inline-block -font-bold -m0">Top Voices</h3>
+    </div>
+    <div class="profile-sidebar -rel -pt2">
+      <div class="feed__top-voices-list -rel -pb2"></div>
+      <a class="ui-btn -primary -md -block -mb2 -text-center" href="/discover/trending">Discover More</a>
+    </div>
+  </div>
 </main>
 
 <script>
+  var App = new CV.App();
+  App.addInteractiveSidebar();
+  var Feed = new CV.Views.Feed({
+    el: document.querySelector('.cv-main-content'),
+    feedItems: <%= JSON.stringify(feed) %>
+  });
 
-	var ns = [];
-	<% if (typeof notifications !== "undefined") { %>
-  	ns = <%= JSON.stringify(notifications) %>;
-	<% } %>
-	var App = new CV.App({
-  	notifications : ns,
-  	currentPerson : currentPerson
-	});
-	App.addInteractiveSidebar();
-
-	var feedItems = <%= JSON.stringify(feed) %>;
-
-	//feedItems.feed.forEach(function(feed){
-	//		if(feed.itemType == 'voice'){
-	//			console.log(feed);
-	//		}
-	//  });
-
-	//console.log(feedItems);
-
-	var currentOrganization;
-
+  var currentOrganization;
   <% if (typeof organization !== "undefined") { %>
     currentOrganization = <%= JSON.stringify(organization) %>;
   <% } %>
 
-	var feedItemEl = '\
-		<div class="feed-item">\
-    	<div class="feed-item-time"></div>\
-    	<div class="feed-item-image">\
-    		<img class="voice-cover" width="48" height="48" src="">\
-    	</div>\
-    	<div class="feed-item-content">\
-    		<div class="feed-item-title">\
-	    		<a href="#"><b></b></a> <span></span>.\
-	  		</div>\
-    		<div class="feed-item-list"></div>\
-    	</div>\
-    </div>\
-	';
+  // if person has owned organizations => render dropdown
+  if (
+    currentPerson.ownedOrganizations != null &&
+    currentPerson.ownedOrganizations.length > 0
+  ) {
+    if (currentOrganization) {
+      var feedOptions = {
+        "1": {
+          label: currentPerson.name+"\'s feed",
+          name: currentPerson.profileName
+        }
+      };
 
-	//************* tmp **********************
+      currentPerson.ownedOrganizations.forEach(function(org, index){
+        var isActive = false;
+        if(currentOrganization.id == org.id){
+          isActive = true;
+        }
+        feedOptions[index+2] = {
+          label: org.name+"\'s feed",
+          name: org.profileName,
+          active : isActive
+        };
+      });
+    } else {
+      var feedOptions = {
+        "1": {
+          label: currentPerson.name+"\'s feed",
+          name: currentPerson.profileName,
+          active : true
+        }
+      };
 
-	//var feedGenerator = new CV.feedGenerator({
-	//	type : 'feed feed'
-	//});
-//
-	//feedGenerator.bind('ready', function(){
-	//	addFeedItems(feedGenerator.feedItems);
-	//});
+      currentPerson.ownedOrganizations.forEach(function(org, index){
+        feedOptions[index+2] = {
+          label: org.name+"\'s feed",
+          name: org.profileName
+        };
+      });
+    }
 
+    var feedSelect = new CV.Select({
+      style : 'tiny',
+      label : 'All feeds',
+      name  : 'feedSelect',
+      options: feedOptions
+    }).render($('.profile-select-options'));
 
-	//****************************************
-
-  var sortedFeedItems = feedItems.feed.sort(this.compare).reverse();
-
-	if (currentPerson.isAnonymous == true){
-
-		$('.voices-stats').remove();
-
-		var onboarding = '\
-			<section class="profile-onboarding -mid-height -rel">\
-		    <h1>You can\'t preview your feed in anonymous mode.</h1>\
-		    <p>Please disable anonymous mode to follow voices, users and organzations and view all their recent activity. This will also help you discover more of them to contact, contribute, join and follow.</p>\
-		    <br>\
-		  </section>';
-
-		  $('.profile-body').html(onboarding);
-
-	} else {
-
-		var numVoices = document.querySelector(".stat-voices .stat-num");
-		numVoices.textContent = currentPerson.voicesCount;
-
-		var numOrgs = document.querySelector(".stat-organizations .stat-num");
-
-		if (currentPerson.organizations == null){
-			numOrgs.textContent = '0';
-		} else {
-			numOrgs.textContent = currentPerson.organizations.length;
-		}
-
-		if ( sortedFeedItems.length > 0 ){
-
-		  addFeedItems(sortedFeedItems);
-
-		}else{
-
-		var onboarding = '\
-		<section class="profile-onboarding -mid-height -rel">\
-		    <h1>Nothing to show yet</h1>\
-		    <p>Follow voices, users and organzations to view all their recent activity.\
-		    This will also help you discover more of them to contact, contribute, join and follow.</p>\
-		    <br>\
-		    <a href="/discover/browse"><button class="cv-button primary small">Explore and Discover!</button></a>\
-		</section>';
-
-		$('.profile-body').html(onboarding);
-
-		}
-	}
-
-
-
-	function addFeedItems(feedItems){
-		feedItems.forEach(function(feed){
-
-			var timeElapsed = moment(feed.createdAt).from(moment());
-			var feedEl = $(feedItemEl);
-
-			feedEl.find('.feed-item-image img').attr('src', feed.actionDoer.images && feed.actionDoer.images.card && feed.actionDoer.images.card.url);
-			feedEl.find('.feed-item-time').text( moment(feed.createdAt).from(moment()) );
-			feedEl.find('.feed-item-title > a > b').text(feed.actionDoer.name + ' ' + feed.actionDoer.lastname);
-			feedEl.find('.feed-item-title > a').attr('href', '/' + feed.actionDoer.profileName);
-
-			var typeWidget;
-
-
-			switch (feed.action) {
-		      case 'created':
-
-		      	if(feed.itemType == 'entity'){
-						feedEl.find('.feed-item-title > span').text(feed.action + ' ' + feed.entity.type + 's');
-			  			typeWidget = new CV.CardMini({data:feed.entity}).render(feedEl.find('.feed-item-list'));
-			  		} else if (feed.itemType == 'voice'){
-			  			feedEl.find('.feed-item-title > span').text(feed.action + ' ' + feed.itemType + 's');
-			  			typeWidget = new CV.VoiceCoverMini({data:feed.voice}).render(feedEl.find('.feed-item-list'));
-			  		}
-		        typeWidget.showMeta();
-		        break;
-		      case 'followed':
-
-		      	if(feed.itemType == 'entity'){
-						feedEl.find('.feed-item-title > span').text(feed.action + ' ' + feed.entity.type + 's');
-			  			typeWidget = new CV.CardMini({data:feed.entity}).render(feedEl.find('.feed-item-list'));
-			  		} else if (feed.itemType == 'voice'){
-			  			feedEl.find('.feed-item-title > span').text(feed.action + ' ' + feed.itemType + 's');
-			  			typeWidget = new CV.VoiceCoverMini({data:feed.voice}).render(feedEl.find('.feed-item-list'));
-			  		}
-		        typeWidget.showMeta();
-		        break;
-		      case 'new posts':
-
-		      	if (feed.itemType == 'voice'){
-			  			feedEl.find('.feed-item-title > span').text('added ' + feed.action + ' to ' + feed.itemType);
-			  			typeWidget = new CV.VoiceCoverMini({data:feed.voice}).render(feedEl.find('.feed-item-list'));
-			  		}
-		        typeWidget.showMeta();
-		        break;
-		      case 'changed avatar':
-
-						feedEl.find('.feed-item-title > span').text(feed.action);
-		        break;
-		      case 'changed background':
-
-						feedEl.find('.feed-item-title > span').text(feed.action);
-		        break;
-		      case 'changed title':
-
-		      	if (feed.itemType == 'voice'){
-			  			feedEl.find('.feed-item-title > span').text(feed.action + ' to a ' + feed.itemType);
-			  			typeWidget = new CV.VoiceCoverMini({data:feed.voice}).render(feedEl.find('.feed-item-list'));
-			  		}
-		        typeWidget.showMeta();
-		        break;
-		      case 'changed description':
-
-		      	if (feed.itemType == 'voice'){
-			  			feedEl.find('.feed-item-title > span').text(feed.action + ' to a ' + feed.itemType);
-			  			typeWidget = new CV.VoiceCoverMini({data:feed.voice}).render(feedEl.find('.feed-item-list'));
-			  		}
-		        typeWidget.showMeta();
-		        break;
-            case 'became public member':
-              if (feed.itemType === 'entity') {
-                feedEl.find('.feed-item-title > span').text(feed.action + ' of ' + feed.entity.type);
-                typeWidget = new CV.CardMini({data:feed.entity}).render(feedEl.find('.feed-item-list'));
-                typeWidget.showMeta();
-              }
-              break;
-            case 'became public contributor':
-                if (feed.itemType === 'voice') {
-                  feedEl.find('.feed-item-title > span').text(feed.action + ' of a ' + feed.itemType);
-                  typeWidget = new CV.VoiceCoverMini({data:feed.voice}).render(feedEl.find('.feed-item-list'));
-                  typeWidget.showMeta();
-                }
-                break
-          default:
-		        // \_||_/
-		    }
-
-			$('.profile-body').append(feedEl);
-
-	  });
-	}
-
-  function compare(a,b) {
-    if (a.createdAt < b.createdAt)
-      return -1;
-    if (a.createdAt > b.createdAt)
-      return 1;
-    return 0;
+    for (feed in feedOptions){
+      feedSelect[feedOptions[feed].name].on('click', function(){
+        window.location = '/' + $(this).attr('name') + '/feed';
+      });
+    }
   }
-
-  if(currentPerson.ownedOrganizations != null && currentPerson.ownedOrganizations.length > 0){
-
-  	if (currentOrganization) {
-
-  		var feedOptions = {
-				"1": {label: currentPerson.name+"\'s feed", name: currentPerson.profileName}
-			};
-
-			currentPerson.ownedOrganizations.forEach(function(org, index){
-				var isActive = false;
-				if(currentOrganization.id == org.id){
-					isActive = true;
-				}
-				feedOptions[index+2] = {label: org.name+"\'s feed", name: org.profileName, active : isActive};
-
-			});
-
-  	} else {
-
-		  var feedOptions = {
-				"1": {label: currentPerson.name+"\'s feed", name: currentPerson.profileName, active : true}
-			};
-
-			currentPerson.ownedOrganizations.forEach(function(org, index){
-				feedOptions[index+2] = {label: org.name+"\'s feed", name: org.profileName};
-			});
-
-		}
-
-		var feedSelect = new CV.Select({
-			style : 'tiny',
-			label : 'All feeds',
-			name  : 'feedSelect',
-			options: feedOptions
-		}).render($('.profile-select-options'));
-
-		for (feed in feedOptions){
-			feedSelect[feedOptions[feed].name].on('click', function(){
-				window.location = '/' + $(this).attr('name') + '/feed';
-			});
-		}
-
-	}
-
-	var isFeed = true;
-
-	if (!isFeed){
-		var contentWrapper = document.querySelector('.profile-body');
-
-		contentWrapper.innerHTML = onboarding;
-		var buttonExplore = new CV.Button({
-		    style   : 'primary',
-		    type    : 'single',
-		    label   : 'Explore and Discover!',
-		    name    : 'buttonexplore'
-		}).render(document.querySelector('.profile-onboarding'));
-
-		buttonExplore.element.on('click', function(){
-			console.log('explore');
-		});
-	}
-	function renderData(data, instance, className, showMeta){
-
-        var itemsWrapper = document.querySelector('.'+className);
-        var itemsElements = [];
-
-        data.forEach(function(item, index) {
-	          var itemWidget = new instance({data:item}).render(itemsWrapper);
-	          if(showMeta){
-	            itemWidget.showMeta();
-	          }
-			itemWidget.element.addClass('id-' + item.id);
-	        itemsElements.push(itemWidget.el);
-        });
-
-	}
-
-	$.ajax({
-		type: "GET",
-		url:'/discover/trending/voices',
-		headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
-		data : {},
-		dataType : 'json',
-		success: function(data) {
-		  renderData(data.slice(0,6), CV.VoiceCoverMini, 'voices-list', false);
-
-		}
-	});
-
-
-
-	$.ajax({
-		type : 'POST',
-		url : '/' + currentPerson.profileName + '/notifications/markAllAsRead?_method=DELETE',
-		headers : { 'csrf-token' : $('meta[name="csrf-token"]').attr('content') },
-		success : function success(data) {
-			//find
-			console.log('All notifications marked as read');
-			$('.header-notification-button').find('.ui-badge').hide();
-          	$('.header-notification-button').removeClass('has-new-notifications');
-		},
-		error : function error(err) {
-			console.log(err);
-		}
-	});
-
-
-	var buttonDiscover = new CV.Button({
-		style   : 'primary small full',
-		type    : 'single',
-		label   : 'Discover More',
-		name    : 'buttonDiscover'
-	}).render(document.querySelector('.voices-button a'));
-
-	buttonDiscover.element.on('click', function(){
-		console.log('click');
-	});
-
 </script>

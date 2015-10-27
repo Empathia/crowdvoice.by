@@ -46,8 +46,18 @@
   </header>
 
   <style media="screen">
-      body.page-inner > .cv-main-sidebar .cv-main-logo-type, body.page-inner > .cv-main-sidebar .sidebar-heading, body.page-inner > .cv-main-sidebar .sidebar-link-label {
+      .page-inner > .cv-main-sidebar .cv-main-logo-type,
+      .page-inner > .cv-main-sidebar .sidebar-heading,
+      .page-inner > .cv-main-sidebar .sidebar-link-label {
           opacity : 1;
+      }
+
+      .page-inner > .cv-main-sidebar .cv-main-logo-type {
+        transform: translateX(0);
+      }
+
+      .cv-main-header .cv-main-logo {
+        display: none;
       }
   </style>
 

@@ -1,6 +1,6 @@
-/* jshint multistr: true */
 var moment = require('moment');
 var Velocity = require('velocity-animate');
+var Events = require('./../../../lib/events');
 
 Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
     HTML : '\
@@ -78,7 +78,6 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
             this.appendChild(new CV.VoiceTimelineJumpToDate({
                 name : 'jumpToDate',
                 postsCount : postsCount,
-                clockElement : this.el,
                 container : this.el
             })).render(this.el);
         },
@@ -90,7 +89,10 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
             this.readAndUpdateRef = this._readAndUpdate.bind(this);
 
             this.scrollHandlerRef = this._scrollHandler.bind(this);
-            this.scrollableArea.addEventListener('scroll', this.scrollHandlerRef, false);
+            Events.on(this.scrollableArea, 'scroll', this.scrollHandlerRef);
+
+            this.resizeHandlerRef = this.updateVars.bind(this);
+            Events.on(this._window, 'resize', this.resizeHandlerRef);
 
             return this;
         },
@@ -114,7 +116,6 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
          */
         _readAndUpdate : function _readAndUpdate() {
             var scrollPercentage, scrollViewportPixels, elem, scaledPercentage, scaledPixels;
-            // var degs;
 
             scrollPercentage = 100 * this._lastScrollY / (this._totalHeight - this._clientHeight);
             scrollViewportPixels = scrollPercentage * this._clientHeight / 100;
@@ -132,29 +133,7 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
                 scaledPercentage = 0;
             }
 
-            // scaledPixels = ~~((this._clientWidth - this._timelineOffsetRight) * scaledPercentage / 100);
-            // 60 (sidebar-width) + 14 (clock-width) = 74
             scaledPixels = ~~((this._clientWidth - 74) * scaledPercentage / 100);
-
-            // if (scaledPixels < this._timelineOffsetLeft) {
-            //     scaledPixels = this._timelineOffsetLeft;
-            // }
-
-            // degs = scaledPercentage * 3.6;
-
-            // Velocity(this.hourElement, 'stop', true);
-            // Velocity(this.hourElement, {
-            //     rotateZ: (degs * (this._rotateFactor / 2)) + 'deg'
-            // }, {
-            //     easing: 'ease'
-            // });
-
-            // Velocity(this.minutesElement, 'stop', true);
-            // Velocity(this.minutesElement, {
-            //     rotateZ: (degs * this._rotateFactor) + 'deg'
-            // }, {
-            //     easing: 'ease'
-            // });
 
             Velocity(this.clockWrapper, 'stop', true);
             Velocity(this.clockWrapper, {
@@ -207,8 +186,11 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
 
-            this.scrollableArea.removeEventListener('scroll', this.scrollHandlerRef, false);
+            Events.off(this.scrollableArea, 'scroll', this.scrollHandlerRef);
             this.scrollHandlerRef = null;
+
+            Events.off(this._window, 'resize', this.resizeHandlerRef);
+            this.resizeHandlerRef = null;
         }
     }
 });

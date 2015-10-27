@@ -1,4 +1,3 @@
-/* jshint multistr: true */
 Class(CV, 'VoiceTimelineJumpToDateItem').inherits(Widget).includes(CV.WidgetUtils)({
     ELEMENT_CLASS :'voice-timeline-popover_option ui-vertical-list-item',
 

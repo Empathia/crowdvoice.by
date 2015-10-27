@@ -3,19 +3,6 @@
   margin: 0 -15px;
   padding-top: 25px;
   min-height: 185px;
-
-  > .cv-loader {
-    top: 100px;
-    left: 50%;
-    opacity: 1;
-    transition: opacity 300ms linear;
-
-    &.disable {opacity: 0;}
-  }
-
-  .ball-spin-fade-loader > div {
-    background-color: @color-neutral-x-mid;
-  }
 }
 
 .responsive-width-voice-covers {
@@ -124,18 +111,6 @@
   display: inline-block;
   width: 20px;
   height: 25px;
-
-  .cv-loader {
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    transform: scale(.25);
-  }
-
-  .ball-spin-fade-loader > div {
-    background-color: @color-neutral-x-mid;
-  }
 }
 
 hr{
@@ -314,44 +289,6 @@ hr{
 	&.has-subtitle{
 		padding-top: 15px;
 	}
-	.feed-item{
-		border-top: 1px solid @color-menu-border-light;
-		position: relative;
-		padding-bottom: 20px;
-		min-height: 95px;
-		.feed-item-time{
-			text-align: right;
-			font-size: 11px;
-			color: @color-neutral-mid;
-			padding-top: 10px;
-			line-height: 11px;
-		}
-		.feed-item-image{
-			width: 75px;
-			position: absolute;
-			top: 25px;
-			left: 0px;
-			img{
-				border-radius: 6px;
-			}
-		}
-		.feed-item-content{
-			padding-left: 75px;
-			.feed-item-title{
-				padding-bottom: 10px;
-			}
-			.feed-item-list,
-			.feed-item-list1,
-			.feed-item-list2{
-				.cv-voice-cover,
-				.card-mini{
-					padding: 15px;
-					margin-bottom: 10px;
-					border: 1px solid @color-menu-border;
-				}
-			}
-		}
-	}
 }
 
 .profile-content-body{
@@ -420,13 +357,6 @@ hr{
 }
 
 .profile-sidebar{
-	padding: 35px 0px 25px 0px;
-	.cv-voice-cover{
-		padding-bottom: 20px;
-		&:last-child{
-			padding-bottom: 0px;
-		}
-	}
 	.voices-stats{
 		div:first-child{
 			padding-right: 5px;
@@ -435,11 +365,13 @@ hr{
 			padding-left: 5px;
 		}
 	}
+
 	.profile-stat{
 		border: 1px solid @color-menu-border;
 		text-align: center;
 		border-radius: 3px;
 		padding: 20px 10px;
+
 		.stat-num{
 			font-size: 48px;
 			font-weight: bold;

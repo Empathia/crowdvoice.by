@@ -102,7 +102,9 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             if (this.isAdmin) {
                 //this.voiceOwnershipDropdownAdmin.selectByEntity(voice.owner);
             }else{
-                this.voiceOwnershipDropdown.selectByEntity(voice.owner);
+                if (this.voiceOwnershipDropdown) {
+                    this.voiceOwnershipDropdown.selectByEntity(voice.owner);
+                }
             }
             this.voiceHashtags.setValue(voice.twitterSearch);
             this.voiceRssfeed.setValue(voice.rssUrl);
@@ -206,7 +208,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
 
             this.appendChild(new CV.DetectLocation({
                 name : 'detectLocation',
-                label : 'Detect Location',
+                label : 'Use Current Location',
                 requireGoogleMaps : true
             })).render(this.el.querySelector('[data-location-wrapper]'));
 

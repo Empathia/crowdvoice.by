@@ -148,7 +148,6 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
           var org = new Entity({
             type: 'organization',
             name: req.body.title,
-            lastname: null,
             profileName: req.body.profileName,
             isAnonymous: false,
             isAdmin: false,
@@ -231,8 +230,7 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
 
     members : function members(req, res, next) {
       EntityMembership.find({
-        entity_id: hashids.decode(req.entity.id)[0],
-        is_anonymous: false
+        entity_id: hashids.decode(req.entity.id)[0]
       }, function(err, result) {
         if (err) {
           return next(err);
@@ -243,14 +241,10 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
         });
 
         Entity.whereIn('id', memberIds, function(err, result) {
-          if (err) {
-            return next(err);
-          }
+          if (err) { return next(err); }
 
           EntitiesPresenter.build(result, req.currentPerson, function(err, members) {
-            if (err) {
-              return next(err);
-            }
+            if (err) { return next(err); }
 
             res.json(members);
           });

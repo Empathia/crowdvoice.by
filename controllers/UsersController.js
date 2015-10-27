@@ -77,8 +77,7 @@ var UsersController = Class('UsersController')({
             async.series([function(done) {
               person = new Entity({
                 type: 'person',
-                name: req.body['name'],
-                lastname: req.body['lastname'],
+                name: req.body['profileName'].split('-').join(' '),
                 profileName: req.body['profileName'],
                 isAnonymous: false
               });
@@ -93,7 +92,6 @@ var UsersController = Class('UsersController')({
             }, function(done) {
               user = new User({
                 entityId: person.id,
-                username: req.body['username'],
                 email: req.body['email'],
                 password: req.body['password']
               });
@@ -110,7 +108,6 @@ var UsersController = Class('UsersController')({
               anonymous = new Entity({
                 type: 'person',
                 name: 'Anonymous',
-                lastname: 'anonymous',
                 profileName: 'anonymous_' + hashids.encode(Date.now() + (person.id * 10000)),
                 isAnonymous: true
               });
@@ -277,52 +274,7 @@ var UsersController = Class('UsersController')({
     },
 
     checkUsername : function checkUsername(req, res, next) {
-      var field = req.body.field;
-      var value = req.body.value;
-
-      ACL.isAllowed('checkUsername', 'users', req.role, {
-        currentPerson : req.currentPerson
-      }, function(err, isAllowed) {
-        if (err) {
-          return next(err);
-        }
-
-        if (!isAllowed) {
-          return next(new ForbiddenError())
-        }
-
-        res.format({
-          json : function() {
-            if (field === 'username') {
-              User.find(["username = lower(trim( ' ' from ?))", [value]], function(err, response) {
-                if (err) {
-                  return next(err)
-                }
-
-                if (response.length === 0) {
-                  return res.json({ username : 'available' });
-                }
-
-                return res.json({username : 'unavailable'});
-              })
-            } else if (field === 'profileName') {
-              Entity.find(["profile_name = lower(trim( ' ' from ?))", [value]], function(err, response) {
-                if (err) {
-                  return next(err)
-                }
-
-                if (response.length === 0) {
-                  return res.json({ profileName : 'available' });
-                }
-
-                return res.json({profileName : 'unavailable'});
-              })
-            } else {
-              return res.json({error : 'invalid field'});
-            }
-          }
-        });
-      })
+      return false;
     }
   }
 });

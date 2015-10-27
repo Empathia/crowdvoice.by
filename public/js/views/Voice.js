@@ -46,9 +46,12 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
             }, this);
 
             this._window = window;
+            this._body = document.body;
             this.postsCountApproved = this._formatPostsCountObject(this.postsCount.approved);
             this.postsCountUnapproved = this._formatPostsCountObject(this.postsCount.unapproved);
             this.postCount = this._getTotalPostCount(this.postsCountApproved);
+
+            window.CardHoverWidget.register(document.querySelector('.voice-info__author'), this.data.owner);
 
             if (this.postCount === 0) {
                 this._showOnboarding();
@@ -89,7 +92,7 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
                 element : document.getElementsByClassName('cv-main-header')[0],
                 backgroundElement : this.backgroundElement,
                 footerVoiceTitle : document.getElementsByClassName('voice-footer-meta-wrapper')[0],
-                scrollableArea : document.querySelector('.yield')
+                scrollableArea : this.scrollableArea
             }));
 
             return this;
@@ -245,17 +248,39 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
          * @method _scrollHandler <private> [Function]
          */
         _scrollHandler : function _scrollHandler() {
-            var st = this.scrollableArea.scrollTop;
+            var st = this._body.scrollTop;
             var scrollingUpwards = (st < this._lastScrollTop);
             var y = 0;
             var el;
 
+            this.voiceFooter.el.style.pointerEvents = 'none';
+            this.voiceHeader.el.style.pointerEvents = 'none';
+            this.voiceAddContent.el.style.pointerEvents = 'none';
+
             if (!this._listenScrollEvent) {
-                return void 0;
+                return;
             }
 
             if (!scrollingUpwards) {
                 y = this.voicePostLayersManager._windowInnerHeight - 1;
+
+                this.voicePostLayersManager.getLayers().forEach(function(layer) {
+                    var indicators = layer.getIndicators();
+                    if (indicators.length) {
+                        indicators.forEach(function(indicator) {
+                            indicator.removeIndex();
+                        });
+                    }
+                });
+            } else {
+                this.voicePostLayersManager.getLayers().forEach(function(layer) {
+                    var indicators = layer.getIndicators();
+                    if (indicators.length) {
+                        indicators.forEach(function(indicator) {
+                            indicator.addIndex();
+                        });
+                    }
+                });
             }
 
             el = document.elementFromPoint(this._layersOffsetLeft, y);
@@ -273,6 +298,9 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
             }
 
             this._scrollTimer = this._window.setTimeout(function() {
+                this.voiceFooter.el.style.pointerEvents = '';
+                this.voiceHeader.el.style.pointerEvents = '';
+                this.voiceAddContent.el.style.pointerEvents = '';
                 this.voicePostLayersManager.loadImagesVisibleOnViewport();
             }.bind(this), this._scrollTime);
         },
@@ -324,6 +352,8 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
 
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
+
+            window.CardHoverWidget.unregister(document.querySelector('.voice-info__author'));
 
             this.scrollableArea.removeEventListener('scroll', this._scrollHandlerRef);
             this._scrollHandlerRef = null;

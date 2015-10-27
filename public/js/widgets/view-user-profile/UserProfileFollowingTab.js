@@ -36,9 +36,9 @@ Class(CV, 'UserProfileFollowingTab').inherits(Widget)({
             this.cardsContainer = this.el.querySelector('[data-cards-container]');
             this.voicesContainer = this.el.querySelector('[data-voices-container]');
 
-            this.appendChild(new CV.Loader({
+            this.appendChild(new CV.Loading({
                 name : 'loader'
-            })).render(this.cardsContainer);
+            })).render(this.cardsContainer).center().setStyle({top: '100px'});
 
             this._createDropdown();
         },
@@ -82,9 +82,6 @@ Class(CV, 'UserProfileFollowingTab').inherits(Widget)({
 
             this._fetchingUsers = true;
 
-            console.time('fr');
-            console.log('%cfollowing request', 'color: orange');
-
             API.getEntityFollowedEntities({
                 profileName : this.data.entity.profileName,
             }, this._handleFetchUsersResults.bind(this));
@@ -96,9 +93,6 @@ Class(CV, 'UserProfileFollowingTab').inherits(Widget)({
             }
 
             this._fetchingVoices = true;
-
-            console.time('fr2');
-            console.log('%cfollowing request2', 'color: orange');
 
             API.getEntityFollowedVoices({
                 profileName : this.data.entity.profileName,
@@ -130,15 +124,16 @@ Class(CV, 'UserProfileFollowingTab').inherits(Widget)({
         },
 
          _renderUserResults : function _renderUserResults(entities) {
+             var fragment = document.createDocumentFragment();
              this.parent.parent.nav.increaseCounter(entities.length);
 
              if (entities.length) {
                 this._entities = [];
                 entities.forEach(function(entity, index) {
-                    this.appendChild(new CV.Card({
+                    fragment.appendChild(this.appendChild(new CV.Card({
                         name : 'entity_' + index,
                         data : entity
-                    })).render(this.cardsContainer);
+                    })).el);
                     this._entities.push(this['entity_' + index]);
                 }, this);
 
@@ -147,6 +142,8 @@ Class(CV, 'UserProfileFollowingTab').inherits(Widget)({
                     items : this._entities.map(function(ch) {return ch.el;}),
                     minWidth : 300
                 }).setup();
+
+                this.cardsContainer.appendChild(fragment);
              } else {
                 this.appendChild(new CV.EmptyState({
                     name : 'empty',
@@ -156,21 +153,19 @@ Class(CV, 'UserProfileFollowingTab').inherits(Widget)({
              }
 
             this.loader.disable();
-
-            console.timeEnd('fr');
-            console.log('%cfollowing rendered', 'color: orange');
         },
 
         _renderVoicesResults : function _renderVoicesResults(voices) {
+            var fragment = document.createDocumentFragment();
             this.parent.parent.nav.increaseCounter(voices.length);
 
             if (voices.length) {
                 this._voices = [];
                 voices.forEach(function(voice, index) {
-                    this.appendChild(new CV.VoiceCover({
+                    fragment.appendChild(this.appendChild(new CV.VoiceCover({
                         name : 'voice_' + index,
                         data : voice
-                    })).render(this.voicesContainer);
+                    })).el);
                     this._voices.push(this['voice_' + index]);
                 }, this);
 
@@ -179,6 +174,8 @@ Class(CV, 'UserProfileFollowingTab').inherits(Widget)({
                     items : this._voices.map(function(ch) {return ch.el;}),
                     minWidth : 300
                 }).setup();
+
+                this.voicesContainer.appendChild(fragment);
             } else {
                 this.appendChild(new CV.EmptyState({
                     name : 'empty',
@@ -188,9 +185,6 @@ Class(CV, 'UserProfileFollowingTab').inherits(Widget)({
             }
 
             this.loader.disable();
-
-            console.timeEnd('fr2');
-            console.log('%cfollowing rendered2', 'color: orange');
         },
 
         _showUsers : function _showUsers() {

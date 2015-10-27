@@ -26,57 +26,48 @@ var data = {
   voices : {},
   topics : {},
   invitations : {},
+  feedActions: {}
 };
 
 async.series([function(next) {
   var users = [
     {
-      username : 'tyrion',
       email    : 'tyrion@example.com',
       password : '12345678'
     },
     {
-      username : 'cersei',
       email    : 'cersei@example.com',
       password : '12345678'
     },
     {
-      username : 'jamie',
       email    : 'jamie@example.com',
       password : '12345678'
     },
     {
-      username : 'daenerys',
       email    : 'daenerys@example.com',
       password : '12345678'
     },
     {
-      username : 'jon',
       email    : 'jon@example.com',
       password : '12345678'
     },
     {
-      username : 'arya',
       email    : 'arya@example.com',
       password : '12345678'
     },
     {
-      username : 'eddard',
       email    : 'eddard@example.com',
       password : '12345678'
     },
     {
-      username : 'stannis',
       email    : 'stannis@example.com',
       password : '12345678'
     },
     {
-      username : 'robert',
       email    : 'robert@example.com',
       password : '12345678'
     },
     {
-      username : 'joffrey',
       email    : 'joffrey@example.com',
       password : '12345678'
     }
@@ -97,7 +88,7 @@ async.series([function(next) {
           return nextUser(err);
         }
 
-        data.users[userInstance.username] = userInstance;
+        data.users[userInstance.email] = userInstance;
 
         nextUser();
       });
@@ -110,142 +101,132 @@ async.series([function(next) {
     {
       data : {
         type        : 'person',
-        name        : 'Tyrion',
-        lastname    : 'Lannister',
+        name        : 'Tyrion Lannister',
         profileName : 'tyrion-lannister',
         isAnonymous : false,
         isAdmin     : true,
         description : 'Tyrion Lannister is a fictional character in the A Song of Ice and Fire series of fantasy novels.',
         location : 'King\'s Landing'
       },
-      user : data.users.tyrion,
+      user : data.users['tyrion@example.com'],
       image : path.join(process.cwd(), '/public/generator/users/tyrion.jpg'),
       background : path.join(process.cwd(), '/public/generator/users/tyrion-background.jpg')
     },
     {
       data : {
         type        : 'person',
-        name        : 'Cersei',
-        lastname    : 'Lannister',
+        name        : 'Cersei Lannister',
         profileName : 'cersei-lannister',
         isAnonymous : false,
         isAdmin     : true,
         description : 'Cersei Lannister is the eldest child of Tywin and Joanna Lannister by mere moments, and the twin sister of Jamie Lannister.',
         location : 'King\'s Landing'
       },
-      user : data.users.cersei,
+      user : data.users['cersei@example.com'],
       image : path.join(process.cwd(), '/public/generator/users/cersei.jpg'),
       background : path.join(process.cwd(), '/public/generator/users/cersei-background.jpg')
     },
     {
       data : {
         type        : 'person',
-        name        : 'Jamie',
-        lastname    : 'Lannister',
+        name        : 'Jamie Lannister',
         profileName : 'jamie-lannister',
         isAnonymous : false,
         description : 'Ser Jamie Lannister, known as the Kingslayer, is a knight from House Lannister.',
         location : 'King\'s Landing'
       },
-      user : data.users.jamie,
+      user : data.users['jamie@example.com'],
       image : path.join(process.cwd(), '/public/generator/users/jamie.jpg'),
       background : path.join(process.cwd(), '/public/generator/users/jamie-background.jpg')
     },
     {
       data : {
         type        : 'person',
-        name        : 'Daenerys',
-        lastname    : 'Targaryen',
+        name        : 'Daenerys Targaryen',
         profileName : 'daenerys-targaryen',
         isAnonymous : false,
         description : 'Daenerys Targaryen, known as Daenerys Stormborn and Dany, is one of the last confirmed members of House Targaryen.',
         location : 'Meereen'
       },
-      user : data.users.daenerys,
+      user : data.users['daenerys@example.com'],
       image : path.join(process.cwd(), '/public/generator/users/daenerys.jpg'),
       background : path.join(process.cwd(), '/public/generator/users/daenerys-background.jpg')
     },
     {
       data : {
         type        : 'person',
-        name        : 'Jon',
-        lastname    : 'Snow',
+        name        : 'Jon Snow',
         profileName : 'jon-snow',
         isAnonymous : false,
         description : 'Jon Snow is the bastard son of Eddard Stark, by a mother whose identity is a source of speculation.',
         location : 'The Wall'
       },
-      user : data.users.jon,
+      user : data.users['jon@example.com'],
       image : path.join(process.cwd(), '/public/generator/users/jon.jpg'),
       background : path.join(process.cwd(), '/public/generator/users/jon-background.jpg')
     },
     {
       data : {
         type        : 'person',
-        name        : 'Arya',
-        lastname    : 'Stark',
+        name        : 'Arya Stark',
         profileName : 'arya-stark',
         isAnonymous : false,
         description : 'Arya Stark is the third child and second daughter of Lord Eddard Stark and Lady Catelyn Tully.',
         location : 'Winterfell'
       },
-      user : data.users.arya,
+      user : data.users['arya@example.com'],
       image : path.join(process.cwd(), '/public/generator/users/arya.jpg'),
       background : path.join(process.cwd(), '/public/generator/users/arya-background.jpg')
     },
     {
       data : {
         type        : 'person',
-        name        : 'Eddard',
-        lastname    : 'Stark',
+        name        : 'Eddard Stark',
         profileName : 'eddard-stark',
         isAnonymous : false,
         description : 'Eddard Stark, also affectionately called "Ned", is the head of House Stark, Lord of Winterfell.',
         location : 'Winterfell'
       },
-      user : data.users.eddard,
+      user : data.users['eddard@example.com'],
       image : path.join(process.cwd(), '/public/generator/users/eddard.jpg'),
       background : path.join(process.cwd(), '/public/generator/users/eddard-background.jpg')
     },
     {
       data : {
         type        : 'person',
-        name        : 'Stannis',
-        lastname    : 'Baratheon',
+        name        : 'Stannis Baratheon',
         profileName : 'stannis-baratheon',
         isAnonymous : false,
         description : 'Stannis Baratheon is the head of House Baratheon of Dragonstone and the Lord of Dragonstone.',
         location : 'Dragonstone'
       },
-      user : data.users.stannis,
+      user : data.users['stannis@example.com'],
       image : path.join(process.cwd(), '/public/generator/users/stannis.png'),
       background : path.join(process.cwd(), '/public/generator/users/stannis-background.jpg')
     },
     {
       data : {
         type        : 'person',
-        name        : 'Robert',
-        lastname    : 'Baratheon',
+        name        : 'Robert Baratheon',
         profileName : 'robert-baratheon',
         isAnonymous : false,
         description : 'King Robert I Baratheon is the Lord of the Seven Kingdoms of Westeros and the head of House Baratheon of King\'s Landing.',
         location : 'Dragonstone'
       },
-      user : data.users.robert,
+      user : data.users['robert@example.com'],
       image : path.join(process.cwd(), '/public/generator/users/robert.jpg'),
       background : path.join(process.cwd(), '/public/generator/users/robert-background.jpg')
     },
     {
       data : {
         type        : 'person',
-        name        : 'Joffrey',
-        lastname    : 'Baratheon',
+        name        : 'Joffrey Baratheon',
         profileName : 'joffrey-baratheon',
         isAnonymous : false,
         description : 'Prince Joffrey Baratheon is known to the Seven Kingdoms as the eldest son and heir of King Robert Baratheon and Queen Cersei Lannister.',
         location : 'King\s Landing'
       },
-      user : data.users.joffrey,
+      user : data.users['joffrey@example.com'],
       image : path.join(process.cwd(), '/public/generator/users/joffrey.jpg'),
       background : path.join(process.cwd(), '/public/generator/users/joffrey-background.jpg')
     }
@@ -284,7 +265,6 @@ async.series([function(next) {
               var shadowEntity = new Entity({
                 type : 'person',
                 name : 'Anonymous',
-                lastname : null,
                 profileName : 'anonymous_' + hashids.encode(entityInstance.id + new Date().getTime() + Math.round(Math.random() * 1000)),
                 isAnonymous : true
               });
@@ -319,7 +299,6 @@ async.series([function(next) {
       data : {
         type        : 'organization',
         name        : 'House Stark',
-        lastname    : null,
         profileName : 'house-stark',
         isAnonymous : false,
         description : 'House Stark was one of the Great Houses of Westeros, ruling over the vast region known as the North from their seat in Winterfell.',
@@ -334,7 +313,6 @@ async.series([function(next) {
       data : {
         type        : 'organization',
         name        : 'House Lannister',
-        lastname    : null,
         profileName : 'house-lannister',
         isAnonymous : false,
         description : 'House Lannister of Casterly Rock is one of the Great Houses of Westeros.',
@@ -349,7 +327,6 @@ async.series([function(next) {
       data : {
         type        : 'organization',
         name        : 'House Targaryen',
-        lastname    : null,
         profileName : 'house-targaryen',
         isAnonymous : false,
         description : 'House Targaryen is one of the former Great Houses of Westeros and the previous ruling royal house of the Seven Kingdoms.',
@@ -364,7 +341,6 @@ async.series([function(next) {
       data : {
         type        : 'organization',
         name        : 'House Baratheon',
-        lastname    : null,
         profileName : 'house-baratheon',
         isAnonymous : false,
         description : 'House Baratheon is one of the Great Houses of Westeros, although also one of the youngest.',
@@ -927,7 +903,6 @@ async.series([function(next) {
 
   // FeaturedVoices
   var featured = [
-    data.voices.winterfell,
     data.voices.meereen,
     data.voices['second-trial-by-combat'],
     data.voices['blackwater-battle'],
@@ -979,6 +954,72 @@ async.series([function(next) {
     });
 
     featuredOrganization.save(nextOrganization);
+  }, next);
+}, function(next) {
+
+  // Feed actions
+  var actions = [
+    // Jon followed voices
+    {
+      itemType: 'voice',
+      itemId: data.voices.meereen.id,
+      action: 'followed',
+      who: 9, // Jon
+    },
+    {
+      itemType: 'voice',
+      itemId: data.voices.winterfell.id,
+      action: 'followed',
+      who: 9,
+    },
+    {
+      itemType: 'voice',
+      itemId: data.voices['casterly-rock'].id,
+      action: 'followed',
+      who: 9,
+    }
+  ];
+
+  async.each(actions, function(action, nextAction) {
+    var feedAction = new FeedAction(action);
+
+    feedAction.save(function (err) {
+      if (err) { return nextAction(err); }
+
+      data.feedActions[feedAction.who + '-' +
+        feedAction.action + '-' +
+        feedAction.itemType + '-' +
+        feedAction.itemId] = feedAction;
+
+      return nextAction();
+    })
+  }, next);
+}, function(next) {
+
+  // Notifications
+  var notifications = [
+    // Jon followed voices
+    {
+      actionId: data.feedActions['9-followed-voice-9'].id,
+      followerId: 3, // Cersei
+      read: false
+    },
+    {
+      actionId: data.feedActions['9-followed-voice-13'].id,
+      followerId: 3,
+      read: false
+    },
+    {
+      actionId: data.feedActions['9-followed-voice-15'].id,
+      followerId: 22, // House Lannister
+      read: false
+    }
+  ];
+
+  async.each(notifications, function (notif, nextNotif) {
+    var notification = new Notification(notif);
+
+    notification.save(nextNotif)
   }, next);
 }, function(next) {
 
@@ -1198,7 +1239,7 @@ async.series([function(next) {
         var type = casual['random_element'](['image', 'video', 'link']);
 
         post.title = casual.title;
-        post.description = casual.description;
+        post.description = casual.description.substr(0, 62);
 
         post.sourceType = type;
 

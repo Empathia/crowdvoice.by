@@ -1,3 +1,4 @@
+/* globals App */
 var API = require('../../lib/api');
 var Gemini = require('gemini-scrollbar');
 
@@ -23,8 +24,7 @@ Class(CV, 'Search').inherits(Widget)({
                 </div>\
                 <div class="gm-scroll-view"></div>\
             </div>\
-        </div>\
-    ',
+        </div>',
 
     prototype : {
         _lastSearchQuery : '',
@@ -52,9 +52,17 @@ Class(CV, 'Search').inherits(Widget)({
                 svgClassName : '-s18'
             })).render(this.el.querySelector('.cv-search-overlay__header'));
 
-            this.appendChild(new CV.Loader({
-                name : 'loader'
-            })).render(this.inputWrapper);
+            this.appendChild(new CV.Loading({
+                name : 'loader',
+                className: '-abs',
+                size : 40
+            })).render(this.inputWrapper).setStyle({
+                right: '-156px',
+                top: '15px',
+                webkitTransformOrigin: '0 0',
+                msTransformOrigin: '0 0',
+                transformOrigin: '0 0'
+            });
 
             this.appendChild(new CV.InputClearable({
                 name : 'input',
@@ -130,7 +138,13 @@ Class(CV, 'Search').inherits(Widget)({
 
         _activate : function _activate() {
             Widget.prototype._activate.call(this);
+            App.hideScrollbar();
             this.input.getElement().focus();
+        },
+
+        _deactivate : function _deactivate() {
+            Widget.prototype._deactivate.call(this);
+            App.showScrollbar();
         },
 
         destroy : function destroy() {

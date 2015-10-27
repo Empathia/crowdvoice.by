@@ -126,7 +126,7 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
                 label         : 'Multiple',
                 name          : 'select',
                 accountImage  : Person.getImage('small'),
-                accountName   : Person.get().name + ' ' + Person.get().lastname,
+                accountName   : Person.get().name,
                 options       : allMulti
             })).render(this.loginActionsWrapper);
 
@@ -136,17 +136,9 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
                 name : 'incognitoButton',
             })).render(this.buttonActionsWrapper);
 
-            // alerts buttons
-            var bell = new NotificationBell({
-              name : 'bell',
-              data : { count : 0 }
-            });
-
-            this.appendChild(bell);
-
-            bell.setup();
-
-            this.buttonActionsWrapper.appendChild(bell.element[0]);
+            this.appendChild(new NotificationBell({
+              name : 'bell'
+            })).render(this.buttonActionsWrapper);
 
             return this;
         },

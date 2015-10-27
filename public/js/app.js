@@ -42,21 +42,7 @@ Class(CV, 'App').includes(NodeSupport)({
 
             this.header.setup();
 
-            this._scrollableElement = document.querySelector('.yield');
-
-            //************* tmp generator **********************
-
-            //var feedGen = new CV.feedGenerator({
-            //    type : 'feed app'
-            //});
-
-            //feedGen.bind('ready', function(){
-            //    new CV.NotificationsManager({
-            //        notifications : feedGen.feedItems
-            //    }).render(document.body);
-            //});
-
-            //****************************************
+            this._scrollableElement = document.body;
 
             //new CV.NotificationsManager({
             //    notifications : this.notifications
@@ -93,6 +79,7 @@ Class(CV, 'App').includes(NodeSupport)({
          */
         addInteractiveSidebar : function addInteractiveSidebar() {
             this.sidebar.enableInteraction();
+            this.sidebar.setup();
             return this;
         },
 
@@ -103,6 +90,33 @@ Class(CV, 'App').includes(NodeSupport)({
          */
         getScrollableElement : function getScrollableElement() {
             return this._scrollableElement;
+        },
+
+        /* @method scrollTo <public> [Function]
+         * @return undefined
+         */
+        scrollTo : function scrollTo(y) {
+            this.getScrollableElement().scrollTop = y;
+        },
+
+        _bodyOverflowValuesIndex: -1,
+        _bodyOverflowValues: [],
+
+        hideScrollbar : function hideScrollbar() {
+            this._bodyOverflowValues.push(this.getBodyOverflowValue());
+            this._bodyOverflowValuesIndex++;
+            this.getScrollableElement().style.overflow = 'hidden';
+        },
+
+        showScrollbar : function showScrollbar() {
+            this.getScrollableElement().style.overflow = this._bodyOverflowValues[this._bodyOverflowValuesIndex];
+            this._bodyOverflowValuesIndex--;
+            this._bodyOverflowValues.pop();
+        },
+
+        getBodyOverflowValue : function getBodyOverflowValue() {
+            return window.getComputedStyle(this.getScrollableElement(), null)
+                .getPropertyValue('overflow');
         },
 
         /* Display the CreateVoiceModal.

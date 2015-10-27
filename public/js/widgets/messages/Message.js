@@ -1,4 +1,5 @@
 var moment = require('moment');
+var API = require('./../../lib/api');
 var Person = require('./../../lib/currentPerson');
 var PLACEHOLDERS = require('./../../lib/placeholders');
 
@@ -24,10 +25,10 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
     Accepting this invitation will grant you privilege of posting and moderating content on the Voices <a href="{url}">{organizationName}</a.</p>',
 
   REQUEST_ORGANIZATION_HTML : '<p>{name} has requested to become a member of {organizationName}. \
-    If you grant access, {name} will be able to post and moderate content on all the Voices of {organizationName}.<br><a href="{url}">Go to this Voice\'s settings ›</a></p>',
+    If you grant access, {name} will be able to post and moderate content on all the Voices of {organizationName}. <a href="{url}">Go to this Organization\'s settings ›</a></p>',
 
-  REQUEST_VOICE_HTML : '<p>{name} has requested to become a contributor for {organizationName}. \
-    If you grant access, {name} will be able to post and moderate content of this Voice.<br><a href="{url}">Go to this Voice\'s settings ›</a></p>',
+  REQUEST_VOICE_HTML : '<p>{name} has requested to become a contributor for {voiceTitle}. \
+    If you grant access, {name} will be able to post and moderate content of this Voice. <a href="{url}">Go to this Voice\'s settings ›</a></p>',
 
   INVITATION_ACCEPTED_VOICE_HTML : '<p>Invitation to {voiceTitle} accepted.</p>',
 
@@ -65,8 +66,8 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
         message.element.find('.message-sender-image').attr('src', PLACEHOLDERS.notification);
       }
 
-      message.element.find('.message-data .data-message-date').text(moment(new Date(message.data.createdAt).toISOString()).format('• MMMM Do, YYYY • h:mm a'));
-      message.element.find('.message-data .data-message-text').text(message.data.message);
+      message.element.find('.message-data .data-message-date').text(moment(new Date(message.data.createdAt).toISOString()).format('• MMMM Do, YYYY • h:mm A'));
+      message.element.find('.message-data .data-message-text')[0].insertAdjacentHTML('beforeend', message.data.message);
 
       if (message.type !== 'message' && message.type !== 'report') {
         var text = this.constructor[this.type.toUpperCase() + '_HTML'];
@@ -84,13 +85,13 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
             case 'request_organization':
               text = text
                       .replace(/{name}/g, message.data.senderEntity.name + ' ' + message.data.senderEntity.lastname)
-                      .replace(/{organizationName}/g, message.data.organization.name + ' ' + message.data.organization.lastname)
+                      .replace(/{organizationName}/g, message.data.organization.name)
                       .replace(/{url}/, '/' + message.data.organization.profileName + '/edit');
               break;
             case 'request_voice':
               text = text.replace(/{name}/g, message.data.senderEntity.name + ' ' + message.data.senderEntity.lastname)
-                      .replace(/{organizationName}/g, message.data.voice.title)
-                      .replace(/{url}/g, '/' + message.data.voice.slug);
+                      .replace(/{voiceTitle}/g, message.data.voice.title)
+                      .replace(/{url}/g, '/' + Person.get().profileName + '/' + message.data.voice.slug);
               break;
             case 'invitation_accepted_voice':
               text = text.replace(/{voiceTitle}/, message.data.voice.title);
@@ -126,84 +127,53 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
             // ************   Message button actions *******************
 
             messageActions.accept.on('click', function(){
-              var url = '/' + message.threadContainer.currentPerson.profileName + '/messages/' + message.data.threadId + '/' + message.data.id  +'/answerInvite';
-
               console.log('-- Accept --');
-              console.log('url: ' + url);
-              console.log('message Id: ' + message.data.id);
-              console.log('thread Id: ' + message.data.threadId);
-              console.log('message Type: ' + message.data.type);
 
-              $.ajax({
-                  type : 'POST',
-                  headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
-                  url : url,
-                  dataType : 'json',
-                  data : {
-                    action : 'accept'
-                  },
-                  success : function() {
-                      messageActions.element.hide();
-                      message.element.find('.message-notification > p').html('Invitation Accepted.');
-                  },
-                  error : function(err) {
-                      console.error(err);
-                  }
+              API.threatAnswerInvitation({
+                profileName: message.threadContainer.currentPerson.profileName,
+                threadId: message.data.threadId,
+                messageId: message.data.id,
+                data : {action: 'accept'}
+              }, function(err, res) {
+                if (err) {
+                  return console.log(res);
+                }
+                messageActions.element.hide();
+                message.element.find('.message-notification > p').html('Invitation Accepted.');
               });
             });
 
             messageActions.anonymous.on('click', function(){
-              var url = '/' + message.threadContainer.currentPerson.profileName + '/messages/' + message.data.threadId + '/' + message.data.id  +'/answerInvite';
-
               console.log('-- Accept As anon --');
-              console.log('url: ' + url);
-              console.log('message Id: ' + message.data.id);
-              console.log('thread Id: ' + message.data.threadId);
-              console.log('message Type: ' + message.data.type);
 
-              $.ajax({
-                  type : 'POST',
-                  headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
-                  url : url,
-                  dataType : 'json',
-                  data : {
-                    action : 'accept',
-                    anonymous : true
-                  },
-                  success : function() {
-                      messageActions.element.hide();
-                      message.element.find('.message-notification > p').html('Invitation Accepted.');
-                  },
-                  error : function(err) {
-                      console.error(err);
-                  }
+              API.threatAnswerInvitation({
+                profileName: message.threadContainer.currentPerson.profileName,
+                threadId: message.data.threadId,
+                messageId: message.data.id,
+                data : {action: 'accept', anonymous: true}
+              }, function(err, res) {
+                if (err) {
+                  return console.log(res);
+                }
+                messageActions.element.hide();
+                message.element.find('.message-notification > p').html('Invitation Accepted.');
               });
             });
 
             messageActions.refuse.on('click', function(){
-              var url = '/' + message.threadContainer.currentPerson.profileName + '/messages/' + message.data.threadId + '/' + message.data.id  +'/answerInvite';
-
               console.log('-- Refuse --');
-              console.log('url: ' + url);
-              console.log('message Id: ' + message.data.id);
-              console.log('thread Id: ' + message.data.threadId);
-              console.log('message Type: ' + message.data.type);
 
-              $.ajax({
-                  type : 'POST',
-                  headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
-                  url : url,
-                  dataType : 'json',
-                  data : {
-                    action : 'ignore'
-                  },
-                  success : function() {
-                      messageActions.element.hide();
-                      message.element.find('.message-notification > p').html('Invitation rejected.');
-                  },
-                  error : function(err) {
-                      console.error(err);
-                  }
+              API.threatAnswerInvitation({
+                profileName: message.threadContainer.currentPerson.profileName,
+                threadId: message.data.threadId,
+                messageId: message.data.id,
+                data : {action: 'ignore'}
+              }, function(err, res) {
+                if (err) {
+                  return console.log(res);
+                }
+                messageActions.element.hide();
+                message.element.find('.message-notification > p').html('Invitation rejected.');
               });
             });
           }
@@ -216,6 +186,14 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
 
             case 'invitation_organization':
               text = '<p>You invited ' + message.thread.data.receiverEntity.name + ' to become a member of ' + message.data.organization.name + '.</p>';
+              break;
+
+            case 'request_voice':
+              text = '<p>You have requested to become a contributor for {voiceTitle}.</p>'.replace(/{voiceTitle}/, message.data.voice.title);
+              break;
+
+            case 'request_organization':
+              text = '<p>You have requested to become a member of {organizationName}.</p>'.replace(/{organizationName}/, message.data.organization.name);
               break;
 
             case 'invitation_accepted_voice':
