@@ -242,8 +242,6 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
             this._showDatePickerRef = null;
 
             this.titleElement.removeEventListener('keypress', this._titleKeyPressHandler);
-            this.titleElement.removeEventListener('paste', this._pasteHandler);
-            this.descriptionElement.removeEventListener('paste', this._pasteHandler);
 
             this.romeTime.destroy();
 
@@ -319,8 +317,6 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
             this.timePickerButton.addEventListener('click', this._showDatePickerRef);
 
             this.titleElement.addEventListener('keypress', this._titleKeyPressHandler);
-            this.titleElement.addEventListener('paste', this._pasteHandler);
-            this.descriptionElement.addEventListener('paste', this._pasteHandler);
 
             return this;
         },
@@ -512,10 +508,6 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
             if (charCode === 13) {
                 ev.preventDefault();
             }
-        },
-
-        _pasteHandler : function _pasteHandler(ev) {
-            ev.preventDefault();
         },
 
         _showDatePicker : function _showDatePicker(ev) {
