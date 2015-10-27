@@ -100,11 +100,13 @@ Class(CV, 'SendMessage').inherits(Widget).includes(CV.WidgetUtils)({
             }
 
             API.sendMessage({
-                type : 'message',
                 profileName : this.data.profileName,
-                senderEntityId : this.data.senderEntityId,
-                receiverEntityId : this.data.receiverEntityId,
-                message : this.messageInput.getValue().trim()
+                data : {
+                    type : 'message',
+                    senderEntityId : this.data.senderEntityId,
+                    receiverEntityId : this.data.receiverEntityId,
+                    message : this.messageInput.getValue().trim()
+                }
             }, this._sendMessageResponseHandler.bind(this));
         },
 

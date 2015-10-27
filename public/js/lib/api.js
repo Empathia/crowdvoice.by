@@ -980,14 +980,15 @@ module.exports = {
      *************************************************************************/
     /* Creates a thread or insert a message in an existing thread.
      * @argument args.profileName <required> [String] currentPerson profileName
-     * @argument args.type <required> [String] Message type ('message')
-     * @argument args.senderEntityId [String] currentPerson hashid
-     * @argument args.receiverEntityId [String] receriver Person hashid
-     * @argument args.message <required> [String] the text message
+     * @argument args.data.type <required> [String] Message type ('message')
+     * @argument args.data.senderEntityId [String] currentPerson hashid
+     * @argument args.data.receiverEntityId [String] receriver Person hashid
+     * @argument args.data.message <required> [String] the text message
+     * @argument args.data.organizationId <optional> [String] organization hashid
      * @argument callback <required> [Function]
      */
     sendMessage : function sendMessage(args, callback) {
-        if (!args.profileName || !args.type || !args.senderEntityId || !args.receiverEntityId || !args.message || !callback) {
+        if (!args.profileName || !args.data.type || !args.data.senderEntityId || !args.data.receiverEntityId || !args.data.message || !callback) {
             throw new Error('Missing required params');
         }
 
@@ -999,12 +1000,7 @@ module.exports = {
             type : 'POST',
             url : '/' + args.profileName + '/messages',
             headers : {'csrf-token' : this.token},
-            data : {
-                type : args.type,
-                senderEntityId : args.senderEntityId,
-                receiverEntityId : args.receiverEntityId,
-                message : args.message
-            },
+            data : args.data,
             success : function success(data) {callback(false, data);},
             error : function error(err) {callback(true, err);}
         });
@@ -1063,7 +1059,33 @@ module.exports = {
             success : function success(data) {callback(false, data);},
             error : function error(err) {callback(true, err);}
         });
-     },
+    },
+
+    /* Search People to invite to an organization.
+     * TODO: improve description, documentation missing on wiki
+     * @argument args.profileName <required> [String] currentPerson profileName
+     * @argument args.data.query <required> [String] the query string
+     * @argument callback <required> [Function]
+     */
+    searchPeopleToInvite : function searchPeopleToInvite(args, callback) {
+        if (!args.profileName || !args.data.query || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/' + args.profileName + '/messages/searchPeople',
+            headers : {'csrf-token' : this.token},
+            dataType : 'json',
+            data : {value : args.data.query},
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
 
     /**************************************************************************
      * SEARCH
