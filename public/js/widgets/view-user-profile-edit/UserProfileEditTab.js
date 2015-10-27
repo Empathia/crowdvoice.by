@@ -1,3 +1,4 @@
+/* globals App */
 var API = require('./../../lib/api');
 var Person = require('./../../lib/currentPerson');
 var Events = require('./../../lib/events');
@@ -324,6 +325,8 @@ Class(CV, 'UserProfileEditTab').inherits(Widget)({
          * @return undefined
          */
         _displaySuccessAlert : function _displaySuccessAlert(message) {
+            App.scrollTo(0, 0);
+
             if (this._alertSuccess) {
                 this._alertSuccess.update(message);
                 return;
@@ -343,6 +346,8 @@ Class(CV, 'UserProfileEditTab').inherits(Widget)({
          * @return undefined
          */
         _displayErrorAlert : function _displayErrorAlert(message) {
+            App.scrollTo(0, 0);
+
             if (this._alertError) {
                 return this._alertError.update(message);
             }
