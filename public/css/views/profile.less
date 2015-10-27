@@ -58,7 +58,7 @@
 }
 
 .user-profile-tab__label {
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .profile__actions {
@@ -136,25 +136,27 @@ hr{
 
 .profile-background-cover {
   position: absolute;
-  top: 0;
+  top: 30px;
   left: 0;
   right: 0;
   bottom: 0;
   &:extend(.dark-background all);
 }
-.profile-intro{
-  padding: 35px 0 110px;
-	.pan-separator{
-		width: 560px;
-		margin: 0 auto;
-  		text-align: center;
-  		padding-top: 20px;
-	}
+
+.profile-intro {
+  padding: 0 0 110px;
+
+  .pan-separator{
+    width: 650px;
+    margin: 0 auto;
+    text-align: center;
+    padding-top: 20px;
+  }
+
 	.profile-card-activity{
-		margin-bottom: 0;
 		font-size: 11px;
 		line-height: 15px;
-		margin: 1.5rem 0;
+		margin: 1.5rem 0 0;
 		color: @color-white;
 		fill: @color-white;
 		.profile-card-activity-svg {
@@ -167,41 +169,40 @@ hr{
 		}
 	}
 
-	.profile-tw{
-		color: @color-white;
-  		font-size: 12px;
-  		opacity: .6;
-	}
-	.profile-description{
-		color: @color-white;
-		font-size: 13px;
-		line-height: 23px;
-		text-shadow: 0px 1px 3px @color-description-shadow;
-		-webkit-font-smoothing: antialiased;
-		padding-top: 10px;
-	}
+  .profile-tw {
+    color: @color-white;
+    font-size: 12px;
+    opacity: .6;
+  }
 
-	.profile-image{
-		width: 176px;
-		height: 176px;
-		border-radius: 100px;
-		margin: 0 auto;
-		display: block;
-		position: relative;
-		z-index: 2;
-		border: 2px solid @color-white;
-		box-shadow: 0px 3px 5px @color-image-shadow;
-	}
-	.profile-heading{
-		color: @color-white;
-		font-size: 30px;
-		line-height: 40px;
-	}
-}
-.profile-intro:after{
-  	content: "";
-    display: table;
-    clear: both;
+  .profile-description{
+    color: @color-white;
+    font-size: 13px;
+    line-height: 23px;
+    text-shadow: 0px 1px 3px @color-description-shadow;
+    -webkit-font-smoothing: antialiased;
+    padding-top: 10px;
+
+    &:empty {padding: 0}
+  }
+
+  .profile-image{
+    width: 160px;
+    height: 160px;
+    border-radius: 80px;
+    margin: -30px auto 0;
+    display: block;
+    position: relative;
+    z-index: 1;
+    border: 2px solid @color-white;
+    box-shadow: 0px 3px 5px @color-image-shadow;
+  }
+
+  .profile-heading{
+    color: @color-white;
+    font-size: 40px;
+    line-height: 50px;
+  }
 }
 
 .-menu-tab-content{
