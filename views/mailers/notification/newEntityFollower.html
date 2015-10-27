@@ -1,76 +1,66 @@
-<pre style="white-space: inherit;">
-		<% var doerInfo = params.follower; %>
+<% var doerInfo = params.follower; %>
+<% var voiceDate = new Date();  %>
+<% var monthNames = ["January", "February", "March","April", "May", "June", "July","August", "September", "October","November", "December"];%>
+<% var day = voiceDate.getDate(); %> 
+<% var monthIndex = voiceDate.getMonth(); %>
+<% var year = voiceDate.getFullYear();%>
 
-		<% var voiceDate = new Date();  %>
-		<% var monthNames = ["January", "February", "March","April", "May", "June", "July","August", "September", "October","November", "December"];%>
-		<% var day = voiceDate.getDate(); %> 
-		<% var monthIndex = voiceDate.getMonth(); %>
-		<% var year = voiceDate.getFullYear();%>
-</pre>
-<!-- Change image url -->
-<div style="background-color:#F7F9FA !important;background: url('<%= CONFIG.siteUrl[application.env]+'/img/cv-mailtemplate.png'%>')right top;background-repeat: no-repeat; text-align: center; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; height: 100%;">
-	<!-- Header -->
-	<div style="padding: 30px 0 25px 0; text-align: center;">
-		<p style="font-size:36px;color:#454B4D">CrowdVoice.by</p>
-		<p style="font-size:12px;color:#A1B0B3;"><%= monthNames[monthIndex] + ' ' + day +', ' + year %></p>
-	</div>
-	<center style="padding: 0 0 40px 0;">
-	    <div style="display: inline-block; width: 550px; padding: 30px 0 30px 0; background-color: #FFFFFF; color: #4c4b49; border-radius: 0px;border-top:10px solid;border-top-color:#FF9400;box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.5);">
-	    	<!-- Notification header information -->
-	    		<table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 0 0 0 -3px;">
-			        	<tbody>
-			          		<tr>
-			            		<td style="padding: 0 25px; text-align: left;">
-			              			<div style="font-size: 14px; line-height: 38px; color: #b2b2b2;">
-			                			<p style="font-size:18px;color:black;">
-			                				Hello <%= params.receiver.entity.name %>, you have a new follower!
-			                			</p>
-			              			</div>
-			            		</td>
-			          		</tr>
-			        	</tbody>
-				</table>
-	    	<!-- Notification when USER gets followed by another USER -->
-	    	<% if(params.follower.type === 'person') {%>
-			       	<table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 10px 0 0 -3px;padding:0px 20px">
-			        	<tbody>
-			          		<tr style="background-color:#F7F9FA;">
-			            		<td style="padding: 25px 0px 25px 25px;">
-			                		<img style="width:52px;height:52px;border-radius:5px;"src="<%= doerInfo.images.card.url %>"/>
-			            		</td>
-			            		<td style="padding-right:25px;">
-			              			<a href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName%>" target="_blank" style="font-size:13px;color:#4D4D4D;text-align:left;font-weight:bold;"><%= doerInfo.name + ' ' + doerInfo.lastname %></a>
-			              			<!--<p style="font-size:12px;color:#A1B0B3;">by <%= doerInfo.profileName %></p>-->
-			            		</td>
-			          		</tr>
-			        	</tbody>
-			      	</table>
-			<% } %>
-			<!-- Notification when USER gets followed by ORGANIZATION -->
-			<% if(params.follower.type === 'organization'){%>
-			       	<table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 10px 0 0 -3px;padding:0px 20px">
-			        	<tbody>
-			          		<tr style="background-color:#F7F9FA;">
-			            		<td style="padding: 25px 0px 25px 25px;">
-			                		<img style="width:52px;height:52px;border-radius:5px;"src="<%= doerInfo.images.card.url  %>"/>
-			            		</td>
-			            		<td style="padding-right:25px;">
-			              			<a href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="_blank" style="font-size:13px;color:#4D4D4D;text-align:left;font-weight:bold;"><%= doerInfo.name %></a>
-			              			<!--<p style="font-size:12px;color:#A1B0B3;">by <%= doerInfo.profileName %></p>-->
-			            		</td>
-			          		</tr>
-			        	</tbody>
-			      	</table>
-			<% } %>
-	    </div>
-	    <!-- Footer -->
-	    <div style="font-size: 13px; padding: 30px 0 0 0; color: #66635c;text-align:center;">
-	      <a target="_blank" href="https://twitter.com/CrowdVoice" style="padding: 0px 10px;text-decoration:none;vertical-align:super;"><img src="<%= CONFIG.siteUrl[application.env] %>/img/icons/icon-circle-twitter.png"/></a>
-	      <a target="_blank" href="<%= CONFIG.siteUrl[application.env] %>" style="padding: 0px 10px;text-decoration:none;vertical-align: middle;"><img src="<%= CONFIG.siteUrl[application.env] %>/img/icons/icon-logo-cv.png"/></a>
-	      <a target="_blank" href="https://www.facebook.com/crowdvoice" style="padding: 0px 10px;text-decoration:none;vertical-align:super;"><img src="<%= CONFIG.siteUrl[application.env] %>/img/icons/icon-circle-facebook.png"/></a>
-	      <a href="<%= CONFIG.siteUrl[application.env] + '/' + params.receiver.entity.profileName %>/edit#notifications" style="font-size:12px;color:#8A9699;display:block;margin-top:25px;">Manage your Notifications Settings</a>
-	      <p style="font-size:12px;color:A1B0B3;">© Majal, 2015. All Rights Reserved</p>
-	    </div>
-	</center>
-</div>
-
+<table width="100%" bgcolor="#F7F9FA" style="padding:30px;font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+  <tr>
+    <td>
+      <table align="center" width="550px" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+          <td style="text-align:center;">
+            <p style="font-size:36px;color:#454B4D;margin-bottom:30px;">CrowdVoice.by</p>
+              <p style="font-size:12px;color:#A1B0B3;margin-bottom:30px;"><%= monthNames[monthIndex] + ' ' + day +', ' + year %></p>
+          </td>
+        </tr>
+        <tr>
+          <td style="box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.5);-webkit-box-shadow:0px 2px 4px 0px rgba(0, 0, 0, 0.5); -moz-box-shadow:0px 2px 4px 0px rgba(0, 0, 0, 0.5); padding: 30px 0 30px 0; background-color: #FFFFFF; color: #4C4B49; border-radius: 0px; border-top:10px solid; border-top-color:#FF9400;">
+            <!-- init -->
+            <table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 0 0 0 -3px;">
+				<tbody>
+				   <tr>
+				     <td style="padding: 0 25px; text-align: left;">
+				        <div style="font-size: 14px; line-height: 38px; color: #b2b2b2;">
+				          <p style="font-size:18px;color:black;">Hello <%= params.receiver.entity.name %>, you have a new follower!</p>
+				        </div>
+				     </td>
+				   </tr>
+				</tbody>
+			</table>
+			<table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 10px 0 0 -3px;padding:0px 20px">
+				<tbody>
+				    <tr style="background-color:#F7F9FA;">
+				        <td style="padding: 25px 0px 25px 25px;">
+				            <img style="width:52px;height:52px;border-radius:5px;"src="<%= doerInfo.images.card.url %>"/>
+				        </td>
+				        <td style="padding-right:25px;">
+				            <a href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName%>" target="_blank" style="font-size:13px;color:#4D4D4D;text-align:left;font-weight:bold;"><%= doerInfo.name %></a>
+				        </td>
+				    </tr>
+				</tbody>
+			</table>
+            <!-- Ending -->
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td>
+       <div style="padding: 30px 0 0 0; color: #66635c;text-align:center;">
+        <a target="_blank" href="https://twitter.com/CrowdVoice" style="padding: 0px 10px;text-decoration:none;vertical-align:super;">
+          <img src="<%= CONFIG.siteUrl[application.env] %>/img/icons/icon-circle-twitter.png"/>
+        </a>
+        <a target="_blank" href="<%= CONFIG.siteUrl[application.env] %>" style="padding: 0px 10px;text-decoration:none;vertical-align: middle;">
+          <img src="<%= CONFIG.siteUrl[application.env] %>/img/icons/icon-logo-cv.png"/>
+        </a>
+        <a target="_blank" href="https://www.facebook.com/crowdvoice" style="padding: 0px 10px;text-decoration:none;vertical-align:super;">
+          <img src="<%= CONFIG.siteUrl[application.env] %>/img/icons/icon-circle-facebook.png"/>
+        </a>
+        <p style="font-size:12px;color:A1B0B3;">© Majal, 2015. All Rights Reserved</p>
+      </div>
+    </td>
+  </tr>
+</table>

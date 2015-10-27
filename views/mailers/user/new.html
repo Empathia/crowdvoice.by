@@ -3,6 +3,7 @@
 <% var day = entityDate.getDate(); %>
 <% var monthIndex = entityDate.getMonth(); %>
 <% var year = entityDate.getFullYear(); %>
+
 <table width="100%" bgcolor="#F7F9FA" style="padding:30px;font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
   <tr>
     <td>
@@ -21,13 +22,7 @@
                 <td style="padding: 50px; text-align: left;">
                   <div style="line-height: 23px;">
                     <p style="font-size:18px;color:black;font-weight:300;">Welcome to CrowdVoice.by! Thanks for signing up.</p>
-                    <p style="font-size:15px;color:black;">
-                      Before you can start using CrowdVoice.by we need you to activate your account. To do so, please click on the link below or copy and paste it in your browser.<br><br>
-
-                      <b>Activation link:</b><br>
-                      <a target="_blank" href="<%= CONFIG.siteUrl[application.env] %>/session?username=null&token=<%= user.token %>" style="font-size:13px;color:#FF9400;word-break: break-all;">
-                        <%= CONFIG.siteUrl[application.env] %>/session?username=null&token=<%= user.token %>
-                      </a>
+                    <p style="font-size:15px;color:black !important;">Before you can start using CrowdVoice.by we need you to activate your account. To do so, please click on the link below or copy and paste it in your browser.<br><br><b>Activation link:</b><br><a target="_blank" href="<%= CONFIG.siteUrl[application.env] %>/session?username=null&token=<%= user.token %>" style="font-size:13px;color:#FF9400;word-break: break-all;"><%= CONFIG.siteUrl[application.env] %>/session?username=null&token=<%= user.token %></a>
                     </p>
                   </div>
                 </td>
