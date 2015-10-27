@@ -87,7 +87,7 @@ Class(CV, 'CardActionFollow').inherits(Widget).includes(BubblingSupport)({
             this.entity.followed = false;
 
             if (this.unfollowPopover) {
-                this.unfollowPopover = this.unfollowPopover.destroy();
+                this.unfollowPopover = this.unfollowPopover.deactivate().destroy();
             }
 
             if (this.unfollowPopoverContent) {
