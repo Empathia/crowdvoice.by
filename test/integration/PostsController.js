@@ -31,7 +31,7 @@ describe('PostsController', function () {
   describe('#create', function () {
 
     it('create post with no errors as non-admin', function (done) {
-      login('jon', function (err, agent, csrf) {
+      login('jon-snow', function (err, agent, csrf) {
         if (err) { return done(err) }
 
         agent
@@ -72,7 +72,7 @@ describe('PostsController', function () {
     })
 
     it('create post with no errors in public voice as non-owner', function (done) {
-      login('arya', function (err, agent, csrf) {
+      login('arya-stark', function (err, agent, csrf) {
         if (err) { return done(err) }
 
         agent
@@ -117,7 +117,7 @@ describe('PostsController', function () {
   describe('#preview', function () {
 
     it('From URL: Invalid YouTube URL should not crash server', function (done) {
-      login('cersei', function (err, agent, csrf) {
+      login('cersei-lannister', function (err, agent, csrf) {
         if (err) { return done(err) }
 
         agent

@@ -874,16 +874,16 @@ async.series([function(next) {
         invitatorEntityId: data.entities['cersei-lannister'].id,
         invitedEntityId: data.entities['arya-stark'].id,
       },
-      invitator: data.entities['cersei-lannister'].name,
-      invited: data.entities['arya-stark'].name,
+      invitator: data.entities['cersei-lannister'].profileName,
+      invited: data.entities['arya-stark'].profileName,
     },
     {
       data: {
         invitatorEntityId: data.entities['jon-snow'].id,
         invitedEntityId: data.entities['jamie-lannister'].id,
       },
-      invitator: data.entities['jon-snow'].name,
-      invited: data.entities['jamie-lannister'].name,
+      invitator: data.entities['jon-snow'].profileName,
+      invited: data.entities['jamie-lannister'].profileName,
     },
   ];
 
@@ -1179,7 +1179,7 @@ async.series([function(next) {
             senderPersonId: data.entities['cersei-lannister'].id,
             message: 'Would you be interested in this offer?',
             type: 'invitation_organization',
-            invitationRequestId: data.invitations['Cersei-to-Arya'].id,
+            invitationRequestId: data.invitations['cersei-lannister-to-arya-stark'].id,
             organizationId: data.organizations['house-lannister'].id,
           }, doneMessage);
         },
@@ -1201,7 +1201,7 @@ async.series([function(next) {
             senderPersonId: data.entities['jon-snow'].id,
             message: 'Would you be interested in this offer?',
             type: 'invitation_voice',
-            invitationRequestId: data.invitations['Jon-to-Jamie'].id,
+            invitationRequestId: data.invitations['jon-snow-to-jamie-lannister'].id,
             voiceId: data.voices['white-walkers'].id,
           }, doneMessage);
         },
@@ -1230,7 +1230,7 @@ async.series([function(next) {
       var times = process.argv[2]
 
       if (!times || typeof times !== 'number') {
-        times = 250
+        times = 0;
       }
 
       async.timesLimit(times, 1, function(id, nextPost) {

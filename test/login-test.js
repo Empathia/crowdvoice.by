@@ -36,7 +36,7 @@ async.series([function(done) {
   var req = request
     .post(urlBase + '/session')
     .set('cookie', cookies)
-    .send({_csrf: csrf, username: 'cersei', password: '12345678'});
+    .send({_csrf: csrf, username: 'cersei@example.com', password: '12345678'});
 
   req.end(function (err, res) {
     done();
