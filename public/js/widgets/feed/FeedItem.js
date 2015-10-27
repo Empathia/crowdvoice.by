@@ -56,10 +56,17 @@ Class(CV, 'FeedItem').inherits(Widget).includes(CV.WidgetUtils)({
 
         /* Sets the actionDoer avatar.
          * @method updateAvatar <protected> [Function]
+         * @argument avatarPath <option> [String] path to the avatar.
          * @return undefined
          */
-        updateAvatar : function updateAvatar() {
-            this.dom.updateAttr('src', this.el.querySelector('.main-avatar'), this.getAvatar());
+        updateAvatar : function updateAvatar(avatarPath) {
+            var path = this.getAvatar();
+
+            if (avatarPath) {
+                path = avatarPath;
+            }
+
+            this.dom.updateAttr('src', this.el.querySelector('.main-avatar'), path);
         },
 
         /* Sets the description text.

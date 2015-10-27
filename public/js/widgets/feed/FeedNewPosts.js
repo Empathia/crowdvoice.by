@@ -2,6 +2,10 @@ Class(CV, 'FeedNewPosts').inherits(CV.FeedItem)({
     ELEMENT_CLASS : 'cv-feed-item new-posts',
 
     prototype : {
+        /* FeedPresenter Result.
+         * @property <required> [Object]
+         */
+        data : null,
         init : function init(config) {
             CV.FeedItem.prototype.init.call(this, config);
 

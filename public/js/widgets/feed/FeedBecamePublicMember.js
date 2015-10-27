@@ -2,6 +2,10 @@ Class(CV, 'FeedBecamePublicMember').inherits(CV.FeedItem)({
     ELEMENT_CLASS : 'cv-feed-item became-public',
 
     prototype : {
+        /* FeedPresenter Result.
+         * @property <required> [Object]
+         */
+        data : null,
         init : function init(config) {
             CV.FeedItem.prototype.init.call(this, config);
 
