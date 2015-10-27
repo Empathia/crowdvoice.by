@@ -1,4 +1,6 @@
-Class(CV, 'NotificationsManager').inherits(Widget)({
+var Velocity = require('velocity-animate');
+
+Class(CV, 'NotificationsManager').inherits(Widget).includes(BubblingSupport)({
     ELEMENT_CLASS : 'cv-notifications',
 
     HTML : '\
@@ -12,7 +14,7 @@ Class(CV, 'NotificationsManager').inherits(Widget)({
     prototype : {
         init : function init(config) {
             Widget.prototype.init.call(this, config);
-            this.el = this.element[0].querySelector(".cv-notifications-container");
+            this.el = this.element[0];
             this.elAll = this.element[0].querySelector(".cv-notifications-all");
         },
 
@@ -66,12 +68,16 @@ Class(CV, 'NotificationsManager').inherits(Widget)({
 
         _activate : function _activate() {
             Widget.prototype._activate.call(this);
-            this.element.slideDown(250);
+            Velocity(this.el, 'fadeIn', {
+                duration: 120
+            });
         },
 
         _deactivate : function _deactivate() {
             Widget.prototype._deactivate.call(this);
-            this.element.slideUp(150);
+            Velocity(this.el, 'fadeOut', {
+                duration: 120
+            });
         }
     }
 });

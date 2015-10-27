@@ -39,6 +39,7 @@ Class(CV, 'NotificationItem').inherits(CV.Notification)({
         },
 
         _close : function _close() {
+            this.dispatch('notification:markAsRead');
             this.destroy();
 
             API.markNotificationAsRead({
