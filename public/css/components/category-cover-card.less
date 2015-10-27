@@ -1,0 +1,111 @@
+.category-list-item {
+  float: left;
+  width: 33.333%;
+  text-align: center;
+  .card-body{
+    padding:50px 25px 0px 25px;
+
+    .card-wrapper{
+      background: white;
+      border-radius:5px;
+      padding: 33px 21px;
+      box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.1);
+      min-height: 490px;
+      width: 300px;
+
+      .featured-text{
+        margin-top: 26px;
+        margin-bottom: 32px;
+        text-align: center;
+        border-bottom: 1px solid #E7EAEC;
+        line-height: 0px;
+        color: #A1B0B3;
+
+        .middle-line{
+          background-color: white;
+          padding-left: 10px;
+          padding-right: 10px;
+          font-size: 10px;
+        }
+      }
+
+      .all-voices{
+        text-align: left;
+        font-size: 13px;
+        a.category_link{
+          color: #ff9400;
+          cursor: pointer;
+          text-decoration: none;
+          .arrow{
+            font-size: 13px;
+            vertical-align: baseline;
+          }
+        }
+        a.category_link:hover{
+          text-decoration: underline;
+        }
+      }
+
+      .category_link {
+        display: inline-block;
+        color: @color-neutral-xx-dark;
+      }
+
+      .category-icon {
+        width: 160px;
+        height: 160px;
+        background-size: 100%;
+        background-repeat: no-repeat;
+      }
+
+      .category_link-wrapper {
+        padding-top: 35px;
+      }
+
+      .category_title {
+        font-size: 22px;
+        &:extend(.-text-center);
+      }
+
+      .category_link.category_title, .voice-link{
+        text-decoration: none;
+      }
+
+      .category_link.category_title:hover, .voice-link:hover{
+        text-decoration: underline;
+      }
+
+      .voice-card-container{
+        margin-bottom: 36px;
+        padding:0px 9px;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 480px){
+  .category-list-item .card-body .card-wrapper{
+    width: 240px;
+  }
+}
+@media only screen and (max-width: 768px){
+  .category-list-item{
+    width: 100%;
+    .card-body .card-wrapper{
+      width: 500px;
+    }
+  }
+}
+@media only screen and (max-width: 800px){
+  .category-list-item{
+    width: 100%;
+    .card-body .card-wrapper{
+      width: 260px;
+    }
+  }
+}
+@media only screen and (max-width: 1024px){
+  .category-list-item .card-body .card-wrapper{
+    width: 100%;
+  }
+}

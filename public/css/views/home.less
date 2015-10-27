@@ -22,14 +22,38 @@
 /* =========================================================================== *
  *  intro
  * =========================================================================== */
+ .cv-main-content.home{
+    background-image: url("/img/views/home/illustration-30-b.jpg");
+    background-position: 310% -2%;
+    background-repeat: no-repeat;
+    background-size: 80%;
+ }
+ .page-home{
+    .sidebar-link.active{
+      border-left: 5px solid #ff9400;
+    }
+    .sidebar-link-help-support{
+      bottom: inherit;
+      margin-top:54px;
+    }
+    // Buttons separation
+    .-float-left.-mr1{
+      margin-right: 27px;
+    }
+    // Orangee button padding
+    .cv-button.primary.large{
+      padding:17px 35px 8px 35px;
+    }
+    // White button padding
+    .cv-button.large.learn{
+      padding: 24px 64px 25px 64px;
+      font-size: 14px;
+    }
+ }
 .homepage-intro {
   padding-top: 65px;
-  padding-bottom: 110px;
-  background-color: @color-white;
-  background-image: url("/img/views/home/illustration-30-b.jpg");
-  background-position: 223% 25%;
-  background-repeat: no-repeat;
-  background-size: 70%;
+  padding-bottom: 30px;
+  background-color: transparent;
 
   .intro-description {
     font-size: 17px;
@@ -38,7 +62,7 @@
   }
 
   .intro-description-text {
-    font-size: 1em;
+    font-size: 1.125em;
   }
 
   .cv-button{
@@ -72,26 +96,32 @@
   background-image: url("/img/home-wave-left.png"), url("/img/home-wave-right.png");
   background-position: left bottom, right top;
   background-repeat: no-repeat;
-  padding-top:125px;
-  padding-bottom:125px;
+  padding-top:75px;
+  padding-bottom:108px;
   color:white;
-  article{
+
+  .statsTitle, .stats-number{
+    font-size: 48px;
     text-align: center;
-    margin-top:45px;
+  }
+
+  .stats{
+    text-align: center;
+    margin-top:53px;
+
     .stats-col{
-      padding: 0px 50px;
+      padding: 15px 50px;
     }
+
     .stats-col:not(:last-child){
         border-right: 1px solid #454B4D;
     }
   }
-  p{
-    font-size: 48px;
-    text-align: center;
-  }
-  p.stats-label{
+
+  .stats-label{
     color:#8A9699;
     font-size: 14px;
+    font-weight: bold;
   }
 }
 .homepage-intro-banner {
@@ -144,33 +174,45 @@
     margin-left:15px;
   }
 }
-.betweenDivs.cv-button.large{
+/* =========================================================================== *
+ *  Button between divs
+ * =========================================================================== */
+.betweenDivs{
     position: absolute;
+    text-align: center;
     margin-top: -30px;
-    margin-left: 50%;
+    margin-left: 46%;
     line-height: 50px;
+    font-size: 16px;
+    height: 56px;
+    width: 240px;
+    
 }
 /* =========================================================================== *
  *  category list
  * =========================================================================== */
 .homepage-category-list {
-  padding-top: 64px;
+  padding-top: 87px;
   padding-bottom: 100px;
   background-color: @color-neutral-xx-light;
+  .homepage-category-list-row{
+    max-width: 1000px;
+    margin:auto;
+  }
 }
 
 .homepage-category-list-heading {
   font-size: 40px;
   line-height: 55px;
-  margin: 0 auto 50px;
+  margin: 0px auto 12px;
   max-width: 800px;
 }
 
 .homepage-category-list-item {
   float: left;
   width: 33.333%;
-  padding-bottom: 100px;
   text-align: center;
+
 
   .categories_link {
     display: inline-block;
@@ -185,7 +227,7 @@
   }
 
   .categories_link-wrapper {
-    padding-top: 10px;
+    padding-top: 35px;
   }
 
   .categories_title {
@@ -200,7 +242,6 @@
     padding-top: 16px;
    }
 }
-
 /* =========================================================================== *
  *  organization cards
  * =========================================================================== */
@@ -216,5 +257,28 @@
   .widget-card {
     padding-left: 1rem;
     padding-right: 1rem;
+  }
+}
+/* =========================================================================== *
+ *  Media queries - Home Stats
+ * =========================================================================== */
+@media only screen and (max-width: 480px){
+  .home-stats .stats .stats-col{
+    padding:0px;
+  }
+}
+@media only screen and (max-width: 800px){
+  .home-stats{
+    .stats{
+      .stats-col{
+        width: 40%;
+        border-right:0 !important;
+        margin: 0px 10px;
+      }
+      .stats-col:nth-child(-n+2){
+        border-bottom:1px solid #454B4D;
+        padding: 10px 0px;
+      }
+    }
   }
 }
