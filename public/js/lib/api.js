@@ -605,7 +605,7 @@ module.exports = {
         if ((typeof callback).toLowerCase() !== "function") {
             throw new Error('Callback should be a function');
         }
-        // debugger;
+
         $.ajax({
             type : 'PUT',
             url : '/' + args.profileName,
@@ -695,6 +695,34 @@ module.exports = {
             dataType : 'json',
             data : args.data,
             headers : {'csrf-token' : this.token},
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
+    /* Remove entity from organization. Must be organization owner in order to do so.
+     * @argument args.profileName <required> [String] the entity profileName (where :profileName is :profileName of org, not current user)
+     * @argument args.data.entityId <required> <Hashids encode result>, // entity ID of organization to remove user from
+     * @argument args.data.orgId <required> <Hashids encode result>, // entity ID of organization to remove user from
+     * @argument callback <required> [Function]
+     */
+    removeEntityFromOrganization : function removeEntityFromOrganization(args, callback) {
+        if (!args.profileName || !args.data.entityId || !args.data.orgId || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'POST',
+            url : '/' + args.profileName + '/removeEntity',
+            headers : {'csrf-token' : this.token},
+            data : {
+                entityId : args.data.entityId,
+                orgId : args.data.orgId
+            },
             success : function success(data) {callback(false, data);},
             error : function error(err) {callback(true, err);}
         });
