@@ -34,6 +34,12 @@ Module(CV, 'WidgetUtils')({
                 element.insertAdjacentHTML('beforeend', htmlString);
             },
 
+            decodeHTML : function decodeHTML(htmlString) {
+                var el = document.createElement('div');
+                el.insertAdjacentHTML('beforeend', htmlString);
+                return el.textContent;
+            },
+
             addClass : function addClass(el, classNames) {
                 if (el.classList) {
                     return classNames.forEach(function(cl) {
