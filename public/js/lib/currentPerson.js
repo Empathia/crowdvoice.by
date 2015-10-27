@@ -53,7 +53,7 @@ module.exports = {
         }
 
         if (type === 'voice') {
-            if (!this.get().ownedVoices.length) {
+            if ((!this.get().ownedVoices) || (!this.get().ownedVoices.length)) {
                 return false;
             }
 
