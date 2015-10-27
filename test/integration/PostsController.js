@@ -31,7 +31,7 @@ describe('PostsController', function () {
   describe('#create', function () {
 
     it('create post with no errors as non-admin', function (done) {
-      login('jon', function (err, agent, csrf) {
+      login('jon-snow', function (err, agent, csrf) {
         if (err) { return done(err) }
 
         agent
@@ -72,7 +72,7 @@ describe('PostsController', function () {
     })
 
     it('create post with no errors in public voice as non-owner', function (done) {
-      login('arya', function (err, agent, csrf) {
+      login('arya-stark', function (err, agent, csrf) {
         if (err) { return done(err) }
 
         agent
@@ -108,6 +108,30 @@ describe('PostsController', function () {
 
               return done()
             })
+          })
+      })
+    })
+
+  })
+
+  describe('#preview', function () {
+
+    it('From URL: Invalid YouTube URL should not crash server', function (done) {
+      login('cersei-lannister', function (err, agent, csrf) {
+        if (err) { return done(err) }
+
+        agent
+          .post(urlBase + '/cersei-lannister/dead-of-arryn/preview')
+          .accept('application/json')
+          .send({
+            _csrf: csrf,
+            url: 'https://www.youtube.com/watch?v=M4Txn4FtV4', // missing an "o" at end
+          })
+          .end(function (err, res) {
+            expect(res.status).to.equal(400)
+            expect(res.body.status).to.equal('There was an error in the request')
+
+            return done()
           })
       })
     })
