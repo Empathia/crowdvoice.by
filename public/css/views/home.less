@@ -10,7 +10,7 @@
 .homepage-heading-wrapper {
   margin-bottom: 30px;
   padding-bottom: 5px;
-  border-bottom: 1px solid @color-neutral-light;
+  border-bottom: 1px solid @color-neutral-x-light;
 
   .homepage-heading {
     font-size: 30px;
@@ -19,41 +19,18 @@
   }
 }
 
-/* =========================================================================== *
- *  intro
- * =========================================================================== */
- .cv-main-content.home{
-    background-image: url("/img/views/home/illustration-30-b.jpg");
-    background-position: right top;
-    background-repeat: no-repeat;
-    background-size: 450px;
- }
- .page-home{
-    .sidebar-link.active{
-      border-left: 5px solid #ff9400;
-    }
-    .sidebar-link-help-support{
-      bottom: inherit;
-      margin-top:54px;
-    }
-    // Buttons separation
-    .-float-left.-mr1{
-      margin-right: 27px;
-    }
-    // Orangee button padding
-    .cv-button.primary.large{
-      padding:17px 35px 8px 35px;
-    }
-    // White button padding
-    .cv-button.large.learn{
-      padding: 24px 64px 25px 64px;
-      font-size: 14px;
-    }
- }
+/******************************************************************************
+ INTRO
+ *****************************************************************************/
+.cv-main-content.home {
+  background-image: url("/img/views/home/illustration-30-b.jpg");
+  background-position: right top;
+  background-repeat: no-repeat;
+}
+
 .homepage-intro {
   padding-top: 65px;
-  padding-bottom: 30px;
-  background-color: transparent;
+  padding-bottom: 80px;
 
   .intro-description {
     font-size: 17px;
@@ -65,33 +42,34 @@
     font-size: 1.125em;
   }
 
-  .cv-button{
-    text-align: center;
-    span{
+  > .homepage-intro-main-cta-dl {
+    display: inline-block;
+    height: 64px;
+    padding: 8px 25px;
+    margin: 0 27px 0 0;
+
+    b {
+      font-size: 18px;
+      line-height: 24px;
+    }
+
+    span {
       font-size: 12px;
+      line-height: 17px;
       color: #FFDAA6;
     }
   }
 
-  .stats {
-    font-size: 1rem;
-    margin-bottom: 60px;
-
-    &-col {
-      padding-right: 1.5em;
-    }
-
-    &-number {
-      font-size: 1.538em;
-      text-align: left;
-    }
-
-    &-label {
-      font-size: 1em;
-    }
+  > .homepage-intro-main-cta {
+    font-size: 14px;
+    display: inline-block;
+    height: 64px;
+    padding: 20px 60px;
+    margin: 0;
   }
 }
-.home-stats{
+
+.home-stats {
   background-color: #2E3233;
   background-image: url("/img/home-wave-left.png"), url("/img/home-wave-right.png");
   background-position: left bottom, right top;
@@ -124,6 +102,7 @@
     font-weight: bold;
   }
 }
+
 .homepage-intro-banner {
   font-size: 1rem;
 
@@ -186,7 +165,7 @@
     font-size: 16px;
     height: 56px;
     width: 240px;
-    
+
 }
 /* =========================================================================== *
  *  category list
@@ -246,7 +225,7 @@
  *  organization cards
  * =========================================================================== */
 .homepage-organization-cards {
-  padding-top: 100px;
+  padding-top: 80px;
   padding-bottom: 80px;
 
   div.heading-right{

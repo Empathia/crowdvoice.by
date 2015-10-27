@@ -36,8 +36,16 @@
     &.active {
       color: @color-primary;
       .sidebar-link-svg {fill: @color-primary}
-      &::before {opacity: 1}
+      &::before {
+        opacity: 1;
+        transform: none;
+      }
     }
+  }
+
+  .sidebar-link-help-support {
+    bottom: inherit;
+    margin-top: 54px;
   }
 }
 
@@ -124,7 +132,6 @@
 
 .sidebar-link {
   position: relative;
-  font-size: 14px;
   display: block;
   height: 36px;
   padding-top: 10px;
@@ -141,11 +148,11 @@
   position: absolute;
   left: 0;
   top: 0;
-  width: 7px;
+  width: 6px;
   height: 100%;
   border-radius: 0 2px 2px;
   background-color: @color-primary;
-  transform: translateX(-7px);
+  transform: translateX(-6px);
   transition: transform 124ms ease;
 }
 
