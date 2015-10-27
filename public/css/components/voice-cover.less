@@ -12,6 +12,8 @@
 
   a {
     color: inherit;
+    &:extend(.-tdn);
+    &:hover {opacity: .7}
   }
 }
 
@@ -171,6 +173,7 @@
     right: 16px;
   }
 }
+
 /*************************************************
 * Voice Cover Centered Title
 **************************************************/
@@ -178,22 +181,19 @@
   margin-bottom: 15px;
   .voice-content{
     height: 32px;
-                
+
     .voice-title-link{
       line-height: 13px;
       text-align: left;
     }
-                
+
     .voice-link{
       color:#454b4d;
       font-weight: 600;
     }
-                
+
     .voice-link:hover{
        color:#ff9400;
     }
   }
-}         
-
-
-    
+}

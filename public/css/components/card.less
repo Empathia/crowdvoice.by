@@ -51,7 +51,8 @@
 .card_username-link {
   font-size: 11px;
   color: @color-neutral-mid;
-  text-decoration: none;
+  &:extend(.-tdn);
+  &:hover {opacity: .7}
 }
 
 .card_fullname {
