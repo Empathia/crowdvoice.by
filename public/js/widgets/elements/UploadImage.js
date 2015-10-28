@@ -12,7 +12,7 @@ Class(CV, 'UploadImage').inherits(CV.Image)({
                 <div class="cv-upload-image__button-wrapper -table-cell -vam">\
                     <button class="cv-button tiny" data-button>Replace</button>\
                     <p class="button-hint"></p>\
-                    <input type="file" name="upload" class="-hide"/>\
+                    <input type="file" name="upload" accept="image/.jpg, .png, .jpeg" class="-hide"/>\
                 </div>\
             </div>\
         </div>',
