@@ -16,30 +16,30 @@
           </td>
         </tr>
         <tr>
-          <td style="box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.5);-webkit-box-shadow:0px 2px 4px 0px rgba(0, 0, 0, 0.5); -moz-box-shadow:0px 2px 4px 0px rgba(0, 0, 0, 0.5); padding: 30px 0 30px 0; background-color: #FFFFFF; color: #4C4B49; border-radius: 0px; border-top:10px solid; border-top-color:#FF9400;">
-            <table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 0 0 0 -3px;">
-				<tbody>
-				   <tr>
-				     <td style="padding: 0 25px; text-align: left;">
-				        <div style="font-size: 14px; line-height: 38px; color: #b2b2b2;">
-				          <p style="font-size:18px;color:black;">Hello <%= params.receiver.entity.name %>, you have a new follower!</p>
-				        </div>
-				     </td>
-				   </tr>
-				</tbody>
-			</table>
-			<table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 10px 0 0 -3px;padding:0px 20px">
-				<tbody>
-				    <tr style="background-color:#F7F9FA;">
-				        <td style="padding: 25px 0px 25px 25px;">
-				            <img style="width:52px;height:52px;border-radius:5px;"src="<%= doerInfo.images.card.url %>"/>
-				        </td>
-				        <td style="padding-right:25px;">
-				            <a href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName%>" target="_blank" style="font-size:13px;color:#4D4D4D;text-align:left;font-weight:bold;"><%= doerInfo.name %></a>
-				        </td>
-				    </tr>
-				</tbody>
-			</table>
+          <td style="box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.5);-webkit-box-shadow:0px 2px 4px 0px rgba(0, 0, 0, 0.5); -moz-box-shadow:0px 2px 4px 0px rgba(0, 0, 0, 0.5); background-color: #FFFFFF; color: #4C4B49; border-radius: 0px; border-top:10px solid; border-top-color:#FF9400;">
+            <table width="100%" cellspacing="0" cellpadding="0" border="0" style="padding: 65px 50px 20px 50px;">
+      				<tbody>
+      				  <tr>
+      				    <td>
+      				      <div>
+      				        <p style="font-size:18px;color:black;font-weight:300;">Hello <%= params.receiver.entity.name %>, you have a new follower!</p>
+      				      </div>
+      				    </td>
+      				  </tr>
+      				</tbody>
+      			</table>
+      			<table width="100%" cellspacing="0" cellpadding="0" border="0" style="padding:0px 50px 60px 50px;">
+      				<tbody>
+      				  <tr style="background-color:#F7F9FA; height:98px; border-radius:5px;">
+      				    <td style="text-align:center;">
+      				      <img width="36" height="36" style="border-radius:5px;"src="<%= doerInfo.images.card.url %>"/>
+      				    </td>
+      				    <td>
+      				      <a href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName%>" target="_blank" style="font-size:13px;color:#4D4D4D;text-align:left;font-weight:bold;"><%= doerInfo.name %></a>
+      				    </td>
+      				  </tr>
+      				</tbody>
+      			</table>
           </td>
         </tr>
       </table>
@@ -47,7 +47,7 @@
   </tr>
   <tr>
     <td>
-       <div style="padding: 30px 0 0 0; color: #66635c;text-align:center;">
+      <div style="padding: 40px 0 0 0; color: #66635c;text-align:center;">
         <a target="_blank" href="https://twitter.com/CrowdVoice" style="padding: 0px 10px;text-decoration:none;vertical-align:super;">
           <img src="<%= CONFIG.siteUrl[application.env] %>/img/icons/icon-circle-twitter.png"/>
         </a>

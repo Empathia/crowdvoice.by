@@ -16,13 +16,13 @@
           </td>
         </tr>
         <tr>
-	        <td style="box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.5);-webkit-box-shadow:0px 2px 4px 0px rgba(0, 0, 0, 0.5); -moz-box-shadow:0px 2px 4px 0px rgba(0, 0, 0, 0.5); padding: 30px 0 30px 0; background-color: #FFFFFF; color: #4C4B49; border-radius: 0px; border-top:10px solid; border-top-color:#FF9400;">
-				<table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 0 0 0 -3px;">
+	        <td style="box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.5);-webkit-box-shadow:0px 2px 4px 0px rgba(0, 0, 0, 0.5); -moz-box-shadow:0px 2px 4px 0px rgba(0, 0, 0, 0.5);background-color: #FFFFFF; color: #4C4B49; border-radius: 0px; border-top:10px solid; border-top-color:#FF9400;">
+				<table width="100%" cellspacing="0" cellpadding="0" border="0" style="padding: 65px 50px 20px 50px;">
 					<tbody>
 					    <tr>
-					        <td style="padding: 0 25px; text-align: left;">
-					            <div style="font-size: 14px; line-height: 38px; color: #b2b2b2;">
-					            	<p style="font-size:18px;color:black;">Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="blank_"><%= doerInfo.name %></a> has sent you an invitation:</p>
+					        <td style="text-align: left;">
+					            <div>
+					            	<p style="font-size:18px;color:black;font-weight:300;">Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="blank_"><%= doerInfo.name %></a> has sent you an invitation:</p>
 					            </div>
 					        </td>
 					    </tr>
@@ -31,14 +31,14 @@
 				<!-- New invitation to join a new ORGANIZATION -->
 		    	<% if(params.message.type == 'invitation_organization'){ %>
 		    	<% voiceImage = params.invitationOrganization.images.small.url; %>
-					<table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 10px 0 0 -3px;">
+					<table width="100%" cellspacing="0" cellpadding="0" border="0" style="padding:0px 50px 40px 50px;">
 					    <tbody>
 					        <tr>
-						        <td style="padding: 0px 0 80px 25px;">
-						            <img width="52" height="52" style="border-radius:50%;display:block;margin-left:auto;margin-right:auto;" src="<%= doerInfo.images.card.url %>"/>
+						        <td style="padding: 0 0 80px 0;">
+						            <img width="36" height="36" style="border-radius:50%;display:block;margin-left:auto;margin-right:15px;" src="<%= doerInfo.images.card.url %>"/>
 						        </td>
 						        <td style="padding-right:25px;">
-						            <table width="100%" cellspacing="0" cellpadding="0" border="0" style="font-size:15px;color:#454B4D;text-align:left;background-color:#F7F9FA;padding:20px;">
+						            <table width="100%" cellspacing="0" cellpadding="0" border="0" style="font-size:15px;color:#454B4D;text-align:left;background-color:#F7F9FA;padding:20px;border-radius:5px;">
 						                <tbody>
 	                                      	<tr>
 	                                       		<td>
@@ -47,7 +47,7 @@
 	                                      	</tr>
 						                    <tr>
 						                      	<td colspan="">
-						                          	<img width="52" height="52" style="border-radius:5px;float:left;"src="<%= voiceImage %>"/>
+						                          	<img width="37" height="37" style="border-radius:5px;float:left;"src="<%= voiceImage %>"/>
 						                        	<p style="margin-left:59px;margin-top:5px;font-size:12px;color:#A1B0B3;"><a href="<%= CONFIG.siteUrl[application.env] + '/' + params.invitationOrganization.profileName%>" target="_blank" style="font-size:13px;color:#4D4D4D;text-align:left;vertical-align:middle;font-weight:bold;"><%= params.invitationOrganization.name %></a><!--<br><br>by The International Planned Parenthood Federation--></p>
 						                      	</td>
 						                    </tr>
@@ -61,24 +61,26 @@
 				<!-- New invitation to join a VOICE-->
 				<% if(params.message.type == 'invitation_voice'){%>
 				<% voiceImage = params.invitationVoice.images.small.url; %>
-					<table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 10px 0 0 -3px;">
+					<table width="100%" cellspacing="0" cellpadding="0" border="0" style="padding:0px 50px 40px 50px;">
 					    <tbody>
 					        <tr>
-						        <td style="padding: 0px 0 80px 25px;">
-						            <img width="52" height="52" style="border-radius:50%;display:block;margin-left:auto;margin-right:auto;" src="<%= doerInfo.images.card.url %>"/>
+						        <td style="padding: 0 0 80px 0;">
+						            <img width="36" height="36" style="border-radius:50%;display:block;margin-left:auto;margin-right:15px;" src="<%= doerInfo.images.card.url %>"/>
 						        </td>
 						        <td style="padding-right:25px;">
-						            <table width="100%" cellspacing="0" cellpadding="0" border="0" style="font-size:15px;color:#454B4D;text-align:left;background-color:#F7F9FA;padding:20px;">
+						            <table width="100%" cellspacing="0" cellpadding="0" border="0" style="font-size:15px;color:#454B4D;text-align:left;background-color:#F7F9FA;padding:20px;border-radius:5px;">
 						                <tbody>
 	                                      	<tr>
-	                                       		<td>
+	                                       		<td colspan="2">
 	                                        		<p><%= params.message.message %><br><br></p>
 	                                        	</td>
 	                                      	</tr>
 						                    <tr>
-						                      	<td colspan="">
-						                          	<img width="52" height="52" style="border-radius:5px;float:left;"src="<%= voiceImage %>"/>
-						                        	<p style="margin-left:59px;margin-top:5px;font-size:12px;color:#A1B0B3;"><a href="<%= CONFIG.siteUrl[application.env] +'/'+ params.invitationVoice.owner.profileName +'/'+ params.invitationVoice.slug %>" target="blank_" style="font-size:13px;color:#4D4D4D;text-align:left;vertical-align:middle;font-weight:bold;"><%= params.invitationVoice.title %></a><<br><br>by <%= params.invitationVoice.owner.name + ' '%></p>
+						                      	<td style="text-align:center;">
+						                          	<img width="37" height="37" style="border-radius:5px;"src="<%= voiceImage %>"/>
+						                      	</td>
+						                      	<td>
+						                      		<p style="line-height:20px;font-size:12px;color:#A1B0B3;"><a href="<%= CONFIG.siteUrl[application.env] +'/'+ params.invitationVoice.owner.profileName +'/'+ params.invitationVoice.slug %>" target="blank_" style="font-size:13px;color:#4D4D4D;text-align:left;vertical-align:middle;font-weight:bold;"><%= params.invitationVoice.title %></a><<br>by <%= params.invitationVoice.owner.name + ' '%></p>
 						                      	</td>
 						                    </tr>
 						                </tbody>
@@ -89,9 +91,9 @@
 					</table>
 				<% } %>
 				<!-- Layout Button Separator -->
-				<hr style="border-top:1px solid #DFE4E6;margin-top:50px;">
+				<hr style="border-top:1px solid #DFE4E6;">
 				<!-- Layout Buttons area -->
-				<div style="text-align:center; font-size: 15px; line-height: 23px; color: #a6a39d; padding:30px; margin-top:20px;">
+				<div style="text-align:center; font-size: 15px; line-height: 23px; color: #a6a39d; padding:30px; margin-top:40px;margin-bottom:40px;">
 					<!-- Invitation notitification reply button
 					<a style="text-decoration:none;color:white;background-color:#FF9400;padding:17px 60px;border-radius:5px;border-bottom:5px solid #E68600;margin-right:10px" href="#">Accept</a>-->
 					<a style="text-decoration:none;color:white;background-color:#FF9400;padding:17px 45px;border-radius:5px;border:1px solid #E68600;border-bottom:5px solid #E68600;margin-left:10px;" href="<%= CONFIG.siteUrl[application.env] + '/' + params.receiver.entity.profileName + '/messages#' + params.thread.id %>">View Invitation</a>
@@ -103,7 +105,7 @@
   </tr>
   <tr>
     <td>
-       <div style="padding: 30px 0 0 0; color: #66635c;text-align:center;">
+       <div style="padding: 40px 0 0 0; color: #66635c;text-align:center;">
         <a target="_blank" href="https://twitter.com/CrowdVoice" style="padding: 0px 10px;text-decoration:none;vertical-align:super;">
           <img src="<%= CONFIG.siteUrl[application.env] %>/img/icons/icon-circle-twitter.png"/>
         </a>
