@@ -121,8 +121,8 @@ require('./widgets/voice-cover/VoiceCoverTitle');
 require('./widgets/voice-cover/actions/VoiceCoverActions');
 require('./widgets/voice-cover/actions/VoiceCoverActionsEdit');
 require('./widgets/voice-cover/actions/VoiceCoverActionsArchive');
-require('./widgets/CategoryCards');
 require('./widgets/CategoryCover');
+require('./widgets/TopicCard');
 
 
 // views

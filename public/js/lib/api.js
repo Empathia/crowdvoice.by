@@ -1406,8 +1406,30 @@ module.exports = {
     },
 
     /**************************************************************************
-     * MISC
+     * TOPICS
      *************************************************************************/
+    /* Most recently created 3 voices in topic.
+     * @argument args.topicSlug <required> [String]
+     * @argument callback <required> [Function]
+     */
+    getTopicNewestVoices : function getTopicNewestVoices(args, callback) {
+        if (!args.topicSlug || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'GET',
+            url : '/topic/' + args.topicSlug + '/newestVoices',
+            headers : {'csrf-token' : this.token},
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
     /* Returns the registered topics. [Array]
      * @argument callback <required> [Function]
      */

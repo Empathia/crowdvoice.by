@@ -40,10 +40,21 @@ Class(CV.Views, 'DiscoverBrowse').includes(NodeSupport, CV.WidgetUtils)({
             });
             this.tabs.addTabIndicator().start();
 
-            var topicsHolder = document.querySelector('.homepage-category-list-row');
-            this.topicsData.forEach(function(topic) {
-                this.appendChild(new CV.CategoryCards(topic)).render(topicsHolder);
+            var topicsHolder = document.querySelector('.topics-list-row');
+            var topicsElements = [];
+            this.topicsData.forEach(function(topic, index) {
+                topicsElements.push(this.appendChild(new CV.TopicCard({
+                    name : 'topic_' + index,
+                    className: '-float-left',
+                    data: topic
+                })).render(topicsHolder).el);
             }, this);
+
+            new CV.ResponsiveWidth({
+                container : topicsHolder,
+                items : [].slice.call(topicsElements, 0),
+                minWidth : 300
+            }).setup();
         }
     }
 });

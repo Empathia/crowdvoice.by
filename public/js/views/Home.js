@@ -19,11 +19,10 @@ Class(CV, 'HomeView').includes(NodeSupport, CV.WidgetUtils)({
             var featuredVoicesWrapper = document.querySelector('.homepage-featured-voices-container');
             var featuredVoicesElements = [];
             this.featuredVoicesData.forEach(function(voice, index) {
-                this.appendChild(new CV.VoiceCover({
+                featuredVoicesElements.push(this.appendChild(new CV.VoiceCover({
                     name : 'featuredVoice_' + index,
                     data : voice
-                })).render(featuredVoicesWrapper);
-                featuredVoicesElements.push(this['featuredVoice_' + index].el);
+                })).render(featuredVoicesWrapper).el);
             }, this);
 
             new CV.ResponsiveWidth({
@@ -34,9 +33,20 @@ Class(CV, 'HomeView').includes(NodeSupport, CV.WidgetUtils)({
 
             /* CATEGORIES */
             var categoriesHolder = document.querySelector('.homepage-category-list-row');
-            this.categoriesData.forEach(function(category) {
-                this.appendChild(new CV.CategoryCards(category).render(categoriesHolder));
+            var categoriesElements = [];
+            this.categoriesData.forEach(function(category, index) {
+                categoriesElements.push(this.appendChild(new CV.TopicCard({
+                    name: 'topic_' + index,
+                    className: '-float-left',
+                    data: category
+                })).render(categoriesHolder).el);
             }, this);
+
+            new CV.ResponsiveWidth({
+                container : categoriesHolder,
+                items : [].slice.call(categoriesElements, 0),
+                minWidth : 300
+            }).setup();
 
             /* ORGANIZATIONS */
             var orgsHolder = document.querySelector('.homepage-organization-cards-holder');

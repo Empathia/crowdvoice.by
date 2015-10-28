@@ -1,3 +1,17 @@
+.voice-cover {
+  position: relative;
+
+  &:hover {
+    .voice-cover-hover-overlay {opacity: 1}
+    .voice-cover-hover-overlay-button.cv-button {transform: scale(1)}
+    .voice-cover-main-image {
+      transform: scale(1.1);
+      transition-duration: 300ms;
+      transition-timing-function: ease;
+    }
+  }
+}
+
 .cv-voice-cover .author {
   font-size: 11px;
   line-height: 16px;
@@ -14,20 +28,6 @@
     color: inherit;
     &:extend(.-tdn);
     &:hover {opacity: .7}
-  }
-}
-
-.voice-cover {
-  position: relative;
-
-  &:hover {
-    .voice-cover-hover-overlay {opacity: 1}
-    .voice-cover-hover-overlay-button.cv-button {transform: scale(1)}
-    .voice-cover-main-image {
-      transform: scale(1.1);
-      transition-duration: 300ms;
-      transition-timing-function: ease;
-    }
   }
 }
 
@@ -134,13 +134,14 @@
   color: @color-neutral-mid;
 }
 
-/**** mini view ****/
-
+/******************************************************************************
+  MINI
+ *****************************************************************************/
 .cv-voice-cover.mini {
   position: relative;
 
   .voice-cover {
-    border-radius: 6px;
+    border-radius: 3px;
     display: inherit;
   }
 
@@ -175,26 +176,16 @@
   }
 }
 
-/*************************************************
-* Voice Cover Centered Title
-**************************************************/
-.cv-voice-cover.centeredTitle{
-  margin-bottom: 15px;
-  .voice-content{
+/******************************************************************************
+  Voice Cover Centered Title
+ *****************************************************************************/
+.cv-voice-cover.centeredTitle {
+  .voice-content {
     height: 32px;
+    margin-left: 45px;
+  }
 
-    .voice-title-link{
-      line-height: 13px;
-      text-align: left;
-    }
-
-    .voice-link{
-      color:#454b4d;
-      font-weight: 600;
-    }
-
-    .voice-link:hover{
-       color:#ff9400;
-    }
+  .voice-cover-title {
+    line-height: 1em;
   }
 }

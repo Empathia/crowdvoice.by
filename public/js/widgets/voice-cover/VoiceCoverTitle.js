@@ -2,11 +2,11 @@ Class(CV, 'VoiceCoverTitle').inherits(Widget).includes(CV.WidgetUtils)({
     HTML : '\
         <article class="cv-voice-cover centeredTitle mini -clearfix" role="article">\
             <img class="voice-cover -float-left" width="32" height="32"/>\
-            <div class="voice-content -table">\
+            <div class="voice-content -table -full-height">\
                 <div class="-table-cell -vam">\
-                    <p class="voice-title-link"><a href="{{voice-url}}" class="voice-link">\
-                        {{voice-title}}\
-                    </a></p>\
+                    <p class="voice-cover-title">\
+                        <a class="voice-cover-title-anchor -font-semi-bold -tdn"></a>\
+                    </p>\
                 </div>\
             </div>\
             <div class="action"></div>\
@@ -24,10 +24,10 @@ Class(CV, 'VoiceCoverTitle').inherits(Widget).includes(CV.WidgetUtils)({
             this._setup();
         },
 
-        _setup : function _setup() {             
-            this.dom.updateAttr('src', this.el.querySelector('.voice-cover'), this.data.images.small.url); 
-            this.dom.updateAttr('href', this.el.querySelector('.voice-link'), this.data.slug);
-            this.dom.updateText(this.el.querySelector('.voice-link'), this.data.title);              
+        _setup : function _setup() {
+            this.dom.updateAttr('src', this.el.querySelector('.voice-cover'), this.data.images.small.url);
+            this.dom.updateAttr('href', this.el.querySelector('.voice-cover-title-anchor'), '/' + this.data.owner.profileName + '/' + this.data.slug + '/');
+            this.dom.updateText(this.el.querySelector('.voice-cover-title-anchor'), this.data.title);
         }
     }
 });
