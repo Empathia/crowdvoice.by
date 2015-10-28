@@ -1213,6 +1213,7 @@ async.series([function(next) {
 
   // Posts
   Voice.all(function(err, voices) {
+    if (err) { return next(err); }
 
     async.eachLimit(voices, 1, function(voice, done) {
       var year = 2015;
@@ -1287,7 +1288,8 @@ async.series([function(next) {
             return nextPost(err);
           }
 
-          post.uploadImage('image', url, function() {
+          post.uploadImage('image', url, function(err) {
+            if (err) { return nextPost(err); }
 
             post.save(function(err, result) {
               nextPost(err, post);
@@ -1295,12 +1297,7 @@ async.series([function(next) {
           });
         });
 
-      }, function(err, posts) {
-        if (err) {
-          return done(err);
-        }
-        done();
-      });
+      }, done);
 
     }, next);
   });
@@ -1311,5 +1308,6 @@ async.series([function(next) {
     console.error(data);
   }
 
+  console.log('FINISHED SUCCESSFULLY!');
   process.exit(0);
 });

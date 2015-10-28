@@ -142,18 +142,20 @@ var SearchController = Class('SearchController')({
     },
 
     _searchVoices : function _searchVoices(query, exclude, currentPerson, callback) {
+      var searchQuery = query.toLowerCase().trim().split(/[ ]+/).join(':* | ') + ':*';
+
       db.raw('SELECT * FROM ( \
         SELECT "Voices".*, \
         setweight(to_tsvector("Voices".title), \'A\') || \
         setweight(to_tsvector("Voices".description), \'B\') || \
         setweight(to_tsvector("Voices".location_name), \'C\') || \
-        setweight(to_tsvector("Entities".name), \'C\') \
-        AS document \
+        setweight(to_tsvector("Entities".name), \'C\') AS document \
         FROM "Voices" \
         JOIN "Entities" ON "Entities".id = "Voices".owner_id \
-        WHERE "Voices".status = ? AND "Voices".deleted = ?) search \
-        WHERE search.document @@ plainto_tsquery(?) \
-        ORDER BY ts_rank(search.document, plainto_tsquery(?)) DESC;', [Voice.STATUS_PUBLISHED, false, query, query]).exec(function(err, result) {
+        WHERE "Voices".status = ? AND "Voices".deleted = ? \
+        ) search \
+        WHERE search.document @@ to_tsquery(?) \
+        ORDER BY ts_rank(search.document, to_tsquery(?)) DESC;', [Voice.STATUS_PUBLISHED, false, searchQuery, searchQuery]).exec(function(err, result) {
           if (err) {
             return callback(err);
           }
@@ -179,6 +181,8 @@ var SearchController = Class('SearchController')({
     },
 
     _searchPeople : function _searchPeople(query, exclude, currentPerson, callback) {
+      var searchQuery = query.toLowerCase().trim().split(/[ ]+/).join(':* | ') + ':*';
+
       db.raw('SELECT * FROM ( \
         SELECT "Entities".*, \
         setweight(to_tsvector("Entities".name), \'A\') || \
@@ -188,8 +192,8 @@ var SearchController = Class('SearchController')({
         AS document \
         FROM "Entities" \
         WHERE "Entities".is_anonymous = ? AND "Entities".type = ? AND "Entities".deleted = ?) search \
-        WHERE search.document @@ plainto_tsquery(?) \
-        ORDER BY ts_rank(search.document, plainto_tsquery(?)) DESC;', [false, 'person', false, query, query]).exec(function(err, result) {
+        WHERE search.document @@ to_tsquery(?) \
+        ORDER BY ts_rank(search.document, to_tsquery(?)) DESC;', [false, 'person', false, searchQuery, searchQuery]).exec(function(err, result) {
           if (err) {
             return callback(err);
           }
@@ -215,6 +219,8 @@ var SearchController = Class('SearchController')({
     },
 
     _searchOrganizations : function _searchOrganizations(query, exclude, currentPerson, callback) {
+      var searchQuery = query.toLowerCase().trim().split(/[ ]+/).join(':* | ') + ':*';
+
       db.raw('SELECT * FROM ( \
         SELECT "Entities".*, \
         setweight(to_tsvector("Entities".name), \'A\') || \
@@ -224,8 +230,8 @@ var SearchController = Class('SearchController')({
         AS document \
         FROM "Entities" \
         WHERE "Entities".is_anonymous = ? AND "Entities".type = ? AND "Entities".deleted = ?) search \
-        WHERE search.document @@ plainto_tsquery(?) \
-        ORDER BY ts_rank(search.document, plainto_tsquery(?)) DESC;', [false, 'organization', false, query, query]).exec(function(err, result) {
+        WHERE search.document @@ to_tsquery(?) \
+        ORDER BY ts_rank(search.document, to_tsquery(?)) DESC;', [false, 'organization', false, searchQuery, searchQuery]).exec(function(err, result) {
           if (err) {
             return callback(err);
           }
