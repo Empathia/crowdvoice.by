@@ -89,7 +89,7 @@ Class(CV, 'Search').inherits(Widget)({
 
         _inputKeyPressHandler : function _inputKeyPressHandler() {
             var _this = this;
-            var inputValue = this.input.getValue().replace(this._queryRe2, ' ').replace(this._queryRe, ' ');
+            var inputValue = encodeURIComponent(this.input.getValue());
 
             if (this._keypressTimer) {
                 window.clearTimeout(this._keypressTimer);
