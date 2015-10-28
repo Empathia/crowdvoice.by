@@ -1,3 +1,4 @@
+var Person = require('./../../lib/currentPerson');
 var Velocity = require('velocity-animate');
 
 Class(CV, 'NotificationsManager').inherits(Widget).includes(BubblingSupport)({
@@ -36,9 +37,11 @@ Class(CV, 'NotificationsManager').inherits(Widget).includes(BubblingSupport)({
                 this.appendChild(CV.Notification.create(n.action, n.notificationId)).render(this.elAll);
             }, this);
 
-            this.appendChild(new CV.NotificationReadMore({
-                name : 'read_more'
-            })).render(this.elAll);
+            if (Person.anon() === false) {
+                this.appendChild(new CV.NotificationReadMore({
+                    name : 'read_more'
+                })).render(this.elAll);
+            }
 
             return this;
         },
