@@ -22,7 +22,7 @@
 					    <tr>
 					        <td style="text-align: left;">
 					            <div>
-					            	<p style="font-size:18px;color:black;font-weight:300;">Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="blank_"><%= doerInfo.name %></a> has sent you an invitation:</p>
+					            	<p style="font-size:18px;color:black;font-weight:300;">Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="_blank"><%= doerInfo.name %></a> has sent you an invitation:</p>
 					            </div>
 					        </td>
 					    </tr>
@@ -30,7 +30,7 @@
 				</table>
 				<!-- New invitation to join a new ORGANIZATION -->
 		    	<% if(params.message.type == 'invitation_organization'){ %>
-		    	<% voiceImage = params.invitationOrganization.images.small.url; %>
+		    	<% if(Object.getOwnPropertyNames(params.invitationOrganization.images).length === 0){ voiceImage = CONFIG.siteUrl[application.env]+'/img/img-placeholder.png'; }else{ voiceImage = params.invitationOrganization.images.small.url;} %>
 					<table width="100%" cellspacing="0" cellpadding="0" border="0" style="padding:0px 50px 40px 50px;">
 					    <tbody>
 					        <tr>
@@ -60,7 +60,7 @@
 				<% } %>
 				<!-- New invitation to join a VOICE-->
 				<% if(params.message.type == 'invitation_voice'){%>
-				<% voiceImage = params.invitationVoice.images.small.url; %>
+				<% if(Object.getOwnPropertyNames(params.invitationVoice.images).length === 0){ voiceImage = CONFIG.siteUrl[application.env]+'/img/img-placeholder.png'; }else{ voiceImage = params.invitationVoice.images.small.url;} %>
 					<table width="100%" cellspacing="0" cellpadding="0" border="0" style="padding:0px 50px 40px 50px;">
 					    <tbody>
 					        <tr>
@@ -80,7 +80,7 @@
 						                          	<img width="37" height="37" style="border-radius:5px;"src="<%= voiceImage %>"/>
 						                      	</td>
 						                      	<td>
-						                      		<p style="line-height:20px;font-size:12px;color:#A1B0B3;"><a href="<%= CONFIG.siteUrl[application.env] +'/'+ params.invitationVoice.owner.profileName +'/'+ params.invitationVoice.slug %>" target="blank_" style="font-size:13px;color:#4D4D4D;text-align:left;vertical-align:middle;font-weight:bold;"><%= params.invitationVoice.title %></a><<br>by <%= params.invitationVoice.owner.name + ' '%></p>
+						                      		<p style="line-height:20px;font-size:12px;color:#A1B0B3;"><a href="<%= CONFIG.siteUrl[application.env] +'/'+ params.invitationVoice.owner.profileName +'/'+ params.invitationVoice.slug %>" target="_blank" style="font-size:13px;color:#4D4D4D;text-align:left;vertical-align:middle;font-weight:bold;"><%= params.invitationVoice.title %></a><<br>by <%= params.invitationVoice.owner.name + ' '%></p>
 						                      	</td>
 						                    </tr>
 						                </tbody>
