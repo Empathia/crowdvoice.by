@@ -53,7 +53,7 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
       var participant;
 
       if (message.data.senderEntity.id !== message.parent.parent.currentPerson.id) {
-        participant = message.data.senderEntity.name + " " + message.data.senderEntity.lastname;
+        participant = message.data.senderEntity.name;
       } else {
         participant = 'You';
       }
@@ -84,12 +84,12 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
               break;
             case 'request_organization':
               text = text
-                      .replace(/{name}/g, message.data.senderEntity.name + ' ' + message.data.senderEntity.lastname)
+                      .replace(/{name}/g, message.data.senderEntity.name)
                       .replace(/{organizationName}/g, message.data.organization.name)
                       .replace(/{url}/, '/' + message.data.organization.profileName + '/edit');
               break;
             case 'request_voice':
-              text = text.replace(/{name}/g, message.data.senderEntity.name + ' ' + message.data.senderEntity.lastname)
+              text = text.replace(/{name}/g, message.data.senderEntity.name)
                       .replace(/{voiceTitle}/g, message.data.voice.title)
                       .replace(/{url}/g, '/' + Person.get().profileName + '/' + message.data.voice.slug);
               break;

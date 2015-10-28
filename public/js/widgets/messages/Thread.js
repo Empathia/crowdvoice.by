@@ -17,12 +17,6 @@ CV.Thread = Class(CV, 'Thread').includes(Widget)({
     threadPartnerName : null,
     unreadCount       : 0,
 
-    init : function init(config) {
-      Widget.prototype.init.call(this, config);
-
-      var thread = this;
-    },
-
     setup : function setup() {
       var thread = this;
 
@@ -36,6 +30,7 @@ CV.Thread = Class(CV, 'Thread').includes(Widget)({
         this.threadPartner = thread.data.senderEntity;
       }
 
+      var threadPartner;
       if (thread.data.receiverEntity.id !== thread.parent.currentPerson.id ){
         threadPartner = thread.data.receiverEntity;
       } else {
@@ -45,7 +40,7 @@ CV.Thread = Class(CV, 'Thread').includes(Widget)({
       this.element.attr('id', thread.data.id);
       this.element.attr('data-partner-id', threadPartner.id);
 
-      this.threadPartnerName = threadPartner.name + " " + threadPartner.lastname;
+      this.threadPartnerName = threadPartner.name;
 
       this.element.find('h3').text(this.threadPartnerName);
 
@@ -55,18 +50,12 @@ CV.Thread = Class(CV, 'Thread').includes(Widget)({
         this.element.find('img').attr('src', PLACEHOLDERS.small);
       }
 
-      //console.log('setup ');
-
-      //console.log(this.data.senderEntity);
-
-      if (this.data.senderEntity.type == "person"){
+      if (this.data.senderEntity.type === "person"){
         this.element.attr('is-organization', 'false');
         this.element.find('.thread-type').text('As Myself');
       } else {
         this.element.attr('is-organization', 'true');
-        this.element.find('.thread-type').html('As an Organization (<b>'+
-          this.data.senderEntity.name
-          +'<b>)');
+        this.element.find('.thread-type').html('As an Organization (<b>'+ this.data.senderEntity.name +'<b>)');
       }
 
       //console.log(this.data);
@@ -103,15 +92,10 @@ CV.Thread = Class(CV, 'Thread').includes(Widget)({
       thread.threadContainer.messagesBodyHeaderEl.find('.m-action').show();
       thread.threadContainer.messagesBodyHeaderEl.find('.m-new').hide();
 
-      if(this.element.attr('is-organization') == 'true'){
-        thread.threadContainer.messagesBodyHeaderEl.find('span.conversation-title').html('Conversation with '
-          + this.threadPartnerName +
-          ' <span>- As an Organization (<b>'+ this.data.senderEntity.name +'<b>)</span>');
-
+      if(this.element.attr('is-organization') === 'true'){
+        thread.threadContainer.messagesBodyHeaderEl.find('span.conversation-title').html('Conversation with ' + this.threadPartnerName + ' <span>- As an Organization (<b>'+ this.data.senderEntity.name +'<b>)</span>');
       } else {
-        thread.threadContainer.messagesBodyHeaderEl.find('span.conversation-title').html('Conversation with '
-          + this.threadPartnerName +
-          ' <span>- As Myself</span>');
+        thread.threadContainer.messagesBodyHeaderEl.find('span.conversation-title').html('Conversation with ' + this.threadPartnerName + ' <span>- As Myself</span>');
       }
 
       thread.threadContainer.messagesBodyHeaderEl.find('.delete-thread').show().attr('data-id', this.data.id);
@@ -122,7 +106,7 @@ CV.Thread = Class(CV, 'Thread').includes(Widget)({
         type: "PUT",
         url: updateThreadUrl,
         headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
-        success: function(data) {
+        success: function() {
           //console.log('Thread updated');
           if (!thread.element.hasClass('updated')){
             thread.element.addClass('updated');
@@ -138,7 +122,7 @@ CV.Thread = Class(CV, 'Thread').includes(Widget)({
           name : 'message_' + message.id,
           type : message.type,
           data : message
-        })
+        });
 
         thread.appendChild(messageInstance);
 
@@ -158,10 +142,10 @@ CV.Thread = Class(CV, 'Thread').includes(Widget)({
       return this;
     },
 
-    isSenderOrReceiver : function isSenderOrReceiver(currentPerson) {
+    isSenderOrReceiver : function isSenderOrReceiver() {
       var thread = this;
 
       return thread.data.senderPerson ? 'sender' : 'receiver';
     }
   }
-})
+});
