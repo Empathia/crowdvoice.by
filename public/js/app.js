@@ -55,7 +55,12 @@ Class(CV, 'App').includes(NodeSupport)({
          */
         socketStart : function socketStart() {
             if (!this._socket) {
-                this._socket = io();
+                this._socket = io(window.location.origin, {
+                  'reconnection': true,
+                  'reconnectionDelay': 1000,
+                  'reconnectionDelayMax' : 5000,
+                  'reconnectionAttempts': 5
+                });
             }
             return this;
         },

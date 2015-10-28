@@ -15,7 +15,7 @@ Class(CV, 'PostEditImageControls').inherits(Widget)({
                 </svg>\
             </button>\
         </div>\
-        <input type="file" name="image" accept="image/*" class="-hide"/>\
+        <input type="file" name="image" accept="image/.jpg, .png, .jpeg" class="-hide"/>\
         <div class="cv-button-group multiple">\
             <button class="image-replace cv-button tiny">Replace</button>\
             <button class="image-remove cv-button tiny">Remove</button>\
