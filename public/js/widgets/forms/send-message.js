@@ -119,8 +119,7 @@ Class(CV, 'SendMessage').inherits(Widget).includes(CV.WidgetUtils)({
                 return void 0;
             }
 
-            var receiverName = res.receiverEntity.name + ' ' + res.receiverEntity.lastname;
-            this._setSuccessState(receiverName);
+            this._setSuccessState(res.receiverEntity.name);
         },
 
         _close : function _close() {

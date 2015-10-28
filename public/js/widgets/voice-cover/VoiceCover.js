@@ -111,13 +111,12 @@ Class(CV, 'VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
                 this.createTopics(this.data.topics);
             }
 
-            var authorFullname = this.data.owner.name + (this.data.owner.lastname ? (' ' + this.data.owner.lastname) : '');
             this.authorAnchors.forEach(function(anchor) {
-                this.dom.updateAttr('title', anchor, authorFullname + '’s profile');
+                this.dom.updateAttr('title', anchor, this.data.owner.name + '’s profile');
                 this.dom.updateAttr('href', anchor, '/' + this.data.owner.profileName);
             }, this);
             this.dom.updateAttr('src', this.el.querySelector('.author-avatar'), this.data.owner.images.icon.url);
-            this.dom.updateText(this.el.querySelector('.author-username'), authorFullname);
+            this.dom.updateText(this.el.querySelector('.author-username'), this.data.owner.name);
 
             this.dom.updateText(this.el.querySelector('.voice-cover-title-anchor'), this.data.title);
 

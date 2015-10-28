@@ -84,20 +84,6 @@ Class(CV, 'UserProfileEditTab').inherits(Widget)({
                 }
             })).render(this.mainElement);
 
-            // this.appendChild(new CV.UI.Input({
-            //     name : 'lastnameInput',
-            //     className : 'user-profile-edit-tab__input-last-name',
-            //     data : {
-            //         label : 'Your Last Name',
-            //         hint : '',
-            //         attr  : {
-            //             value : Person.get().lastname,
-            //             type: 'text'
-            //         },
-            //         inputClassName : '-md -block'
-            //     }
-            // })).render(this.mainElement);
-
             this.appendChild(new CV.UI.Input({
                 name : 'profilenameInput',
                 className : 'user-profile-edit-tab__input-profile-name',

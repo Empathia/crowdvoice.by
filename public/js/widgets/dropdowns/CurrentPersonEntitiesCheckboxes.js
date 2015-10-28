@@ -108,13 +108,11 @@ Class(CV.UI, 'CurrentPersonEntitiesCheckboxes').inherits(Widget)({
          * @argument entity <require> [EntityModel]
          */
         _createItem : function _createItem(entity) {
-            var label = entity.name + (entity.lastname ? ' ' + entity.lastname : '');
-
             this.dropdown.addContent(this.appendChild(new CV.UI.Checkbox({
                 name : entity.profileName,
                 id : entity.id,
                 className : 'ui-vertical-list-item -block -p0',
-                data : {label : label}
+                data : {label : entity.name}
             })).el);
 
             this._options.push(this[entity.profileName]);
