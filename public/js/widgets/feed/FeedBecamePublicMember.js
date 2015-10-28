@@ -10,7 +10,10 @@ Class(CV, 'FeedBecamePublicMember').inherits(CV.FeedItem)({
             CV.FeedItem.prototype.init.call(this, config);
 
             this.updateAvatar();
-            this.setText(this.getName() + ' became a public member of:');
+            this.setText(this.constructor.stringLink({
+                href: this.getProfileUrl(),
+                text: this.getName()
+            }) + ' became a public member of:');
 
             if (this.data.itemType === 'entity') {
                 this.appendChild(new CV.CardMini({

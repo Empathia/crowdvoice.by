@@ -17,6 +17,12 @@
 
   .main-text {
     margin: 3px 0 0 38px;
+    > a {
+      color: inherit;
+      opacity: 1;
+      &:extend(.-tdn);
+      &:hover {opacity: .7}
+    }
   }
 }
 

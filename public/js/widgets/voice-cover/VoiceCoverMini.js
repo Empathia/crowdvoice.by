@@ -76,8 +76,7 @@ Class(CV, 'VoiceCoverMini').inherits(Widget).includes(CV.WidgetUtils)({
             this.dom.updateAttr('href', this.authorAnchor, '/' + this.data.owner.profileName);
             this.dom.updateAttr('title', this.authorAnchor, this.data.owner.profileName + ' profile');
 
-            var fullname = this.data.owner.name + (this.data.owner.lastname ? (' ' + this.data.owner.lastname) : '');
-            this.dom.updateText(this.el.querySelector('.author-username'), fullname);
+            this.dom.updateText(this.el.querySelector('.author-username'), this.data.owner.name);
         },
 
         /* Show the location, joined at and inline name, username

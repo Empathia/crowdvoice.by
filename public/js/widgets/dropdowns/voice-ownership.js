@@ -49,7 +49,7 @@ Class(CV.UI, 'DropdownVoiceOwnership').inherits(Widget).includes(CV.WidgetUtils)
          * @return DropdownVoiceOwnership
          */
         _setup : function _setup() {
-            this._createItem((Person.get().name + ' ' + Person.get().lastname).trim(), Person.get().id);
+            this._createItem(Person.get().name, Person.get().id);
 
             Person.get().ownedOrganizations.forEach(function(organization) {
                 this._createItem(organization.name, organization.id);

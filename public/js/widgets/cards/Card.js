@@ -11,7 +11,6 @@
  * images           {Object} entity's avatar images formats available
  *                  {card, icon, medium, notification, original, small: {url}}
  * isAnonymous      {Boolean} indicates if the entity's session has been started anonymously
- * lastname         {String} entity's lastname (only present for "users" not "organizations")
  * location         {String} entity's location name string
  * name             {String} entity's name
  * profileName      {String} entity's profile name
@@ -213,10 +212,9 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
             this.dom.updateAttr('href', this.usernameEl, '/' + this.data.profileName + '/');
             this.dom.updateAttr('title', this.usernameEl, "@" + this.data.profileName + '’s profile');
 
-            var fullname = this.data.name + (this.data.lastname ? (' ' + this.data.lastname) : '');
-            this.dom.updateText(this.fullNameEl, fullname);
+            this.dom.updateText(this.fullNameEl, this.data.name);
             this.dom.updateAttr('href', this.fullNameEl, '/' + this.data.profileName + '/');
-            this.dom.updateAttr('title', this.fullNameEl, fullname + '’s profile');
+            this.dom.updateAttr('title', this.fullNameEl, this.data.name + '’s profile');
 
             var description = Autolinker.link(this.format.truncate(this.data.description || '', this.constructor.MAX_DESCRIPTION_LENGTH, true));
 

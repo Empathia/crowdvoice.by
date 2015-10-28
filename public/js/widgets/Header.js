@@ -87,6 +87,10 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
                 name : 'incognitoButton'
             })).render(this.buttonActionsWrapper);
 
+            this.appendChild(new NotificationBell({
+              name : 'bell'
+            })).render(this.buttonActionsWrapper);
+
             return this;
         },
 

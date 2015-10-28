@@ -10,7 +10,10 @@ Class(CV, 'FeedBecamePublicContributor').inherits(CV.FeedItem)({
             CV.FeedItem.prototype.init.call(this, config);
 
             this.updateAvatar();
-            this.setText(this.getName() + ' became a public contributor of a voice:');
+            this.setText(this.constructor.stringLink({
+                href: this.getProfileUrl(),
+                text: this.getName()
+            }) + ' became a public contributor of a voice:');
 
             this.appendChild(new CV.VoiceCoverMini({
                 name : 'voice-cover',

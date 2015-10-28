@@ -52,9 +52,8 @@ Class(CV, 'CardMiniClean').inherits(Widget).includes(CV.WidgetUtils, BubblingSup
         _setup : function _setup() {
             this.dom.updateAttr('src', this.avatarElement, this.data.images && this.data.images.small && this.data.images.small.url);
 
-            var fullname = this.data.name + (this.data.lastname ? (' ' + this.data.lastname) : '');
             this.dom.updateAttr('alt', this.avatarElement, this.data.profileName + "’s avatar image");
-            this.dom.updateText(this.fullNameElement, fullname);
+            this.dom.updateText(this.fullNameElement, this.data.name);
 
             this.dom.updateText(this.usernameElement, "@" + this.data.profileName);
 

@@ -46,6 +46,10 @@ Class('NotificationBell').inherits(Widget).includes(CV.WidgetUtils)({
         _bindEvents : function _bindEvents() {
             this._toggleNotificationsManagerRef = this._toggleNotificationsManager.bind(this);
             Events.on(this.el, 'click', this._toggleNotificationsManagerRef);
+
+            this._decreaseBubbleCounterRef = this._decreaseBubbleCounter.bind(this);
+            this.bind('notification:markAsRead', this._decreaseBubbleCounterRef);
+
             return this;
         },
 
@@ -65,18 +69,23 @@ Class('NotificationBell').inherits(Widget).includes(CV.WidgetUtils)({
          * @return undefined
          */
         _fetchNotificationsResponseHandler : function _fetchNotificationsResponseHandler(err, res) {
-            var filteredNotifications = res.filter(function(notification) {
-                return (typeof notification.action !== 'undefined');
-            }).reverse();
+            this._updateBubbleState(res.length);
+            this.notificationsManager.update(res.reverse());
+        },
 
-            if (filteredNotifications.length) {
-                this.dom.updateText(this.badgeElement, filteredNotifications.length);
+        /* Updates the bubble and button state.
+         * @method _updateBubbleState <private> [Function]
+         * @return undefined
+         */
+        _updateBubbleState : function _updateBubbleState(notificationsLength) {
+            this._notificationsLength = notificationsLength;
+
+            if (this._notificationsLength) {
+                this.dom.updateText(this.badgeElement, this._notificationsLength);
                 this.dom.addClass(this.el, ['has-new-notifications']);
             } else {
                 this.dom.removeClass(this.el, ['has-new-notifications']);
             }
-
-            this.notificationsManager.update(filteredNotifications);
         },
 
         /* Show/hide the NotificationsManager.
@@ -85,6 +94,12 @@ Class('NotificationBell').inherits(Widget).includes(CV.WidgetUtils)({
          */
         _toggleNotificationsManager : function _toggleNotificationsManager() {
             this.notificationsManager.toggle();
+        },
+
+        _decreaseBubbleCounter : function _decreaseBubbleCounter(ev) {
+            ev.preventDefault();
+            this._notificationsLength--;
+            this._updateBubbleState(this._notificationsLength);
         },
 
         destroy : function destroy() {

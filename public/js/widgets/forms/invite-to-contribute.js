@@ -65,7 +65,7 @@ Class(CV, 'InviteToContribute').inherits(Widget).includes(CV.WidgetUtils)({
                 name : 'buttonSend',
                 className : 'primary -font-bold -full-width -m0',
                 type : 'single',
-                label : 'Invite ' + this.data.name + ' ' + (this.data.lastname || '')
+                label : 'Invite ' + this.data.name
             })).render(this.el.querySelector('[data-placeholder-send]'));
 
             return this;
@@ -140,7 +140,7 @@ Class(CV, 'InviteToContribute').inherits(Widget).includes(CV.WidgetUtils)({
             this.appendChild(new CV.Alert({
                 name : '_flashMessage',
                 type : 'positive',
-                text : 'Invitation to ' + this.data.name + ' ' + (this.data.lastname || '') + ' has been sent.',
+                text : 'Invitation to ' + this.data.name + ' has been sent.',
                 className : '-mb1'
             })).render(this.el, this.el.firstElementChild);
 
@@ -160,7 +160,7 @@ Class(CV, 'InviteToContribute').inherits(Widget).includes(CV.WidgetUtils)({
             this.appendChild(new CV.Alert({
                 name : '_flashMessage',
                 type : 'negative',
-                text : msg || 'There was an error sending your invitation to ' + this.data.name + ' ' + (this.data.lastname || ''),
+                text : msg || 'There was an error sending your invitation to ' + this.data.name,
                 className : '-mb1'
             })).render(this.el, this.el.firstElementChild);
 

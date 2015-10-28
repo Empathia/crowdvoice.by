@@ -10,7 +10,10 @@ Class(CV, 'FeedPublished').inherits(CV.FeedItem)({
             CV.FeedItem.prototype.init.call(this, config);
 
             this.updateAvatar();
-            this.setText(this.getName() + ' published:');
+            this.setText(this.constructor.stringLink({
+                href: this.getProfileUrl(),
+                text: this.getName()
+            }) + ' published:');
 
             if (this.data.itemType === 'entity') {
                 this.appendChild(new CV.CardMini({

@@ -25,20 +25,19 @@ Class(CV, 'DiscoverRecommendedSectionItem').inherits(Widget).includes(CV.WidgetU
         },
 
         _setup : function _setup() {
-            var fullname = this.data.owner.name + (this.data.owner.lastname ? ' ' + this.data.owner.lastname : '');
             var template;
 
             if (this.data.type === 'voice') {
                 template = this.constructor.FOLLOWED_VOICE_TEMPLATE;
                 template = template.replace(/{url}/, '/' + this.data.owner.profileName + '/');
-                template = template.replace(/{fullname}/, fullname);
+                template = template.replace(/{fullname}/, this.data.owner.name);
                 template = template.replace(/{voice-url}/, '/' + this.data.owner.profileName + '/' + this.data.data.slug + '/');
                 template = template.replace(/{voice-name}/, this.data.data.title);
                 this.dom.updateHTML(this.headingElement, template);
             } else {
                 template = this.constructor.FOLLOWED_ENTITY_TEMPLATE;
                 template = template.replace(/{url}/, '/' + this.data.owner.profileName + '/');
-                template = template.replace(/{fullname}/, fullname);
+                template = template.replace(/{fullname}/, this.data.owner.name);
                 this.dom.updateHTML(this.headingElement, template);
             }
         },

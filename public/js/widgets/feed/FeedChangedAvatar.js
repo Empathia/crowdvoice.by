@@ -10,12 +10,26 @@ Class(CV, 'FeedChangedAvatar').inherits(CV.FeedItem)({
             CV.FeedItem.prototype.init.call(this, config);
 
             if (this.data.entity.type === 'organization') {
-                this.updateAvatar(this.data.entity.images.small.url);
-                this.setText(this.data.entity.name + ' changed avatar.');
+                this._updateForOrganization();
             } else {
-                this.updateAvatar();
-                this.setText(this.getName() + ' changed avatar.');
+                this._updateForUser();
             }
+        },
+
+        _updateForOrganization : function _updateForOrganization() {
+            this.updateAvatar(this.data.entity.images.notification.url);
+            this.setText(this.constructor.stringLink({
+                href: '/' + this.data.entity.profileName + '/',
+                text: this.data.entity.name
+            }) + ' changed avatar.');
+        },
+
+        _updateForUser : function _updateForUser() {
+            this.updateAvatar();
+            this.setText(this.constructor.stringLink({
+                href: this.getProfileUrl(),
+                text: this.getName()
+            }) + ' changed avatar.');
         }
     }
 });

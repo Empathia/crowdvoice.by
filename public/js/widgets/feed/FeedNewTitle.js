@@ -6,7 +6,10 @@ Class(CV, 'FeedNewTitle').inherits(CV.FeedItem)({
             CV.FeedItem.prototype.init.call(this, config);
 
             this.updateAvatar();
-            this.setText(this.getName() + ' changed title to a voice:');
+            this.setText(this.constructor.stringLink({
+                href: this.getProfileUrl(),
+                text: this.getName()
+            }) + ' changed title to a voice:');
 
             this.appendChild(new CV.VoiceCoverMini({
                 name: 'voice-cover',
