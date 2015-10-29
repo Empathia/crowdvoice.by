@@ -242,9 +242,7 @@ var DiscoverController = Class('DiscoverController')({
 
     recommendedIndex: function (req, res, next) {
       if (!req.currentPerson) {
-        return res.render('discover/recommended-visitor.html');
-      } else if (req.currentPerson.isAnonymous) {
-        return res.render('discover/recommended-anonymous.html');
+        return next(new NotFoundError());
       }
 
       var items    = [];
