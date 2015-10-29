@@ -54,6 +54,7 @@
             <% } %>
           </span>
         </a>
+
         <% if (currentPerson) { %>
           <a href="/<%= currentPerson.profileName %>/feed/" class="sidebar-link">
             <svg class="sidebar-link-svg"><use xlink:href="#svg-activity"></use></svg>
@@ -65,10 +66,12 @@
             <span class="sidebar-link-label">Home</span>
           </a>
         <% } %>
+
         <a href="/page/about/" class="sidebar-link">
           <svg class="sidebar-link-svg"><use xlink:href="#svg-info"></use></svg>
           <span class="sidebar-link-label">About</span>
         </a>
+
         <% if (currentPerson) { %>
           <h4 class="sidebar-heading -upper">My Stuff</h4>
           <a href="/<%= currentPerson.profileName %>/myvoices/" class="sidebar-link">
@@ -91,6 +94,7 @@
             </div>
           </a>
         <% } %>
+
         <h4 class="sidebar-heading -upper">Discover</h4>
         <a href="/discover/trending/" class="sidebar-link">
           <svg class="sidebar-link-svg"><use xlink:href="#svg-trending"></use></svg>
@@ -100,10 +104,14 @@
           <svg class="sidebar-link-svg"><use xlink:href="#svg-star"></use></svg>
           <span class="sidebar-link-label">New</span>
         </a>
-        <a href="/discover/recommended/" class="sidebar-link">
-          <svg class="sidebar-link-svg"><use xlink:href="#svg-thumbs-up"></use></svg>
-          <span class="sidebar-link-label">Recommended</span>
-        </a>
+
+        <% if (currentPerson) { %>
+          <a href="/discover/recommended/" class="sidebar-link">
+            <svg class="sidebar-link-svg"><use xlink:href="#svg-thumbs-up"></use></svg>
+            <span class="sidebar-link-label">Recommended</span>
+          </a>
+        <% } %>
+
         <a href="/discover/browse/" class="sidebar-link">
           <svg class="sidebar-link-svg"><use xlink:href="#svg-browse"></use></svg>
           <span class="sidebar-link-label">Browse</span>
@@ -114,6 +122,7 @@
         </a>
       </nav>
     </aside>
+
     <div class="yield -rel">
       <%= yield %>
     </div>

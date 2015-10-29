@@ -34,28 +34,32 @@
   &.-top-right .ui-popover__arrow {
     right: 43px;
   }
+}
 
-  .voice-add-content__option {
-    white-space: nowrap;
-    line-height: 16px;
-    padding-right: 3em;
-  }
+.voice-add-content__option {
+  white-space: nowrap;
+  line-height: 16px;
+  padding-right: 3em;
+}
 
-  .voice-add-content__option-svg {
-    margin-right: 10px;
-  }
+.voice-add-content__option-svg {
+  margin-right: 10px;
+}
 
-  .voice-add-content__option-label {
-  }
+.voice-add-content__option-label {
+}
 
-  .voice-add-content__option-tooltip {
-    margin-left: 6px;
+.voice-add-content__option-tooltip {
+  margin-left: 6px;
 
-    .ui-tooltip {
-      pointer-events: none;
-      width: 200px;
-      white-space: initial;
-      line-height: initial;
-    }
+  .ui-tooltip {
+    pointer-events: none;
+    width: 200px;
+    white-space: initial;
+    line-height: initial;
+
+    &.-top-right {right: -10px;}
+
+    &::after {right: 10px;}
   }
 }
