@@ -51,7 +51,7 @@ var NotificationsController = Class('NotificationsController')({
                 NotificationsPresenter.build(notifications, req.currentPerson, function (err, presentedNotifications) {
                   if (err) { return next(err) }
 
-                  res.json(presentedNotifications)
+                  return res.json(presentedNotifications)
                 })
               })
           })
@@ -70,14 +70,15 @@ var NotificationsController = Class('NotificationsController')({
         currentPerson: req.currentPerson,
         notificationId: req.body.notificationId
       }, function (err, isAllowed) {
-
         if (err) { return next(err) }
 
         if (!isAllowed) {
-          return next(new ForbiddenError('Unauthorized.'))
+          return next(new ForbiddenError())
         }
 
-        Notification.find({ id: hashids.decode(req.body.notificationId)[0] }, function (err, notification) {
+        Notification.find({
+          id: hashids.decode(req.body.notificationId)[0]
+        }, function (err, notification) {
           if (err) { return next(err) }
 
           var notif = new Notification(notification[0])
