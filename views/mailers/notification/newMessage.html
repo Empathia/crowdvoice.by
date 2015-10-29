@@ -3,7 +3,7 @@
 <% var monthNames = ["January", "February", "March","April", "May", "June", "July","August", "September", "October","November", "December"];%>
 <% var day = voiceDate.getDate(); %> 
 <% var monthIndex = voiceDate.getMonth(); %>
-<% var year = voiceDate.getFullYear(); %>
+<% var year = voiceDate.getFullYear(); var doerImage; %>
 
 <table width="100%" bgcolor="#F7F9FA" style="padding:30px;font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
   <tr>
@@ -18,7 +18,7 @@
         <tr>
           <td style="box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.5);-webkit-box-shadow:0px 2px 4px 0px rgba(0, 0, 0, 0.5); -moz-box-shadow:0px 2px 4px 0px rgba(0, 0, 0, 0.5); background-color: #FFFFFF; color: #4C4B49; border-radius: 0px; border-top:10px solid; border-top-color:#FF9400; padding-bottom:40px;">
             <!-- init -->
-      			<table width="100%" cellspacing="0" cellpadding="0" border="0" style="padding: 65px 50px 20px 50px;">
+      			<table width="100%" cellspacing="0" cellpadding="0" border="0" style="padding: 65px 50px 0px 50px;">
       				<tbody>
       				    <tr>
       				      <td>
@@ -32,8 +32,9 @@
       			<table width="100%" cellspacing="0" cellpadding="0" border="0" style="padding:0px 50px 40px 50px;">
       				<tbody>
       					<tr>
-      						<td>
-      						  <img width="36" height="36" style="border-radius:50%;display: block;" src="<%= doerInfo.images.card.url %>"/>
+      						<td width="50px">
+                    <% if(doerInfo.images.card.url.search('entity-placeholder') !== -1){ doerImage = CONFIG.siteUrl[application.env] + doerInfo.images.card.url } else { doerImage = doerInfo.images.card.url } %>
+      						  <img width="36" height="36" style="border-radius:50%;display: block;" src="<%= doerImage %>"/>
       						</td>
       						<td>
       						  <p style="font-size:15px;color:#454B4D;text-align:left;background-color:#F7F9FA;padding:20px;border-radius:5px;">"<%= params.message.message %>"<br><br></p>
@@ -44,7 +45,7 @@
       			<!-- Layout Button Separator -->
       			<hr style="border-top:1px solid #DFE4E6;">
       			<!-- Layout Button area -->
-      			<div style="text-align:center; font-size: 15px; line-height: 23px; color: #a6a39d;; padding: 30px;margin-top:40px">
+      			<div style="text-align:center; font-size: 15px; line-height: 23px; color: #a6a39d; padding: 30px;margin-top:40px">
       				<a href="<%= CONFIG.siteUrl[application.env] + '/' + params.receiver.entity.profileName + '/messages#' + params.thread.id %>" style="text-decoration:none;color:white;background-color:#FF9400;padding:22px 80px;border-radius:5px;border-bottom:5px solid #E68600;">View Message</a>
       			</div>
           </td>

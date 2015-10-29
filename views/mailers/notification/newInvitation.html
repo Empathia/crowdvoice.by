@@ -3,7 +3,7 @@
 <% var monthNames = ["January", "February", "March","April", "May", "June", "July","August", "September", "October","November", "December"];%>
 <% var day = voiceDate.getDate(); %>
 <% var monthIndex = voiceDate.getMonth(); %>
-<% var year = voiceDate.getFullYear(); var voiceImage; %>
+<% var year = voiceDate.getFullYear(); var inviteImage; var doerImage; %>
 
 <table width="100%" bgcolor="#F7F9FA" style="padding:30px;font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
   <tr>
@@ -28,14 +28,19 @@
 					    </tr>
 					</tbody>
 				</table>
+				<% if(doerInfo.images.card.url.search('entity-placeholder') !== -1){ doerImage = CONFIG.siteUrl[application.env] + doerInfo.images.card.url } else { doerImage = doerInfo.images.card.url } %>
 				<!-- New invitation to join a new ORGANIZATION -->
 		    	<% if(params.message.type == 'invitation_organization'){ %>
-		    	<% if(Object.getOwnPropertyNames(params.invitationOrganization.images).length === 0){ voiceImage = CONFIG.siteUrl[application.env]+'/img/img-placeholder.png'; }else{ voiceImage = params.invitationOrganization.images.small.url;} %>
+		    		<% if(params.invitationOrganization.images.small.url.search('entity-placeholder') !== -1){ %>
+		    		<%	inviteImage = CONFIG.siteUrl[application.env] + params.invitationOrganization.images.small.url %>
+			    	<%	} else { %>
+			    	<%		inviteImage = params.invitationOrganization.images.small.url %>
+		    		<% } %>
 					<table width="100%" cellspacing="0" cellpadding="0" border="0" style="padding:0px 50px 40px 50px;">
 					    <tbody>
 					        <tr>
 						        <td style="padding: 0 0 80px 0;">
-						            <img width="36" height="36" style="border-radius:50%;display:block;margin-left:auto;margin-right:15px;" src="<%= doerInfo.images.card.url %>"/>
+						            <img width="36" height="36" style="border-radius:50%;display:block;margin-left:auto;margin-right:15px;" src="<%= doerImage %>"/>
 						        </td>
 						        <td style="padding-right:25px;">
 						            <table width="100%" cellspacing="0" cellpadding="0" border="0" style="font-size:15px;color:#454B4D;text-align:left;background-color:#F7F9FA;padding:20px;border-radius:5px;">
@@ -47,7 +52,7 @@
 	                                      	</tr>
 						                    <tr>
 						                      	<td colspan="">
-						                          	<img width="37" height="37" style="border-radius:5px;float:left;"src="<%= voiceImage %>"/>
+						                          	<img width="37" height="37" style="border-radius:5px;float:left;"src="<%= inviteImage %>"/>
 						                        	<p style="margin-left:59px;margin-top:5px;font-size:12px;color:#A1B0B3;"><a href="<%= CONFIG.siteUrl[application.env] + '/' + params.invitationOrganization.profileName%>" target="_blank" style="font-size:13px;color:#4D4D4D;text-align:left;vertical-align:middle;font-weight:bold;"><%= params.invitationOrganization.name %></a><!--<br><br>by The International Planned Parenthood Federation--></p>
 						                      	</td>
 						                    </tr>
@@ -60,12 +65,16 @@
 				<% } %>
 				<!-- New invitation to join a VOICE-->
 				<% if(params.message.type == 'invitation_voice'){%>
-				<% if(Object.getOwnPropertyNames(params.invitationVoice.images).length === 0){ voiceImage = CONFIG.siteUrl[application.env]+'/img/img-placeholder.png'; }else{ voiceImage = params.invitationVoice.images.small.url;} %>
+					<% if(Object.getOwnPropertyNames(params.invitationVoice.images).length === 0){ %>
+					<% 		inviteImage = CONFIG.siteUrl[application.env]+'/img/img-placeholder.png'; %>
+					<%	}else{ %>
+					<%		inviteImage = params.invitationVoice.images.small.url; %>
+					<%	} %>
 					<table width="100%" cellspacing="0" cellpadding="0" border="0" style="padding:0px 50px 40px 50px;">
 					    <tbody>
 					        <tr>
 						        <td style="padding: 0 0 80px 0;">
-						            <img width="36" height="36" style="border-radius:50%;display:block;margin-left:auto;margin-right:15px;" src="<%= doerInfo.images.card.url %>"/>
+						            <img width="36" height="36" style="border-radius:50%;display:block;margin-left:auto;margin-right:15px;" src="<%= doerImage %>"/>
 						        </td>
 						        <td style="padding-right:25px;">
 						            <table width="100%" cellspacing="0" cellpadding="0" border="0" style="font-size:15px;color:#454B4D;text-align:left;background-color:#F7F9FA;padding:20px;border-radius:5px;">
@@ -77,7 +86,7 @@
 	                                      	</tr>
 						                    <tr>
 						                      	<td style="text-align:center;">
-						                          	<img width="37" height="37" style="border-radius:5px;"src="<%= voiceImage %>"/>
+						                          	<img width="37" height="37" style="border-radius:5px;"src="<%= inviteImage %>"/>
 						                      	</td>
 						                      	<td>
 						                      		<p style="line-height:20px;font-size:12px;color:#A1B0B3;"><a href="<%= CONFIG.siteUrl[application.env] +'/'+ params.invitationVoice.owner.profileName +'/'+ params.invitationVoice.slug %>" target="_blank" style="font-size:13px;color:#4D4D4D;text-align:left;vertical-align:middle;font-weight:bold;"><%= params.invitationVoice.title %></a><<br>by <%= params.invitationVoice.owner.name + ' '%></p>

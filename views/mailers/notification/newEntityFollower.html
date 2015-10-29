@@ -3,7 +3,7 @@
 <% var monthNames = ["January", "February", "March","April", "May", "June", "July","August", "September", "October","November", "December"];%>
 <% var day = voiceDate.getDate(); %> 
 <% var monthIndex = voiceDate.getMonth(); %>
-<% var year = voiceDate.getFullYear();%>
+<% var year = voiceDate.getFullYear(); var doerImage; %>
 
 <table width="100%" bgcolor="#F7F9FA" style="padding:30px;font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
   <tr>
@@ -32,7 +32,8 @@
       				<tbody>
       				  <tr style="background-color:#F7F9FA; height:98px; border-radius:5px;">
       				    <td style="text-align:center;">
-      				      <img width="36" height="36" style="border-radius:5px;"src="<%= doerInfo.images.card.url %>"/>
+                    <% if(doerInfo.images.card.url.search('entity-placeholder') !== -1 ){ doerImage = CONFIG.siteUrl[application.env] + doerInfo.images.card.url; } else { doerImage = doerInfo.images.card.url; } %>
+      				      <img width="36" height="36" style="border-radius:5px;"src="<%= doerImage %>"/>
       				    </td>
       				    <td>
       				      <a href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName%>" target="_blank" style="font-size:13px;color:#4D4D4D;text-align:left;font-weight:bold;"><%= doerInfo.name %></a>
