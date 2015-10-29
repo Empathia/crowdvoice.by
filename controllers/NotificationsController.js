@@ -3,7 +3,9 @@
 var NotificationsPresenter = require(__dirname + '/../presenters/NotificationsPresenter.js')
 
 var NotificationsController = Class('NotificationsController')({
+
   prototype: {
+
     getNotifications: function (req, res, next) {
       ACL.isAllowed('getNotifications', 'entities', req.role, {
         currentEntity: req.entity,
@@ -15,24 +17,44 @@ var NotificationsController = Class('NotificationsController')({
           return next(new ForbiddenError())
         }
 
-        EntityOwner.find({ owner_id: hashids.decode(req.currentPerson.id)[0] }, function (err, entities) {
-          var ids = entities.map(function (entity) { return entity.id })
-          ids.push(hashids.decode(req.currentPerson.id)[0])
+        var currentPerson,
+          person = new Entity(req.currentPerson)
+        person.id = hashids.decode(person.id)[0]
 
-          db('Notifications')
-            .whereIn('follower_id', ids)
-            .andWhere('read', '=', false)
-            .exec(function (err, result) {
-              if (err) { return next(err) }
+        person.owner(function (err, result) {
+          if (err) { return next(err) }
 
-              var notifications = Argon.Storage.Knex.processors[0](result)
+          if (req.currentPerson.isAnonymous) {
+            currentPerson = new Entity(result)
+          } else {
+            currentPerson = new Entity(person)
+          }
 
-              NotificationsPresenter.build(notifications, req.currentPerson, function (err, presentedNotifications) {
+          EntityOwner.find({
+            owner_id: currentPerson.id,
+          }, function (err, entities) {
+            if (err) { return next(err) }
+
+            var ids = entities.map(function (entity) {
+              return entity.id
+            })
+            ids.push(currentPerson.id)
+
+            db('Notifications')
+              .whereIn('follower_id', ids)
+              .andWhere('read', '=', false)
+              .exec(function (err, result) {
                 if (err) { return next(err) }
 
-                res.json(presentedNotifications)
+                var notifications = Argon.Storage.Knex.processors[0](result)
+
+                NotificationsPresenter.build(notifications, req.currentPerson, function (err, presentedNotifications) {
+                  if (err) { return next(err) }
+
+                  res.json(presentedNotifications)
+                })
               })
-            })
+          })
         })
       })
     },
@@ -160,7 +182,9 @@ var NotificationsController = Class('NotificationsController')({
         })
       })
     },
+
   },
+
 })
 
 module.exports = new NotificationsController()
