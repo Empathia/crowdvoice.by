@@ -1,4 +1,3 @@
-/* jshint multistr: true */
 Class(CV, 'VoiceAddContent').inherits(Widget)({
     HTML: '\
         <div class="voice-add-content">\
@@ -7,8 +6,7 @@ Class(CV, 'VoiceAddContent').inherits(Widget)({
                     <use xlink:href="#svg-plus"></use>\
                 </svg>\
             </button>\
-        </div>\
-    ',
+        </div>',
 
     BUBBLE_OPTIONS : '\
         <div class="voice-add-content__option ui-vertical-list-item" data-type="FromUrl">\
@@ -17,7 +15,7 @@ Class(CV, 'VoiceAddContent').inherits(Widget)({
             </svg>\
             <span class="voice-add-content__option-label">From URL</span>\
             <span class="voice-add-content__option-tooltip ui-has-tooltip cv-caption -font-normal -color-neutral-mid">(?)\
-                <i class="ui-tooltip -top">You can enter a URL of an image, video from Youtube or Vimeo or a web page.</i>\
+                <i class="ui-tooltip -top-right">You can enter a URL of an image, video from Youtube or Vimeo or a web page.</i>\
             </span>\
         </div>\
         <div class="voice-add-content__option ui-vertical-list-item" data-type="FromSources">\
@@ -26,7 +24,7 @@ Class(CV, 'VoiceAddContent').inherits(Widget)({
             </svg>\
             <span class="voice-add-content__option-label">From Sources</span>\
             <span class="voice-add-content__option-tooltip ui-has-tooltip cv-caption -font-normal -color-neutral-mid">(?)\
-                <i class="ui-tooltip -top">You can enter a URL of an image, video from Youtube or Vimeo or a web page.</i>\
+                <i class="ui-tooltip -top-right">You can search and add content from Youtube and Google News.</i>\
             </span>\
         </div>\
         <div class="voice-add-content__option ui-vertical-list-item" data-type="UploadFile">\
@@ -35,7 +33,7 @@ Class(CV, 'VoiceAddContent').inherits(Widget)({
             </svg>\
             <span class="voice-add-content__option-label">Upload File</span>\
             <span class="voice-add-content__option-tooltip ui-has-tooltip cv-caption -font-normal -color-neutral-mid">(?)\
-                <i class="ui-tooltip -top">You can enter a URL of an image, video from Youtube or Vimeo or a web page.</i>\
+                <i class="ui-tooltip -top-right">Upload your own Images.</i>\
             </span>\
         </div>\
         <div class="voice-add-content__option ui-vertical-list-item" data-type="WriteArticle">\
@@ -44,10 +42,9 @@ Class(CV, 'VoiceAddContent').inherits(Widget)({
             </svg>\
             <span class="voice-add-content__option-label">Write Article</span>\
             <span class="voice-add-content__option-tooltip ui-has-tooltip cv-caption -font-normal -color-neutral-mid">(?)\
-                <i class="ui-tooltip -top">You can enter a URL of an image, video from Youtube or Vimeo or a web page.</i>\
+                <i class="ui-tooltip -top-right">Write and post your own article.</i>\
             </span>\
-        </div>\
-    ',
+        </div>',
 
     prototype : {
         el: null,
