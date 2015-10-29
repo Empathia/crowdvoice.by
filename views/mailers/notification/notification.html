@@ -1,13 +1,12 @@
-<pre style="white-space: inherit;">
-		<% var voiceInfo = params.notificationInfo.voice; %>
-		<% var doerInfo = params.notificationInfo.actionDoer; %>
+<% var voiceInfo = params.notificationInfo.voice; %>
+<% var doerInfo = params.notificationInfo.actionDoer; %>
 
-		<% var voiceDate = new Date();  %>
-		<% var monthNames = ["January", "February", "March","April", "May", "June", "July","August", "September", "October","November", "December"];%>
-		<% var day = voiceDate.getDate(); %>
-		<% var monthIndex = voiceDate.getMonth(); %>
-		<% var year = voiceDate.getFullYear(); var voiceImage; %>
-</pre>
+<% var voiceDate = new Date();  %>
+<% var monthNames = ["January", "February", "March","April", "May", "June", "July","August", "September", "October","November", "December"];%>
+<% var day = voiceDate.getDate(); %>
+<% var monthIndex = voiceDate.getMonth(); %>
+<% var year = voiceDate.getFullYear(); var voiceImage; var doerImage; %>
+
 <table width="100%" bgcolor="#F7F9FA" style="padding:30px;font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
   <tr>
     <td>
@@ -21,7 +20,7 @@
         <tr>
           <td style="box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.5);-webkit-box-shadow:0px 2px 4px 0px rgba(0, 0, 0, 0.5); -moz-box-shadow:0px 2px 4px 0px rgba(0, 0, 0, 0.5); background-color: #FFFFFF; color: #4C4B49; border-radius: 0px; border-top:10px solid; border-top-color:#FF9400;">
             <!-- init -->
-<!-- New voice published notification-->
+			<!-- New voice published notification-->
 	    	<% if(params.notificationInfo.itemType === 'voice' && params.notificationInfo.action === 'published'){ %>
 	    		<% if(Object.getOwnPropertyNames(voiceInfo.images).length === 0){ voiceImage = CONFIG.siteUrl[application.env]+'/img/img-placeholder.png'; }else{ voiceImage = voiceInfo.images.small.url;} %>
 					<table width="100%" cellspacing="0" cellpadding="0" border="0" style="padding: 50px 50px 20px 50px;">
@@ -200,7 +199,8 @@
 				        <tbody>
 					        <tr style="background-color:#F7F9FA;">
 					            <td style="padding: 25px 0px 25px 5px; text-align: center; width: 75px;">
-					            	<img width="37px" height="37px" style="border-radius:5px;" src="<%= doerInfo.images.small.url %>"/>
+					            	<% if(doerInfo.images.card.url.search('entity-placeholder') !== -1 ){ doerImage = CONFIG.siteUrl[application.env] + doerInfo.images.card.url; } else { doerImage = doerInfo.images.card.url; } %>
+					            	<img width="37px" height="37px" style="border-radius:5px;" src="<%= doerImage %>"/>
 					            </td>
 					            <td style="padding-right:25px;">
 					            	<a href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="_blank" style="font-size:13px;color:#4D4D4D;text-align:left;font-weight:bold;"><%= doerInfo.name %></a>
@@ -255,7 +255,8 @@
 				        <tbody>
 					        <tr style="background-color:#F7F9FA;">
 					            <td style="padding: 25px 0px 25px 5px; text-align: center; width: 75px;">
-					            	<img width="37px" height="37px" style="border-radius:5px;" src="<%= doerInfo.images.small.url %>"/>
+					            	<% if(doerInfo.images.card.url.search('entity-placeholder') !== -1 ){ doerImage = CONFIG.siteUrl[application.env] + doerInfo.images.card.url; } else { doerImage = doerInfo.images.card.url; } %>
+					            	<img width="37px" height="37px" style="border-radius:5px;" src="<%= doerImage %>"/>
 					            </td>
 					            <td style="padding-right:25px;">
 					            	<a href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="_blank" style="font-size:13px;color:#4D4D4D;text-align:left;font-weight:bold;"><%= doerInfo.name %></a>
@@ -264,7 +265,6 @@
 				        </tbody>
 			      	</table>
 	    	<% } %>
-            <!-- Ending -->
           </td>
         </tr>
       </table>
