@@ -242,7 +242,7 @@ var DiscoverController = Class('DiscoverController')({
 
     recommendedIndex: function (req, res, next) {
       if (!req.currentPerson) {
-        return next(new NotFoundError());
+        return res.redirect('/login');
       }
 
       var items    = [];
