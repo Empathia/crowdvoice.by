@@ -25,10 +25,54 @@ var urlBase = 'http://localhost:3000'
 
 describe('NotificationsController', function () {
 
+  describe('#getNotifications', function () {
+
+    it('Get notifications when in anonymous mode', function (testDone) {
+      login('cersei-lannister', function (err, agent, csrf) {
+        if (err) { return testDone(err) }
+
+        async.series([
+          // change to anonymous
+          function (seriesNext) {
+            agent
+              .get(urlBase + '/switchPerson')
+              .end(function (err, res) {
+                if (err) { return seriesNext(err) }
+
+                expect(res.status).to.equal(200)
+
+                return seriesNext()
+              })
+          },
+
+          // getNotifications
+          function (seriesNext) {
+            agent
+              .get(urlBase + '/cersei-lannister/notifications')
+              .accept('application/json')
+              .end(function (err, res) {
+                if (err) { return seriesNext(err) }
+
+                expect(res.status).to.equal(200)
+                expect(res.body.length).to.equal(2)
+                expect(res.body[0].notificationId).to.exist
+                expect(res.body[1].notificationId).to.exist
+                expect(res.body[0].action).to.exist
+                expect(res.body[1].action).to.exist
+
+                return seriesNext()
+              })
+          },
+        ], testDone)
+      })
+    })
+
+  })
+
   describe('#markAllAsRead', function () {
 
     it('Mark as read all notifications "owned" by you', function (done) {
-      login('cersei', function (err, agent, csrf) {
+      login('cersei-lannister', function (err, agent, csrf) {
         if (err) { return done(err) }
 
         agent

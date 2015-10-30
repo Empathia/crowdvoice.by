@@ -245,13 +245,28 @@ var DiscoverController = Class('DiscoverController')({
         return res.redirect('/login');
       }
 
-      var items    = [];
-      var voices   = [];
+      var items = [];
+      var voices = [];
       var entities = [];
+      var currentPerson;
+      var person = new Entity(req.currentPerson);
+      person.id = hashids.decode(req.currentPerson.id)[0]
 
       async.series([function(done) {
+        person.owner(function (err, result) {
+          if (err) { return done(err); }
+
+          if (req.currentPerson.isAnonymous) {
+            currentPerson = new Entity(result);
+          } else {
+            currentPerson = new Entity(person);
+          }
+
+          return done();
+        });
+      }, function(done) {
         // Get the voices that the currentPerson is following
-        VoiceFollower.find({ entity_id : hashids.decode(req.currentPerson.id)[0] }, function(err, result) {
+        VoiceFollower.find({ entity_id : currentPerson.id }, function(err, result) {
           if (err) {
             return done(err);
           }
@@ -318,7 +333,7 @@ var DiscoverController = Class('DiscoverController')({
         }, done);
       }, function(done) {
         // Get entities that the currentPerson follows
-        EntityFollower.find({ 'follower_id' : hashids.decode(req.currentPerson.id)[0] }, function(err, result) {
+        EntityFollower.find({ 'follower_id' : currentPerson.id }, function(err, result) {
           if (err) {
             return done(err);
           }
