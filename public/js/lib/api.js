@@ -1006,6 +1006,31 @@ module.exports = {
         });
      },
 
+    /* Creates a thread or insert a message in an existing thread.
+     * @argument args.profileName <required> [String] currentPerson profileName
+     * @argument args.threadId <required> [String]
+     * @argument args.data.message <required> [String] the text message
+     * @argument callback <required> [Function]
+     */
+    sendMessageToThread : function sendMessageToThread(args, callback) {
+        if (!args.profileName || !args.threadId || !args.data.message || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'POST',
+            url : '/' + args.profileName + '/messages/' + args.threadId,
+            headers : {'csrf-token' : this.token},
+            data : args.data,
+            success : function success(data) {callback(false, data);},
+            error : function error(err) {callback(true, err);}
+        });
+    },
+
      /* Answer to an invitation.
       * @argument args.profileName <required> [String] currentPerson profileName
       * @argument args.threadId <required> [String]
