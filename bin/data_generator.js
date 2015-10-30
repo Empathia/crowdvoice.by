@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 global.Admin = {};
 
 var application = require('neonode-core');
@@ -1228,9 +1230,9 @@ async.series([function(next) {
         'https://www.youtube.com/watch?v=f4RGU2jXQiE'
       ];
 
-      var times = process.argv[2]
+      var times = parseInt(process.argv[2], 10);
 
-      if (!times || typeof times !== 'number') {
+      if (!times || typeof times === NaN) {
         times = 0;
       }
 
