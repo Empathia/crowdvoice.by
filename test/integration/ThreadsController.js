@@ -28,7 +28,7 @@ describe('ThreadsController', function () {
   describe('#create', function () {
 
     it('Create new thread', function (done) {
-      login('cersei', function (err, agent, csrf) {
+      login('cersei-lannister', function (err, agent, csrf) {
         agent
           .post(urlBase + '/cersei-lannister/messages')
           .accept('application/json')
@@ -50,7 +50,7 @@ describe('ThreadsController', function () {
     })
 
     it('"Refresh" invitation_organization message instead of duplicating', function (done) {
-      login('cersei', function (err, agent, csrf) {
+      login('cersei-lannister', function (err, agent, csrf) {
         // send our invitations
         async.series([
           function (next) {
@@ -161,8 +161,8 @@ describe('ThreadsController', function () {
 
   describe('#destroy', function () {
 
-    it('Delete invitations of hidden messages', function (done) {
-      login('cersei', function (err, agent, csrf) {
+    it('Delete invitations of hidden messages and mark as invitation_rejected', function (done) {
+      login('cersei-lannister', function (err, agent, csrf) {
         agent
           .del(urlBase + '/cersei-lannister/messages/' + hashids.encode(2))
           .accept('application/json')
@@ -175,16 +175,30 @@ describe('ThreadsController', function () {
             expect(res.status).to.equal(200)
             expect(res.body.status).to.equal('ok')
 
-            InvitationRequest.find({
-              invitator_entity_id: 3, // Cersei
-              invited_entity_id: 11, // Arya
-            }, function (err, result) {
-              if (err) { return done(err) }
+            async.series([
+              function (nextSeries) {
+                InvitationRequest.find({
+                  invitator_entity_id: 3, // Cersei
+                  invited_entity_id: 11, // Arya
+                }, function (err, result) {
+                  if (err) { return nextSeries(err) }
 
-              expect(result.length).to.equal(0)
+                  expect(result.length).to.equal(0)
 
-              return done()
-            })
+                  return nextSeries()
+                })
+              },
+
+              function (nextSeries) {
+                Message.findById(6, function (err, message) {
+                  if (err) { return nextSeries(err) }
+
+                  expect(message[0].type).to.equal('invitation_rejected_organization')
+
+                  return nextSeries()
+                })
+              },
+            ], done)
           })
       })
     })
