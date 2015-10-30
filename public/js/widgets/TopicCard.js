@@ -13,7 +13,7 @@ Class(CV, 'TopicCard').inherits(Widget).includes(CV.WidgetUtils)({
                 <p class="featured-text"><span class="middle-line">FEATURED VOICES</span></p>\
                 <div class="voice-card-container -text-left"></div>\
                 <p class="all-voices -text-left">\
-                    <a href="" class="category_link">See all Voices &nbsp;<span class="arrow">›</span></a>\
+                    <a href="" class="topic-card__see-all-link category_link"></a>\
                 </p>\
             </div>\
         </div>',
@@ -55,6 +55,8 @@ Class(CV, 'TopicCard').inherits(Widget).includes(CV.WidgetUtils)({
                 this.dom.updateAttr('href', anchor, '/topic/' + this.data.slug + '/');
                 this.dom.updateAttr('alt', anchor, this.data.name);
             }, this);
+
+            this.dom.updateText(this.el.querySelector('.topic-card__see-all-link'), 'See all ' + this.data.voicesCount + '  Voices ›');
 
             return this;
         },
