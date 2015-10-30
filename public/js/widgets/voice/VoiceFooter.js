@@ -70,7 +70,7 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
                 name : 'filterDropdown'
             })).render(this.actionsColumn);
 
-            if (Person.get() && (!Person.anon()) && (!Person.memberOf('voice', this.voice.id))) {
+            if (Person.get() && (!Person.anon())) {
                 if (Person.get().ownedOrganizations.length) {
                     this.appendChild(new CV.VoiceFollowMultipleButton({
                         name : 'followButton',
@@ -84,12 +84,6 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
                         className : 'tiny'
                     })).render(this.actionsColumn);
                 }
-            } else {
-                this.appendChild(new CV.VoiceFollowSingleButton({
-                    name : 'followButton',
-                    voice : this.voice,
-                    className : 'tiny'
-                })).render(this.actionsColumn).disable();
             }
 
             var relatedVoicesDiv = document.createElement('div');
