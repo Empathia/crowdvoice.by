@@ -190,10 +190,44 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
               });
 
               owner.save(next);
+            },
+
+            // notification settings
+            function (next) {
+              // NOTE: WHEN ADDING NEW FEED ACTIONS YOU NEED TO UPDATE THIS!!
+              var feedDefaults = {
+                  entityFollowsEntity: true,
+                  entityFollowsVoice: true,
+                  entityArchivesVoice: true,
+                  entityUpdatesAvatar: true,
+                  entityUpdatesBackground: true,
+                  entityBecomesOrgPublicMember: true,
+                  voiceIsPublished: true,
+                  voiceNewPosts: true,
+                  voiceNewTitle: true,
+                  voiceNewDescription: true,
+                  voiceNewPublicContributor: true,
+                },
+                clone = _.clone(feedDefaults);
+
+              var setting = new NotificationSetting({
+                entityId: org.id,
+                webSettings: feedDefaults,
+                emailSettings: _.defaults(clone, {
+                  selfNewMessage: true,
+                  selfNewInvitation: true,
+                  selfNewRequest: true,
+                  selfNewVoiceFollower: true,
+                  selfNewEntityFollower: true
+                })
+              });
+
+              setting.save(next);
             }
           ], function (err) {
             if (err) {
               logger.error(err);
+              logger.error(err.stat);
 
               // destroy org
               return org.destroy(function () {
