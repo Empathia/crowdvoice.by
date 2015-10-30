@@ -57,6 +57,17 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
             })).render(this.buttonActionsWrapper);
         },
 
+        /* Destroy the createDropdown {voice, organization}
+         * @method removeCreateDropdown <public> [Function]
+         * @return Header
+         */
+        removeCreateDropdown : function removeCreateDropdown() {
+            if (this.createDropdown) {
+                this.createDropdown = this.createDropdown.destroy();
+            }
+            return this;
+        },
+
         /* Append the ui for not logged in users
          * @method _setupVisitor <private> [Function]
          */

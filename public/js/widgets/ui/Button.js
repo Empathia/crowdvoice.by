@@ -1,3 +1,6 @@
+/* @example
+ * new CV.UI.Button({data: {value: 'Button Text'}});
+ */
 Class(CV.UI, 'Button').inherits(Widget).includes(CV.WidgetUtils)({
     ELEMENT_CLASS : 'cv-button',
     HTML : '<button></button>',
