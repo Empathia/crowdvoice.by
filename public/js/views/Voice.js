@@ -77,7 +77,7 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
          * @return [CV.VoiceView]
          */
         setupVoiceWidgets : function setupVoiceWidgets() {
-            if (Person.memberOf('voice', this.data.id)) {
+            if (Person.ownerOf('voice', this.data.id)) {
                 App.header.removeCreateDropdown();
 
                 this.appendChild(new CV.UI.Button({
