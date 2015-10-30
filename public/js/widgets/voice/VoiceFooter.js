@@ -86,16 +86,6 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
                 }
             }
 
-            var relatedVoicesDiv = document.createElement('div');
-            relatedVoicesDiv.className = '-inline-block';
-            this.appendChild(new CV.RelatedVoicesButton({
-                name : 'relatedVoicesButton',
-                voice : this.voice,
-                className : 'tiny',
-                relatedVoices : this.relatedVoices
-            })).render(relatedVoicesDiv);
-            this.actionsColumn.appendChild(relatedVoicesDiv);
-
             if (Person.ownerOf('voice', this.voice.id)) {
                 this.appendChild(new CV.ManageContributorsButton({
                     name : 'manageContributors',
@@ -107,6 +97,16 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
                     }
                 })).render(this.actionsColumn);
             }
+
+            var relatedVoicesDiv = document.createElement('div');
+            relatedVoicesDiv.className = '-inline-block';
+            this.appendChild(new CV.RelatedVoicesButton({
+                name : 'relatedVoicesButton',
+                voice : this.voice,
+                className : 'tiny',
+                relatedVoices : this.relatedVoices
+            })).render(relatedVoicesDiv);
+            this.actionsColumn.appendChild(relatedVoicesDiv);
 
             this.appendChild(new CV.VoiceFooterShareButtonsGroup({
                 name : 'shareButtons',

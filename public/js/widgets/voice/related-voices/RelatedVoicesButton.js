@@ -28,7 +28,7 @@ Class(CV, 'RelatedVoicesButton').inherits(CV.UI.Button)({
          * @return RelatedVoicesButton
          */
         _setup : function _setup() {
-            this.editMode = (Person.get() && !Person.anon() && Person.memberOf('voice', this.voice.id));
+            this.editMode = (Person.get() && !Person.anon() && Person.ownerOf('voice', this.voice.id));
             var buttonText  = '';
 
             if (this.editMode) {
