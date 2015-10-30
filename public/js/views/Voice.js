@@ -1,3 +1,7 @@
+/* globals App */
+var Person = require('./../lib/currentPerson');
+var Events = require('./../lib/events');
+
 Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, CustomEventSupport)({
     STATUS_DRAFT : 'STATUS_DRAFT',
     STATUS_UNLISTED : 'STATUS_UNLISTED',
@@ -51,6 +55,10 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
             this.postsCountUnapproved = this._formatPostsCountObject(this.postsCount.unapproved);
             this.postCount = this._getTotalPostCount(this.postsCountApproved);
 
+            this._setup();
+        },
+
+        _setup : function _setup() {
             window.CardHoverWidget.register(document.querySelector('.voice-info__author'), this.data.owner);
 
             if (this.postCount === 0) {
@@ -60,6 +68,8 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
                 this._checkInitialHash();
                 this._bindEvents();
             }
+
+            return this;
         },
 
         /* Instantiate Widgets that give special behaviour to VoiceView, such as the AutoHide Header, Expandable Sidebar, Voice Footer, etc.
@@ -67,6 +77,19 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
          * @return [CV.VoiceView]
          */
         setupVoiceWidgets : function setupVoiceWidgets() {
+            if (Person.memberOf('voice', this.data.id)) {
+                App.header.removeCreateDropdown();
+
+                this.appendChild(new CV.UI.Button({
+                    name : 'editVoiceButton',
+                    className : 'small primary',
+                    data : {value: 'Edit this Voice'}
+                })).render(App.header.buttonActionsWrapper, App.header.buttonActionsWrapper.firstElementChild);
+
+                this._editVoiceButtonClickedRef = this._editVoiceButtonClicked.bind(this);
+                Events.on(this.editVoiceButton.el, 'click', this._editVoiceButtonClickedRef);
+            }
+
             // display the create content button if the voice allows posting.
             if (this.allowPosting) {
                 this.appendChild(new CV.VoiceAddContent({
@@ -187,13 +210,13 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
 
         _bindEvents : function _bindEvents() {
             this._scrollHandlerRef = this._scrollHandler.bind(this);
-            this.scrollableArea.addEventListener('scroll', this._scrollHandlerRef);
+            Events.on(this.scrollableArea, 'scroll', this._scrollHandlerRef);
 
             this._resizeHandlerRef = this._resizeHandler.bind(this);
-            this._window.addEventListener('resize', this._resizeHandlerRef);
+            Events.on(this._window, 'resize', this._resizeHandlerRef);
 
             this.showAboutBoxRef = this.showAboutBoxButtonHandler.bind(this);
-            this.aboutBoxButtonElement.addEventListener('click', this.showAboutBoxRef);
+            Events.on(this.aboutBoxButtonElement, 'click', this.showAboutBoxRef);
 
             this._deactivateButtonRef = this._deactivateButton.bind(this);
             CV.VoiceAboutBox.bind('activate', this._deactivateButtonRef);
@@ -210,6 +233,10 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
             this.bind('post:display:detail', function (ev) {
                 this.displayGallery(ev);
             }.bind(this));
+        },
+
+        _editVoiceButtonClicked : function _editVoiceButtonClicked() {
+            App.showCreateVoiceModal(this.data);
         },
 
         /* Renders the PostDetail Overlay
@@ -355,66 +382,23 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
 
             window.CardHoverWidget.unregister(document.querySelector('.voice-info__author'));
 
-            this.scrollableArea.removeEventListener('scroll', this._scrollHandlerRef);
+            Events.off(this.scrollableArea, 'scroll', this._scrollHandlerRef);
             this._scrollHandlerRef = null;
 
-            this.aboutBoxButtonElement.removeEventListener('click', this.showAboutBoxRef);
+            Events.off(this.aboutBoxButtonElement, 'click', this.showAboutBoxRef);
             this.showAboutBoxRef = null;
 
-            this._window.removeEventListener('resize', this._resizeHandlerRef);
+            Events.off(this._window, 'resize', this._resizeHandlerRef);
             this._resizeHandlerRef = null;
-
-            CV.VoiceAboutBox.unbind('activate', this._deactivateButtonRef);
-            this._deactivateButtonRef = null;
-
-            CV.VoiceAboutBox.unbind('deactivate', this._activateButtonRef);
-            this._activateButtonRef = null;
-
-            this.voicePostLayersManager.unbind('layerLoaded', this.layerLoadedRef);
-            this.layerLoadedRef = null;
-
-            this.voicePostLayersManager.unbind('ready', this.layerManagerReadyRef);
-            this.layerManagerReadyRef = null;
-
-            this.id = null;
-            this.title = null;
-            this.description = null;
-            this.images = null;
-            this.latitude = null;
-            this.longitude = null;
-            this.locationName = null;
-            this.ownerId = null;
-            this.status = null;
-            this.type = null;
-            this.twitterSearch = null;
-            this.tweetLastFetchAt = null;
-            this.rssUrl = null;
-            this.rssLastFetchAt = null;
-            this.firstPostDate = null;
-            this.lastPostDate = null;
-            this.postCount = null;
-            this.createdAt = null;
-            this.updatedAt = null;
-
-            this.followerCount = null;
-            this.postCountElement = null;
-            this.followersCountElement = null;
-            this.aboutBoxButtonElement = null;
 
             if (this._resizeTimer) {
                 this._window.clearTimeout(this._resizeTimer);
             }
-            this._resizeTimer = null;
-            this._resizeTime = 250;
-            this._window = null;
 
-            this._listenScrollEvent = null;
-            this._lastScrollTop = null;
-            this._scrollTimer = null;
-            this._scrollTime = null;
-            this._layersOffsetLeft = null;
-            this.LAYER_CLASSNAME = null;
-            this._socket = null;
+            if (this.editVoiceButton) {
+                Events.off(this.editVoiceButton.el, 'click', this._editVoiceButtonClickedRef);
+                this._editVoiceButtonClickedRef = null;
+            }
 
             return null;
         }
