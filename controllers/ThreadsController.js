@@ -257,66 +257,66 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
           return next(new ForbiddenError());
         }
 
-        res.format({
-          json : function() {
+        MessageThread.findById(threadId, function(err, thread) {
+          if (err) {
+            return next(err);
+          }
 
+          if (thread.length === 0) {
+            return next(new NotFoundError('Thread Not Found'));
+          }
 
-            MessageThread.findById(threadId, function(err, thread) {
-              if (err) {
-                return next(err);
-              }
+          thread = new MessageThread(thread[0]);
 
-              if (thread.length === 0) {
-                return next(new NotFoundError('Thread Not Found'));
-              }
+          var senderOrReceiver = thread.isPersonSender(currentPersonId) ? 'Sender' : 'Receiver';
 
-              thread = new MessageThread(thread[0]);
+          thread['hiddenFor' + senderOrReceiver] = true;
 
-              var senderOrReceiver = thread.isPersonSender(currentPersonId) ? 'Sender' : 'Receiver';
+          thread.save(function(err, result) {
+            if (err) { return next(err); }
 
-              thread['hiddenFor' + senderOrReceiver] = true;
+            Message.find({ thread_id: thread.id }, function(err, messages) {
+              if (err) { return next(err); }
 
-              thread.save(function(err, result) {
+              async.each(messages, function(message, done) {
+                async.series([
+                  // mark post as hidden
+                  function (next) {
+                    message = new Message(message);
+
+                    var senderOrReceiver = message.isPersonSender(currentPersonId) ? 'Sender' : 'Receiver';
+
+                    message['hiddenFor' + senderOrReceiver] = true;
+
+                    if (message.type === 'invitation_voice') {
+                      message.type = 'invitation_rejected_voice';
+                    } else if (message.type === 'invitation_organization') {
+                      message.type = 'invitation_rejected_organization';
+                    }
+
+                    message.save(next);
+                  },
+
+                  function (next) {
+                    if (!message.invitationRequestId) {
+                      return next();
+                    }
+
+                    InvitationRequest.findById(message.invitationRequestId, function (err, invitation) {
+                      var invite = new InvitationRequest(invitation[0]);
+
+                      invite.destroy(next);
+                    });
+                  },
+                ], done);
+              }, function(err) {
                 if (err) { return next(err); }
 
-                Message.find({'thread_id' : thread.id}, function(err, messages) {
-                  if (err) { return next(err); }
-
-                  async.each(messages, function(message, done) {
-                    async.series([
-                      // mark post as hidden
-                      function (next) {
-                        message = new Message(message);
-
-                        var senderOrReceiver = message.isPersonSender(currentPersonId) ? 'Sender' : 'Receiver';
-
-                        message['hiddenFor' + senderOrReceiver] = true;
-
-                        message.save(next);
-                      },
-
-                      function (next) {
-                        if (!message.invitationRequestId) {
-                          return next();
-                        }
-
-                        InvitationRequest.findById(message.invitationRequestId, function (err, invitation) {
-                          var invite = new InvitationRequest(invitation[0]);
-
-                          invite.destroy(next);
-                        });
-                      },
-                    ], done);
-                  }, function(err) {
-                    if (err) { return next(err); }
-
-                    res.json({ status: 'ok' });
-                  })
-                })
+                res.json({ status: 'ok' });
               })
             })
-          }
-        });
+          })
+        })
       });
     },
 
