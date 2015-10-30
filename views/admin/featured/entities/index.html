@@ -26,7 +26,7 @@
 							<div class="card-mini-info">
 								<div>
 									<a href="/<%= entity.profileName %>" class="card-mini-fullname -font-semi-bold -tdn" data-author-anchor="" title="profile">
-										<%= entity.name %> <% if (entity.lastname){ %><%= entity.lastname %><% } %>
+										<%= entity.name %>
 									</a>
 									<p class="card-mini-username"> · @<%= entity.profileName %></p>
 								</div>
@@ -167,9 +167,6 @@
 			    newEnt.appendTo($('.admin-users-list'));
 
 			    var eName = selectedUser.name;
-			    if(selectedUser.lastname){
-			    	eName = eName + " " + selectedUser.lastname;
-			    }
 
 			    newEnt.attr('id', selectedUser.id);
 
@@ -209,11 +206,7 @@
 	      	var personEl = personElBase.clone();
 	      	personEl.attr('id', person.id);
 
-	      	if(person.lastname){
-	      		personEl.text(person.name + ' ' + person.lastname);
-	  		}else{
-	  			personEl.text(person.name);
-	  		}
+        personEl.text(person.name);
 
 	     	personEl.on('click', function(){
 	        	setSelectedUser(person);
