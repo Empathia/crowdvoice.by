@@ -1,5 +1,5 @@
 var Events = require('./../../lib/events');
-// var inlineStyle = require('./../../lib/inline-style');
+var inlineStyle = require('./../../lib/inline-style');
 
 Class(CV, 'VoiceHeader').inherits(Widget)({
     prototype : {
@@ -12,13 +12,14 @@ Class(CV, 'VoiceHeader').inherits(Widget)({
         TITLE_OFF_PAGE : 0,
         DELTA : 5,
         backgroundElementHeigth : 0,
-        // _backgroundSizeKnow : false,
+        _backgroundSizeKnow : false,
         _lastScrollTop : 0,
 
         init : function init(config) {
             Widget.prototype.init.call(this, config);
 
             this.el = this.element;
+            this._body = document.body;
             this.HEADER_HEIGHT = this.el.offsetHeight;
             this.TITLE_OFF_PAGE = this.HEADER_HEIGHT + document.querySelector('.voice-heading').offsetHeight;
             this.backgroundElementHeigth = this.backgroundElement.offsetHeight;
@@ -33,15 +34,15 @@ Class(CV, 'VoiceHeader').inherits(Widget)({
             this._scrollHandlerRef = this._scrollHandler.bind(this);
             Events.on(this.scrollableArea, 'scroll', this._scrollHandlerRef);
 
-            // var backgroundImage = this.backgroundElement.getElementsByTagName('img')[0];
-            // if (backgroundImage) {
-            //     Events.once(backgroundImage, 'load', function(ev) {
-            //         this.backgroundElementHeigth = ev.currentTarget.clientHeight;
-            //         this._backgroundSizeKnow = true;
-            //     }.bind(this));
-            // } else {
-            //     this._backgroundSizeKnow = true;
-            // }
+            var backgroundImage = this.backgroundElement.getElementsByTagName('img')[0];
+            if (backgroundImage) {
+                Events.once(backgroundImage, 'load', function(ev) {
+                    this.backgroundElementHeigth = ev.currentTarget.clientHeight;
+                    this._backgroundSizeKnow = true;
+                }.bind(this));
+            } else {
+                this._backgroundSizeKnow = true;
+            }
 
             return this;
         },
@@ -50,19 +51,19 @@ Class(CV, 'VoiceHeader').inherits(Widget)({
          * @method _scrollHandler <private> [Function]
          */
         _scrollHandler : function _scrollHandler() {
-            var y = this.parent.voicePostLayersManager.getScrollTop();
+            var y = this._body.scrollTop;
             var scrollingDown = (y > this._lastScrollTop);
 
-            // if (this._backgroundSizeKnow) {
-            //     if (y <= (this.backgroundElementHeigth * 2)) {
-            //         var yHalf = (y/2);
-            //         inlineStyle(this.backgroundElement, {
-            //             msTransform: 'translateY('+ yHalf +'px)',
-            //             webkitTransform: 'translate3d(0px, '+ yHalf +'px, 0px)',
-            //             transform: 'translate3d(0px, '+ yHalf +'px, 0px)'
-            //         });
-            //     }
-            // }
+            if (this._backgroundSizeKnow) {
+                if (y <= (this.backgroundElementHeigth * 2)) {
+                    var yHalf = ~~(y/2);
+                    inlineStyle(this.backgroundElement, {
+                        msTransform: 'translate(0px, '+ yHalf +'px)',
+                        webkitTransform: 'translate(0px, '+ yHalf +'px)',
+                        transform: 'translate(0px, '+ yHalf +'px)'
+                    });
+                }
+            }
 
             if (Math.abs(this._lastScrollTop - y) <= this.DELTA) {
                 return;
