@@ -52,7 +52,7 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
       var message = this;
       var participant;
 
-      if (message.data.senderEntity.id !== message.parent.parent.currentPerson.id) {
+      if (message.data.senderEntity.id !== Person.get('id')) {
         participant = message.data.senderEntity.name;
       } else {
         participant = 'You';
@@ -130,7 +130,7 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
               console.log('-- Accept --');
 
               API.threatAnswerInvitation({
-                profileName: message.threadContainer.currentPerson.profileName,
+                profileName: Person.get('profileName'),
                 threadId: message.data.threadId,
                 messageId: message.data.id,
                 data : {action: 'accept'}
@@ -147,7 +147,7 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
               console.log('-- Accept As anon --');
 
               API.threatAnswerInvitation({
-                profileName: message.threadContainer.currentPerson.profileName,
+                profileName: Person.get('profileName'),
                 threadId: message.data.threadId,
                 messageId: message.data.id,
                 data : {action: 'accept', anonymous: true}
@@ -164,7 +164,7 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
               console.log('-- Refuse --');
 
               API.threatAnswerInvitation({
-                profileName: message.threadContainer.currentPerson.profileName,
+                profileName: Person.get('profileName'),
                 threadId: message.data.threadId,
                 messageId: message.data.id,
                 data : {action: 'ignore'}
@@ -216,6 +216,8 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
 
         this.element.find('.message-data .message-notification').prepend(text);
       }
+
+      return this;
     }
   }
 });

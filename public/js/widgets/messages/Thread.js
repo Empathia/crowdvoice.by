@@ -1,3 +1,4 @@
+var Person = require('./../../lib/currentPerson');
 var PLACEHOLDERS = require('./../../lib/placeholders');
 
 CV.Thread = Class(CV, 'Thread').includes(Widget)({
@@ -20,7 +21,7 @@ CV.Thread = Class(CV, 'Thread').includes(Widget)({
     setup : function setup() {
       var thread = this;
 
-      var senderOrReceiver = this.isSenderOrReceiver(thread.parent.currentPerson);
+      var senderOrReceiver = this.isSenderOrReceiver(Person.get());
 
       this.unreadCount = thread.data.unreadCount;
 
@@ -31,7 +32,7 @@ CV.Thread = Class(CV, 'Thread').includes(Widget)({
       }
 
       var threadPartner;
-      if (thread.data.receiverEntity.id !== thread.parent.currentPerson.id ){
+      if (thread.data.receiverEntity.id !== Person.get('id')){
         threadPartner = thread.data.receiverEntity;
       } else {
         threadPartner = thread.data.senderEntity;
@@ -100,7 +101,7 @@ CV.Thread = Class(CV, 'Thread').includes(Widget)({
 
       thread.threadContainer.messagesBodyHeaderEl.find('.delete-thread').show().attr('data-id', this.data.id);
 
-      var updateThreadUrl = '/'+ thread.threadContainer.currentPerson.profileName + '/messages/'+ thread.data.id;
+      var updateThreadUrl = '/'+ Person.get('profileName') + '/messages/'+ thread.data.id;
 
       $.ajax({
         type: "PUT",
