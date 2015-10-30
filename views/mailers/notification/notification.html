@@ -6,11 +6,11 @@
 <% var day = voiceDate.getDate(); %>
 <% var monthIndex = voiceDate.getMonth(); %>
 <% var year = voiceDate.getFullYear(); var voiceImage; var doerImage; %>
-
-<table width="100%" bgcolor="#F7F9FA" style="padding:30px;font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+<div style="margin:0 auto;">
+<table bgcolor="#F7F9FA" style="width:100%;padding:30px;font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
   <tr>
     <td>
-      <table align="center" width="600px" border="0" cellspacing="0" cellpadding="0">
+      <table align="center" border="0" cellspacing="0" cellpadding="0">
         <tr>
           <td style="text-align:center;">
             <p style="font-size:36px;color:#454B4D;margin-bottom:30px;">CrowdVoice.by</p>
@@ -26,7 +26,7 @@
 				        <tbody>
 				          	<tr>
 				            	<td>
-					             	<div style="font-size: 14px; line-height: 38px; color: #b2b2b2;">
+					             	<div style="font-size: 14px; color: #b2b2b2;">
 						                <p style="margin:0px;font-size:18px;color:black;font-weight:300;">
 						                	Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="_blank"><%= doerInfo.name + ' '%></a> has created a Voice!
 						                </p>
@@ -38,7 +38,7 @@
 			       	<table width="100%" cellspacing="0" cellpadding="0" border="0" style="padding:0px 50px 40px 50px;">
 				        <tbody>
 					        <tr style="background-color:#F7F9FA;">
-					            <td style="padding: 25px 0px 25px 5px; text-align: center; width: 75px;">
+					            <td style="padding: 25px 0px 25px 5px; text-align: center; width: 60px;">
 					            	<img width="37px" height="37px" style="border-radius:5px;" src="<%= voiceImage %>"/>
 					            </td>
 					            <td style="padding-right:25px;">
@@ -56,7 +56,7 @@
 				        <tbody>
 				          	<tr>
 				            	<td>
-					             	<div style="font-size: 14px; line-height: 38px; color: #b2b2b2;">
+					             	<div style="font-size: 14px;color: #b2b2b2;">
 						                <p style="margin:0px;font-size:18px;color:black;font-weight:300;">
 						                	Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="_blank"><%= doerInfo.name + ' '%></a> has followed a Voice!
 						                </p>
@@ -68,7 +68,7 @@
 			       	<table width="100%" cellspacing="0" cellpadding="0" border="0" style="padding:0px 50px 40px 50px;">
 				        <tbody>
 					        <tr style="background-color:#F7F9FA;">
-					            <td style="padding: 25px 0px 25px 5px; text-align: center; width: 75px;">
+					            <td style="padding: 25px 0px 25px 5px; text-align: center; width: 60px;">
 					            	<img width="37px" height="37px" style="border-radius:5px;" src="<%= voiceImage %>"/>
 					            </td>
 					            <td style="padding-right:25px;">
@@ -86,7 +86,7 @@
 				        <tbody>
 				          	<tr>
 				            	<td>
-					             	<div style="font-size: 14px; line-height: 38px; color: #b2b2b2;">
+					             	<div style="font-size: 14px;color: #b2b2b2;">
 						                <p style="margin:0px;font-size:18px;color:black;font-weight:300;">
 						                	Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ doerInfo.profileName %>" target="_blank"><%= doerInfo.name + ' '%></a> has archived a Voice!
 						                </p>
@@ -98,7 +98,7 @@
 			       	<table width="100%" cellspacing="0" cellpadding="0" border="0" style="padding:0px 50px 40px 50px;">
 				        <tbody>
 					        <tr style="background-color:#F7F9FA;">
-					            <td style="padding: 25px 0px 25px 5px; text-align: center; width: 75px;">
+					            <td style="padding: 25px 0px 25px 5px; text-align: center; width: 60px;">
 					            	<img width="37px" height="37px" style="border-radius:5px;" src="<%= voiceImage %>"/>
 					            </td>
 					            <td style="padding-right:25px;">
@@ -115,7 +115,7 @@
 				        <tbody>
 				          	<tr>
 				            	<td>
-					             	<div style="font-size: 14px; line-height: 38px; color: #b2b2b2;">
+					             	<div style="font-size: 14px;color: #b2b2b2;">
 					             		<% if(params.notificationInfo.entity.type === 'organization'){ %>
 												 <p style="margin:0px;font-size:18px;color:black;font-weight:300;">
 								                	Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ params.notificationInfo.entity.profileName %>" target="_blank"><%= params.notificationInfo.entity.name %></a> has a new avatar!
@@ -137,10 +137,10 @@
 				        <tbody>
 				          	<tr>
 				            	<td>
-					             	<div style="font-size: 14px; line-height: 38px; color: #b2b2b2;">
+					             	<div style="font-size: 14px;color: #b2b2b2;">
 					             		<% if(params.notificationInfo.entity.type === 'organization'){ %>
 												 <p style="margin:0px;font-size:18px;color:black;font-weight:300;">
-								                	Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ params.notificationInfo.entity.profileName %>" target="_blank"><%= params.notificationInfo.entity.name %></a> has a new background image!
+								                	Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ params.notificationInfo.entity.profileName %>" target="_blank"><%= params.notificationInfo.entity.name %></a> has a new background!
 								                </p>
 					             		<% } else {%>
 								                <p style="margin:0px;font-size:18px;color:black;font-weight:300;">
@@ -171,7 +171,7 @@
 			       	<table width="100%" cellspacing="0" cellpadding="0" border="0" style="padding:0px 50px 40px 50px;">
 				        <tbody>
 					        <tr style="background-color:#F7F9FA;">
-					            <td style="padding: 25px 0px 25px 5px; text-align: center; width: 75px;">
+					            <td style="padding: 25px 0px 25px 5px; text-align: center; width: 60px;">
 					            	<img width="37px" height="37px" style="border-radius:5px;" src="<%= params.notificationInfo.entity.images.card.url %>"/>
 					            </td>
 					            <td style="padding-right:25px;">
@@ -187,7 +187,7 @@
 				      <tbody>
 				          <tr>
 				            <td>
-				              <div style="font-size: 14px; line-height: 38px; color: #b2b2b2;">
+				              <div style="font-size: 14px;color: #b2b2b2;">
 				                <p style="margin:0px;font-size:18px;color:black;font-weight:300;">Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ params.notificationInfo.entity.profileName %>" target="_blank"><%= params.notificationInfo.entity.name %></a> has a new member:</p>
 				              </div>
 				            </td>
@@ -197,7 +197,7 @@
 				    <table width="100%" cellspacing="0" cellpadding="0" border="0" style="padding:0px 50px 40px 50px;">
 				        <tbody>
 					        <tr style="background-color:#F7F9FA;">
-					            <td style="padding: 25px 0px 25px 5px; text-align: center; width: 75px;">
+					            <td style="padding: 25px 0px 25px 5px; text-align: center; width: 60px;">
 					            	<% if(doerInfo.images.card.url.search('entity-placeholder') !== -1 ){ doerImage = CONFIG.siteUrl[application.env] + doerInfo.images.card.url; } else { doerImage = doerInfo.images.card.url; } %>
 					            	<img width="37px" height="37px" style="border-radius:5px;" src="<%= doerImage %>"/>
 					            </td>
@@ -215,7 +215,7 @@
 				      <tbody>
 				          <tr>
 				            <td>
-				              <div style="font-size: 14px; line-height: 38px; color: #b2b2b2;">
+				              <div style="font-size: 14px;color: #b2b2b2;">
 				                <p style="margin:0px;font-size:18px;color:black;font-weight:300;">Hello <%= params.receiver.entity.name %>, there are new posts in:</p>
 				              </div>
 				            </td>
@@ -243,7 +243,7 @@
 				      <tbody>
 				          <tr>
 				            <td>
-				              <div style="font-size: 14px; line-height: 38px; color: #b2b2b2;">
+				              <div style="font-size: 14px;color: #b2b2b2;">
 				                <p style="margin:0px;font-size:18px;color:black;font-weight:300;">Hello <%= params.receiver.entity.name %>, <a style="color:#FF9400;text-decoration:none;"href="<%= CONFIG.siteUrl[application.env] +'/'+ voiceInfo.owner.profileName +'/'+ voiceInfo.slug %>" target="_blank"><%= voiceInfo.title %></a> has a new contributor:</p>
 				              </div>
 				            </td>
@@ -253,7 +253,7 @@
 				    <table width="100%" cellspacing="0" cellpadding="0" border="0" style="padding:0px 50px 40px 50px;">
 				        <tbody>
 					        <tr style="background-color:#F7F9FA;">
-					            <td style="padding: 25px 0px 25px 5px; text-align: center; width: 75px;">
+					            <td style="padding: 25px 0px 25px 5px; text-align: center; width: 60px;">
 					            	<% if(doerInfo.images.card.url.search('entity-placeholder') !== -1 ){ doerImage = CONFIG.siteUrl[application.env] + doerInfo.images.card.url; } else { doerImage = doerInfo.images.card.url; } %>
 					            	<img width="37px" height="37px" style="border-radius:5px;" src="<%= doerImage %>"/>
 					            </td>
@@ -286,4 +286,4 @@
     </td>
   </tr>
 </table>
-
+</div>

@@ -7,11 +7,11 @@
 <% var monthIndex = voiceDate.getMonth(); %>
 <% var year = voiceDate.getFullYear(); var voiceImage; %>
 <% if(Object.getOwnPropertyNames(voiceInfo.images).length === 0){ voiceImage = CONFIG.siteUrl[application.env]+'/img/img-placeholder.png'; }else{ voiceImage = voiceInfo.images.small.url;} %>
-
-<table width="100%" bgcolor="#F7F9FA" style="padding:30px;font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+<div style="margin:0 auto;">
+<table bgcolor="#F7F9FA" style="width:100%;padding:30px;font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
   <tr>
     <td>
-      <table align="center" width="600px" border="0" cellspacing="0" cellpadding="0">
+      <table align="center" border="0" cellspacing="0" cellpadding="0">
         <tr>
           <td style="text-align:center;">
             <p style="font-size:36px;color:#454B4D;margin-bottom:30px;">CrowdVoice.by</p>
@@ -35,8 +35,8 @@
 			    <table width="100%" cellspacing="0" cellpadding="0" border="0" style="padding:0px 50px 62px 50px;">
 			        <tbody>
 			          	<tr style="background-color:#F7F9FA;">
-			            	<td style="padding: 25px 0px 25px 5px; text-align: center; width: 75px;">
-			                	<img width="37px" height="37px" style="border-radius:5px;" src="<%= voiceImage %>"/>
+			            	<td style="padding: 25px 0px 25px 5px; text-align: center; width: 65px;">
+			                	<img width="37px" height="37px" style="border-radius:5px;margin-right:5px;" src="<%= voiceImage %>"/>
 			            	</td>
 			            	<td style="padding-right:25px;">
 			              		<a href="<%= CONFIG.siteUrl[application.env] +'/'+ voiceInfo.owner.profileName +'/'+ voiceInfo.slug %>" target="_blank" style="font-size:13px;color:#4D4D4D;text-align:left;font-weight:bold;"><%= voiceInfo.title %></a>
@@ -67,5 +67,4 @@
     </td>
   </tr>
 </table>
-
-
+</div>
