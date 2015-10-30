@@ -17,7 +17,15 @@ module.exports = {
         this._ = data;
     },
 
-    get : function get() {
+    /* Returns all properties of currentPerson.
+     * If a propertyName is passed as param it will just return the value of that property.
+     * @argument propertyName <optional> [String]
+     */
+    get : function get(propertyName) {
+        if (propertyName) {
+            return this._[propertyName];
+        }
+
         return this._;
     },
 
