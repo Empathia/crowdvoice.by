@@ -123,9 +123,12 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
     approved      : false,
     imageBaseUrl  : null,
     imageMeta     : {},
+    faviconBaseUrl : null,
+    faviconMeta   : {},
     sourceService : null,
     sourceType    : null,
     sourceUrl     : null,
+    sourceDomain  : null,
     title         : null,
     description   : null,
     publishedAt   : null,
@@ -157,7 +160,7 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
       this.hasImage({
         propertyName: 'image',
         versions: {
-          small: function (readStream) {
+          small: function(readStream) {
             if (!useGM) {
               return readStream.pipe(
                 sharp()
@@ -170,10 +173,10 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
             } else {
               return gm(readStream)
                 .resize(85)
-                .stream()
+                .stream();
             }
           },
-          medium: function (readStream) {
+          medium: function(readStream) {
             if (!useGM) {
               return readStream.pipe(
                 sharp()
@@ -186,13 +189,13 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
             } else {
               return gm(readStream)
                 .resize(340)
-                .stream()
+                .stream();
             }
           },
           big: function(readStream) {
             return readStream.pipe(
               sharp()
-                .resize(2560,1113)
+                .resize(2560, 1113)
                 .interpolateWith(sharp.interpolator.nohalo)
                 .progressive()
                 .flatten()
@@ -204,6 +207,38 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
         },
         bucket: 'crowdvoice.by',
         basePath: '{env}/{modelName}_{id}/{property}_{versionName}.{extension}'
+      });
+
+      this.hasImage({
+        propertyName : 'favicon',
+        versions : {
+          small : function(readStream) {
+            return readStream.pipe(
+              sharp()
+                .resize(32, 32)
+                .interpolateWith(sharp.interpolator.nohalo)
+                .progressive()
+                .flatten()
+                .quality(100)
+                .format('jpeg')
+            );
+          },
+
+          medium : function(readStream) {
+            return readStream.pipe(
+              sharp()
+                .resize(128, 128)
+                .interpolateWith(sharp.interpolator.nohalo)
+                .progressive()
+                .flatten()
+                .background('#FFFFFF')
+                .quality(100)
+                .format('jpeg')
+            );
+          }
+        },
+        bucket : 'crowdvoice.by',
+        basePath : '{env}/{modelName}_{id}/{property}_{versionName}.{extension}'
       });
     }
   }
