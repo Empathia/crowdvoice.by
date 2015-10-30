@@ -89,7 +89,6 @@ Module(CV, 'PostModuleImages')({
             if (err) {
                 this.abortImage();
                 this.haltImage = null;
-                console.error(err);
                 return;
             }
 
