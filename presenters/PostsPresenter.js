@@ -23,6 +23,17 @@ var PostsPresenter = Module('PostsPresenter')({
 
       post.postImages = images;
 
+      var favicons = {};
+
+      for (var version in postInstance.faviconMeta) {
+        favicons[version] = {
+          url : postInstance.favicon.url(version),
+          meta : postInstance.favicon.meta(version)
+        };
+      }
+
+      post.faviconImages = favicons;
+
       async.series([
 
         // .voted, whether you've voted on this post
