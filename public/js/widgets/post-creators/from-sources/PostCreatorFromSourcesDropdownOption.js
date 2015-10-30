@@ -10,7 +10,7 @@ Class(CV, 'PostCreatorFromSourcesDropdownOption').inherits(Widget)({
     ',
 
     ICON_HTML : '\
-        <svg class="from-sources-dropdown-option-svg -s18 -color-grey-light">\
+        <svg class="from-sources-dropdown-option-svg -s18">\
             <use xlink:href="#svg-{{ICON_ID}}"></use>\
         </svg>\
     ',
@@ -38,6 +38,10 @@ Class(CV, 'PostCreatorFromSourcesDropdownOption').inherits(Widget)({
             if (this.iconID) {
                 this.el.insertAdjacentHTML('afterbegin', this.constructor.ICON_HTML.replace(/{{ICON_ID}}/, this.iconID));
                 this.iconElement = this.el.querySelector('.from-sources-dropdown-option-svg');
+
+                if (this.iconClassName) {
+                    this.iconElement.classList.add(this.iconClassName);
+                }
             }
 
             this.labelElement.insertAdjacentHTML('beforeend', this.label);

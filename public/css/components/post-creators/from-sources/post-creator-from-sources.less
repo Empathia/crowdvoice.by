@@ -14,10 +14,6 @@
 
   .ui-dropdown__head {
     padding: 1.6rem 1.5rem 0;
-
-    .from-sources-dropdown-option-svg {
-      fill: @color-grey;
-    }
   }
 
   .ui-dropdown__body {min-width: 170px}
@@ -27,11 +23,16 @@
 .from-sources-dropdown-option {
   white-space: nowrap;
   line-height: 16px;
+}
 
-  .from-sources-dropdown-option-svg {
-    margin-right: 10px;
+.from-sources-dropdown-option-svg {
+  margin-right: 10px;
+
+  &.youtube-option {
+    fill: @color-youtube;
   }
 }
+
 
 /* HEADER » POST BUTTON */
 .from-sources-post-button {

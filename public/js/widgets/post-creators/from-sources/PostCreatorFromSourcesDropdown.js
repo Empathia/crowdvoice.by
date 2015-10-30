@@ -39,8 +39,9 @@ Class(CV, 'PostCreatorFromSourcesDropdown').inherits(Widget)({
             this.appendChild(new CV.PostCreatorFromSourcesDropdownOption({
                 name : 'dropdownOptionYoutube',
                 source : 'youtube',
-                iconID : 'video',
+                iconID : 'youtube',
                 label : 'Youtube',
+                iconClassName : 'youtube-option',
                 className : 'ui-vertical-list-item'
             }));
             this.dropdown.addContent(this.dropdownOptionYoutube.el);
@@ -49,7 +50,7 @@ Class(CV, 'PostCreatorFromSourcesDropdown').inherits(Widget)({
             this.appendChild(new CV.PostCreatorFromSourcesDropdownOption({
                 name : 'dropdownOptionGoogleNews',
                 source : 'googleNews',
-                iconID : 'article',
+                iconID : 'google-news',
                 label : 'Google News',
                 className : 'ui-vertical-list-item'
             }));
