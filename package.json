@@ -27,6 +27,7 @@
     "css-loader": "^0.9.1",
     "dragula": "^3.5.1",
     "express": "^4.13.3",
+    "favicon": "0.0.2",
     "file-loader": "^0.8.1",
     "follow-redirects": "0.0.3",
     "fs-extra": "^0.21.0",

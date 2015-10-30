@@ -1,4 +1,7 @@
 var ImageUploader = require(__dirname + '/../lib/image_uploader.js');
+var url = require('url');
+var favicon = require('favicon');
+
 var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
 
   // Source services:
@@ -154,6 +157,10 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
         } else {
           model.publishedAt = new Date(model.publishedAt);
         }
+
+        var sourceURL = url.parse(model.sourceUrl);
+
+        model.sourceDomain = sourceURL.protocol + '//' + sourceURL.hostname;
       });
 
       // Add image attachment
@@ -220,7 +227,7 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
                 .progressive()
                 .flatten()
                 .quality(100)
-                .format('jpeg')
+                .toFormat('jpeg')
             );
           },
 
@@ -233,12 +240,113 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
                 .flatten()
                 .background('#FFFFFF')
                 .quality(100)
-                .format('jpeg')
+                .toFormat('jpeg')
             );
           }
         },
         bucket : 'crowdvoice.by',
-        basePath : '{env}/{modelName}_{id}/{property}_{versionName}.{extension}'
+        basePath : '{env}/{modelName}_{id}/{property}_{versionName}.jpg'
+      });
+    },
+
+    save : function save(callback) {
+      var model, request;
+
+      var date = new Date(Date.now());
+
+      model = this;
+
+      this.constructor.dispatch('beforeSave', {
+        data : {
+          model : this
+        }
+      });
+
+      this.dispatch('beforeSave');
+
+      this.isValid(function (isValid) {
+        if (isValid) {
+
+          model.updatedAt = model.updatedAt || date;
+
+          if (model.hasOwnProperty('id') && model.id !== '') {
+            model.dispatch('beforeUpdate');
+
+            request = {
+              action : 'update',
+              data : model,
+              model : model.constructor
+            };
+
+            model.constructor.storage.update(request, function updateCallback(err, data) {
+              model.constructor.dispatch('afterSave', {
+                data : {
+                  model : model
+                }
+              });
+
+              model.dispatch('afterSave');
+
+              model.dispatch('afterUpdate');
+
+              callback(err, data);
+            });
+          } else {
+
+            model.createdAt = model.createdAt || date;
+
+            model.dispatch('beforeCreate');
+
+            request = {
+              action : 'create',
+              data : model,
+              model : model.constructor
+            }
+
+            var result = null;
+
+
+            async.series([function(next) {
+              model.constructor.storage.create(request, function createCallback(err, data) {
+                if (data) {
+                  model.setProperty('id', data[0]);
+                }
+
+                model.constructor.dispatch('afterSave', {
+                  data : {
+                    model : model
+                  }
+                });
+
+                model.dispatch('afterSave');
+
+                model.dispatch('afterCreate');
+
+                result = data
+
+                next(err);
+              });
+            }, function(next) {
+              favicon(model.sourceDomain, function(err, faviconURL) {
+                if (err || !faviconURL) {
+                  return next(err);
+                }
+
+                model.uploadImage('favicon', faviconURL, next);
+              });
+            }, function(next) {
+              model.save(next);
+            }], function(err) {
+              if (err) {
+                callback(err);
+              }
+
+              callback(null, result);
+            });
+          }
+        } else {
+          callback(model.errors);
+        }
       });
     }
   }
