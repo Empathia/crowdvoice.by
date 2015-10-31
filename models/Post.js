@@ -158,9 +158,11 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
           model.publishedAt = new Date(model.publishedAt);
         }
 
-        var sourceURL = url.parse(model.sourceUrl);
+        if (model.sourceUrl) {
+          var sourceURL = url.parse(model.sourceUrl);
 
-        model.sourceDomain = sourceURL.protocol + '//' + sourceURL.hostname;
+          model.sourceDomain = sourceURL.protocol + '//' + sourceURL.hostname;
+        }
       });
 
       // Add image attachment
@@ -327,6 +329,10 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
                 next(err);
               });
             }, function(next) {
+              if (!model.sourceDomain) {
+                return next();
+              }
+
               favicon(model.sourceDomain, function(err, faviconURL) {
                 if (err || !faviconURL) {
                   return next(err);
@@ -335,6 +341,10 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
                 model.uploadImage('favicon', faviconURL, next);
               });
             }, function(next) {
+              if (!model.sourceDomain) {
+                return next();
+              }
+
               model.save(next);
             }], function(err) {
               if (err) {
