@@ -172,7 +172,7 @@
 				        <tbody>
 					        <tr style="background-color:#F7F9FA;">
 					            <td style="padding: 25px 0px 25px 5px; text-align: center; width: 60px;">
-					            	<% if(params.notificationInfo.entity.images.card.url('entity-placeholder') !== -1 ){ doerImage = CONFIG.siteUrl[application.env] + params.notificationInfo.entity.images.card.url; } else { doerImage = params.notificationInfo.entity.images.card.url; } %>
+					            	<% if(params.notificationInfo.entity.images.card.url.search('entity-placeholder') !== -1 ){ doerImage = CONFIG.siteUrl[application.env] + params.notificationInfo.entity.images.card.url; } else { doerImage = params.notificationInfo.entity.images.card.url; } %>
 					            	<img width="37px" height="37px" style="border-radius:5px;" src="<%= doerImage %>"/>
 					            </td>
 					            <td style="padding-right:25px;">
