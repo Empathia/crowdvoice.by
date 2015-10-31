@@ -77,6 +77,18 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
          * @return [CV.VoiceView]
          */
         setupVoiceWidgets : function setupVoiceWidgets() {
+            if (!Person.get()) {
+                this.appendChild(new CV.UI.Button({
+                    name : 'createVoiceButton',
+                    className : 'small primary',
+                    data : {value: 'Create Voice'}
+                })).render(App.header.buttonActionsWrapper, App.header.buttonActionsWrapper.firstElementChild);
+
+                Events.on(this.createVoiceButton.el, 'click', function() {
+                    window.location.href = '/login';
+                });
+            }
+
             if (Person.ownerOf('voice', this.data.id)) {
                 App.header.removeCreateDropdown();
 
@@ -282,7 +294,9 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
 
             this.voiceFooter.el.style.pointerEvents = 'none';
             this.voiceHeader.el.style.pointerEvents = 'none';
-            this.voiceAddContent.el.style.pointerEvents = 'none';
+            if (this.voiceAddContent) {
+                this.voiceAddContent.el.style.pointerEvents = 'none';
+            }
 
             if (!this._listenScrollEvent) {
                 return;
@@ -327,7 +341,9 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
             this._scrollTimer = this._window.setTimeout(function() {
                 this.voiceFooter.el.style.pointerEvents = '';
                 this.voiceHeader.el.style.pointerEvents = '';
-                this.voiceAddContent.el.style.pointerEvents = '';
+                if (this.voiceAddContent) {
+                    this.voiceAddContent.el.style.pointerEvents = '';
+                }
                 this.voicePostLayersManager.loadImagesVisibleOnViewport();
             }.bind(this), this._scrollTime);
         },

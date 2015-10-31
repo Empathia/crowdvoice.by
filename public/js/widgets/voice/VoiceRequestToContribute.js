@@ -64,6 +64,11 @@ Class(CV, 'VoiceRequestToContribute').inherits(Widget)({
             requestAnimationFrame(function() {
                 this.popover.activate();
             }.bind(this));
+        },
+
+        disable : function disable() {
+            Widget.prototype.disable.call(this);
+            this.button.disable();
         }
     }
 });

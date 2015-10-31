@@ -126,12 +126,29 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
                 })).render(this.actionsColumn);
             }
 
-            // currentPerson does not belongs/owns this voice already?
-            if ((!Person.anon()) && (!Person.memberOf('voice', this.voice.id))) {
-                this.appendChild(new CV.VoiceRequestToContribute({
-                    name : 'voiceRequestToContribute',
-                    voice : this.voice
-                })).render(this.actionsColumn);
+            if ((Person.ownerOf('voice', this.voice.id) === false) &&
+                (this.voice.type === CV.VoiceView.TYPE_CLOSED)) {
+
+                var _showRequestToContribute = false;
+
+                if (this.voice.owner.type === 'organization')  {
+                    if (Person.memberOf('organization', this.voice.owner.id) === false) {
+                        _showRequestToContribute = true;
+                    }
+                } else if (Person.memberOf('voice', this.voice.id) === false) {
+                    _showRequestToContribute = true;
+                }
+
+                if (_showRequestToContribute) {
+                    this.appendChild(new CV.VoiceRequestToContribute({
+                        name : 'voiceRequestToContribute',
+                        voice : this.voice
+                    })).render(this.actionsColumn);
+
+                    if (!Person.get()) {
+                        this.voiceRequestToContribute.disable();
+                    }
+                }
             }
         },
 
