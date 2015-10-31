@@ -84,6 +84,12 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
                         className : 'tiny'
                     })).render(this.actionsColumn);
                 }
+            } else {
+                this.appendChild(new CV.VoiceFollowSingleButton({
+                    name : 'followButton',
+                    voice : this.voice,
+                    className : 'tiny'
+                })).render(this.actionsColumn).disable();
             }
 
             if (Person.ownerOf('voice', this.voice.id)) {
