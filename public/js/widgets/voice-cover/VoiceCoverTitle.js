@@ -25,7 +25,11 @@ Class(CV, 'VoiceCoverTitle').inherits(Widget).includes(CV.WidgetUtils)({
         },
 
         _setup : function _setup() {
-            this.dom.updateAttr('src', this.el.querySelector('.voice-cover'), this.data.images.small.url);
+            if (this.data.images.small) {
+                this.dom.updateAttr('src', this.el.querySelector('.voice-cover'), this.data.images.small.url);
+            } else {
+                this.el.querySelector('.voice-cover').classList.add('-colored-background');
+            }
             this.dom.updateAttr('href', this.el.querySelector('.voice-cover-title-anchor'), '/' + this.data.owner.profileName + '/' + this.data.slug + '/');
             this.dom.updateText(this.el.querySelector('.voice-cover-title-anchor'), this.data.title);
         }
