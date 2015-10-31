@@ -84,7 +84,7 @@ Class(CV, 'Login').inherits(Widget)({
       <p style="width: 400px; margin: 0 auto; margin-bottom: 3em;">Please enter the email address you used to sign up and we will send you instructions to reset your password to gain back access to CrowdVoice.by.</p>\
       <form action="" method="post" accept-charset="utf-8">\
         <div class="form-field">\
-            <input type="email" class="ui-input -lg -block email" name="email" placeholder="Your Email">\
+          <input type="email" class="ui-input -lg -block email" name="email" placeholder="Your Email">\
         </div>\
         <input type="hidden" name="_csrf" class="form-token" value="">\
         <button class="cv-button primary -m0 -block">Submit</button>\
@@ -98,10 +98,12 @@ Class(CV, 'Login').inherits(Widget)({
       <br>\
       <form action="" method="post" accept-charset="utf-8">\
         <div class="form-field">\
+          <div class="reset-password-input">\
             <input name="password" type="password" class="ui-input -lg -block password" placeholder="Your new password">\
+          </div>\
         </div>\
         <div class="cv-check">\
-          <input type="checkbox" class="input-checkbox">\
+          <input type="checkbox" class="reset-password-checkbox">\
           <span class="label">Show your password to make sure you typed it correctly.</span>\
         </div>\
         <br><br>\
@@ -156,7 +158,7 @@ Class(CV, 'Login').inherits(Widget)({
 
             this.buttonEl = this.element.find('button');
             this.formEl = this.element.find('form');
-            this.checkEl = this.element.find('.input-checkbox');
+            this.checkEl = this.element.find('.reset-password-checkbox');
 
             this.errors = {};
 
@@ -220,11 +222,11 @@ Class(CV, 'Login').inherits(Widget)({
 
             this.checkEl.on('click', function(){
               if ( this.checked ) {
-                login.element.find('.cv-input input').attr('type', 'text');
+                login.element.find('.reset-password-input input').attr('type', 'text');
               } else {
-                login.element.find('.cv-input input').attr('type', 'password');
+                login.element.find('.reset-password-input input').attr('type', 'password');
               }
-              login.element.find('.cv-input input')[0].focus();
+              login.element.find('.reset-password-input input')[0].focus();
             });
         },
 
