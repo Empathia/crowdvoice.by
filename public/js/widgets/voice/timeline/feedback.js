@@ -62,6 +62,7 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
 
             this.el = this.element[0];
             this._window = window;
+            this._body = document.body;
             this.clockWrapper = this.el.querySelector('.cv-voice-timeline-feedback');
             this._mainContent = document.getElementsByClassName('cv-main-content')[0];
             this.clockElement = this.el.querySelector('.cv-voice-timeline-clock');
@@ -101,7 +102,7 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
          * @method _scrollHandler <private> [Function]
          */
         _scrollHandler : function _scrollHandler() {
-            this._lastScrollY = this.scrollableArea.scrollTop;
+            this._lastScrollY = this._body.scrollTop;
 
             if (this._scheduledAnimationFrame) {
                 return void 0;
