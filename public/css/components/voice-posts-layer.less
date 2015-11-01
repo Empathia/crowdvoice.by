@@ -28,7 +28,7 @@
   top: 6em;
   right: 0;
   bottom: 0;
-  width: 40px;
+  width: 50px;
   white-space: nowrap;
   overflow: hidden;
   pointer-events: none;
@@ -38,29 +38,20 @@
   }
 }
 
+.cv-voice-post-layer__tick-month {
+  font-size: 9px;
+  position: relative;
+  top: 20px;
+  border-top-width: 1px;
+  border-color: @color-neutral-light;
+  color: @color-neutral-light;
+ }
+
 .cv-voice-tick-indicator {
-  position: inherit;
-  font-size: .8rem;
-  width: 100%;
-  opacity: 0;
   pointer-events: auto;
-
-  &.active {
-    // border-top-width: 1px;
-    // border-color: @color-grey-light;
-    // color: @color-grey-light;
-    opacity: .5;
-  }
 }
 
-.cv-voice-tick-indicator-label {
-  pointer-events: none;
-  display: inline-block;
-  padding: 5px;
-  line-height: 1;
-}
-
-.voice-moderate-wrapper .cv-voice-tick-indicator.active {
+.voice-moderate-wrapper .cv-voice-post-layer__tick-month {
   border-color: @color-neutral-dark;
   color: @color-neutral-xx-mid;
 }

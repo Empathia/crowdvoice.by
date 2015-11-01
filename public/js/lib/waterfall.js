@@ -105,7 +105,9 @@
     Waterfall.prototype.removeItems = function removeItems(items) {
         items.forEach(function(item) {
             var index = this._items.indexOf(item);
-            if (index > -1) this._items.splice(index, 1);
+            if (index > -1) {
+                this._items.splice(index, 1);
+            }
         }, this);
     };
 

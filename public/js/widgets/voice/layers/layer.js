@@ -6,7 +6,9 @@ Class(CV, 'VoicePostsLayer').inherits(Widget).includes(BubblingSupport)({
         <div class="cv-voice-posts-layer">\
             <div class="cv-voice-posts-layer__detector"></div>\
             <div class="cv-voice-posts-layer__posts"></div>\
-            <div class="cv-voice-posts-layer__ticks"></div>\
+            <div class="cv-voice-posts-layer__ticks">\
+                <div class="cv-voice-post-layer__tick-month"></div>\
+            </div>\
         </div>',
 
     prototype : {
@@ -35,8 +37,9 @@ Class(CV, 'VoicePostsLayer').inherits(Widget).includes(BubblingSupport)({
             this._postWidgets = [];
             this._indicatorWidgets = [];
 
-            this.el.dataset.date = this.dateString;
+            this.el.querySelector('.cv-voice-post-layer__tick-month').textContent = moment(this.dateString).format('MMM YYYY');
             this.el.querySelector('.cv-voice-posts-layer__detector').dataset.date = this.dateString;
+            this.el.dataset.date = this.dateString;
 
             this.addLoaders();
 

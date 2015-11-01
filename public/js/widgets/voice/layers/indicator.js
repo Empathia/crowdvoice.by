@@ -2,11 +2,8 @@
 var moment = require('moment');
 
 Class(CV, 'VoicePostIndicator').inherits(Widget).includes(CV.WidgetUtils)({
-    HTML : '\
-        <div class="cv-voice-tick-indicator">\
-            <span class="cv-voice-tick-indicator-label"></span>\
-        </div>\
-    ',
+    ELEMENT_CLASS: 'cv-voice-tick-indicator',
+
     /* Holds the `y` values that are being registed by any instance.
      * We do not want them to overlap each other.
      * There is just one group of indicators now, so can safely us this
@@ -26,9 +23,6 @@ Class(CV, 'VoicePostIndicator').inherits(Widget).includes(CV.WidgetUtils)({
         refElement : null,
         zIndex : 0,
 
-        /* PRIVATE */
-        el : null,
-
         init : function init(config) {
             Widget.prototype.init.call(this, config);
 
@@ -36,8 +30,6 @@ Class(CV, 'VoicePostIndicator').inherits(Widget).includes(CV.WidgetUtils)({
             this.labelElement = this.el.querySelector('.cv-voice-tick-indicator-label');
 
             this.el.dataset.timestamp = moment(this.label).format('x') * 1000;
-
-            this.dom.updateText(this.labelElement, moment(this.label).format('MMM DD, YYYY'));
         },
 
         /* Sets the indicator position and dimensions.
@@ -55,7 +47,7 @@ Class(CV, 'VoicePostIndicator').inherits(Widget).includes(CV.WidgetUtils)({
             height = ~~this.refElement.dataset.h;
 
             alreadyRegistered = function(value) {
-                return (value == y || y < (value + this.constructor.ITEM_HEIGHT));
+                return (value === y || y < (value + this.constructor.ITEM_HEIGHT));
             }.bind(this);
 
             if (this.constructor.registeredYValues.some(alreadyRegistered)) {
