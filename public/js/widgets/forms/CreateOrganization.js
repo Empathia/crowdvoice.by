@@ -20,7 +20,7 @@ Class(CV, 'CreateOrganization').inherits(Widget).includes(CV.WidgetUtils)({
 
     prototype : {
         MAX_TITLE_LENGTH : 65,
-        MAX_DESCRIPTION_LENGTH : 180,
+        MAX_DESCRIPTION_LENGTH : 140,
 
         _flashMessage : null,
 
@@ -305,7 +305,7 @@ Class(CV, 'CreateOrganization').inherits(Widget).includes(CV.WidgetUtils)({
             })).render(this.el, this.el.firstElementChild);
 
             window.setTimeout(function() {
-                window.location.replace('/' + res.profileName);
+                window.location.replace('/' + res.profileName + '/');
             }, 4000);
 
             return this;

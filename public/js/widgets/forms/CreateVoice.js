@@ -602,7 +602,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 message = "“" + res.title + '” was created! You will be redirected to its profile in a couple of seconds.';
 
                 window.setTimeout(function() {
-                    window.location.replace('/' + res.owner.profileName + '/' + res.slug);
+                    window.location.replace('/' + res.owner.profileName + '/' + res.slug + '/');
                 }, this.constructor.REDIRECT_DELAY);
             }
 
