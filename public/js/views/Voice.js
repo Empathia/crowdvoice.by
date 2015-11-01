@@ -1,6 +1,7 @@
 /* globals App */
 var Person = require('./../lib/currentPerson');
 var Events = require('./../lib/events');
+var inlineStyle = require('./../lib/inline-style');
 
 Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, CustomEventSupport)({
     STATUS_DRAFT : 'STATUS_DRAFT',
@@ -158,6 +159,40 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
                 name : 'onboarding',
                 className : '-fixed -text-center'
             })).render(document.querySelector('.cv-main-content'));
+
+            document.querySelector('.cv-main-content').insertAdjacentHTML('beforeend', '\
+                <section class="voice-posts -rel">\
+                    <div class="cv-voice-posts-layer first">\
+                        <div class="cv-voice-posts-layer__posts"></div>\
+                    </div>\
+                </section>');
+
+            this.appendChild(new CV.VoiceAboutBox({
+                name : 'voiceAboutBox',
+                description : this.data.description
+            })).render(document.querySelector('.cv-voice-posts-layer__posts'));
+
+            inlineStyle(this.voiceAboutBox.el, {
+                top: '20px',
+                left: '20px'
+            });
+
+            this.showAboutBoxRef = this.showAboutBoxButtonHandler.bind(this);
+            Events.on(this.aboutBoxButtonElement, 'click', this.showAboutBoxRef);
+
+            this._deactivateButtonRef = this._deactivateButton.bind(this);
+            CV.VoiceAboutBox.bind('activate', this._deactivateButtonRef);
+
+            this._activateButtonRef = this._activateButton.bind(this);
+            CV.VoiceAboutBox.bind('deactivate', this._activateButtonRef);
+
+            CV.VoiceAboutBox.bind('deactivate', function() {
+                localStorage['cvby__voice' + this.data.id + '__about-read'] = true;
+            }.bind(this));
+
+            if (!localStorage['cvby__voice' + this.data.id + '__about-read']) {
+                this.voiceAboutBox.activate();
+            }
         },
 
         /* Checks if we have provided the information required before
@@ -179,7 +214,7 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
                 scrollableArea : this.scrollableArea,
                 allowPostEditing : this.allowPostEditing,
                 _socket : this._socket
-            })).render(document.querySelector('.cv-main-content'), document.querySelector('.voice-footer'));
+            })).render(document.querySelector('.cv-main-content'));
 
             this.voicePostLayersManager.setup();
 
