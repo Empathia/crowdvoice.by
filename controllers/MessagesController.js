@@ -112,6 +112,8 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
           });
         }
       ], function (err) {
+        if (err) { return next(err); }
+
         ACL.isAllowed('acceptInvite', 'messages', req.role,  {
           currentPerson : req.currentPerson,
           thread : thread,
