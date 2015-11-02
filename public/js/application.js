@@ -75,7 +75,7 @@ require('./widgets/search/SearchResultsViewAllButton');
 require('./widgets/Sidebar');
 require('./widgets/NotificationBell.js');
 require('./widgets/Header');
-require('./widgets/incognito/button');
+require('./widgets/incognito/IncognitoButton');
 require('./widgets/Loading');
 
 // generic widgets
@@ -86,11 +86,11 @@ require('./widgets/responsive-slider.js');
 require('./widgets/InputClearable');
 require('./widgets/input-counter.js');
 require('./widgets/Dropdown');
-require('./widgets/dropdowns/regular');
+require('./widgets/dropdowns/DropdownRegular');
 require('./widgets/dropdowns/DropdownTopics');
-require('./widgets/dropdowns/voice-types');
-require('./widgets/dropdowns/voice-status');
-require('./widgets/dropdowns/voice-ownership');
+require('./widgets/dropdowns/DropdownVoiceTypes');
+require('./widgets/dropdowns/DropdownVoiceStatus');
+require('./widgets/dropdowns/DropdownVoiceOwnership');
 require('./widgets/dropdowns/voice-ownership-admin');
 require('./widgets/dropdowns/CurrentPersonEntitiesCheckboxes');
 require('./widgets/tabs/TabsManager');
@@ -186,28 +186,28 @@ require('./widgets/view-feed/FeedSidebarStats');
 require('./widgets/view-feed/FeedOnboarding');
 require('./widgets/view-feed/FeedAnonymousOnboarding');
 
-require('./widgets/voice/posts-registry');
+require('./widgets/voice/PostsRegistry');
 require('./widgets/voice/Onboarding');
 require('./widgets/voice/VoiceHeader');
 require('./widgets/voice/VoiceFooter');
 require('./widgets/voice/VoiceFilterPostsDropdown');
-require('./widgets/voice/footer/share-buttons-group');
-require('./widgets/voice/footer/share-button');
-require('./widgets/voice/footer/embed-button');
+require('./widgets/voice/footer/VoiceFooterShareButtonsGroup');
+require('./widgets/voice/footer/VoiceFooterShareButton');
+require('./widgets/voice/footer/VoiceFooterEmbedButton');
 require('./widgets/voice/follow/VoiceFollowSingleButton');
 require('./widgets/voice/follow/VoiceFollowMultipleButton');
 
-require('./widgets/voice/timeline/feedback');
-require('./widgets/voice/timeline/jump-to-date');
-require('./widgets/voice/timeline/jump-to-date-label');
-require('./widgets/voice/timeline/jump-to-date-item');
+require('./widgets/voice/timeline/VoiceTimelineFeedback');
+require('./widgets/voice/timeline/VoiceTimelineJumpToDate');
+require('./widgets/voice/timeline/VoiceTimelineJumpToDateLabel');
+require('./widgets/voice/timeline/VoiceTimelineJumpToDateItem');
 
-require('./widgets/voice/layers/layers');
-require('./widgets/voice/layers/voice_abstract');
-require('./widgets/voice/layers/moderate_abstract');
-require('./widgets/voice/layers/layer');
-require('./widgets/voice/layers/indicator');
-require('./widgets/voice/voice-about-box');
+require('./widgets/voice/layers/VoicePostLayers');
+require('./widgets/voice/layers/VoicePostLayersVoiceAbstract');
+require('./widgets/voice/layers/VoicePostLayersModerateAbstract');
+require('./widgets/voice/layers/VoicePostsLayer');
+require('./widgets/voice/layers/VoicePostIndicator');
+require('./widgets/voice/VoiceAboutBox');
 
 require('./widgets/voice/moderate/ModeratePostsRegistry');
 require('./widgets/voice/moderate/VoiceModerateButton');
@@ -216,7 +216,7 @@ require('./widgets/voice/moderate/VoiceModerateDoneButton');
 require('./widgets/voice/moderate/VoiceModerateFooter');
 require('./widgets/voice/moderate/VoiceModerateDeleteUnmoderatedPostsDropdown');
 
-require('./widgets/voice/add-content/');
+require('./widgets/voice/add-content/VoiceAddContent');
 
 require('./widgets/voice/related-voices/RelatedVoicesButton');
 require('./widgets/voice/related-voices/ManageRelatedVoices');
@@ -228,8 +228,8 @@ require('./widgets/voice/contributors/ManageContributorsList');
 
 // popovers
 require('./widgets/popovers/PopoverConfirm');
-require('./widgets/popovers/unsave');
-require('./widgets/popovers/share');
+require('./widgets/popovers/PopoverUnsave');
+require('./widgets/popovers/PopoverShare');
 
 // posts
 require('./widgets/posts/modules/PostModuleImages');
@@ -271,9 +271,9 @@ require('./widgets/posts/edit/EditablePostText');
 require('./widgets/posts/edit/EditablePostImageControls');
 
 // moderate actions
-require('./widgets/posts/moderate/remove-button.js');
-require('./widgets/posts/moderate/publish-button.js');
-require('./widgets/posts/moderate/vote-buttons.js');
+require('./widgets/posts/moderate/PostModerateRemoveButton');
+require('./widgets/posts/moderate/PostModeratePublishButton');
+require('./widgets/posts/moderate/PostModerateVoteButtons');
 
 require('./widgets/voice/VoiceRequestToContribute');
 
