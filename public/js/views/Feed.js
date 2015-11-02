@@ -2,6 +2,7 @@ var Person = require('./../lib/currentPerson');
 
 Class(CV.Views, 'Feed').includes(NodeSupport, CV.WidgetUtils)({
     prototype : {
+        organization: null,
         feedItems : null,
 
         init : function init(config) {
@@ -13,6 +14,20 @@ Class(CV.Views, 'Feed').includes(NodeSupport, CV.WidgetUtils)({
         },
 
         _setup : function _setup() {
+            if (Person.ownsOrganizations()) {
+                var currentEntityView = Person.get();
+
+                this.appendChild(new CV.UI.FeedDropdown({
+                    name : 'dropdown'
+                })).render(this.el.querySelector('.profile-select-options'));
+
+                if (this.organization) {
+                    currentEntityView = this.organization;
+                }
+
+                this.dropdown.selectByEntity(currentEntityView);
+            }
+
             this.appendChild(new CV.FeedSidebar({
                 name : 'sidebar',
                 el : this.el.querySelector('[data-feed-sidebar]')

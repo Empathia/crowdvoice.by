@@ -181,6 +181,7 @@ require('./widgets/view-organization-profile-edit/OrganizationProfileEditTab');
 require('./widgets/view-organization-profile-edit/OrganizationProfileEditMembersTab');
 require('./widgets/view-organization-profile-edit/OrganizationProfileEditMembersList');
 require('./views/Feed');
+require('./widgets/view-feed/FeedDropdown');
 require('./widgets/view-feed/FeedSidebar');
 require('./widgets/view-feed/FeedSidebarStats');
 require('./widgets/view-feed/FeedOnboarding');
