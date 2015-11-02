@@ -97,10 +97,10 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
                 // Show normal button
                 this.newMessageButton = new CV.Button({
                     name    : 'newMessageButton',
-                    style   : 'primary small',
+                    style   : 'small',
                     type    : 'single',
                     label   : 'New Conversation',
-                }).render($('.profile-messages-intro'));
+                }).render($('.messages-new'));
 
                 this.newMessageButton.element.on('click', function() {
                     container.newMessageAs(Person.get('id'));
