@@ -77,31 +77,35 @@ var NotificationMailer = Module('NotificationMailer')({
 
       // get newest message that was sent to the receiver that is not the message
       // we just sent and that is part of the same thread
-      Message.find(['thread_id = ? AND receiver_entity_id = ? ORDER BY created_at DESC LIMIT ?',
-                   [info.message.threadId, info.message.receiverEntityId, 2]], function (err, messages) {
-        if (err) { return callback(err); }
+      Message.find(['type = ? AND thread_id = ? AND receiver_entity_id = ? ORDER BY created_at DESC LIMIT ?',
+                   ['message', info.message.threadId, info.message.receiverEntityId, 2]], function (err, messages) {
+        if (err) { return callback(err) }
 
         var isSender = new MessageThread(info.thread).isPersonSender(receiver.entity.id)
           isReceiver = !isSender,
           isUnread = false
 
-        if (isSender && info.thread.lastSeenSender === null) {
+        // auto-unread, since we haven't even seen this thread before
+        if (isSender && info.thread.lastSeenSender === null
+          || isReceiver && info.thread.lastSeenReceiver === null) {
           isUnread = true
-        } else if (isReceiver && info.thread.lastSeenReceiver === null) {
-          isUnread = true
+        } else {
+          // maybe the messages got deleted from DB or something, but since we
+          // got to this point it means that this is the first time this message
+          // is being seen.
+          if (messages.length < 2) {
+            isUnread = true
+          } else {
+            // message was created after thread last read by receiver
+            isUnread = (
+              moment(messages[1].createdAt).format('X')
+              >
+              moment(info.thread['lastSeen' + (isSender ? 'Sender' : 'Receiver')]).format('X')
+            )
+          }
         }
 
-        if (!isUnread) {
-          isUnread = (
-            // message createdAt is newer than
-            moment(messages[1].createdAt).format('X')
-            >
-            // last read by involved party
-            moment(info.thread['lastSeen' + (isSender ? 'Sender' : 'Receiver')]).format('X')
-          )
-        }
-
-        // oh wait it's not read, well was it sent within the last 24 hours?
+        // oh wait it's unread, well was it sent within the last 24 hours?
         // make sure it's unread AND there are at least 2 messages, otherwise it
         // means that this is the first message and the mail needs to be sent
         if (isUnread && messages[1]) {

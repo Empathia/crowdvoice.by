@@ -28,7 +28,7 @@ describe('MessagesController', function () {
   describe('#create', function () {
 
     it('Create message in pre-existing conversation', function (done) {
-      login('tyrion', function (err, agent, csrf) {
+      login('tyrion-lannister', function (err, agent, csrf) {
         if (err) { return done(err) }
 
         agent
@@ -48,6 +48,65 @@ describe('MessagesController', function () {
       })
     })
 
+    it('Creating message in empty, pre-existing thread should not crash NotificationMailer', function (doneTest) {
+      async.series([
+        function (nextSeries) {
+          login('arya-stark', function (err, agent, csrf) {
+            if (err) { return nextSeries(err) }
+
+            agent
+              .post(urlBase + '/arya-stark/messages')
+              .accept('application/json')
+              .send({
+                _csrf: csrf,
+                type: 'message',
+                senderEntityId: hashids.encode(11), // Arya
+                receiverEntityId: hashids.encode(3), // Cersei
+                message: 'Just a test, you know the drill'
+              })
+              .end(function (err, res) {
+                if (err) { return nextSeries(err) }
+
+                expect(res.status).to.equal(200)
+
+                return nextSeries()
+              })
+          })
+        },
+
+        function (nextSeries) {
+          db('Messages')
+            .where('thread_id', '=', 2)
+            .del()
+            .exec(nextSeries)
+        },
+
+        function (nextSeries) {
+          login('arya-stark', function (err, agent, csrf) {
+            if (err) { return nextSeries(err) }
+
+            agent
+              .post(urlBase + '/arya-stark/messages')
+              .accept('application/json')
+              .send({
+                _csrf: csrf,
+                type: 'message',
+                senderEntityId: hashids.encode(11), // Arya
+                receiverEntityId: hashids.encode(3), // Cersei
+                message: 'Just a test, you know the drill'
+              })
+              .end(function (err, res) {
+                if (err) { return nextSeries(err) }
+
+                expect(res.status).to.equal(200)
+
+                return nextSeries()
+              })
+          })
+        },
+      ], doneTest)
+    })
+
   })
 
   describe('#answerInvite', function () {
@@ -55,7 +114,7 @@ describe('MessagesController', function () {
     it('"Accept > Leave > Accept > Error" shouldn\'t happen', function (done) {
       async.series([
         function (nextSeries) {
-          login('cersei', function (err, agent, csrf) {
+          login('cersei-lannister', function (err, agent, csrf) {
             if (err) { return nextSeries(err) }
 
             agent
@@ -80,11 +139,11 @@ describe('MessagesController', function () {
         },
 
         function (nextSeries) {
-          login('robert', function (err, agent, csrf) {
+          login('robert-baratheon', function (err, agent, csrf) {
             if (err) { return nextSeries(err) }
 
             agent
-              .post(urlBase + '/robert-baratheon/messages/d6wb1XVgRvzm/jd36BpEg4Mbe/answerInvite')
+              .post(urlBase + '/robert-baratheon/messages/' + hashids.encode(4) + '/' + hashids.encode(11) + '/answerInvite')
               .accept('application/json')
               .send({
                 _csrf: csrf,
@@ -101,7 +160,7 @@ describe('MessagesController', function () {
         },
 
         function (nextSeries) {
-          login('robert', function (err, agent, csrf) {
+          login('robert-baratheon', function (err, agent, csrf) {
             if (err) { return nextSeries(err) }
 
             agent
@@ -123,7 +182,7 @@ describe('MessagesController', function () {
         },
 
         function (nextSeries) {
-          login('cersei', function (err, agent, csrf) {
+          login('cersei-lannister', function (err, agent, csrf) {
             if (err) { return nextSeries(err) }
 
             agent
@@ -138,7 +197,7 @@ describe('MessagesController', function () {
                 message: 'I think this is an offer you cannot turn down...',
               })
               .end(function (err, res) {
-                if (err) { return nextSeries(err) }
+                if (err) { console.log(err); return nextSeries(err) }
 
                 expect(res.status).to.equal(200)
 
@@ -148,18 +207,18 @@ describe('MessagesController', function () {
         },
 
         function (nextSeries) {
-          login('robert', function (err, agent, csrf) {
+          login('robert-baratheon', function (err, agent, csrf) {
             if (err) { return nextSeries(err) }
 
             agent
-              .post(urlBase + '/robert-baratheon/messages/d6wb1XVgRvzm/QLP8gxJ13z6D/answerInvite')
+              .post(urlBase + '/robert-baratheon/messages/' + hashids.encode(4) + '/' + hashids.encode(12) + '/answerInvite')
               .accept('application/json')
               .send({
                 _csrf: csrf,
                 action: 'accept',
               })
               .end(function (err, res) {
-                if (err) { return nextSeries(err) }
+                if (err) { console.log(err); return nextSeries(err) }
 
                 expect(res.status).to.equal(200)
 
