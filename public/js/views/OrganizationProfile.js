@@ -44,8 +44,6 @@ Class(CV.Views, 'OrganizationProfile').includes(NodeSupport, CV.WidgetUtils)({
         },
 
         _setup : function _setup() {
-            console.log(this.entity);
-
             this.appendChild(new CV.TabsManager({
                 name : 'tabs',
                 useHash : true,
@@ -173,13 +171,6 @@ Class(CV.Views, 'OrganizationProfile').includes(NodeSupport, CV.WidgetUtils)({
         _updateAsVisitor : function _updateAsVisitor() {
             var buttonsGroup = document.createElement('div');
             buttonsGroup.className = 'cv-button-group multiple';
-
-            this.appendChild(new CV.UserProfileActionMessage({
-                name : 'messageButton',
-                className : 'small',
-                data : {value: 'Message'},
-                entity :  this.entity
-            })).render(buttonsGroup);
 
             if (Person.get().ownedOrganizations.length === 0) {
                 this.appendChild(new CV.UserProfileActionFollow({
