@@ -47,24 +47,6 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           return done();
         }
 
-        db('ReadablePosts').where({'post_id' : post.id}).exec(function(err, result) {
-          if (err) {
-            return done(err);
-          }
-
-          if (result.length === 0) {
-            return done();
-          }
-
-          readablePost = result[0];
-
-          return done();
-        });
-      }, function(done) {
-        if (!readablePost) {
-          return done();
-        }
-
         rParser.parse(post.sourceUrl, function(err, parsed) {
           if (err) {
             return done(err);
@@ -93,6 +75,12 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
             });
           });
         })
+      }, function(done) {
+        // if (!readablePost) {
+          return done();
+        // }
+
+
       }], function(err) {
         if (err) {
           return next(err)
@@ -520,15 +508,19 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
             post.save(function(err, resave) {
               if (err) { return next(err); }
 
-              PostsPresenter.build([post], req.currentPerson, function(err, posts) {
+              FeedInjector().inject(req.activeVoice.ownerId, 'item voiceNewPosts', req.activeVoice, function (err) {
                 if (err) { return next(err); }
 
-                if (req.body.imagePath) {
-                  fs.unlinkSync(process.cwd() + '/public' + req.body.imagePath);
-                  logger.log('Deleted tmp image: ' + process.cwd() + '/public' + req.body.imagePath);
-                }
+                PostsPresenter.build([post], req.currentPerson, function(err, posts) {
+                  if (err) { return next(err); }
 
-                return res.json(posts[0]);
+                  if (req.body.imagePath) {
+                    fs.unlinkSync(process.cwd() + '/public' + req.body.imagePath);
+                    logger.log('Deleted tmp image: ' + process.cwd() + '/public' + req.body.imagePath);
+                  }
+
+                  return res.json(posts[0]);
+                });
               });
             });
           });

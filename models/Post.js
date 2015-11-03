@@ -309,6 +309,10 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
                   return next();
                 }
 
+                if (!url.parse(faviconURL).host) {
+                  return next();
+                }
+
                 var faviconHash = crypto.createHash('md5')
                   .update(faviconURL)
                   .digest('hex');

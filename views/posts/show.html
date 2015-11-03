@@ -6,23 +6,34 @@
         background-image: url('<%= post.image.url('big') %>');
         border-bottom: 1px solid #b8b8c1;
         height: 320px;
-            
+
     }
     .image-header > h1.title {
         color:white;
-        text-shadow:black 3px 3px; 
+        text-shadow:black 3px 3px;
     }
     .image-header > h1{
         font-size: 48px;
-        position: absolute; 
-        top: 80px; 
-        left: 100px; 
+        position: absolute;
+        top: 80px;
+        left: 100px;
         max-width: 100%;
         line-height: 45px;
     }
 
     .description p {
         text-align: justify;
+        margin : 0 0 2em 0;
+    }
+
+    .description img {
+        margin : 2em auto;
+        display : block;
+    }
+
+    .description iframe {
+        margin : 2em auto;
+        display : block;
     }
 
     .description h1, article h1{
@@ -50,7 +61,7 @@
         font-weight: bold;
         font-size: 10px;
     }
-    
+
     @media only screen and (max-width: 665px){
         .image-header > h1{
             font-size: 40px;
@@ -73,10 +84,16 @@
 
 <div class="readable">
 <% if (readablePost) { %>
-    <h1><%= readablePost.data.title %></h1>
-    <article>
+    <div class="image-header -img-cover -rel">
+        <% if (post.image.exists('big')) { %>
+            <h1 class="title"><%= readablePost.data.title %></h1>
+        <% } else {%>
+            <h1><%= post.title %></h1>
+        <% } %>
+    </div>
+    <div class="description">
         <%= readablePost.data.content %>
-    </article>
+    </div>
 <% } else { %>
     <div class="image-header -img-cover -rel">
         <% if (post.image.exists('big')) { %>
