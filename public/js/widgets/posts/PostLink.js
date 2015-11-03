@@ -3,30 +3,29 @@ var Events = require('./../../lib/events');
 
 Class(CV, 'PostLink').inherits(CV.Post)({
     HTML : '\
-    <article class="post-card link">\
-        <div class="post-card-image-wrapper">\
-            <svg class="post-card-svg-magnifier">\
-                <use xlink:href="#svg-magnifier"></use>\
-            </svg>\
-        </div>\
-        <div class="post-card-info -text-left">\
-            <div class="post-card-meta">\
-                <span class="post-card-meta-source"></span>\
-                on <time class="post-card-meta-date" datetime=""></time>\
+        <article class="post-card link">\
+            <div class="post-card-image-wrapper">\
+                <svg class="post-card-svg-magnifier">\
+                    <use xlink:href="#svg-magnifier"></use>\
+                </svg>\
             </div>\
-            <h2 class="post-card-title"></h2>\
-            <p class="post-card-description"></p>\
-            <div class="post-card-activity">\
-                <div class="post-card-activity-saved -inline-block">\
-                    <svg class="post-card-activity-svg">\
-                        <use xlink:href="#svg-save-outline"></use>\
-                    </svg>\
-                    <span class="post-card-activity-label">0</span>\
+            <div class="post-card-info -text-left">\
+                <div class="post-card-meta">\
+                    <span class="post-card-meta-source"></span>\
+                    on <time class="post-card-meta-date" datetime=""></time>\
+                </div>\
+                <h2 class="post-card-title"></h2>\
+                <p class="post-card-description"></p>\
+                <div class="post-card-activity">\
+                    <div class="post-card-activity-saved -inline-block">\
+                        <svg class="post-card-activity-svg">\
+                            <use xlink:href="#svg-save-outline"></use>\
+                        </svg>\
+                        <span class="post-card-activity-label">0</span>\
+                    </div>\
                 </div>\
             </div>\
-        </div>\
-    </article>\
-    ',
+        </article>',
 
     ICON : '<svg class="post-card-meta-icon"><use xlink:href="#svg-link"></use></svg>',
 
@@ -60,16 +59,13 @@ Class(CV, 'PostLink').inherits(CV.Post)({
                 this.imageLoaded = true;
             }
 
-            // if (this.sourceUrl && this.sourceService) {
-            //     var a = this.dom.create('a');
-            //     this.dom.updateAttr('href', a, this.sourceUrl);
-            //     this.dom.updateText(a, this.sourceService + " ");
-            //     this.dom.updateText(this.sourceElement, 'from ');
-            //     this.sourceElement.appendChild(a);
-            // } else {
+            if (this.faviconPath) {
+                this.el.querySelector('.post-card-meta').insertAdjacentHTML('afterbegin', this.constructor.FAVICON.replace(/{src}/, this.faviconPath));
+                this.sourceElement.insertAdjacentHTML('beforeend', 'from <a href="' + this.sourceDomain + '" target="_blank">'+ this.sourceDomain.replace(/.*?:\/\/(w{3}.)?/g, "") + '</a> ');
+            } else {
                 this.el.querySelector('.post-card-meta').insertAdjacentHTML('afterbegin', this.constructor.ICON);
                 this.dom.updateText(this.sourceElement, 'posted ');
-            // }
+            }
 
             this.dom.updateText(this.dateTimeElement, moment(this.publishedAt).format('MMM DD, YYYY'));
             this.dom.updateAttr('datetime', this.dateTimeElement, this.publishedAt);

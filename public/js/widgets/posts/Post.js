@@ -10,10 +10,10 @@ Class(CV, 'Post').inherits(Widget).includes(
 )({
     ACTIONS_HTML : '\
         <div class="post-card-actions">\
-            <div class="-row -full-height" data-actions-row>\
-            </div>\
-        </div>\
-    ',
+            <div class="-row -full-height" data-actions-row></div>\
+        </div>',
+
+    FAVICON : '<img class="post-card-meta-icon-image" src="{src}"/>',
 
     /* Creates a specific Post by type using the Strategy Pattern.
      * The Post type should be one of the knows post types available.
