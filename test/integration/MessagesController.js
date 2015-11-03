@@ -258,7 +258,7 @@ describe('MessagesController', function () {
                 action: 'accept',
               })
               .end(function (err, res) {
-                if (err) { console.log(err); return nextSeries(err) }
+                if (err) { return nextSeries(err) }
 
                 expect(res.status).to.equal(200)
 
@@ -326,7 +326,7 @@ describe('MessagesController', function () {
                 action: 'accept',
               })
               .end(function (err, res) {
-                if (err) { console.log(err); return nextSeries(err) }
+                if (err) { return nextSeries(err) }
 
                 expect(res.status).to.equal(200)
 
