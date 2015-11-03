@@ -28,6 +28,42 @@ var urlBase = 'http://localhost:3000'
 
 describe('PostsController', function () {
 
+  describe('#saveArticle', function () {
+
+    it('create post with no errors', function (doneTest) {
+      login('jon-snow', function (err, agent, csrf) {
+        if (err) { return doneTest(err) }
+
+        agent
+          .post(urlBase + '/jon-snow/white-walkers/saveArticle')
+          .accept('application/json')
+          .send({
+            _csrf: csrf,
+            title: 'Test article being saved.',
+            content: 'THIS IS THE VERY INSIGHTFUL CONTENT OF THIS POST ABOUT THE WHITE WALKERS.',
+            publishedAt: new Date(),
+          })
+          .end(function (err, res) {
+            if (err) { return doneTest(err) }
+
+            expect(res.status).to.equal(200)
+
+              Post.find({
+                title: 'Test article being saved.',
+              }, function (err, post) {
+                if (err) { return doneTest(err) }
+
+                expect(post[0].title).to.equal('Test article being saved.')
+                expect(post[0].sourceType).to.equal(Post.SOURCE_TYPE_TEXT)
+
+                return doneTest()
+              })
+          })
+      })
+    })
+
+  })
+
   describe('#create', function () {
 
     it('create post with no errors as non-admin', function (done) {
