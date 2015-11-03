@@ -21,13 +21,14 @@ Class(CV, 'VoiceCoverActionsArchive').inherits(CV.UI.Button)({
         },
 
         _responseHandler : function _responseHandler (err, res){
-            this.enable();
-
             if (err) {
                 this.dom.updateHTML(this.el, 'Archive (' + res.status + ' ' + res.statusText + ')');
+                this.enable();
                 return;
             }
 
+            this.dom.removeClass(this.el, ['-color-negative']);
+            this.dom.addClass(this.el, ['-color-positive']);
             this.dom.updateHTML(this.el, 'Archived');
         },
 

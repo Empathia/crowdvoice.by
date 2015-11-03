@@ -12,11 +12,13 @@ Class(CV, 'VoiceCoverActions').inherits(Widget).includes(CV.WidgetUtils)({
                 data : {value: 'Edit'}
             })).render(this.el);
 
-            this.appendChild(new CV.VoiceCoverActionsArchive({
-                name : 'archive',
-                voiceEntity : this.voiceEntity,
-                data : {value: 'Archive'}
-            })).render(this.el);
+            if (this.voiceEntity.status !== CV.VoiceView.STATUS_ARCHIVED) {
+                this.appendChild(new CV.VoiceCoverActionsArchive({
+                    name : 'archive',
+                    voiceEntity : this.voiceEntity,
+                    data : {value: 'Archive'}
+                })).render(this.el);
+            }
         }
     }
 });
