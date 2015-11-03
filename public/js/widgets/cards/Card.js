@@ -153,12 +153,6 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
                     })).render(this.actionsEl);
                 }
                 this._totalCountActions++;
-
-                this.appendChild(new CV.CardActionMessage({
-                    name : 'messageButton',
-                    id : this.data.id
-                })).render(this.actionsEl);
-                this._totalCountActions++;
             }
 
             if (this.data.type === "organization") {
@@ -170,6 +164,12 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
                     this._totalCountActions++;
                 }
             } else {
+                this.appendChild(new CV.CardActionMessage({
+                    name : 'messageButton',
+                    id : this.data.id
+                })).render(this.actionsEl);
+                this._totalCountActions++;
+
                 if (Person.canInviteEntity(this.data)) {
                     this.appendChild(new CV.CardActionInvite({
                         name : 'inviteButton',
