@@ -326,6 +326,10 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
                 req.get(faviconURL, function(res) {
                   var extension;
 
+                  if (!res.headers['content-type'].match('image')) {
+                    return next();
+                  }
+
                   if (res.headers['content-type']) {
                     extension = res.headers['content-type'].replace(/image\//, '');
                   }
