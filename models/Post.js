@@ -337,6 +337,8 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
                       file = file + '.' + extension;
                     }
 
+                    fsextra.ensureFileSync(file);
+
                     res.pipe(fs.createWriteStream(file));
 
                     return next();
