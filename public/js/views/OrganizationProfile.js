@@ -86,6 +86,7 @@ Class(CV.Views, 'OrganizationProfile').includes(NodeSupport, CV.WidgetUtils)({
             });
 
             this.tabs.start();
+            this._scaleProfileImage();
 
             var t = 1000;
             setTimeout(function() {
@@ -200,6 +201,24 @@ Class(CV.Views, 'OrganizationProfile').includes(NodeSupport, CV.WidgetUtils)({
                 className : '-inline-block -ml1',
                 entity :  this.entity
             })).render(this._actionsElementWrapper);
+        },
+
+        /*
+         * Applies Resize and z-index changes to hide the image when scrolling
+         */
+        _scaleProfileImage : function _scaleProfileImage(){
+            window.addEventListener('scroll', function(e){
+                var distanceY = window.pageYOffset || document.documentElement.scrollTop;
+                var profileImage = document.querySelector('.profile-image');
+                var newScale = 1 - (distanceY / 100);
+
+                if (distanceY < 50) {
+                    profileImage.style.transform = 'scale('+newScale+')';
+                    profileImage.style.zIndex = '1';
+                } else {
+                    profileImage.style.zIndex = '0';
+                }
+            });
         }
     }
 });
