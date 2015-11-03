@@ -50,7 +50,7 @@ Class(CV, 'VoiceCoverMini').inherits(Widget).includes(CV.WidgetUtils)({
                 return;
             }
 
-            if (Person.memberOf('voice', this.data.id)) {
+            if (Person.ownerOf('voice', this.data.id)) {
                 this.appendChild(new CV.VoiceCoverActions({
                     name : 'actions',
                     voiceEntity : this.data
