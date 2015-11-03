@@ -106,7 +106,7 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
 
             return {
                 title : this.format.truncate(this.titleElement.value, this.constructor.MAX_LENGTH_TITLE),
-                description : this.format.truncate(this.descriptionElement.value, this.constructor.MAX_LENGTH_DESCRIPTION),
+                description : this.format.truncate(this.descriptionElement.value, this.constructor.MAX_LENGTH_DESCRIPTION) || ' ',
                 publishedAt : this.romeTime.getDate(),
 
                 image : this.image,

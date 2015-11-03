@@ -260,8 +260,10 @@
 .post-card-description {
   overflow: hidden;
   text-overflow: ellipsis;
-  color: @color-grey;
+  color: @color-neutral-x-dark;
   width: 100%;
+
+  &:empty {display: none;}
 }
 
 .post-card-quote {

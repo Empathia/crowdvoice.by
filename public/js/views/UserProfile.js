@@ -44,8 +44,6 @@ Class(CV.Views, 'UserProfile').includes(NodeSupport, CV.WidgetUtils)({
         },
 
         _setup : function _setup() {
-            console.log(this.entity);
-
             this.appendChild(new CV.TabsManager({
                 name : 'tabs',
                 useHash : true,

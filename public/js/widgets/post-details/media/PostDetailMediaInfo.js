@@ -20,8 +20,7 @@ Class(CV, 'PostDetailMediaInfo').inherits(Widget).includes(CV.WidgetUtils)({
                 <div class="cv-post-detail-actions cv-button-group multiple">\
                 </div>\
             </div>\
-        </div>\
-    ',
+        </div>',
 
     reYT : new RegExp('v=((\\w+-?)+)'),
     reV : new RegExp('[0-9]+'),
@@ -94,7 +93,7 @@ Class(CV, 'PostDetailMediaInfo').inherits(Widget).includes(CV.WidgetUtils)({
                 this.dom.updateAttr('src', iframe, 'https://www.youtube.com/embed/' + id + '?autoplay=1');
             }
 
-            if (this.sourceService === 'vimeo') {
+            if (data.sourceService === 'vimeo') {
                 id = data.sourceUrl.match(this.constructor.reV)[0];
                 // <iframe src="https://player.vimeo.com/video/20729832?title=0&byline=0&portrait=0" width="500" height="272" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
                 this.dom.updateAttr('src', iframe, 'https://player.vimeo.com/video/' + id + '?autoplay=1');

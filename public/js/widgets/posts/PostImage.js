@@ -71,7 +71,7 @@ Class(CV, 'PostImage').inherits(CV.Post)({
             this.dom.updateAttr('datetime', this.dateTimeElement, this.publishedAt);
 
             this.dom.updateText(this.titleElement, this.dom.decodeHTML(this.title));
-            this.dom.updateText(this.descriptionElement, this.dom.decodeHTML(this.description));
+            this.dom.updateText(this.descriptionElement, this.dom.decodeHTML(this.description).trim());
 
             this.dom.updateText(this.el.querySelector('.post-card-activity-saved .post-card-activity-label'), this.totalSaves);
 
