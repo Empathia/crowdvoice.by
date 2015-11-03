@@ -27,7 +27,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 <div data-status></div>\
             </div>\
             <div class="-col-12">\
-                <div data-twitter class="-col-6"></div>\
+                <div data-twitter class="-col-12"></div>\
                 <div data-rss class="-col-6 -pl1">\
             </div>\
             </div>\
@@ -107,7 +107,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 }
             }
             this.voiceHashtags.setValue(voice.twitterSearch);
-            this.voiceRssfeed.setValue(voice.rssUrl);
+            // this.voiceRssfeed.setValue(voice.rssUrl);
             this.voiceLocation.setValue(voice.locationName);
             this.voiceLatitude.setValue(voice.latitude);
             this.voiceLongitude.setValue(voice.longitude);
@@ -198,13 +198,13 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 }
             })).render(this.el.querySelector('[data-twitter]'));
 
-            this.appendChild(new CV.UI.Input({
-                name : 'voiceRssfeed',
-                data : {
-                    label : 'Content from rss feed',
-                    inputClassName : '-lg -block'
-                }
-            })).render(this.el.querySelector('[data-rss]'));
+            // this.appendChild(new CV.UI.Input({
+            //     name : 'voiceRssfeed',
+            //     data : {
+            //         label : 'Content from rss feed',
+            //         inputClassName : '-lg -block'
+            //     }
+            // })).render(this.el.querySelector('[data-rss]'));
 
             this.appendChild(new CV.DetectLocation({
                 name : 'detectLocation',
@@ -651,7 +651,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             data.append('type', this.voiceTypesDropdown.getValue());
             data.append('status', this.voiceStatusDropdown.getValue());
             data.append('twitterSearch', this.voiceHashtags.getValue().trim());
-            data.append('rssUrl', this.voiceRssfeed.getValue().trim());
+            // data.append('rssUrl', this.voiceRssfeed.getValue().trim());
             data.append('locationName', this.voiceLocation.getValue().trim());
             data.append('latitude', this.voiceLatitude.getValue().trim());
             data.append('longitude', this.voiceLongitude.getValue().trim());
@@ -686,7 +686,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             data['type'] = this.voiceTypesDropdown.getValue();
             data['status'] = this.voiceStatusDropdown.getValue();
             data['twitterSearch'] = this.voiceHashtags.getValue().trim();
-            data['rssUrl'] = this.voiceRssfeed.getValue().trim();
+            // data['rssUrl'] = this.voiceRssfeed.getValue().trim();
             data['locationName'] = this.voiceLocation.getValue().trim();
             data['latitude'] = this.voiceLatitude.getValue().trim();
             data['longitude'] = this.voiceLongitude.getValue().trim();
