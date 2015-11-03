@@ -118,7 +118,8 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         if (req.role === 'Admin'
           || response.isVoiceOwner
           || response.isVoiceCollaborator
-          || response.isOrganizationMember) {
+          || response.isOrganizationMember
+          || response.isOrganizationOwner) {
 
           approved = true;
         }
