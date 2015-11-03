@@ -15,21 +15,29 @@
   <section>
     <hr>
     <div class="homepage-category-list-row -row -pt3">
-      <div class="browse-element widget">
-      	<a class="element_link -tdn" href="/discover/trending" alt="Trending">
-	        <div class="browse-element-button-trending -rel">
-	            <svg class="svg-trending -rel">
-	            	<linearGradient id="trending-gradient" gradientTransform="rotate(100)">
-	            		<stop offset="20%" stop-color="#FF9000" />
-	            		<stop offset="100%" stop-color="#FF0000" />
-	            	</linearGradient>
-	            	<use xlink:href="#svg-trending"></use>
-	            </svg>
-	          	<p class="-font-bold -rel">Trending</p>
-	        </div>
-        </a>
-      </div>
-      <div class="browse-element widget">
+    	<% if (currentPerson){ %>
+	    <div class="browse-element widget -col-4">
+	    <% } else { %>
+	    <div class="browse-element widget -col-6">
+	    <% } %>
+	      	<a class="element_link -tdn" href="/discover/trending" alt="Trending">
+		        <div class="browse-element-button-trending -rel">
+		            <svg class="svg-trending -rel">
+		            	<linearGradient id="trending-gradient" gradientTransform="rotate(100)">
+		            		<stop offset="20%" stop-color="#FF9000" />
+		            		<stop offset="100%" stop-color="#FF0000" />
+		            	</linearGradient>
+		            	<use xlink:href="#svg-trending"></use>
+		            </svg>
+		          	<p class="-font-bold -rel">Trending</p>
+		        </div>
+	        </a>
+	    </div>
+	    <% if (currentPerson){ %>
+	    <div class="browse-element widget -col-4">
+	    <% } else { %>
+	    <div class="browse-element widget -col-6">
+	    <% } %>
       	<a class="element_link -tdn" href="/discover/new" alt="Newest">
 	        <div class="browse-element-button-newest -rel">
 	            <svg class="svg-new -rel">
@@ -44,7 +52,8 @@
 	        </div>
         </a>
       </div>
-      <div class="browse-element widget">
+      <% if (currentPerson){ %>
+      <div class="browse-element widget -col-4">
       	<a class="element_link -tdn" href="/discover/recommended" alt="Recommended">
 	        <div class="browse-element-button-recommended -rel">
 		        <svg class="svg-recommended -rel">
@@ -58,6 +67,7 @@
 	        </div>
         </a>
       </div>
+      <% } %>
     </div>
   </section>
 </main>
