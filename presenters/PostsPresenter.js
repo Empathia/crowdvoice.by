@@ -23,16 +23,17 @@ var PostsPresenter = Module('PostsPresenter')({
 
       post.postImages = images;
 
-      var favicons = {};
+      var faviconPath;
 
-      for (var version in postInstance.faviconMeta) {
-        favicons[version] = {
-          url : postInstance.favicon.url(version),
-          meta : postInstance.favicon.meta(version)
-        };
+      if (post.faviconPath) {
+        if (!CONFIG.env || CONFIG.env === 'development') {
+          faviconPath = '/public/upload/favicons/' + post.faviconPath;
+        } else {
+          faviconPath = '//s3.amazonaws.com/crowdvoice.by/' + CONFIG.env + '/favicons/' + post.faviconPath;
+        }
+
+        post.faviconPath = faviconPath
       }
-
-      post.faviconImages = favicons;
 
       async.series([
 

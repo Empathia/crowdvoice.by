@@ -1,6 +1,10 @@
 var ImageUploader = require(__dirname + '/../lib/image_uploader.js');
 var url = require('url');
 var favicon = require('favicon');
+var crypto = require('crypto');
+var fsextra = require('fs-extra');
+var http = require('http');
+var https = require('https');
 
 var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
 
@@ -126,8 +130,7 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
     approved      : false,
     imageBaseUrl  : null,
     imageMeta     : {},
-    faviconBaseUrl : null,
-    faviconMeta   : {},
+    faviconPath   : null,
     sourceService : null,
     sourceType    : null,
     sourceUrl     : null,
@@ -217,38 +220,6 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
         bucket: 'crowdvoice.by',
         basePath: '{env}/{modelName}_{id}/{property}_{versionName}.{extension}'
       });
-
-      this.hasImage({
-        propertyName : 'favicon',
-        versions : {
-          small : function(readStream) {
-            return readStream.pipe(
-              sharp()
-                .resize(32, 32)
-                .interpolateWith(sharp.interpolator.nohalo)
-                .progressive()
-                .flatten()
-                .quality(100)
-                .toFormat('jpeg')
-            );
-          },
-
-          medium : function(readStream) {
-            return readStream.pipe(
-              sharp()
-                .resize(128, 128)
-                .interpolateWith(sharp.interpolator.nohalo)
-                .progressive()
-                .flatten()
-                .background('#FFFFFF')
-                .quality(100)
-                .toFormat('jpeg')
-            );
-          }
-        },
-        bucket : 'crowdvoice.by',
-        basePath : '{env}/{modelName}_{id}/{property}_{versionName}.jpg'
-      });
     },
 
     save : function save(callback) {
@@ -335,10 +306,65 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
 
               favicon(model.sourceDomain, function(err, faviconURL) {
                 if (err || !faviconURL) {
-                  return next(err);
+                  return next();
                 }
 
-                model.uploadImage('favicon', faviconURL, next);
+                var faviconHash = crypto.createHash('md5')
+                  .update(faviconURL)
+                  .digest('hex');
+
+                var req = http;
+
+                if (faviconURL.match('https')) {
+                  req = https;
+                }
+
+                req.get(faviconURL, function(res) {
+                  var extension;
+
+                  if (res.headers['content-type']) {
+                    extension = res.headers['content-type'].replace(/image\//, '');
+                  }
+
+                  if (!CONFIG.env || CONFIG.env === 'development') {
+
+                    var file = path.join(process.cwd(), '/public/uploads/favicons/', faviconHash);
+
+                    model.faviconPath = faviconHash;
+
+                    if (extension) {
+                      model.faviconPath = model.faviconPath + '.' + extension;
+                      file = file + '.' + extension;
+                    }
+
+                    res.pipe(fs.createWriteStream(file));
+
+                    return next();
+                  } else {
+                    var uploadParams = {
+                      Bucket: 'crowdvoice.by',
+                      ACL: 'public-read',
+                      Key : CONFIG.env + '/favicons/' + faviconHash
+                    }
+
+                    model.faviconPath = faviconHash;
+
+                    if (extension) {
+                      model.faviconPath = model.faviconPath + '.' + extension;
+                      uploadParams.Key = uploadParams.Key + '.' + extension;
+                    }
+
+                    uploadParams.ContentType = res.headers['content-type'];
+
+                    uploadParams.Body = res;
+
+                    amazonS3.upload(uploadParams, function(err) {
+                      next();
+                    });
+                  }
+                });
+
+
               });
             }, function(next) {
               if (!model.sourceDomain) {
