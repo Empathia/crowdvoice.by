@@ -134,7 +134,7 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
         if (err) { return next(err); }
 
         if (!isAllowed) {
-          return next(new ForbiddenError('Unauthorized.'));
+          return next(new ForbiddenError());
         }
 
         // check if provided profile name is taken

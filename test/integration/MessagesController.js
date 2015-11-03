@@ -28,11 +28,11 @@ describe('MessagesController', function () {
   describe('#create', function () {
 
     it('Create message in pre-existing conversation', function (done) {
-      login('tyrion', function (err, agent, csrf) {
+      login('tyrion-lannister', function (err, agent, csrf) {
         if (err) { return done(err) }
 
         agent
-          .post(urlBase + '/tyrion-lannister/messages/6xOVBlryjQ0a')
+          .post(urlBase + '/tyrion-lannister/messages/' + hashids.encode(1)) // NOTE: thread ID changes
           .accept('application/json')
           .send({
             _csrf: csrf,
@@ -48,6 +48,173 @@ describe('MessagesController', function () {
       })
     })
 
+    it('Creating message in empty, pre-existing thread should not crash NotificationMailer', function (doneTest) {
+      async.series([
+        function (nextSeries) {
+          login('arya-stark', function (err, agent, csrf) {
+            if (err) { return nextSeries(err) }
+
+            agent
+              .post(urlBase + '/arya-stark/messages')
+              .accept('application/json')
+              .send({
+                _csrf: csrf,
+                type: 'message',
+                senderEntityId: hashids.encode(11), // Arya
+                receiverEntityId: hashids.encode(3), // Cersei
+                message: 'Just a test, you know the drill'
+              })
+              .end(function (err, res) {
+                if (err) { return nextSeries(err) }
+
+                expect(res.status).to.equal(200)
+
+                return nextSeries()
+              })
+          })
+        },
+
+        function (nextSeries) {
+          db('Messages')
+            .where('thread_id', '=', 2)
+            .del()
+            .exec(nextSeries)
+        },
+
+        function (nextSeries) {
+          login('arya-stark', function (err, agent, csrf) {
+            if (err) { return nextSeries(err) }
+
+            agent
+              .post(urlBase + '/arya-stark/messages')
+              .accept('application/json')
+              .send({
+                _csrf: csrf,
+                type: 'message',
+                senderEntityId: hashids.encode(11), // Arya
+                receiverEntityId: hashids.encode(3), // Cersei
+                message: 'Just a test, you know the drill'
+              })
+              .end(function (err, res) {
+                if (err) { return nextSeries(err) }
+
+                expect(res.status).to.equal(200)
+
+                return nextSeries()
+              })
+          })
+        },
+      ], doneTest)
+    })
+
+    it('MessageThread.createMessage should mark the thread as not hidden', function (doneTest) {
+      async.series([
+        // robert to jamie
+        function (nextSeries) {
+          login('robert-baratheon', function (err, agent, csrf) {
+            if (err) { return nextSeries(err) }
+
+            agent
+              .post(urlBase + '/robert-baratheon/messages')
+              .accept('application/json')
+              .send({
+                _csrf: csrf,
+                type: 'message',
+                senderEntityId: hashids.encode(17), // Robert
+                receiverEntityId: hashids.encode(5), // Jamie
+                message: 'This\'ll be deleted in the near future...'
+              })
+              .end(function (err, res) {
+                if (err) { return nextSeries(err) }
+
+                expect(res.status).to.equal(200)
+
+                return nextSeries()
+              })
+          })
+        },
+
+        // jamie answer
+        function (nextSeries) {
+          login('jamie-lannister', function (err, agent, csrf) {
+            if (err) { return nextSeries(err) }
+
+            agent
+              .post(urlBase + '/jamie-lannister/messages')
+              .accept('application/json')
+              .send({
+                _csrf: csrf,
+                type: 'message',
+                senderEntityId: hashids.encode(5), // Jamie
+                receiverEntityId: hashids.encode(17), // Robert
+                message: 'This\'ll also be deleted in the near future...'
+              })
+              .end(function (err, res) {
+                if (err) { return nextSeries(err) }
+
+                expect(res.status).to.equal(200)
+
+                return nextSeries()
+              })
+          })
+        },
+
+        // jamie delete
+        function (nextSeries) {
+          login('jamie-lannister', function (err, agent, csrf) {
+            if (err) { return nextSeries(err) }
+
+            agent
+              .del(urlBase + '/jamie-lannister/messages/' + hashids.encode(4))
+              .accept('application/json')
+              .send({
+                _csrf: csrf,
+              })
+              .end(function (err, res) {
+                if (err) { return nextSeries(err) }
+
+                expect(res.status).to.equal(200)
+
+                return nextSeries()
+              })
+          })
+        },
+
+        // robert to jamie
+        function (nextSeries) {
+          login('robert-baratheon', function (err, agent, csrf) {
+            if (err) { return nextSeries(err) }
+
+            agent
+              .post(urlBase + '/robert-baratheon/messages/' + hashids.encode(4)) // NOTE: thread ID changes
+              .accept('application/json')
+              .send({
+                _csrf: csrf,
+                message: 'It got deleted.  This is an entirely new conversation for you.'
+              })
+              .end(function (err, res) {
+                if (err) { return nextSeries(err) }
+
+                expect(res.status).to.equal(200)
+
+                return nextSeries()
+              })
+          })
+        },
+      ], function (err) {
+        if (err) { return doneTest(err) }
+
+        MessageThread.findById(4, function (err, thread) { // NOTE: thread ID changes
+          if (err) { return doneTest(err) }
+
+          expect(thread[0].hiddenForSender).to.equal(false)
+          expect(thread[0].hiddenForReceiver).to.equal(false)
+
+          return doneTest()
+        })
+      })
+    })
+
   })
 
   describe('#answerInvite', function () {
@@ -55,7 +222,7 @@ describe('MessagesController', function () {
     it('"Accept > Leave > Accept > Error" shouldn\'t happen', function (done) {
       async.series([
         function (nextSeries) {
-          login('cersei', function (err, agent, csrf) {
+          login('cersei-lannister', function (err, agent, csrf) {
             if (err) { return nextSeries(err) }
 
             agent
@@ -80,11 +247,11 @@ describe('MessagesController', function () {
         },
 
         function (nextSeries) {
-          login('robert', function (err, agent, csrf) {
+          login('robert-baratheon', function (err, agent, csrf) {
             if (err) { return nextSeries(err) }
 
             agent
-              .post(urlBase + '/robert-baratheon/messages/d6wb1XVgRvzm/jd36BpEg4Mbe/answerInvite')
+              .post(urlBase + '/robert-baratheon/messages/' + hashids.encode(5) + '/' + hashids.encode(14) + '/answerInvite') // NOTE: IDs changes
               .accept('application/json')
               .send({
                 _csrf: csrf,
@@ -101,7 +268,7 @@ describe('MessagesController', function () {
         },
 
         function (nextSeries) {
-          login('robert', function (err, agent, csrf) {
+          login('robert-baratheon', function (err, agent, csrf) {
             if (err) { return nextSeries(err) }
 
             agent
@@ -123,7 +290,7 @@ describe('MessagesController', function () {
         },
 
         function (nextSeries) {
-          login('cersei', function (err, agent, csrf) {
+          login('cersei-lannister', function (err, agent, csrf) {
             if (err) { return nextSeries(err) }
 
             agent
@@ -148,11 +315,11 @@ describe('MessagesController', function () {
         },
 
         function (nextSeries) {
-          login('robert', function (err, agent, csrf) {
+          login('robert-baratheon', function (err, agent, csrf) {
             if (err) { return nextSeries(err) }
 
             agent
-              .post(urlBase + '/robert-baratheon/messages/d6wb1XVgRvzm/QLP8gxJ13z6D/answerInvite')
+              .post(urlBase + '/robert-baratheon/messages/' + hashids.encode(5) + '/' + hashids.encode(15) + '/answerInvite') // NOTE: IDs changes
               .accept('application/json')
               .send({
                 _csrf: csrf,

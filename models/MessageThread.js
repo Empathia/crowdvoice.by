@@ -377,98 +377,106 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
       }
 
       var message = new Message(params),
-        thread = this;
+        thread = new MessageThread(this);
 
-      message.save(function (err) {
+      thread.hiddenForSender = false
+      thread.hiddenForReceiver = false
+
+      thread.save(function (err) {
         if (err) { return callback(err) }
 
-        var receiverEntity,
-          realReceiverEntity,
-          receiverUser
+        message.save(function (err) {
+          if (err) { return callback(err) }
 
-        async.series([
-          // get receiver entity, could be org or person
-          function (next) {
-            Entity.findById(message.receiverEntityId, function (err, entity) {
-              if (err) { return next(err) }
+          var receiverEntity,
+            realReceiverEntity,
+            receiverUser
 
-              receiverEntity = entity[0]
-
-              return next()
-            })
-          },
-
-          // get real receiver entity, can only be person
-          function (next) {
-            if (receiverEntity.type === 'person') {
-              realReceiverEntity = receiverEntity
-              return next()
-            }
-
-            EntityOwner.find({ owned_id: receiverEntity.id }, function (err, ownership) {
-              if (err) { return next(err) }
-
-              Entity.findById(ownership[0].ownerId, function (err, entity) {
+          // setup for sending emails
+          async.series([
+            // get receiver entity, could be org or person
+            function (next) {
+              Entity.findById(message.receiverEntityId, function (err, entity) {
                 if (err) { return next(err) }
 
-                realReceiverEntity = entity[0]
+                receiverEntity = entity[0]
 
                 return next()
               })
-            })
-          },
+            },
 
-          // get user of real receiver entity
-          function (next) {
-            User.find({ entity_id: realReceiverEntity.id }, function (err, user) {
-              if (err) { return next(err) }
+            // get real receiver entity, can only be person
+            function (next) {
+              if (receiverEntity.type === 'person') {
+                realReceiverEntity = receiverEntity
+                return next()
+              }
 
-              receiverUser = user[0]
+              EntityOwner.find({ owned_id: receiverEntity.id }, function (err, ownership) {
+                if (err) { return next(err) }
 
-              return next()
-            })
-          },
+                Entity.findById(ownership[0].ownerId, function (err, entity) {
+                  if (err) { return next(err) }
 
-          // send emails
-          function (next) {
-            if (params.type === 'message') {
+                  realReceiverEntity = entity[0]
 
-              NotificationMailer.newMessage({
-                entity: receiverEntity,
-                realEntity: realReceiverEntity,
-                user: receiverUser,
-              }, {
-                thread: thread,
-                message: message
-              }, next);
+                  return next()
+                })
+              })
+            },
 
-            } else if (params.type.match(/request_(voice|organization)/)) {
+            // get user of real receiver entity
+            function (next) {
+              User.find({ entity_id: realReceiverEntity.id }, function (err, user) {
+                if (err) { return next(err) }
 
-              NotificationMailer.newRequest({
-                entity: receiverEntity,
-                realEntity: realReceiverEntity,
-                user: receiverUser,
-              }, {
-                thread: thread,
-                message: message
-              }, next);
+                receiverUser = user[0]
 
-            } else if (params.type.match(/invitation_(voice|organization)/)) {
+                return next()
+              })
+            },
 
-              NotificationMailer.newInvitation({
-                entity: receiverEntity,
-                realEntity: realReceiverEntity,
-                user: receiverUser,
-              }, {
-                thread: thread,
-                message: message
-              }, next);
-            }
-          },
-        ], function (err) {
-          return callback(err, message)
-        })
-      });
+            // send emails
+            function (next) {
+              if (params.type === 'message') {
+
+                NotificationMailer.newMessage({
+                  entity: receiverEntity,
+                  realEntity: realReceiverEntity,
+                  user: receiverUser,
+                }, {
+                  thread: thread,
+                  message: message
+                }, next);
+
+              } else if (params.type.match(/request_(voice|organization)/)) {
+
+                NotificationMailer.newRequest({
+                  entity: receiverEntity,
+                  realEntity: realReceiverEntity,
+                  user: receiverUser,
+                }, {
+                  thread: thread,
+                  message: message
+                }, next);
+
+              } else if (params.type.match(/invitation_(voice|organization)/)) {
+
+                NotificationMailer.newInvitation({
+                  entity: receiverEntity,
+                  realEntity: realReceiverEntity,
+                  user: receiverUser,
+                }, {
+                  thread: thread,
+                  message: message
+                }, next);
+              }
+            },
+          ], function (err) {
+            return callback(err, message)
+          })
+        });
+      })
     },
 
     /* Has Many Messages Relationship
