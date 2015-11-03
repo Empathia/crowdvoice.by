@@ -202,7 +202,7 @@ Class(CV.Views, 'OrganizationProfile').includes(NodeSupport, CV.WidgetUtils)({
                 entity :  this.entity
             })).render(this._actionsElementWrapper);
         },
-        
+
         /*
          * Applies Resize and z-index changes to hide the image when scrolling
          */
@@ -215,7 +215,7 @@ Class(CV.Views, 'OrganizationProfile').includes(NodeSupport, CV.WidgetUtils)({
                 if (distanceY < 50) {
                     profileImage.style.transform = 'scale('+newScale+')';
                     profileImage.style.zIndex = '1';
-                }else{
+                } else {
                     profileImage.style.zIndex = '0';
                 }
             });
