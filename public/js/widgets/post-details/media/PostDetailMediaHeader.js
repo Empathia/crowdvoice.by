@@ -41,12 +41,14 @@ Class(CV, 'PostDetailMediaHeader').inherits(Widget).includes(CV.WidgetUtils)({
             }
 
             posts.forEach(function(post) {
-                this.appendChild(new CV.PostDetailMediaThumb({
-                    name : 'thumb_' + post.id,
-                    data : post
-                })).render(this.scrollbar.getViewElement());
-                this['thumb_' + post.id].bind('image:loaded', this._updateScrollbarRef);
-                this['thumb_' + post.id].bind('click', this._thumbClickHandlerRef);
+                if (post.postImages && post.postImages.small) {
+                    this.appendChild(new CV.PostDetailMediaThumb({
+                        name : 'thumb_' + post.id,
+                        data : post
+                    })).render(this.scrollbar.getViewElement());
+                    this['thumb_' + post.id].bind('image:loaded', this._updateScrollbarRef);
+                    this['thumb_' + post.id].bind('click', this._thumbClickHandlerRef);
+                }
             }, this);
 
             this._updateScrollbar();
