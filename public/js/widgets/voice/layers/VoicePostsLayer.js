@@ -37,7 +37,7 @@ Class(CV, 'VoicePostsLayer').inherits(Widget).includes(BubblingSupport)({
             this._postWidgets = [];
             this._indicatorWidgets = [];
 
-            this.el.querySelector('.cv-voice-post-layer__tick-month').textContent = moment(this.dateString).format('MMM YYYY');
+            this.el.querySelector('.cv-voice-post-layer__tick-month').textContent = moment(this.dateString).format('MMM ’YY');
             this.el.querySelector('.cv-voice-posts-layer__detector').dataset.date = this.dateString;
             this.el.dataset.date = this.dateString;
 
