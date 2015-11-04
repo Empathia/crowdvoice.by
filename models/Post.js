@@ -1,6 +1,6 @@
 var ImageUploader = require(__dirname + '/../lib/image_uploader.js');
 var url = require('url');
-var favicon = require('favicon');
+var favicon = require('find-favicon');
 var crypto = require('crypto');
 var fsextra = require('fs-extra');
 var http = require('http');
@@ -309,21 +309,21 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
                   return next();
                 }
 
-                if (!url.parse(faviconURL).host) {
+                if (!url.parse(faviconURL.url).host) {
                   return next();
                 }
 
                 var faviconHash = crypto.createHash('md5')
-                  .update(faviconURL)
+                  .update(faviconURL.url)
                   .digest('hex');
 
                 var req = http;
 
-                if (faviconURL.match('https')) {
+                if (faviconURL.url.match('https')) {
                   req = https;
                 }
 
-                req.get(faviconURL, function(res) {
+                req.get(faviconURL.url, function(res) {
                   var extension;
 
                   if (!res.headers['content-type'].match('image')) {
