@@ -30,7 +30,7 @@ Class(CV, 'VoiceCoverMiniClean').inherits(Widget).includes(CV.WidgetUtils)({
         _setup : function _setup() {
             this.dom.updateAttr('src', this.el.querySelector('.voice-cover'), this.data.images.small.url);
             this.dom.updateText(this.el.querySelector('.voice-cover-title'), this.data.title);
-            this.dom.updateText(this.el.querySelector('.author-username'), this.dta.owner.name);
+            this.dom.updateText(this.el.querySelector('.author-username'), this.data.owner.name);
         }
     }
 });
