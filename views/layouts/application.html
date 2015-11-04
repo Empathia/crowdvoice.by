@@ -1,3 +1,7 @@
+<!--
+    Version : <%= CONFIG.gitRevision %>
+-->
+
 <!doctype html>
 <% if (typeof pageName !== "undefined") { %>
 <html lang="en" class="<%= pageName %>">
@@ -14,8 +18,8 @@
   <script type="text/javascript">
   window.currentPerson = <%= JSON.stringify(currentPerson) %>;
   </script>
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="/dist/bundle.js"></script>
+  <script src="/socket.io/socket.io.js?version=<%= CONFIG.gitRevision %>"></script>
+  <script src="/dist/bundle.js?version=<%= CONFIG.gitRevision %>"></script>
 </head>
 <body>
   <svg width="0" height="0" style="position: absolute;"><defs><linearGradient x1="31.38%" y1="0%" x2="74.816%" y2="100%" id="bea"><stop stop-color="#3AE0D0" offset="0%"/><stop stop-color="#EE8100" offset="100%"/></linearGradient><filter x="-50%" y="-50%" width="200%" height="200%" filterUnits="objectBoundingBox" id="beb"><feOffset dy="1" in="SourceAlpha" result="shadowOffsetOuter1"/><feGaussianBlur stdDeviation=".5" in="shadowOffsetOuter1" result="shadowBlurOuter1"/><feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.175 0" in="shadowBlurOuter1" result="shadowMatrixOuter1"/><feMerge><feMergeNode in="shadowMatrixOuter1"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><symbol viewBox="0 0 32 36" id="svg-logo"><g fill="none" fill-rule="evenodd"><path stroke-opacity=".247" stroke="#000" fill="url(#bea)" d="M15.988 0L32 9v18l-16.012 9L0 27V9z"/><text fill="#fff" filter="url(#beb)" font-family="Open Sans" font-size="17" font-weight="526"><tspan x="5" y="25" fill="#FFF">CV</tspan></text></g></symbol></svg>
