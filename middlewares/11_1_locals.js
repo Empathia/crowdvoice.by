@@ -214,7 +214,8 @@ module.exports = function(req, res, next) {
                 var voiceTitles = voices.map(function(item) {
                   return {
                     id : hashids.encode(item.id),
-                    name : item.title
+                    name : item.title,
+                    type : item.type
                   }
                 });
 
