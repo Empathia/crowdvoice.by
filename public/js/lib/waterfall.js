@@ -35,7 +35,7 @@
         this.AVAILABLE_WIDTH = (c.offsetWidth || c.innerWidth);
         this._colWidth = this.columnWidth || this._getVisibleItems()[0].offsetWidth;
         this._blocks = [];
-        columnsCount = ~~(this.AVAILABLE_WIDTH / (this._colWidth + this.gutter));
+        columnsCount = ~~(this.AVAILABLE_WIDTH / (this._colWidth + this.gutter * 2));
 
         if (this.centerItems) {
             this._spaceLeft = (this.AVAILABLE_WIDTH - ((this._colWidth * columnsCount) + (this.gutter * columnsCount - 1))) / 2;
