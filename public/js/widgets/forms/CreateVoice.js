@@ -457,8 +457,8 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             });
 
             this.voiceLocation.setValue(address.join(', ') + '.');
-            this.voiceLatitude.setValue(r.geometry.location.G);
-            this.voiceLongitude.setValue(r.geometry.location.K);
+            this.voiceLatitude.setValue(r.geometry.location.lat());
+            this.voiceLongitude.setValue(r.geometry.location.lng());
         },
 
         _sendFormHandler : function _sendFormHandler() {
