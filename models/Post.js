@@ -334,7 +334,7 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
                     extension = res.headers['content-type'].replace(/image\//, '');
                   }
 
-                  if (!CONFIG.env || CONFIG.env === 'development') {
+                  if (CONFIG.environment === 'development') {
 
                     var file = path.join(process.cwd(), '/public/uploads/favicons/', faviconHash);
 
@@ -354,7 +354,7 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
                     var uploadParams = {
                       Bucket: 'crowdvoice.by',
                       ACL: 'public-read',
-                      Key : CONFIG.env + '/favicons/' + faviconHash
+                      Key : CONFIG.environment + '/favicons/' + faviconHash
                     }
 
                     model.faviconPath = faviconHash;
