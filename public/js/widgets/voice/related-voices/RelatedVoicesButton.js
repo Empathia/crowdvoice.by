@@ -54,13 +54,13 @@ Class(CV, 'RelatedVoicesButton').inherits(CV.UI.Button)({
          * @method _clickHandler <private>
          */
         _clickHandler : function _clickHandler() {
-            if (this.relatedVoicesModal) {
-                this.relatedVoicesModal = this.relatedVoicesModal.destroy();
+            if (this.relatedVoicesWidget) {
+                this.relatedVoicesWidget = this.relatedVoicesWidget.destroy();
             }
 
             if (this.editMode) {
                 this.appendChild(new CV.UI.Modal({
-                    name : 'relatedVoicesModal',
+                    name : 'relatedVoicesWidget',
                     title : 'Manage Related Voices',
                     action : CV.ManageRelatedVoices,
                     width : 900,
@@ -72,9 +72,9 @@ Class(CV, 'RelatedVoicesButton').inherits(CV.UI.Button)({
                 })).render(document.body);
             } else {
                 this.appendChild(new CV.PopoverBlocker({
-                    name : 'relatedVoicesModal',
+                    name : 'relatedVoicesWidget',
                     title : 'Related Voices',
-                    placement : 'bottom',
+                    placement : 'bottom-right',
                     showCloseButton : true,
                     className : 'voice-related-voices-bubble',
                     content : CV.ManageRelatedVoices,
@@ -83,13 +83,12 @@ Class(CV, 'RelatedVoicesButton').inherits(CV.UI.Button)({
                         editMode : false,
                         voice : this.voice
                     }
-                })).render(this.el.parentElement).activate();
+                })).render(this.el.parentElement);
             }
 
-            this.relatedVoicesModal.bubbleAction.setup();
-
             requestAnimationFrame(function() {
-                this.relatedVoicesModal.activate();
+                this.relatedVoicesWidget.activate();
+                this.relatedVoicesWidget.bubbleAction.setup();
             }.bind(this));
         },
 

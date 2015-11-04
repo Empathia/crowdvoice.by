@@ -2,7 +2,6 @@
  * Declares the required abstract methods to handle the Voice Posts on Moderation Mode
  */
 Class(CV, 'VoicePostLayersModerateAbstract').inherits(CV.VoicePostLayers)({
-
     prototype : {
         setup : function setup() {
             CV.VoicePostLayers.prototype.setup.call(this);
@@ -26,7 +25,7 @@ Class(CV, 'VoicePostLayersModerateAbstract').inherits(CV.VoicePostLayers)({
             this._socket.emit('getUnapprovedMonthPosts', id, dateString, scrollDirection);
         },
 
-        /* Implementation to add and render post to a layer.
+        /* Implementation to add and render posts to a layer.
          * @method addPosts <public, abstract> [Function]
          */
         addPosts : function addPosts(layer, postsData) {
@@ -103,7 +102,6 @@ Class(CV, 'VoicePostLayersModerateAbstract').inherits(CV.VoicePostLayers)({
          */
         __bindEvents : function __bindEvents() {
             this._socket.on('unapprovedMonthPosts', this._loadLayerRef);
-
             return this;
         },
 
