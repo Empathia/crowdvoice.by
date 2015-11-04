@@ -114,12 +114,15 @@ module.exports = {
      * @return [Boolean]
      */
     canInviteEntityToAVoice : function canInviteEntityToAVoice(entity) {
-        if (!this.get().voiceIds.length) {
+        if (!this.get().voiceNames.length) {
             return false;
         }
 
-        return (this.get().voiceIds.some(function(voiceid) {
-            return (entity.voiceIds.indexOf(voiceid) === -1);
+        return (this.get().voiceNames.some(function(voice) {
+            if (voice.type === CV.VoiceView.TYPE_CLOSED) {
+                return (entity.voiceIds.indexOf(voice.id) === -1);
+            }
+            return false;
         }));
     },
 

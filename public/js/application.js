@@ -315,7 +315,7 @@ require('./widgets/forms/send-message.js');
 require('./widgets/forms/RequestToContribute');
 require('./widgets/forms/CreateVoice');
 require('./widgets/forms/CreateOrganization');
-require('./widgets/forms/invite-to-contribute.js');
+require('./widgets/forms/InviteToContribute');
 require('./widgets/forms/invite-to-organization.js');
 require('./widgets/forms/users-list.js');
 require('./widgets/forms/request-membership.js');
