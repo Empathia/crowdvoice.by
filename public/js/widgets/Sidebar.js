@@ -19,11 +19,6 @@ Class(CV, 'Sidebar').inherits(Widget).includes(CV.WidgetUtils)({
             this.linkElements = [].slice.call(this.el.querySelectorAll('.sidebar-link'), 0);
             this._yield = document.body.querySelector('.app-wrapper');
 
-            this.appendChild( new CV.HelpDesk({
-                name : 'helpDesk',
-                element : this.linkElements
-            }));
-
             this._checkAndActivateCurrentLink();
         },
 
