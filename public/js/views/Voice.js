@@ -1,5 +1,6 @@
 /* globals App */
 var Person = require('./../lib/currentPerson');
+var API = require('./../lib/api');
 var Events = require('./../lib/events');
 var inlineStyle = require('./../lib/inline-style');
 
@@ -280,10 +281,41 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
             this.bind('post:display:detail', function (ev) {
                 this.displayGallery(ev);
             }.bind(this));
+
+            this.bind('post:moderate:delete', this._postDelete.bind(this));
         },
 
         _editVoiceButtonClicked : function _editVoiceButtonClicked() {
             App.showCreateVoiceModal(this.data);
+        },
+
+        /* Listens the `post:moderate:delete` event bubbling up.
+         * Deletes an specific published Post record.
+         * @method _postDelete <private> [Function]
+         * @return undefined
+         */
+        _postDelete : function _postDelete(ev) {
+            ev.stopPropagation();
+
+            if (Person.ownerOf('voice', ev.data.parent.voice.id) === false) {
+                throw new Error('Not autorized to perform this action.');
+            }
+
+            API.postDelete({
+                profileName : App.Voice.data.owner.profileName,
+                voiceSlug : App.Voice.data.slug,
+                postId : ev.data.parent.id
+            }, function(err, res) {
+                console.log(err);
+                console.log(res);
+
+                if (err) {
+                    return;
+                }
+
+                var layer = ev.data.parent.parent;
+                layer.removePost(ev.data.parent);
+            }.bind(this));
         },
 
         /* Renders the PostDetail Overlay

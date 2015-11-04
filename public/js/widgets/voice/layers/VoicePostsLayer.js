@@ -14,7 +14,7 @@ Class(CV, 'VoicePostsLayer').inherits(Widget).includes(BubblingSupport)({
     prototype : {
         /* OPTIONS */
         dateString : '',
-        columnWidth : 350,
+        columnWidth : 300,
         allowPostEditing : false,
 
         /* PRIVATE PROPERTIES */
@@ -150,7 +150,7 @@ Class(CV, 'VoicePostsLayer').inherits(Widget).includes(BubblingSupport)({
 
                 post = CV.Post.create(posts[i]);
                 post.addActions();
-                post.el.dataset.date = moment(posts[i].publishedAt).format('YYYY-MM-DD');
+                post.el.dataset.date = moment(post.publishedAt).format('YYYY-MM-DD');
 
                 this.appendChild(post).render(frag);
                 this._postWidgets.push(post);
@@ -331,21 +331,30 @@ Class(CV, 'VoicePostsLayer').inherits(Widget).includes(BubblingSupport)({
             }
         },
 
+        /* Removes an specific Post from the UI.
+         * It will destroy the post instance and remove it from the PostsRegistry.
+         * @method removePost <public> [Function]
+         * @argument post <required> [PostInstance] the post instance to remove.
+         * @return undefined
+         */
         removePost : function removePost(post) {
+            var dateString = moment(post.publishedAt).format('YYYY-MM');
+            var monthPostsFromRegistry = this.parent.getPostsRegistry(dateString);
+            var postWidgetsIndex = this._postWidgets.indexOf(post);
+
+            (monthPostsFromRegistry || []).some(function(p, i) {
+                if (post.id === p.id) {
+                    monthPostsFromRegistry.splice(i, 1);
+                    return true;
+                }
+            });
+
             post.destroy();
             this.removeChild(post);
 
-            var index = this._postWidgets.indexOf(post);
-            if (index > -1) {
-                this._postWidgets.splice(index, 1);
+            if (postWidgetsIndex > -1) {
+                this._postWidgets.splice(postWidgetsIndex, 1);
             }
-
-            // this.getIndicators().forEach(function(indicator) {
-            //     this.removeChild(indicator);
-            // }, this);
-            // this.ticksContainerElement.innerHTML = '';
-            // CV.VoicePostIndicator.flushRegisteredYValues();
-            // this._addPostIndicators(this._postWidgets);
 
             if (this._postWidgets.length === 0) {
                 return this.destroy();
