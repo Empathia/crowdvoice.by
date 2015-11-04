@@ -2,6 +2,8 @@
 /* Subclass of VoicePostLayers
  * Declares the required abstract methods to handle the Voice Posts on Normal Mode
  */
+var Person = require('./../../../lib/currentPerson');
+
 Class(CV, 'VoicePostLayersVoiceAbstract').inherits(CV.VoicePostLayers)({
     prototype : {
         setup : function setup() {
@@ -26,11 +28,18 @@ Class(CV, 'VoicePostLayersVoiceAbstract').inherits(CV.VoicePostLayers)({
             this._socket.emit('getApprovedMonthPosts', id, dateString, scrollDirection);
         },
 
-        /* Implementation to add and render post to a layer.
+        /* Implementation to add and render posts to a layer.
          * @method addPosts <public, abstract> [Function]
          */
         addPosts : function addPosts(layer, postsData) {
-            layer.addPosts(postsData);
+            if (Person.ownerOf('voice', App.Voice.data.id)) {
+                layer.addEditablePosts(postsData).getPosts().forEach(function(post) {
+                    post.addRemoveButton();
+                });
+            } else {
+                layer.addPosts(postsData);
+            }
+
             layer.filterPosts(App.Voice.voiceFooter.filterDropdown.getSelectedSourceTypes());
         },
 

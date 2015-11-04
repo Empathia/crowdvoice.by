@@ -26,8 +26,6 @@ Class(CV, 'FeedItem').inherits(Widget).includes(CV.WidgetUtils)({
             type += this.prototype.format.capitalizeFirstLetter(term);
         }, this);
 
-        console.log(type);
-
         return new window.CV['Feed' + type](config);
     },
 
