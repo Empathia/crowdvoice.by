@@ -26,7 +26,7 @@ var PostsPresenter = Module('PostsPresenter')({
       var faviconPath;
 
       if (post.faviconPath) {
-        if (!CONFIG.envronment || CONFIG.environment === 'development') {
+        if (CONFIG.environment === 'development') {
           faviconPath = '/uploads/favicons/' + post.faviconPath;
         } else {
           faviconPath = '//s3.amazonaws.com/crowdvoice.by/' + CONFIG.environment + '/favicons/' + post.faviconPath;

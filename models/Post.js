@@ -334,7 +334,7 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
                     extension = res.headers['content-type'].replace(/image\//, '');
                   }
 
-                  if (!CONFIG.environment || CONFIG.environment === 'development') {
+                  if (CONFIG.environment === 'development') {
 
                     var file = path.join(process.cwd(), '/public/uploads/favicons/', faviconHash);
 
