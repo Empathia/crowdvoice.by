@@ -33,11 +33,13 @@ Class(CV, 'InviteToContribute').inherits(Widget).includes(CV.WidgetUtils)({
         _setup : function _setup() {
             var allVoices = [];
             Person.get().voiceNames.forEach(function(voice) {
-                if (this.data.voiceIds.indexOf(voice.id) === -1) {
-                    allVoices.push({
-                        label : voice.name,
-                        value : voice.id
-                    });
+                if (voice.type === CV.VoiceView.TYPE_CLOSED) {
+                    if (this.data.voiceIds.indexOf(voice.id) === -1) {
+                        allVoices.push({
+                            label : voice.name,
+                            value : voice.id
+                        });
+                    }
                 }
             }, this);
 
