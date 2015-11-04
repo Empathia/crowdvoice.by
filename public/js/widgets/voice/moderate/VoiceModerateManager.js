@@ -1,6 +1,7 @@
 /* globals App */
 /* Handles the modetate window ui. Uses VoicePostLayersManager to create the layers and fill them with posts.
  */
+var Person = require('./../../../lib/currentPerson');
 var API = require('./../../../lib/api');
 
 Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
@@ -63,11 +64,11 @@ Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
          * - ESC to close the widget
          */
         _bindEvents : function _bindEvents() {
-            this.bind('post:moderate:delete', this._postModerateDelete.bind(this));
-
             this.bind('post:moderate:published', function () {
                 this._publishedPosts = true;
             }.bind(this));
+
+            this.bind('post:moderate:delete', this._postModerateDelete.bind(this));
 
             this.footer.bind('done', this.destroy.bind(this));
 
@@ -83,7 +84,18 @@ Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
             return this;
         },
 
+        /* Listens the `post:moderate:delete` event bubbling up.
+         * Deletes an specific (unmoderated) Post record.
+         * @method _postDelete <private> [Function]
+         * @return undefined
+         */
         _postModerateDelete : function _postModerateDelete(ev) {
+            ev.stopPropagation();
+
+            if (Person.ownerOf('voice', ev.data.parent.voice.id) === false) {
+                throw new Error('Not autorized to perform this action.');
+            }
+
             API.postDelete({
                 profileName : App.Voice.data.owner.profileName,
                 voiceSlug : App.Voice.data.slug,
@@ -96,13 +108,9 @@ Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
                     return;
                 }
 
-                setTimeout(function() {
-                    var layer = ev.data.parent.parent;
-                    layer.removePost(ev.data.parent);
-                }.bind(this), 1000);
+                var layer = ev.data.parent.parent;
+                layer.removePost(ev.data.parent);
             }.bind(this));
-
-            this._publishedPosts = true;
         },
 
         /* Handle the scrollableArea scroll event.

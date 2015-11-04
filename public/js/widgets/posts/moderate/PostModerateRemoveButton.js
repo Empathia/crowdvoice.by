@@ -1,26 +1,81 @@
+var Events = require('./../../../lib/events');
+
 Class(CV, 'PostModerateRemoveButton').inherits(Widget).includes(BubblingSupport)({
     HTML : '\
         <button class="post-moderate-remove-btn cv-button negative tiny -abs">\
             <svg class="-s16">\
                 <use xlink:href="#svg-trash"></use>\
             </svg>\
-        </button>\
-    ',
+        </button>',
 
     prototype : {
         init : function init(config) {
             Widget.prototype.init.call(this, config);
             this.el = this.element[0];
 
-            this._bindEditEvents();
+            this._setup()._bindEvents();
         },
 
-        _bindEditEvents : function _bindEditEvents() {
+        _setup : function _setup() {
+            this.appendChild(new CV.PopoverConfirm({
+                name : 'confirmPopover',
+                data : {
+                    confirm : {
+                        label : 'Delete Post',
+                        className : '-color-negative'
+                    }
+                }
+            }));
+
+            this.appendChild(new CV.PopoverBlocker({
+                name : 'popover',
+                className : 'delete-post-popover  -text-left -nw',
+                placement : 'left',
+                content : this.confirmPopover.el
+            }));
+
+            return this;
+        },
+
+        _bindEvents : function _bindEvents() {
             this._clickHandlerRef = this._clickHandler.bind(this);
-            this.el.addEventListener('click', this._clickHandlerRef);
+            Events.on(this.el, 'click', this._clickHandlerRef);
+
+            this._popOverConfirmClickHandlerRef = this._popOverConfirmClickHandler.bind(this);
+            this.confirmPopover.bind('confirm', this._popOverConfirmClickHandlerRef);
+
+            this._popOverCancelClickHandlerRef = this._popOverCancelClickHandler.bind(this);
+            this.confirmPopover.bind('cancel', this._popOverCancelClickHandlerRef);
+
+            return this;
         },
 
-        _clickHandler : function _clickHandler() {
+        /* Handles the click event on the button.
+         * @method _clickHandler <private> [Function]
+         * @return undefined
+         */
+        _clickHandler : function _clickHandler(ev) {
+            ev.stopPropagation();
+            this.popover.render(ev.currentTarget).activate();
+        },
+
+        /* Handles the popover 'cancel' custom event.
+         * Just close the popover.
+         * @method _popOverCancelClickHandler <private> [Function]
+         * @return undefined
+         */
+        _popOverCancelClickHandler : function _popOverCancelClickHandler(ev) {
+            ev.stopPropagation();
+            this.popover.deactivate();
+        },
+
+        /* Handles the popover 'confirm' custom event.
+         * @method _popOverConfirmClickHandler <private> [Function]
+         * @return undefined
+         */
+        _popOverConfirmClickHandler : function _popOverConfirmClickHandler(ev) {
+            ev.stopPropagation();
+            this.popover.deactivate();
             this.disable();
             this.dispatch('post:moderate:delete', {data: this});
         },
@@ -40,7 +95,7 @@ Class(CV, 'PostModerateRemoveButton').inherits(Widget).includes(BubblingSupport)
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
 
-            this.el.removeEventListener('click', this._clickHandlerRef);
+            Events.off(this.el, 'click', this._clickHandlerRef);
             this._clickHandlerRef = null;
 
             return null;
