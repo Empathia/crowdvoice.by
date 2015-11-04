@@ -186,6 +186,7 @@ require('./widgets/view-feed/FeedSidebar');
 require('./widgets/view-feed/FeedSidebarStats');
 require('./widgets/view-feed/FeedOnboarding');
 require('./widgets/view-feed/FeedAnonymousOnboarding');
+require('./widgets/HelpDesk');
 
 require('./widgets/voice/PostsRegistry');
 require('./widgets/voice/Onboarding');
