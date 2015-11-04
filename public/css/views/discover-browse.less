@@ -3,3 +3,75 @@
     padding: 0 25px 50px;
   }
 }
+.browse-page .browse-element{
+	float: left;
+	padding-bottom: 100px;
+	text-align: center;
+
+	a.element_link{
+		display: inline-block;
+		width: 100%;
+		div{
+			margin: 0px 10px;
+			border: 1px solid @color-card-wrapper;
+			box-shadow: 1px 1px 5px @color-shadow-select-body;
+			border-radius: 5px;
+			padding: 20px 0px;
+			background-position: center;
+			background-size: cover;
+			transition: background-size 250ms ease;
+			&.browse-element-button-trending{
+				background-image: url('/img/browse-button-trending.jpg');
+			}
+			&.browse-element-button-newest{
+				background-image: url('/img/browse-button-newest.jpg');
+			}
+			&.browse-element-button-recommended{
+				background-image: url('/img/browse-button-recommended.jpg');
+			}
+
+			svg{
+				width: 90px;
+				fill: rgba(240,240,240,0.6);
+			}
+		}
+		div:before{
+			 position: absolute;
+			 content:"";
+			 top:0;
+			 width:100%;
+			 height:100%;
+			 display: block;
+			 border-radius: 5px;
+			 background-color: rgba(0,0,0,0.7);
+			 transition: background-color 250ms ease;
+		}
+	}
+
+	a.element_link:hover{
+		div{
+			background-size: 120%;
+			svg{
+				&.svg-trending{
+					fill: url('#trending-gradient');
+				}
+				&.svg-new{
+					fill: url('#newest-gradient');
+				}
+				&.svg-recommended{
+					fill: url('#recommended-gradient');
+				}
+			}
+		}
+
+		div:before{
+			background-color: rgba(0,0,0,0.5);
+		}
+	}
+	p{
+		padding-top: 10px;
+		font-size: 18px;
+	  	color: white;
+		text-transform: uppercase;
+	}
+}
