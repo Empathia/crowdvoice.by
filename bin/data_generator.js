@@ -1294,7 +1294,55 @@ async.series([function(next) {
             if (err) { return nextPost(err); }
 
             post.save(function(err, result) {
-              nextPost(err, post);
+              if (err) { return nextPost(err); }
+
+              var fibonacci = [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987];
+
+              if (!post.approved) {
+                async.series([
+                  // VOTES UP
+                  function (nextSeries) {
+                    async.times(casual.random_element(fibonacci), function (n, doneTime) {
+                      var vote = new Vote({
+                        value: +1,
+                        postId: post.id,
+                        entityId: 0,
+                        ip: '127.0.0.1'
+                      });
+
+                      vote.save(function (err) {
+                        if (err) { return doneTime(err); }
+
+                        return doneTime(null, vote);
+                      });
+                    }, nextSeries);
+                  },
+
+                  // VOTES DOWN
+                  function (nextSeries) {
+                    async.times(casual.random_element(fibonacci), function (n, doneTime) {
+                      var vote = new Vote({
+                        value: -1,
+                        postId: post.id,
+                        entityId: 0,
+                        ip: '127.0.0.1'
+                      });
+
+                      vote.save(function (err) {
+                        if (err) { return doneTime(err); }
+
+                        return doneTime(null, vote);
+                      });
+                    }, nextSeries);
+                  },
+                ], function (err) {
+                  if (err) { return nextPost(err); }
+
+                  return nextPost(null, post);
+                });
+              } else {
+                return nextPost(null, post);
+              }
             });
           });
         });
