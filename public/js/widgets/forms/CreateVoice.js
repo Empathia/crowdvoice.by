@@ -279,6 +279,9 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                     owner : this.data.owner,
                 })).render(owncol);
 
+                this._ownershipChangedHandlerRef = this._ownershipChangedHandler.bind(this);
+                this.voiceOwnershipDropdown.bind('ownership:changed', this._ownershipChangedHandlerRef);
+
                 this.voiceOwnershipDropdown.selectByEntity(this.data.owner);
                 row.appendChild(owncol);
 
@@ -290,6 +293,9 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                     this.appendChild(new CV.UI.DropdownVoiceOwnership({
                         name : 'voiceOwnershipDropdown'
                     })).render(owncol);
+
+                    this._ownershipChangedHandlerRef = this._ownershipChangedHandler.bind(this);
+                    this.voiceOwnershipDropdown.bind('ownership:changed', this._ownershipChangedHandlerRef);
 
                     this.voiceOwnershipDropdown.selectByEntity(Person.get());
                     row.appendChild(owncol);
@@ -325,6 +331,31 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             Events.on(this.voiceSlug.getInput(), 'keyup', this._letFreeSlugRef);
 
             return this;
+        },
+
+        _ownershipChangedHandler : function _ownershipChangedHandler(ev) {
+            ev.stopPropagation();
+
+            if (ev.data.dataset.isOrganization === "true") {
+                if (this.checkAnon && this.checkAnon.isChecked()) {
+                    this.checkAnon.uncheck();
+
+                    if (this._flashMessage) {
+                        this._flashMessage = this._flashMessage.destroy();
+                    }
+
+                    this.appendChild(new CV.Alert({
+                        name : '_flashMessage',
+                        type : 'warning',
+                        text : 'You cannot create voices anonymously and set its ownership to an organization.',
+                        className : '-mb1'
+                    })).render(this.el, this.el.firstElementChild);
+                }
+
+                this.checkAnon.disable();
+            } else {
+                this.checkAnon.enable();
+            }
         },
 
         /* Watch the voiceTitle input change event, auto-generates a valid slug
@@ -457,8 +488,8 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             });
 
             this.voiceLocation.setValue(address.join(', ') + '.');
-            this.voiceLatitude.setValue(r.geometry.location.G);
-            this.voiceLongitude.setValue(r.geometry.location.K);
+            this.voiceLatitude.setValue(r.geometry.location.lat());
+            this.voiceLongitude.setValue(r.geometry.location.lng());
         },
 
         _sendFormHandler : function _sendFormHandler() {

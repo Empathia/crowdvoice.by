@@ -73,7 +73,7 @@ Class(CV, 'VoiceCoverMini').inherits(Widget).includes(CV.WidgetUtils)({
             }
             this.dom.updateText(this.el.querySelector('.voice-cover-title'), this.data.title);
 
-            this.dom.updateAttr('href', this.authorAnchor, '/' + this.data.owner.profileName);
+            this.dom.updateAttr('href', this.authorAnchor, '/' + this.data.owner.profileName + '/');
             this.dom.updateAttr('title', this.authorAnchor, this.data.owner.profileName + ' profile');
 
             this.dom.updateText(this.el.querySelector('.author-username'), this.data.owner.name);

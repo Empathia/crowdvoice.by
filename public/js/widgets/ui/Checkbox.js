@@ -63,6 +63,16 @@ Class(CV.UI, 'Checkbox').inherits(Widget).includes(CV.WidgetUtils)({
             return this;
         },
 
+        /* Sets the checkbox check property as `false`.
+         * @method uncheck <public>
+         * @return Checkbox
+         */
+        uncheck : function uncheck() {
+            this.checkbox.checked = false;
+            this._changeHandler();
+            return this;
+        },
+
         /* Handles the checkbox `change` event.
          * @method _changeHandler <private>
          * @return undefined
