@@ -20,7 +20,7 @@ Class(CV, 'Sidebar').inherits(Widget).includes(CV.WidgetUtils)({
             this._yield = document.body.querySelector('.app-wrapper');
             this.helpSupport = this.el.querySelector('.sidebar-link-help-support');
             this.helpSupport.addEventListener('click', this._helpDeskAppend.bind(this));
-            
+
             this._checkAndActivateCurrentLink();
         },
 
@@ -110,12 +110,9 @@ Class(CV, 'Sidebar').inherits(Widget).includes(CV.WidgetUtils)({
         },
 
         _helpDeskAppend : function _helpDeskAppend(){
-            console.log('HelpDESK');
             if(this.helpDeskOverlay){
-                console.log('renderizando existente');
                 this.helpDeskOverlay.activate();
             }else{
-                console.log('Creando nuevo overlay');
                 this.appendChild( new CV.HelpDeskOverlay({     
                     name : 'helpDeskOverlay',
                     className : 'active'
