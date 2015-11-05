@@ -336,8 +336,12 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
         _ownershipChangedHandler : function _ownershipChangedHandler(ev) {
             ev.stopPropagation();
 
+            if (!this.checkAnon) {
+                return;
+            }
+
             if (ev.data.dataset.isOrganization === "true") {
-                if (this.checkAnon && this.checkAnon.isChecked()) {
+                if (this.checkAnon.isChecked()) {
                     this.checkAnon.uncheck();
 
                     if (this._flashMessage) {
