@@ -347,7 +347,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                     this.appendChild(new CV.Alert({
                         name : '_flashMessage',
                         type : 'warning',
-                        text : 'You cannot create voices anonymously and set its ownership to an organization.',
+                        text : 'You cannot create voices anonymously as an organization.',
                         className : '-mb1'
                     })).render(this.el, this.el.firstElementChild);
                 }
