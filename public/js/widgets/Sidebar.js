@@ -19,7 +19,8 @@ Class(CV, 'Sidebar').inherits(Widget).includes(CV.WidgetUtils)({
             this.linkElements = [].slice.call(this.el.querySelectorAll('.sidebar-link'), 0);
             this._yield = document.body.querySelector('.app-wrapper');
             this.helpSupport = this.el.querySelector('.sidebar-link-help-support');
-
+            this.helpSupport.addEventListener('click', this._helpDeskAppend.bind(this));
+            
             this._checkAndActivateCurrentLink();
         },
 
@@ -106,11 +107,10 @@ Class(CV, 'Sidebar').inherits(Widget).includes(CV.WidgetUtils)({
 
             this._mouseLeaveHandlerRef = this._mouseLeaveHandler.bind(this);
             this.el.addEventListener('mouseleave', this._mouseLeaveHandlerRef);
-
-            this.helpSupport.addEventListener('click', this._helpDeskAppend.bind(this));
         },
 
         _helpDeskAppend : function _helpDeskAppend(){
+            console.log('HelpDESK');
             if(this.helpDeskOverlay){
                 console.log('renderizando existente');
                 this.helpDeskOverlay.activate();

@@ -32,12 +32,6 @@ Class(CV, 'HelpDeskOverlay').inherits(Widget).includes(CV.WidgetUtils)({
 
 		_bindEvents : function _bindEvents() {
 			this.closeButton.el.addEventListener('click', this.deactivate.bind(this));
-		},
-
-		destroy : function destroy() {
-			Widget.prototype.destroy.call(this);
-			
-			return null;
 		}
 	}
 });
