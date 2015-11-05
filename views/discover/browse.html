@@ -15,36 +15,59 @@
   <section>
     <hr>
     <div class="homepage-category-list-row -row -pt3">
-      <div class="browse-element widget">
-        <div>
-          <a class="element_link" href="/discover/trending" alt="Trending">
-            <svg class="svg-trending"><use xlink:href="#svg-trending"></use></svg>
-          </a>
-          <p class="">
-          <a class=" -font-bold" href="/discover/trending" alt="Trending">Trending</a>
-          </p>
-        </div>
+    	<% if (currentPerson){ %>
+	    <div class="browse-element widget -col-4">
+	    <% } else { %>
+	    <div class="browse-element widget -col-6">
+	    <% } %>
+	      	<a class="element_link -tdn" href="/discover/trending" alt="Trending">
+		        <div class="browse-element-button-trending -rel">
+		            <svg class="svg-trending -rel">
+		            	<linearGradient id="trending-gradient" gradientTransform="rotate(100)">
+		            		<stop offset="20%" stop-color="#FF9000" />
+		            		<stop offset="100%" stop-color="#FF0000" />
+		            	</linearGradient>
+		            	<use xlink:href="#svg-trending"></use>
+		            </svg>
+		          	<p class="-font-bold -rel">Trending</p>
+		        </div>
+	        </a>
+	    </div>
+	    <% if (currentPerson){ %>
+	    <div class="browse-element widget -col-4">
+	    <% } else { %>
+	    <div class="browse-element widget -col-6">
+	    <% } %>
+      	<a class="element_link -tdn" href="/discover/new" alt="Newest">
+	        <div class="browse-element-button-newest -rel">
+	            <svg class="svg-new -rel">
+	            	<linearGradient id="newest-gradient" gradientTransform="rotate(10)">
+	            		<stop offset="0%" stop-color="#297FC2" />
+	            		<stop offset="70%" stop-color="#3FA2EE" />
+	            		<stop offset="100%" stop-color="#47AFFF" />
+	            	</linearGradient>
+	            	<use xlink:href="#svg-new"></use>
+	            </svg>
+	          	<p class="-font-bold -rel">Newest</p>
+	        </div>
+        </a>
       </div>
-      <div class="browse-element widget">
-        <div>
-          <a class="element_link" href="/discover/new" alt="Newest">
-            <svg class="svg-new"><use xlink:href="#svg-clock"></use></svg>
-          </a>
-          <p class="">
-          <a class=" -font-bold" href="/discover/new" alt="Newest">Newest</a>
-          </p>
-        </div>
+      <% if (currentPerson){ %>
+      <div class="browse-element widget -col-4">
+      	<a class="element_link -tdn" href="/discover/recommended" alt="Recommended">
+	        <div class="browse-element-button-recommended -rel">
+		        <svg class="svg-recommended -rel">
+		        	<linearGradient id="recommended-gradient" gradientTransform="rotate(330)">
+		        		<stop offset="10%" stop-color="#429321" />
+          				<stop offset="90%" stop-color="#B4EC51" />
+		        	</linearGradient>
+		        	<use xlink:href="#svg-thumbs-up"></use>
+		        </svg>
+		        <p class="-font-bold -rel">Recommended</p>
+	        </div>
+        </a>
       </div>
-      <div class="browse-element widget">
-        <div>
-          <a class="element_link" href="/discover/recommended" alt="Recommended">
-            <svg class="svg-recommended"><use xlink:href="#svg-thumbs-up"></use></svg>
-          </a>
-          <p class="">
-          <a class=" -font-bold" href="/discover/recommended" alt="Recommended">Recommended</a>
-          </p>
-        </div>
-      </div>
+      <% } %>
     </div>
   </section>
 </main>
