@@ -18,6 +18,7 @@ Class(CV, 'Sidebar').inherits(Widget).includes(CV.WidgetUtils)({
             this.el = this.element;
             this.linkElements = [].slice.call(this.el.querySelectorAll('.sidebar-link'), 0);
             this._yield = document.body.querySelector('.app-wrapper');
+            this.helpSupport = this.el.querySelector('.sidebar-link-help-support');
 
             this._checkAndActivateCurrentLink();
         },
@@ -105,6 +106,21 @@ Class(CV, 'Sidebar').inherits(Widget).includes(CV.WidgetUtils)({
 
             this._mouseLeaveHandlerRef = this._mouseLeaveHandler.bind(this);
             this.el.addEventListener('mouseleave', this._mouseLeaveHandlerRef);
+
+            this.helpSupport.addEventListener('click', this._helpDeskAppend.bind(this));
+        },
+
+        _helpDeskAppend : function _helpDeskAppend(){
+            if(this.helpDeskOverlay){
+                console.log('renderizando existente');
+                this.helpDeskOverlay.activate();
+            }else{
+                console.log('Creando nuevo overlay');
+                this.appendChild( new CV.HelpDeskOverlay({     
+                    name : 'helpDeskOverlay',
+                    className : 'active'
+                })).render(this._yield.querySelector('main[role="main"]'));
+            }
         },
 
         _mouseEnterHandler : function _mouseEnterHandler() {
@@ -129,6 +145,8 @@ Class(CV, 'Sidebar').inherits(Widget).includes(CV.WidgetUtils)({
                 this.el.removeEventListener('mouseleave', this._mouseLeaveHandlerRef);
                 this._mouseLeaveHandlerRef = null;
             }
+
+            this.helpSupport.removeEventListener('click', this._helpDeskAppend.bind(this));
 
             this.el = null;
             this.linkElements = null;
