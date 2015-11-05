@@ -5,9 +5,9 @@ var path = require('path'),
   db = require('knex')(knexfile[process.env.NODE_ENV || 'development']),
   decay = require('decay'),
   wilsonScore = decay.wilsonScore(),
+  // redditHot = decay.redditHot(),
   async = require('async'),
-  Promise = require('bluebird'),
-  _ = require('underscore')
+  Promise = require('bluebird')
 
 db.select('id').from('Voices')
   .where('status', '=', 'STATUS_PUBLISHED')
@@ -15,7 +15,7 @@ db.select('id').from('Voices')
   .map(function (voice) {
     return voice.id
   })
-  .then(function (voiceIds) {
+  .then(function (voiceIds) { // GET POSTS FOR EACH VOICE
 
     return Promise.all(voiceIds.map(function (voiceId) {
       return db.select('id', 'created_at').from('Posts')
@@ -24,8 +24,7 @@ db.select('id').from('Voices')
     }))
 
   })
-  .then(function (postsPerVoice) {
-
+  .then(function (postsPerVoice) { // GET RANKS FOR EACH VOICE'S POSTS
     return new Promise(function (resolve, reject) {
 
       async.mapLimit(postsPerVoice, 3, function (posts, donePosts) {
@@ -39,14 +38,11 @@ db.select('id').from('Voices')
               return donePost(null, {
                 postId: post.id,
                 score: wilsonScore(ups.length, downs.length),
+                // score: redditHot(ups.length, downs.length, post.created_at),
               })
             })
             .catch(donePost)
-        }, function (err, result) {
-          if (err) { return donePosts(err) }
-
-          return donePosts(null, result)
-        })
+        }, donePosts)
       }, function (err, result) {
         if (err) { return reject(err) }
 
@@ -54,6 +50,52 @@ db.select('id').from('Voices')
       })
 
     })
+  })
+  .then(function (ranks) { // SORT RANKS
+    // WILSON SCORE
+    ranks.forEach(function (posts) {
+      posts.sort(function (a, b) {
+        return b.score - a.score // ASC
+      })
+    })
+
+    // REDDIT HOT
+    // Reddit Hot sort will need more work, as it can provide minus numbers,
+    // which a simple sort does not sort properly.
+
+    return Promise.resolve(ranks)
+  })
+  .then(function (ranks) { // FIND THOSE THAT WILL BE APPROVED
+    var approved = []
+
+    // WILSON SCORE
+    ranks.forEach(function (posts) {
+      approved = approved.concat(posts.filter(function (post) {
+        return (post.score > 0.80)
+      }).map(function (post) {
+        return post.postId
+      }))
+    })
+
+    // REDDIT HOT
+    // Reddit Hot will need more work, as its numbers are more complex.
+
+    return Promise.resolve(approved)
+  })
+  .then(function (approvedPostIds) { // APPROVE POSTS AND DELETE VOTES
+
+    return db('Posts')
+      .whereIn('id', approvedPostIds)
+      .update({
+        approved: true
+      })
+      .then(function (updatedRows) {
+
+        return db('Votes')
+          .whereIn('post_id', approvedPostIds)
+          .del()
+
+      })
 
   })
   .then(console.log.bind(console))
