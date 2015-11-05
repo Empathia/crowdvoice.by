@@ -84,7 +84,7 @@ d.run(function () {
           // WILSON SCORE
           ranks.forEach(function (posts) {
             approved = approved.concat(posts.filter(function (post) {
-              return (post.score > 0.80)
+              return (post.score > 0.70)
             }).map(function (post) {
               return post.postId
             }))
