@@ -22,9 +22,9 @@ Class(CV, 'VoiceAddContent').inherits(Widget)({
             <svg class="voice-add-content__option-svg -s16 -color-grey-light">\
                 <use xlink:href="#svg-sources"></use>\
             </svg>\
-            <span class="voice-add-content__option-label">From Sources</span>\
+            <span class="voice-add-content__option-label">Aggregator</span>\
             <span class="voice-add-content__option-tooltip ui-has-tooltip cv-caption -font-normal -color-neutral-mid">(?)\
-                <i class="ui-tooltip -top-right">You can search and add content from Youtube and Google News.</i>\
+                <i class="ui-tooltip -top-right">Insert keywords to generate and add relevant content from various sources.</i>\
             </span>\
         </div>\
         <div class="voice-add-content__option ui-vertical-list-item" data-type="UploadFile">\
