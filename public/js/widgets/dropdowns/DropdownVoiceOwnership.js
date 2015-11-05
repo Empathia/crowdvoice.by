@@ -28,31 +28,16 @@ Class(CV.UI, 'DropdownVoiceOwnership').inherits(Widget).includes(CV.WidgetUtils)
             this._setup()._bindEvents();
         },
 
-        selectByIndex : function selectByIndex(index) {
-            this._items[index].click();
-            return this;
-        },
-
-        selectByEntity : function selectByEntity(entity) {
-            this._items.some(function(i) {
-                if (i.getAttribute('data-value') === entity.id) {
-                    this.selectByElement(i);
-                    return true;
-                }
-            }, this);
-            return this;
-        },
-
         /* Fill the dropdown options using currentPerson data. It will add currentPerson itself and
          * its owned organizations (if any).
          * @method _setup <private>
          * @return DropdownVoiceOwnership
          */
         _setup : function _setup() {
-            this._createItem(Person.get().name, Person.get().id);
+            this._createItem(Person.get().name, Person.get().id, false);
 
             Person.get().ownedOrganizations.forEach(function(organization) {
-                this._createItem(organization.name, organization.id);
+                this._createItem(organization.name, organization.id, true);
             }, this);
 
             this._items = [].slice.call(this.dropdown.getContent());
@@ -60,12 +45,13 @@ Class(CV.UI, 'DropdownVoiceOwnership').inherits(Widget).includes(CV.WidgetUtils)
             return this;
         },
 
-        _createItem : function _createItem(label, value) {
-            var item = document.createElement('div');
-            item.className = 'ui-vertical-list-item';
-            this.dom.updateText(item, label);
-            this.dom.updateAttr('data-value', item, value);
-            this.dropdown.addContent(item);
+        _createItem : function _createItem(label, value, isOrganization) {
+            var element = document.createElement('div');
+            element.className = 'ui-vertical-list-item';
+            this.dom.updateText(element, label);
+            this.dom.updateAttr('data-value', element, value);
+            this.dom.updateAttr('data-is-organization', element, isOrganization);
+            this.dropdown.addContent(element);
         },
 
         _bindEvents : function _bindEvents() {
@@ -87,6 +73,22 @@ Class(CV.UI, 'DropdownVoiceOwnership').inherits(Widget).includes(CV.WidgetUtils)
             });
             element.classList.add('active');
             this.dropdown.setLabel(element.textContent).deactivate();
+            this.dispatch('ownership:changed', {data: element});
+        },
+
+        selectByIndex : function selectByIndex(index) {
+            this._items[index].click();
+            return this;
+        },
+
+        selectByEntity : function selectByEntity(entity) {
+            this._items.some(function(i) {
+                if (i.getAttribute('data-value') === entity.id) {
+                    this.selectByElement(i);
+                    return true;
+                }
+            }, this);
+            return this;
         },
 
         /* Returns the data-value of the current selected option

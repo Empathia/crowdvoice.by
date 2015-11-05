@@ -60,9 +60,7 @@ Class(CV, 'VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
         </li>',
 
     IS_NEW_BADGE_HTML : '\
-        <svg class="voice-cover-badge-new">\
-            <use xlink:href="#svg-badge"></use>\
-            <text x="50%" y="50%" dy=".3em" class="-font-bold">NEW</text>\
+        <svg class="voice-cover-badge-new">\ <use xlink:href="#svg-badge"></use>\ <text x="50%" y="50%" dy=".3em" class="-font-bold">NEW</text>\
         </svg>',
 
     MAX_DESCRIPTION_LENGTH : 180,
@@ -113,7 +111,7 @@ Class(CV, 'VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
 
             this.authorAnchors.forEach(function(anchor) {
                 this.dom.updateAttr('title', anchor, this.data.owner.name + '’s profile');
-                this.dom.updateAttr('href', anchor, '/' + this.data.owner.profileName);
+                this.dom.updateAttr('href', anchor, '/' + this.data.owner.profileName + '/');
             }, this);
             this.dom.updateAttr('src', this.el.querySelector('.author-avatar'), this.data.owner.images.icon.url);
             this.dom.updateText(this.el.querySelector('.author-username'), this.data.owner.name);
