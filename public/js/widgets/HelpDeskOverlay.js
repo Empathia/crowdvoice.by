@@ -1,6 +1,6 @@
 /* Help/Support - Help Desk Iframe */
 
-Class(CV, 'HelpDeskOverlay').inherits(Widget).includes(CV.WidgetUtils)({
+Class(CV, 'HelpDeskOverlay').inherits(Widget)({
 	HTML : '\
 		<div class="help-desk-background"></div>\
 		<div class="help-desk-overlay">\
