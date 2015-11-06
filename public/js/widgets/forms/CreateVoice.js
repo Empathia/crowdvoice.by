@@ -336,8 +336,12 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
         _ownershipChangedHandler : function _ownershipChangedHandler(ev) {
             ev.stopPropagation();
 
+            if (!this.checkAnon) {
+                return;
+            }
+
             if (ev.data.dataset.isOrganization === "true") {
-                if (this.checkAnon && this.checkAnon.isChecked()) {
+                if (this.checkAnon.isChecked()) {
                     this.checkAnon.uncheck();
 
                     if (this._flashMessage) {
@@ -347,7 +351,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                     this.appendChild(new CV.Alert({
                         name : '_flashMessage',
                         type : 'warning',
-                        text : 'You cannot create voices anonymously and set its ownership to an organization.',
+                        text : 'You cannot create voices anonymously as an organization.',
                         className : '-mb1'
                     })).render(this.el, this.el.firstElementChild);
                 }
