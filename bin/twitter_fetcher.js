@@ -7,6 +7,7 @@ var domain = require('domain');
 var d = domain.create();
 
 var application = require('neonode-core');
+require('./../lib/TwitterFetcher');
 
 CONFIG.database.logQueries = false;
 
@@ -35,20 +36,11 @@ d.on('error', function(err) {
 
 d.run(function() {
 
-  var Twitter = require('twitter');
-
-  var client = new Twitter({
-    consumer_key: CONFIG.twitter.consumer_key,
-    consumer_secret: CONFIG.twitter.consumer_secret,
-    access_token_key: CONFIG.twitter.access_token,
-    access_token_secret: CONFIG.twitter.access_token_secret
-  });
-
-
   var CronJob = require('cron').CronJob;
   var job = new CronJob({
-    cronTime: '0 0 * * * *',
+    cronTime: '* * * * *',
     onTick: function() {
+      console.log('fetch...')
       var fetching = false;
 
       if (fs.existsSync(LOCK_FILE)) {
@@ -62,136 +54,31 @@ d.run(function() {
 
       fs.closeSync(fs.openSync(LOCK_FILE, 'w'));
 
-      Voice.find(["twitter_search IS NOT null AND (tweet_last_fetch_at IS null OR tweet_last_fetch_at <  '"  + moment(new Date(Date.now() - (3600 * 6)).toISOString()).format() +  "')", []], function(err, voices) {
+      // "twitter_search IS NOT null AND (tweet_last_fetch_at IS null OR tweet_last_fetch_at <  '"  + moment(new Date(Date.now() - (3600 * 6)).toISOString()).format() +  "')"
+      Voice.find(["twitter_search IS NOT null", []], function(err, voices) {
+        console.log(voices)
 
         async.eachLimit(voices, 1, function(voice, next) {
 
-          logger.log("\n\n");
-          logger.log(new Date(Date.now()));
-          logger.log("Last: "+ voice.tweetLastFetchAt + "in Voice " + voice.id);
-          logger.log("Search term: " +  voice.twitterSearch);
+          var twitterFetcher = new TwitterFetcher({
+            voice : voice,
+            count : 100
+          });
 
-          client.get('search/tweets', {q: voice.twitterSearch + ' exclude:retweets exclude:replies', result_type: 'recent', count : 100}, function(err, tweets, response) {
-            if (err) {
-              logger.log(err)
-              return next(err)
-            }
+          async.series([function(done) {
+            twitterFetcher.fetchTweets(done);
+          }, function(done) {
+            twitterFetcher.createPosts(done);
+          }, function(done) {
+            var voiceInstance = new Voice(voice);
+            voiceInstance.tweetLastFetchAt = new Date(Date.now());
 
-            logger.log("Processing " + tweets.statuses.length + " results.");
-
-
-            async.eachLimit(tweets.statuses, 1, function(tweet, nextTweet) {
-
-              logger.log("Tweet date: " +  tweet.created_at)
-              // logger.log("Tweet: " +  tweet.text);
-
-
-
-              async.eachLimit(tweet.entities.urls, 1, function(url, nextUrl) {
-                request(url, function(err, res, body) {
-                  if (err) {
-                    logger.error(err);
-                    return nextUrl();
-                  }
-
-                  var longURL = res.request.uri.href;
-
-                  logger.log('Will process ' + longURL);
-
-                  Post.find(['source_url = ?', [longURL]], function(err, posts) {
-                    if (err) {
-                      logger.error(err);
-
-                      return nextUrl();
-                    }
-
-                    if (posts.length > 0) {
-                      logger.log('URL exists');
-                      return nextUrl();
-                    }
-
-                    Scrapper.processUrl(longURL, res, function(err, result) {
-                      if (err) {
-                        logger.log('Scrapper Error');
-                        logger.error(err.stack);
-                        return nextUrl();
-                      }
-
-                      var data = {
-                        sourceUrl : result.sourceUrl,
-                        sourceType : result.sourceType,
-                        sourceService : result.sourceService,
-                        title : result.title.substr(0, 65),
-                        description : result.description.substr(0, 180),
-                        voiceId : voice.id,
-                        ownerId : voice.ownerId,
-                        approved : false
-                      }
-
-                      var post = new Post(data);
-
-                      post.save(function(err, postResult) {
-                        if (err) {
-                          logger.error(err);
-                          logger.error(err.stack);
-                          return nextUrl();
-                        }
-
-                        if (result.images.length > 0) {
-
-                          logger.log(result.images[0].path);
-
-                          var imagePath = process.cwd() + '/public' + result.images[0].path;
-
-                          post.uploadImage('image', imagePath, function(err) {
-                            if (err) {
-                              logger.error(err);
-                              logger.error(err.stack);
-                            }
-
-                            post.save(function(err, result) {
-                              return nextUrl();
-                            });
-                          });
-                        } else {
-                          return nextUrl();
-                        };
-                      });
-                    });
-                  });
-                });
-
-              }, function(err) {
-                if (err) {
-                  return nextTweet(err);
-                }
-
-                var tweetInstance = new Tweet({
-                  idStr : tweet.id_str,
-                  voiceId : voice.id,
-                  text : tweet.text
-                });
-
-                tweetInstance.save(function(err, result) {
-                  logger.log('Saved ' + tweetInstance.idStr);
-                  nextTweet(err);
-                });
-              });
-            }, function(err) {
-              if (err) {
-                logger.error(err);
-                console.log(err.stack)
-              }
-
-              var voiceInstance = new Voice(voice);
-
-              voiceInstance.tweetLastFetchAt = new Date(Date.now());
-
-              voiceInstance.save(function(err, result) {
-                logger.log('Updated Voice.tweetLastFetchAt');
-                next();
-              });
+            voiceInstance.save(function(err, result) {
+              logger.log('Updated Voice.tweetLastFetchAt');
+              done();
             });
+          }], function(err) {
+            next(err);
           });
         }, function(err) {
           if (err) {
@@ -200,8 +87,6 @@ d.run(function() {
           }
 
           fs.unlinkSync(LOCK_FILE);
-
-          process.exit(0);
         });
       });
     },

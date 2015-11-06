@@ -16,6 +16,8 @@ global.FeedInjector = require(__dirname + '/../lib/FeedInjector.js');
 // Load routes
 require('./../lib/routes.js');
 
+require('./../lib/TwitterFetcher');
+
 application._serverStart();
 
 require('./../presenters/PostsPresenter');

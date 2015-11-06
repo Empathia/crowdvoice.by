@@ -46,10 +46,10 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
       {
         rule: function (val) {
           if (this.target.sourceType !== Post.SOURCE_TYPE_TEXT && val.length > 180) {
-            throw new Checkit.FieldError('The description must be less than 65 characters.');
+            throw new Checkit.FieldError('The description must be less than 180 characters.');
           }
         },
-        message: 'The description must be less than 65 characters.'
+        message: 'The description must be less than 180 characters.'
       }
     ],
   },
