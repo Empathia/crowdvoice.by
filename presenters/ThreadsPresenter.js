@@ -241,11 +241,15 @@ Module('ThreadsPresenter')({
             done();
           })
         });
-      }], function(err) {
-        next(err);
-      })
+      }, function (nextSeries) {
+        delete thread.senderEntityId;
+        delete thread.senderPersonId;
+        delete thread.receiverEntityId;
+
+        return nextSeries();
+      }], next)
     }, function(err) {
-      threads =  threads.filter(function(thread) {
+      threads = threads.filter(function(thread) {
         if (!thread.hidden) {
           delete thread.hidden;
           return thread;
