@@ -39,7 +39,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             <div class="send -col-12 -text-center"></div>\
         </div>',
 
-    REDIRECT_DELAY : 4000,
+    REDIRECT_DELAY : 6000,
 
     prototype : {
         /* Voice data for Edit. Is null it assumes you are creating a new Voice,
