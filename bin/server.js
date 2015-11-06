@@ -16,6 +16,8 @@ global.FeedInjector = require(__dirname + '/../lib/FeedInjector.js');
 // Load routes
 require('./../lib/routes.js');
 
+require('./../lib/TwitterFetcher');
+
 application._serverStart();
 
 require('./../presenters/PostsPresenter');
@@ -138,79 +140,47 @@ io.on('connection', function(socket) {
 
       db('MessageThreads')
         .whereIn('receiver_entity_id', ids)
+        .orWhereIn('sender_person_id', ids)
         .orWhereIn('sender_entity_id', ids)
         .exec(function (err, result) {
-          if (err) { return next(err); }
+          if (err) {
+            logger.log(err);
+            logger.log(err.stat);
+            return;
+          }
 
           var threads = Argon.Storage.Knex.processors[0](result);
 
-          async.each(threads, function (thread, next) {
-            var isThreadSender = false,
-              isThreadReceiver = false;
-
-            // figure out if we should deal with the thread receiver or the sender
-            if (thread.senderPersonId === currentPerson.id) {
-              isThreadSender = true;
-            } else if (thread.receiverEntityId === currentPerson.id) {
-              isThreadReceiver = true;
-            }
-
-            // don't count hidden threads
-            if (isThreadSender) {
-              if (thread.isHiddenForSender) {
-                return next();
-              }
-            } else if (isThreadReceiver) {
-              if (thread.isHiddenForReceiver) {
-                return next();
-              }
-            }
+          async.each(threads, function (thread, doneThread) {
+            var threadInst = new MessageThread(thread),
+              isThreadSender = threadInst.isPersonSender(currentPerson.id),
+              lastSeen = threadInst['lastSeen' + (isThreadSender ? 'Sender' : 'Receiver')];
 
             Message.find({
-              thread_id: thread.id
+              thread_id: threadInst.id
             }, function (err, messages) {
-              if (err) { return next(err); }
+              if (err) { return doneThread(err); }
 
-              var isUnread;
-
-              var messagesNotByUser = messages.filter(function (msg) {
-                return msg.receiverEntityId === currentPerson.id;
+              var messagesToGoThrough = messages.filter(function (msg) {
+                return (msg.receiverEntityId === currentPerson.id);
+              }).filter(function (msg) {
+                return !(msg.hiddenForSender && msg.hiddenForReceiver);
               });
 
-              var unseenMessages = messagesNotByUser.filter(function (msg) {
-                isUnread = false;
-
-                // we're dealing with the sender
-                if (isThreadSender) {
-                  // never seen thread thus unread
-                  if (thread.lastSeenSender === null) {
-                    isUnread = true;
-                  }
-                  isUnread = moment(msg.createdAt).format('X') > moment(thread.lastSeenSender).format('X');
-                  // don't count hidden messages
-                  if (msg.hiddenForSender) {
-                    isUnread = false;
-                  }
-                // we're dealing with the receiver
-                } else if (isThreadReceiver) {
-                  // never seen thread thus unread
-                  if (thread.lastSeenReceiver === null) {
-                    isUnread = true;
-                  }
-                  isUnread = moment(msg.createdAt).format('X') > moment(thread.lastSeenReceiver).format('X');
-                  // don't count hidden messages
-                  if (msg.hiddenForReceiver) {
-                    isUnread = false;
-                  }
-                } else {
-                  isUnread = false;
+              messagesToGoThrough.forEach(function (msg) {
+                // never seen the thread, thus unread
+                if (lastSeen === null) {
+                  counter += 1;
+                  return;
                 }
 
-                return isUnread;
+                if (moment(msg.createdAt).format('X') > moment(lastSeen).format('X')) {
+                  counter += 1;
+                  return;
+                }
               });
 
-              counter += unseenMessages.length;
-              next();
+              return doneThread();
             });
           }, function (err) {
             if (err) {
