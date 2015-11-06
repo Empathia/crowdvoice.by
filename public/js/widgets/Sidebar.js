@@ -116,7 +116,7 @@ Class(CV, 'Sidebar').inherits(Widget).includes(CV.WidgetUtils)({
                 this.appendChild( new CV.HelpDeskOverlay({     
                     name : 'helpDeskOverlay',
                     className : 'active'
-                })).render(this._yield);
+                })).render(document.body);
             }
         },
 

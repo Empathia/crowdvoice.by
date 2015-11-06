@@ -98,6 +98,7 @@ require('./widgets/tabs/Tab');
 require('./widgets/tabs/TabNav');
 require('./widgets/tabs/TabContent');
 require('./widgets/tabs/TabIndicator');
+require('./widgets/HelpDeskOverlay');
 
 // components
 require('./widgets/cards/Card');
@@ -186,7 +187,6 @@ require('./widgets/view-feed/FeedSidebar');
 require('./widgets/view-feed/FeedSidebarStats');
 require('./widgets/view-feed/FeedOnboarding');
 require('./widgets/view-feed/FeedAnonymousOnboarding');
-require('./widgets/HelpDeskOverlay');
 
 require('./widgets/voice/PostsRegistry');
 require('./widgets/voice/Onboarding');
