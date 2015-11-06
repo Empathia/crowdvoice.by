@@ -2,6 +2,16 @@ var BlackListFilter = require(__dirname + '/BlackListFilter');
 var EntitiesPresenter = require(path.join(process.cwd(), '/presenters/EntitiesPresenter.js'));
 var NotificationMailer = require(path.join(__dirname, '../mailers/NotificationMailer.js'));
 
+var domain = require('domain');
+
+var d = domain.create();
+
+d.on('error', function(err) {
+  logger.error('Voice Twitter Fetcher Error');
+  logger.error(err);
+  logger.error(err.stack);
+});
+
 var VoicesController = Class('VoicesController').includes(BlackListFilter)({
   prototype : {
     getActiveVoice : function(req, res, next) {
@@ -356,6 +366,42 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
             });
           }
 
+
+          // Load tweets in the background
+          d.run(function() {
+            var tf = new TwitterFetcher({
+              voice : voice,
+              count : 100
+            });
+
+            if (voice.twitterSearch !== null) {
+              async.series([function(done) {
+                logger.log('Fetching Tweets');
+                tf.fetchTweets(done);
+              }, function(done) {
+                logger.log('Creating posts from tweets');
+                tf.createPosts(done);
+              }, function(done) {
+                logger.log('Updating voice');
+                var voiceInstance = new Voice(voice);
+                voiceInstance.tweetLastFetchAt = new Date(Date.now());
+
+                voiceInstance.save(function(err, result) {
+                  logger.log('Updated Voice.tweetLastFetchAt');
+                  done();
+                });
+              }], function(err) {
+                if (err) {
+                  logger.error('Error fetching tweets');
+                  logger.error(err)
+                  logger.error(err.stack);
+                }
+
+                logger.log('Finished Fetching tweets and saving posts.')
+              });
+            }
+          });
+
           VoicesPresenter.build([voice], req.currentPerson, function(err, voices) {
             if (err) {
               return next(err);
@@ -484,6 +530,41 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           if (err) {
             return next(err);
           }
+
+          // Load tweets in the background
+          d.run(function() {
+            var tf = new TwitterFetcher({
+              voice : voice,
+              count : 100
+            });
+
+            if (voice.twitterSearch !== null) {
+              async.series([function(done) {
+                logger.log('Fetching Tweets');
+                tf.fetchTweets(done);
+              }, function(done) {
+                logger.log('Creating posts from tweets');
+                tf.createPosts(done);
+              }, function(done) {
+                logger.log('Updating voice');
+                var voiceInstance = new Voice(voice);
+                voiceInstance.tweetLastFetchAt = new Date(Date.now());
+
+                voiceInstance.save(function(err, result) {
+                  logger.log('Updated Voice.tweetLastFetchAt');
+                  done();
+                });
+              }], function(err) {
+                if (err) {
+                  logger.error('Error fetching tweets');
+                  logger.error(err)
+                  logger.error(err.stack);
+                }
+
+                logger.log('Finished Fetching tweets and saving posts.')
+              });
+            }
+          });
 
           VoicesPresenter.build([voice], req.currentPerson, function (err, presentedVoice) {
             if (err) { return next(err); }

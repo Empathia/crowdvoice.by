@@ -54,10 +54,7 @@ d.run(function() {
 
       fs.closeSync(fs.openSync(LOCK_FILE, 'w'));
 
-      // "twitter_search IS NOT null AND (tweet_last_fetch_at IS null OR tweet_last_fetch_at <  '"  + moment(new Date(Date.now() - (3600 * 6)).toISOString()).format() +  "')"
-      Voice.find(["twitter_search IS NOT null", []], function(err, voices) {
-        console.log(voices)
-
+      Voice.find(["twitter_search IS NOT null AND (tweet_last_fetch_at IS null OR tweet_last_fetch_at <  '"  + moment().subtract(1, 'hour').format() +  "')", []], function(err, voices) {
         async.eachLimit(voices, 1, function(voice, next) {
 
           var twitterFetcher = new TwitterFetcher({
@@ -83,7 +80,7 @@ d.run(function() {
         }, function(err) {
           if (err) {
             logger.error(err);
-            console.log(err.stack)
+            console.log(err.stack);
           }
 
           fs.unlinkSync(LOCK_FILE);
