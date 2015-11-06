@@ -357,8 +357,8 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           return next(new ForbiddenError());
         }
 
-        var logUrlError = function (url, error, callback) {
-          var errorLog = new UrlScrapperError({
+        var logScrapperError = function (url, error, callback) {
+          var errorLog = new ScrapperError({
             url: url,
             error: error,
             errorStack: error.stack
@@ -377,7 +377,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           }
         }, function (err, response, body) {
           if (err) {
-            return logUrlError(req.body.url, err, function (err) {
+            return logScrapperError(req.body.url, err, function (err) {
               if (err) { return next(err); }
 
               return res.status(400).json({ status: 'Bad URL' });
@@ -388,7 +388,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
             source_url: response.request.uri.href
           }, function (err, posts) {
             if (err) {
-              return logUrlError(response.request.uri.href, err, function (err) {
+              return logScrapperError(response.request.uri.href, err, function (err) {
                 if (err) { return next(err); }
 
                 return res.status(400).json({
@@ -407,7 +407,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
             Scrapper.processUrl(response.request.uri.href, response, function (err, result) {
               if (err) {
-                return logUrlError(req.body.url, err, function (err) {
+                return logScrapperError(req.body.url, err, function (err) {
                   if (err) { return next(err); }
 
                   return res.status(400).json({

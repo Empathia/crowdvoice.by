@@ -1,11 +1,11 @@
 
 exports.up = function(knex, Promise) {
   return Promise.all([
-    knex.schema.createTable('UrlScrapperErrors', function (t) {
+    knex.schema.createTable('ScrapperErrors', function (t) {
       t.increments('id').primary();
-      t.string('url').index();
+      t.text('url').index();
       t.json('error');
-      t.string('error_stack');
+      t.text('error_stack');
       t.timestamps();
     })
   ]);
@@ -13,6 +13,6 @@ exports.up = function(knex, Promise) {
 
 exports.down = function(knex, Promise) {
   return Promise.all([
-    knex.schema.dropTable('UrlScrapperErrors')
+    knex.schema.dropTable('ScrapperErrors')
   ]);
 };

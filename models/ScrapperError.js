@@ -1,4 +1,4 @@
-var UrlScrapperError = Class('UrlScrapperError').inherits(Argon.KnexModel)({
+var ScrapperError = Class('ScrapperError').inherits(Argon.KnexModel)({
 
   validations: {
     url: ['required'],
@@ -7,7 +7,7 @@ var UrlScrapperError = Class('UrlScrapperError').inherits(Argon.KnexModel)({
   },
 
   storage: (new Argon.Storage.Knex({
-    tableName: 'UrlScrapperErrors',
+    tableName: 'ScrapperErrors',
   })),
 
   prototype: {
@@ -18,4 +18,4 @@ var UrlScrapperError = Class('UrlScrapperError').inherits(Argon.KnexModel)({
 
 })
 
-module.exports = UrlScrapperError
+module.exports = ScrapperError
