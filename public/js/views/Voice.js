@@ -163,7 +163,7 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
             this.appendChild(new CV.VoiceOboarding({
                 name : 'onboarding',
                 className : '-fixed -text-center'
-            }).bind(this)).render(document.querySelector('.cv-main-content'));
+            })).render(document.querySelector('.cv-main-content'));
 
             document.querySelector('.cv-main-content').insertAdjacentHTML('beforeend', '\
                 <section class="voice-posts -rel">\
