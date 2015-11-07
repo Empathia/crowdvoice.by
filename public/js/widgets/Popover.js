@@ -108,7 +108,7 @@ Class(CV, 'Popover').inherits(Widget)({
             return this;
         },
 
-        destroy : function desttroy(){
+        destroy : function destroy(){
             Widget.prototype.destroy.call(this);
 
             this.toggler.removeEventListener('click', this.togglerRef);
