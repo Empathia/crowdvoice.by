@@ -92,7 +92,7 @@ Module('ThreadsPresenter')({
 
             if (messageSenderOrReceiver === 'Receiver') {
               if (moment(messageInstance.createdAt).format('X') > moment(thread.lastSeen).format('X')) {
-                unreadCount++;
+                unreadCount += 1;
               };
             }
 
