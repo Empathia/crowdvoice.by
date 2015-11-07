@@ -127,7 +127,6 @@ CV.Thread = Class(CV, 'Thread').includes(Widget)({
         }
       });
 
-
       thread.data.messages.forEach(function(message) {
         var messageInstance = new CV.Message({
           name : 'message_' + message.id,
