@@ -4,19 +4,20 @@ var Person = require('./../../lib/currentPerson');
 var PLACEHOLDERS = require('./../../lib/placeholders');
 
 CV.Message = new Class(CV, 'Message').inherits(Widget)({
-  HTML : '<div class="message-text">\
-            <div class="message-info">\
+  HTML : '\
+    <div class="message-text">\
+        <div class="message-info -rel">\
             <img class="message-sender-image" src="/img/sample/avatars/org-06.png" alt="">\
             <div class="message-data">\
-                <h3 class="data-message-participant">Chu Vaca </h3>\
-                <span class="data-message-date">• May 5th, 2015 • 7:32 PM</span>\
+                <h3 class="data-message-participant -font-normal"></h3>\
+                <span class="data-message-date"></span>\
                 <p class="data-message-text"></p>\
                 <div class="message-notification">\
-                  <div class="message-notification-actions"></div>\
+                    <div class="message-notification-actions"></div>\
                 </div>\
-              </div>\
             </div>\
-          </div>',
+        </div>\
+    </div>',
 
   INVITATION_ORGANIZATION_HTML : '<p>You were invited to become a member of {organizationName}. \
     Accepting this invitation will grant you privilege of posting and moderating content on all the Voices by <a href="{url}">{organizationName}</a.</p>',
