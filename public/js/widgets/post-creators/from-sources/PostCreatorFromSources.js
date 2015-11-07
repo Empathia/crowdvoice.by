@@ -4,17 +4,15 @@ var Events = require('../../../lib/events');
 var Velocity = require('velocity-animate');
 
 Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
-
     ELEMENT_CLASS : 'cv-post-creator post-creator-from-sources',
 
     HTML : '\
-    <div>\
-        <div class="input-error-message -on-error -abs -color-negative"></div>\
-        <header class="cv-post-creator__header -clearfix"></header>\
-        <div class="cv-post-creator__content -abs"></div>\
-        <div class="cv-post-creator__disable"></div>\
-    </div>\
-    ',
+        <div>\
+            <div class="input-error-message -on-error -abs -color-negative"></div>\
+            <header class="cv-post-creator__header -clearfix"></header>\
+            <div class="cv-post-creator__content -abs"></div>\
+            <div class="cv-post-creator__disable"></div>\
+        </div>',
 
     DEFAULT_ERROR_MESSAGE : 'There was a problem searching for content.',
 
@@ -160,7 +158,7 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
 
                 var revert = true;
 
-                this.queuePanel.loader.deactivate();
+                this.queuePanel.loader.disable();
 
                 var errorMessage = '';
                 if (response.responseJSON) {
@@ -231,7 +229,7 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
 
         _setSuccessState : function _setSuccessState() {
             this.queuePanel.removePosts();
-            this.queuePanel.loader.deactivate();
+            this.queuePanel.loader.disable();
             this._addedPostsCounter = 0;
             this.postButton.updateCounter(this._addedPostsCounter);
             this.enable();
