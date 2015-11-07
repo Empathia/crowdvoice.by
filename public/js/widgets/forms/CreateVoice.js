@@ -124,13 +124,15 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                     className : '-mb2'
                 })).render(this.el, this.el.firstChild);
             } else {
-                // not on edit-mode
-                if (!this.data) {
-                    this.appendChild(new CV.UI.Checkbox({
-                        name : 'checkAnon',
-                        className : '-block -pt1 -pb1',
-                        data : {label : 'Create Anonymously' }
-                    })).render(this.sendElement);
+                this.appendChild(new CV.UI.Checkbox({
+                    name : 'checkAnon',
+                    className : '-block -pt1 -pb1',
+                    data : {label : 'Create Anonymously' }
+                })).render(this.sendElement);
+
+                // on edit-mode
+                if (this.data) {
+                    this.checkAnon.el.style.display = 'none';
                 }
             }
 
@@ -335,10 +337,6 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
 
         _ownershipChangedHandler : function _ownershipChangedHandler(ev) {
             ev.stopPropagation();
-
-            if (!this.checkAnon) {
-                return;
-            }
 
             if (ev.data.dataset.isOrganization === "true") {
                 if (this.checkAnon.isChecked()) {
