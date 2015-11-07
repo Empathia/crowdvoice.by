@@ -3,6 +3,7 @@ var rome = require('rome');
 var moment = require('moment');
 var autosize = require('autosize');
 var API = require('./../../../lib/api');
+var Events = require('./../../../lib/events');
 
 Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSupport, BubblingSupport)({
     MAX_LENGTH_TITLE : 65,
@@ -174,7 +175,7 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
          * @method _makeItEditable <private> [Function]
          * @return EditablePost
          */
-        edit : function edit(config) {
+        edit : function edit() {
             this.el.classList.add('edit-mode');
             this.titleElement.classList.add('-font-bold');
 
@@ -216,7 +217,6 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
             this.timePickerButton = this.dateTimeElement.parentNode.querySelector('.post-date-picker-button');
 
             this.romeTime = rome(this.timePickerInput, {
-                appendTo : (config && config.appendCalendarTo !== "undefined") ? config.appendCalendarTo : this.parent.el,
                 inputFormat : 'DD MMM, YYYY HH:mm',
                 initialValue : moment(this.updatedAt)
             });
@@ -238,10 +238,11 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
             autosize.destroy(this.titleElement);
             autosize.destroy(this.descriptionElement);
 
-            this.timePickerButton.removeEventListener('click', this._showDatePickerRef);
+            Events.off(this.timePickerButton, 'click', this._showDatePickerRef);
+            Events.off(this.romeTime.associated, 'click', this._showDatePickerRef);
             this._showDatePickerRef = null;
 
-            this.titleElement.removeEventListener('keypress', this._titleKeyPressHandler);
+            Events.off(this.titleElement, 'keypress', this._titleKeyPressHandler);
 
             this.romeTime.destroy();
 
@@ -314,9 +315,10 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
             this.descriptionElement.addEventListener('autosize:resized', this._postDimensionsChangedRef);
 
             this._showDatePickerRef = this._showDatePicker.bind(this);
-            this.timePickerButton.addEventListener('click', this._showDatePickerRef);
+            Events.on(this.timePickerButton, 'click', this._showDatePickerRef);
+            Events.on(this.romeTime.associated, 'click', this._showDatePickerRef);
 
-            this.titleElement.addEventListener('keypress', this._titleKeyPressHandler);
+            Events.on(this.titleElement, 'keypress', this._titleKeyPressHandler);
 
             return this;
         },
@@ -513,6 +515,7 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
         _showDatePicker : function _showDatePicker(ev) {
             ev.stopPropagation();
             this.romeTime.show();
+            this.romeTime.container.style.zIndex = 3;
         }
     }
 });
