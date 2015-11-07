@@ -130,7 +130,10 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
        * }
        */
 
-      ACL.isAllowed('createOrganization', 'entities', req.role, {}, function (err, isAllowed) {
+      ACL.isAllowed('createOrganization', 'entities', req.role, {
+        profileName: req.body.profileName,
+        currentPerson: req.currentPerson
+      }, function (err, isAllowed) {
         if (err) { return next(err); }
 
         if (!isAllowed) {

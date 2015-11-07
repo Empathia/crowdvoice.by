@@ -1,6 +1,7 @@
 var BlackListFilter = Module('BlackListFilter')({
   routesBlackList: [
-    /^\/(search|discover|post|switchPerson|person|people|signup|login|logout|user|organization|entity|dist|session|page|root|admin|voice|dev|anonymous)(es|s|$|\/)/
+    /^\/(search|discover|post|switchPerson|person|people|signup|login|logout|user|organization|entity|dist|session|page|root|admin|voice|dev|anonymous)(es|s|$|\/)/,
+    /^(search|discover|post|switchPerson|person|people|signup|login|logout|user|organization|entity|dist|session|page|root|admin|voice|dev|anonymous)(es|s|$|\/)/
   ],
 
   isBlackListed : function isBlackListed (path) {
