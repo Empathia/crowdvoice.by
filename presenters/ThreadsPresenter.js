@@ -91,7 +91,7 @@ Module('ThreadsPresenter')({
             }
 
             if (messageSenderOrReceiver === 'Receiver') {
-              if ((new Date(messageInstance.createdAt)) > (new Date(thread.lastSeen))) {
+              if (moment(messageInstance.createdAt).format('X') > moment(thread.lastSeen).format('X')) {
                 unreadCount++;
               };
             }
@@ -111,7 +111,7 @@ Module('ThreadsPresenter')({
 
               InvitationRequest.find({id : message.invitationRequestId}, function(err, result) {
                 if (err) {
-                  return doneMessageInfo();
+                  return doneMessageInfo(err);
                 }
 
                 if (result.length === 0) {
