@@ -34,16 +34,27 @@ var TopicsPresenter = Module('TopicsPresenter')({
         // Voices count
         function (next) {
           db('VoiceTopic')
-            .count()
             .where('topic_id', '=', topic.id)
-            .exec(function (err, result) {
+            .exec(function (err, rows) {
               if (err) { return next(err); }
 
-              topicInstance.voicesCount = result[0].count
+              var voiceIds = rows.map(function (record) {
+                return record.voice_id;
+              });
 
-              return next();
+              db('Voices')
+                .count()
+                .whereIn('id', voiceIds)
+                .andWhere('status', Voice.STATUS_PUBLISHED)
+                .exec(function (err, rows) {
+                  if (err) { return next(err); }
+
+                  topicInstance.voicesCount = rows[0].count;
+
+                  return next();
+                });
             });
-        },
+        }
       ], function (err) {
         if (err) { return nextTopic(err); }
 
