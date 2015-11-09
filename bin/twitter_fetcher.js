@@ -34,11 +34,17 @@ d.on('error', function(err) {
   }
 });
 
+var cronExpression = '0 0 * * * *';
+
+if (CONFIG.environment === 'develpment') {
+  cronExpression = '* * * * * *';
+}
+
 d.run(function() {
 
   var CronJob = require('cron').CronJob;
   var job = new CronJob({
-    cronTime: '* * * * *',
+    cronTime: cronExpression,
     onTick: function() {
       console.log('fetch...')
       var fetching = false;
