@@ -7,12 +7,12 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
     ELEMENT_CLASS : 'cv-post-creator post-creator-from-url',
 
     HTML : '\
-    <div>\
-        <div class="input-error-message -on-error -abs -color-negative"></div>\
-        <header class="cv-post-creator__header -clearfix"></header>\
-        <div class="cv-post-creator__content -abs"></div>\
-        <div class="cv-post-creator__disable"></div>\
-    </div>',
+        <div>\
+            <div class="input-error-message -on-error -abs -color-negative"></div>\
+            <header class="cv-post-creator__header -clearfix"></header>\
+            <div class="cv-post-creator__content -abs"></div>\
+            <div class="cv-post-creator__disable"></div>\
+        </div>',
 
     DEFAULT_ERROR_MESSAGE : 'You entered an invalid URL. Please double check it.',
 

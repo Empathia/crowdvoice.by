@@ -1,9 +1,9 @@
 /* jshint multistr: true */
 var rome = require('rome');
 var moment = require('moment');
+var Events = require('./../../../lib/events');
 
 Class(CV, 'PostCreatorWriteArticlePostDate').inherits(Widget)({
-
     ELEMENT_CLASS : 'write-article-post-date',
 
     HTML : '\
@@ -27,13 +27,9 @@ Class(CV, 'PostCreatorWriteArticlePostDate').inherits(Widget)({
                     </div>\
                 </div>\
             </div>\
-        </div>\
-    ',
+        </div>',
 
     prototype : {
-
-        el : null,
-
         init : function init(config) {
             Widget.prototype.init.call(this, config);
 
@@ -47,7 +43,6 @@ Class(CV, 'PostCreatorWriteArticlePostDate').inherits(Widget)({
 
         _setup : function _setup() {
             this.romeTime = rome(this.timePickerInput, {
-                appendTo : this.el,
                 inputFormat : 'DD MMM, YYYY HH:mm',
                 initialValue : moment()
             });
@@ -57,7 +52,8 @@ Class(CV, 'PostCreatorWriteArticlePostDate').inherits(Widget)({
 
         _bindEvents : function _bindEvents() {
             this._showDatePickerRef = this._showDatePicker.bind(this);
-            this.timePickerButton.addEventListener('click', this._showDatePickerRef);
+            Events.on(this.romeTime.associated, 'click', this._showDatePickerRef);
+            Events.on(this.timePickerButton, 'click', this._showDatePickerRef);
 
             return this;
         },
@@ -65,11 +61,15 @@ Class(CV, 'PostCreatorWriteArticlePostDate').inherits(Widget)({
         _showDatePicker : function _showDatePicker(ev) {
             ev.stopPropagation();
             this.romeTime.show();
+            this.romeTime.container.style.zIndex = 3;
         },
 
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
-
+            Events.off(this.romeTime.associated, 'click', this._showDatePickerRef);
+            Events.off(this.timePickerButton, 'click', this._showDatePickerRef);
+            this._showDatePickerRef = null;
+            this.romeTime.destroy();
             return null;
         }
     }
