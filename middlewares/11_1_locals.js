@@ -95,6 +95,39 @@ module.exports = function(req, res, next) {
                   });
                 });
               },
+
+              // .ownedVoices
+              function (nextSeries) {
+                var anonEntity = new Entity(req.currentPerson);
+                anonEntity.id = hashids.decode(anonEntity.id)[0];
+
+                anonEntity.owner(function (err, owner) {
+                  if (err) { return nextSeries(err); }
+
+                  db.select('owned_id').from('EntityOwner')
+                    .where('owner_id', '=', owner.id)
+                    .exec(function (err, orgs) {
+                      if (err) { return nextSeries(err); }
+
+                      var entityIds = orgs.map(function (org) { return org.owned_id; });
+                      entityIds.push(owner.id);
+
+                      db.select('id').from('Voices')
+                        .whereIn('owner_id', entityIds)
+                        .exec(function (err, rows) {
+                          if (err) { return nextSeries(err); }
+
+                          var voiceIds = rows.map(function (row) { return hashids.encode(row.id) });
+
+                          res.locals.currentPerson.ownedVoices = voiceIds;
+                          req.currentPerson.ownedVoices = voiceIds;
+                          console.log(voiceIds)
+
+                          return nextSeries();
+                        });
+                    });
+                });
+              }
             ], next);
           });
         });
@@ -189,15 +222,13 @@ module.exports = function(req, res, next) {
             });
 
           }, function (done) {
-            // Get Voices owned directly by user or owned by organizations that
-            // user is owner of
+            // Get Voices owned directly by user or owned by entities that user
+            // is owner of
 
-            person.ownedOrganizations(function (err, organizations) {
+            EntityOwner.find({ owner_id: hashids.decode(req.currentPerson.id)[0] }, function (err, owners) {
               if (err) { return done(err); }
 
-              // get org IDs
-              var ids = organizations.map(function (org) { return org.id });
-              // get currentPerson ID
+              var ids = owners.map(function (owner) { return owner.ownedId });
               ids.push(person.id);
 
               Voice.whereIn('owner_id', ids, function (err, voices) {
@@ -207,9 +238,6 @@ module.exports = function(req, res, next) {
 
                 res.locals.currentPerson.ownedVoices = result;
                 req.currentPerson.ownedVoices = result;
-
-                // add voices {id,name} of organization currentUser owns
-                // to req.locals.currentPerson.voiceNames
 
                 var voiceTitles = voices.map(function(item) {
                   return {
