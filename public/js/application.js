@@ -299,12 +299,12 @@ require('./widgets/post-creators/from-sources/PostCreatorFromSourcesGoogleNews')
 require('./widgets/post-creators/upload-file/PostCreatorUploadFile');
 require('./widgets/post-creators/upload-file/PostCreatorUploadFileHeaderMessages');
 
-require('./widgets/post-creators/write-article/post-creator-write-article');
-require('./widgets/post-creators/write-article/post-date');
-require('./widgets/post-creators/write-article/editor');
-require('./widgets/post-creators/write-article/editor-header');
-require('./widgets/post-creators/write-article/editor-body');
-require('./widgets/post-creators/write-article/cover-button');
+require('./widgets/post-creators/write-article/PostCreatorWriteArticle');
+require('./widgets/post-creators/write-article/PostCreatorWriteArticlePostDate');
+require('./widgets/post-creators/write-article/PostCreatorWriteArticleEditor');
+require('./widgets/post-creators/write-article/PostCreatorWriteArticleEditorHeader');
+require('./widgets/post-creators/write-article/PostCreatorWriteArticleEditorBody');
+require('./widgets/post-creators/write-article/PostCreatorWriteArticleEditorCoverButton');
 
 // bubbles
 require('./widgets/bubble.js');

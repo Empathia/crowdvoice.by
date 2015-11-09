@@ -226,6 +226,12 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
                 container.unreadMessages -= this.unreadCount;
             });
 
+            thread.bind('activate', function(){
+                setTimeout(function() {
+                    container.replyButton.focus();
+                }, 0);
+            });
+
             thread.threadContainer = this;
             thread.setup();
 
@@ -406,6 +412,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
             this.messagesBodyHeaderEl.find('.delete-thread').hide();
             this.messagesContainerEl.show();
             this.refresh();
+            this.replyButton.focus();
             return this;
         },
 
