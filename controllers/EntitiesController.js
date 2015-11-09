@@ -2,6 +2,7 @@ var BlackListFilter = require(__dirname + '/BlackListFilter');
 var VoicesPresenter = require(path.join(process.cwd(), '/presenters/VoicesPresenter.js'));
 var FeedPresenter = require(__dirname + '/../presenters/FeedPresenter.js');
 var NotificationMailer = require(path.join(__dirname, '../mailers/NotificationMailer.js'));
+var isProfileNameAvailable = require(path.join(__dirname, '../lib/util/isProfileNameAvailable.js'))
 
 var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
@@ -576,20 +577,22 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
         var value = req.body.value.toLowerCase().trim();
         var currentPersonId = hashids.decode(req.currentPerson.id)[0];
-        res.format({
-          json : function() {
 
-            Entity.find(['profile_name = ? AND id != ?', [value, currentPersonId]], function(err, result) {
-              if (err) {
-                return next(err);
-              }
+        if (value.match(BlackListFilter.routesBlackList[1])) {
+          return res.json({ status : 'taken' });
+        }
 
-              if (result.length > 0) {
-                return res.json({ status : 'taken' });
-              } else {
-                return res.json({ status : 'available' });
-              }
-            });
+        Entity.find({
+          profile_name: value
+        }, function(err, result) {
+          if (err) {
+            return next(err);
+          }
+
+          if (result.length > 0) {
+            return res.json({ status : 'taken' });
+          } else {
+            return res.json({ status : 'available' });
           }
         });
       });
