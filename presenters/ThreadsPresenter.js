@@ -5,12 +5,12 @@ Module('ThreadsPresenter')({
     async.eachLimit(threads, 1, function(thread, next) {
       var threadInstance = new MessageThread(thread);
 
-      var senderOrReceiver = threadInstance.isPersonSender(hashids.decode(req.currentPerson.id)[0]) ? 'Sender' : 'Receiver';
+      var isThreadSender = threadInstance.isPersonSender(hashids.decode(req.currentPerson.id)[0]);
 
-      thread.lastSeen     = thread['lastSeen' + senderOrReceiver]
-      thread.messageCount = thread['messageCount' + senderOrReceiver];
-      thread.hidden       = thread['hiddenFor' + senderOrReceiver];
-      thread.id           = hashids.encode(thread.id);
+      thread.lastSeen = thread['lastSeen' + (isThreadSender ? 'Sender' : 'Receiver')]
+      thread.messageCount = thread['messageCount' + (isThreadSender ? 'Sender' : 'Receiver')];
+      thread.hidden = thread['hiddenFor' + (isThreadSender ? 'Sender' : 'Receiver')];
+      thread.id = hashids.encode(thread.id);
 
       delete thread.lastSeenSender;
       delete thread.lastSeenReceiver;
@@ -74,159 +74,154 @@ Module('ThreadsPresenter')({
         });
       }, function(done) {
         Message.find(['thread_id = ? ORDER BY created_at ASC', [threadInstance.id]], function(err, messages) {
-          if (err) {
-            return done(err);
-          }
+          if (err) { return done(err); }
+
           var unreadCount = 0;
 
-          async.eachLimit(messages, 1, function(message, nextMessage) {
-            var messageInstance = new Message(message);
+          async.each(messages, function (message, nextMessage) {
+            EntityOwner.find({
+              owner_id: hashids.decode(req.currentPerson.id)[0]
+            }, function (err, orgs) {
+              var ownedIds = orgs.map(function (owner) { return owner.ownedId; });
+              ownedIds.push(hashids.decode(req.currentPerson.id)[0]);
 
-            var messageSenderOrReceiver;
+              var isMsgSender = (ownedIds.indexOf(message.senderEntityId) !== -1),
+                msgSenderIsThreadSender = (message.senderEntityId === hashids.decode(thread.senderEntity.id)[0]);
 
-            if (message.senderEntityId === hashids.decode(thread.senderEntity.id)[0]) {
-              messageSenderOrReceiver = 'Sender'
-            } else {
-              messageSenderOrReceiver = 'Receiver'
-            }
+              if (!isMsgSender) {
+                if (thread.lastSeen === null
+                  || moment(message.createdAt).format('X') > moment(thread.lastSeen).format('X')) {
 
-            if (messageSenderOrReceiver === 'Receiver') {
-              if (moment(messageInstance.createdAt).format('X') > moment(thread.lastSeen).format('X')) {
-                unreadCount++;
-              };
-            }
-
-            message.hidden = message['hiddenFor' + messageSenderOrReceiver];
-
-            if (messageSenderOrReceiver === 'Sender') {
-              message.senderEntity = thread.senderEntity;
-            } else {
-              message.senderEntity = thread.receiverEntity;
-            }
-
-            async.series([function(doneMessageInfo){
-              if (!message.invitationRequestId) {
-                return doneMessageInfo();
+                  unreadCount += 1;
+                }
               }
 
-              InvitationRequest.find({id : message.invitationRequestId}, function(err, result) {
-                if (err) {
-                  return doneMessageInfo(err);
-                }
+              message.hidden = message['hiddenFor' + (isMsgSender ? 'Sender' : 'Receiver')];
 
-                if (result.length === 0) {
+              message.senderEntity = thread[(msgSenderIsThreadSender ? 'sender' : 'receiver') + 'Entity'];
+
+              async.series([function(doneMessageInfo){
+                if (!message.invitationRequestId) {
                   return doneMessageInfo();
                 }
 
-                message.invitationRequest = result[0];
-
-                message.invitationRequest.id = hashids.encode(message.invitationRequest.id);
-                message.invitationRequest.invitatorEntityId = hashids.encode(message.invitationRequest.invitatorEntityId)
-                message.invitationRequest.invitedEntityId = hashids.encode(message.invitationRequest.invitedEntityId);
-
-                doneMessageInfo();
-              })
-            }, function(doneMessageInfo) {
-              if (!message.voiceId) {
-                return doneMessageInfo();
-              }
-
-              Voice.find({id : message.voiceId}, function(err, result) {
-                if (err) {
-                  return doneMessageInfo(err);
-                }
-
-                result = result[0];
-
-                result.ownerId = hashids.encode(result.ownerId);
-
-                message.voice = result;
-
-                Slug.find(["voice_id = ? ORDER BY created_at DESC", [result.id]], function(err, slug) {
+                InvitationRequest.find({id : message.invitationRequestId}, function(err, result) {
                   if (err) {
                     return doneMessageInfo(err);
                   }
 
-                  if (slug.length === 0) {
-                    return doneMessageInfo(new NotFoundError('Voice Slug not found'));
+                  if (result.length === 0) {
+                    return doneMessageInfo();
                   }
 
-                  delete message.voiceId;
-                  message.voice.id = hashids.encode(message.voice.id);
+                  message.invitationRequest = result[0];
 
-                  message.voice.slug = slug[0].url;
+                  message.invitationRequest.id = hashids.encode(message.invitationRequest.id);
+                  message.invitationRequest.invitatorEntityId = hashids.encode(message.invitationRequest.invitatorEntityId)
+                  message.invitationRequest.invitedEntityId = hashids.encode(message.invitationRequest.invitedEntityId);
+
                   doneMessageInfo();
                 })
-              })
-            }, function(doneMessageInfo) {
-              if (!message.organizationId) {
-                return doneMessageInfo();
-              }
-
-              Entity.find({id : message.organizationId}, function(err, result) {
-                if (err) {
-                  return doneMessageInfo(err);
+              }, function(doneMessageInfo) {
+                if (!message.voiceId) {
+                  return doneMessageInfo();
                 }
 
-                result = result[0];
+                Voice.find({id : message.voiceId}, function(err, result) {
+                  if (err) {
+                    return doneMessageInfo(err);
+                  }
 
-                result.id = hashids.encode(result.id);
-                message.organization = result;
+                  result = result[0];
 
-                delete message.organizationId;
+                  result.ownerId = hashids.encode(result.ownerId);
 
-                doneMessageInfo();
-              })
-            }, function (doneMessageInfo) {
-              if (message.type !== 'report') {
-                return doneMessageInfo();
-              }
+                  message.voice = result;
 
-              // for reports before update
-              if (!message.reportId) {
-                return doneMessageInfo();
-              }
+                  Slug.find(["voice_id = ? ORDER BY created_at DESC", [result.id]], function(err, slug) {
+                    if (err) {
+                      return doneMessageInfo(err);
+                    }
 
-              Report.find({ id: message.reportId }, function (err, report) {
-                if (err) { return doneMessageInfo(err); }
+                    if (slug.length === 0) {
+                      return doneMessageInfo(new NotFoundError('Voice Slug not found'));
+                    }
 
-                message.reportId = hashids.encode(message.reportId);
-
-                Entity.find({ id: report[0].reportedId }, function (err, org) {
-                  EntitiesPresenter.build(org, req.currentPerson, function (err, presentedOrg) {
-                    if (err) { return doneMessageInfo(err); }
-
-                    message.organization = presentedOrg[0];
+                    delete message.voiceId;
+                    message.voice.id = hashids.encode(message.voice.id);
+                    message.voice.slug = slug[0].url;
 
                     doneMessageInfo();
+                  })
+                })
+              }, function(doneMessageInfo) {
+                if (!message.organizationId) {
+                  return doneMessageInfo();
+                }
+
+                Entity.find({id : message.organizationId}, function(err, result) {
+                  if (err) {
+                    return doneMessageInfo(err);
+                  }
+
+                  result = result[0];
+
+                  result.id = hashids.encode(result.id);
+                  message.organization = result;
+
+                  delete message.organizationId;
+
+                  doneMessageInfo();
+                })
+              }, function (doneMessageInfo) {
+                if (message.type !== 'report') {
+                  return doneMessageInfo();
+                }
+
+                // for reports before update
+                if (!message.reportId) {
+                  return doneMessageInfo();
+                }
+
+                Report.find({ id: message.reportId }, function (err, report) {
+                  if (err) { return doneMessageInfo(err); }
+
+                  message.reportId = hashids.encode(message.reportId);
+
+                  Entity.find({ id: report[0].reportedId }, function (err, org) {
+                    EntitiesPresenter.build(org, req.currentPerson, function (err, presentedOrg) {
+                      if (err) { return doneMessageInfo(err); }
+
+                      message.organization = presentedOrg[0];
+
+                      doneMessageInfo();
+                    });
                   });
                 });
+
+              }], function(err) {
+                if (err) {
+                  return nextMessage(err)
+                }
+
+                message.threadId = hashids.encode(message.threadId);
+                message.invitationRequestId = hashids.encode(message.invitationRequestId);
+
+                delete message.senderPersonId;
+                delete message.senderEntityId;
+                delete message.receiverEntityId;
+                delete message.hiddenForSender;
+                delete message.hiddenForReceiver;
+                delete message.eventListeners;
+
+                message.id = hashids.encode(message.id);
+
+                nextMessage();
               });
-
-            }], function(err) {
-              if (err) {
-                return nextMessage(err)
-              }
-
-              message.threadId = hashids.encode(message.threadId);
-              message.invitationRequestId = hashids.encode(message.invitationRequestId);
-
-              delete message.senderPersonId;
-              delete message.senderEntityId;
-              delete message.receiverEntityId;
-              delete message.hiddenForSender;
-              delete message.hiddenForReceiver;
-              delete message.eventListeners;
-
-              message.id = hashids.encode(message.id);
-
-              nextMessage();
-            })
-
+            });
           }, function(err) {
-            if (err) {
-              return done(err)
-            };
+            if (err) { return done(err); }
+
             thread.unreadCount = unreadCount;
 
             messages = messages.filter(function(message) {
@@ -234,6 +229,8 @@ Module('ThreadsPresenter')({
                 delete message.hidden;
                 return message;
               }
+            }).sort(function (a, b) {
+              return b - a;
             });
 
             thread.messages = messages;
@@ -241,11 +238,15 @@ Module('ThreadsPresenter')({
             done();
           })
         });
-      }], function(err) {
-        next(err);
-      })
+      }, function (nextSeries) {
+        delete thread.senderEntityId;
+        delete thread.senderPersonId;
+        delete thread.receiverEntityId;
+
+        return nextSeries();
+      }], next)
     }, function(err) {
-      threads =  threads.filter(function(thread) {
+      threads = threads.filter(function(thread) {
         if (!thread.hidden) {
           delete thread.hidden;
           return thread;
