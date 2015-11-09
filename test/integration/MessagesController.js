@@ -27,7 +27,63 @@ describe('MessagesController', function () {
 
   describe('#create', function () {
 
-    it('Create message in pre-existing conversation', function (done) {
+    it('Should not crash when sending mesage to organization as person', function (doneTest) {
+      async.series([
+        function (nextSeries) {
+          login('cersei-lannister', function (err, agent, csrf) {
+            if (err) { return nextSeries(err) }
+
+            agent
+              .post(urlBase + '/cersei-lannister/messages')
+              .accept('application/json')
+              .send({
+                _csrf: csrf,
+                type: 'message',
+                senderEntityId: hashids.encode(22), // House Lannister
+                receiverEntityId: hashids.encode(5), // Jamie
+                message: 'This is from House Lannister to Jamie Lannister, should all work out fine.'
+              })
+              .end(function (err, res) {
+                if (err) { console.log(err); return nextSeries(err) }
+
+                expect(res.status).to.equal(200)
+
+                return nextSeries()
+              })
+          })
+        },
+
+        function (nextSeries) {
+          login('jamie-lannister', function (err, agent, csrf) {
+            if (err) { return nextSeries(err) }
+
+            agent
+              .post(urlBase + '/jamie-lannister/messages/' + hashids.encode(4)) // NOTE: thread ID changes
+              .accept('application/json')
+              .send({
+                _csrf: csrf,
+                message: 'This is to House Lannister from Jamie, it should not crash and should register as a message.'
+              })
+            .end(function (err, res) {
+              if (err) { console.log(err); return nextSeries(err) }
+
+              expect(res.status).to.equal(200)
+
+              Message.findById(9, function (err, result) {
+                if (err) { return nextSeries(err) }
+
+                expect(result.length).to.equal(1)
+                expect(result[0].message).to.equal('This is to House Lannister from Jamie, it should not crash and should register as a message.')
+
+                return nextSeries()
+              })
+            })
+          })
+        },
+      ], doneTest)
+    })
+
+    it('Should create message in pre-existing conversation', function (done) {
       login('tyrion-lannister', function (err, agent, csrf) {
         if (err) { return done(err) }
 
@@ -76,7 +132,7 @@ describe('MessagesController', function () {
 
         function (nextSeries) {
           db('Messages')
-            .where('thread_id', '=', 2)
+            .where('thread_id', '=', 3)
             .del()
             .exec(nextSeries)
         },
@@ -165,7 +221,7 @@ describe('MessagesController', function () {
             if (err) { return nextSeries(err) }
 
             agent
-              .del(urlBase + '/jamie-lannister/messages/' + hashids.encode(4))
+              .del(urlBase + '/jamie-lannister/messages/' + hashids.encode(5)) // NOTE: thread ID changes
               .accept('application/json')
               .send({
                 _csrf: csrf,
@@ -186,7 +242,7 @@ describe('MessagesController', function () {
             if (err) { return nextSeries(err) }
 
             agent
-              .post(urlBase + '/robert-baratheon/messages/' + hashids.encode(4)) // NOTE: thread ID changes
+              .post(urlBase + '/robert-baratheon/messages/' + hashids.encode(5)) // NOTE: thread ID changes
               .accept('application/json')
               .send({
                 _csrf: csrf,
@@ -204,7 +260,7 @@ describe('MessagesController', function () {
       ], function (err) {
         if (err) { return doneTest(err) }
 
-        MessageThread.findById(4, function (err, thread) { // NOTE: thread ID changes
+        MessageThread.findById(5, function (err, thread) { // NOTE: thread ID changes
           if (err) { return doneTest(err) }
 
           expect(thread[0].hiddenForSender).to.equal(false)
@@ -251,7 +307,7 @@ describe('MessagesController', function () {
             if (err) { return nextSeries(err) }
 
             agent
-              .post(urlBase + '/robert-baratheon/messages/' + hashids.encode(5) + '/' + hashids.encode(14) + '/answerInvite') // NOTE: IDs changes
+              .post(urlBase + '/robert-baratheon/messages/' + hashids.encode(6) + '/' + hashids.encode(16) + '/answerInvite') // NOTE: IDs changes
               .accept('application/json')
               .send({
                 _csrf: csrf,
@@ -319,7 +375,7 @@ describe('MessagesController', function () {
             if (err) { return nextSeries(err) }
 
             agent
-              .post(urlBase + '/robert-baratheon/messages/' + hashids.encode(5) + '/' + hashids.encode(15) + '/answerInvite') // NOTE: IDs changes
+              .post(urlBase + '/robert-baratheon/messages/' + hashids.encode(6) + '/' + hashids.encode(17) + '/answerInvite') // NOTE: IDs changes
               .accept('application/json')
               .send({
                 _csrf: csrf,

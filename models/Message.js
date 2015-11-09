@@ -37,15 +37,35 @@ var Message = Class('Message').inherits(Argon.KnexModel)({
         rule : function(val) {
           var rule = this;
 
-          return db('MessageThreads').where({id : val}).then(function(thread) {
-            if (thread.length === 0) {
+          return db('MessageThreads').where({id : val}).then(function(threads) {
+            if (threads.length === 0) {
               throw new Checkit.FieldError("Thread doesn't exists")
             }
 
-            thread = thread[0];
+            thread = threads[0];
 
-            var isSenderThreadParticipant   = (thread['sender_person_id']   === rule.target.senderPersonId) || (thread['sender_person_id'] === rule.target.receiverEntityId) ? true : false;
-            var isReceiverThreadParticipant = (thread['receiver_entity_id'] === rule.target.senderPersonId) || (thread['receiver_entity_id'] === rule.target.receiverEntityId) ? true : false;
+            var isSenderThreadParticipant = false;
+
+            if (thread['sender_person_id'] === rule.target.senderPersonId
+              || thread['sender_person_id'] === rule.target.receiverEntityId) {
+
+              isSenderThreadParticipant = true;
+            }
+
+            if (!isReceiverThreadParticipant
+              && thread['sender_entity_id'] === rule.target.senderPersonId
+              || thread['sender_entity_id'] === rule.target.receiverEntityId) {
+
+              isSenderThreadParticipant = true;
+            }
+
+            var isReceiverThreadParticipant = false;
+
+            if (thread['receiver_entity_id'] === rule.target.senderPersonId
+              || thread['receiver_entity_id'] === rule.target.receiverEntityId) {
+
+              isReceiverThreadParticipant = true;
+            }
 
             if (!isSenderThreadParticipant || !isReceiverThreadParticipant) {
               throw new Checkit.FieldError("Message participants are not part of the thread")
@@ -250,23 +270,6 @@ var Message = Class('Message').inherits(Argon.KnexModel)({
 
         },
         message : "receiverEntity's user has been deleted"
-      },
-      {
-        rule : function(val) {
-          return db('Entities').where({id : val}).then(function(receiverEntity) {
-
-            if (receiverEntity.length === 0) {
-              throw new Checkit.FieldError("receiverEntity doesn't exist")
-            }
-
-            receiverEntity = receiverEntity[0];
-
-            if (receiverEntity.type !== 'person') {
-              throw new Checkit.FieldError("receiverEntity can't be an organization")
-            }
-          })
-        },
-        message : "receiverEntity can't be an organization"
       }
     ],
 
