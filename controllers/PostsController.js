@@ -354,37 +354,67 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         if (err) { return next(err) }
 
         if (!response.isAllowed) {
-          return next(new ForbiddenError('Unauthorized.'));
+          return next(new ForbiddenError());
         }
 
-        var url = req.body.url;
+        var logScrapperError = function (url, error, callback) {
+          var errorLog = new ScrapperError({
+            url: url,
+            error: error,
+            errorStack: error.stack
+          });
 
-        request(url, function(err, response, body) {
+          logger.error(error);
+          logger.error(error.stack);
+
+          errorLog.save(callback);
+        };
+
+        request({
+          url: req.body.url,
+          headers: {
+            'User-Agent': 'Mozilla/5.0'
+          }
+        }, function (err, response, body) {
           if (err) {
-            return res.status(400).json({ status : 'Bad URL' })
+            return logScrapperError(req.body.url, err, function (err) {
+              if (err) { return next(err); }
+
+              return res.status(400).json({ status: 'Bad URL' });
+            });
           }
 
-          var longUrl = response.request.uri.href;
-
-          if (err) {
-            logger.error(err);
-            return res.status(400).json({ status : 'There was an error in the request', error : err });
-          }
-
-          Post.find(['source_url = ?', [longUrl]], function(err, posts) {
+          Post.find({
+            source_url: response.request.uri.href
+          }, function (err, posts) {
             if (err) {
-              logger.error(err);
-              return res.status(400).json({ status : 'There was an error in the request', error : err });
+              return logScrapperError(response.request.uri.href, err, function (err) {
+                if (err) { return next(err); }
+
+                return res.status(400).json({
+                  status: 'There was an error in the request',
+                  error: err
+                });
+              });
             }
 
             if (posts.length > 0) {
-             return res.status(200).json({ status : 'The URL already exists', error : 'The URL already exists' });
+              return res.json({
+                status: 'The URL already exists',
+                error: 'The URL already exists'
+              });
             }
 
-            Scrapper.processUrl(longUrl, response, function(err, result) {
+            Scrapper.processUrl(response.request.uri.href, response, function (err, result) {
               if (err) {
-                logger.error(err);
-                return res.status(400).json({ status : 'There was an error in the request', error : err });
+                return logScrapperError(req.body.url, err, function (err) {
+                  if (err) { return next(err); }
+
+                  return res.status(400).json({
+                    status: 'There was an error in the request',
+                    error: err
+                  });
+                });
               }
 
               return res.json(result);

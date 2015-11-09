@@ -91,7 +91,6 @@ Module('ThreadsPresenter')({
               if (!isMsgSender) {
                 if (thread.lastSeen === null
                   || moment(message.createdAt).format('X') > moment(thread.lastSeen).format('X')) {
-
                   unreadCount += 1;
                 }
               }
@@ -99,6 +98,7 @@ Module('ThreadsPresenter')({
               message.hidden = message['hiddenFor' + (isMsgSender ? 'Sender' : 'Receiver')];
 
               message.senderEntity = thread[(msgSenderIsThreadSender ? 'sender' : 'receiver') + 'Entity'];
+
 
               async.series([function(doneMessageInfo){
                 if (!message.invitationRequestId) {

@@ -8,6 +8,7 @@
   },
   "scripts": {
     "start": "nodemon --ext js,html --watch public/demo-data --watch views --watch controllers --watch middlewares --watch models --watch presenters --watch lib bin/server.js",
+    "debug": "nodemon --ext js,html --watch public/demo-data --watch views --watch controllers --watch middlewares --watch models --watch presenters --watch lib --debug bin/server.js",
     "dev": "webpack -d -w",
     "svg": "svg-sprite -s --symbol-dest=svg --symbol-prefix=.svg- --ss=sprite.svg --si --sx --shape-id-generator=svg-%s --dest=views/shared public/svg/*.svg",
     "feed-test": "export ENV=feedTest NODE_ENV=feedTest; knex migrate:rollback; knex migrate:latest; echo \"\n\"; node test/feed/clean.js && node test/feed/FeedInjector.js"
@@ -25,6 +26,7 @@
     "connect-redis": "^2.2.0",
     "cron": "^1.0.9",
     "css-loader": "^0.9.1",
+    "decay": "^1.0.8",
     "dragula": "^3.5.1",
     "express": "^4.13.3",
     "file-loader": "^0.8.1",

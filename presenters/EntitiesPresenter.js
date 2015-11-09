@@ -327,14 +327,33 @@ var EntitiesPresenter = Module('EntitiesPresenter')({
                 return done();
               });
           }
-        ], function (err) { // async.series
+        ], function (err) { // async.series inside .followersOwnedByCurrentPerson
           if (err) { return next(err); }
 
           entityInstance.followersOwnedByCurrentPerson = result;
 
           return next();
         });
-      }], function(err) { // async.series
+      }, function (nextSeries) {
+        if (!currentPerson) {
+          return nextSeries();
+        }
+
+        db('EntityFollower')
+          .where('follower_id', entity.id)
+          .andWhere('followed_id', hashids.decode(currentPerson.id)[0])
+          .exec(function (err, rows) {
+            if (err) { return nextSeries(err); }
+
+            if (rows.length > 0) {
+              entityInstance.followsCurrentPerson = true;
+            } else {
+              entityInstance.followsCurrentPerson = false;
+            }
+
+            return nextSeries();
+          });
+      }], function(err) { // async.series for filling each property
         if (err) {
           return nextEntity(err);
         }

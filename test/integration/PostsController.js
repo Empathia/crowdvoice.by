@@ -167,7 +167,43 @@ describe('PostsController', function () {
             expect(res.status).to.equal(400)
             expect(res.body.status).to.equal('There was an error in the request')
 
-            return done()
+            ScrapperError.find({
+              url: 'https://www.youtube.com/watch?v=M4Txn4FtV4',
+            }, function (err, result) {
+              if (err) { return done(err) }
+
+              expect(result.length).to.equal(1)
+
+              return done()
+            })
+          })
+      })
+    })
+
+    it('Log scrapper errors', function (doneTest) {
+      login('cersei-lannister', function (err, agent, csrf) {
+        if (err) { return doneTest(err) }
+
+        agent
+          .post(urlBase + '/cersei-lannister/dead-of-arryn/preview')
+          .accept('application/json')
+          .send({
+            _csrf: csrf,
+            url: 'htt://blog.greduan.com', // missing a "p" at http
+          })
+          .end(function (err, res) {
+            expect(res.status).to.equal(400)
+            expect(res.body.status).to.equal('Bad URL')
+
+            ScrapperError.find({
+              url: 'htt://blog.greduan.com',
+            }, function (err, result) {
+              if (err) { return doneTest(err) }
+
+              expect(result.length).to.equal(1)
+
+              return doneTest()
+            })
           })
       })
     })

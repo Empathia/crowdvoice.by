@@ -89,7 +89,7 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
             return this;
         },
 
-        /* Add the data from the DOM 
+        /* Add the data from the DOM
          * And sents it to voiceNewArticle
          * API Endpoint
          */
@@ -164,7 +164,7 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
             }.bind(this));
         },
 
-        //Gets the API response and applies the header background 
+        //Gets the API response and applies the header background
         _imageUploaded : function _imageUploaded(image){
             this.articleImage = image;
             this.articleTitle.addClass('editor-title-bg');

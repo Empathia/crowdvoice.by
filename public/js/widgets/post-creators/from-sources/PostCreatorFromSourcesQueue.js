@@ -1,6 +1,5 @@
 /* jshint multistr: true */
 Class(CV, 'PostCreatorFromSourcesQueue').inherits(Widget).includes(BubblingSupport)({
-
     ELEMENT_CLASS : 'from-sources-content-right',
 
     HTML : '\
@@ -9,8 +8,7 @@ Class(CV, 'PostCreatorFromSourcesQueue').inherits(Widget).includes(BubblingSuppo
                 <p>Add here the posts you want to include in this voice.<br/>You’ll be able to edit their title and description.</p>\
             </div>\
             <div class="from-sources-queue-list -text-center"></div>\
-        </div>\
-    ',
+        </div>',
 
     prototype : {
         _index : 0,
@@ -72,7 +70,7 @@ Class(CV, 'PostCreatorFromSourcesQueue').inherits(Widget).includes(BubblingSuppo
             postData.name = 'post_' + this._index;
             this.appendChild(CV.EditablePost.create(postData))
                 .render(this.list, this.list.firstChild)
-                .edit({appendCalendarTo: this.parent.el})
+                .edit()
                 .addImageControls()
                 .addRemoveButton();
 

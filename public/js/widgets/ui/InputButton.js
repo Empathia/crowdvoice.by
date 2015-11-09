@@ -32,6 +32,15 @@ Class(CV.UI, 'InputButton').inherits(Widget).includes(CV.WidgetUtils, BubblingSu
             this._setup()._bindEvents();
         },
 
+        /* Focus the input element.
+         * @method focus <public> [Function]
+         * @return InputButton
+         */
+        focus : function focus() {
+            this.input.getInput().focus();
+            return this;
+        },
+
         _setup : function _setup() {
             this.appendChild(new CV.UI.Button({
                 name : 'button',

@@ -132,7 +132,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
 
             this.searchField.element.find('input').on('keyup', function(ev){
                 var searchStr = ev.target.value.toLowerCase();
-                container.listElement.find('.message-side').each(function() {
+                container.listElement.find('.thread-list-item').each(function() {
 
                     var userStr = $(this).find('h3').text().toLowerCase();
 
@@ -169,6 +169,12 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
             return this;
         },
 
+        /* Reply input keyup handler.
+         * Checks if the pressed key is ENTER, if so it will call the send
+         * message handler, otherwise it will do nothing.
+         * @method _messageInputKeyUpHandler <private> [Function]
+         * @return undefined
+         */
         _messageInputKeyUpHandler : function _messageInputKeyUpHandler(ev) {
             var charCode = (typeof ev.which === 'number') ? ev.which : ev.keyCode;
             if (charCode === KEYCODES.ENTER) {
@@ -176,6 +182,14 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
             }
         },
 
+        /* Tries to send a new message.
+         * Disables the reply button, if the input has text on in it will send
+         * it to the current thread or if no thread is currently selected it
+         * will create a new thread, otherwise it will just re-enable the
+         * reply button.
+         * @method _sendMessageHandler <private> [Function]
+         * @return undefined
+         */
         _sendMessageHandler : function _sendMessageHandler() {
             var message = this.replyButton.input.getValue();
             this.replyButton.button.disable();
@@ -194,10 +208,12 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
             }
         },
 
+        /* Creates a new Thread item and renders it on the thread list sidebar.
+         * @method addThread <private> [Function]
+         * @return undefined
+         */
         addThread : function addThread(threadData) {
             var container = this;
-
-            //console.log(threadData);
 
             var thread = new CV.Thread({
                 name : 'thread_' + threadData.id,
@@ -210,6 +226,12 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
                 container.unreadMessages -= this.unreadCount;
             });
 
+            thread.bind('activate', function(){
+                setTimeout(function() {
+                    container.replyButton.focus();
+                }, 0);
+            });
+
             thread.threadContainer = this;
             thread.setup();
 
@@ -220,6 +242,10 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
             this.refresh();
         },
 
+        /* Removes a Thread item from the thread list sidebar.
+         * @method deleteThread <private> [Function]
+         * @return undefined
+         */
         deleteThread : function deleteThread(threadId) {
             var container = this;
 
@@ -236,26 +262,25 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
 
             this['thread_' + threadId].destroy();
 
-            // this.listElement.find('#'+threadId).remove();
-
-            if (this.listElement.find('.message-side').length === 0){
+            if (this.listElement.find('.thread-list-item').length === 0){
                 container.hideSideBar();
-                container.showUnselectedScreen();
-
-            }else{
+            } else {
                 container.showSideBar();
-                container.showUnselectedScreen();
             }
+
+            container.showUnselectedScreen();
         },
 
+        /* Deactivate the thread list items.
+         * Display the compose message view.
+         * @method newMessageAs <private> [Function]
+         */
         newMessageAs : function newMessageAs(entityId, isOrganization, orgName) {
             // set the senderEntityId so it can be accessible by other functions
-            this.listElement.find('.message-side').removeClass('active');
+            this.listElement.find('.thread-list-item').removeClass('active');
 
             this.senderEntityId = entityId;
             this.senderEntityIsOrg = isOrganization;
-            console.log(this.senderEntityIsOrg);
-
             this.senderEntityOrgName = orgName;
 
             this.noMessagesEl.hide();
@@ -268,6 +293,8 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
             this.refresh();
         },
 
+        /* Hides the sidebar and display the onboarding message.
+         */
         hideSideBar : function hideSideBar() {
             var container = this;
 
@@ -284,6 +311,8 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
 
         },
 
+        /* Display the sidebar.
+         */
         showSideBar : function showSideBar(){
             var container = this;
             var messageText = 'Please select a thread from the list on the left or <a href="#" class="new-message">compose a new message</a>.';
@@ -333,30 +362,30 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
 
                     liStr.on('click', function(){
                         var receiverEntityId = $(this).attr('data-partner-id');
+                        var senderEntityId = container.senderEntityId;
+                        var listElement;
 
                         container.searchUsersResultEl.empty();
                         container.searchUsersResultEl.hide();
                         $('.search-users').val("");
 
                         if (container.isOnThreadList(receiverEntityId)) {
-                            console.log(container.senderEntityIsOrg);
-                            if (container.senderEntityIsOrg ){
-                                console.log('is');
+                            if (container.senderEntityIsOrg) {
+                                listElement = container.threadListEl.find("[data-partner-id='" + receiverEntityId + "'][data-sender-id='" + senderEntityId + "'][is-organization='true']");
 
-                                console.log(container.threadListEl.find("[data-partner-id='" + receiverEntityId + "'][is-organization='true']"));
-                                container.threadListEl.find("[data-partner-id='" + receiverEntityId + "'][is-organization='true']").click();
+                                if (listElement.length) {
+                                    return listElement.click();
+                                }
                             } else {
-                                console.log('not');
+                                listElement = container.threadListEl.find("[data-partner-id='" + receiverEntityId + "'][data-sender-id='" + senderEntityId + "'][is-organization='false']");
 
-                                console.log($('body').find("[data-partner-id='" + receiverEntityId + "'][is-organization='false']"));
-                                container.threadListEl.find("[data-partner-id='" + receiverEntityId + "'][is-organization='false']").click();
+                                if (listElement.length) {
+                                    return listElement.click();
+                                }
                             }
-                            return;
-
-                        } else {
-                            container.showNewThreadScreen($(this).attr('data-partner-id'), $(this).attr('data-partner-name'));
                         }
 
+                        container.showNewThreadScreen(this.dataset.partnerId, this.dataset.partnerName);
                         // set the receiverEntityId in the threadsContainer so it can be accessible by other functions
                         container.receiverEntityId = receiverEntityId;
 
@@ -370,15 +399,12 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
         },
 
         showNewThreadScreen :  function showNewThreadScreen (otherPersonID, otherPersonName){
-            //console.log(otherPersonID);
             this.messagesBodyHeaderEl.find('.m-action').show();
             this.messagesBodyHeaderEl.find('.m-new').hide();
             this.currentThreadId = null;
 
             if (this.senderEntityIsOrg ){
-                this.messagesBodyHeaderEl.find('span.conversation-title').html('Conversation with ' +
-                                                                               otherPersonName +
-                                                                               ' <span>- As an Organization (<b>'+ this.senderEntityOrgName +'<b>)</span>');
+                this.messagesBodyHeaderEl.find('span.conversation-title').text('Conversation with ' + otherPersonName);
             } else {
                 this.messagesBodyHeaderEl.find('span.conversation-title').text('Conversation with ' + otherPersonName);
             }
@@ -386,6 +412,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
             this.messagesBodyHeaderEl.find('.delete-thread').hide();
             this.messagesContainerEl.show();
             this.refresh();
+            this.replyButton.focus();
             return this;
         },
 
@@ -394,7 +421,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
 
             var foundIt = false;
 
-            container.listElement.find('.message-side').each(function() {
+            container.listElement.find('.thread-list-item').each(function() {
                 //this.senderEntityIsOrg
                 //console.log($(this).attr('is-organization'));
                 if (container.senderEntityIsOrg){
@@ -450,6 +477,11 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
                 threadId : container.currentThreadId,
                 data : {message : message}
             }, function(err, res) {
+                if (err) {
+                    console.log(res);
+                    return;
+                }
+
                 var thread = container['thread_' + container.currentThreadId];
 
                 thread.appendChild(new CV.Message({
