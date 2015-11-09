@@ -233,8 +233,9 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           post.save(function(err, result) {
             if (err) { return next(err); }
 
-            var imagePath = '';
-            if (body.imagePath !== '') {
+
+            var imagePath = body.imagePath;
+            if (body.imagePath !== '' && CONFIG.environment === 'development') {
               imagePath = process.cwd() + '/public' + body.imagePath;
             }
 
