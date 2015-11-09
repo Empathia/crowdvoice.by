@@ -28,7 +28,7 @@ describe('TopicsController', function () {
 
   describe('#newestVoices', function () {
 
-    it('return 3 voices', function (done) {
+    it('Should return 3 voices', function (done) {
       request
         .get(urlBase + '/topic/health/newestVoices')
         .end(function (err, res) {
@@ -38,6 +38,22 @@ describe('TopicsController', function () {
           expect(res.body.voices.length).to.equal(3)
 
           return done()
+        })
+    })
+
+  })
+
+  describe('#getTopicBySlug', function () {
+
+    it('Should return 200', function (doneTest) {
+      request
+        .get(urlBase + '/topic/health')
+        .end(function (err, res) {
+          if (err) { return doneTest(err) }
+
+          expect(res.status).to.equal(200)
+
+          return doneTest()
         })
     })
 

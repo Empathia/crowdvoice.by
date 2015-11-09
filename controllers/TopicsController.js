@@ -207,6 +207,7 @@ var TopicsController = Class('TopicsController')({
 
           db('Voices')
             .whereIn('id', voicesIds)
+            .andWhere('status', Voice.STATUS_PUBLISHED)
             .andWhere('deleted', false)
             .exec(callback);
         },
@@ -235,24 +236,6 @@ var TopicsController = Class('TopicsController')({
       });
     },
 
-    // Many of the following methods are not being used, but should still remain
-    // here.
-
-    getTopicById : function getTopicById (req, res, next) {
-      // Check params
-      if (isNaN(req.params.id)) {
-        next(new Error('Id has to be an integer'));
-      }
-
-      Topic.findById(req.params.id, function (err, result) {
-        if (err) { next(err); return; }
-        if (result.length === 0) { next(new Error('Not found')); }
-
-        res.locals.topic = new Topic(result[0]);
-        next();
-      });
-    },
-
     index : function index (req, res, next) {
       Topic.all(function(err, result) {
         if (err) {
@@ -270,58 +253,7 @@ var TopicsController = Class('TopicsController')({
               res.json(res.locals.topics);
             }
           });
-
         });
-
-      });
-
-    },
-
-    show : function show (req, res) {
-      res.format({
-        'text/html': function () {
-          res.render('topics/show.html', {});
-        },
-        'application/json': function () {
-          res.json(res.locals.topic);
-        }
-      });
-    },
-
-    update : function update (req, res) {
-      var topic = res.locals.topic;
-
-      topic.name = req.body.name || topic.name;
-
-      async.series([
-        function (done) {
-          topic.save(done);
-        },
-        function (done) {
-          if (!req.files['image']) { return done(); }
-          topic.uploadImage('image', req.files['image'].path, function (err) {
-            done(err);
-          });
-        }
-      ], function (err) {
-        if (err) {
-          res.locals.topic = topic;
-          res.render('topics/edit.html');
-        } else {
-          req.flash('success', 'Topic has been updated.');
-          res.redirect('/topics');
-        }
-      });
-    },
-
-    destroy : function destroy (req, res) {
-      var topic = res.locals.topic;
-
-      topic.destroy(function (err) {
-        if (err) { return next(err); }
-
-        req.flash('success', 'Topic has been deleted.');
-        res.redirect('/topics');
       });
     }
   }
