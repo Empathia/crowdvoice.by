@@ -98,7 +98,7 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
                 } else {
                     // post with current image (if replaced), otherwise
                     // post with old image
-                    imagePath = this.imagePath || this.postImages.medium.url;
+                    imagePath = this.imagePath || this.postImages && this.postImages.medium && this.postImages.medium.url || '';
                 }
             } else {
                 // Editing a very new post.
