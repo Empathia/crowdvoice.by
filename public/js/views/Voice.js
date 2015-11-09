@@ -132,6 +132,10 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
                 scrollableArea : this.scrollableArea
             }));
 
+            if (this.onboarding){
+                this.onboarding.setup();
+            } 
+
             return this;
         },
 

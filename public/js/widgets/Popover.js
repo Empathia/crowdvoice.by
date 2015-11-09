@@ -56,7 +56,8 @@ Class(CV, 'Popover').inherits(Widget)({
         },
 
         _bindEvents : function _bindEvents() {
-            this.toggler.addEventListener('click', this.toggle.bind(this), false);
+            this.togglerRef = this.toggle.bind(this);
+            this.toggler.addEventListener('click', this.togglerRef, false); 
         },
 
         /* Returns the `popover-content` element
@@ -98,7 +99,6 @@ Class(CV, 'Popover').inherits(Widget)({
             if (this.__destroyed === true) {
                 console.warn('calling on destroyed object');
             }
-
             this.dispatch('beforeRender');
 
             this.container.appendChild(this.el);
@@ -106,6 +106,15 @@ Class(CV, 'Popover').inherits(Widget)({
             this.dispatch('render');
 
             return this;
+        },
+
+        destroy : function destroy(){
+            Widget.prototype.destroy.call(this);
+
+            this.toggler.removeEventListener('click', this.togglerRef);
+            this.togglerRef = null;
+
+            return null;
         }
     }
 });
