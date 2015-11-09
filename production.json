@@ -74,10 +74,16 @@
         "PORT" : "3007"
       }
     },
-
     {
       name : "Twitter Fetcher Worker",
       script : "bin/twitter_fetcher.js",
+      env : {
+        "NODE_ENV" : "production"
+      }
+    },
+    {
+      name : "Post auto-moderate script worker",
+      script : "bin/autoModerate.js",
       env : {
         "NODE_ENV" : "production"
       }

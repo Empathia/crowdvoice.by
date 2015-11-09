@@ -80,6 +80,13 @@
       env : {
         "NODE_ENV" : "staging"
       }
+    },
+    {
+      name : "Post auto-moderate script worker",
+      script : "bin/autoModerate.js",
+      env : {
+        "NODE_ENV" : "staging"
+      }
     }
   ],
 
