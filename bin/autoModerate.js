@@ -13,14 +13,20 @@ var path = require('path'),
 d.on('error', function (err) {
   logger.error('Post auto-moderate script error')
   logger.error(err)
-  logger.error(err.stat)
+  logger.error(err.stack)
 })
+
+var cronTimeStr = '0 0 * * * *'
+
+if (process.env.NODE_ENV === 'development') {
+  cronTimeStr = '* * * * * *'
+}
 
 d.run(function () {
 
   var CronJob = require('cron').CronJob
   var job = new CronJob({
-    cronTime: '0 0 * * * *',
+    cronTime: cronTimeStr,
 
     onTick: function () {
 
