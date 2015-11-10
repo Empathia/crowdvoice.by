@@ -47,7 +47,12 @@ Class(CV, 'DiscoverTrendingUpdatedVoicesTab').inherits(Widget)({
             }
 
             this._fetched = true;
-            this._renderResults(res);
+
+            if (res.length) {
+                return this._renderResults(res);
+            }
+
+            return this._renderEmptyState();
         },
 
         /* Render the getNewVoices response VoiceCovers.
@@ -71,6 +76,16 @@ Class(CV, 'DiscoverTrendingUpdatedVoicesTab').inherits(Widget)({
             }).setup();
 
             this.el.appendChild(fragment);
+
+            this.loader.disable();
+        },
+
+        _renderEmptyState : function _renderEmptyState() {
+            this.appendChild(new CV.EmptyState({
+                name : 'empty',
+                className : '-pt4 -pb4',
+                message : 'there are no most updated voices yet.'
+            })).render(this.el);
 
             this.loader.disable();
         },
