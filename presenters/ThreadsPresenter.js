@@ -99,7 +99,6 @@ Module('ThreadsPresenter')({
 
               message.senderEntity = thread[(msgSenderIsThreadSender ? 'sender' : 'receiver') + 'Entity'];
 
-
               async.series([function(doneMessageInfo){
                 if (!message.invitationRequestId) {
                   return doneMessageInfo();

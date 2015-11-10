@@ -23,7 +23,7 @@ Class(CV, 'VoiceOboarding').inherits(Widget).includes(CV.WidgetUtils)({
                 placement : '-bottom-right',
                 toggler : popoverToggler,
                 container : this.popoverContainer[0],
-                title : 'Rise Your Voice!',
+                title : 'Raise Your Voice!',
                 content : '\
                     <div class="line"></div>\
                     <p class="cv-voice-onboarding__desc -float-left">Use this button to <b>add content</b><br>from any source.</p>\
@@ -43,7 +43,7 @@ Class(CV, 'VoiceOboarding').inherits(Widget).includes(CV.WidgetUtils)({
 
         _bindEvents : function _bindEvents() {
             this.closeButton.el.addEventListener('click', this._deactivateOnboarding.bind(this));
-            this.popoverOnboarding.bind('deactivate', this._deactivateOnboarding); 
+            this.popoverOnboarding.bind('deactivate', this._deactivateOnboarding);
         },
 
         _deactivateOnboarding : function _deactivateOnboarding() {
