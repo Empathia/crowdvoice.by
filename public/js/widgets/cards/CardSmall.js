@@ -62,6 +62,8 @@ Class(CV, 'CardSmall').inherits(Widget).includes(CV.WidgetUtils, BubblingSupport
             </a>\
         </div>',
 
+    FOLLOWS_CURRENT_PERSON_TEMPLATE : '<span class="badge-follows card-follows-you">Follows You</span>',
+
     MAX_DESCRIPTION_LENGTH : 180,
 
     prototype : {
@@ -184,10 +186,13 @@ Class(CV, 'CardSmall').inherits(Widget).includes(CV.WidgetUtils, BubblingSupport
             this.dom.updateAttr('href', this.usernameEl, '/' + this.data.profileName + '/');
             this.dom.updateAttr('title', this.usernameEl, "@" + this.data.profileName + '’s profile');
 
-            var fullname = this.data.name;
-            this.dom.updateText(this.fullNameEl, fullname);
+            if (this.data.followsCurrentPerson) {
+                this.el.querySelector('.card_username').insertAdjacentHTML('beforeend', this.constructor.FOLLOWS_CURRENT_PERSON_TEMPLATE);
+            }
+
+            this.dom.updateText(this.fullNameEl, this.data.name);
             this.dom.updateAttr('href', this.fullNameEl, '/' + this.data.profileName + '/');
-            this.dom.updateAttr('title', this.fullNameEl, fullname + '’s profile');
+            this.dom.updateAttr('title', this.fullNameEl, this.data.name + '’s profile');
 
             var description = Autolinker.link(this.format.truncate(this.data.description || '', this.constructor.MAX_DESCRIPTION_LENGTH, true));
             if (description != null){
