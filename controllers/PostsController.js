@@ -239,22 +239,39 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
               imagePath = process.cwd() + '/public' + body.imagePath;
             }
 
-            post.uploadImage('image', imagePath, function() {
+            async.series([function(done) {
+              if (imagePath === '') {
+                return done();
+              }
+
+              post.uploadImage('image', imagePath, function() {
+                done();
+              });
+            }, function(done) {
+              if (imagePath === '') {
+                post.imageBaseUrl = '';
+                post.imageMeta = {};
+              }
+
+              done();
+            }, function(done) {
               post.save(function(err, resave) {
+                if (err) { return done(err); }
+
+                done();
+              });
+            }], function(err) {
+              PostsPresenter.build([post], req.currentPerson, function(err, posts) {
                 if (err) { return next(err); }
 
-                PostsPresenter.build([post], req.currentPerson, function(err, posts) {
-                  if (err) { return next(err); }
+                if (body.images) {
+                  body.images.forEach(function(image) {
+                    fs.unlinkSync(process.cwd() + '/public' + image)
+                    logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image);
+                  });
+                }
 
-                  if (body.images) {
-                    body.images.forEach(function(image) {
-                      fs.unlinkSync(process.cwd() + '/public' + image)
-                      logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image);
-                    });
-                  }
-
-                  return res.json(posts[0]);
-                });
+                return res.json(posts[0]);
               });
             });
           });
