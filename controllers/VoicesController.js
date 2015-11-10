@@ -368,13 +368,14 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
 
           // Load tweets in the background
-          d.run(function() {
-            var tf = new TwitterFetcher({
-              voice : voice,
-              count : 100
-            });
+          if (voice.twitterSearch) {
+            d.run(function() {
+              var tf = new TwitterFetcher({
+                voice : voice,
+                count : 100
+              });
 
-            if (voice.twitterSearch !== null) {
+
               async.series([function(done) {
                 logger.log('Fetching Tweets');
                 tf.fetchTweets(done);
@@ -399,8 +400,9 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
                 logger.log('Finished Fetching tweets and saving posts.')
               });
-            }
-          });
+
+            });
+          }
 
           VoicesPresenter.build([voice], req.currentPerson, function(err, voices) {
             if (err) {
