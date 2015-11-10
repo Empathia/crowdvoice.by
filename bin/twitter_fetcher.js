@@ -36,7 +36,7 @@ d.on('error', function(err) {
 
 var cronExpression = '0 0 * * * *';
 
-if (CONFIG.environment === 'develpment') {
+if (CONFIG.environment === 'development') {
   cronExpression = '* * * * * *';
 }
 
