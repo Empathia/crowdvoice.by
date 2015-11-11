@@ -57,7 +57,10 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
             window.CardHoverWidget.register(this.byAnchor, this.voice.owner);
 
             this.dom.updateText(this.el.querySelector('[data-stats-post-count]'), this.format.numberUS(this.postCount) + ' posts');
-            this.dom.updateText(this.el.querySelector('[data-stats-followers]'), this.format.numberUS(this.followerCount) + ' followers');
+
+            if (this.followerCount) {
+                this.dom.updateText(this.el.querySelector('[data-stats-followers]'), this.format.numberUS(this.followerCount) + ' followers');
+            }
 
             this.appendChild(new CV.VoiceTimelineFeedback({
                 name : 'voiceTimelineFeedback',
