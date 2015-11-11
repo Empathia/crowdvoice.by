@@ -102,6 +102,7 @@ Class(CV, 'PostActionSave').inherits(Widget)({
         _clickHandler : function _clickHandler() {
             if (this.entity.saved) {
                 // wants to unsave? you need to confirm first.
+                this.parent.addIsHoverState();
                 this.unsavePopover.activate();
                 return void 0;
             }
@@ -171,6 +172,13 @@ Class(CV, 'PostActionSave').inherits(Widget)({
             };
 
             Events.on(this.el, 'mouseleave', mouseLeave);
+        },
+
+        _deactivate : function _deactivate() {
+            Widget.prototype._deactivate.call(this);
+            setTimeout(function() {
+                this.parent.removeIsHoverState();
+            }.bind(this), 200);
         },
 
         destroy : function destroy() {

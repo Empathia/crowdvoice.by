@@ -74,6 +74,16 @@ Class(CV, 'Post').inherits(Widget).includes(
             return this;
         },
 
+        addIsHoverState : function addIsHoverState() {
+            this.dom.addClass(this.el, ['-is-hover']);
+            return this;
+        },
+
+        removeIsHoverState : function removeIsHoverState() {
+            this.dom.removeClass(this.el, ['-is-hover']);
+            return this;
+        },
+
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
 
