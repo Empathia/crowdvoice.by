@@ -9,10 +9,12 @@ Class(CV, 'OrganizationProfileEditMembersTab').inherits(Widget)({
             <div data-main></div>\
             <div data-list-wrapper>\
                 <div class="form-field -mt2">\
-                    <label>members of this organization</label>\
+                    <label>\
+                        <b data-members-list-total>0</b> members of <b data-members-list-org-name>this organization</b>\
+                    </label>\
                 </div>\
                 <div>\
-                    <div data-members-list></div>\
+                    <div data-members-list class="-rel"></div>\
                 </div>\
             </div>\
         </div>',
@@ -31,6 +33,30 @@ Class(CV, 'OrganizationProfileEditMembersTab').inherits(Widget)({
         init : function init(config) {
             Widget.prototype.init.call(this, config);
             this.el = this.element[0];
+            this.totalMemebersElement = this.el.querySelector('[data-members-list-total]');
+            this.listElement = this.el.querySelector('[data-members-list]');
+
+            this.appendChild(new CV.Loading({
+                name : 'loader'
+            })).render(this.listElement).center().setStyle({top: '80px'});
+
+            this.appendChild(new CV.PopoverConfirm({
+                name : 'confirmPopover',
+                data : {
+                    confirm : {
+                        label : 'Remove',
+                        className : '-color-negative'
+                    }
+                }
+            }));
+
+            this.appendChild(new CV.PopoverBlocker({
+                name : 'popover',
+                className : 'remove-item-popover',
+                placement : 'top-right',
+                content : this.confirmPopover.el
+            }));
+
             this._setup()._bindEvents();
         },
 
@@ -38,21 +64,26 @@ Class(CV, 'OrganizationProfileEditMembersTab').inherits(Widget)({
          * @return OrganizationProfileEditMembersTab
          */
         _setup : function _setup() {
+            this.el.querySelector('[data-members-list-org-name]').textContent = this.data.entity.name;
+
             API.getOrganizationMembers({
                 profileName : this.data.entity.profileName
             }, function(err,res) {
-                console.log(res);
+                this.loader.disable();
+
                 this.appendChild(new CV.OrganizationProfileEditMembersList({
                     name : 'list',
                     data : {
                         members : res
                     }
-                })).render(this.el.querySelector('[data-members-list]'));
+                })).render(this.listElement);
+
+                this._updateListState();
             }.bind(this));
 
             this.appendChild(new CV.UI.InputButton({
                 name : 'searchInput',
-                data : {label : 'Invite Users to Join this Organization'},
+                data : {label : 'Invite Users to Join ' + this.data.entity.name},
                 inputData : {
                     inputClassName : '-lg -block -btrr0 -bbrr0',
                     attr : {
@@ -95,10 +126,51 @@ Class(CV, 'OrganizationProfileEditMembersTab').inherits(Widget)({
             this._inviteClickHandlerRef = this._inviteClickHandler.bind(this);
             Events.on(this.searchInput.button.el, 'click', this._inviteClickHandlerRef);
 
-            this._removeMemberRef = this._removeMember.bind(this);
-            this.bind(this.constructor.REMOVE_MEMBER_EVENT_NAME, this._removeMemberRef);
+            this._removeMemberClickHandlerRef = this._removeMemberClickHandler.bind(this);
+            this.bind(this.constructor.REMOVE_MEMBER_EVENT_NAME, this._removeMemberClickHandlerRef);
+
+            this._popOverConfirmClickHandlerRef = this._popOverConfirmClickHandler.bind(this);
+            this.confirmPopover.bind('confirm', this._popOverConfirmClickHandlerRef);
+
+            this._popOverCancelClickHandlerRef = this._popOverCancelClickHandler.bind(this);
+            this.confirmPopover.bind('cancel', this._popOverCancelClickHandlerRef);
 
             return this;
+        },
+
+        /* Updates the total memebers number.
+         * Checks if the list has not members, in which case it will display the emptyState.
+         * @method _updateListState <private> [Function]
+         * @return undefined
+         */
+        _updateListState : function _updateListState() {
+            var totalMemebers = this.list.getTotalMembers();
+
+            this.totalMemebersElement.textContent = totalMemebers;
+
+            if (totalMemebers === 0) {
+                return this._showEmptyState();
+            }
+
+            if (this.empty) {
+                this.empty = this.empty.destroy();
+            }
+        },
+
+        /* Displays the EmptyState.
+         * @method _showEmptyState <private> [Function]
+         * @return undefined
+         */
+        _showEmptyState : function _showEmptyState() {
+            if (this.empty) {
+                return;
+            }
+
+            this.appendChild(new CV.EmptyState({
+                name : 'empty',
+                className : '-pt4 -pb4',
+                message : '@' + this.data.entity.profileName + ' has no members yet.'
+            })).render(this.listElement);
         },
 
         /* Search Input Key Up Handler. Checks if we should call the
@@ -214,30 +286,66 @@ Class(CV, 'OrganizationProfileEditMembersTab').inherits(Widget)({
             })).render(this.el, this.el.firstElementChild);
         },
 
-        _removeMember : function _removeMember(ev) {
+        /* Handle the 'card-remove-action-clicked' event dispatched by `this.list`.
+         * It will try to remove a specific entity from the organization.
+         * @method _removeMemberClickHandler <private> [Function]
+         * @return undefined
+         */
+        _removeMemberClickHandler : function _removeMemberClickHandler(ev) {
             ev.stopPropagation();
+            this._currentOptionToRemove = ev.target;
+            this._currentOptionToRemove.removeButton.disable();
+            this.popover.render(this._currentOptionToRemove.removeButton.el).activate();
+        },
 
-            var widget = ev.data;
-            widget.removeButton.disable();
+        /* Handles the popover 'cancel' custom event.
+         * Just close the popover.
+         * @method _popOverCancelClickHandler <private> [Function]
+         * @return undefined
+         */
+        _popOverCancelClickHandler : function _popOverCancelClickHandler(ev) {
+            ev.stopPropagation();
+            this.popover.deactivate();
+            this._currentOptionToRemove.removeButton.enable();
+        },
 
+        /* Handles the popover 'confirm' custom event.
+         * @method _popOverConfirmClickHandler <private> [Function]
+         * @return undefined
+         */
+        _popOverConfirmClickHandler : function _popOverConfirmClickHandler(ev) {
+            ev.stopPropagation();
+            this.popover.deactivate();
+            this._removeMember(this._currentOptionToRemove);
+        },
+
+        /* Tries to remove a specific entity from the organization.
+         * @method _removeMember <private> [Function]
+         * @argument widget <required> [EntityModel]
+         * @return undefined
+         */
+        _removeMember : function _removeMember(entity) {
             API.removeEntityFromOrganization({
                 profileName : this.data.entity.profileName,
                 data : {
-                    entityId : widget.data.id,
+                    entityId : entity.data.id,
                     orgId : this.data.entity.id
                 }
-            }, this._removeContributorResponseHandler.bind(this, widget));
+            }, this._removeContributorResponseHandler.bind(this, entity));
         },
 
-        _removeContributorResponseHandler : function _removeContributorResponseHandler(widget, err, res) {
-            console.log(res);
-
+        /* Handles the response of `API.removeEntityFromOrganization` call.
+         * @method _removeContributorResponseHandler <private> [Function]
+         * @return undefined
+         */
+        _removeContributorResponseHandler : function _removeContributorResponseHandler(widget, err) {
             if (err) {
                 widget.removeButton.enable();
                 return;
             }
 
             this.list.removeUser(widget);
+            this._updateListState();
         }
     }
 });
