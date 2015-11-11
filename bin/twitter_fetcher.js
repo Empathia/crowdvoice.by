@@ -23,6 +23,18 @@ process.on('SIGTERM', function() {
   if (fs.existsSync(LOCK_FILE)) {
     fs.unlinkSync(LOCK_FILE);
   }
+
+  process.exit();
+});
+
+process.on('SIGINT', function() {
+  logger.log('Twitter Fetcher Terminated');
+  logger.log('Cleaning...');
+  if (fs.existsSync(LOCK_FILE)) {
+    fs.unlinkSync(LOCK_FILE);
+  }
+
+  process.exit();
 });
 
 d.on('error', function(err) {
@@ -34,7 +46,7 @@ d.on('error', function(err) {
   }
 });
 
-var cronExpression = '0 0 * * * *';
+var cronExpression = '00 00 * * * *';
 
 if (CONFIG.environment === 'development') {
   cronExpression = '* * * * * *';
