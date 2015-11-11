@@ -40,6 +40,23 @@ Class(CV, 'OrganizationProfileEditMembersTab').inherits(Widget)({
                 name : 'loader'
             })).render(this.listElement).center().setStyle({top: '80px'});
 
+            this.appendChild(new CV.PopoverConfirm({
+                name : 'confirmPopover',
+                data : {
+                    confirm : {
+                        label : 'Remove',
+                        className : '-color-negative'
+                    }
+                }
+            }));
+
+            this.appendChild(new CV.PopoverBlocker({
+                name : 'popover',
+                className : 'remove-item-popover',
+                placement : 'top-right',
+                content : this.confirmPopover.el
+            }));
+
             this._setup()._bindEvents();
         },
 
@@ -109,8 +126,14 @@ Class(CV, 'OrganizationProfileEditMembersTab').inherits(Widget)({
             this._inviteClickHandlerRef = this._inviteClickHandler.bind(this);
             Events.on(this.searchInput.button.el, 'click', this._inviteClickHandlerRef);
 
-            this._removeMemberRef = this._removeMember.bind(this);
-            this.bind(this.constructor.REMOVE_MEMBER_EVENT_NAME, this._removeMemberRef);
+            this._removeMemberClickHandlerRef = this._removeMemberClickHandler.bind(this);
+            this.bind(this.constructor.REMOVE_MEMBER_EVENT_NAME, this._removeMemberClickHandlerRef);
+
+            this._popOverConfirmClickHandlerRef = this._popOverConfirmClickHandler.bind(this);
+            this.confirmPopover.bind('confirm', this._popOverConfirmClickHandlerRef);
+
+            this._popOverCancelClickHandlerRef = this._popOverCancelClickHandler.bind(this);
+            this.confirmPopover.bind('cancel', this._popOverCancelClickHandlerRef);
 
             return this;
         },
@@ -265,22 +288,50 @@ Class(CV, 'OrganizationProfileEditMembersTab').inherits(Widget)({
 
         /* Handle the 'card-remove-action-clicked' event dispatched by `this.list`.
          * It will try to remove a specific entity from the organization.
-         * @method _removeMember <private> [Function]
+         * @method _removeMemberClickHandler <private> [Function]
          * @return undefined
          */
-        _removeMember : function _removeMember(ev) {
+        _removeMemberClickHandler : function _removeMemberClickHandler(ev) {
             ev.stopPropagation();
+            this._currentOptionToRemove = ev.target;
+            this._currentOptionToRemove.removeButton.disable();
+            this.popover.render(this._currentOptionToRemove.removeButton.el).activate();
+        },
 
-            var widget = ev.data;
-            widget.removeButton.disable();
+        /* Handles the popover 'cancel' custom event.
+         * Just close the popover.
+         * @method _popOverCancelClickHandler <private> [Function]
+         * @return undefined
+         */
+        _popOverCancelClickHandler : function _popOverCancelClickHandler(ev) {
+            ev.stopPropagation();
+            this.popover.deactivate();
+            this._currentOptionToRemove.removeButton.enable();
+        },
 
+        /* Handles the popover 'confirm' custom event.
+         * @method _popOverConfirmClickHandler <private> [Function]
+         * @return undefined
+         */
+        _popOverConfirmClickHandler : function _popOverConfirmClickHandler(ev) {
+            ev.stopPropagation();
+            this.popover.deactivate();
+            this._removeMember(this._currentOptionToRemove);
+        },
+
+        /* Tries to remove a specific entity from the organization.
+         * @method _removeMember <private> [Function]
+         * @argument widget <required> [EntityModel]
+         * @return undefined
+         */
+        _removeMember : function _removeMember(entity) {
             API.removeEntityFromOrganization({
                 profileName : this.data.entity.profileName,
                 data : {
-                    entityId : widget.data.id,
+                    entityId : entity.data.id,
                     orgId : this.data.entity.id
                 }
-            }, this._removeContributorResponseHandler.bind(this, widget));
+            }, this._removeContributorResponseHandler.bind(this, entity));
         },
 
         /* Handles the response of `API.removeEntityFromOrganization` call.
