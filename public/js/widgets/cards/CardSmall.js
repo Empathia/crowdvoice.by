@@ -218,20 +218,37 @@ Class(CV, 'CardSmall').inherits(Widget).includes(CV.WidgetUtils, BubblingSupport
             following = this.statsWrapper.querySelector('[data-stats-following]');
             members = this.statsWrapper.querySelector('[data-stats-members]');
 
-            this.dom.updateAttr('href', voices, '/' + this.data.profileName + '/#voices');
-            this.dom.updateAttr('href', followers, '/' + this.data.profileName + '/#followers');
-            this.dom.updateAttr('href', following, '/' + this.data.profileName + '/#following');
-            this.dom.updateAttr('href', members, '/' + this.data.profileName + '/#members');
+            if (total_voices != 0) {
+                this.dom.updateAttr('href', voices, '/' + this.data.profileName + '/#voices');
+                this.dom.updateAttr('title', voices, total_voices + ' Voices');
+                this.dom.updateText(voices.querySelector('.stats-number'), total_voices);
+            } else {
+                voices.parentNode.removeChild(voices);
+            }
 
-            this.dom.updateAttr('title', voices, total_voices + ' Voices');
-            this.dom.updateAttr('title', followers, total_followers + ' Followers');
-            this.dom.updateAttr('title', following, total_following + ' Following');
-            this.dom.updateAttr('title', members, total_members + ' Members');
+            if (total_followers != 0) {
+                this.dom.updateAttr('href', followers, '/' + this.data.profileName + '/#followers');
+                this.dom.updateAttr('title', followers, total_followers + ' Followers');
+                this.dom.updateText(followers.querySelector('.stats-number'), total_followers);
+            } else {
+                followers.parentNode.removeChild(followers);
+            }
 
-            this.dom.updateText(voices.querySelector('.stats-number'), total_voices);
-            this.dom.updateText(followers.querySelector('.stats-number'), total_followers);
-            this.dom.updateText(following.querySelector('.stats-number'), total_following);
-            this.dom.updateText(members.querySelector('.stats-number'), total_members);
+            if (total_following != 0) {
+                this.dom.updateAttr('href', following, '/' + this.data.profileName + '/#following');
+                this.dom.updateAttr('title', following, total_following + ' Following');
+                this.dom.updateText(following.querySelector('.stats-number'), total_following);
+            } else {
+                following.parentNode.removeChild(following);
+            }
+
+            if (total_members != 0) {
+                this.dom.updateAttr('href', members, '/' + this.data.profileName + '/#members');
+                this.dom.updateAttr('title', members, total_members + ' Members');
+                this.dom.updateText(members.querySelector('.stats-number'), total_members);
+            } else {
+                members.parentNode.removeChild(members);
+            }
 
             return this;
         },
@@ -248,17 +265,29 @@ Class(CV, 'CardSmall').inherits(Widget).includes(CV.WidgetUtils, BubblingSupport
             followers = this.statsWrapper.querySelector('[data-stats-followers]');
             following = this.statsWrapper.querySelector('[data-stats-following]');
 
-            this.dom.updateAttr('href', voices, '/' + this.data.profileName + '/#voices');
-            this.dom.updateAttr('href', followers, '/' + this.data.profileName + '/#followers');
-            this.dom.updateAttr('href', following, '/' + this.data.profileName + '/#following');
+            if (total_voices != 0) {
+                this.dom.updateAttr('href', voices, '/' + this.data.profileName + '/#voices');
+                this.dom.updateAttr('title', voices, total_voices + ' Voices');
+                this.dom.updateText(voices.querySelector('.stats-number'), total_voices);
+            } else {
+                voices.parentNode.removeChild(voices);
+            }
 
-            this.dom.updateAttr('title', voices, total_voices + ' Voices');
-            this.dom.updateAttr('title', followers, total_followers + ' Followers');
-            this.dom.updateAttr('title', following, total_following + ' Following');
+            if (total_followers != 0) { 
+                this.dom.updateAttr('href', followers, '/' + this.data.profileName + '/#followers');
+                this.dom.updateAttr('title', followers, total_followers + ' Followers');
+                this.dom.updateText(followers.querySelector('.stats-number'), total_followers);
+            } else {
+                followers.parentNode.removeChild(followers);
+            }
 
-            this.dom.updateText(voices.querySelector('.stats-number'), total_voices);
-            this.dom.updateText(followers.querySelector('.stats-number'), total_followers);
-            this.dom.updateText(following.querySelector('.stats-number'), total_following);
+            if (total_following != 0) {
+                this.dom.updateAttr('href', following, '/' + this.data.profileName + '/#following');
+                this.dom.updateAttr('title', following, total_following + ' Following');
+                this.dom.updateText(following.querySelector('.stats-number'), total_following);
+            } else {
+                following.parentNode.removeChild(following);
+            }
 
             return this;
         }
