@@ -48,6 +48,7 @@ Class(CV, 'PostImage').inherits(CV.Post)({
             this.descriptionElement = this.el.querySelector('.post-card-description');
             this.sourceElement = this.el.querySelector('.post-card-meta-source');
             this.dateTimeElement = this.el.querySelector('.post-card-meta-date');
+            this.savedElement = this.el.querySelector('.post-card-activity-saved > .post-card-activity-label');
 
             this._setup()._bindEvents();
         },
@@ -73,7 +74,7 @@ Class(CV, 'PostImage').inherits(CV.Post)({
             this.dom.updateText(this.titleElement, this.dom.decodeHTML(this.title));
             this.dom.updateText(this.descriptionElement, this.dom.decodeHTML(this.description).trim());
 
-            this.dom.updateText(this.el.querySelector('.post-card-activity-saved .post-card-activity-label'), this.totalSaves);
+            this.dom.updateText(this.savedElement, this.totalSaves);
 
             return this;
         },
