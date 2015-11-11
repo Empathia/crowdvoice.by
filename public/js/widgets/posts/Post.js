@@ -44,7 +44,13 @@ Class(CV, 'Post').inherits(Widget).includes(
          * @method addActions <public> [Function]
          */
         addActions : function addActions() {
-            this.el.insertAdjacentHTML('beforeend', this.constructor.ACTIONS_HTML);
+            var postElement = this.el;
+
+            if (postElement.classList.contains('post-card') === false) {
+                postElement = postElement.querySelector('.post-card');
+            }
+
+            postElement.insertAdjacentHTML('beforeend', this.constructor.ACTIONS_HTML);
             this.actionsRow = this.el.querySelector('[data-actions-row]');
 
             this.appendChild(new CV.PostActionSave({
