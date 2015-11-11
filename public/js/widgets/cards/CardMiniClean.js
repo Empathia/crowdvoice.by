@@ -1,12 +1,10 @@
 /* Mini Card Clean Widget.
- * @argument person <required> [Object]
- * @argument person.avatar <required> [String]
- * @argument person.fullname <required> [String]
- * @argument person.username <required> [String]
+ * @argument data.person <required> [Object]
  */
 
-var Events = require('./../../lib/events');
 var moment = require('moment');
+var PLACEHOLDERS = require('./../../lib/placeholders');
+var Events = require('./../../lib/events');
 
 Class(CV, 'CardMiniClean').inherits(Widget).includes(CV.WidgetUtils, BubblingSupport)({
     ELEMENT_CLASS : 'card-mini -rel',
@@ -21,8 +19,7 @@ Class(CV, 'CardMiniClean').inherits(Widget).includes(CV.WidgetUtils, BubblingSup
                 </div>\
             </div>\
             <div class="action -abs"></div>\
-        </article>\
-    ',
+        </article>',
 
     META_HTML : '\
         <div class="card-info-meta">\
@@ -50,7 +47,11 @@ Class(CV, 'CardMiniClean').inherits(Widget).includes(CV.WidgetUtils, BubblingSup
          * @method _setup <private> [Function]
          */
         _setup : function _setup() {
-            this.dom.updateAttr('src', this.avatarElement, this.data.images && this.data.images.small && this.data.images.small.url);
+            if (this.data.images && this.data.images.small && this.data.images.small.url) {
+                this.dom.updateAttr('src', this.avatarElement, this.data.images.small.url);
+            } else {
+                this.dom.updateAttr('src', this.avatarElement, PLACEHOLDERS.small);
+            }
 
             this.dom.updateAttr('alt', this.avatarElement, this.data.profileName + "’s avatar image");
             this.dom.updateText(this.fullNameElement, this.data.name);

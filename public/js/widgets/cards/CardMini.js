@@ -1,10 +1,8 @@
 /* Mini Card Widget.
- * @argument person <required> [Object]
- * @argument person.avatar <required> [String]
- * @argument person.fullname <required> [String]
- * @argument person.username <required> [String]
+ * @argument data.person <required> [Object]
  */
 var moment = require('moment');
+var PLACEHOLDERS = require('./../../lib/placeholders');
 var Events = require('./../../lib/events');
 
 Class(CV, 'CardMini').inherits(Widget).includes(CV.WidgetUtils, BubblingSupport)({
@@ -22,8 +20,7 @@ Class(CV, 'CardMini').inherits(Widget).includes(CV.WidgetUtils, BubblingSupport)
                 </div>\
             </div>\
             <div class="action -abs"></div>\
-        </article>\
-    ',
+        </article>',
 
     META_HTML : '\
         <div class="card-info-meta">\
@@ -57,12 +54,14 @@ Class(CV, 'CardMini').inherits(Widget).includes(CV.WidgetUtils, BubblingSupport)
                 this.dom.updateAttr('title', anchor, this.data.profileName + '’s profile');
             }, this);
 
-            this.dom.updateAttr('src', this.avatarElement, this.data.images && this.data.images.small && this.data.images.small.url);
-
-            var fullname = this.data.name;
+            if (this.data.images.small && this.data.images.small.url) {
+                this.dom.updateAttr('src', this.avatarElement, this.data.images.small.url);
+            } else {
+                this.dom.updateAttr('src', this.avatarElement, PLACEHOLDERS.small);
+            }
             this.dom.updateAttr('alt', this.avatarElement, this.data.profileName + "’s avatar image");
-            this.dom.updateText(this.fullNameElement, fullname);
 
+            this.dom.updateText(this.fullNameElement, this.data.name);
             this.dom.updateText(this.usernameElement, "@" + this.data.profileName);
 
             return this;
