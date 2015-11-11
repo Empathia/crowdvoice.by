@@ -9,10 +9,12 @@ Class(CV, 'OrganizationProfileEditMembersTab').inherits(Widget)({
             <div data-main></div>\
             <div data-list-wrapper>\
                 <div class="form-field -mt2">\
-                    <label>members of this organization</label>\
+                    <label>\
+                        <b data-members-list-total>0</b> members of <b data-members-list-org-name>this organization</b>\
+                    </label>\
                 </div>\
                 <div>\
-                    <div data-members-list></div>\
+                    <div data-members-list class="-rel"></div>\
                 </div>\
             </div>\
         </div>',
@@ -31,6 +33,13 @@ Class(CV, 'OrganizationProfileEditMembersTab').inherits(Widget)({
         init : function init(config) {
             Widget.prototype.init.call(this, config);
             this.el = this.element[0];
+            this.totalMemebersElement = this.el.querySelector('[data-members-list-total]');
+            this.listElement = this.el.querySelector('[data-members-list]');
+
+            this.appendChild(new CV.Loading({
+                name : 'loader'
+            })).render(this.listElement).center().setStyle({top: '80px'});
+
             this._setup()._bindEvents();
         },
 
@@ -38,21 +47,26 @@ Class(CV, 'OrganizationProfileEditMembersTab').inherits(Widget)({
          * @return OrganizationProfileEditMembersTab
          */
         _setup : function _setup() {
+            this.el.querySelector('[data-members-list-org-name]').textContent = this.data.entity.name;
+
             API.getOrganizationMembers({
                 profileName : this.data.entity.profileName
             }, function(err,res) {
-                console.log(res);
+                this.loader.disable();
+
                 this.appendChild(new CV.OrganizationProfileEditMembersList({
                     name : 'list',
                     data : {
                         members : res
                     }
-                })).render(this.el.querySelector('[data-members-list]'));
+                })).render(this.listElement);
+
+                this._updateListState();
             }.bind(this));
 
             this.appendChild(new CV.UI.InputButton({
                 name : 'searchInput',
-                data : {label : 'Invite Users to Join this Organization'},
+                data : {label : 'Invite Users to Join ' + this.data.entity.name},
                 inputData : {
                     inputClassName : '-lg -block -btrr0 -bbrr0',
                     attr : {
@@ -99,6 +113,41 @@ Class(CV, 'OrganizationProfileEditMembersTab').inherits(Widget)({
             this.bind(this.constructor.REMOVE_MEMBER_EVENT_NAME, this._removeMemberRef);
 
             return this;
+        },
+
+        /* Updates the total memebers number.
+         * Checks if the list has not members, in which case it will display the emptyState.
+         * @method _updateListState <private> [Function]
+         * @return undefined
+         */
+        _updateListState : function _updateListState() {
+            var totalMemebers = this.list.getTotalMembers();
+
+            this.totalMemebersElement.textContent = totalMemebers;
+
+            if (totalMemebers === 0) {
+                return this._showEmptyState();
+            }
+
+            if (this.empty) {
+                this.empty = this.empty.destroy();
+            }
+        },
+
+        /* Displays the EmptyState.
+         * @method _showEmptyState <private> [Function]
+         * @return undefined
+         */
+        _showEmptyState : function _showEmptyState() {
+            if (this.empty) {
+                return;
+            }
+
+            this.appendChild(new CV.EmptyState({
+                name : 'empty',
+                className : '-pt4 -pb4',
+                message : '@' + this.data.entity.profileName + ' has no members yet.'
+            })).render(this.listElement);
         },
 
         /* Search Input Key Up Handler. Checks if we should call the
@@ -214,6 +263,11 @@ Class(CV, 'OrganizationProfileEditMembersTab').inherits(Widget)({
             })).render(this.el, this.el.firstElementChild);
         },
 
+        /* Handle the 'card-remove-action-clicked' event dispatched by `this.list`.
+         * It will try to remove a specific entity from the organization.
+         * @method _removeMember <private> [Function]
+         * @return undefined
+         */
         _removeMember : function _removeMember(ev) {
             ev.stopPropagation();
 
@@ -229,15 +283,18 @@ Class(CV, 'OrganizationProfileEditMembersTab').inherits(Widget)({
             }, this._removeContributorResponseHandler.bind(this, widget));
         },
 
-        _removeContributorResponseHandler : function _removeContributorResponseHandler(widget, err, res) {
-            console.log(res);
-
+        /* Handles the response of `API.removeEntityFromOrganization` call.
+         * @method _removeContributorResponseHandler <private> [Function]
+         * @return undefined
+         */
+        _removeContributorResponseHandler : function _removeContributorResponseHandler(widget, err) {
             if (err) {
                 widget.removeButton.enable();
                 return;
             }
 
             this.list.removeUser(widget);
+            this._updateListState();
         }
     }
 });
