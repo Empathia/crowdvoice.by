@@ -103,7 +103,7 @@
       ref  : "origin/master",
       repo : "git@github.com:Empathya/crowdvoice.by.git",
       path : "/home/deploy/cv.by",
-      "post-deploy" : "npm install && npm install webpack knex -g && webpack -p -c --progress && cp ../shared/config.js ./config/config.js && cp ../shared/knexfile.js ./knexfile.js && NODE_ENV=production knex migrate:latest && pm2 startOrRestart production.json --env production"
+      "post-deploy" : "npm install && npm install webpack knex -g && webpack -p -c --progress && cp ../shared/config.js ./config/config.js && cp ../shared/knexfile.js ./knexfile.js && NODE_ENV=production knex migrate:latest && rm /tmp/fetching_tweets && pm2 startOrRestart production.json --env production"
     }
   }
 }
