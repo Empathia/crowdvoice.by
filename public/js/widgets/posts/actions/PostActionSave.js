@@ -113,6 +113,8 @@ Class(CV, 'PostActionSave').inherits(Widget)({
          * @method _saveHandler <private>
          */
         _saveHandler : function _saveHandler() {
+            this.entity.totalSaves++;
+            this.parent.updateSaves(this.entity);
             this._setIsSaved()._cancelHoverState();
 
             API.postSave({
@@ -121,6 +123,8 @@ Class(CV, 'PostActionSave').inherits(Widget)({
                 postId : this.entity.id
             }, function(err) {
                 if (err) {
+                    this.entity.totalSaves--;
+                    this.parent.updateSaves(this.entity);
                     this._setIsNotSaved();
                 }
             }.bind(this));
@@ -130,6 +134,9 @@ Class(CV, 'PostActionSave').inherits(Widget)({
          * @method _unsaveHandler <private>
          */
         _unsaveHandler : function _unsaveHandler() {
+            this.entity.totalSaves--;
+            this.parent.updateSaves(this.entity);
+            this.unsavePopover.deactivate();
             this._setIsNotSaved();
 
             API.postUnsave({
@@ -138,6 +145,8 @@ Class(CV, 'PostActionSave').inherits(Widget)({
                 postId : this.entity.id
             }, function(err) {
                 if (err) {
+                    this.entity.totalSaves++;
+                    this.parent.updateSaves(this.entity);
                     this._setIsSaved();
                 }
             }.bind(this));
