@@ -62,6 +62,28 @@ Class(CV, 'Post').inherits(Widget).includes(
             return this;
         },
 
+        /* Updates the Saved number for the current Post.
+         * Usefull to live-show the update for the user and reflect its change
+         * has taken place.
+         * @method updateSaves <protected> [Function]
+         * @argument data <required> [Object] The Post Model Data.
+         * @return CV.Post[type]
+         */
+        updateSaves : function updateSaves(data) {
+            this.dom.updateText(this.savedElement, data.totalSaves || 0);
+            return this;
+        },
+
+        addIsHoverState : function addIsHoverState() {
+            this.dom.addClass(this.el, ['-is-hover']);
+            return this;
+        },
+
+        removeIsHoverState : function removeIsHoverState() {
+            this.dom.removeClass(this.el, ['-is-hover']);
+            return this;
+        },
+
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
 

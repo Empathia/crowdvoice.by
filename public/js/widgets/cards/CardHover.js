@@ -38,6 +38,10 @@ Class(CV, 'CardHover').inherits(Widget).includes(CV.WidgetUtils)({
          * @return CardHover
          */
         register : function register(nodeElement, entityData) {
+            if (entityData.isAnonymous) {
+                return;
+            }
+
             this.appendChild(new CV.CardHoverItem({
                 element : nodeElement,
                 data : entityData

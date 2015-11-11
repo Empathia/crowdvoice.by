@@ -14,7 +14,7 @@
   <meta content="<%= csrfToken %>" name="csrf-token" />
   <title>CrowdVoice.by – A new way to organize information and strengthen movements that matter to you</title>
   <meta name="description" content="A new way to organize information and strengthen movements that matter to you">
-  <link rel="icon" type="image/gif" href="/img/favicon.png" />
+  <%= renderPartial('shared/favicon.html') %>
   <script type="text/javascript">
   window.currentPerson = <%= JSON.stringify(currentPerson) %>;
   </script>

@@ -46,7 +46,12 @@ Class(CV, 'UserProfileFollowersTab').inherits(Widget)({
             }
 
             this._fetched = true;
-            this._renderResults(res);
+
+            if (res.length) {
+                return this._renderResults(res);
+            }
+
+            return this._setEmptyState();
         },
 
          _renderResults : function _renderResults(followers) {
@@ -54,30 +59,32 @@ Class(CV, 'UserProfileFollowersTab').inherits(Widget)({
 
              this.parent.parent.nav.updateCounter(followers.length);
 
-             if (followers.length) {
-                 followers.forEach(function(follower, index) {
-                     fragment.appendChild(this.appendChild(new CV.Card({
-                         name : 'follower_' + index,
-                         data : follower
-                     })).el);
-                 }, this);
+             followers.forEach(function(follower, index) {
+                 fragment.appendChild(this.appendChild(new CV.Card({
+                     name : 'follower_' + index,
+                     data : follower
+                 })).el);
+             }, this);
 
-                 this._responsiveWidth = new CV.ResponsiveWidth({
-                     container : this.containerElement,
-                     items : this.children.map(function(ch) {return ch.el;}),
-                     minWidth : 300
-                 }).setup();
+             this._responsiveWidth = new CV.ResponsiveWidth({
+                 container : this.containerElement,
+                 items : this.children.map(function(ch) {return ch.el;}),
+                 minWidth : 300
+             }).setup();
 
-                 this.containerElement.appendChild(fragment);
-             } else {
-                this.appendChild(new CV.EmptyState({
-                    name : 'empty',
-                    className : '-pt4 -pb4',
-                    message : '@' + this.data.entity.profileName + ' has no followers yet.'
-                })).render(this.containerElement);
-             }
+             this.containerElement.appendChild(fragment);
 
              this.loader.disable();
+        },
+
+        _setEmptyState : function _setEmptyState() {
+            this.appendChild(new CV.EmptyState({
+                name : 'empty',
+                className : '-pt4 -pb4',
+                message : '@' + this.data.entity.profileName + ' has no followers yet.'
+            })).render(this.containerElement);
+
+            this.parent.parent.destroy();
         },
 
         _activate : function _activate() {
