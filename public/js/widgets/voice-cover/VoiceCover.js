@@ -48,8 +48,10 @@ Class(CV, 'VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
                 </h2>\
                 <p class="voice-cover-description"></p>\
                 <div class="meta">\
-                    <span class="voice-cover-followers"></span> followers &middot;&nbsp;\
-                    Updated <time class="voice-cover-datetime" datetime=""></time>\
+                    <span class="voice-cover-followers voice-cover-meta">0 followers</span>\
+                    <span class="voice-cover-meta">\
+                        Updated <time class="voice-cover-datetime" datetime=""></time>\
+                    </span>\
                 </div>\
             </div>\
         </article>',
@@ -121,7 +123,18 @@ Class(CV, 'VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
             var description = this.format.truncate(this.data.description, this.constructor.MAX_DESCRIPTION_LENGTH, true);
             this.dom.updateText(this.el.querySelector('.voice-cover-description'), description);
 
-            this.dom.updateText(this.el.querySelector('.voice-cover-followers'), this.format.numberUS(this.data.followers.length));
+            if (this.data.followers.length) {
+                var followersString = this.format.numberUS(this.data.followers.length);
+                if (this.data.followers.length > 1) {
+                    followersString += ' followers';
+                } else {
+                    followersString += ' follower';
+                }
+                this.dom.updateText(this.el.querySelector('.voice-cover-followers'), followersString);
+            } else {
+                var followersElement = this.el.querySelector('.voice-cover-followers');
+                followersElement.parentNode.removeChild(followersElement);
+            }
             this.dom.updateText(this.dateTimeElement, moment(this.data.updatedAt).fromNow());
             this.dom.updateAttr('datetime', this.dateTimeElement, this.data.updatedAt);
 
