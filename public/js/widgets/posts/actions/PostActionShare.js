@@ -17,7 +17,10 @@ Class(CV, 'PostActionShare').inherits(Widget)({
         init : function init (config) {
             Widget.prototype.init.call(this, config);
             this.el = this.element[0];
+            this._setup()._bindEvents();
+        },
 
+        _setup : function _setup() {
             var url = origin + '/' + this.entity.voice.owner.profileName + '/';
             url += this.entity.voice.slug + '/';
             url += '#!' + moment(this.entity.publishedAt).format('YYYY-MM') + '/';
@@ -38,6 +41,26 @@ Class(CV, 'PostActionShare').inherits(Widget)({
                 toggler : this.el,
                 content : this.share.el
             })).render(this.el);
+
+            return this;
+        },
+
+        _bindEvents : function _bindEvents() {
+            this.popover.bind('activate', this.activate.bind(this));
+            this.popover.bind('deactivate', this.deactivate.bind(this));
+            return this;
+        },
+
+        _activate : function _activate() {
+            Widget.prototype._activate.call(this);
+            this.parent.addIsHoverState();
+        },
+
+        _deactivate : function _deactivate() {
+            Widget.prototype._deactivate.call(this);
+            setTimeout(function() {
+                this.parent.removeIsHoverState();
+            }.bind(this), 200);
         }
     }
 });
