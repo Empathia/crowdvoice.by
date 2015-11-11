@@ -15,6 +15,10 @@ Class(CV, 'OrganizationProfileEditMembersList').inherits(Widget).includes(Bubbli
             return this;
         },
 
+        /* Appends a new listItem children.
+         * @argument user <required> [EntityModel]
+         * @return OrganizationProfileEditMembersList
+         */
         addUser : function addUser(user) {
             this.appendChild(new CV.CardMini({
                 name : 'user_' + user.id,
@@ -26,12 +30,28 @@ Class(CV, 'OrganizationProfileEditMembersList').inherits(Widget).includes(Bubbli
                 className : 'micro',
                 eventName : 'card-remove-action-clicked'
             });
+            return this;
         },
 
+        /* Removes a specific listItem.
+         * @method removeUser <public> [Function]
+         * @return OrganizationProfileEditMembersList
+         */
         removeUser : function removeUser(user) {
             this.removeChild(user);
             user = user.destroy();
             return this;
+        },
+
+        /* Returns the total number of children, in this case the only children
+         * this widget has are all listItems so we can rely on the children array
+         * to return how many listItems it has, which can be trusted as the
+         * number of members the organization has.
+         * @method getTotalMembers <public> [Function]
+         * @return this.children.length
+         */
+        getTotalMembers : function getTotalMembers() {
+            return this.children.length;
         }
     }
 });

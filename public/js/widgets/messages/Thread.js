@@ -127,8 +127,18 @@ CV.Thread = Class(CV, 'Thread').includes(Widget)({
         }
       });
 
-      thread.data.messages.forEach(function(message) {
-        var messageInstance = new CV.Message({
+      thread.data.messages.sort(function(a, b) {
+          if (a.createdAt < b.createdAt) {
+              return -1;
+          }
+
+          if (a.createdAt > b.createdAt) {
+            return 1;
+          }
+
+          return 0;
+      }).forEach(function(message) {
+          var messageInstance = new CV.Message({
           name : 'message_' + message.id,
           type : message.type,
           data : message
