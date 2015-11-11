@@ -7,7 +7,7 @@ Class(CV, 'Image').inherits(Widget).includes(CV.WidgetUtils)({
             <label><span></span></label>\
             <div class="cv-image">\
                 <div class="placeholder"></div>\
-                <div class="button" data-button>Replace</div>\
+                <a class="button cv-button full" data-button>Replace</a>\
                 <input type="file" name="upload" accept="image/.jpg, .png, .jpeg" class="-hide"/>\
             </div>\
         </div>\
