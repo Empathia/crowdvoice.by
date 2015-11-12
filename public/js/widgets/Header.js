@@ -78,19 +78,10 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
         },
 
         _setupAnonymous : function _setupAnonymous() {
-            var allMulti = {
-                '1' : {name: 'Logout', url: '/logout'}
-            };
-
-            var num = Math.floor(Math.random() * 9) + 1;
-
-            this.appendChild(new CV.SelectAccount({
-                label         : 'Multiple',
-                name          : 'select',
-                accountImage  : '/img/anonymous/' + num + '/image_small.png',
-                accountName   : 'Anonymous',
-                options       : allMulti
+            this.appendChild(new CV.AccountDropdownMenu({
+                name : 'accountMenu',
             })).render(this.loginActionsWrapper);
+            this.loginActionsWrapper.style.paddingTop = 0;
 
             this._displayCreateNewDropdown();
 
@@ -109,41 +100,10 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
          * @method _setupForCurrentPerson <private> [Function]
          */
         _setupForCurrentPerson : function _setupForCurrentPerson() {
-            // account dropdown
-            var itemCounter = 0;
-            var allMulti = {
-                "1": {name: 'Your Profile', url: '/' + Person.get().profileName},
-                "2": {name: 'Manage Account', url: '/' + Person.get().profileName + '/edit'}
-            };
-            itemCounter = 2;
-
-            Person.get().ownedOrganizations.forEach(function(organization) {
-                itemCounter++;
-                allMulti[itemCounter] = {
-                    name : organization.name,
-                    sub : {
-                        '0' : {
-                            name : 'Profile',
-                            url : '/' + organization.profileName
-                        },
-                        '1' : {
-                            name : 'Manage',
-                            url : '/' + organization.profileName + '/edit'
-                        }
-                    }
-                };
-            }, this);
-
-            itemCounter++;
-            allMulti[itemCounter] = {name: 'Logout', url: '/logout'};
-
-            this.appendChild(new CV.SelectAccount({
-                label         : 'Multiple',
-                name          : 'select',
-                accountImage  : Person.getImage('small'),
-                accountName   : Person.get().name,
-                options       : allMulti
+            this.appendChild(new CV.AccountDropdownMenu({
+                name : 'accountMenu',
             })).render(this.loginActionsWrapper);
+            this.loginActionsWrapper.style.paddingTop = 0;
 
             this._displayCreateNewDropdown();
 

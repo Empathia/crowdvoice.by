@@ -86,6 +86,8 @@ require('./widgets/responsive-slider.js');
 require('./widgets/InputClearable');
 require('./widgets/input-counter.js');
 require('./widgets/Dropdown');
+require('./widgets/dropdowns/AccountDropdownMenu');
+require('./widgets/dropdowns/AccountDropdownMenuItem');
 require('./widgets/dropdowns/DropdownRegular');
 require('./widgets/dropdowns/DropdownTopics');
 require('./widgets/dropdowns/DropdownVoiceTypes');
@@ -330,7 +332,6 @@ require('./widgets/elements/check.js');
 require('./widgets/elements/input.js');
 require('./widgets/elements/input-button.js');
 require('./widgets/elements/select.js');
-require('./widgets/elements/select-account.js');
 require('./widgets/elements/alert.js');
 require('./widgets/elements/detect-location.js');
 
