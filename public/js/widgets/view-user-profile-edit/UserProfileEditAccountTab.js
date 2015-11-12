@@ -313,7 +313,10 @@ Class(CV, 'UserProfileEditAccountTab').inherits(Widget)({
          */
         _displaySuccessAlert : function _displaySuccessAlert(message) {
             if (this._alertSuccess) {
-                return this._alertSuccess.update(message);
+                return this._alertSuccess.update({
+                    type : 'positive',
+                    text: message
+                }).shake();
             }
 
             this.appendChild(new CV.Alert({
@@ -331,7 +334,10 @@ Class(CV, 'UserProfileEditAccountTab').inherits(Widget)({
          */
         _displayErrorAlert : function _displayErrorAlert(message) {
             if (this._alertError) {
-                return this._alertError.update(message);
+                return this._alertError.update({
+                    type : 'negative',
+                    text: message
+                }).shake();
             }
 
             this.appendChild(new CV.Alert({

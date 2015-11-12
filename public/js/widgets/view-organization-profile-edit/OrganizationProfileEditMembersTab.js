@@ -41,7 +41,6 @@ Class(CV, 'OrganizationProfileEditMembersTab').inherits(Widget)({
             API.getOrganizationMembers({
                 profileName : this.data.entity.profileName
             }, function(err,res) {
-                console.log(res);
                 this.appendChild(new CV.OrganizationProfileEditMembersList({
                     name : 'list',
                     data : {
@@ -190,9 +189,7 @@ Class(CV, 'OrganizationProfileEditMembersTab').inherits(Widget)({
          * @method _inviteToContributeResponseHandler <private> [Function]
          * @return undefined
          */
-        _inviteToContributeResponseHandler : function _inviteToContributeResponseHandler(err, res) {
-            console.log(res);
-
+        _inviteToContributeResponseHandler : function _inviteToContributeResponseHandler(err) {
             if (err) {
                 this.searchInput.button.enable();
                 return;
@@ -203,7 +200,10 @@ Class(CV, 'OrganizationProfileEditMembersTab').inherits(Widget)({
             this._selectedUser = null;
 
             if (this._flashMessage) {
-                this._flashMessage = this._flashMessage.destroy();
+                return this._flashMessage.update({
+                    type : 'positive',
+                    text : "Invitation was sent, the user will see it on the message box."
+                }).shake();
             }
 
             this.appendChild(new CV.Alert({
@@ -229,9 +229,7 @@ Class(CV, 'OrganizationProfileEditMembersTab').inherits(Widget)({
             }, this._removeContributorResponseHandler.bind(this, widget));
         },
 
-        _removeContributorResponseHandler : function _removeContributorResponseHandler(widget, err, res) {
-            console.log(res);
-
+        _removeContributorResponseHandler : function _removeContributorResponseHandler(widget, err) {
             if (err) {
                 widget.removeButton.enable();
                 return;

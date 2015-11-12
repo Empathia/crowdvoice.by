@@ -151,7 +151,10 @@ Class(CV, 'UserProfileEditNotificationsTab').inherits(Widget)({
             App.scrollTo(0, 0);
 
             if (this._successAlert) {
-                return this._successAlert.update(message);
+                return this._successAlert.update({
+                    type : 'positive',
+                    text: message
+                }).shake();
             }
 
             this.appendChild(new CV.Alert({
@@ -171,7 +174,10 @@ Class(CV, 'UserProfileEditNotificationsTab').inherits(Widget)({
             App.scrollTo(0, 0);
 
             if (this._errorAlert) {
-                return this._errorAlert.update(message);
+                return this._errorAlert.update({
+                    type : 'negative',
+                    text: message
+                }).shake();
             }
 
             this.appendChild(new CV.Alert({

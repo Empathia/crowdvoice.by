@@ -256,7 +256,10 @@ Class(CV, 'ManageContributors').inherits(Widget).includes(CV.WidgetUtils)({
             this._selectedUser = null;
 
             if (this._flashMessage) {
-                this._flashMessage = this._flashMessage.destroy();
+                return this._flashMessage.update({
+                    type : 'positive',
+                    text : "Invitation was sent, the user will see it on the message box.",
+                }).shake();
             }
 
             this.appendChild(new CV.Alert({
