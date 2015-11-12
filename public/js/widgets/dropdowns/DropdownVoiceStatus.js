@@ -54,6 +54,7 @@ Class(CV.UI, 'DropdownVoiceStatus').inherits(Widget)({
             });
             element.classList.add('active');
             this.dropdown.setLabel(element.textContent).deactivate();
+            this.dispatch('status:changed', {data: element});
             return this;
         },
 

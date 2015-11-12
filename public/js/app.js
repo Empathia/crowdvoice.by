@@ -127,23 +127,15 @@ Class(CV, 'App').includes(NodeSupport)({
         /* Display the CreateVoiceModal.
          * @method showCreateVoiceModal <public> [Function]
          */
-        showCreateVoiceModal : function showCreateVoiceModal(voiceEntity, elToRender, isAdmin) {
+        showCreateVoiceModal : function showCreateVoiceModal(config) {
             if (!Person.get()) {
                 throw new Error('Not autorized to perform this action.');
             }
 
             var modalLabel = 'Create a Voice';
 
-            if (voiceEntity) {
-              modalLabel = 'Update Voice';
-            }
-
-            var placeElement;
-
-            if (elToRender){
-                placeElement = elToRender;
-            } else {
-                placeElement = document.body;
+            if (config.voiceEntity) {
+                modalLabel = 'Update Voice';
             }
 
             this.appendChild(new CV.UI.Modal({
@@ -151,9 +143,12 @@ Class(CV, 'App').includes(NodeSupport)({
                 name : 'createAVoiceModal',
                 action : CV.CreateVoice,
                 width : 960,
-                data : voiceEntity,
-                isAdmin : isAdmin
-            })).render(placeElement);
+                data : {
+                    voiceEntity : config.voiceEntity,
+                    ownerEntity: config.ownerEntity
+                },
+                isAdmin : config.isAdmin
+            })).render(config.renderTo || document.body);
 
             requestAnimationFrame(function() {
                 this.createAVoiceModal.activate();

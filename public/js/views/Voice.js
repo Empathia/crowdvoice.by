@@ -134,7 +134,7 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
 
             if (this.onboarding){
                 this.onboarding.setup();
-            } 
+            }
 
             return this;
         },
@@ -290,7 +290,10 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
         },
 
         _editVoiceButtonClicked : function _editVoiceButtonClicked() {
-            App.showCreateVoiceModal(this.data);
+            App.showCreateVoiceModal({
+                voiceEntity : this.data,
+                ownerEntity: Person.get()
+            });
         },
 
         /* Listens the `post:moderate:delete` event bubbling up.

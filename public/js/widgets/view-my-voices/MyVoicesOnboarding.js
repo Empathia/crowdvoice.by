@@ -1,5 +1,6 @@
 /* global App */
 var Events = require('./../../lib/events');
+var Person = require('./../../lib/currentPerson');
 
 Class(CV, 'MyVoicesOnboarding').inherits(Widget)({
     HTML : '\
@@ -20,7 +21,9 @@ Class(CV, 'MyVoicesOnboarding').inherits(Widget)({
             })).render(this.el);
 
             Events.on(this.buttonCreate.el, 'click', function() {
-                App.showCreateVoiceModal();
+                App.showCreateVoiceModal({
+                    ownerEntity : Person.get()
+                });
             });
         },
     }

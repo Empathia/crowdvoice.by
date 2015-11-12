@@ -39,21 +39,20 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             <div class="send -col-12 -text-center"></div>\
         </div>',
 
-    REDIRECT_DELAY : 6000,
+    REDIRECT_DELAY : 2000,
 
     prototype : {
         /* Voice data for Edit. Is null it assumes you are creating a new Voice,
          * if other than null assumes you are editing an existing Voice.
          */
         data : null,
+        isAdmin : null,
+
         _flashMessage : null,
 
         MAX_TITLE_LENGTH : 65,
         MAX_DESCRIPTION_LENGTH : 180,
         _autoGenerateSlug : true,
-        isAdmin     : null,
-        token : $('meta[name="csrf-token"]').attr('content'),
-
 
         init : function init(config){
             Widget.prototype.init.call(this, config);
@@ -71,14 +70,14 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
 
             this._setup()._updateInfoRow();
 
-            // Edit voice
-            if (this.data) {
-                this._autoGenerateSlug = false;
-                this._fillForm(this.data);
-            }
-
             this._bindEvents();
             this.checkit = new Checkit(this.checkitProps);
+
+            // Edit voice
+            if (this.data.voiceEntity) {
+                this._autoGenerateSlug = false;
+                this._fillForm(this.data.voiceEntity);
+            }
         },
 
         /* Fills the form using this.data values (Edit Voice).
@@ -87,7 +86,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
          */
         _fillForm : function _fillForm(voice) {
             if (voice.images.card) {
-                this.voiceBgImage.setImage(voice.images.card.url);
+                this.voiceImage.setImage(voice.images.card.url);
             }
             this.voiceTitle.setValue(voice.title);
             this.voiceSlug.setValue(voice.slug);
@@ -99,13 +98,11 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             }));
             this.voiceTypesDropdown.selectByValue(voice.type);
             this.voiceStatusDropdown.selectByValue(voice.status);
-            if (this.isAdmin) {
-                //this.voiceOwnershipDropdownAdmin.selectByEntity(voice.owner);
-            }else{
-                if (this.voiceOwnershipDropdown) {
-                    this.voiceOwnershipDropdown.selectByEntity(voice.owner);
-                }
+
+            if (this.voiceOwnershipDropdown) {
+                this.voiceOwnershipDropdown.selectByEntity(voice.owner);
             }
+
             this.voiceHashtags.setValue(voice.twitterSearch);
             // this.voiceRssfeed.setValue(voice.rssUrl);
             this.voiceLocation.setValue(voice.locationName);
@@ -119,6 +116,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
         _setup : function _setup() {
             if (Person.anon()) {
                 this.appendChild(new CV.Alert({
+                    name : '_flashMessage',
                     type : 'warning',
                     text : 'You are creating this Voice anonymously. If you wish to make it public then turn Anonymous Mode off.',
                     className : '-mb2'
@@ -131,13 +129,13 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 })).render(this.sendElement);
 
                 // on edit-mode
-                if (this.data) {
+                if (this.data.voiceEntity) {
                     this.checkAnon.el.style.display = 'none';
                 }
             }
 
             this.appendChild(new CV.Image({
-                name : 'voiceBgImage',
+                name : 'voiceImage',
                 data: {title : "Background image"}
             })).render(this.el.querySelector('[data-background]'));
 
@@ -252,8 +250,8 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
 
             var buttonLabel = 'Create Voice';
 
-            if (this.data) {
-              buttonLabel = 'Update Voice';
+            if (this.data.voiceEntity) {
+                buttonLabel = 'Update Voice';
             }
 
             this.appendChild(new CV.Button({
@@ -272,38 +270,21 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
          */
         _updateInfoRow : function _updateInfoRow() {
             var row = this.el.querySelector('[data-row-voice-info]');
+            var owncol = document.createElement('div');
 
-            if (this.isAdmin){
-
-                var owncol = document.createElement('div');
-                this.appendChild(new CV.UI.DropdownVoiceOwnershipAdmin({
+            if (!this.data.ownerEntity.isAnonymous && this.data.ownerEntity.ownedOrganizations) {
+                this.appendChild(new CV.UI.DropdownVoiceOwnership({
                     name : 'voiceOwnershipDropdown',
-                    owner : this.data.owner,
+                    ownerEntity : this.data.ownerEntity
                 })).render(owncol);
 
                 this._ownershipChangedHandlerRef = this._ownershipChangedHandler.bind(this);
                 this.voiceOwnershipDropdown.bind('ownership:changed', this._ownershipChangedHandlerRef);
 
-                this.voiceOwnershipDropdown.selectByEntity(this.data.owner);
+                this.voiceOwnershipDropdown.selectByEntity(this.data.ownerEntity);
                 row.appendChild(owncol);
 
                 this.checkitProps.ownershipDropdown = 'required';
-
-            } else {
-                if (!Person.anon() && Person.ownsOrganizations()) {
-                    var owncol = document.createElement('div');
-                    this.appendChild(new CV.UI.DropdownVoiceOwnership({
-                        name : 'voiceOwnershipDropdown'
-                    })).render(owncol);
-
-                    this._ownershipChangedHandlerRef = this._ownershipChangedHandler.bind(this);
-                    this.voiceOwnershipDropdown.bind('ownership:changed', this._ownershipChangedHandlerRef);
-
-                    this.voiceOwnershipDropdown.selectByEntity(Person.get());
-                    row.appendChild(owncol);
-
-                    this.checkitProps.ownershipDropdown = 'required';
-                }
             }
 
             var l = 12/row.childElementCount;
@@ -332,6 +313,9 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             this._letFreeSlugRef = this._letFreeSlug.bind(this);
             Events.on(this.voiceSlug.getInput(), 'keyup', this._letFreeSlugRef);
 
+            this._statusChangedHandlerRef = this._statusChangedHandler.bind(this);
+            this.voiceStatusDropdown.bind('status:changed', this._statusChangedHandlerRef);
+
             return this;
         },
 
@@ -340,24 +324,46 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
 
             if (ev.data.dataset.isOrganization === "true") {
                 if (this.checkAnon.isChecked()) {
+                    var message = 'You cannot create voices anonymously as an organization.';
+
                     this.checkAnon.uncheck();
 
                     if (this._flashMessage) {
-                        this._flashMessage = this._flashMessage.destroy();
+                        this._flashMessage.update({
+                            text : message,
+                            type : 'warning'
+                        }).shake();
+                    } else {
+                        this.appendChild(new CV.Alert({
+                            name : '_flashMessage',
+                            type : 'warning',
+                            text : message,
+                            className : '-mb1'
+                        })).render(this.el, this.el.firstElementChild);
                     }
-
-                    this.appendChild(new CV.Alert({
-                        name : '_flashMessage',
-                        type : 'warning',
-                        text : 'You cannot create voices anonymously as an organization.',
-                        className : '-mb1'
-                    })).render(this.el, this.el.firstElementChild);
                 }
 
                 this.checkAnon.disable();
             } else {
                 this.checkAnon.enable();
             }
+        },
+
+        _statusChangedHandler : function _statusChangedHandler(ev) {
+            ev.stopPropagation();
+
+            if (
+                (this.voiceStatusDropdown.getValue() === CV.VoiceView.STATUS_PUBLISHED) &&
+                (this.voiceImage.isEmpty())
+            ) {
+                this.checkitProps.image = 'required';
+                this.checkit = new Checkit(this.checkitProps);
+            } else {
+                delete this.checkitProps.image;
+                this.checkit = new Checkit(this.checkitProps);
+            }
+
+            this.voiceImage.clearState();
         },
 
         /* Watch the voiceTitle input change event, auto-generates a valid slug
@@ -386,8 +392,8 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 slug : slug
             };
 
-            if (this.data) {
-              options.voiceSlug = this.data.slug;
+            if (this.data.voiceEntity) {
+              options.voiceSlug = this.data.voiceEntity.slug;
             }
 
             API.isSlugAvailable(options, this._slugAvailabilityHandler.bind(this));
@@ -495,81 +501,51 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
         },
 
         _sendFormHandler : function _sendFormHandler() {
-
             var validate = this.checkit.validateSync(this._getCurrentData());
 
             if (validate[0]) {
                 return this._displayErrors(validate[0].errors);
             }
 
-            if(this.isAdmin){
+            this._setSendingState();
 
-                this.buttonSend.disable();
-                var createVoice = this;
-
-                $.ajax({
-                    type : 'PUT',
-                    url : '/admin/voices/' + this.data.id,
-                    headers : {'csrf-token' : this.token},
-                    data : this._dataPresenterAdmin(),
-                    dataType : 'json',
-                    success : function success(data) {
-                        console.log('success');
-                        if (createVoice._flashMessage) {
-                            createVoice._flashMessage = createVoice._flashMessage.destroy();
-                        }
-                        createVoice.appendChild(new CV.Alert({
-                            name : '_flashMessage',
-                            type : 'positive',
-                            text : "Voice edited succesfully, redirecting to voices list.",
-                            className : '-mb1'
-                        })).render(createVoice.el, createVoice.el.firstElementChild);
-                        window.setTimeout(function() {
-                            window.location = '/admin/voices';
-                        }, 2000);
-                    },
-                    error : function error(err) {
-                        if (createVoice._flashMessage) {
-                            createVoice._flashMessage = createVoice._flashMessage.destroy();
-                        }
-                        createVoice.appendChild(new CV.Alert({
-                            name : '_flashMessage',
-                            type : 'negative',
-                            text : "Could not update voice try again please.",
-                            className : '-mb1'
-                        })).render(createVoice.el, createVoice.el.firstElementChild);
-                        this.buttonSend.enable();
-                    }
-                });
-
-            } else {
-                this._setSendingState();
-
-                // Edit
-                if (this.data) {
-                    var profileName;
-                    if (Person.anon() || this.checkAnon.isChecked()) {
-                        profileName = 'anonymous';
-                    } else {
-                        profileName = this.data.owner.profileName;
+            if (this.isAdmin) {
+                return API.adminUpdateVoice({
+                    voiceData : this.data.voiceEntity,
+                    data : this._dataPresenterAdmin()
+                }, function(err, res) {
+                    if (err) {
+                        this._setErrorState(res.status + ': ' + res.statusText);
+                        return;
                     }
 
-                    API.voiceEdit({
-                        profileName : profileName,
-                        voiceSlug : this.data.slug,
-                        data : this._dataPresenter()
-                    }, this._createVoiceHandler.bind(this));
-
-                    return void 0;
-                }
-
-                // Create
-                API.voiceCreate({
-                    data: this._dataPresenter()
-                }, this._createVoiceHandler.bind(this));
-
+                    this._setAdminSuccessState(res);
+                }.bind(this));
             }
 
+            // Owner Editing Voice?
+            if (this.data.voiceEntity) {
+                var profileName;
+
+                if (Person.anon() || this.checkAnon.isChecked()) {
+                    profileName = 'anonymous';
+                } else {
+                    profileName = this.data.voiceEntity.owner.profileName;
+                }
+
+                API.voiceEdit({
+                    profileName : profileName,
+                    voiceSlug : this.data.voiceEntity.slug,
+                    data : this._dataPresenter()
+                }, this._createVoiceHandler.bind(this));
+
+                return;
+            }
+
+            // Creating Voice
+            API.voiceCreate({
+                data: this._dataPresenter()
+            }, this._createVoiceHandler.bind(this));
         },
 
         _createVoiceHandler : function _createVoiceHandler(err, res) {
@@ -585,11 +561,28 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
          * @method _displayErrors
          */
         _displayErrors : function _displayErrors(errors) {
-            console.log(errors);
             Object.keys(errors).forEach(function(propertyName) {
                 var widget = 'voice' + this.format.capitalizeFirstLetter(propertyName);
                 this[widget].error();
             }, this);
+
+            if (this.voiceImage.hasError()) {
+                var message = 'Custom message telling voice background is required (to be replaced).';
+
+                if (this._flashMessage) {
+                    return this._flashMessage.update({
+                        text: message,
+                        type: 'warning'
+                    }).shake();
+                }
+
+                this.appendChild(new CV.Alert({
+                    name : '_flashMessage',
+                    type : 'warning',
+                    text : message,
+                    className : '-mb1'
+                })).render(this.el, this.el.firstElementChild);
+            }
         },
 
         /* Sending state, disable the send button.
@@ -607,7 +600,10 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             this.buttonSend.enable();
 
             if (this._flashMessage) {
-                this._flashMessage = this._flashMessage.destroy();
+                return this._flashMessage.update({
+                    type : 'negative',
+                    text : message
+                }).shake();
             }
 
             this.appendChild(new CV.Alert({
@@ -624,11 +620,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
         _setSuccessState : function _setSuccessState(res) {
             var message;
 
-            if (this._flashMessage) {
-                this._flashMessage = this._flashMessage.destroy();
-            }
-
-            if (this.data) {
+            if (this.data.voiceEntity) {
                 message = "“" + res.title + '” was updated! You will be redirected to your profile in a couple of seconds.';
 
                 window.setTimeout(function() {
@@ -642,6 +634,14 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 }, this.constructor.REDIRECT_DELAY);
             }
 
+            if (this._flashMessage) {
+                this._flashMessage.update({
+                    type : 'positive',
+                    text : message
+                }).shake();
+                return this;
+            }
+
             this.appendChild(new CV.Alert({
                 name : '_flashMessage',
                 type : 'positive',
@@ -650,6 +650,26 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             })).render(this.el, this.el.firstElementChild);
 
             return this;
+        },
+
+        _setAdminSuccessState : function _setAdminSuccessState() {
+            if (this._flashMessage) {
+                this._flashMessage.update({
+                    text : "Voice edited succesfully, redirecting to voices list.",
+                    type : 'positive'
+                }).shake();
+            } else {
+                this.appendChild(new CV.Alert({
+                    name : '_flashMessage',
+                    type : 'positive',
+                    text : "Voice edited succesfully, redirecting to voices list.",
+                    className : '-mb1'
+                })).render(this.el, this.el.firstElementChild);
+            }
+
+            window.setTimeout(function() {
+                window.location = '/admin/voices';
+            }, this.constructor.REDIRECT_DELAY);
         },
 
         /* Returns the data to be validated using Checkit module
@@ -678,7 +698,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
         _dataPresenter : function _dataPresenter() {
             var data = new FormData();
 
-            data.append('image', this.voiceBgImage.getFile());
+            data.append('image', this.voiceImage.getFile());
             data.append('title', this.voiceTitle.getValue().trim());
 
             data.append('slug', this.voiceSlug.getValue().trim());
@@ -703,8 +723,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             } else {
                 data.append('ownerId', Person.get().id);
             }
-            window.tmp = this;
-            console.log(data);
+
             return data;
         },
 
@@ -714,22 +733,26 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
         _dataPresenterAdmin : function _dataPresenterAdmin() {
             var data = {};
 
-            data['image'] = this.voiceBgImage.getFile();
-            data['title'] = this.voiceTitle.getValue().trim();
-            data['slug'] = this.voiceSlug.getValue().trim();
-            data['description'] = this.voiceDescription.getValue().trim();
-            data['topics'] = this.voiceTopicsDropdown.getSelection().map(function(topic) {return topic.id;});
-            data['type'] = this.voiceTypesDropdown.getValue();
-            data['status'] = this.voiceStatusDropdown.getValue();
-            data['twitterSearch'] = this.voiceHashtags.getValue().trim();
+            data.image = this.voiceImage.getFile();
+            data.title = this.voiceTitle.getValue().trim();
+            data.slug = this.voiceSlug.getValue().trim();
+            data.description = this.voiceDescription.getValue().trim();
+            data.topics = this.voiceTopicsDropdown.getSelection().map(function(topic) {return topic.id;});
+            data.type = this.voiceTypesDropdown.getValue();
+            data.status = this.voiceStatusDropdown.getValue();
+            data.twitterSearch = this.voiceHashtags.getValue().trim();
             // data['rssUrl'] = this.voiceRssfeed.getValue().trim();
-            data['locationName'] = this.voiceLocation.getValue().trim();
-            data['latitude'] = this.voiceLatitude.getValue().trim();
-            data['longitude'] = this.voiceLongitude.getValue().trim();
-            data['anonymously'] = this.checkAnon.isChecked();
-            data['ownerId'] = this.voiceOwnershipDropdown.getValue();
+            data.locationName = this.voiceLocation.getValue().trim();
+            data.latitude = this.voiceLatitude.getValue().trim();
+            data.longitude = this.voiceLongitude.getValue().trim();
+            data.anonymously = this.checkAnon.isChecked();
 
-            window.tmp = this;
+            if (this.voiceOwnershipDropdown) {
+                data.ownerId = this.voiceOwnershipDropdown.getValue();
+            } else {
+                data.ownerId = this.data.ownerEntity.id;
+            }
+
             return data;
         },
 
