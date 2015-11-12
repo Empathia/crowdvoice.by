@@ -8,11 +8,18 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
   prototype : {
     getEntityByProfileName : function (req, res, next) {
+      if (req.url.match(/^(\/anonymous\/?)/)) {
+        return next();
+      }
+
       Entity.find({
         'profile_name' : req.params.profile_name
       }, function (err, result) {
-        if (err) { next(err); return; }
-        if (result.length === 0) { next(new NotFoundError('Entity Not Found')); return; }
+        if (err) { return next(err); }
+
+        if (result.length === 0) {
+          return next(new NotFoundError('Entity Not Found'));
+        }
 
         EntitiesPresenter.build(result, req.currentPerson, function(err, entities) {
           if (err) {
