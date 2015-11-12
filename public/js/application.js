@@ -91,7 +91,6 @@ require('./widgets/dropdowns/DropdownTopics');
 require('./widgets/dropdowns/DropdownVoiceTypes');
 require('./widgets/dropdowns/DropdownVoiceStatus');
 require('./widgets/dropdowns/DropdownVoiceOwnership');
-require('./widgets/dropdowns/voice-ownership-admin');
 require('./widgets/dropdowns/CurrentPersonEntitiesCheckboxes');
 require('./widgets/tabs/TabsManager');
 require('./widgets/tabs/Tab');
