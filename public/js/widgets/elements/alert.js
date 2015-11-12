@@ -1,8 +1,20 @@
 /* @usage
- * new CV.Alert({
- *      text : 'Notification message'
- * }).render(...);
+ * this.appendChild(new CV.Alert({
+ *  name : 'myAlert',
+ *  text : 'Notification message'
+ * })).render(...);
+ *
+ * @reuse
+ * myAlert.update({
+ *  text : 'My new text',
+ *  type : 'warning'
+ * });
+ *
+ * @alternative make it shake
+ * myAlert.shake();
  */
+var onAnimationEnd = require('./../../lib/onanimationend');
+
 Class(CV, 'Alert').inherits(Widget).includes(CV.WidgetUtils)({
     ELEMENT_CLASS : 'cv-alert',
     HTML : '\
@@ -25,7 +37,6 @@ Class(CV, 'Alert').inherits(Widget).includes(CV.WidgetUtils)({
          */
         type : 'info',
         text : '',
-        html : null,
 
         init : function init(config) {
             Widget.prototype.init.call(this, config);
@@ -35,20 +46,10 @@ Class(CV, 'Alert').inherits(Widget).includes(CV.WidgetUtils)({
             this.textElement = this.el.querySelector('.cv-alert__info-text');
             this.closeElement = this.el.querySelector('.cv-alert__close');
 
-            this._setup().update(this.text, this.html)._bindEvents();
-        },
-
-        _setup : function _setup() {
-            this.el.classList.add('-' + this.type);
-            if (this.type === "positive") {
-                this.infoElement.insertAdjacentHTML('afterbegin', this.constructor.HTML_CHECKMARK_ICON);
-            }
-
-            if (this.type === "warning" || this.type === "negative") {
-                this.infoElement.insertAdjacentHTML('afterbegin', this.constructor.HTML_WARING_ICON);
-            }
-
-            return this;
+            this.update({
+                text: this.text,
+                type: this.type
+            })._bindEvents();
         },
 
         _bindEvents : function _bindEvents() {
@@ -60,13 +61,51 @@ Class(CV, 'Alert').inherits(Widget).includes(CV.WidgetUtils)({
         /* Updates the main text displayed.
          * @method update <public> [Function]
          */
-        update : function update(text, html) {
-            if ( this.html ) {
-                this.textElement.innerHTML = html;
-            } else {
-                this.dom.updateText(this.textElement, text);
+        update : function update(config) {
+            if (config.text) {
+                this.dom.updateText(this.textElement, config.text);
             }
+
+            if (config.type) {
+                this.type = config.type;
+                this._updateType();
+            }
+
             return this;
+        },
+
+        /* Adds a little shake effect to make the alert be noticed.
+         * Usefull to perform after an alert update/replace.
+         * @method shake <public> [Function]
+         * @return this
+         */
+        shake : function shake() {
+            this.dom.addClass(this.el, ['shake']);
+
+            onAnimationEnd(this.el, function() {
+                this.dom.removeClass(this.el, ['shake']);
+            }.bind(this));
+
+            return this;
+        },
+
+        _updateType : function _updateType() {
+            var svg = this.infoElement.querySelector('svg');
+
+            if (svg) {
+                svg.parentNode.removeChild(svg);
+            }
+
+            this.dom.removeClass(this.el, ['-info', '-positive', '-warning', '-negative']);
+            this.dom.addClass(this.el, ['-' + this.type]);
+
+            if (this.type === "positive") {
+                this.infoElement.insertAdjacentHTML('afterbegin', this.constructor.HTML_CHECKMARK_ICON);
+            }
+
+            if (this.type === "warning" || this.type === "negative") {
+                this.infoElement.insertAdjacentHTML('afterbegin', this.constructor.HTML_WARING_ICON);
+            }
         },
 
         /* Handle the click on the far-right close icon.
