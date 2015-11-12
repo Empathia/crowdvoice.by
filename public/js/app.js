@@ -5,7 +5,7 @@
 /* global io */
 
 var Person = require('./lib/currentPerson');
-var Topics = require('./lib/registers/topics');
+var Topics = require('./lib/registers/Topics');
 
 Class(CV, 'App').includes(NodeSupport)({
     prototype : {
