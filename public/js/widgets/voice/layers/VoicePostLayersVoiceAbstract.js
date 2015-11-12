@@ -34,7 +34,7 @@ Class(CV, 'VoicePostLayersVoiceAbstract').inherits(CV.VoicePostLayers)({
         addPosts : function addPosts(layer, postsData) {
             if (Person.ownerOf('voice', App.Voice.data.id)) {
                 layer.addEditablePosts(postsData).getPosts().forEach(function(post) {
-                    post.addRemoveButton();
+                    post.addActions().addRemoveButton();
                 });
             } else {
                 layer.addPosts(postsData);
