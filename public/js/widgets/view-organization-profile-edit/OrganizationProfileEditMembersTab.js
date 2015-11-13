@@ -26,10 +26,15 @@ Class(CV, 'OrganizationProfileEditMembersTab').inherits(Widget)({
          */
         _selectedUser : null,
 
+        /* Array of current organization member ids.
+         * Used to exclude current memebers and currentPerson from the search results.
+         */
+        _memeberIds : null,
         _flashMessage : null,
 
         init : function init(config) {
             Widget.prototype.init.call(this, config);
+            this._memeberIds = [];
             this.el = this.element[0];
             this._setup()._bindEvents();
         },
@@ -38,10 +43,15 @@ Class(CV, 'OrganizationProfileEditMembersTab').inherits(Widget)({
          * @return OrganizationProfileEditMembersTab
          */
         _setup : function _setup() {
+            this._memeberIds.push(Person.get('id'));
+
             API.getOrganizationMembers({
                 profileName : this.data.entity.profileName
             }, function(err,res) {
-                console.log(res);
+                res.forEach(function(member) {
+                    this._memeberIds.push(member.id);
+                }, this);
+
                 this.appendChild(new CV.OrganizationProfileEditMembersList({
                     name : 'list',
                     data : {
@@ -118,9 +128,9 @@ Class(CV, 'OrganizationProfileEditMembersTab').inherits(Widget)({
             this.searchInput.button.disable();
             this._selectedUser = null;
 
-            API.searchPeopleToInvite({
-                profileName : Person.get().profileName,
-                data: {query: searchString}
+            API.searchPeople({
+                query : searchString,
+                exclude : this._memeberIds
             }, this._searchUsersResponseHandler.bind(this));
         },
 
@@ -131,11 +141,11 @@ Class(CV, 'OrganizationProfileEditMembersTab').inherits(Widget)({
         _searchUsersResponseHandler : function _searchUsersResponseHandler(err, res) {
             this.searchInput.results.deactivate().clear();
 
-            if (!res.length) {
+            if (!res.people.length) {
                 return;
             }
 
-            res.forEach(function(user) {
+            res.people.forEach(function(user) {
                 this.searchInput.results.add({
                     element : new CV.CardMiniClean({data: user}).el,
                     data : user
