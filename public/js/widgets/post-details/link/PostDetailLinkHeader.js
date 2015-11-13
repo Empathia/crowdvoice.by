@@ -48,7 +48,14 @@ Class(CV, 'PostDetailLinkHeader').inherits(Widget).includes(CV.WidgetUtils)({
             this.dom.updateText(this.titleElement, this.dom.decodeHTML(data.title));
             this.dom.updateText(this.dateElement, moment(data.publishedAt).format('MMM DD, YYYY'));
             this.dom.updateAttr('datetime', this.dateElement, data.publishedAt);
-            this.dom.updateAttr('href', this.viewOriginalBtn, data.sourceUrl);
+
+            if (data.sourceType === 'text') {
+                this.dom.addClass(this.viewOriginalBtn, ['-hide']);
+            } else {
+                this.dom.removeClass(this.viewOriginalBtn, ['-hide']);
+                this.dom.updateAttr('href', this.viewOriginalBtn, data.sourceUrl);
+            }
+
             this.updateSaves(data);
             this.actionSave.update(data);
             this.actionShare.update(data);
