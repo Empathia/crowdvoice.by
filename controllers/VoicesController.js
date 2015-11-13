@@ -1065,7 +1065,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         if (err) { return next(err); }
 
         if (!response.isAllowed) {
-          return next(new ForbiddenError('Unauthorized.'));
+          return next(new ForbiddenError());
         }
 
         RelatedVoice.find({
