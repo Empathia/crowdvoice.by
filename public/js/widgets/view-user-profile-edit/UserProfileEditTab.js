@@ -190,7 +190,9 @@ Class(CV, 'UserProfileEditTab').inherits(Widget)({
                 return;
             }
 
-            if (res.status === "taken") {
+            if ((res.status === "taken") &&
+                (Person.get('profileName') !== this.profilenameInput.getValue())
+               ) {
                 return this.profilenameInput.clearState().error().updateHint({
                     hint : '(profile name already taken)',
                     className : '-color-negative'

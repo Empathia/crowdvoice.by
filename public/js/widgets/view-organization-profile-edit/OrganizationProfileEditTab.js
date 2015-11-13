@@ -189,7 +189,9 @@ Class(CV, 'OrganizationProfileEditTab').inherits(Widget)({
                 return;
             }
 
-            if (res.status === "taken") {
+            if ((res.status === "taken") &&
+                (this.data.entity.profileName !== this.profilenameInput.getValue())
+               ) {
                 return this.profilenameInput.clearState().error().updateHint({
                     hint : '(profile name already taken)',
                     className : '-color-negative'
