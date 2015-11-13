@@ -2,15 +2,7 @@
 </main>
 
 <script>
-  // App
-  var ns = [];
-  <% if (typeof notifications !== "undefined") { %>
-    ns = <%= JSON.stringify(notifications) %>;
-  <% } %>
-  var App = new CV.App({
-    notifications : ns,
-    currentPerson : currentPerson
-  });
+  var App = new CV.App().setup();
   App.addInteractiveSidebar();
 
   App.appendChild(new CV.SavedPosts({

@@ -20,33 +20,30 @@ Class(CV, 'App').includes(NodeSupport)({
          * Starts the Sidebar window so it can update itself
          */
         init : function init(config) {
-            this.notifications = [];
-
             Object.keys(config || {}).forEach(function(propertyName) {
                 this[propertyName] = config[propertyName];
             }, this);
 
             Person.set(window.currentPerson);
             Topics.fetch();
+
+            this._scrollableElement = document.body;
+        },
+
+        setup : function setup() {
             window.CardHoverWidget = new CV.CardHover().render(document.body);
 
             this.appendChild(new CV.Header({
                 name : 'header',
                 element: $('.cv-main-header')
-            }));
+            })).setup();
 
             this.appendChild( new CV.Sidebar({
                 name : 'sidebar',
                 element : document.getElementsByClassName('cv-main-sidebar')[0]
             }));
 
-            this.header.setup();
-
-            this._scrollableElement = document.body;
-
-            //new CV.NotificationsManager({
-            //    notifications : this.notifications
-            //}).render(document.body);
+            return this;
         },
 
         /* Start socketio connection

@@ -8,8 +8,9 @@
 </main>
 
 <script type="text/javascript">
-  var App = new CV.App();
+  var App = new CV.App().setup();
   App.addInteractiveSidebar();
+
   var OrganizationProfileEdit = new CV.Views.OrganizationProfileEdit({
     entity : <%= JSON.stringify(organization) %>
   });

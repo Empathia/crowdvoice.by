@@ -73,8 +73,9 @@
 </main>
 
 <script>
-  var App = new CV.App();
+  var App = new CV.App().setup();
   App.addInteractiveSidebar();
+
   var DiscoverBrowse = new CV.Views.DiscoverBrowse({
     el : document.querySelector('.browse-page'),
     topicsData : <%= JSON.stringify(topics) %>

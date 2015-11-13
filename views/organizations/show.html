@@ -44,8 +44,9 @@
 </main>
 
 <script>
-  var App = new CV.App();
+  var App = new CV.App().setup();
   App.addInteractiveSidebar();
+
   var UserProfile = new CV.Views.OrganizationProfile({
     el : document.querySelector('.profile-page'),
     entity : <%= JSON.stringify(organization) %>
