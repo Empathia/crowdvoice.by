@@ -352,8 +352,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
         _statusChangedHandler : function _statusChangedHandler(ev) {
             ev.stopPropagation();
 
-            if (
-                (this.voiceStatusDropdown.getValue() === CV.VoiceView.STATUS_PUBLISHED) &&
+            if ((this.voiceStatusDropdown.getValue() === CV.VoiceView.STATUS_PUBLISHED) &&
                 (this.voiceImage.isEmpty())
             ) {
                 this.checkitProps.image = 'required';
@@ -678,6 +677,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
         _getCurrentData : function _getCurrentData() {
             var body = {
                 title : this.voiceTitle.getValue().trim(),
+                image : this.voiceImage.getFile(),
                 slug : this.voiceSlug.getValue().trim(),
                 description : this.voiceDescription.getValue().trim(),
                 topicsDropdown : this.voiceTopicsDropdown.getSelection(),
