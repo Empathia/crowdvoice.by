@@ -98,7 +98,10 @@ Class(CV, 'RequestToContribute').inherits(Widget)({
          */
         _displayErrorMessage : function _displayErrorMessage(res) {
             if (this._flashMessage) {
-                this._flashMessage = this._flashMessage.destroy();
+                return this._flashMessage.update({
+                    type : 'negative',
+                    text : 'There was an error sending the invitation. (' + res.statusText + ' - ' + res.status + ' )'
+                }).shake();
             }
 
             this.appendChild(new CV.Alert({
@@ -107,8 +110,6 @@ Class(CV, 'RequestToContribute').inherits(Widget)({
                 text : 'There was an error sending the invitation. (' + res.statusText + ' - ' + res.status + ' )',
                 className : '-mb1'
             })).render(this.formElement, this.formElement.firstElementChild);
-
-            return this;
         },
 
         /* SendButton click handler.

@@ -198,7 +198,10 @@ Class(CV, 'VoiceModerateDeleteUnmoderatedPostsDropdown').inherits(Widget)({
             this.scrollableArea.scrollTop = 0;
 
             if (this._successAlert) {
-                return this._successAlert.update(message);
+                return this._successAlert.update({
+                    text: message,
+                    type : 'positive'
+                }).shake();
             }
 
             this.appendChild(new CV.Alert({
@@ -218,7 +221,10 @@ Class(CV, 'VoiceModerateDeleteUnmoderatedPostsDropdown').inherits(Widget)({
             this.scrollableArea.scrollTop = 0;
 
             if (this._errorAlert) {
-                return this._errorAlert.update(message);
+                return this._errorAlert.update({
+                    text: message,
+                    type : 'negative'
+                });
             }
 
             this.appendChild(new CV.Alert({

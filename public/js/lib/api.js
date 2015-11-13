@@ -7,6 +7,29 @@ module.exports = {
     token : $('meta[name="csrf-token"]').attr('content'),
 
     /**************************************************************************
+     * ADMIN
+     *************************************************************************/
+    adminUpdateVoice : function adminUpdateVoice(args, callback) {
+        if (!args.voiceData || !args.data || !callback) {
+            throw new Error('Missing required params');
+        }
+
+        if ((typeof callback).toLowerCase() !== "function") {
+            throw new Error('Callback should be a function');
+        }
+
+        $.ajax({
+            type : 'PUT',
+            url : '/admin/voices/' + args.voiceData.id,
+            headers : {'csrf-token' : this.token},
+            data : args.data,
+            dataType : 'json',
+            success : function success(data) { callback(false, data); },
+            error : function error(err) { callback(true, err); }
+        });
+    },
+
+    /**************************************************************************
      * VOICES
      *************************************************************************/
     /* Creates a new Voice.

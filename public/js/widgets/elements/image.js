@@ -17,6 +17,8 @@ Class(CV, 'Image').inherits(Widget).includes(CV.WidgetUtils)({
             title  : ''
         },
 
+        _error : false,
+
         /* Holds if the removeImage method was called to clear the values.
          * @property imageRemoved <public> [Boolean]
          */
@@ -54,12 +56,21 @@ Class(CV, 'Image').inherits(Widget).includes(CV.WidgetUtils)({
          * @method error <public>
          */
         error : function error() {
+            this._error = true;
             this.imageWrapper.classList.add('-is-error');
             return this;
         },
 
+        hasError : function hasError() {
+            return this._error;
+        },
+
         getFile : function getFile() {
             return this.uploadFile.files[0];
+        },
+
+        isEmpty : function isEmpty() {
+            return (!this.getFile() && !this.backgroundImage.style.backgroundImage);
         },
 
         /* Resets the uploadedFile and removes the preview background image.
@@ -76,6 +87,7 @@ Class(CV, 'Image').inherits(Widget).includes(CV.WidgetUtils)({
          * @method clearState <public>
          */
         clearState : function clearState() {
+            this._error = false;
             this.dom.removeClass(this.imageWrapper, ['-is-error']);
             return this;
         },

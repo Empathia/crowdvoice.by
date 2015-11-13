@@ -8,9 +8,7 @@
 </main>
 
 <script>
-  var App = new CV.App({
-    currentPerson : currentPerson
-  });
+  var App = new CV.App().setup();
   App.addInteractiveSidebar();
 
   var MyVoices = new CV.Views.MyVoices({

@@ -1,5 +1,6 @@
 /* globals App */
 var Events = require('./../../../lib/events');
+var Person = require('./../../../lib/currentPerson');
 
 Class(CV, 'VoiceCoverActionsEdit').inherits(CV.UI.Button)({
     ELEMENT_CLASS : 'cv-button tiny -mr1',
@@ -13,7 +14,10 @@ Class(CV, 'VoiceCoverActionsEdit').inherits(CV.UI.Button)({
         },
 
         _clickHandler : function _clickHandler() {
-            App.showCreateVoiceModal(this.voiceEntity);
+            App.showCreateVoiceModal({
+                voiceEntity : this.voiceEntity,
+                ownerEntity : Person.get()
+            });
         },
 
         destroy : function destroy() {

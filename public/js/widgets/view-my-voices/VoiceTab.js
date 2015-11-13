@@ -1,5 +1,6 @@
 /* global App */
 var Events = require('./../../lib/events');
+var Person = require('./../../lib/currentPerson');
 
 Class(CV, 'MyVoicesTab').inherits(Widget)({
     prototype : {
@@ -46,7 +47,9 @@ Class(CV, 'MyVoicesTab').inherits(Widget)({
 
             Events.on(this.el.getElementsByTagName('a')[0], 'click', function(ev) {
                 ev.preventDefault();
-                App.showCreateVoiceModal();
+                App.showCreateVoiceModal({
+                    ownerEntity : Person.get()
+                });
             });
 
             this._rendered = true;

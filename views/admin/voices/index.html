@@ -1,7 +1,6 @@
 <div class="notifications">
 
 </div>
-
 <div class="admin-users-list">
 
 	<% voices.forEach(function(voice){ %>
@@ -13,7 +12,9 @@
 					<div class="admin-info">
 						<article class="cv-voice-cover mini -clearfix widget" role="article">
 							<a href="/<%= voice.owner.profileName %>/<%= voice.slug %>/" class="-float-left" data-voice-anchor="" title="Battle of Castle Black voice">
-								<img class="voice-cover" width="36" height="36" src="<%= voice.images.small.url %>">
+                <% if (voice.images && voice.images.small) { %>
+  								<img class="voice-cover" width="36" height="36" src="<%= voice.images.small.url %>">
+                <% } %>
 							</a>
 							<div class="voice-content">
 								<a href="/<%= voice.owner.profileName %>/<%= voice.slug %>/" class="voice-cover-title voice-cover-title-anchor -font-semi-bold -tdn" data-voice-anchor="" title="Battle of Castle Black voice"><%= voice.title %></a>
