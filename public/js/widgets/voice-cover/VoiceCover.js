@@ -36,10 +36,10 @@ Class(CV, 'VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
             </div>\
             <div class="voice-content">\
                 <div class="author">\
-                    <a class="author-anchor" href="">\
+                    <a class="author-anchor -inline-block">\
                         <img class="author-avatar -rounded" src="" alt="">\
                     </a>\
-                    by <a class="author-anchor" href="">\
+                    by <a class="author-anchor -inline-block">\
                         <span class="author-username"></span>\
                     </a>\
                 </div>\
@@ -66,10 +66,13 @@ Class(CV, 'VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
     MAX_DESCRIPTION_LENGTH : 180,
 
     prototype : {
+        /* Voice Model
+         * @property data <required> [Object]
+         */
         data : null,
+
         init : function init(config) {
             Widget.prototype.init.call(this, config);
-
             this.el = this.element[0];
             this.tagListElement = this.el.querySelector('.cv-tags');
             this.voiceCoverElement = this.el.querySelector('.voice-cover');
@@ -110,8 +113,12 @@ Class(CV, 'VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
             }
 
             this.authorAnchors.forEach(function(anchor) {
-                this.dom.updateAttr('title', anchor, this.data.owner.name + '’s profile');
-                this.dom.updateAttr('href', anchor, '/' + this.data.owner.profileName + '/');
+                if (this.data.owner.isAnonymous === true) {
+                    this.dom.renameNode(anchor, 'p');
+                } else {
+                    this.dom.updateAttr('title', anchor, this.data.owner.name + '’s profile');
+                    this.dom.updateAttr('href', anchor, '/' + this.data.owner.profileName + '/');
+                }
             }, this);
             this.dom.updateAttr('src', this.el.querySelector('.author-avatar'), this.data.owner.images.icon.url);
             this.dom.updateText(this.el.querySelector('.author-username'), this.data.owner.name);
