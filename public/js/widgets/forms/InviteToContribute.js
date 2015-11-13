@@ -94,8 +94,6 @@ Class(CV, 'InviteToContribute').inherits(Widget).includes(CV.WidgetUtils)({
 
             this._setSendingState();
 
-            console.log(this._dataPresenter());
-
             API.sendInvitation({
                 profileName : Person.get().profileName,
                 data : this._dataPresenter()
@@ -111,7 +109,8 @@ Class(CV, 'InviteToContribute').inherits(Widget).includes(CV.WidgetUtils)({
                 return;
             }
 
-            this._setSuccessState()._clearForm();
+            this._setSuccessState();
+            this._clearForm();
         },
 
         /* Display the current form errors.
@@ -136,7 +135,10 @@ Class(CV, 'InviteToContribute').inherits(Widget).includes(CV.WidgetUtils)({
             this.buttonSend.enable();
 
             if (this._flashMessage) {
-                this._flashMessage = this._flashMessage.destroy();
+                return this._flashMessage.update({
+                    type : 'positive',
+                    text : 'Invitation to ' + this.data.name + ' has been sent.'
+                }).shake();
             }
 
             this.appendChild(new CV.Alert({
@@ -145,8 +147,6 @@ Class(CV, 'InviteToContribute').inherits(Widget).includes(CV.WidgetUtils)({
                 text : 'Invitation to ' + this.data.name + ' has been sent.',
                 className : '-mb1'
             })).render(this.el, this.el.firstElementChild);
-
-            return this;
         },
 
         /* Sets the error state of the form.
@@ -156,7 +156,10 @@ Class(CV, 'InviteToContribute').inherits(Widget).includes(CV.WidgetUtils)({
             this.buttonSend.enable();
 
             if (this._flashMessage) {
-                this._flashMessage = this._flashMessage.destroy();
+                return this._flashMessage.update({
+                    type : 'negative',
+                    text : msg || 'There was an error sending your invitation to ' + this.data.name
+                }).shake();
             }
 
             this.appendChild(new CV.Alert({
@@ -165,8 +168,6 @@ Class(CV, 'InviteToContribute').inherits(Widget).includes(CV.WidgetUtils)({
                 text : msg || 'There was an error sending your invitation to ' + this.data.name,
                 className : '-mb1'
             })).render(this.el, this.el.firstElementChild);
-
-            return this;
         },
 
         /* Clears the form.

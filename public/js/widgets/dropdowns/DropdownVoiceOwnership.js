@@ -1,4 +1,3 @@
-var Person = require('./../../lib/currentPerson');
 var Events = require('./../../lib/events');
 
 Class(CV.UI, 'DropdownVoiceOwnership').inherits(Widget).includes(CV.WidgetUtils)({
@@ -10,10 +9,21 @@ Class(CV.UI, 'DropdownVoiceOwnership').inherits(Widget).includes(CV.WidgetUtils)
         </div>',
 
     prototype : {
+        /* Entity Model of the Voice Owner.
+         * @property ownerEntity <required> [EntityModel]
+         */
+        ownerEntity : null,
+
         _items : null,
         _value : null,
+
         init : function init(config) {
             Widget.prototype.init.call(this, config);
+
+            if (!this.ownerEntity) {
+                throw new Error('Missing required prop. ownerEntity.');
+            }
+
             this.el = this.element[0];
 
             this.appendChild(new CV.Dropdown({
@@ -34,11 +44,13 @@ Class(CV.UI, 'DropdownVoiceOwnership').inherits(Widget).includes(CV.WidgetUtils)
          * @return DropdownVoiceOwnership
          */
         _setup : function _setup() {
-            this._createItem(Person.get().name, Person.get().id, false);
+            this._createItem(this.ownerEntity.name, this.ownerEntity.id, false);
 
-            Person.get().ownedOrganizations.forEach(function(organization) {
-                this._createItem(organization.name, organization.id, true);
-            }, this);
+            if (this.ownerEntity.ownedOrganizations) {
+                this.ownerEntity.ownedOrganizations.forEach(function(organization) {
+                    this._createItem(organization.name, organization.id, true);
+                }, this);
+            }
 
             this._items = [].slice.call(this.dropdown.getContent());
 

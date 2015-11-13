@@ -6,8 +6,9 @@
 </main>
 
 <script>
-  var App = new CV.App();
+  var App = new CV.App().setup();
   App.addInteractiveSidebar();
+
   var DiscoverRecommended = new CV.Views.DiscoverRecommended({
     el : document.querySelector('.cv-main-content'),
     data : <%= JSON.stringify(recommended) %>

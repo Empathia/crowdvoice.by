@@ -146,7 +146,9 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
 
             this.createDropdownVoice.element[0].addEventListener('click', function() {
                 this.createDropdown.deactivate();
-                App.showCreateVoiceModal();
+                App.showCreateVoiceModal({
+                    ownerEntity : Person.get()
+                });
             }.bind(this));
 
             this.createDropdownOrganization.element[0].addEventListener('click', function() {

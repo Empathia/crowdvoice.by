@@ -166,7 +166,10 @@ Class(CV, 'UserProfileEditOrganizationsTab').inherits(Widget)({
          */
         _displaySuccessAlert : function _displaySuccessAlert(message) {
             if (this._successAlert) {
-                return this._successAlert.update(message);
+                return this._successAlert.update({
+                    type : 'positive',
+                    text: message
+                }).shake();
             }
 
             this.appendChild(new CV.Alert({
@@ -184,7 +187,10 @@ Class(CV, 'UserProfileEditOrganizationsTab').inherits(Widget)({
          */
         _displayErrorAlert : function _displayErrorAlert(message) {
             if (this._errorAlert) {
-                return this._errorAlert.update(message);
+                return this._errorAlert.update({
+                    text: message,
+                    type : 'negative'
+                }).shake();
             }
 
             this.appendChild(new CV.Alert({

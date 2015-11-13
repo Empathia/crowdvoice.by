@@ -5,7 +5,7 @@
 /* global io */
 
 var Person = require('./lib/currentPerson');
-var Topics = require('./lib/registers/topics');
+var Topics = require('./lib/registers/Topics');
 
 Class(CV, 'App').includes(NodeSupport)({
     prototype : {
@@ -20,33 +20,30 @@ Class(CV, 'App').includes(NodeSupport)({
          * Starts the Sidebar window so it can update itself
          */
         init : function init(config) {
-            this.notifications = [];
-
             Object.keys(config || {}).forEach(function(propertyName) {
                 this[propertyName] = config[propertyName];
             }, this);
 
             Person.set(window.currentPerson);
             Topics.fetch();
+
+            this._scrollableElement = document.body;
+        },
+
+        setup : function setup() {
             window.CardHoverWidget = new CV.CardHover().render(document.body);
 
             this.appendChild(new CV.Header({
                 name : 'header',
                 element: $('.cv-main-header')
-            }));
+            })).setup();
 
             this.appendChild( new CV.Sidebar({
                 name : 'sidebar',
                 element : document.getElementsByClassName('cv-main-sidebar')[0]
             }));
 
-            this.header.setup();
-
-            this._scrollableElement = document.body;
-
-            //new CV.NotificationsManager({
-            //    notifications : this.notifications
-            //}).render(document.body);
+            return this;
         },
 
         /* Start socketio connection
@@ -127,23 +124,15 @@ Class(CV, 'App').includes(NodeSupport)({
         /* Display the CreateVoiceModal.
          * @method showCreateVoiceModal <public> [Function]
          */
-        showCreateVoiceModal : function showCreateVoiceModal(voiceEntity, elToRender, isAdmin) {
+        showCreateVoiceModal : function showCreateVoiceModal(config) {
             if (!Person.get()) {
                 throw new Error('Not autorized to perform this action.');
             }
 
             var modalLabel = 'Create a Voice';
 
-            if (voiceEntity) {
-              modalLabel = 'Update Voice';
-            }
-
-            var placeElement;
-
-            if (elToRender){
-                placeElement = elToRender;
-            } else {
-                placeElement = document.body;
+            if (config.voiceEntity) {
+                modalLabel = 'Update Voice';
             }
 
             this.appendChild(new CV.UI.Modal({
@@ -151,9 +140,12 @@ Class(CV, 'App').includes(NodeSupport)({
                 name : 'createAVoiceModal',
                 action : CV.CreateVoice,
                 width : 960,
-                data : voiceEntity,
-                isAdmin : isAdmin
-            })).render(placeElement);
+                data : {
+                    voiceEntity : config.voiceEntity,
+                    ownerEntity: config.ownerEntity
+                },
+                isAdmin : config.isAdmin
+            })).render(config.renderTo || document.body);
 
             requestAnimationFrame(function() {
                 this.createAVoiceModal.activate();

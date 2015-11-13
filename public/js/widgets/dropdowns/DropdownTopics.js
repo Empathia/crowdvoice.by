@@ -1,4 +1,4 @@
-var Topics = require('./../../lib/registers/topics');
+var Topics = require('./../../lib/registers/Topics');
 
 Class(CV.UI, 'DropdownTopics').inherits(Widget)({
     HTML : '\
@@ -14,6 +14,7 @@ Class(CV.UI, 'DropdownTopics').inherits(Widget)({
     prototype : {
         _options : null,
         _items : null,
+        _fetched : false,
 
         init : function init(config) {
             Widget.prototype.init.call(this, config);
@@ -21,7 +22,7 @@ Class(CV.UI, 'DropdownTopics').inherits(Widget)({
             this._options = [];
             this._items = [];
 
-            this._setup()._bindEvents();
+            this._setup();
         },
 
         _setup : function _setup() {
@@ -32,20 +33,30 @@ Class(CV.UI, 'DropdownTopics').inherits(Widget)({
                 className : 'dropdown-topics ui-dropdown-styled -lg',
                 arrowClassName : '-s10 -color-grey',
                 bodyClassName : 'ui-vertical-list hoverable -full-width'
-            })).render(this.el);
+            })).render(this.el).disable();
 
-            Topics.get().forEach(function(topic) {
-                this.dropdown.addContent(this.appendChild(new CV.UI.Checkbox({
-                    name : topic.slug,
-                    id : topic.id,
-                    className : 'ui-vertical-list-item -block -p0',
-                    data : {label : topic.name}
-                })).el);
+            Topics.get(function(err, topics) {
+                if (err) {
+                    return;
+                }
 
-                this._options.push(this[topic.slug]);
-            }, this);
+                topics.forEach(function(topic) {
+                    this.dropdown.addContent(this.appendChild(new CV.UI.Checkbox({
+                        name : topic.slug,
+                        id : topic.id,
+                        className : 'ui-vertical-list-item -block -p0',
+                        data : {label : topic.name}
+                    })).el);
 
-            this._items = [].slice.call(this.dropdown.getContent());
+                    this._options.push(this[topic.slug]);
+                }, this);
+
+                this._items = [].slice.call(this.dropdown.getContent());
+                this._bindEvents();
+                this.dropdown.enable();
+                this._fetched = true;
+                this.dispatch('fetched');
+            }.bind(this));
 
             return this;
         },
@@ -66,6 +77,10 @@ Class(CV.UI, 'DropdownTopics').inherits(Widget)({
          * @return DropdownTopics
          */
         selectValues : function selectValues(topicIds) {
+            if (!this._fetched) {
+                return this.bind('fetched', this.selectValues.bind(this, topicIds));
+            }
+
             this._options.forEach(function(topic) {
                 if (topicIds.indexOf(topic.id) !== -1) {
                     topic.check();

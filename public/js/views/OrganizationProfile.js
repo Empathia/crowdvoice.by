@@ -139,7 +139,7 @@ Class(CV.Views, 'OrganizationProfile').includes(NodeSupport, CV.WidgetUtils)({
                 name : 'editProfileButton',
                 className : 'small',
                 data : {
-                    href : '/' + this.entity.profileName + '/edit',
+                    href : '/' + this.entity.profileName + '/edit/',
                     value : 'Manage Organization'
                 }
             })).render(this._actionsElementWrapper);

@@ -278,7 +278,10 @@ Class(CV, 'CreateOrganization').inherits(Widget).includes(CV.WidgetUtils)({
             this.buttonSend.enable();
 
             if (this._flashMessage) {
-                this._flashMessage = this._flashMessage.destroy();
+                return this._flashMessage.update({
+                    type : 'negative',
+                    text : message,
+                }).shake();
             }
 
             this.appendChild(new CV.Alert({
@@ -293,16 +296,21 @@ Class(CV, 'CreateOrganization').inherits(Widget).includes(CV.WidgetUtils)({
          * @method _setSuccessState <private>
          */
         _setSuccessState : function _setSuccessState(res) {
-            if (this._flashMessage) {
-                this._flashMessage = this._flashMessage.destroy();
-            }
+            var message = "Your new organization “" + res.name + '” was created! You will be redirected to its profile in a couple of seconds.';
 
-            this.appendChild(new CV.Alert({
-                name : '_flashMessage',
-                type : 'positive',
-                text : "Your new organization “" + res.name + '” was created! You will be redirected to its profile in a couple of seconds.',
-                className : '-mb1'
-            })).render(this.el, this.el.firstElementChild);
+            if (this._flashMessage) {
+                this._flashMessage.update({
+                    type : 'positive',
+                    text : message,
+                }).shake();
+            } else {
+                this.appendChild(new CV.Alert({
+                    name : '_flashMessage',
+                    type : 'positive',
+                    text : message,
+                    className : '-mb1'
+                })).render(this.el, this.el.firstElementChild);
+            }
 
             window.setTimeout(function() {
                 window.location.replace('/' + res.profileName + '/');

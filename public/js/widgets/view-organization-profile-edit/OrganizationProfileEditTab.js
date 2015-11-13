@@ -313,8 +313,10 @@ Class(CV, 'OrganizationProfileEditTab').inherits(Widget)({
             App.scrollTo(0, 0);
 
             if (this._alertSuccess) {
-                this._alertSuccess.update(message);
-                return;
+                return this._alertSuccess.update({
+                    type : 'positive',
+                    text : message
+                }).shake();
             }
 
             this.appendChild(new CV.Alert({
@@ -334,7 +336,10 @@ Class(CV, 'OrganizationProfileEditTab').inherits(Widget)({
             App.scrollTo(0, 0);
 
             if (this._alertError) {
-                return this._alertError.update(message);
+                return this._alertError.update({
+                    text: message,
+                    type : 'negative'
+                }).shake();
             }
 
             this.appendChild(new CV.Alert({

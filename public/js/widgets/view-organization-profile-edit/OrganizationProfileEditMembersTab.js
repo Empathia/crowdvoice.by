@@ -262,9 +262,7 @@ Class(CV, 'OrganizationProfileEditMembersTab').inherits(Widget)({
          * @method _inviteToContributeResponseHandler <private> [Function]
          * @return undefined
          */
-        _inviteToContributeResponseHandler : function _inviteToContributeResponseHandler(err, res) {
-            console.log(res);
-
+        _inviteToContributeResponseHandler : function _inviteToContributeResponseHandler(err) {
             if (err) {
                 this.searchInput.button.enable();
                 return;
@@ -275,7 +273,10 @@ Class(CV, 'OrganizationProfileEditMembersTab').inherits(Widget)({
             this._selectedUser = null;
 
             if (this._flashMessage) {
-                this._flashMessage = this._flashMessage.destroy();
+                return this._flashMessage.update({
+                    type : 'positive',
+                    text : "Invitation was sent, the user will see it on the message box."
+                }).shake();
             }
 
             this.appendChild(new CV.Alert({
