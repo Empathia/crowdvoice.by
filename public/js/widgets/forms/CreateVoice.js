@@ -136,7 +136,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
 
             this.appendChild(new CV.Image({
                 name : 'voiceImage',
-                data: {title : "Thumbnail image"}
+                data: {title : "Cover image"}
             })).render(this.el.querySelector('[data-background]'));
 
             this.appendChild(new CV.UI.Input({
@@ -567,7 +567,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             }, this);
 
             if (this.voiceImage.hasError()) {
-                var message = 'Please upload a thumbnail image to your voice, this will be the face of your voice.';
+                var message = 'Please upload a cover image to your voice, this will be the face of your voice.';
 
                 if (this._flashMessage) {
                     return this._flashMessage.update({
