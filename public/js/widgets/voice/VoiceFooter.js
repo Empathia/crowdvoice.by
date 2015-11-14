@@ -135,10 +135,12 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
                 var _showRequestToContribute = false;
 
                 if (this.voice.owner.type === 'organization')  {
-                    if (Person.memberOf('organization', this.voice.owner.id) === false) {
+                    if ((Person.notMemberOf('organization', this.voice.owner.id)) &&
+                        (Person.notMemberOf('voice', this.voice.id))
+                    ) {
                         _showRequestToContribute = true;
                     }
-                } else if (Person.memberOf('voice', this.voice.id) === false) {
+                } else if (Person.notMemberOf('voice', this.voice.id)) {
                     _showRequestToContribute = true;
                 }
 
