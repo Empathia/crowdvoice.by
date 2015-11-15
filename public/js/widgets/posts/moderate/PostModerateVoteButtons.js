@@ -1,3 +1,4 @@
+/* globals App */
 var API = require('../../../lib/api');
 
 Class(CV, 'PostModerateVoteButtons').inherits(Widget).includes(CV.WidgetUtils)({
@@ -19,10 +20,16 @@ Class(CV, 'PostModerateVoteButtons').inherits(Widget).includes(CV.WidgetUtils)({
             <span>Deny</span>\
         </button>',
 
-    HTML_ALREADY_CAST : '\
+    HTML_VOTE_CAST : '\
+        <div class="post-moderate-vote-already-cast-msg cv-button -block -m0 -text-center -font-semi-bold -upper">\
+            (Vote Cast)\
+        </div>',
+
+    HTML_VOTE_ALREADY_CAST : '\
         <div class="post-moderate-vote-already-cast-msg cv-button -block -m0 -text-center -font-semi-bold -upper">\
             (Vote Already Cast)\
         </div>',
+
     HTML_ERROR : '<div class="post-moderate-vote-error-msg cv-button -block -m0 -text-center -font-semi-bold -upper -abs"></div>',
 
     prototype : {
@@ -48,7 +55,7 @@ Class(CV, 'PostModerateVoteButtons').inherits(Widget).includes(CV.WidgetUtils)({
          * @method _setInitialStateVoteAlreadyCast <private>
          */
         _setInitialStateVoteAlreadyCast : function _setInitialStateVoteAlreadyCast() {
-            this.el.insertAdjacentHTML('beforeend', this.constructor.HTML_ALREADY_CAST);
+            this.el.insertAdjacentHTML('beforeend', this.constructor.HTML_VOTE_ALREADY_CAST);
         },
 
         /* Initial state for when the Post can be voted.
@@ -69,10 +76,11 @@ Class(CV, 'PostModerateVoteButtons').inherits(Widget).includes(CV.WidgetUtils)({
             this.denyButton.addEventListener('click', this._denyClickHandlerRef);
         },
 
-        /* Remove the allow, deny buttons,
-         * unsubscribe its events and display the vote already cast message.
+        /* Remove the allow, deny buttons and unsubscribe its events.
+         * @method _removeButtons <private> [Function]
+         * @return PostModerateVoteButtons
          */
-        _updateStateToAlreadyVoted : function _updateStateToAlreadyVoted() {
+        _removeButtons : function _removeButtons() {
             this.allowButton.removeEventListener('click', this._allowClickHandlerRef);
             this._allowClickHandlerRef = null;
             this.denyButton.removeEventListener('click', this._denyClickHandlerRef);
@@ -82,7 +90,26 @@ Class(CV, 'PostModerateVoteButtons').inherits(Widget).includes(CV.WidgetUtils)({
             this.el.removeChild(this.denyButton);
             this.allowButton = this.denyButton = null;
 
-            this._setInitialStateVoteAlreadyCast();
+            return this;
+        },
+
+        /* Remove the allow, deny buttons and display the vote already cast message.
+         * @method _updateStateToAlreadyVoted <private> [Function]
+         * @return PostModerateVoteButtons
+         */
+        _updateStateToAlreadyVoted : function _updateStateToAlreadyVoted() {
+            this._removeButtons();
+            this.el.insertAdjacentHTML('beforeend', this.constructor.HTML_VOTE_ALREADY_CAST);
+            return this;
+        },
+
+        /* Remove the allow, deny buttons and display the vote cast message.
+         * @method _updateStateToVoted <private> [Function]
+         * @return PostModerateVoteButtons
+         */
+        _updateStateToVoted : function _updateStateToVoted() {
+            this._removeButtons();
+            this.el.insertAdjacentHTML('beforeend', this.constructor.HTML_VOTE_CAST);
             return this;
         },
 
@@ -140,14 +167,14 @@ Class(CV, 'PostModerateVoteButtons').inherits(Widget).includes(CV.WidgetUtils)({
                 if (response.status === 403) {
                     this._updateStateToAlreadyVoted().enable();
                     this.el.querySelector('.post-moderate-vote-already-cast-msg').classList.add('negative');
-                    return void 0;
+                    return;
                 }
 
                 this._updateStateError(response.status + ' - ' + response.statusText).enable();
-                return void 0;
+                return;
             }
 
-            this._updateStateToAlreadyVoted();
+            this._updateStateToVoted();
         },
 
         _disable : function _disable() {
