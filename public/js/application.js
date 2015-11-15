@@ -324,7 +324,6 @@ require('./widgets/forms/block.js');
 
 require('./widgets/elements/image.js');
 require('./widgets/elements/UploadImage');
-require('./widgets/elements/button.js');
 require('./widgets/elements/check.js');
 require('./widgets/elements/input.js');
 require('./widgets/elements/input-button.js');

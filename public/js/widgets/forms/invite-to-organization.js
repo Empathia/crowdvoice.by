@@ -61,11 +61,10 @@ Class(CV, 'InviteToOrganization').inherits(Widget).includes(CV.WidgetUtils)({
                 }
             })).render(this.element.find('.placeholder-main'));
 
-            this.appendChild(new CV.Button({
+            this.appendChild(new CV.UI.Button({
                 name : 'buttonSend',
                 className : 'primary -font-bold -full-width -m0',
-                type : 'single',
-                label : 'Invite ' + this.data.name
+                data: {value : 'Invite ' + this.data.name}
             })).render(this.element.find('.placeholder-send'));
 
             return this;

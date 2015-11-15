@@ -12,10 +12,10 @@ Class(CV, 'SearchResultsViewAllButton').inherits(Widget).includes(CV.WidgetUtils
 
             this.el = this.element[0];
 
-            this.appendChild(new CV.Button({
+            this.appendChild(new CV.UI.Button({
                 name : 'button',
                 className : '-full-width',
-                label : 'View all ' + this.totals + ' results »'
+                data: {value : 'View all ' + this.totals + ' results »'}
             })).render(this.el);
 
             this._bindEvents();

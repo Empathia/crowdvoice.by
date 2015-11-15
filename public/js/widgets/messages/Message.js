@@ -1,6 +1,7 @@
 var moment = require('moment');
 var API = require('./../../lib/api');
 var Person = require('./../../lib/currentPerson');
+var Events = require('./../../lib/events');
 var PLACEHOLDERS = require('./../../lib/placeholders');
 
 CV.Message = new Class(CV, 'Message').inherits(Widget)({
@@ -43,6 +44,7 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
     data : {},
     init : function init(config) {
       Widget.prototype.init.call(this, config);
+      this.messageActionsWrapper =this.element.find('.message-notification-actions');
 
       if (this.type === 'message') {
         this.element.find('.message-data .message-notification').remove();
@@ -112,74 +114,9 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
           }
 
           if (message.type === "invitation_organization" || message.type === "invitation_voice") {
-            var btnMultipleOptions = {
-              "1": {label: 'Accept', name: 'accept'},
-              "2": {label: 'Accept as an Anonymous Member', name: 'anonymous'},
-              "3": {label: 'Refuse', name: 'refuse'}
-            };
-
-            var messageActions = new CV.Button({
-              style   : 'tiny',
-              type    : 'multiple',
-              name    : 'buttonMultiple',
-              options : btnMultipleOptions
-            }).render(message.element.find('.message-notification-actions'));
-
-            // ************   Message button actions *******************
-
-            messageActions.accept.on('click', function(){
-              console.log('-- Accept --');
-
-              API.threatAnswerInvitation({
-                profileName: Person.get('profileName'),
-                threadId: message.data.threadId,
-                messageId: message.data.id,
-                data : {action: 'accept'}
-              }, function(err, res) {
-                if (err) {
-                  return console.log(res);
-                }
-                messageActions.element.hide();
-                message.element.find('.message-notification > p').html('Invitation Accepted.');
-              });
-            });
-
-            messageActions.anonymous.on('click', function(){
-              console.log('-- Accept As anon --');
-
-              API.threatAnswerInvitation({
-                profileName: Person.get('profileName'),
-                threadId: message.data.threadId,
-                messageId: message.data.id,
-                data : {action: 'accept', anonymous: true}
-              }, function(err, res) {
-                if (err) {
-                  return console.log(res);
-                }
-                messageActions.element.hide();
-                message.element.find('.message-notification > p').html('Invitation Accepted.');
-              });
-            });
-
-            messageActions.refuse.on('click', function(){
-              console.log('-- Refuse --');
-
-              API.threatAnswerInvitation({
-                profileName: Person.get('profileName'),
-                threadId: message.data.threadId,
-                messageId: message.data.id,
-                data : {action: 'ignore'}
-              }, function(err, res) {
-                if (err) {
-                  return console.log(res);
-                }
-                messageActions.element.hide();
-                message.element.find('.message-notification > p').html('Invitation rejected.');
-              });
-            });
+            this._addActionButtons();
           }
         } else {
-
           switch(message.type) {
             case 'invitation_voice':
               text = '<p>You invited ' + message.thread.data.receiverEntity.name + ' to become a contributor of ' + message.data.voice.title + '.</p>';
@@ -219,6 +156,150 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
       }
 
       return this;
+    },
+
+    /* Adds the [Accept, Accept as Anonymous] [Reject] buttons for invitations.
+     * @method _addActionButtons <private> [Function]
+     * @return Message
+     */
+    _addActionButtons : function _addActionButtons() {
+      var positiveGroupButtons = document.createElement('div');
+      positiveGroupButtons.className = 'cv-button-group multiple';
+
+      this.appendChild(new CV.UI.Button({
+        name : 'actionAcceptButton',
+        className : 'micro -ghost positive',
+        data : {value: 'Accept'}
+      })).render(positiveGroupButtons);
+
+      this.appendChild(new CV.UI.Button({
+        name : 'actionAcceptAsAnonButton',
+        className : 'micro -ghost positive',
+        data : {value: 'Accept as an Anonymous Member'}
+      })).render(positiveGroupButtons);
+
+      this.messageActionsWrapper.append(positiveGroupButtons);
+
+      this.appendChild(new CV.UI.Button({
+        name : 'actionRejectButton',
+        className : 'micro -ghost negative',
+        data: {value: 'Reject'}
+      })).render(this.messageActionsWrapper);
+
+      this._bindActionButtonsEvents();
+      return this;
+    },
+
+    /* Disables the [Accept, Accept as Anonymous] [Reject] action buttons.
+     * @method _disableActionButtons <private> [Function]
+     * @return Message
+     */
+    _disableActionButtons : function _disableActionButtons() {
+      this.actionAcceptButton.disable();
+      this.actionAcceptAsAnonButton.disable();
+      this.actionRejectButton.disable();
+      return this;
+    },
+
+    /* Register the event handlers for the [Accept, Accept as Anonymous] [Reject] action buttons.
+     * @method _bindActionButtonsEvents <private> [Function]
+     * @return Message
+     */
+    _bindActionButtonsEvents : function _bindActionButtonsEvents() {
+      this._acceptInvitationHandlerRef = this._acceptInvitationHandler.bind(this);
+      Events.on(this.actionAcceptButton.el, 'click', this._acceptInvitationHandlerRef);
+
+      this._acceptAsAnonInvitationHandlerRef = this._acceptAsAnonInvitationHandler.bind(this);
+      Events.on(this.actionAcceptAsAnonButton.el, 'click', this._acceptAsAnonInvitationHandlerRef);
+
+      this._rejectInvitationHandlerRef = this._rejectInvitationHandler.bind(this);
+      Events.on(this.actionRejectButton.el, 'click', this._rejectInvitationHandlerRef);
+      return this;
+    },
+
+    /* Unregister the event handlers for the [Accept, Accept as Anonymous] [Reject] action buttons.
+     * @method _unbindActionButtonsEvents <private> [Function]
+     * @return Message
+     */
+    _unbindActionButtonsEvents : function _unbindActionButtonsEvents() {
+      console.log('events unbinded');
+      Events.off(this.actionAcceptButton.el, 'click', this._acceptInvitationHandlerRef);
+      this._acceptInvitationHandlerRef = null;
+
+      Events.off(this.actionAcceptAsAnonButton.el, 'click', this._acceptAsAnonInvitationHandlerRef);
+      this._acceptAsAnonInvitationHandlerRef = null;
+
+      Events.off(this.actionRejectButton.el, 'click', this._rejectInvitationHandlerRef);
+      this._rejectInvitationHandlerRef = null;
+    },
+
+    /* Handles the [Accept] action button click event.
+     * @method _acceptInvitationHandler <private> [Function]
+     * @return undefined
+     */
+    _acceptInvitationHandler : function _acceptInvitationHandler() {
+      console.log('-- Accept --');
+      this._disableActionButtons();
+
+      API.threatAnswerInvitation({
+        profileName: Person.get('profileName'),
+        threadId: this.data.threadId,
+        messageId: this.data.id,
+        data : {action: 'accept'}
+      }, function(err, res) {
+        if (err) {
+          return console.log(res);
+        }
+        this._unbindActionButtonsEvents();
+        this.messageActionsWrapper.remove();
+        this.element.find('.message-notification > p').html('Invitation Accepted.');
+      }.bind(this));
+    },
+
+    /* Handles the [Accept as an Anonymous Member] action button click event.
+     * @method _acceptAsAnonInvitationHandler <private> [Function]
+     * @return undefined
+     */
+    _acceptAsAnonInvitationHandler : function _acceptAsAnonInvitationHandler() {
+      console.log('-- Accept As anon --');
+      this._disableActionButtons();
+
+      API.threatAnswerInvitation({
+        profileName: Person.get('profileName'),
+        threadId: this.data.threadId,
+        messageId: this.data.id,
+        data : {action: 'accept', anonymous: true}
+      }, function(err, res) {
+        if (err) {
+          return console.log(res);
+        }
+        this._unbindActionButtonsEvents();
+        this.messageActionsWrapper.remove();
+        this.element.find('.message-notification > p').html('Invitation accepted as anonymous.');
+      }.bind(this));
+    },
+
+    /* Handles the [Reject] action button click event.
+     * @method _rejectInvitationHandler <private> [Function]
+     * @return undefined
+     */
+    _rejectInvitationHandler : function _rejectInvitationHandler() {
+      console.log('-- Reject --');
+      this._disableActionButtons();
+
+      API.threatAnswerInvitation({
+        profileName: Person.get('profileName'),
+        threadId: this.data.threadId,
+        messageId: this.data.id,
+        data : {action: 'ignore'}
+      }, function(err, res) {
+        if (err) {
+          return console.log(res);
+        }
+        this._unbindActionButtonsEvents();
+        this.messageActionsWrapper.remove();
+        this.element.find('.message-notification > p').html('Invitation rejected.');
+      }.bind(this));
     }
   }
 });
