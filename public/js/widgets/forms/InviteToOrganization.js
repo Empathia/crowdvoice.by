@@ -181,6 +181,7 @@ Class(CV, 'InviteToOrganization').inherits(Widget).includes(CV.WidgetUtils)({
         _dataPresenter : function _dataPresenter() {
             return {
                 type : 'invitation_organization',
+                senderEntityId : this.inviteOrganizationDropdown.getValue(),
                 receiverEntityId : this.data.id,
                 organizationId : this.inviteOrganizationDropdown.getValue(),
                 message : this.inviteMessage.getValue()
