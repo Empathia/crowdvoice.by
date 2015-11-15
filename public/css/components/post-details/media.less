@@ -58,6 +58,17 @@
 .cv-post-detail-media__info-media {
   display: inline-block;
   width: 50%;
+  overflow: hidden;
+  background-color: @color-black;
+  border-radius: 3px;
+
+  > img {
+    background-image: linear-gradient(45deg, #eee 25%, rgba(0, 0, 0, 0) 25%, rgba(0, 0, 0, 0) 75%, #eee 75%, #eee 0px), linear-gradient(45deg, #eee 25%, rgba(0, 0, 0, 0) 25%, rgba(0, 0, 0, 0) 75%, #eee 75%, #eee 0px);
+    background-position: 0 20px, 20px 0px;
+    background-size: 40px 40px;
+    background-color: rgb(255, 255, 255);
+    border-radius: 3px;
+  }
 }
 
 .cv-post-detail-media__info-text {
