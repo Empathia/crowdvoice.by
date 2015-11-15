@@ -178,7 +178,7 @@ Class(CV, 'OrganizationProfileEditMembersTab').inherits(Widget)({
                 profileName : Person.get().profileName,
                 data : {
                     type : 'invitation_organization',
-                    senderEntityId : Person.get().id,
+                    senderEntityId : this.data.entity.id,
                     receiverEntityId : this._selectedUser.id,
                     organizationId : this.data.entity.id,
                     message : this.messageInput.getValue()
