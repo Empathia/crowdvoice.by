@@ -1,10 +1,11 @@
 /* globals App */
-Class(CV, 'VoiceModerateButton').inherits(Widget).includes(CV.WidgetUtils)({
+Class(CV, 'VoiceModerateButton').inherits(Widget).includes(CV.WidgetUtils, CV.VoiceHelper)({
     HTML : '\
     <button class="cv-button tiny ui-has-tooltip">\
         <svg class="voice-footer-svg">\
             <use xlink:href="#svg-moderate"></use>\
         </svg>\
+        <span class="voice-moderate-button__counter"></span>\
         <span class="ui-tooltip -bottom-right -nw">Moderate Content</span>\
     </button>',
 
@@ -15,12 +16,26 @@ Class(CV, 'VoiceModerateButton').inherits(Widget).includes(CV.WidgetUtils)({
         init : function init(config) {
             Widget.prototype.init.call(this, config);
             this.el = this.element[0];
+            this.counterElement = this.el.querySelector('.voice-moderate-button__counter');
 
             if (App.Voice.postsCountUnapproved.length) {
                 this._bindEvents();
+                this.updateCounter(this._getTotalPostCount(App.Voice.postsCountUnapproved));
             } else {
                 this.disable();
             }
+        },
+
+        updateCounter : function updateCounter(totals) {
+            var text = '';
+
+            if (!totals) {
+                this.disable();
+            } else {
+                text = totals;
+            }
+
+            this.dom.updateText(this.counterElement, text);
         },
 
         /* Subscribes to the button click event

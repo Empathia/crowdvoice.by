@@ -288,6 +288,19 @@
   height: 16px;
 }
 
+.voice-moderate-button__counter {
+  font-size: 10px;
+  margin-left: 5px;
+
+  &::before {content: '(';}
+  &::after {content: ')';}
+
+  &:empty {
+    margin: 0;
+    display: none;
+  }
+}
+
 @{ns}-popover.request-contribute-popover.widget {
   width: 560px;
   bottom: 100%;
