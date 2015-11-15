@@ -629,10 +629,23 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             }
 
             if (this.data) {
-                message = "“" + res.title + '” was updated! You will be redirected to your profile in a couple of seconds.';
+                message = "“" + res.title + '” was updated! You will be redirected to your voices in a couple of seconds.';
+
+                var url = '/' + Person.get('profileName') + '/myvoices/';
+
+                switch(this.data.status) {
+                    case CV.VoiceView.STATUS_ARCHIVED : url += '#archived'; break;
+                    case CV.VoiceView.STATUS_DRAFT : url += '#drafts'; break;
+                    case CV.VoiceView.STATUS_PUBLISHED : url += '#published'; break;
+                    case CV.VoiceView.STATUS_UNLISTED : url += '#unlisted'; break;
+                }
 
                 window.setTimeout(function() {
-                    window.location = '/';
+                    window.location = url;
+
+                    if ((window.location.pathname + window.location.hash) === url) {
+                        window.location.reload();
+                    }
                 }, this.constructor.REDIRECT_DELAY);
             } else {
                 message = "“" + res.title + '” was created! You will be redirected to its profile in a couple of seconds.';
