@@ -26,20 +26,17 @@ Class(CV, 'Block').inherits(Widget)({
 
         init : function(config){
             Widget.prototype.init.call(this, config);
-            var sendElement = this.element.find('.send');
 
-			new CV.Button({
-			    style   : 'full',
-			    type    : 'single',
-			    label   : 'Don\'t Block',
-			    name    : 'buttonSend'
+			new CV.UI.Button({
+			    name : 'buttonSend',
+			    className : 'full',
+			    data : {value: 'Don\'t Block'}
 			}).render(this.element.find('.placeholder-dont'));
 
-            new CV.Button({
-			    style   : 'primary full',
-			    type    : 'single',
-			    label   : 'Block',
-			    name    : 'buttonSend'
+            new CV.UI.Button({
+			    name   : 'buttonSend',
+			    className   : 'primary full',
+			    data : {value: 'Block'}
 			}).render(this.element.find('.placeholder-block'));
 
         }

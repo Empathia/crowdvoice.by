@@ -95,11 +95,10 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
                 });
             } else {
                 // Show normal button
-                this.newMessageButton = new CV.Button({
-                    name    : 'newMessageButton',
-                    style   : 'small',
-                    type    : 'single',
-                    label   : 'New Conversation',
+                this.newMessageButton = new CV.UI.Button({
+                    name : 'newMessageButton',
+                    className : 'small',
+                    data : {value: 'New Conversation'}
                 }).render($('.messages-new'));
 
                 this.newMessageButton.element.on('click', function() {

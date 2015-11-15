@@ -48,11 +48,10 @@ Class(CV, 'RequestMembership').inherits(Widget)({
                 }
             })).render(this.el.querySelector('[data-placeholder-main]'));
 
-            this.appendChild(new CV.Button({
+            this.appendChild(new CV.UI.Button({
                 name : 'formButton',
                 className : 'primary full',
-                type : 'single',
-                label : 'Submit Request',
+                data : {value : 'Submit Request'}
             })).render(this.el.querySelector('[data-placeholder-send]'));
 
             return this;

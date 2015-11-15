@@ -198,6 +198,21 @@ a.cv-button{
   }
 }
 
+.cv-button.-ghost {
+  box-shadow: none;
+  background-color: transparent;
+
+  &.positive {
+    border-color: @color-positive;
+    color: @color-positive-dark;
+  }
+
+  &.negative {
+    border-color: @color-negative;
+    color: @color-negative-dark;
+  }
+}
+
 .cv-button.full{
   width: 100%;
   margin: 0;
