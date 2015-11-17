@@ -40,6 +40,25 @@ Module(CV, 'WidgetUtils')({
                 return el.textContent;
             },
 
+            /* Creates a new node with the specified name and replaces the
+             * existing node with the new node.
+             * @usage this.dom.renameNode(nodeElement, 'tagName')
+             * @return Node the renamed node. The new node that was created to replace the specified node.
+             */
+            renameNode : function renameNode(node, name) {
+                var newNode = document.createElement(name);
+
+                Object.keys(node.attributes).forEach(function(attr) {
+                    newNode.setAttribute(node.attributes[attr].nodeName, node.attributes[attr].value);
+                });
+
+                while(node.firstChild) {
+                    newNode.appendChild(node.firstChild);
+                }
+
+                return node.parentNode.replaceChild(newNode, node);
+            },
+
             addClass : function addClass(el, classNames) {
                 if (el.classList) {
                     return classNames.forEach(function(cl) {
