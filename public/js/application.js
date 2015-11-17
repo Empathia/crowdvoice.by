@@ -318,7 +318,7 @@ require('./widgets/forms/RequestToContribute');
 require('./widgets/forms/CreateVoice');
 require('./widgets/forms/CreateOrganization');
 require('./widgets/forms/InviteToContribute');
-require('./widgets/forms/inviteToOrganization');
+require('./widgets/forms/InviteToOrganization');
 require('./widgets/forms/request-membership.js');
 require('./widgets/forms/report.js');
 require('./widgets/forms/block.js');
