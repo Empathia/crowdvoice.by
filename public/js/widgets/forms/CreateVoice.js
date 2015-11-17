@@ -76,6 +76,8 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             // Edit voice
             if (this.data.voiceEntity) {
                 this._autoGenerateSlug = false;
+                Events.off(this.voiceTitle.getInput(), 'keyup', this._generateSlughandlerRef);
+                this._generateSlughandlerRef = null;
                 this._fillForm(this.data.voiceEntity);
             }
         },
@@ -108,6 +110,10 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             this.voiceLocation.setValue(voice.locationName);
             this.voiceLatitude.setValue(voice.latitude);
             this.voiceLongitude.setValue(voice.longitude);
+
+            if (this.checkAnon && voice.owner.isAnonymous) {
+                this.checkAnon.check();
+            }
         },
 
         /* Create and append the form element widgets.
@@ -271,7 +277,18 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             var row = this.el.querySelector('[data-row-voice-info]');
             var owncol = document.createElement('div');
 
-            if (!this.data.ownerEntity.isAnonymous && this.data.ownerEntity.ownedOrganizations) {
+            if (this.data.voiceEntity && this.data.voiceEntity.owner.isAnonymous) {
+                this.appendChild(new CV.UI.DropdownVoiceOwnership({
+                    name : 'voiceOwnershipDropdown',
+                    ownerEntity : this.data.voiceEntity.owner
+                })).render(owncol);
+
+                this._ownershipChangedHandlerRef = this._ownershipChangedHandler.bind(this);
+                this.voiceOwnershipDropdown.bind('ownership:changed', this._ownershipChangedHandlerRef);
+
+                this.voiceOwnershipDropdown.selectByEntity(this.data.ownerEntity);
+                row.appendChild(owncol);
+            } else if (!this.data.ownerEntity.isAnonymous && this.data.ownerEntity.ownedOrganizations) {
                 this.appendChild(new CV.UI.DropdownVoiceOwnership({
                     name : 'voiceOwnershipDropdown',
                     ownerEntity : this.data.ownerEntity
@@ -531,13 +548,11 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                     profileName = this.data.voiceEntity.owner.profileName;
                 }
 
-                API.voiceEdit({
+                return API.voiceEdit({
                     profileName : profileName,
                     voiceSlug : this.data.voiceEntity.slug,
                     data : this._dataPresenter()
                 }, this._createVoiceHandler.bind(this));
-
-                return;
             }
 
             // Creating Voice
@@ -724,16 +739,24 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             data.append('latitude', this.voiceLatitude.getValue().trim());
             data.append('longitude', this.voiceLongitude.getValue().trim());
 
-            if (Person.anon()) {
+            if (Person.anon() && !this.data.voiceEntity) {
                 data.append('anonymously', true);
             } else {
                 data.append('anonymously', this.checkAnon.isChecked());
             }
 
-            if (this.voiceOwnershipDropdown) {
-                data.append('ownerId', this.voiceOwnershipDropdown.getValue());
-            } else {
-                data.append('ownerId', Person.get().id);
+            var addOwnerId = true;
+            // Editing an anonymous voice?, do not send ownerId
+            if (this.data.voiceEntity && this.data.voiceEntity.owner.isAnonymous) {
+                addOwnerId = false;
+            }
+
+            if (addOwnerId) {
+                if (this.voiceOwnershipDropdown) {
+                    data.append('ownerId', this.voiceOwnershipDropdown.getValue());
+                } else {
+                    data.append('ownerId', Person.get().id);
+                }
             }
 
             return data;
