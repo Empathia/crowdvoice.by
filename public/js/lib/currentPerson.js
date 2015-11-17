@@ -71,7 +71,7 @@ module.exports = {
 
     /* Checks if currentPerson is member of a specific organization or a specific voice.
      * @argument type <required> [String] ('organization' || 'voice')
-     * @argument id <required> [String] organization || voice id
+     * @argument id <required> [String] {organization || voice}.id
      * @return [Boolean]
      */
     memberOf : function memberOf(type, id) {
@@ -94,6 +94,15 @@ module.exports = {
 
             return (voices.indexOf(id) !== -1);
         }
+    },
+
+    /* Checks if currentPerson is NOT a member of a specific organization or a specific voice.
+     * @argument type <required> [String] ('organization' || 'voice')
+     * @argument id <required> [String] {organization || voice}.id
+     * @return [Boolean]
+     */
+    notMemberOf : function notMemberOf(type, id) {
+        return !this.memberOf(type, id);
     },
 
     ownsOrganizations : function ownsOrganizations() {
