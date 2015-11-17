@@ -8,23 +8,47 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
   prototype : {
     getEntityByProfileName : function (req, res, next) {
-      Entity.find({
-        'profile_name' : req.params.profile_name
-      }, function (err, result) {
-        if (err) { next(err); return; }
-        if (result.length === 0) { next(new NotFoundError('Entity Not Found')); return; }
+      if (req.url.match(/^(\/anonymous\/?)/)) {
+        var anonEntity = new Entity({
+          id: 0,
+          type: 'person',
+          name: 'Anonymous',
+          profileName: 'anonymous',
+          isAnonymous: true,
+          description : 'Anonymous user',
+          location : 'No location',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          deleted: false,
+        });
 
-        EntitiesPresenter.build(result, req.currentPerson, function(err, entities) {
-          if (err) {
-            return next(err);
+        req.entity = anonEntity;
+        req.entityType = 'Person';
+        res.locals.Person = anonEntity;
+
+        return next();
+      } else {
+        Entity.find({
+          'profile_name' : req.params.profile_name
+        }, function (err, result) {
+          if (err) { return next(err); }
+
+          if (result.length === 0) {
+            return next(new NotFoundError('Entity Not Found'));
           }
 
-          req.entity = entities[0];
-          req.entityType = req.entity.type;
-          res.locals[req.entityType] = entities[0];
-          next();
-        })
-      });
+          EntitiesPresenter.build(result, req.currentPerson, function(err, entities) {
+            if (err) {
+              return next(err);
+            }
+
+            req.entity = entities[0];
+            req.entityType = req.entity.type;
+            res.locals[req.entityType] = entities[0];
+            return next();
+          })
+        });
+      }
     },
 
     getEntity : function getEntity (req, res, next) {
