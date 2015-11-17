@@ -98,11 +98,10 @@ Class(CV, 'CreateOrganization').inherits(Widget).includes(CV.WidgetUtils)({
                 data : {title : 'Background'}
             })).render(this.el.querySelector('.placeholder-background'));
 
-            this.appendChild(new CV.Button({
+            this.appendChild(new CV.UI.Button({
                 name  : 'buttonSend',
                 className : 'primary full',
-                type : 'single',
-                label : 'Create Organization'
+                data : {value : 'Create Organization'}
             })).render(this.el.querySelector('.placeholder-send'));
 
             return this;

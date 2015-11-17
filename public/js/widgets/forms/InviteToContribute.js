@@ -63,11 +63,10 @@ Class(CV, 'InviteToContribute').inherits(Widget).includes(CV.WidgetUtils)({
                 }
             })).render(this.el.querySelector('[data-placeholder-main]'));
 
-            this.appendChild(new CV.Button({
+            this.appendChild(new CV.UI.Button({
                 name : 'buttonSend',
                 className : 'primary -font-bold -full-width -m0',
-                type : 'single',
-                label : 'Invite ' + this.data.name
+                data : {value : 'Invite ' + this.data.name}
             })).render(this.el.querySelector('[data-placeholder-send]'));
 
             return this;

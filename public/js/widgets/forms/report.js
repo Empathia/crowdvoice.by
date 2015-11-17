@@ -84,11 +84,10 @@ Class(CV, 'Report').inherits(Widget)({
 			    subTitle 	: "Be as detailed as possible"
 			}).render(this.element.find('.placeholder-main'));
 
-            var formButton = new CV.Button({
-			    style   : 'primary full',
-			    type    : 'single',
-			    label   : 'Submit Request',
-			    name    : 'buttonSend'
+            var formButton = new CV.UI.Button({
+			    name    : 'buttonSend',
+			    className   : 'primary full',
+			    data : {value : 'Submit Request'}
 			}).render(this.element.find('.placeholder-send'));
 
 			formButton.element.click(function(e){

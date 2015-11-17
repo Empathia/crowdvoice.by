@@ -254,11 +254,10 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 buttonLabel = 'Update Voice';
             }
 
-            this.appendChild(new CV.Button({
+            this.appendChild(new CV.UI.Button({
                 name : 'buttonSend',
-                type : 'single',
-                label : buttonLabel,
-                className : 'primary full'
+                className : 'primary full',
+                data: {value : buttonLabel}
             })).render(this.sendElement);
 
             return this;

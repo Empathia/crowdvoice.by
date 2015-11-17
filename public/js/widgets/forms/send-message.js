@@ -48,11 +48,10 @@ Class(CV, 'SendMessage').inherits(Widget).includes(CV.WidgetUtils)({
                 }
             })).render(this.el.querySelector('.placeholder-main'));
 
-            this.appendChild(new CV.Button({
+            this.appendChild(new CV.UI.Button({
                 name : 'formButton',
                 className : 'primary full',
-                type : 'single',
-                label : 'Send Message',
+                data : {value : 'Send Message'}
             })).render(this.el.querySelector('.placeholder-send'));
 
             return this;
