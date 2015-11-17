@@ -31,29 +31,11 @@ Class(CV, 'VoiceOboarding').inherits(Widget).includes(CV.WidgetUtils)({
                 '
             })).render(this.el);
 
-            this.appendChild(new CV.UI.Close({
-                name : 'closeButton',
-                className : '-abs cv-onboarding__close',
-                svgClassName : '-s10'
-            })).render(this.popoverOnboarding.el);
-
             this.popoverOnboarding.activate();
-            this._bindEvents();
-        },
-
-        _bindEvents : function _bindEvents() {
-            this.closeButton.el.addEventListener('click', this._deactivateOnboarding.bind(this));
-            this.popoverOnboarding.bind('deactivate', this._deactivateOnboarding);
         },
 
         _deactivateOnboarding : function _deactivateOnboarding() {
             this.destroy();
-        },
-
-        destroy : function destroy (){
-            Widget.prototype.destroy.call(this);
-
-            return null;
         }
     }
 });
