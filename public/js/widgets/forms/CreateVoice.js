@@ -544,16 +544,8 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
 
             // Owner Editing Voice?
             if (this.data.voiceEntity) {
-                var profileName;
-
-                if (Person.anon() || this.checkAnon.isChecked()) {
-                    profileName = 'anonymous';
-                } else {
-                    profileName = this.data.voiceEntity.owner.profileName;
-                }
-
                 return API.voiceEdit({
-                    profileName : profileName,
+                    profileName : this.data.voiceEntity.owner.profileName,
                     voiceSlug : this.data.voiceEntity.slug,
                     data : this._dataPresenter()
                 }, this._createVoiceHandler.bind(this));

@@ -98,7 +98,7 @@ Class(CV, 'VoiceAddContent').inherits(Widget)({
         /* Handle the actions when the bubble is activated.
          * @method _bubbleActivateHandler
          */
-        _bubbleActivateHandler : function _bubbleShowetavitcAner() {
+        _bubbleActivateHandler : function _bubbleActivateHandler() {
             this.addPostButton.classList.add('active');
         },
 
