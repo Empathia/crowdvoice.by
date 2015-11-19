@@ -267,7 +267,8 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
 
     members : function members(req, res, next) {
       EntityMembership.find({
-        entity_id: hashids.decode(req.entity.id)[0]
+        entity_id: hashids.decode(req.entity.id)[0],
+        is_anonymous: false
       }, function(err, result) {
         if (err) {
           return next(err);
