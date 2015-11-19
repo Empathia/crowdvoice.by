@@ -234,12 +234,12 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
             if (err) { return next(err); }
 
             var imagePath = body.imagePath;
-            if (imagePath && body.imagePath.length > 0 && CONFIG.environment === 'development') {
+            if (body.imagePath !== '' && CONFIG.environment === 'development') {
               imagePath = process.cwd() + '/public' + body.imagePath;
             }
 
             async.series([function(done) {
-              if (imagePath && imagePath.length < 1) {
+              if (imagePath === '') {
                 return done();
               }
 
