@@ -157,24 +157,4 @@ describe('OrganizationsController', function () {
 
   })
 
-  describe('#edit', function () {
-
-    it('Should not crash server and return 200', function (doneTest) {
-      login('cersei-lannister', function (err, agent, csrf) {
-        if (err) { return doneTest(err) }
-
-        agent
-          .get(urlBase + '/house-lannister/edit')
-          .end(function (err, res) {
-            if (err) { return doneTest(err) }
-
-            expect(res.status).to.equal(200)
-
-            return doneTest()
-          })
-      })
-    })
-
-  })
-
 })

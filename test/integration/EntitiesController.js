@@ -27,8 +27,8 @@ describe('EntitiesController', function () {
 
   describe('#edit', function () {
 
-    it('Open edit page', function (done) {
-      login('cersei', function (err, agent, csrf) {
+    it('Should open edit page', function (done) {
+      login('cersei-lannister', function (err, agent, csrf) {
         if (err) { return done(err) }
 
         agent
@@ -43,8 +43,8 @@ describe('EntitiesController', function () {
       })
     })
 
-    it('Open edit page of organization you own', function (done) {
-      login('cersei', function (err, agent, csrf) {
+    it('Should open edit page of organization you own', function (done) {
+      login('cersei-lannister', function (err, agent, csrf) {
         if (err) { return done(err) }
 
         agent
@@ -63,8 +63,8 @@ describe('EntitiesController', function () {
 
   describe('#follow', function () {
 
-    it('Follow with no errors', function (done) {
-      login('cersei', function (err, agent, csrf) {
+    it('Should follow with no errors', function (done) {
+      login('cersei-lannister', function (err, agent, csrf) {
         if (err) { return done(err) }
 
         agent
