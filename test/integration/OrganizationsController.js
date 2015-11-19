@@ -17,7 +17,8 @@ application._serverStart()
 logger.log = function () {}
 
 var login = require(path.join(__dirname, 'login.js')),
-  expect = require('chai').expect
+  expect = require('chai').expect,
+  request = require('superagent')
 
 CONFIG.database.logQueries = false
 
@@ -140,13 +141,40 @@ describe('OrganizationsController', function () {
 
   })
 
-  /*
   describe('#members', function () {
 
-    it('Return all members (also anonymous members)', function (done) {
+    it('Should not crash server and return 200', function (doneTest) {
+      request
+        .get(urlBase + '/house-lannister/members')
+        .end(function (err, res) {
+          if (err) { return doneTest(err) }
+
+          expect(res.status).to.equal(200)
+
+          return doneTest()
+        })
     })
 
   })
-  */
+
+  describe('#edit', function () {
+
+    it('Should not crash server and return 200', function (doneTest) {
+      login('cersei-lannister', function (err, agent, csrf) {
+        if (err) { return doneTest(err) }
+
+        agent
+          .get(urlBase + '/house-lannister/edit')
+          .end(function (err, res) {
+            if (err) { return doneTest(err) }
+
+            expect(res.status).to.equal(200)
+
+            return doneTest()
+          })
+      })
+    })
+
+  })
 
 })
