@@ -228,23 +228,24 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           post.description = body.description || post.description;
           post.sourceUrl = body.sourceUrl || post.sourceUrl;
           post.approved = body.approved || post.approved;
-          post.publishedAt = new Date(body.publishedAt) || post.publishedAt
+          post.publishedAt = (body.publishedAt ? new Date(body.publishedAt) : new Date(post.publishedAt));
 
           post.save(function(err, result) {
             if (err) { return next(err); }
 
-
             var imagePath = body.imagePath;
-            if (body.imagePath !== '' && CONFIG.environment === 'development') {
+            if (imagePath && body.imagePath.length > 0 && CONFIG.environment === 'development') {
               imagePath = process.cwd() + '/public' + body.imagePath;
             }
 
             async.series([function(done) {
-              if (imagePath === '') {
+              if (imagePath && imagePath.length < 1) {
                 return done();
               }
 
-              post.uploadImage('image', imagePath, function() {
+              // NOTE: .uploadImage does not return err, thus if you just pass done
+              //       to it directly it'll always return error
+              post.uploadImage('image', imagePath, function () {
                 done();
               });
             }, function(done) {
@@ -260,7 +261,21 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
                 done();
               });
+            }, function(done) {
+              if (!post.approved) {
+                return done();
+              }
+
+              Voice.findById(post.voiceId, function (err, voice) {
+                if (err) { return done(err); }
+
+                var voiceToUpdate = new Voice(voice[0]);
+
+                voiceToUpdate.save(done);
+              });
             }], function(err) {
+              if (err) { return next(err); }
+
               PostsPresenter.build([post], req.currentPerson, function(err, posts) {
                 if (err) { return next(err); }
 
