@@ -25,12 +25,109 @@ CONFIG.database.logQueries = false
 
 var urlBase = 'http://localhost:3000'
 
-
 describe('PostsController', function () {
+
+  describe('#update', function () {
+
+    it('Should change updated_at of Voice when post is published', function (doneTest) {
+        var oldUpdatedAt
+
+        async.series([
+          // Jon Snow create unapproved post
+          function (nextSeries) {
+            login('jon-snow', function (err, agent, csrf) {
+              if (err) { console.log(err); return nextSeries(err) }
+
+              agent
+                .post(urlBase + '/cersei-lannister/walk-of-atonement')
+                .accept('application/json')
+                .send({
+                  _csrf: csrf,
+                  posts: [
+                    {
+                      title: 'Mirage A Smoke',
+                      description: 'French Uncomfortable Jenny',
+                      publishedAt: 'Thu Oct 15 2015 12:20:00 GMT-0500 (CDT)',
+                      image: '',
+                      imageWidth: '0',
+                      imageHeight: '0',
+                      sourceType: 'link',
+                      sourceService: 'link',
+                      sourceUrl: 'http://gfycat.com/FrenchUncomfortableJenny',
+                      imagePath: '',
+                    },
+                  ],
+                })
+                .end(function (err, res) {
+                  if (err) { return nextSeries(err) }
+
+                  expect(res.status).to.equal(200)
+
+                  return nextSeries()
+                })
+            })
+          },
+
+          // Record Voice date
+          function (nextSeries) {
+            Voice.findById(6, function (err, voice) {
+              if (err) { return nextSeries(err) }
+
+              oldUpdatedAt = new Date(voice[0].updatedAt)
+
+              return nextSeries()
+            })
+          },
+
+          // Cersei approve Jon's post
+          function (nextSeries) {
+            login('cersei-lannister', function (err, agent, csrf) {
+              if (err) { return nextSeries(err) }
+
+              agent
+                .put(urlBase + '/cersei-lannister/walk-of-atonement/' + hashids.encode(1))
+                .accept('application/json')
+                .send({
+                  _csrf: csrf,
+                  title: 'CSGO Mirage Smoke T spawn to Connector Jungle - Gfycat',
+                  description: 'new mirage smoke from t spawn to a site',
+                  publishedAt: 'Thu Nov 19 2015 11:43:00 GMT-0600 (CST)',
+                  image: null,
+                  imageWidth: 0,
+                  imageHeight: 0,
+                  sourceType: 'link',
+                  sourceService: 'link',
+                  sourceUrl: 'http://gfycat.com/FrenchUncomfortableJenny',
+                  imagePath: '/uploads/development/post_' + hashids.encode(1) + '/image_medium.jpeg',
+                  approved: true,
+                })
+                .end(function (err, res) {
+                  if (err) { return nextSeries(err) }
+
+                  expect(res.status).to.equal(200)
+
+                  return nextSeries()
+                })
+            })
+          },
+        ], function (err) {
+          if (err) { return doneTest(err) }
+
+          Voice.find(6, function (err, voice) {
+            if (err) { return doneTest(err) }
+
+            expect(oldUpdatedAt).to.not.eql(new Date(voice[0].updatedAt))
+
+            return doneTest()
+          })
+        })
+    })
+
+  })
 
   describe('#saveArticle', function () {
 
-    it('create post with no errors', function (doneTest) {
+    it('Should create post with no errors', function (doneTest) {
       login('jon-snow', function (err, agent, csrf) {
         if (err) { return doneTest(err) }
 
@@ -48,16 +145,16 @@ describe('PostsController', function () {
 
             expect(res.status).to.equal(200)
 
-              Post.find({
-                title: 'Test article being saved.',
-              }, function (err, post) {
-                if (err) { return doneTest(err) }
+            Post.find({
+              title: 'Test article being saved.',
+            }, function (err, post) {
+              if (err) { return doneTest(err) }
 
-                expect(post[0].title).to.equal('Test article being saved.')
-                expect(post[0].sourceType).to.equal(Post.SOURCE_TYPE_TEXT)
+              expect(post[0].title).to.equal('Test article being saved.')
+              expect(post[0].sourceType).to.equal(Post.SOURCE_TYPE_TEXT)
 
-                return doneTest()
-              })
+              return doneTest()
+            })
           })
       })
     })
@@ -66,7 +163,7 @@ describe('PostsController', function () {
 
   describe('#create', function () {
 
-    it('create post with no errors as non-admin', function (done) {
+    it('Should create post with no errors as non-admin', function (done) {
       login('jon-snow', function (err, agent, csrf) {
         if (err) { return done(err) }
 
@@ -107,7 +204,7 @@ describe('PostsController', function () {
       })
     })
 
-    it('create post with no errors in public voice as non-owner', function (done) {
+    it('Should create post with no errors in public voice as non-owner', function (done) {
       login('arya-stark', function (err, agent, csrf) {
         if (err) { return done(err) }
 
@@ -165,7 +262,7 @@ describe('PostsController', function () {
           })
           .end(function (err, res) {
             expect(res.status).to.equal(400)
-            expect(res.body.status).to.equal('Bad URL')
+            expect(res.body.status).to.equal('There was an error in the request')
 
             ScrapperError.find({
               url: 'https://www.youtube.com/watch?v=M4Txn4FtV4',
@@ -180,7 +277,7 @@ describe('PostsController', function () {
       })
     })
 
-    it('Log scrapper errors', function (doneTest) {
+    it('Should log scrappers\' errors', function (doneTest) {
       login('cersei-lannister', function (err, agent, csrf) {
         if (err) { return doneTest(err) }
 
