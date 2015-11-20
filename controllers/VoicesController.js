@@ -276,6 +276,14 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           return next(new ForbiddenError());
         }
 
+        // if (!req.files.image) {
+        //   return res.status(403).json({ error: 'Voice does not have a background image.' });
+        // }
+
+        if (req.body.status === Voice.STATUS_PUBLISHED) {
+          return res.status(403).json({ error: 'Voice does not have 15 posts.' });
+        }
+
         var voice = new Voice({
           title: req.body.title,
           status: req.body.status,
@@ -320,8 +328,6 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
               done();
             });
           });
-
-
         }, function(done) {
           voice.save(done);
         }, function(done) {
@@ -450,129 +456,174 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         var voice = req.activeVoice,
           oldTitle = voice.title,
           oldDescription = voice.description,
-          oldStatus = voice.status;
+          oldStatus = voice.status,
+          publishErrors = [];
 
-        voice.setProperties({
-          title: req.body.title || voice.title,
-          status: req.body.status || voice.status,
-          description: req.body.description || voice.description,
-          type: req.body.type || voice.type,
-          ownerId: hashids.decode(req.body.ownerId)[0] || voice.ownerId,
-          twitterSearch: req.body.twitterSearch || voice.twitterSearch,
-          rssUrl: req.body.rssUrl || voice.rssUrl,
-          locationName: req.body.locationName || voice.locationName,
-          latitude: req.body.latitude || voice.latitude,
-          longitude: req.body.longitude || voice.longitude
-        });
-
-        async.series([function(done) {
-          if (!req.files.image) {
-            return done();
-          }
-
-          voice.uploadImage('image', req.files.image.path, done);
-        }, function(done) {
-          if (req.body.slug === req.voiceSlug.url) {
-            return done();
-          }
-
-          voice.addSlug(req.body.slug, done);
-        }, function(done) {
-          voice.save(function(err, result) {
-            if (err) {
-              return done(err)
+        // Check for some requiremenets
+        async.series([
+          // Check for background image
+          function (nextSeries) {
+            if (req.body.status !== Voice.STATUS_PUBLISHED) {
+              return nextSeries();
             }
 
-            done();
-          });
-        }, function(done) {
-          req.body.topics = req.body.topics.split(',');
-
-          db('VoiceTopic').where({
-            'voice_id' : voice.id
-          }).del().exec(function(err, result) {
-            if (err) {
-              return done(err);
+            if (!voice.imageBaseUrl.length === 0 && !req.files.image) {
+              publishErrors.push('Voice does not have a background image.');
             }
 
-            async.each(req.body.topics, function(topic, nextTopic) {
-              var voiceTopic = new VoiceTopic({
-                voiceId : voice.id,
-                topicId : hashids.decode(topic)[0]
-              });
+            return nextSeries();
+          },
 
-              voiceTopic.save(nextTopic);
-            }, done);
-          });
-        }, function(done) {
-          if (req.body.title !== oldTitle) {
-            FeedInjector().inject(voice.ownerId, 'item voiceNewTitle', voice, done);
-          } else {
-            return done();
+          // Check for 15 posts
+          function (nextSeries) {
+            if (req.body.status !== Voice.STATUS_PUBLISHED) {
+              return nextSeries();
+            }
+
+            Post.find({
+              voice_id: voice.id,
+              approved: true
+            }, function (err, posts) {
+              if (err) { return next(err); }
+
+              if (posts.length < 15) {
+                publishErrors.push('Voice does not have 15 posts.')
+              }
+
+              return nextSeries();
+            });
           }
-        }, function(done) {
-          if (req.body.description !== oldDescription) {
-            FeedInjector().inject(voice.ownerId, 'item voiceNewDescription', voice, done);
-          } else {
-            return done();
-          }
-        }, function (done) {
-          if (req.body.status !== oldStatus && req.body.status === Voice.STATUS_PUBLISHED) {
-            FeedInjector().inject(voice.ownerId, 'who voiceIsPublished', voice, done);
-          } else {
-            return done();
-          }
-        }, function (done) {
-          if (req.body.status !== oldStatus && req.body.status === Voice.STATUS_ARCHIVED) {
-            FeedInjector().inject(voice.ownerId, 'both entityArchivesVoice', voice, done);
-          } else {
-            return done();
-          }
-        }], function(err) {
-          if (err) {
-            return next(err);
+        ], function (err) {
+          if (err) { return next(err); }
+
+          if (publishErrors.length > 0) {
+            return res.status(403).json({ errors: publishErrors });
           }
 
-          // Load tweets in the background
-          d.run(function() {
-            var tf = new TwitterFetcher({
-              voice : voice,
-              count : 100
+          async.series([function (nextSeries) {
+            if (req.body.status !== oldStatus && req.body.status === Voice.STATUS_PUBLISHED) {
+              FeedInjector().inject(voice.ownerId, 'who voiceIsPublished', voice, nextSeries);
+            } else {
+              return nextSeries();
+            }
+          }, function (done) {
+            voice.setProperties({
+              title: req.body.title || voice.title,
+              status: req.body.status || voice.status,
+              description: req.body.description || voice.description,
+              type: req.body.type || voice.type,
+              ownerId: hashids.decode(req.body.ownerId)[0] || voice.ownerId,
+              twitterSearch: req.body.twitterSearch || voice.twitterSearch,
+              rssUrl: req.body.rssUrl || voice.rssUrl,
+              locationName: req.body.locationName || voice.locationName,
+              latitude: req.body.latitude || voice.latitude,
+              longitude: req.body.longitude || voice.longitude
             });
 
-            if (voice.twitterSearch !== null) {
-              async.series([function(done) {
-                logger.log('Fetching Tweets');
-                tf.fetchTweets(done);
-              }, function(done) {
-                logger.log('Creating posts from tweets');
-                tf.createPosts(done);
-              }, function(done) {
-                logger.log('Updating voice');
-                var voiceInstance = new Voice(voice);
-                voiceInstance.tweetLastFetchAt = new Date(Date.now());
-
-                voiceInstance.save(function(err, result) {
-                  logger.log('Updated Voice.tweetLastFetchAt');
-                  done();
-                });
-              }], function(err) {
-                if (err) {
-                  logger.error('Error fetching tweets');
-                  logger.error(err)
-                  logger.error(err.stack);
-                }
-
-                logger.log('Finished Fetching tweets and saving posts.')
-              });
+            return done();
+          }, function(done) {
+            if (!req.files.image) {
+              return done();
             }
-          });
 
-          VoicesPresenter.build([voice], req.currentPerson, function (err, presentedVoice) {
-            if (err) { return next(err); }
+            voice.uploadImage('image', req.files.image.path, done);
+          }, function(done) {
+            if (req.body.slug === req.voiceSlug.url) {
+              return done();
+            }
 
-            req.flash('success', 'Voice has been updated.');
-            res.json(presentedVoice[0]);
+            voice.addSlug(req.body.slug, done);
+          }, function(done) {
+            voice.save(done);
+          }, function(done) {
+            req.body.topics = req.body.topics.split(',');
+
+            db('VoiceTopic').where({
+              'voice_id' : voice.id
+            }).del().exec(function(err, result) {
+              if (err) {
+                return done(err);
+              }
+
+              async.each(req.body.topics, function(topic, nextTopic) {
+                var voiceTopic = new VoiceTopic({
+                  voiceId : voice.id,
+                  topicId : hashids.decode(topic)[0]
+                });
+
+                voiceTopic.save(nextTopic);
+              }, done);
+            });
+          }, function(done) {
+            if (req.body.title !== oldTitle) {
+              FeedInjector().inject(voice.ownerId, 'item voiceNewTitle', voice, done);
+            } else {
+              return done();
+            }
+          }, function(done) {
+            if (req.body.description !== oldDescription) {
+              FeedInjector().inject(voice.ownerId, 'item voiceNewDescription', voice, done);
+            } else {
+              return done();
+            }
+          }, function (done) {
+            if (req.body.status !== oldStatus && req.body.status === Voice.STATUS_PUBLISHED) {
+              FeedInjector().inject(voice.ownerId, 'who voiceIsPublished', voice, done);
+            } else {
+              return done();
+            }
+          }, function (done) {
+            if (req.body.status !== oldStatus && req.body.status === Voice.STATUS_ARCHIVED) {
+              FeedInjector().inject(voice.ownerId, 'both entityArchivesVoice', voice, done);
+            } else {
+              return done();
+            }
+          }], function(err) {
+            if (err) {
+              return next(err);
+            }
+
+            // Load tweets in the background
+            d.run(function() {
+              var tf = new TwitterFetcher({
+                voice : voice,
+                count : 100
+              });
+
+              if (voice.twitterSearch !== null) {
+                async.series([function(done) {
+                  logger.log('Fetching Tweets');
+                  tf.fetchTweets(done);
+                }, function(done) {
+                  logger.log('Creating posts from tweets');
+                  tf.createPosts(done);
+                }, function(done) {
+                  logger.log('Updating voice');
+                  var voiceInstance = new Voice(voice);
+                  voiceInstance.tweetLastFetchAt = new Date(Date.now());
+
+                  voiceInstance.save(function(err, result) {
+                    logger.log('Updated Voice.tweetLastFetchAt');
+                    done();
+                  });
+                }], function(err) {
+                  if (err) {
+                    logger.error('Error fetching tweets');
+                    logger.error(err)
+                    logger.error(err.stack);
+                  }
+
+                  logger.log('Finished Fetching tweets and saving posts.')
+                });
+              }
+            });
+
+            VoicesPresenter.build([voice], req.currentPerson, function (err, presentedVoice) {
+              if (err) { return next(err); }
+
+              req.flash('success', 'Voice has been updated.');
+              res.json(presentedVoice[0]);
+            });
           });
         });
       });
