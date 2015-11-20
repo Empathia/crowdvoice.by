@@ -276,12 +276,12 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           return next(new ForbiddenError());
         }
 
-        // if (!req.files.image) {
-        //   return res.status(403).json({ error: 'Voice does not have a background image.' });
-        // }
+        if (req.body.status === Voice.STATUS_PUBLISHED && !req.files.image) {
+          return res.status(403).json({ errors: ['Voice does not have a background image.', 'Voice does not have 15 posts.'] });
+        }
 
         if (req.body.status === Voice.STATUS_PUBLISHED) {
-          return res.status(403).json({ error: 'Voice does not have 15 posts.' });
+          return res.status(403).json({ errors: ['Voice does not have 15 posts.'] });
         }
 
         var voice = new Voice({
