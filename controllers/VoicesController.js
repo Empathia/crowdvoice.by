@@ -276,11 +276,16 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           return next(new ForbiddenError());
         }
 
-        if (req.body.status === Voice.STATUS_PUBLISHED && !req.files.image) {
+        if (req.body.status === Voice.STATUS_PUBLISHED
+          || req.body.status === Voice.STATUS_UNLISTED
+          && !req.files.image) {
+
           return res.status(403).json({ errors: ['Voice does not have a background image.', 'Voice does not have 15 posts.'] });
         }
 
-        if (req.body.status === Voice.STATUS_PUBLISHED) {
+        if (req.body.status === Voice.STATUS_PUBLISHED
+          || req.body.status === Voice.STATUS_UNLISTED) {
+
           return res.status(403).json({ errors: ['Voice does not have 15 posts.'] });
         }
 
@@ -463,7 +468,9 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         async.series([
           // Check for background image
           function (nextSeries) {
-            if (req.body.status !== Voice.STATUS_PUBLISHED) {
+            if (req.body.status !== Voice.STATUS_PUBLISHED
+              || req.body.status !== Voice.STATUS_UNLISTED) {
+
               return nextSeries();
             }
 
@@ -476,7 +483,9 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
           // Check for 15 posts
           function (nextSeries) {
-            if (req.body.status !== Voice.STATUS_PUBLISHED) {
+            if (req.body.status !== Voice.STATUS_PUBLISHED
+              || req.body.status !== Voice.STATUS_UNLISTED) {
+
               return nextSeries();
             }
 
