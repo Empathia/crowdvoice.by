@@ -110,13 +110,13 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         if (err) {return next(err)}
 
         if (!response.isAllowed) {
-          return next(new ForbiddenError('Unauthorized'));
+          return next(new ForbiddenError());
         }
 
         var approved = false;
 
         if (req.role === 'Admin'
-          || response.isVoiceOwner
+          || response.isVoiceIndirectOwner
           || response.isVoiceCollaborator
           || response.isOrganizationMember
           || response.isOrganizationOwner) {
@@ -534,13 +534,13 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         if (err) { return next(err); }
 
         if (!response.isAllowed) {
-          return next(new ForbiddenError('Unauthorized.'));
+          return next(new ForbiddenError());
         }
 
         var approved = false;
 
         if (req.role === 'Admin'
-          || response.isVoiceOwner
+          || response.isVoiceIndirectOwner
           || response.isVoiceCollaborator
           || response.isOrganizationMember) {
 

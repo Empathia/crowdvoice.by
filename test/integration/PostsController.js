@@ -159,6 +159,37 @@ describe('PostsController', function () {
       })
     })
 
+    it('Should insta-publish article if Voice owner', function (doneTest) {
+      login('cersei-lannister', function (err, agent, csrf) {
+        if (err) { return doneTest(err) }
+
+        agent
+          .post(urlBase + '/cersei-lannister/walk-of-atonement/saveArticle')
+          .accept('application/json')
+          .send({
+            _csrf: csrf,
+            title: 'Insta-publish because owner test',
+            content: 'THIS IS THE VERY INSIGHTFUL CONTENT OF THIS POST ABOUT THE WALK OF ATONEMENT.',
+            publishedAt: new Date(),
+          })
+          .end(function (err, res) {
+            if (err) { return doneTest(err) }
+
+            expect(res.status).to.equal(200)
+
+            Post.find({
+              title: 'Insta-publish because owner test',
+            }, function (err, post) {
+              if (err) { return doneTest(err) }
+
+              expect(post[0].approved).to.equal(true)
+
+              return doneTest()
+            })
+          })
+      })
+    })
+
   })
 
   describe('#create', function () {
