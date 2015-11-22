@@ -148,13 +148,16 @@
 
   &.dark {
     .ui-dropdown__head {
-      background-color: @color-neutral-x-mid;
-      border-color: @color-neutral-x-dark;
-      color: @color-white;
+      background-color: #2D2D2D;
+      border-color: #000;
+      color: #7C7F80;
+      fill: #7C7F80;
 
       &:hover {
-        color: @color-white;
-        background-color: @color-neutral-mid;
+        background-color: tint(#2D2D2D, 5%);
+        border-color: #000;
+        color: #7C7F80;
+        fill: #7C7F80;
       }
     }
 
@@ -163,9 +166,8 @@
     }
 
     &.active .ui-dropdown__head {
-      color: @color-white;
-      background-color: @color-neutral-x-dark;
-      border-color: @color-neutral-xx-dark;
+      background-color: shade(#2D2D2D, 10%);
+      border-color: #000;
     }
   }
 }

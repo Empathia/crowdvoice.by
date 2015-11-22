@@ -30,17 +30,19 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
       async.series([function(done) {
         Post.findById(hashids.decode(req.params.postId)[0], function(err, result) {
-          if (err) {
-            return done(err);
-          }
+          if (err) { return done(err); }
 
           if (result.length === 0) {
             return done(new NotFoundError('Post Not Found'));
           }
 
-          post = new Post(result[0]);
+          PostsPresenter.build(result, req.currentPerson, function (err, posts) {
+            if (err) { return done(err); }
 
-          done();
+            post = new Post(posts[0]);
+
+            return done();
+          });
         });
       }, function(done) {
         if (post.sourceType !== Post.SOURCE_TYPE_LINK && post.sourceService !== Post.SOURCE_SERVICE_LINK) {
@@ -54,7 +56,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
           db('ReadablePosts')
           .insert({
-            'post_id' : post.id,
+            'post_id' : hashids.decode(post.id)[0],
             data : parsed,
             created_at : new Date(),
             updated_at : new Date()
@@ -75,12 +77,6 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
             });
           });
         })
-      }, function(done) {
-        // if (!readablePost) {
-          return done();
-        // }
-
-
       }], function(err) {
         if (err) {
           return next(err)
@@ -94,7 +90,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
             res.json(post.toJSON());
           },
           html : function() {
-            res.render('posts/show', { layout : 'login' });
+            res.render('posts/show', { layout : 'postShow' });
           }
         })
 

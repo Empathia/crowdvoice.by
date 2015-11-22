@@ -17,15 +17,20 @@ Class(CV.UI, 'Button').inherits(Widget).includes(CV.WidgetUtils)({
 
             Widget.prototype.init.call(this, config);
             this.el = this.element[0];
-            this.updateText(this.data.value);
+
+            if (this.data.value) {
+                this.updateText(this.data.value);
+            }
         },
 
         updateText : function updateText(text) {
             this.dom.updateText(this.el, text);
+            return this;
         },
 
         updateHTML : function updateHTML(string) {
             this.dom.updateHTML(this.el, string);
+            return this;
         },
 
         _enable : function _enable() {

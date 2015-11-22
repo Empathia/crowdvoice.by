@@ -177,7 +177,9 @@ Class(CV, 'PostActionSave').inherits(Widget)({
         _deactivate : function _deactivate() {
             Widget.prototype._deactivate.call(this);
             setTimeout(function() {
-                this.parent.removeIsHoverState();
+                if (this.parent) {
+                    this.parent.removeIsHoverState();
+                }
             }.bind(this), 200);
         },
 

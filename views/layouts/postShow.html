@@ -1,0 +1,21 @@
+<!--
+    Version : <%= CONFIG.gitRevision %>
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta content="authenticity_token" name="csrf-param" />
+  <meta content="<%= csrfToken %>" name="csrf-token" />
+  <title>CrowdVoice.by – A new way to organize information and strengthen movements that matter to you</title>
+  <%= renderPartial('shared/favicon.html') %>
+  <script type="text/javascript">
+  window.currentPerson = <%= JSON.stringify(currentPerson) %>;
+  </script>
+  <script src="/dist/postShow.js?version=<%= CONFIG.gitRevision %>"></script>
+</head>
+<body>
+  <%= renderPartial('shared/svg/sprite.svg') %>
+  <%= yield %>
+</body>
+</html>
