@@ -324,32 +324,31 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
       ACL.isAllowed('searchPeople', 'threads', req.role, {
         currentPerson : req.currentPerson
       }, function(err, isAllowed) {
-        if (err) {
-          return next(err);
-        }
+        if (err) { return next(err); }
 
-        if (!isAllowed) {
-          return next(new ForbiddenError());
-        }
+        if (!isAllowed) { return next(new ForbiddenError()); }
 
         var value = req.body.value.toLowerCase().trim();
-        var currentPersonId = hashids.decode(req.currentPerson.id)[0];
+
         res.format({
           json : function() {
-            Entity.searchPeople({
-              value : value,
-              currentPersonId : currentPersonId
-            }, function(err, result) {
-              if (err) {
-                return next(err);
-              }
+            db('Entities')
+              .where('name', 'like', value)
+              .orWhere('profile_name', 'like', '%' + value + '%')
+              .andWhere('is_anonymous', '=', false)
+              .andWhere('deleted', '=', false)
+              .andWhere('id', '!=', hashids.decode(req.currentPerson.id)[0])
+              .exec(function (err, rows) {
+                if (err) { return next(err); }
 
-              result.forEach(function(person) {
-                person.id = hashids.encode(person.id);
-              })
+                var entities = Argon.Storage.Knex.processors[0](rows)
 
-              res.json(result);
-            });
+                entities.forEach(function(entity) {
+                  entity.id = hashids.encode(entity.id);
+                })
+
+                res.json(entities);
+              });
           }
         })
       })
