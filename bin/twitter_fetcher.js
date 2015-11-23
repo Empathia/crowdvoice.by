@@ -48,7 +48,7 @@ d.on('error', function(err) {
 
 var cronExpression = '00 00 * * * *';
 
-if (CONFIG.environment === 'development') {
+if (CONFIG.environment === 'development' || CONFIG.environment === 'test') {
   cronExpression = '* * * * * *';
 }
 

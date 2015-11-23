@@ -18,7 +18,7 @@ d.on('error', function (err) {
 
 var cronTimeStr = '0 0 * * * *'
 
-if (process.env.NODE_ENV === 'development') {
+if (CONFIG.environment === 'development' || CONFIG.environment === 'test') {
   cronTimeStr = '* * * * * *'
 }
 
@@ -29,7 +29,6 @@ d.run(function () {
     cronTime: cronTimeStr,
 
     onTick: function () {
-
       db.select('id').from('Voices')
         .where('status', '=', 'STATUS_PUBLISHED')
         .andWhere('type', '=', 'TYPE_PUBLIC')
@@ -116,9 +115,7 @@ d.run(function () {
                 })
             })
         })
-        .then(function () {})
         .catch(console.error.bind(console))
-
     },
 
     start: true,
