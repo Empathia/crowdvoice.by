@@ -262,8 +262,11 @@ Class(CV, 'PostDetailController').includes(NodeSupport, CustomEventSupport)({
         },
 
         destroy : function destroy() {
+            this.unbind('nextPostDetail', this.nextHandlerRef);
+            this.unbind('prevPostDetail', this.prevHandlerRef);
             this.postDetailWidget = this.postDetailWidget.destroy();
             this.socket.removeListener(this.requestPostsSocketEventName, this.updateRegistryRef);
+            return null;
         }
     }
 });

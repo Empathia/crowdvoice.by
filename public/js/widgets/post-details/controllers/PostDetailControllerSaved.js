@@ -33,16 +33,35 @@ Class(CV, 'PostDetailControllerSaved').includes(NodeSupport, CustomEventSupport)
             this._bindEvents();
         },
 
+        /* Subscribe to the default PostDetailController events.
+         * This method might be overriden by any subclass, but also called using super.
+         * @protected|abstract
+         * @listens {post:details:next}
+         * @listens {post:details:prev}
+         */
         _bindEvents : function _bindEvents() {
             this.nextHandlerRef = this.nextHandler.bind(this);
             this.prevHandlerRef = this.prevHandler.bind(this);
 
-            this.bind('post:details:next', this.nextHandlerRef);
-            this.bind('post:details:prev', this.prevHandlerRef);
+            this.bind('nextPostDetail', this.nextHandlerRef);
+            this.bind('prevPostDetail', this.prevHandlerRef);
         },
 
+        /* Updates the postDetailWidget using the data stored on `_posts`.
+         * @private
+         */
         update : function update() {
             this.widget.update(this._posts[this._index]);
+        },
+
+        /* Updates the post index reference.
+         * @public
+         * @param {Object} post - a post instance
+         * @return {Object} this
+         */
+        setIndexes : function setIndexes(post) {
+            this._index = this._posts.indexOf(post);
+            return this;
         },
 
         /* Prev button click handler.
@@ -73,6 +92,8 @@ Class(CV, 'PostDetailControllerSaved').includes(NodeSupport, CustomEventSupport)
         },
 
         destroy : function destroy() {
+            this.unbind('nextPostDetail', this.nextHandlerRef);
+            this.unbind('prevPostDetail', this.prevHandlerRef);
             this.widget = this.widget.destroy();
             return null;
         }
