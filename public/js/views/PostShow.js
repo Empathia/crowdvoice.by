@@ -8,9 +8,6 @@ Class(CV.Views, 'PostShow').includes(CV.WidgetUtils, NodeSupport)({
     /* @param {Object} config.data - the PostModel
      */
     init: function init(config) {
-      console.log('post show view');
-      console.log(config);
-
       Object.keys(config || {}).forEach(function (propertyName) {
         this[propertyName] = config[propertyName];
       }, this);
