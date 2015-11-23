@@ -8,25 +8,10 @@ Class(CV, 'PostDetailControllerSaved').includes(NodeSupport, CustomEventSupport)
             this._posts = config.posts;
             this._postsLen = this._posts.length;
 
-            this.appendChild(CV.PostDetail.create({
+            this.appendChild(new CV.PostDetail({
                 name: 'widget',
                 data: config.data
-            }));
-            this._type = this.widget.data.sourceType; /* link || image || video */
-
-            if (this._type === "image" || this._type === "video") {
-                this._type = ["image", "video"];
-            } else {
-                this._type = [this._type];
-            }
-
-            this._posts = this._posts.filter(function(post) {
-                return this._type.some(function(type) {
-                    if (post.sourceType === type) {
-                        return post;
-                    }
-                });
-            }, this);
+            })).render(document.body);
 
             this._posts.some(function(post, index) {
                 if (config.data.id === post.id) {

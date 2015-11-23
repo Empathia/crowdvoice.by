@@ -18,6 +18,7 @@ Class(CV.Views, 'PostShow').includes(CV.WidgetUtils, NodeSupport)({
       this.sourceElement = this.el.querySelector('.post-show__meta-source');
       this.dateTimeElement = this.el.querySelector('.post-show__meta > time');
       this.savedElement = this.el.querySelector('[data-saved]');
+      this.viewOriginalBtn = this.el.querySelector('.actions-view-original-btn');
       this.actionsGroup = this.el.querySelector('.post-show__actions .multiple');
 
       this._setup();
@@ -42,6 +43,13 @@ Class(CV.Views, 'PostShow').includes(CV.WidgetUtils, NodeSupport)({
         name : 'actionShare',
         tooltipPostition : 'bottom'
       })).render(this.actionsGroup);
+
+      if (this.data.sourceType === 'text') {
+        this.dom.addClass(this.viewOriginalBtn, ['-hide']);
+      } else {
+        this.dom.removeClass(this.viewOriginalBtn, ['-hide']);
+        this.dom.updateAttr('href', this.viewOriginalBtn, this.data.sourceUrl);
+      }
 
       this.updateSaves(this.data);
       this.actionSave.update(this.data);

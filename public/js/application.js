@@ -246,24 +246,18 @@ require('./widgets/posts/actions/PostActionShare');
 
 // post detail
 require('./widgets/post-details/controllers/PostDetailController');
-require('./widgets/post-details/controllers/PostDetailControllerApproved');
 require('./widgets/post-details/controllers/PostDetailControllerUnapproved');
 require('./widgets/post-details/controllers/PostDetailControllerSaved');
-require('./widgets/post-details/PostDetailNavigation');
 require('./widgets/post-details/PostDetail');
+require('./widgets/post-details/PostDetailNavigation');
+require('./widgets/post-details/PostDetailTimeline');
+require('./widgets/post-details/PostDetailSidebar');
+require('./widgets/post-details/PostDetailSidebarItem');
+require('./widgets/post-details/PostDetailInfo');
+require('./widgets/post-details/PostDetailInfoMedia');
+require('./widgets/post-details/PostDetailInfoArticle');
 require('./widgets/post-details/actions/PostDetailActionsSave');
 require('./widgets/post-details/actions/PostDetailActionsShare');
-// post detail link (link, text)
-require('./widgets/post-details/link/PostDetailLink');
-require('./widgets/post-details/PostDetailText');
-require('./widgets/post-details/link/PostDetailLinkHeader');
-require('./widgets/post-details/link/PostDetailLinkIframe');
-require('./widgets/post-details/link/PostDetailLinkNonCompatible');
-// post detail media (video, image)
-require('./widgets/post-details/media/PostDetailMedia');
-require('./widgets/post-details/media/PostDetailMediaHeader');
-require('./widgets/post-details/media/PostDetailMediaThumb');
-require('./widgets/post-details/media/PostDetailMediaInfo');
 
 // editable posts
 require('./widgets/posts/edit/EditablePost');
