@@ -27,8 +27,8 @@ describe('VoicesController', function () {
 
   describe('#follow', function () {
 
-    it('Follow voice', function (done) {
-      login('cersei', function (err, agent, csrf) {
+    it('Should follow voice', function (done) {
+      login('cersei-lannister', function (err, agent, csrf) {
         if (err) { return done(err) }
 
         agent
@@ -53,8 +53,8 @@ describe('VoicesController', function () {
 
   describe('#inviteToContribute', function () {
 
-    it('Invite to contribute', function (done) {
-      login('cersei', function (err, agent, csrf) {
+    it('Should invite to contribute', function (done) {
+      login('cersei-lannister', function (err, agent, csrf) {
         if (err) { return done(err) }
 
         agent
@@ -76,8 +76,10 @@ describe('VoicesController', function () {
       })
     })
 
-    it('"Refresh" invitation_voice message instead of duplicating', function (done) {
-      login('cersei', function (err, agent, csrf) {
+    it('Should "refresh" invitation_voice message instead of duplicating', function (done) {
+      login('cersei-lannister', function (err, agent, csrf) {
+        if (err) { return done(err) }
+
         // send our invitations
         async.series([
           function (next) {
@@ -183,7 +185,9 @@ describe('VoicesController', function () {
   describe('#requestToContribute', function () {
 
     it('Request to contribute', function (done) {
-      login('cersei', function (err, agent, csrf) {
+      login('cersei-lannister', function (err, agent, csrf) {
+        if (err) { return done(err) }
+
         agent
           .post(urlBase + '/cersei-lannister/walk-of-atonement/requestToContribute')
           .accept('application/json')
@@ -203,10 +207,48 @@ describe('VoicesController', function () {
 
   })
 
+  describe('#create', function () {
+
+    it('Should return missing background image and not enough posts errors if status published', function (doneTest) {
+      login('cersei-lannister', function (err, agent, csrf) {
+        if (err) { return doneTest(err) }
+
+        agent
+          .post(urlBase + '/voice')
+          .accept('application/json')
+          .send({
+            _csrf: csrf,
+            image: 'undefined',
+            title: 'Casterly Cock',
+            slug: 'casterly-cock',
+            description: 'Cock as in the animal.',
+            topics: 'd6wb1XVgRvzm',
+            type: 'TYPE_PUBLIC',
+            status: 'STATUS_PUBLISHED',
+            locationName: 'The farm',
+            latitude: '4.815',
+            longitude: '162.342',
+            anonymously: 'false',
+            ownerId: hashids.encode(3),
+          })
+          .end(function (err, res) {
+            expect(res.status).to.equal(403)
+
+            expect(res.body.errors).to.eql(['Voice does not have a background image.', 'Voice does not have 15 posts.'])
+
+            return doneTest()
+          })
+      })
+    })
+
+  })
+
   describe('#update', function () {
 
-    it('Update voice owned by organization you own', function (done) {
-      login('cersei', function (err, agent, csrf) {
+    it('Should update voice owned by organization you own', function (done) {
+      login('cersei-lannister', function (err, agent, csrf) {
+        if (err) { return done(err) }
+
         agent
           .put(urlBase + '/house-lannister/casterly-rock')
           .accept('application/json')
@@ -218,12 +260,12 @@ describe('VoicesController', function () {
             description: 'This is a new and completely unique description.',
             topics: 'd6wb1XVgRvzm',
             type: 'TYPE_PUBLIC',
-            status: 'STATUS_PUBLISHED',
+            status: 'STATUS_DRAFT',
             locationName: 'Casterly Rock',
             latitude: '4.815',
             longitude: '162.342',
             anonymously: 'false',
-            ownerId: 'dWK6yYeyk8P4'
+            ownerId: hashids.encode(3),
           })
           .end(function (err, res) {
             if (err) { return done(err) }
@@ -237,6 +279,38 @@ describe('VoicesController', function () {
 
               return done();
             })
+          })
+      })
+    })
+
+    it('Should return missing background image and not enough posts errors if status published', function (doneTest) {
+      login('tyrion-lannister', function (err, agent, csrf) {
+        if (err) { return doneTest(err) }
+
+        agent
+          .put(urlBase + '/tyrion-lannister/valyrian-roads')
+          .accept('application/json')
+          .send({
+            _csrf: csrf,
+            image: 'undefined',
+            title: 'Casterly Cock',
+            slug: 'casterly-cock',
+            description: 'Cock as in the animal.',
+            topics: 'd6wb1XVgRvzm',
+            type: 'TYPE_CLOSED',
+            status: 'STATUS_PUBLISHED',
+            locationName: 'The farm',
+            latitude: '4.815',
+            longitude: '162.342',
+            anonymously: 'false',
+            ownerId: hashids.encode(1),
+          })
+          .end(function (err, res) {
+            expect(res.status).to.equal(403)
+
+            expect(res.body.errors).to.eql(['Voice does not have 15 posts.'])
+
+            return doneTest()
           })
       })
     })
