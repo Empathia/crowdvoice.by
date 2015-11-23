@@ -10,9 +10,7 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
 
     index : function index(req, res, next) {
       ACL.isAllowed('show', 'threads', req.role, {currentPerson : req.currentPerson},  function(err, isAllowed) {
-        if (err) {
-          return next(err);
-        }
+        if (err) { return next(err); }
 
         if (!isAllowed) {
           return next(new ForbiddenError());
@@ -22,24 +20,40 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
           return res.render('threads/anonymous.html')
         };
 
-        MessageThread.find(['sender_person_id = ? OR receiver_entity_id = ?', [hashids.decode(req.currentPerson.id)[0], hashids.decode(req.currentPerson.id)[0]]], function(err, threads) {
+        EntityOwner.find({
+          owner_id: hashids.decode(req.currentPerson.id)[0]
+        }, function (err, owners) {
           if (err) { return next(err); }
 
-          ThreadsPresenter.build(req, threads, function(err, threads) {
-            if (err) { return next(err); }
-
-            res.format({
-              html : function() {
-                return res.render('threads/index.html', {
-                  pageName : 'page-inner page-threads',
-                  threads : threads
-                });
-              },
-              json : function() {
-                return res.json(result);
-              }
-            });
+          var ids = owners.map(function (owner) {
+            return owner.ownedId;
           });
+          ids.push(hashids.decode(req.currentPerson.id)[0])
+
+          db('MessageThreads')
+            .where('sender_person_id', '=', hashids.decode(req.currentPerson.id)[0])
+            .orWhereIn('receiver_entity_id', ids)
+            .exec(function (err, rows) {
+              if (err) { return next(err); }
+
+              var threads = Argon.Storage.Knex.processors[0](rows);
+
+              ThreadsPresenter.build(req, threads, function(err, threads) {
+                if (err) { return next(err); }
+
+                res.format({
+                  html : function() {
+                    return res.render('threads/index.html', {
+                      pageName : 'page-inner page-threads',
+                      threads : threads
+                    });
+                  },
+                  json : function() {
+                    return res.json(result);
+                  }
+                });
+              });
+            });
         });
       });
     },
