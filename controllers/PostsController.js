@@ -75,12 +75,6 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
             });
           });
         })
-      }, function(done) {
-        // if (!readablePost) {
-          return done();
-        // }
-
-
       }], function(err) {
         if (err) {
           return next(err)
@@ -94,7 +88,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
             res.json(post.toJSON());
           },
           html : function() {
-            res.render('posts/show', { layout : 'login' });
+            res.render('posts/show', { layout : 'postShow' });
           }
         })
 
