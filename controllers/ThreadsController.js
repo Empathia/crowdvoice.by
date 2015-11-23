@@ -77,9 +77,7 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
         voiceId : payload.voiceId || null,
         organizationId : payload.organizationId || null
       }, function(err, response) {
-        if (err) {
-          return next(err);
-        }
+        if (err) { return next(err); }
 
         if (!response.isAllowed) {
           return next(new ForbiddenError());
@@ -97,9 +95,7 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
               senderEntity : response.senderEntity,
               receiverEntity : response.receiverEntity
             }, function(err, result) {
-              if (err) {
-                return done(err);
-              }
+              if (err) { return done(err); }
 
               thread = result;
 
@@ -167,9 +163,7 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
               organizationId : payload.organizationId,
               message : payload.message,
             }, function(err, result) {
-              if (err) {
-                return done(err);
-              }
+              if (err) { return done(err); }
 
               message = result;
 
@@ -177,20 +171,12 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
             });
           }
         ], function(err) {
-          if (err) {
-            return next(err);
-          }
+          if (err) { return next(err); }
 
           ThreadsPresenter.build(req, [thread], function(err, result) {
-            if (err) {
-              return next(err);
-            }
+            if (err) { return next(err); }
 
-            res.format({
-              json : function() {
-                res.json(result[0]);
-              }
-            });
+            return res.json(result[0]);
           });
         });
       })
@@ -320,6 +306,9 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
       });
     },
 
+    // NOTE: Previously it only searched people as that was a limitation of
+    //       threads and emssages in the past, name kept same for
+    //       compatibility's sake, but it now searches all entities.
     searchPeople : function searchPeople(req, res, next) {
       ACL.isAllowed('searchPeople', 'threads', req.role, {
         currentPerson : req.currentPerson
