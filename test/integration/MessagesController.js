@@ -27,7 +27,7 @@ describe('MessagesController', function () {
 
   describe('#create', function () {
 
-    it('Should not crash when sending mesage to organization as person', function (doneTest) {
+    it('Should not crash when sending message to organization as person', function (doneTest) {
       async.series([
         function (nextSeries) {
           login('cersei-lannister', function (err, agent, csrf) {
@@ -44,7 +44,7 @@ describe('MessagesController', function () {
                 message: 'This is from House Lannister to Jamie Lannister, should all work out fine.'
               })
               .end(function (err, res) {
-                if (err) { console.log(err); return nextSeries(err) }
+                if (err) { return nextSeries(err) }
 
                 expect(res.status).to.equal(200)
 
@@ -64,20 +64,20 @@ describe('MessagesController', function () {
                 _csrf: csrf,
                 message: 'This is to House Lannister from Jamie, it should not crash and should register as a message.'
               })
-            .end(function (err, res) {
-              if (err) { console.log(err); return nextSeries(err) }
-
-              expect(res.status).to.equal(200)
-
-              Message.findById(9, function (err, result) {
+              .end(function (err, res) {
                 if (err) { return nextSeries(err) }
 
-                expect(result.length).to.equal(1)
-                expect(result[0].message).to.equal('This is to House Lannister from Jamie, it should not crash and should register as a message.')
+                expect(res.status).to.equal(200)
 
-                return nextSeries()
+                Message.findById(9, function (err, result) {
+                  if (err) { return nextSeries(err) }
+
+                  expect(result.length).to.equal(1)
+                  expect(result[0].message).to.equal('This is to House Lannister from Jamie, it should not crash and should register as a message.')
+
+                  return nextSeries()
+                })
               })
-            })
           })
         },
       ], doneTest)

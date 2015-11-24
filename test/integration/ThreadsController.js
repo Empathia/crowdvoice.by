@@ -157,6 +157,30 @@ describe('ThreadsController', function () {
       })
     })
 
+    it('Should allow person to create thread with receiver being an organization', function (doneTest) {
+      login('eddard-stark', function (err, agent, csrf) {
+        if (err) { return doneTest(err) }
+
+        agent
+          .post(urlBase + '/eddard-stark/messages')
+          .accept('application/json')
+          .send({
+            _csrf: csrf,
+            type: 'message',
+            senderEntityId: hashids.encode(13), // Eddard
+            receiverEntityId: hashids.encode(22), // House Lannister
+            message: '8846555126',
+          })
+          .end(function (err, res) {
+            if (err) { return doneTest(err) }
+
+            expect(res.status).to.equal(200)
+
+            return doneTest()
+          })
+      })
+    })
+
   })
 
   describe('#destroy', function () {
