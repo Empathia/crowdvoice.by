@@ -69,21 +69,19 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
 
         async.series([
           function (next) {
-            EntityOwner.find({ owned_id: hashids.decode(req.body.orgId)[0] }, function (err, result) {
-              var sender = new Entity({ id: hashids.decode(req.currentPerson.id)[0] });
-              var receiverEntity = new Entity({ id: result[0].ownerId });
+            var sender = new Entity({ id: hashids.decode(req.currentPerson.id)[0] }),
+              receiverEntity = new Entity({ id: hashids.decode(req.body.orgId)[0] });
 
-              MessageThread.findOrCreate({
-                senderPerson: sender,
-                senderEntity: sender,
-                receiverEntity: receiverEntity
-              }, function (err, result) {
-                if (err) { return next(err); }
+            MessageThread.findOrCreate({
+              senderPerson: sender,
+              senderEntity: sender,
+              receiverEntity: receiverEntity
+            }, function (err, result) {
+              if (err) { return next(err); }
 
-                thread = result;
+              thread = result;
 
-                next();
-              });
+              next();
             });
           },
 
