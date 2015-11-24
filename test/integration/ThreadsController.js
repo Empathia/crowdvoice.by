@@ -37,7 +37,7 @@ describe('ThreadsController', function () {
             type: 'message',
             senderEntityId: hashids.encode(3), // Cersei
             receiverEntityId: hashids.encode(17), // Robert
-            message: 'Hey, what\'s up? Wanna catch up over coffee?',
+            message: '2685390919',
           })
           .end(function (err, res) {
             if (err) { return done(err) }
@@ -63,7 +63,7 @@ describe('ThreadsController', function () {
                 senderEntityId: hashids.encode(3), // Cersei
                 receiverEntityId: hashids.encode(17), // Robert
                 organizationId: hashids.encode(22), // House Lannister
-                message: 'I think this is an offer you cannot turn down...',
+                message: '2650622019',
               })
               .end(function (err, res) {
                 if (err) { return done(err) }
@@ -84,7 +84,7 @@ describe('ThreadsController', function () {
                 senderEntityId: hashids.encode(3), // Cersei
                 receiverEntityId: hashids.encode(17), // Robert
                 organizationId: hashids.encode(22), // House Lannister
-                message: 'Just re-sending it, you know...',
+                message: '1237491502',
               })
               .end(function (err, res) {
                 if (err) { return done(err) }
@@ -105,7 +105,7 @@ describe('ThreadsController', function () {
                 senderEntityId: hashids.encode(3), // Cersei
                 receiverEntityId: hashids.encode(17), // Robert
                 organizationId: hashids.encode(22), // House Lannister
-                message: 'The real final invitation',
+                message: '0844856118',
               })
               .end(function (err, res) {
                 if (err) { return done(err) }
@@ -147,7 +147,7 @@ describe('ThreadsController', function () {
                 if (err) { return next(err) }
 
                 expect(messages.length).to.equal(1)
-                expect(messages[0].message).to.equal('The real final invitation')
+                expect(messages[0].message).to.equal('0844856118')
 
                 return next()
               })
@@ -190,7 +190,9 @@ describe('ThreadsController', function () {
               },
 
               function (nextSeries) {
-                Message.findById(6, function (err, message) {
+                Message.find({
+                  message: '9903255846'
+                }, function (err, message) {
                   if (err) { return nextSeries(err) }
 
                   expect(message[0].type).to.equal('invitation_rejected_organization')

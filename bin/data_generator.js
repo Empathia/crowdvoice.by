@@ -1179,7 +1179,7 @@ async.series([function(next) {
         function (doneMessage) {
           thread.createMessage({
             senderPersonId: data.entities['cersei-lannister'].id,
-            message: 'Would you be interested in this offer?',
+            message: '9903255846',
             type: 'invitation_organization',
             invitationRequestId: data.invitations['cersei-lannister-to-arya-stark'].id,
             organizationId: data.organizations['house-lannister'].id,
@@ -1201,7 +1201,7 @@ async.series([function(next) {
         function (doneMessage) {
           thread.createMessage({
             senderPersonId: data.entities['jon-snow'].id,
-            message: 'Would you be interested in this offer?',
+            message: '5275170667',
             type: 'invitation_voice',
             invitationRequestId: data.invitations['jon-snow-to-jamie-lannister'].id,
             voiceId: data.voices['white-walkers'].id,

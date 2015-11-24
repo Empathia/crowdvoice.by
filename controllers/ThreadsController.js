@@ -28,7 +28,7 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
           var ids = owners.map(function (owner) {
             return owner.ownedId;
           });
-          ids.push(hashids.decode(req.currentPerson.id)[0])
+          ids.push(hashids.decode(req.currentPerson.id)[0]);
 
           db('MessageThreads')
             .where('sender_person_id', '=', hashids.decode(req.currentPerson.id)[0])
