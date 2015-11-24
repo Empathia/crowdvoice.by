@@ -28,7 +28,7 @@ describe('VoicesController', function () {
   describe('#follow', function () {
 
     it('Follow voice', function (done) {
-      login('cersei', function (err, agent, csrf) {
+      login('cersei-lannister', function (err, agent, csrf) {
         if (err) { return done(err) }
 
         agent
@@ -54,7 +54,7 @@ describe('VoicesController', function () {
   describe('#inviteToContribute', function () {
 
     it('Invite to contribute', function (done) {
-      login('cersei', function (err, agent, csrf) {
+      login('cersei-lannister', function (err, agent, csrf) {
         if (err) { return done(err) }
 
         agent
@@ -77,7 +77,7 @@ describe('VoicesController', function () {
     })
 
     it('"Refresh" invitation_voice message instead of duplicating', function (done) {
-      login('cersei', function (err, agent, csrf) {
+      login('cersei-lannister', function (err, agent, csrf) {
         // send our invitations
         async.series([
           function (next) {
@@ -183,7 +183,7 @@ describe('VoicesController', function () {
   describe('#requestToContribute', function () {
 
     it('Request to contribute', function (done) {
-      login('cersei', function (err, agent, csrf) {
+      login('cersei-lannister', function (err, agent, csrf) {
         agent
           .post(urlBase + '/cersei-lannister/walk-of-atonement/requestToContribute')
           .accept('application/json')
@@ -206,7 +206,7 @@ describe('VoicesController', function () {
   describe('#update', function () {
 
     it('Update voice owned by organization you own', function (done) {
-      login('cersei', function (err, agent, csrf) {
+      login('cersei-lannister', function (err, agent, csrf) {
         agent
           .put(urlBase + '/house-lannister/casterly-rock')
           .accept('application/json')

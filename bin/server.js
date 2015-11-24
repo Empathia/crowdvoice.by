@@ -139,17 +139,16 @@ io.on('connection', function(socket) {
       ids.push(currentPerson.id);
 
       db('MessageThreads')
-        .whereIn('receiver_entity_id', ids)
-        .orWhereIn('sender_person_id', ids)
-        .orWhereIn('sender_entity_id', ids)
-        .exec(function (err, result) {
+        .whereIn('sender_person_id', currentPerson.id)
+        .orWhereIn('receiver_entity_id', ids)
+        .exec(function (err, rows) {
           if (err) {
             logger.log(err);
-            logger.log(err.stat);
+            logger.log(err.stack);
             return;
           }
 
-          var threads = Argon.Storage.Knex.processors[0](result);
+          var threads = Argon.Storage.Knex.processors[0](rows);
 
           async.each(threads, function (thread, doneThread) {
             var threadInst = new MessageThread(thread),
@@ -162,7 +161,7 @@ io.on('connection', function(socket) {
               if (err) { return doneThread(err); }
 
               var messagesToGoThrough = messages.filter(function (msg) {
-                return (msg.receiverEntityId === currentPerson.id);
+                return (ids.indexOf(msg.receiverEntityId) !== -1);
               }).filter(function (msg) {
                 return !(msg.hiddenForSender && msg.hiddenForReceiver);
               });
@@ -185,7 +184,7 @@ io.on('connection', function(socket) {
           }, function (err) {
             if (err) {
               logger.log(err);
-              logger.log(err.stat);
+              logger.log(err.stack);
               return;
             }
 

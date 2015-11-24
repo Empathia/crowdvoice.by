@@ -75,7 +75,18 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
       if (message.type !== 'message' && message.type !== 'report') {
         var text = this.constructor[this.type.toUpperCase() + '_HTML'];
 
-        if (Person.is(message.data.senderEntity.id) === false) {
+        var sender = false;
+        if (this.data.senderEntity.type === 'organization') {
+          if (Person.ownerOf('organization', this.data.senderEntity.id)) {
+            sender = true;
+          }
+        } else {
+          if (Person.is(message.data.senderEntity.id)) {
+            sender = true;
+          }
+        }
+
+        if (sender === false) {
           switch(message.type) {
             case 'invitation_organization':
               text = text.replace(/{organizationName}/g, message.data.organization.name)

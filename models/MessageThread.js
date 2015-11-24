@@ -89,23 +89,15 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
                 senderPerson = senderPerson[0];
 
                 return db('EntityOwner').where({owner_id: senderPerson.id, owned_id: senderEntity.id}).then(function(owner) {
-                  return db('EntityMembership').where({entity_id: senderEntity.id, member_id: senderPerson.id}).then(function(member) {
-                    var isOwner  = false;
-                    var isMember = false;
+                  var isOwner  = false;
 
-                    if (owner.length !== 0) {
-                      isOwner = true;
-                    }
+                  if (owner.length !== 0) {
+                    isOwner = true;
+                  }
 
-                    if (member.length !== 0) {
-                      isMember = true;
-                    }
-
-                    if (!isOwner && !isMember) {
-                      throw new Checkit.FieldError('The sender Person is not owner or member of the sender Organization');
-                    }
-                  });
-
+                  if (!isOwner) {
+                    throw new Checkit.FieldError('The sender Person is not owner or member of the sender Organization');
+                  }
                 });
               });
             }
@@ -124,17 +116,6 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
           return db('Entities').where({id: val}).then(function(receiverEntity) {
             if (receiverEntity.length === 0) {
               throw new Checkit.FieldError('receiverEntity doesn\'t exists!');
-            }
-          });
-        }
-      },
-      {
-        rule: function(val) {
-          var rule = this;
-
-          return db('Entities').where({id: val}).then(function(receiverEntity) {
-            if (receiverEntity[0].type === 'organization') {
-              throw new Checkit.FieldError('receiverEntity is an organization!');
             }
           });
         }
@@ -219,13 +200,7 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
       messageThread.hiddenForSender = false;
       messageThread.hiddenForReceiver = false;
 
-      messageThread.save(function(err, result) {
-        if (err) {
-          return done(err);
-        }
-
-        done();
-      });
+      messageThread.save(done);
     }], function(err) {
       if (err) {
         return callback(err);
@@ -273,7 +248,7 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
         thread.save(function (err) {
           if (err) {
             logger.error(err);
-            logger.error(err.stat);
+            logger.error(err.stack);
           }
         })
       });

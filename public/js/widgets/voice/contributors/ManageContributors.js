@@ -228,11 +228,13 @@ Class(CV, 'ManageContributors').inherits(Widget).includes(CV.WidgetUtils)({
                 return;
             }
 
-            API.voiceInviteToContribute({
-                profileName : this.data.voice.owner.profileName,
-                voiceSlug : this.data.voice.slug,
+            API.sendMessage({
+                profileName : Person.get().profileName,
                 data : {
-                    personId : this._selectedUser.id,
+                    type : 'invitation_voice',
+                    senderEntityId : this.data.voice.owner.id,
+                    receiverEntityId : this._selectedUser.id,
+                    voiceId : this.data.voice.id,
                     message : this.messageInput.getValue()
                 }
             }, this._inviteToContributeResponseHandler.bind(this));

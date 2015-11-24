@@ -534,39 +534,41 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           }
 
           // Load tweets in the background
-          d.run(function() {
-            var tf = new TwitterFetcher({
-              voice : voice,
-              count : 100
-            });
-
-            if (voice.twitterSearch !== null) {
-              async.series([function(done) {
-                logger.log('Fetching Tweets');
-                tf.fetchTweets(done);
-              }, function(done) {
-                logger.log('Creating posts from tweets');
-                tf.createPosts(done);
-              }, function(done) {
-                logger.log('Updating voice');
-                var voiceInstance = new Voice(voice);
-                voiceInstance.tweetLastFetchAt = new Date(Date.now());
-
-                voiceInstance.save(function(err, result) {
-                  logger.log('Updated Voice.tweetLastFetchAt');
-                  done();
-                });
-              }], function(err) {
-                if (err) {
-                  logger.error('Error fetching tweets');
-                  logger.error(err)
-                  logger.error(err.stack);
-                }
-
-                logger.log('Finished Fetching tweets and saving posts.')
+          if (voice.twitterSearch) {
+            d.run(function() {
+              var tf = new TwitterFetcher({
+                voice : voice,
+                count : 100
               });
-            }
-          });
+
+              if (voice.twitterSearch !== null) {
+                async.series([function(done) {
+                  logger.log('Fetching Tweets');
+                  tf.fetchTweets(done);
+                }, function(done) {
+                  logger.log('Creating posts from tweets');
+                  tf.createPosts(done);
+                }, function(done) {
+                  logger.log('Updating voice');
+                  var voiceInstance = new Voice(voice);
+                  voiceInstance.tweetLastFetchAt = new Date(Date.now());
+
+                  voiceInstance.save(function(err, result) {
+                    logger.log('Updated Voice.tweetLastFetchAt');
+                    done();
+                  });
+                }], function(err) {
+                  if (err) {
+                    logger.error('Error fetching tweets');
+                    logger.error(err)
+                    logger.error(err.stack);
+                  }
+
+                  logger.log('Finished Fetching tweets and saving posts.')
+                });
+              }
+            });
+          }
 
           VoicesPresenter.build([voice], req.currentPerson, function (err, presentedVoice) {
             if (err) { return next(err); }
@@ -580,56 +582,74 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
     requestToContribute : function requestToContribute(req, res, next) {
       ACL.isAllowed('requestToContribute', 'voices', req.role, {
-        currentPerson : req.currentPerson,
-        profileName : req.params.profileName,
-        voiceSlug : req.params.voiceSlug
-      }, function(err, response) {
+        currentPerson: req.currentPerson,
+        activeVoice: req.activeVoice
+      }, function(err, isAllowed) {
         if (err) {
           return next(err);
         }
 
-        if (!response.isAllowed) {
+        if (!isAllowed) {
           return next( new ForbiddenError() );
         }
 
-        var thread;
+        var thread,
+          sender,
+          receiver;
 
-        async.series([function(done) {
-          MessageThread.findOrCreate({
-            senderPerson : response.senderPerson,
-            senderEntity : response.senderEntity,
-            receiverEntity : response.receiverEntity
-          }, function(err, result) {
-            if (err) {
-              return done(err);
-            }
+        async.series([
+          // sender
+          function (done) {
+            sender = new Entity(req.currentPerson);
+            sender.id = hashids.decode(req.currentPerson.id)[0];
 
-            thread = result;
+            return done();
+          },
 
-            done();
-          });
-        }, function(done) {
-          thread.createMessage({
-            type : 'request_voice',
-            senderPersonId : response.senderPerson.id,
-            voiceId : response.voice.id,
-            message : req.body.message
-          }, function(err, result) {
-            if (err) {
-              return done(err);
-            }
+          // receiver
+          function (done) {
+            Entity.find({
+              id: req.activeVoice.ownerId
+            }, function (err, owner) {
+              if (err) { return done(err); }
 
-            done();
-          });
-        }], function(err) {
-          if (err) {
-            return next(err);
+              receiver = new Entity(owner[0]);
+
+              return done();
+            });
+          },
+
+          // thread
+          function(done) {
+            MessageThread.findOrCreate({
+              senderPerson : sender,
+              senderEntity : sender,
+              receiverEntity : receiver
+            }, function(err, result) {
+              if (err) {
+                return done(err);
+              }
+
+              thread = result;
+
+              done();
+            });
+          },
+
+          // message
+          function(done) {
+            thread.createMessage({
+              type : 'request_voice',
+              senderPersonId : sender.id,
+              voiceId : req.activeVoice.id,
+              message : req.body.message
+            }, done);
           }
+        ], function(err) {
+          if (err) { return next(err); }
 
           ThreadsPresenter.build(req, [thread], function(err, result) {
-            if (err) {
-              return next(err);
-            }
+            if (err) { return next(err); }
 
             res.json(result[0]);
           });
@@ -811,7 +831,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
               ], function (err) {
                 if (err) {
                   logger.error(err);
-                  logger.error(err.stat);
+                  logger.error(err.stack);
                 }
               });
             }
