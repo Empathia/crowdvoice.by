@@ -46,6 +46,10 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
         /* socket io instance holder */
         _socket : null,
 
+        /* @type {Object} VoiceModel
+         */
+        data : null,
+
         init : function init(config) {
             Object.keys(config || {}).forEach(function(propertyName) {
                 this[propertyName] = config[propertyName];

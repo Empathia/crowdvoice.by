@@ -6,26 +6,44 @@ var Person = require('./../../../lib/currentPerson');
 
 Class(CV, 'VoicePostLayersVoiceAbstract').inherits(CV.VoicePostLayers)({
     prototype : {
+        registry : CV.PostsRegistry,
+
         setup : function setup() {
             CV.VoicePostLayers.prototype.setup.call(this);
-            CV.PostsRegistry.setup(this.postsCount);
-
+            this.registry.setup(this.postsCount);
+            this.requestAll();
             return this;
         },
 
         getPostsRegistry : function getPostsRegistry(date) {
-            return CV.PostsRegistry.get(date);
+            return this.registry.get(date);
         },
 
         setPostsRegistry : function setPostsRegistry(date, posts) {
-            CV.PostsRegistry.set(date, posts);
+            this.registry.set(date, posts);
         },
 
         /* Implementation to request post data to the server.
-         * @method request <protected, abstract> [Function]
+         * @protected|abstract
+         * @param {string} id - the voice id
+         * @param {string} dateString - `YYYY-MM` formatted string of the Posts we are interested in.
          */
         request : function request(id, dateString, scrollDirection) {
             this._socket.emit('getApprovedMonthPosts', id, dateString, scrollDirection);
+        },
+
+        /* Iterates over every registry keys and checks if its value is empty,
+         * if so it will ask for its values via socket.
+         * @protected|abstract
+         */
+        requestAll : function requestAll() {
+            var storedData = this.getPostsRegistry();
+            Object.keys(storedData).forEach(function(propertyName) {
+                var posts = storedData[propertyName];
+                if (!posts) {
+                    this.request(this.id, propertyName);
+                }
+            }, this);
         },
 
         /* Implementation to add and render posts to a layer.
