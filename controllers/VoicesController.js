@@ -580,56 +580,74 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
     requestToContribute : function requestToContribute(req, res, next) {
       ACL.isAllowed('requestToContribute', 'voices', req.role, {
-        currentPerson : req.currentPerson,
-        profileName : req.params.profileName,
-        voiceSlug : req.params.voiceSlug
-      }, function(err, response) {
+        currentPerson: req.currentPerson,
+        activeVoice: req.activeVoice
+      }, function(err, isAllowed) {
         if (err) {
           return next(err);
         }
 
-        if (!response.isAllowed) {
+        if (!isAllowed) {
           return next( new ForbiddenError() );
         }
 
-        var thread;
+        var thread,
+          sender,
+          receiver;
 
-        async.series([function(done) {
-          MessageThread.findOrCreate({
-            senderPerson : response.senderPerson,
-            senderEntity : response.senderEntity,
-            receiverEntity : response.receiverEntity
-          }, function(err, result) {
-            if (err) {
-              return done(err);
-            }
+        async.series([
+          // sender
+          function (done) {
+            sender = new Entity(req.currentPerson);
+            sender.id = hashids.decode(req.currentPerson.id)[0];
 
-            thread = result;
+            return done();
+          },
 
-            done();
-          });
-        }, function(done) {
-          thread.createMessage({
-            type : 'request_voice',
-            senderPersonId : response.senderPerson.id,
-            voiceId : response.voice.id,
-            message : req.body.message
-          }, function(err, result) {
-            if (err) {
-              return done(err);
-            }
+          // receiver
+          function (done) {
+            Entity.find({
+              id: req.activeVoice.ownerId
+            }, function (err, owner) {
+              if (err) { return done(err); }
 
-            done();
-          });
-        }], function(err) {
-          if (err) {
-            return next(err);
+              receiver = new Entity(owner[0]);
+
+              return done();
+            });
+          },
+
+          // thread
+          function(done) {
+            MessageThread.findOrCreate({
+              senderPerson : sender,
+              senderEntity : sender,
+              receiverEntity : receiver
+            }, function(err, result) {
+              if (err) {
+                return done(err);
+              }
+
+              thread = result;
+
+              done();
+            });
+          },
+
+          // message
+          function(done) {
+            thread.createMessage({
+              type : 'request_voice',
+              senderPersonId : sender.id,
+              voiceId : req.activeVoice.id,
+              message : req.body.message
+            }, done);
           }
+        ], function(err) {
+          if (err) { return next(err); }
 
           ThreadsPresenter.build(req, [thread], function(err, result) {
-            if (err) {
-              return next(err);
-            }
+            if (err) { return next(err); }
 
             res.json(result[0]);
           });
