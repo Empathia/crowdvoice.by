@@ -37,7 +37,7 @@ Class(CV, 'PostDetailController').includes(NodeSupport, CustomEventSupport)({
             this.appendChild(new CV.PostDetail({
                 name: 'postDetailWidget',
                 data: this.postData
-            })).render(document.body).addTimeline();
+            })).render(document.body);
 
             this.keys = this.registry.getKeys();
             this._values = this.keys.map(function() {return [];});
