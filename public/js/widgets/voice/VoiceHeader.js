@@ -56,11 +56,11 @@ Class(CV, 'VoiceHeader').inherits(Widget)({
 
             if (this._backgroundSizeKnow) {
                 if (y <= (this.backgroundElementHeigth * 2)) {
-                    var yHalf = ~~(y/2);
+                    var yHalf = (y/2);
                     inlineStyle(this.backgroundElement, {
                         msTransform: 'translate(0px, '+ yHalf +'px)',
                         webkitTransform: 'translate(0px, '+ yHalf +'px)',
-                        transform: 'translate(0px, '+ yHalf +'px)'
+                        transform: 'translate3d(0px, '+ yHalf +'px,0)'
                     });
                 }
             }
@@ -73,8 +73,6 @@ Class(CV, 'VoiceHeader').inherits(Widget)({
 
             if (scrollingDown) {
                 this.el.classList.add('hide');
-
-            // if (scrollingDown && (y > this.HEADER_HEIGHT)) {
 
                 if (y > this.TITLE_OFF_PAGE) {
                     this.footerVoiceTitle.classList.add('active');

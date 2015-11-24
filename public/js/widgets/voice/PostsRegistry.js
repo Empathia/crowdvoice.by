@@ -33,7 +33,11 @@ Module(CV, 'PostsRegistry')({
      * @return this[name] || undefined
      */
     get : function get(name) {
-        return this._[name];
+        if (name) {
+            return this._[name];
+        }
+
+        return this._;
     },
 
     /* Sets the posts data for the passed key.

@@ -1,109 +1,36 @@
-<style media="screen">
-    .description, article{
-            padding: 50px 100px;
-    }
-    .image-header{
-        background-image: url('<%= post.image.url('big') %>');
-        border-bottom: 1px solid #b8b8c1;
-        height: 320px;
-
-    }
-    .image-header > h1.title {
-        color:white;
-        text-shadow:black 3px 3px;
-    }
-    .image-header > h1{
-        font-size: 48px;
-        position: absolute;
-        top: 80px;
-        left: 100px;
-        max-width: 100%;
-        line-height: 45px;
-    }
-
-    .description p {
-        text-align: justify;
-        margin : 0 0 2em 0;
-    }
-
-    .description img {
-        margin : 2em auto;
-        display : block;
-    }
-
-    .description iframe {
-        margin : 2em auto;
-        display : block;
-    }
-
-    .description h1, article h1{
-        font-weight: bold;
-        font-size: 24px;
-    }
-
-    .description h2, article h2{
-        font-weight: bold;
-        font-size: 22px;
-    }
-    .description h3, article h3{
-        font-weight: bold;
-        font-size: 18px;
-    }
-    .description h4, article h4{
-        font-weight: bold;
-        font-size: 16px;
-    }
-    .description h5, article h5{
-        font-weight: bold;
-        font-size: 12px;
-    }
-    .description h6, article h6{
-        font-weight: bold;
-        font-size: 10px;
-    }
-
-    @media only screen and (max-width: 665px){
-        .image-header > h1{
-            font-size: 40px;
-            top: 70px;
-            left: 80px;
-        }
-    }
-    @media only screen and (max-width: 461px){
-        .image-header > h1{
-            top: 30px;
-        }
-    }
-    @media only screen and (max-width: 403px){
-        .image-header > h1{
-            font-size: 35px;
-            top: 40px;
-        }
-    }
-</style>
-
 <div class="readable">
-<% if (readablePost) { %>
-    <div class="image-header -img-cover -rel">
-        <% if (post.image.exists('big')) { %>
-            <h1 class="title"><%= readablePost.data.title %></h1>
-        <% } else {%>
-            <h1><%= post.title %></h1>
-        <% } %>
+  <% if (post.image.exists('big')) { %>
+  <div class="post-show__bg-image -img-cover -rel -has-image" style="background-image: url('<%= post.image.url('big') %>');">
+  <% } else { %>
+  <div class="post-show__bg-image -img-cover -rel">
+  <% } %>
+    <div class="post-show__bg-image-inner -rel">
+      <p class="post-show__meta -inline-block">
+          <time></time>
+          <span class="post-show__meta-source"></span>
+      </p>
+      <h1 class="post-show__title -m0"><%= post.title %></h1>
+      <div class="post-show__actions">
+        <div class="post-show__actions-saved -inline-block">
+          <svg class="-s16"><use xlink:href="#svg-save-outline"></use></svg>
+          <span data-saved></span>
+        </div>
+        <div class="cv-button-group multiple"></div>
+        <div class="-inline-block -ml1">
+          <a class="actions-view-original-btn cv-button tiny" target="_blank">View Original</a>
+        </div>
+      </div>
     </div>
-    <div class="description">
-        <%= readablePost.data.content %>
-    </div>
-<% } else { %>
-    <div class="image-header -img-cover -rel">
-        <% if (post.image.exists('big')) { %>
-            <h1 class="title"><%= post.title %></h1>
-        <% } else {%>
-            <h1><%= post.title %></h1>
-        <% } %>
-    </div>
-    <div class="description">
-        <%= post.description %>
-    </div>
-<% } %>
+  </div>
+  <div class="post-show__description">
+    <%= (readablePost) ? readablePost.data.content : post.description %>
+  </div>
 </div>
+
+<script>
+  var App = new CV.App();
+  var Post = new CV.Views.PostShow({
+    el : document.querySelector('.readable'),
+    data : <%= JSON.stringify(post) %>
+  });
+</script>

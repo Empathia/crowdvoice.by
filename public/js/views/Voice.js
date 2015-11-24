@@ -46,6 +46,10 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
         /* socket io instance holder */
         _socket : null,
 
+        /* @type {Object} VoiceModel
+         */
+        data : null,
+
         init : function init(config) {
             Object.keys(config || {}).forEach(function(propertyName) {
                 this[propertyName] = config[propertyName];
@@ -333,9 +337,12 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
             }
 
             if (ev.data.approved) {
-                this.postDetailController = new CV.PostDetailControllerApproved({
+                this.postDetailController = new CV.PostDetailController({
                     socket : this._socket,
-                    data : ev.data
+                    postData : ev.data,
+                    registry : CV.PostsRegistry,
+                    requestPostsSocketEventName : 'approvedMonthPosts',
+                    responsePostsSocketEventName : 'getApprovedMonthPosts'
                 });
             }
 
@@ -346,7 +353,7 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
                 });
             }
 
-            this.postDetailController.widget.bind('deactivate', function() {
+            this.postDetailController.postDetailWidget.bind('deactivate', function() {
                 this.postDetailController = this.postDetailController.destroy();
             }.bind(this));
         },

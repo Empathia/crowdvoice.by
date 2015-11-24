@@ -8,7 +8,7 @@ module.exports = {
     /* 88x88 */
     card: '/img/entity-placeholder/image_card.png',
     /* 150x150*/
-    original: '/img/entity-placeholder/image_card.png',
+    original: '/img/entity-placeholder/image_original.png',
     /* 160x160 */
     medium: '/img/entity-placeholder/image_medium.png'
 };
