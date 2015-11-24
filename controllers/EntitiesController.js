@@ -444,7 +444,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
               ], function (err) {
                 if (err) {
                   logger.error(err);
-                  logger.error(err.stat);
+                  logger.error(err.stack);
                 }
               });
             }

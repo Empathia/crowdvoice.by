@@ -139,13 +139,12 @@ io.on('connection', function(socket) {
       ids.push(currentPerson.id);
 
       db('MessageThreads')
-        .whereIn('receiver_entity_id', ids)
-        .orWhereIn('sender_person_id', ids)
-        .orWhereIn('sender_entity_id', ids)
+        .whereIn('sender_person_id', ids)
+        .orWhereIn('receiver_entity_id', currentPerson.id)
         .exec(function (err, result) {
           if (err) {
             logger.log(err);
-            logger.log(err.stat);
+            logger.log(err.stack);
             return;
           }
 
@@ -185,7 +184,7 @@ io.on('connection', function(socket) {
           }, function (err) {
             if (err) {
               logger.log(err);
-              logger.log(err.stat);
+              logger.log(err.stack);
               return;
             }
 

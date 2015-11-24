@@ -811,7 +811,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
               ], function (err) {
                 if (err) {
                   logger.error(err);
-                  logger.error(err.stat);
+                  logger.error(err.stack);
                 }
               });
             }

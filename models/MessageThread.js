@@ -200,13 +200,7 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
       messageThread.hiddenForSender = false;
       messageThread.hiddenForReceiver = false;
 
-      messageThread.save(function(err, result) {
-        if (err) {
-          return done(err);
-        }
-
-        done();
-      });
+      messageThread.save(done);
     }], function(err) {
       if (err) {
         return callback(err);
@@ -254,7 +248,7 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
         thread.save(function (err) {
           if (err) {
             logger.error(err);
-            logger.error(err.stat);
+            logger.error(err.stack);
           }
         })
       });

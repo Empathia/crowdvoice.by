@@ -230,7 +230,7 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
           ], function (err) {
             if (err) {
               logger.error(err);
-              logger.error(err.stat);
+              logger.error(err.stack);
 
               // destroy org
               return org.destroy(function () {

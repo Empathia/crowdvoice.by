@@ -28,14 +28,10 @@ Module('ThreadsPresenter')({
         }
 
         Entity.find({id : thread.senderPersonId}, function(err, result) {
-          if (err) {
-            return done(err);
-          }
+          if (err) { return done(err); }
 
           EntitiesPresenter.build(result, null, function(err, entities) {
-            if (err) {
-              return done(err);
-            }
+            if (err) { return done(err); }
 
             thread.senderPerson = new Entity(entities[0]);
             done();
@@ -43,14 +39,10 @@ Module('ThreadsPresenter')({
         });
       }, function(done) {
         Entity.findById(thread.senderEntityId, function(err, result) {
-          if (err) {
-            return done(err);
-          }
+          if (err) { return done(err); }
 
           EntitiesPresenter.build(result, null, function(err, entities) {
-            if (err) {
-              return done(err);
-            }
+            if (err) { return done(err); }
 
             thread.senderEntity = new Entity(entities[0]);
             done();
@@ -58,14 +50,10 @@ Module('ThreadsPresenter')({
         })
       }, function(done) {
         Entity.findById(thread.receiverEntityId, function(err, result) {
-          if (err) {
-            return done(err);
-          }
+          if (err) { return done(err); }
 
           EntitiesPresenter.build(result, null, function(err, entities) {
-            if (err) {
-              return done(err);
-            }
+            if (err) { return done(err); }
 
             thread.receiverEntity = new Entity(entities[0]);
 
