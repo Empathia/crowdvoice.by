@@ -65,7 +65,7 @@ var NotificationMailer = Module('NotificationMailer')({
 
   // Send notification about new message
   newMessage: function (receiver, info, callback) {
-    NotificationSetting.find({ entity_id: receiver.entity.id }, function (err, setting) {
+    NotificationSetting.find({ entity_id: (receiver.entity.isAnonymous ? receiver.realEntity.id : receiver.entity.id) }, function (err, setting) {
       if (err) { return callback(err) }
 
       if (!setting[0].emailSettings.selfNewMessage) {
@@ -176,7 +176,7 @@ var NotificationMailer = Module('NotificationMailer')({
 
   // Send on new invitation
   newInvitation: function (receiver, info, callback) {
-    NotificationSetting.find({ entity_id: receiver.entity.id }, function (err, setting) {
+    NotificationSetting.find({ entity_id: (receiver.entity.isAnonymous ? receiver.realEntity.id : receiver.entity.id) }, function (err, setting) {
       if (err) { return callback(err) }
 
       if (!setting[0].emailSettings.selfNewInvitation) {
@@ -284,7 +284,7 @@ var NotificationMailer = Module('NotificationMailer')({
 
   // Send on new request
   newRequest: function (receiver, info, callback) {
-    NotificationSetting.find({ entity_id: receiver.entity.id }, function (err, setting) {
+    NotificationSetting.find({ entity_id: (receiver.entity.isAnonymous ? receiver.realEntity.id : receiver.entity.id) }, function (err, setting) {
       if (err) { return callback(err) }
 
       if (!setting[0].emailSettings.selfNewRequest) {
@@ -392,7 +392,7 @@ var NotificationMailer = Module('NotificationMailer')({
 
   // Send on new follow of your voice
   newVoiceFollower: function (receiver, newFollowerEntity, followedVoice, callback) {
-    NotificationSetting.find({ entity_id: receiver.entity.id }, function (err, setting) {
+    NotificationSetting.find({ entity_id: (receiver.entity.isAnonymous ? receiver.realEntity.id : receiver.entity.id) }, function (err, setting) {
       if (err) { return callback(err) }
 
       if (!setting[0].emailSettings.selfNewVoiceFollower) {
@@ -451,7 +451,7 @@ var NotificationMailer = Module('NotificationMailer')({
 
   // Send on entity following you
   newEntityFollower: function (receiver, newFollowerEntity, callback) {
-    NotificationSetting.find({ entity_id: receiver.entity.id }, function (err, setting) {
+    NotificationSetting.find({ entity_id: (receiver.entity.isAnonymous ? receiver.realEntity.id : receiver.entity.id) }, function (err, setting) {
       if (err) { return callback(err) }
 
       if (!setting[0].emailSettings.selfNewEntityFollower) {
