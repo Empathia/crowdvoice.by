@@ -218,6 +218,7 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
             this.appendChild(new CV.VoicePostLayersVoiceAbstract({
                 name : 'voicePostLayersManager',
                 id : this.data.id,
+                registry : CV.PostsRegistry,
                 description : this.data.description,
                 postsCount : this.postsCountApproved,
                 scrollableArea : this.scrollableArea,
