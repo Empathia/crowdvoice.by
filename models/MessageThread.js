@@ -382,7 +382,7 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
 
             // get real receiver entity, can only be person
             function (next) {
-              if (receiverEntity.type === 'person') {
+              if (receiverEntity.type === 'person' && !receiverEntity.isAnonymous) {
                 realReceiverEntity = receiverEntity
                 return next()
               }

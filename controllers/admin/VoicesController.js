@@ -193,10 +193,10 @@ Admin.VoicesController = Class(Admin, 'VoicesController')({
 
           async.series([function(done) {
             if (!req.files.image) {
-              done();
-            } else {
-              voice.uploadImage('image', req.files.image.path, done);
+              return done();
             }
+
+            voice.uploadImage('image', req.files.image.path, done);
           }, function(done) {
             voice.save(done);
           }], function(err) {
