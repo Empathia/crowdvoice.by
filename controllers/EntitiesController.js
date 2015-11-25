@@ -437,7 +437,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
                       // get real receiver entity, can only be person
                       function (next) {
-                        if (receiverEntity.type === 'person') {
+                        if (receiverEntity.type === 'person' && !receiverEntity.isAnonymous) {
                           realReceiverEntity = receiverEntity
                           return next()
                         }
