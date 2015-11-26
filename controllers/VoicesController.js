@@ -457,7 +457,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           status: req.body.status || voice.status,
           description: req.body.description || voice.description,
           type: req.body.type || voice.type,
-          ownerId: hashids.decode(req.body.ownerId)[0] || voice.ownerId,
+          ownerId: (req.body.ownerId ? hashids.decode(req.body.ownerId)[0] : voice.ownerId),
           twitterSearch: req.body.twitterSearch || voice.twitterSearch,
           rssUrl: req.body.rssUrl || voice.rssUrl,
           locationName: req.body.locationName || voice.locationName,
