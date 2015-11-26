@@ -241,6 +241,88 @@ describe('VoicesController', function () {
       })
     })
 
+    it('Should not update ownerId of Anonymous Voice even if provided', function (doneTest) {
+      login('cersei-lannister', function (err, agent, csrf) {
+        if (err) { return doneTest(err) }
+
+        async.series([
+          function (nextSeries) {
+            agent
+              .post(urlBase + '/voice')
+              .accept('application/json')
+              .send({
+                _csrf: csrf,
+                image: 'undefined',
+                title: 'Casterly nock',
+                slug: 'casterly-nock',
+                description: 'This is a new and completely unique description.',
+                topics: 'd6wb1XVgRvzm',
+                type: 'TYPE_PUBLIC',
+                status: 'STATUS_DRAFT',
+                locationName: 'Casterly Rock',
+                latitude: '4.815',
+                longitude: '162.342',
+                anonymously: 'true',
+                ownerId: 'K8adgKWgZPlo'
+              })
+              .end(function (err, res) {
+                if (err) { return nextSeries(err) }
+
+                expect(res.status).to.equal(200)
+
+                return nextSeries()
+              })
+          },
+
+          function (nextSeries) {
+            agent
+              .put(urlBase + '/anonymous/casterly-nock')
+              .accept('application/json')
+              .send({
+                _csrf: csrf,
+                image: 'undefined',
+                title: 'Casterly nock',
+                slug: 'casterly-nock',
+                description: 'This is a new and completely unique description.',
+                topics: 'd6wb1XVgRvzm',
+                type: 'TYPE_PUBLIC',
+                status: 'STATUS_DRAFT',
+                locationName: 'Casterly Rock',
+                latitude: '4.815',
+                longitude: '162.342',
+                ownerId: 'K8adgKWgZPlo'
+              })
+              .end(function (err, res) {
+                if (err) { return nextSeries(err) }
+
+                expect(res.status).to.equal(200)
+
+                Voice.findById(15, function (err, voice) {
+                  if (err) { nextSeries(err) }
+
+                  expect(voice[0].description).to.equal('This is a new and completely unique description.')
+
+                  return nextSeries();
+                })
+              })
+          },
+        ], function (err) {
+          if (err) { return doneTest(err) }
+
+          Voice.find({
+            owner_id: 4,
+          }, function (err, voice) {
+            if (err) { return doneTest(err) }
+
+            expect(voice.length).to.equal(1)
+
+            return doneTest()
+          })
+        })
+
+      })
+    })
+
   })
 
 })
