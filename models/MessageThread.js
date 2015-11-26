@@ -5,16 +5,9 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
       'required',
       {
         rule: function(val) {
-          return db('Entities')
-            .where({
-              id: val,
-              is_anonymous: false
-            })
-            .then(function(resp) {
-              if (resp.length === 0) {
-                throw new Checkit.FieldError('This senderPersonId doesn\'t exists!.');
-              }
-            });
+          return db('Entities').where('id', '=', val).then(function(resp) {
+            if (resp.length === 0) { throw new Checkit.FieldError('This senderPersonId doesn\'t exists!.'); }
+          });
         },
         message: 'This senderPersonId doesn\'t exist!.'
       },
@@ -47,15 +40,8 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
     senderEntityId: ['required',
       {
         rule: function(val) {
-          return db('Entities')
-            .where({
-              id: val,
-              is_anonymous: false
-            })
-            .then(function(resp) {
-              if (resp.length === 0) {
-                throw new Checkit.FieldError('This senderEntityId doesn\'t exists!.');
-              }
+          return db('Entities').where('id', '=', val).then(function(resp) {
+            if (resp.length === 0) {throw new Checkit.FieldError('This senderEntityId doesn\'t exists!.');}
           });
         }
       },
@@ -127,15 +113,11 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
         rule: function(val) {
           var rule = this;
 
-          return db('Entities')
-            .where({
-              id: val,
-              is_anonymous: false
-            }).then(function(receiverEntity) {
-              if (receiverEntity.length === 0) {
-                throw new Checkit.FieldError('receiverEntity doesn\'t exists!');
-              }
-            });
+          return db('Entities').where({id: val}).then(function(receiverEntity) {
+            if (receiverEntity.length === 0) {
+              throw new Checkit.FieldError('receiverEntity doesn\'t exists!');
+            }
+          });
         }
       }
     ]
