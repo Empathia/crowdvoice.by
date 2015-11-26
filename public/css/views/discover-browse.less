@@ -44,8 +44,10 @@
 		    width: 100%;
 		    height: 100%;
 		    overflow: hidden;
+		    z-index: -1;
 		    .browse-bg-image{
 					position: absolute;
+					border-radius: 3px;
 			    top: 0;
 			    left: 0;
 			    width: 100%;
@@ -73,17 +75,15 @@
 			svg{
 				width: 90px;
 				fill: rgba(240,240,240,0.6);
-				z-index: 1;
-			}
-			p{
-				z-index: 1;
+				transition: all 220ms ease;
+				will-change: fill;
 			}
 		}
 	}
 
 	a.element_link:hover{
 		div.-rel{
-			.browse-element-overlay:hover{
+			.browse-element-overlay{
 				.browse-bg-image{
 					-webkit-transform: scale(1.1);
 			    transform: scale(1.1);
