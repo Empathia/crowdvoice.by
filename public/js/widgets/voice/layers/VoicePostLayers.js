@@ -80,10 +80,18 @@ Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
 
         /* Implementation of the data request.
          * All Subclassses should include this method.
-         * @method request <private, abstract> [Function]
+         * @private|abstract
          */
         request : function request() {
             throw new Error('VoicePostLayers.prototype.request not implemented');
+        },
+
+        /* Implementation of all data request.
+         * All Subclassses should include this method.
+         * @protected|abstract
+         */
+        requestAll : function requestAll() {
+            throw new Error('VoicePostLayers.prototype.requestAll not implemented');
         },
 
         /* Implementation of add posts.
@@ -312,12 +320,14 @@ Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
          * @return undefined
          */
         loadLayer : function loadLayer(postsData, dateString, scrollDirection) {
+            this.registry.set(dateString, postsData);
+
             if (dateString !== this._currentMonthString) {
-                return void 0;
+                return;
             }
 
             if (this['postsLayer_' + dateString].getPosts().length) {
-                return void 0;
+                return;
             }
 
             var currentLayer = this.getCurrentMonthLayer();

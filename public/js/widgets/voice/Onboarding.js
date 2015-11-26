@@ -15,23 +15,27 @@ Class(CV, 'VoiceOboarding').inherits(Widget).includes(CV.WidgetUtils)({
         },
 
         setup : function setup() {
-            var popoverToggler = this.parent.voiceAddContent.el;
+            if (this.parent.voiceAddContent){
+                var popoverToggler = this.parent.voiceAddContent.el;
 
-            this.appendChild(new CV.Popover({
-                name : 'popoverOnboarding',
-                className : 'onboarding-popover',
-                placement : '-bottom-right',
-                toggler : popoverToggler,
-                container : this.popoverContainer[0],
-                title : 'Raise Your Voice!',
-                content : '\
-                    <div class="line"></div>\
-                    <p class="cv-voice-onboarding__desc -float-left">Use this button to <b>add content</b><br>from any source.</p>\
-                    <div class="cv-voice-onboarding__arrow"></div>\
-                '
-            })).render(this.el);
+                this.appendChild(new CV.Popover({
+                    name : 'popoverOnboarding',
+                    className : 'onboarding-popover',
+                    placement : '-bottom-right',
+                    toggler : popoverToggler,
+                    container : this.popoverContainer[0],
+                    title : 'Raise Your Voice!',
+                    content : '\
+                        <div class="line"></div>\
+                        <p class="cv-voice-onboarding__desc -float-left">Use this button to <b>add content</b><br>from any source.</p>\
+                        <div class="cv-voice-onboarding__arrow"></div>\
+                    '
+                })).render(this.el);
 
-            this.popoverOnboarding.activate();
+                this.popoverOnboarding.activate();
+            } else {
+                return ;
+            }
         },
 
         _deactivateOnboarding : function _deactivateOnboarding() {

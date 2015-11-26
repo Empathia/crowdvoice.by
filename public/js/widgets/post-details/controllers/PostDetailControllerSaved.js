@@ -8,25 +8,10 @@ Class(CV, 'PostDetailControllerSaved').includes(NodeSupport, CustomEventSupport)
             this._posts = config.posts;
             this._postsLen = this._posts.length;
 
-            this.appendChild(CV.PostDetail.create({
+            this.appendChild(new CV.PostDetail({
                 name: 'widget',
                 data: config.data
-            }));
-            this._type = this.widget.data.sourceType; /* link || image || video */
-
-            if (this._type === "image" || this._type === "video") {
-                this._type = ["image", "video"];
-            } else {
-                this._type = [this._type];
-            }
-
-            this._posts = this._posts.filter(function(post) {
-                return this._type.some(function(type) {
-                    if (post.sourceType === type) {
-                        return post;
-                    }
-                });
-            }, this);
+            })).render(document.body);
 
             this._posts.some(function(post, index) {
                 if (config.data.id === post.id) {
@@ -48,16 +33,35 @@ Class(CV, 'PostDetailControllerSaved').includes(NodeSupport, CustomEventSupport)
             this._bindEvents();
         },
 
+        /* Subscribe to the default PostDetailController events.
+         * This method might be overriden by any subclass, but also called using super.
+         * @protected|abstract
+         * @listens {post:details:next}
+         * @listens {post:details:prev}
+         */
         _bindEvents : function _bindEvents() {
             this.nextHandlerRef = this.nextHandler.bind(this);
             this.prevHandlerRef = this.prevHandler.bind(this);
 
-            this.bind('post:details:next', this.nextHandlerRef);
-            this.bind('post:details:prev', this.prevHandlerRef);
+            this.bind('nextPostDetail', this.nextHandlerRef);
+            this.bind('prevPostDetail', this.prevHandlerRef);
         },
 
+        /* Updates the postDetailWidget using the data stored on `_posts`.
+         * @private
+         */
         update : function update() {
             this.widget.update(this._posts[this._index]);
+        },
+
+        /* Updates the post index reference.
+         * @public
+         * @param {Object} post - a post instance
+         * @return {Object} this
+         */
+        setIndexes : function setIndexes(post) {
+            this._index = this._posts.indexOf(post);
+            return this;
         },
 
         /* Prev button click handler.
@@ -88,6 +92,8 @@ Class(CV, 'PostDetailControllerSaved').includes(NodeSupport, CustomEventSupport)
         },
 
         destroy : function destroy() {
+            this.unbind('nextPostDetail', this.nextHandlerRef);
+            this.unbind('prevPostDetail', this.prevHandlerRef);
             this.widget = this.widget.destroy();
             return null;
         }

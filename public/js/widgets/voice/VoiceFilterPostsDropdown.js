@@ -1,4 +1,3 @@
-/* globals App */
 var Options = [
     {label: 'Images', value: 'image'},
     {label: 'Videos', value: 'video'},
@@ -24,14 +23,20 @@ Class(CV, 'VoiceFilterPostsDropdown').inherits(Widget)({
         },
 
         /* Creates the dropdown and its options.
-         * @return VoiceFilterPostsDropdown
+         * @return {Object} this
          */
         _setup : function _setup() {
+            var dropdownClassName = 'dropdown-post-source-types ui-dropdown-styled -sm';
+
+            if (this.dropdownClassName) {
+                dropdownClassName += ' ' + this.dropdownClassName;
+            }
+
             this.appendChild(new CV.Dropdown({
                 name: 'dropdown',
                 label: 'All Posts',
                 showArrow: true,
-                className: 'dropdown-post-source-types ui-dropdown-styled -sm',
+                className: dropdownClassName,
                 arrowClassName: '-s10',
                 bodyClassName: 'ui-vertical-list hoverable -block'
             })).render(this.el);
@@ -66,7 +71,7 @@ Class(CV, 'VoiceFilterPostsDropdown').inherits(Widget)({
         },
 
         /* Returns the checkbox widgets that are checked
-         * @method getValue <public>
+         * @public
          */
         getSelection : function getSelection() {
             return this._options.filter(function(option) {
@@ -77,8 +82,8 @@ Class(CV, 'VoiceFilterPostsDropdown').inherits(Widget)({
         /* Returns the selected sourceTypes as an array of string.
          * If all of them it will return null, so that means all of the are
          * selected and should not apply the filter (skip the checking).
-         * @method getSelectedSourceTypes <public> [Function]
-         * @return selectedSouceTypes [Array | null]
+         * @public
+         * @return {Array|null} selectedSouceTypes
          */
         getSelectedSourceTypes : function getSelectedSourceTypes() {
             var selectedSouceTypes = this.getSelection().map(function(option) {
@@ -96,8 +101,7 @@ Class(CV, 'VoiceFilterPostsDropdown').inherits(Widget)({
          * Contraint the selection by forcing to keep at least 1 checkbox selected (by disabling the last option if needed).
          * Updates the dropdown label.
          * Calls the `filter` method for every layer to filter its Posts by the selectedSouceTypes.
-         * @method _changeHandler <private> [Function]
-         * @return undefined
+         * @private
          */
         _changeHandler : function _changeHandler(ev) {
             ev.stopPropagation();
@@ -123,18 +127,11 @@ Class(CV, 'VoiceFilterPostsDropdown').inherits(Widget)({
                 );
             }
 
-            App.Voice.voicePostLayersManager.getLayers().forEach(function(layer) {
-                var posts = layer.getPosts();
-
-                if (posts.length) {
-                    layer.filterPosts(sourceTypes);
-                }
-            });
+            this.dispatch('selectionUpdated', {sourceTypes: sourceTypes});
         },
 
         /* Handles the click event on the dropdown items.
-         * @method _clickHandler <private> [Function]
-         * @return undefined
+         * @private
          */
         _clickHandler : function _clickHandler(ev) {
             ev.stopPropagation();

@@ -43,6 +43,7 @@ Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
             this.appendChild(new CV.VoicePostLayersModerateAbstract({
                 name : 'layersManager',
                 id : App.Voice.data.id,
+                registry: CV.ModeratePostsRegistry,
                 postsCount : App.Voice.postsCountUnapproved,
                 postCount : this._getTotalPostCount(App.Voice.postsCountUnapproved),
                 scrollableArea : this.voicePostsWrapper,

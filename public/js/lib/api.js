@@ -22,8 +22,10 @@ module.exports = {
             type : 'PUT',
             url : '/admin/voices/' + args.voiceData.id,
             headers : {'csrf-token' : this.token},
+            cache : false,
+            contentType : false,
+            processData : false,
             data : args.data,
-            dataType : 'json',
             success : function success(data) { callback(false, data); },
             error : function error(err) { callback(true, err); }
         });

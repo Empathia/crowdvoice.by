@@ -1,3 +1,4 @@
+/* globals App */
 var Person = require('./../../lib/currentPerson');
 
 Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
@@ -35,7 +36,7 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
             this.actionsColumn = this.el.querySelector('.voice-footer-right');
             this.byAnchor = this.el.querySelector('.voice-footer-by > a');
 
-            this._setup();
+            this._setup()._bindEvents();
         },
 
         _setup : function _setup() {
@@ -155,6 +156,21 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
                     }
                 }
             }
+
+            return this;
+        },
+
+        _bindEvents : function _bindEvents() {
+            this.filterDropdown.bind('selectionUpdated', function(ev) {
+                var sourceTypes = ev.sourceTypes;
+                App.Voice.voicePostLayersManager.getLayers().forEach(function(layer) {
+                    var posts = layer.getPosts();
+                    if (posts.length) {
+                        layer.filterPosts(sourceTypes);
+                    }
+                });
+            });
+            return this;
         },
 
         /* Sets the Timeline's inital date.

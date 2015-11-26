@@ -130,7 +130,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             } else {
                 this.appendChild(new CV.UI.Checkbox({
                     name : 'checkAnon',
-                    className : '-block -pt1 -pb1',
+                    className : '-pt1 -pb1',
                     data : {label : 'Create Anonymously' }
                 })).render(this.sendElement);
 
@@ -257,7 +257,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             var buttonLabel = 'Create Voice';
 
             if (this.data.voiceEntity) {
-                buttonLabel = 'Update Voice';
+                buttonLabel = 'Update Voice.';
             }
 
             this.appendChild(new CV.UI.Button({
@@ -533,7 +533,6 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                         this._setErrorState(res.status + ': ' + res.statusText);
                         return;
                     }
-
                     this._setAdminSuccessState(res);
                 }.bind(this));
             }
@@ -766,26 +765,26 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
          * @method _dataPresenterAdmin <private> [Function]
          */
         _dataPresenterAdmin : function _dataPresenterAdmin() {
-            var data = {};
+            var data = new FormData();
 
-            data.image = this.voiceImage.getFile();
-            data.title = this.voiceTitle.getValue().trim();
-            data.slug = this.voiceSlug.getValue().trim();
-            data.description = this.voiceDescription.getValue().trim();
-            data.topics = this.voiceTopicsDropdown.getSelection().map(function(topic) {return topic.id;});
-            data.type = this.voiceTypesDropdown.getValue();
-            data.status = this.voiceStatusDropdown.getValue();
-            data.twitterSearch = this.voiceHashtags.getValue().trim();
+            data.append('image', this.voiceImage.getFile());
+            data.append('title', this.voiceTitle.getValue().trim());
+            data.append('slug', this.voiceSlug.getValue().trim());
+            data.append('description', this.voiceDescription.getValue().trim());
+            data.append('topics', this.voiceTopicsDropdown.getSelection().map(function(topic) {return topic.id;}));
+            data.append('type', this.voiceTypesDropdown.getValue());
+            data.append('status', this.voiceStatusDropdown.getValue());
+            data.append('twitterSearch', this.voiceHashtags.getValue().trim());
             // data['rssUrl'] = this.voiceRssfeed.getValue().trim();
-            data.locationName = this.voiceLocation.getValue().trim();
-            data.latitude = this.voiceLatitude.getValue().trim();
-            data.longitude = this.voiceLongitude.getValue().trim();
-            data.anonymously = this.checkAnon.isChecked();
+            data.append('locationName', this.voiceLocation.getValue().trim());
+            data.append('latitude', this.voiceLatitude.getValue().trim());
+            data.append('longitude', this.voiceLongitude.getValue().trim());
+            data.append('anonymously', this.checkAnon.isChecked());
 
             if (this.voiceOwnershipDropdown) {
-                data.ownerId = this.voiceOwnershipDropdown.getValue();
+                data.append('ownerId',this.voiceOwnershipDropdown.getValue());
             } else {
-                data.ownerId = this.data.ownerEntity.id;
+                data.append('ownerId',this.data.ownerEntity.id);
             }
 
             return data;
