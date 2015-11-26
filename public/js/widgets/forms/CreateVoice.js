@@ -751,7 +751,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             var addOwnerId = true;
             // Editing an anonymous voice?, do not send ownerId
             if (this.data.voiceEntity && this.data.voiceEntity.owner.isAnonymous) {
-                //addOwnerId = false;
+                addOwnerId = false;
             }
 
             if (addOwnerId) {
