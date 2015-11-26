@@ -181,6 +181,29 @@ describe('ThreadsController', function () {
       })
     })
 
+    it('Should not allow an Anonymous entity to be involved in threads', function (doneTest) {
+      login('eddard-stark', function (err, agent, csrf) {
+        if (err) { return doneTest(err) }
+
+        agent
+          .post(urlBase + '/eddard-stark/messages')
+          .accept('application/json')
+          .send({
+            _csrf: csrf,
+            type: 'message',
+            senderEntityId: hashids.encode(13), // Eddard
+            receiverEntityId: hashids.encode(4), // Cersei's Anonymous
+            message: '1659308890',
+          })
+          .end(function (err, res) {
+            // CheckIt error
+            expect(res.status).to.equal(500)
+
+            return doneTest()
+          })
+      })
+    })
+
   })
 
   describe('#destroy', function () {
