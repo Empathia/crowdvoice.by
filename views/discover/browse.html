@@ -18,7 +18,7 @@
     	<% if (currentPerson){ %>
 	    <div class="browse-element widget -col-4">
 	    <% } else { %>
-	    <div class="browse-element widget -col-6">
+	    <div class="browse-element widget -col-6 ">
 	    <% } %>
 	      	<a class="element_link -tdn" href="/discover/trending" alt="Trending">
 		        <div class="browse-element-button-trending -rel">
@@ -30,6 +30,10 @@
 		            	<use xlink:href="#svg-trending"></use>
 		            </svg>
 		          	<p class="-font-bold -rel">Trending</p>
+		          	<div class="browse-element-overlay">
+		          		<div class="browse-bg-image -img-cover"></div>
+		          		<div class="overlay"></div>
+		          	</div>
 		        </div>
 	        </a>
 	    </div>
@@ -49,6 +53,10 @@
 	            	<use xlink:href="#svg-new"></use>
 	            </svg>
 	          	<p class="-font-bold -rel">Newest</p>
+	          	<div class="browse-element-overlay">
+		          	<div class="browse-bg-image -img-cover"></div>
+		          	<div class="overlay"></div>
+		        </div>
 	        </div>
         </a>
       </div>
@@ -64,6 +72,10 @@
 		        	<use xlink:href="#svg-thumbs-up"></use>
 		        </svg>
 		        <p class="-font-bold -rel">Recommended</p>
+		        <div class="browse-element-overlay">
+		          	<div class="browse-bg-image -img-cover"></div>
+		          	<div class="overlay"></div>
+		        </div>
 	        </div>
         </a>
       </div>
