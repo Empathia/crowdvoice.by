@@ -457,7 +457,6 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           status: req.body.status || voice.status,
           description: req.body.description || voice.description,
           type: req.body.type || voice.type,
-          ownerId: (req.body.ownerId ? hashids.decode(req.body.ownerId)[0] : voice.ownerId),
           twitterSearch: req.body.twitterSearch || voice.twitterSearch,
           rssUrl: req.body.rssUrl || voice.rssUrl,
           locationName: req.body.locationName || voice.locationName,
@@ -465,7 +464,23 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           longitude: req.body.longitude || voice.longitude
         });
 
-        async.series([function(done) {
+        async.series([function (done) {
+          Entity.find({
+            id: req.activeVoice.ownerId
+          }, function (err, voiceOwner) {
+            if (err) { return done(err); }
+
+            if (voiceOwner[0].isAnonymous) {
+              return done();
+            }
+
+            if (req.body.ownerId) {
+              voice.ownerId = hashids.decode(req.body.ownerId)[0];
+            }
+
+            return done();
+          });
+        }, function(done) {
           if (!req.files.image) {
             return done();
           }

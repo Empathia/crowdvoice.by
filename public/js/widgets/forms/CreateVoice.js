@@ -537,7 +537,6 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                         this._setErrorState(res.status + ': ' + res.statusText);
                         return;
                     }
-                    console.log('lo cambiaste');
                     this._setAdminSuccessState(res);
                 }.bind(this));
             }
