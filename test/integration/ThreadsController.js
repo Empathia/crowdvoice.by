@@ -196,8 +196,13 @@ describe('ThreadsController', function () {
             message: '1659308890',
           })
           .end(function (err, res) {
+<<<<<<< HEAD
             // CheckIt error
             expect(res.status).to.equal(500)
+=======
+            // ACL NotFoundError
+            expect(res.status).to.equal(404)
+>>>>>>> Ticket725
 
             return doneTest()
           })
