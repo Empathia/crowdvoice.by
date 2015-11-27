@@ -1,11 +1,6 @@
 var Scrapper = require(process.cwd() + '/lib/cvscrapper');
 var sanitizer = require('sanitize-html');
-
-var readability = require('readability-api');
-
-var rParser = new readability.parser();
-
-readability.configure(CONFIG.readability);
+var ReadabilityParser = require(path.join(__dirname, '../lib/ReadabilityParser.js'));
 
 var PostsController = Class('PostsController').includes(BlackListFilter)({
   prototype : {
@@ -49,7 +44,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           return done();
         }
 
-        rParser.parse(post.sourceUrl, function(err, parsed) {
+        ReadabilityParser.prototype.parse(post.sourceUrl, function(err, parsed) {
           if (err) {
             return done(err);
           }
