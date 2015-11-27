@@ -8,10 +8,11 @@
 	padding-bottom: 100px;
 	text-align: center;
 
+
 	a.element_link{
 		display: inline-block;
 		width: 100%;
-		div{
+		div.-rel{
 			margin: 0px 10px;
 			border: 1px solid @color-card-wrapper;
 			box-shadow: 1px 1px 5px @color-shadow-select-body;
@@ -21,36 +22,79 @@
 			background-size: cover;
 			transition: background-size 250ms ease;
 			&.browse-element-button-trending{
-				background-image: url('/img/browse-button-trending.jpg');
+				.browse-bg-image{
+						background-image: url('/img/browse-button-trending.jpg');
+				}
 			}
 			&.browse-element-button-newest{
-				background-image: url('/img/browse-button-newest.jpg');
+				.browse-bg-image{
+					background-image: url('/img/browse-button-newest.jpg');
+				}
 			}
 			&.browse-element-button-recommended{
-				background-image: url('/img/browse-button-recommended.jpg');
+				.browse-bg-image{
+					background-image: url('/img/browse-button-recommended.jpg');
+				}
+			}
+
+			.browse-element-overlay{
+				position: absolute;
+		    top: 0;
+		    left: 0;
+		    width: 100%;
+		    height: 100%;
+		    overflow: hidden;
+		    z-index: -1;
+		    .browse-bg-image{
+					position: absolute;
+					border-radius: 3px;
+			    top: 0;
+			    left: 0;
+			    width: 100%;
+			    height: 100%;
+			    -webkit-transform: scale(1);
+			    transform: scale(1);
+			    transition: -webkit-transform 160ms linear;
+			    transition: transform 160ms linear;
+			    will-change: transform;
+				}
+		    .overlay{
+		    	position: absolute;
+			    top: 0;
+			    left: 0;
+			    width: 100%;
+			    height: 100%;
+			    background-color: rgba(0, 0, 0, 0.7);
+			    border-radius: 2px;
+			    opacity: 1;
+			    transition: all 220ms ease;
+			    will-change: opacity;
+		    }
 			}
 
 			svg{
 				width: 90px;
 				fill: rgba(240,240,240,0.6);
+				transition: all 220ms ease;
+				will-change: fill;
 			}
-		}
-		div:before{
-			 position: absolute;
-			 content:"";
-			 top:0;
-			 width:100%;
-			 height:100%;
-			 display: block;
-			 border-radius: 5px;
-			 background-color: rgba(0,0,0,0.7);
-			 transition: background-color 250ms ease;
 		}
 	}
 
 	a.element_link:hover{
-		div{
-			background-size: 120%;
+		div.-rel{
+			.browse-element-overlay{
+				.browse-bg-image{
+					-webkit-transform: scale(1.1);
+			    transform: scale(1.1);
+			    transition-duration: 300ms;
+			    transition-timing-function: ease;
+				}
+				.overlay{
+					background-color: rgba(0, 0, 0, 0.5);
+				}
+			}
+
 			svg{
 				&.svg-trending{
 					fill: url('#trending-gradient');
@@ -63,15 +107,11 @@
 				}
 			}
 		}
-
-		div:before{
-			background-color: rgba(0,0,0,0.5);
-		}
 	}
 	p{
 		padding-top: 10px;
 		font-size: 18px;
-	  	color: white;
+	  color: white;
 		text-transform: uppercase;
 	}
 }
