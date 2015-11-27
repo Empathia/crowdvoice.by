@@ -532,7 +532,7 @@ async.series([function(next) {
       data : {
         title         : 'Second Trial by Combat',
         description   : 'The Second Trial by Combat of Tyrion Lannister is an event in the War of the Five Kings.',
-        ownerId       : data.entities['tyrion-lannister'].id,
+        ownerId       : data.entities['tyrion-lannister'].id + 1, // Anonymous
         status        : Voice.STATUS_PUBLISHED,
         type          : Voice.TYPE_PUBLIC,
         latitude      : '4.815',
