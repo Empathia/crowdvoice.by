@@ -18,9 +18,9 @@
     	<% if (currentPerson){ %>
 	    <div class="browse-element widget -col-4">
 	    <% } else { %>
-	    <div class="browse-element widget -col-6">
+	    <div class="browse-element widget -col-6 ">
 	    <% } %>
-	      	<a class="element_link -tdn" href="/discover/trending" alt="Trending">
+	      	<a class="element_link -tdn" href="/discover/trending/" alt="Trending">
 		        <div class="browse-element-button-trending -rel">
 		            <svg class="svg-trending -rel">
 		            	<linearGradient id="trending-gradient" gradientTransform="rotate(100)">
@@ -30,6 +30,10 @@
 		            	<use xlink:href="#svg-trending"></use>
 		            </svg>
 		          	<p class="-font-bold -rel">Trending</p>
+		          	<div class="browse-element-overlay">
+		          		<div class="browse-bg-image -img-cover"></div>
+		          		<div class="overlay"></div>
+		          	</div>
 		        </div>
 	        </a>
 	    </div>
@@ -38,7 +42,7 @@
 	    <% } else { %>
 	    <div class="browse-element widget -col-6">
 	    <% } %>
-      	<a class="element_link -tdn" href="/discover/new" alt="Newest">
+      	<a class="element_link -tdn" href="/discover/new/" alt="Newest">
 	        <div class="browse-element-button-newest -rel">
 	            <svg class="svg-new -rel">
 	            	<linearGradient id="newest-gradient" gradientTransform="rotate(10)">
@@ -49,12 +53,16 @@
 	            	<use xlink:href="#svg-new"></use>
 	            </svg>
 	          	<p class="-font-bold -rel">Newest</p>
+	          	<div class="browse-element-overlay">
+		          	<div class="browse-bg-image -img-cover"></div>
+		          	<div class="overlay"></div>
+		        </div>
 	        </div>
         </a>
       </div>
       <% if (currentPerson){ %>
       <div class="browse-element widget -col-4">
-      	<a class="element_link -tdn" href="/discover/recommended" alt="Recommended">
+      	<a class="element_link -tdn" href="/discover/recommended/" alt="Recommended">
 	        <div class="browse-element-button-recommended -rel">
 		        <svg class="svg-recommended -rel">
 		        	<linearGradient id="recommended-gradient" gradientTransform="rotate(330)">
@@ -64,6 +72,10 @@
 		        	<use xlink:href="#svg-thumbs-up"></use>
 		        </svg>
 		        <p class="-font-bold -rel">Recommended</p>
+		        <div class="browse-element-overlay">
+		          	<div class="browse-bg-image -img-cover"></div>
+		          	<div class="overlay"></div>
+		        </div>
 	        </div>
         </a>
       </div>
