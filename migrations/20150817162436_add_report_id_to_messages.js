@@ -13,5 +13,4 @@ exports.down = function(knex, Promise) {
       t.dropColumn('report_id');
     })
   ]);
-  knex.schema
 };
