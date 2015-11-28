@@ -362,12 +362,10 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
         },
 
         _twitterHelpActivate : function _twitterHelpActivate(){
-            console.log('activate');
             this.popoverTwitterHelp.activate();
         },
 
         _twitterHelpDeactivate : function _twitterHelpActivate(){
-            console.log('adectivate');
             this.popoverTwitterHelp.deactivate();
         },
 
