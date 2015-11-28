@@ -17,11 +17,8 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
     },
 
     show : function show(req, res, next) {
-
-      if (req.params.postId === 'edit') { next(); return; }
-
-      var post;
-      var readablePost;
+      var post,
+        readablePost;
 
       async.series([function(done) {
         Post.findById(hashids.decode(req.params.postId)[0], function(err, result) {
@@ -45,9 +42,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         }
 
         ReadabilityParser.prototype.parse(post.sourceUrl, function(err, parsed) {
-          if (err) {
-            return done(err);
-          }
+          if (err) { return done(err); }
 
           db('ReadablePosts')
           .insert({
@@ -57,25 +52,25 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
             updated_at : new Date()
           })
           .returning('id').exec(function(err, returning) {
-            if (err) {
-              return done(err);
-            }
+            if (err) { return done(err); }
 
             db('ReadablePosts').where({id : returning[0]}).exec(function(err, result) {
-              if (err) {
-                return done(err);
-              }
+              if (err) { return done(err); }
 
-              readablePost = result[0];
+              readablePost = result[0],
+                defaults = _.clone(sanitizer.defaults.allowedTags);
+              defaults.splice(sanitizer.defaults.allowedTags.indexOf('a'), 1);
+
+              readablePost.data.content = sanitizer(readablePost.data.content, {
+                allowedTags: defaults
+              });
 
               return done();
             });
           });
         })
       }], function(err) {
-        if (err) {
-          return next(err)
-        }
+        if (err) { return next(err); }
 
         res.locals.post = post;
         res.locals.readablePost = readablePost;
@@ -87,8 +82,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           html : function() {
             res.render('posts/show', { layout : 'postShow' });
           }
-        })
-
+        });
       });
     },
 
