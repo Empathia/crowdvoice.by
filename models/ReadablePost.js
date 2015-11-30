@@ -2,7 +2,7 @@ var ReadablePost = Class('ReadablePost').inherits(Argon.KnexModel)({
   validations: {
     post_id: ['required'],
     data: ['required'],
-    // readable: ['required'],
+    readerable: ['required'],
   },
 
   storage: (new Argon.Storage.Knex({
@@ -12,7 +12,7 @@ var ReadablePost = Class('ReadablePost').inherits(Argon.KnexModel)({
   prototype: {
     post_id: null,
     data: null,
-    // readable: null,
+    readerable: null,
   },
 })
 
