@@ -231,9 +231,9 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                         </ul>\
                         <ul>\
                             <li>People</li>\
-                            <li>Sent from person “@ealshafei” <span>(from:ealshafei)</span></li>\
-                            <li>To person “@ealshafei” <span>(to:ealshafei)</span></li>\
-                            <li>Referencing a person “ealshafei” <span>(@ealshafei)</span></li>\
+                            <li>Sent from person “@USERNAME” <span>(from:USERNAME)</span></li>\
+                            <li>To person “@USERNAME” <span>(to:USERNAME)</span></li>\
+                            <li>Referencing a person “USERNAME” <span>(@USERNAME)</span></li>\
                         </ul>\
                         <ul>\
                             <li>Places</li>\
@@ -362,12 +362,10 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
         },
 
         _twitterHelpActivate : function _twitterHelpActivate(){
-            console.log('activate');
             this.popoverTwitterHelp.activate();
         },
 
         _twitterHelpDeactivate : function _twitterHelpActivate(){
-            console.log('adectivate');
             this.popoverTwitterHelp.deactivate();
         },
 
