@@ -19,7 +19,8 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
     show : function show(req, res, next) {
       var post,
-        readablePost;
+        readablePost,
+        already = false;
 
       async.series([function(done) {
         Post.findById(hashids.decode(req.params.postId)[0], function(err, result) {
@@ -42,6 +43,28 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           return done();
         }
 
+        ReadablePost.find({
+          post_id: hashids.decode(post.id)[0]
+        }, function (err, readablePosts) {
+          if (err) { return done(err); }
+
+          if (readablePosts[0]) {
+            already = true;
+            readablePost = new ReadablePost(readablePosts[0]);
+          }
+
+          return done();
+        });
+      }, function(done) {
+        if (post.sourceType !== Post.SOURCE_TYPE_LINK && post.sourceService !== Post.SOURCE_SERVICE_LINK) {
+          return done();
+        }
+
+        // we already found something
+        if (already) {
+          return done();
+        }
+
         ReadabilityParser.prototype.parse(post.sourceUrl, function(err, parsed) {
           if (err) { return done(err); }
 
@@ -58,7 +81,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           });
 
           readablePost.data.content = truncatise(readablePost.data.content, {
-            TruncateLength: 200,
+            TruncateLength: 199, // seems to sometimes miscount upwards by one word
             TruncatedBy: 'words',
             Strict: false,
             StripHTML: false,
