@@ -1,6 +1,7 @@
 var Scrapper = require(process.cwd() + '/lib/cvscrapper');
 var sanitizer = require('sanitize-html');
 var ReadabilityParser = require(path.join(__dirname, '../lib/ReadabilityParser.js'));
+var truncatise = require('truncatise')
 
 var PostsController = Class('PostsController').includes(BlackListFilter)({
   prototype : {
@@ -63,6 +64,14 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
               readablePost.data.content = sanitizer(readablePost.data.content, {
                 allowedTags: defaults
+              });
+
+              readablePost.data.content = truncatise(readablePost.data.content, {
+                TruncateLength: 200,
+                TruncatedBy: 'words',
+                Strict: false,
+                StripHTML: false,
+                Suffix: '...',
               });
 
               return done();
