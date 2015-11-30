@@ -45,39 +45,28 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         ReadabilityParser.prototype.parse(post.sourceUrl, function(err, parsed) {
           if (err) { return done(err); }
 
-          db('ReadablePosts')
-          .insert({
-            'post_id' : hashids.decode(post.id)[0],
-            data : parsed,
-            created_at : new Date(),
-            updated_at : new Date()
-          })
-          .returning('id').exec(function(err, returning) {
-            if (err) { return done(err); }
-
-            db('ReadablePosts').where({id : returning[0]}).exec(function(err, result) {
-              if (err) { return done(err); }
-
-              readablePost = result[0],
-                defaults = _.clone(sanitizer.defaults.allowedTags);
-              defaults.splice(sanitizer.defaults.allowedTags.indexOf('a'), 1);
-
-              readablePost.data.content = sanitizer(readablePost.data.content, {
-                allowedTags: defaults
-              });
-
-              readablePost.data.content = truncatise(readablePost.data.content, {
-                TruncateLength: 200,
-                TruncatedBy: 'words',
-                Strict: false,
-                StripHTML: false,
-                Suffix: '...',
-              });
-
-              return done();
-            });
+          readablePost = new ReadablePost({
+            post_id: hashids.decode(post.id)[0],
+            data: parsed,
           });
-        })
+
+          var defaults = _.clone(sanitizer.defaults.allowedTags);
+          defaults.splice(sanitizer.defaults.allowedTags.indexOf('a'), 1);
+
+          readablePost.data.content = sanitizer(readablePost.data.content, {
+            allowedTags: defaults
+          });
+
+          readablePost.data.content = truncatise(readablePost.data.content, {
+            TruncateLength: 200,
+            TruncatedBy: 'words',
+            Strict: false,
+            StripHTML: false,
+            Suffix: '...',
+          });
+
+          readablePost.save(done)
+        });
       }], function(err) {
         if (err) { return next(err); }
 
