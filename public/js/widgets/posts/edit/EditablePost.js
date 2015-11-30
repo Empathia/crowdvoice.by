@@ -33,6 +33,7 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
      */
     create : function create(config) {
         var type = this.prototype.format.capitalizeFirstLetter(config.sourceType);
+
         return new window.CV['EditablePost' + type](config);
     },
 
@@ -285,6 +286,31 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
             }));
             this.el.appendChild(this.publishButton.el);
             this.el.classList.add('has-bottom-actions');
+            return this;
+        },
+
+        addLinkNewtab : function addLinkNewtab() {
+            if(this.sourceType !== 'text' && this.sourceType !== 'image'){
+                var url = this.sourceUrl;
+
+                this.el.querySelector('.post-card-info').addEventListener("click", function( e ){
+                    e = window.event || e; 
+                    if(this === e.target) {
+                        var win = window.open(url, '_blank');
+                        win.focus();
+                    }
+                });
+
+                this.el.querySelector('.post-card-image-wrapper').addEventListener("click", function( e ){
+                    var svgIcon = this.querySelector('use');
+                    e = window.event || e; 
+                    if(this === e.target || svgIcon === e.target) {
+                        var win = window.open(url, '_blank');
+                        win.focus();
+                    }
+                });
+            }
+
             return this;
         },
 
