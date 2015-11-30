@@ -35,6 +35,7 @@ require('./embed/helpers/Voice');
 require('./embed/Embeddable');
 require('./embed/header/EmbedHeader');
 require('./embed/VoiceFilterPostsDropdown');
+require('./embed/EmbedVoiceDescription');
 require('./embed/header/EmbedHeaderViewButtons');
 require('./embed/header/EmbedHeaderShareButton');
 require('./embed/EmbedLayersController');

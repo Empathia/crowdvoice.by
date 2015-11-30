@@ -75,6 +75,13 @@ Class(CV, 'Embeddable').includes(NodeSupport, CustomEventSupport, CV.HelperVoice
         this.postsContainerElement.textContent = 'No posts to show';
       }
 
+      if (this.reqQuery.description) {
+        this.appendChild(new CV.EmbedVoiceDescription({
+          name : 'descriptionWidget',
+          data : { description : this.voiceData.description }
+        })).render(document.querySelector('.voice-intro'));
+      }
+
       if (this.reqQuery.background) {
         this._updateVoiceBackground();
       }
