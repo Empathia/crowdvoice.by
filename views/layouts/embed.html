@@ -1,0 +1,19 @@
+<!--
+    Version : <%= CONFIG.gitRevision %>
+-->
+<!DOCTYPE html>
+<html lang="en" class="theme_<%= params.theme %> theme_bg-<%= params.background %>">
+<head>
+  <meta charset="UTF-8">
+  <title>CrowdVoice.by — <%= voice.title %></title>
+  <meta name="description" content="<%= voice.description %>">
+  <%= renderPartial('shared/favicon.html') %>
+  <script src="/socket.io/socket.io.js?version=<%= CONFIG.gitRevision %>"></script>
+  <script src="/dist/embed.js?version=<%= CONFIG.gitRevision %>"></script>
+</head>
+<body>
+  <%= renderPartial('shared/sprite-logo.svg') %>
+  <%= renderPartial('shared/svg-embed/sprite-embed.svg') %>
+  <%= yield %>
+</body>
+</html>
