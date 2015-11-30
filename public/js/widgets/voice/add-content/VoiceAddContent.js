@@ -31,7 +31,7 @@ Class(CV, 'VoiceAddContent').inherits(Widget)({
             <svg class="voice-add-content__option-svg -s16 -color-grey-light">\
                 <use xlink:href="#svg-upload"></use>\
             </svg>\
-            <span class="voice-add-content__option-label">Upload File</span>\
+            <span class="voice-add-content__option-label">Upload Image</span>\
             <span class="voice-add-content__option-tooltip ui-has-tooltip cv-caption -font-normal -color-neutral-mid">(?)\
                 <i class="ui-tooltip -top-right">Upload your own Images.</i>\
             </span>\
