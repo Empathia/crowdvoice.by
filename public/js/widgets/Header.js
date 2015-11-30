@@ -78,10 +78,11 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
         },
 
         _setupAnonymous : function _setupAnonymous() {
+            this.loginActionsWrapper.style.paddingTop = 0;
+
             this.appendChild(new CV.AccountDropdownMenu({
                 name : 'accountMenu',
             })).render(this.loginActionsWrapper);
-            this.loginActionsWrapper.style.paddingTop = 0;
 
             this._displayCreateNewDropdown();
 
@@ -100,10 +101,11 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
          * @method _setupForCurrentPerson <private> [Function]
          */
         _setupForCurrentPerson : function _setupForCurrentPerson() {
+            this.loginActionsWrapper.style.paddingTop = 0;
+
             this.appendChild(new CV.AccountDropdownMenu({
                 name : 'accountMenu',
             })).render(this.loginActionsWrapper);
-            this.loginActionsWrapper.style.paddingTop = 0;
 
             this._displayCreateNewDropdown();
 
@@ -126,7 +128,7 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
                 name : 'createDropdown',
                 label : 'Create New&nbsp;&nbsp;&nbsp;',
                 showArrow : true,
-                className : 'ui-dropdown-styled primary -md -inline-block -mr1 -text-left',
+                className : 'ui-dropdown-styled primary -md -inline-block -text-left -mr2',
                 arrowClassName : '-s10 -color-white',
                 bodyClassName : 'ui-vertical-list hoverable -full-width'
             })).render(this.buttonActionsWrapper);

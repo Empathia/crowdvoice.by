@@ -63,6 +63,10 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
                 this.dom.updateText(this.el.querySelector('[data-stats-followers]'), this.format.numberUS(this.followerCount) + ' followers');
             }
 
+            if (this.voice.locationName) {
+                this.dom.updateText(this.el.querySelector('[data-stats-location]'), this.voice.locationName);
+            }
+
             this.appendChild(new CV.VoiceTimelineFeedback({
                 name : 'voiceTimelineFeedback',
                 firstPostDate : this.voice.firstPostDate,
@@ -79,27 +83,27 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
                     this.appendChild(new CV.VoiceFollowMultipleButton({
                         name : 'followButton',
                         voice : this.voice,
-                        className : '-inline-block'
+                        className : '-inline-block -ml10px'
                     })).render(this.actionsColumn);
                 } else {
                     this.appendChild(new CV.VoiceFollowSingleButton({
                         name : 'followButton',
                         voice : this.voice,
-                        className : 'tiny'
+                        className : 'tiny -ml10px'
                     })).render(this.actionsColumn);
                 }
             } else {
                 this.appendChild(new CV.VoiceFollowSingleButton({
                     name : 'followButton',
                     voice : this.voice,
-                    className : 'tiny'
+                    className : 'tiny -ml10px'
                 })).render(this.actionsColumn).disable();
             }
 
             if ((this.voice.type === CV.VoiceView.TYPE_CLOSED) && (Person.ownerOf('voice', this.voice.id))) {
                 this.appendChild(new CV.ManageContributorsButton({
                     name : 'manageContributors',
-                    className : 'tiny',
+                    className : 'tiny -ml10px',
                     data : {
                         value: 'Manage Contributors',
                         voice : this.voice,
@@ -113,19 +117,21 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
             this.appendChild(new CV.RelatedVoicesButton({
                 name : 'relatedVoicesButton',
                 voice : this.voice,
-                className : 'tiny',
+                className : 'tiny -ml10px',
                 relatedVoices : this.relatedVoices
             })).render(relatedVoicesDiv);
             this.actionsColumn.appendChild(relatedVoicesDiv);
 
             this.appendChild(new CV.VoiceFooterShareButtonsGroup({
                 name : 'shareButtons',
+                className: '-ml10px',
                 voice : this.voice
             })).render(this.actionsColumn);
 
             if (this.voice.type !== CV.VoiceView.TYPE_CLOSED || this.allowPostEditing) {
                 this.appendChild(new CV.VoiceModerateButton({
                     name : 'voiceModerate',
+                    className: '-ml10px',
                     allowPostEditing : this.allowPostEditing
                 })).render(this.actionsColumn);
             }
@@ -148,6 +154,7 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
                 if (_showRequestToContribute) {
                     this.appendChild(new CV.VoiceRequestToContribute({
                         name : 'voiceRequestToContribute',
+                        className: '-ml10px',
                         voice : this.voice
                     })).render(this.actionsColumn);
 

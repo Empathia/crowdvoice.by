@@ -1,4 +1,5 @@
 var moment = require('moment');
+var Person = require('./../lib/currentPerson');
 
 Class(CV.Views, 'PostShow').includes(CV.WidgetUtils, NodeSupport)({
   FAVICON : '<img class="post-show__meta-icon-image" src="{src}"/>',
@@ -60,14 +61,16 @@ Class(CV.Views, 'PostShow').includes(CV.WidgetUtils, NodeSupport)({
       this.dom.updateText(this.dateTimeElement, moment(this.post.publishedAt).format('MMM DD, YYYY'));
       this.dom.updateAttr('datetime', this.dateTimeElement, this.post.publishedAt);
 
-      this.appendChild(new CV.PostDetailActionsSave({
-        name : 'actionSave'
-      })).render(this.actionsGroup);
+      if (Person.get() && (!Person.anon())) {
+        this.appendChild(new CV.PostDetailActionsSave({
+          name : 'actionSave'
+        })).render(this.actionsGroup).update(this.post);
+      }
 
       this.appendChild(new CV.PostDetailActionsShare({
         name : 'actionShare',
         tooltipPostition : 'bottom'
-      })).render(this.actionsGroup);
+      })).render(this.actionsGroup).update(this.post);
 
       if (this.post.sourceType === 'text') {
         this.dom.addClass(this.viewOriginalBtn, ['-hide']);
@@ -77,8 +80,6 @@ Class(CV.Views, 'PostShow').includes(CV.WidgetUtils, NodeSupport)({
       }
 
       this.updateSaves(this.post);
-      this.actionSave.update(this.post);
-      this.actionShare.update(this.post);
 
       return this;
     },

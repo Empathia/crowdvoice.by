@@ -285,36 +285,20 @@ Class(CV, 'VoicePostsLayer').inherits(Widget).includes(BubblingSupport)({
          */
         _addPostIndicators : function _addPostIndicators(posts) {
             var frag = document.createDocumentFragment();
-            var i = 0;
-            var len = posts.length;
-            var indicator, firstDateCoincidence, currentDate;
 
-            for (i = 0; i < len; i++) {
-                currentDate = posts[i].el.dataset.date.match(/\d{4}-\d{2}-\d{2}/)[0];
+            for (var i = 0, len = posts.length; i < len; i++) {
+                this.appendChild(new CV.VoicePostIndicator({
+                    name: 'indicator_' + i,
+                    label: posts[i].el.dataset.date,
+                    refElement: posts[i].el,
+                    zIndex: (len - i)
+                })).activate().render(frag);
 
-                if (firstDateCoincidence !== currentDate) {
-                    firstDateCoincidence = currentDate;
-
-                    indicator = new CV.VoicePostIndicator({
-                        name : 'indicator_' + i,
-                        label : posts[i].el.dataset.date,
-                        refElement : posts[i].el,
-                        zIndex : len - i
-                    });
-
-                    indicator.activate();
-
-                    this.appendChild(indicator).render(frag);
-                    this._indicatorWidgets.push(indicator);
-                }
+                this._indicatorWidgets.push(this['indicator_' + i]);
             }
 
-            // Avoid forced synchronous layout
             this._updatePostIndicatorsPostion();
-
             this.ticksContainerElement.appendChild(frag);
-
-            frag = i = len = indicator = firstDateCoincidence = currentDate = null;
         },
 
         /* Updates the position of each indicator.

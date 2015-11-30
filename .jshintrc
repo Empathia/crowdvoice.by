@@ -20,6 +20,12 @@
     "NodeSupport",
     "CustomEventSupport",
     "BubblingSupport",
-    "Widget"
+    "Widget",
+    "ACL",
+    "ForbiddenError",
+    "async",
+    "Voice",
+    "db",
+    "VoicesPresenter"
   ]
 }

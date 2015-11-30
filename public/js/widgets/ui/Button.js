@@ -21,6 +21,12 @@ Class(CV.UI, 'Button').inherits(Widget).includes(CV.WidgetUtils)({
             if (this.data.value) {
                 this.updateText(this.data.value);
             }
+
+            if (this.data.attr) {
+                Object.keys(this.data.attr).forEach(function(propertyName) {
+                    this.dom.updateAttr(propertyName, this.el, this.data.attr[propertyName]);
+                }, this);
+            }
         },
 
         updateText : function updateText(text) {
