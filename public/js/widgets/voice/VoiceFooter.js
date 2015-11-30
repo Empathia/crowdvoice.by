@@ -63,6 +63,10 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
                 this.dom.updateText(this.el.querySelector('[data-stats-followers]'), this.format.numberUS(this.followerCount) + ' followers');
             }
 
+            if (this.voice.locationName) {
+                this.dom.updateText(this.el.querySelector('[data-stats-location]'), this.voice.locationName);
+            }
+
             this.appendChild(new CV.VoiceTimelineFeedback({
                 name : 'voiceTimelineFeedback',
                 firstPostDate : this.voice.firstPostDate,
