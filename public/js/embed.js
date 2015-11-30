@@ -1,3 +1,5 @@
+require('./../css/embed.less');
+
 window.WebFontConfig = {
     google: { families: [ 'Open+Sans:400,300,600,700,800:latin' ] }
 };
@@ -21,3 +23,26 @@ require('neon/stdlib');
 window.CV = {UI: {}};
 require('./lib/widget-utils');
 require('./lib/Widget');
+require('./lib/image-halt');
+
+require('./widgets/ui/Button');
+require('./widgets/ui/Checkbox');
+require('./widgets/Dropdown');
+
+require('./widgets/voice/PostsRegistry');
+require('./embed/helpers/Voice');
+
+require('./embed/Embeddable');
+require('./embed/header/EmbedHeader');
+require('./embed/VoiceFilterPostsDropdown');
+require('./embed/header/EmbedHeaderViewButtons');
+require('./embed/header/EmbedHeaderShareButton');
+require('./embed/EmbedLayersController');
+require('./embed/EmbedLayer');
+
+require('./embed/posts/modules/PostModuleImages');
+require('./embed/posts/Post');
+require('./embed/posts/PostImage');
+require('./embed/posts/PostVideo');
+require('./embed/posts/PostLink');
+require('./embed/posts/PostText');
