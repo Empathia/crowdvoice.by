@@ -6,6 +6,10 @@ Class(CV, 'EmbedHeaderViewButtons').inherits(Widget).includes(BubblingSupport)({
   prototype : {
     _activatedView : '',
 
+    /* @param {Object} config - the widget’s configuration options.
+     * @property {string} config.defaultView - embeddable widget `default_view` setting (cards|list).
+     * @property {string} config.theme - embeddable widget `theme` setting (dark|light).
+     */
     init : function init (config) {
       Widget.prototype.init.call(this, config);
       this.el = this.element[0];
@@ -20,7 +24,7 @@ Class(CV, 'EmbedHeaderViewButtons').inherits(Widget).includes(BubblingSupport)({
     _setup : function _setup () {
       this.appendChild(new CV.UI.Button({
         name : 'cardsView',
-        className : 'tiny'
+        className : 'tiny ' + this.theme
       }))
       .updateHTML('<svg class="-s16"><use xlink:href="#svg-cards"></use></svg>')
       .render(this.el);
@@ -28,7 +32,7 @@ Class(CV, 'EmbedHeaderViewButtons').inherits(Widget).includes(BubblingSupport)({
 
       this.appendChild(new CV.UI.Button({
         name : 'listView',
-        className : 'tiny'
+        className : 'tiny ' + this.theme
       }))
       .updateHTML('<svg class="-s16"><use xlink:href="#svg-list"></use></svg>')
       .render(this.el);

@@ -22,21 +22,23 @@ Class(CV, 'EmbedHeader').inherits(Widget).includes(BubblingSupport)({
 
       this.appendChild(new CV.VoiceFilterPostsDropdown({
         name : 'filterDropdown',
-        className : 'header-filter-posts-dropdown'
+        className : 'header-filter-posts-dropdown',
+        dropdownClassName : this.reqQuery.theme
       })).render(this.rightWrapperElement);
 
       if (this.reqQuery.change_view) {
         this.appendChild(new CV.EmbedHeaderViewButtons({
           name : 'viewButtons',
           className : 'header-switch-view-buttons-group',
-          defaultView : this.reqQuery.default_view
+          defaultView : this.reqQuery.default_view,
+          theme : this.reqQuery.theme
         })).render(this.rightWrapperElement);
       }
 
       if (this.reqQuery.share) {
         this.appendChild(new CV.EmbedHeaderShareButton({
           name : 'shareButton',
-          className : 'tiny'
+          className : 'tiny ' + this.reqQuery.theme
         }))
         .updateHTML('<svg class="-s16"><use xlink:href="#svg-share"></use></svg>')
         .render(this.rightWrapperElement);
