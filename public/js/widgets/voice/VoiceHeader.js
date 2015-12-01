@@ -20,6 +20,7 @@ Class(CV, 'VoiceHeader').inherits(Widget)({
 
             this.el = this.element;
             this._body = document.body;
+            this._window = window;
             this.HEADER_HEIGHT = this.el.offsetHeight;
             this.TITLE_OFF_PAGE = this.HEADER_HEIGHT + document.querySelector('.voice-heading').offsetHeight;
             this.backgroundElementHeigth = this.backgroundElement.offsetHeight;
@@ -51,7 +52,7 @@ Class(CV, 'VoiceHeader').inherits(Widget)({
          * @method _scrollHandler <private> [Function]
          */
         _scrollHandler : function _scrollHandler() {
-            var y = this._body.scrollTop;
+            var y = this._window.scrollY;
             var scrollingDown = (y > this._lastScrollTop);
 
             if (this._backgroundSizeKnow) {
