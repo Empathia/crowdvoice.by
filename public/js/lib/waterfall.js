@@ -91,7 +91,7 @@
             }
         }
 
-        this.settings.containerElement.style.height = Math.max.apply(Math, this._blocks) + 'px';
+        this.settings.containerElement.style.height = ~~Math.max.apply(Math, this._blocks) + 'px';
 
         i = x = y = index = item = coordsX = coordsY = items = len = gutter = colWidth = spaceLeft = null;
     };
