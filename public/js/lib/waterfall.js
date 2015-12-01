@@ -36,7 +36,7 @@
         var columnsCount = 0;
 
         this.AVAILABLE_WIDTH = (c.offsetWidth || c.innerWidth);
-        this._colWidth = (this.settings.columnWidth || (this._getVisibleItems()[0] && this._getVisibleItems()[0].offsetWidth)) || 0;
+        this._colWidth = (this.settings.columnWidth || (this._getVisibleItems()[0] && ~~this._getVisibleItems()[0].getBoundingClientRect().width)) || 0;
         this._blocks = [];
         columnsCount = ~~(this.AVAILABLE_WIDTH / (this._colWidth + this.settings.gutter));
 
