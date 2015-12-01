@@ -11,6 +11,7 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport)({
     _resizeTime : 250,
     _scrollTimer : null,
     _scrollTime : 250,
+    SWITCH_HEADER_MIN_WIDTH : 360,
 
     /**
      * @param {Object} config - the configuration object
@@ -33,6 +34,11 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport)({
       this._listenScrollEvent = true;
       this._averageLayerHeight = 0;
       this._lazyLoadingImageArray = [];
+      this.switchHeaderTitleHeight = (
+        document.querySelector('header').offsetHeight +
+        document.querySelector('.voice-title').offsetHeight
+      );
+      this.headerMetaElement = document.querySelector('.header-meta');
 
       this.registry.setup(this.postsCount);
 
@@ -61,18 +67,13 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport)({
      * @private
      */
     _scrollHandler : function _scrollHandler() {
-      var st = this._body.scrollTop;
+      var st = this._window.scrollY;
       var scrollingUpwards = (st < this._lastScrollTop);
       var y = 0;
       var el;
 
-      if (!this._listenScrollEvent) {
-        return;
-      }
-
-      if (!scrollingUpwards) {
-        y = this._windowInnerHeight - 1;
-      }
+      if (!this._listenScrollEvent) { return; }
+      if (!scrollingUpwards) { y = (this._windowInnerHeight - 1); }
 
       el = document.elementFromPoint(1, y);
 
@@ -82,11 +83,22 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport)({
         }
       }
 
+      /* header title transition */
+      if (this._availableWidth >= this.SWITCH_HEADER_MIN_WIDTH) {
+        if (st < this.switchHeaderTitleHeight) {
+          if (this.headerMetaElement.classList.contains('active')) {
+            this.headerMetaElement.classList.remove('active');
+          }
+        } else if (st > this.switchHeaderTitleHeight) {
+          if (!this.headerMetaElement.classList.contains('active')) {
+            this.headerMetaElement.classList.add('active');
+          }
+        }
+      }
+
       this._lastScrollTop = st;
 
-      if (this._scrollTimer) {
-        this._window.clearTimeout(this._scrollTimer);
-      }
+      if (this._scrollTimer) { this._window.clearTimeout(this._scrollTimer); }
     },
 
     /* Handle the window resize event.

@@ -1,26 +1,20 @@
 @import (inline) "../../node_modules/sanitize.css/dist/sanitize.css";
 
-:root {
-  font-size: 13px;
-  font-family: 'Open sans', sans-serif;
-  line-height: 1.618;
-  color: black;
-  background-color: white;
-}
+@kabinet-path: "../../lib/kabinett/source/less";
+@import '@{kabinet-path}/core/_variables';
 
-body {
-  overflow-x: hidden;
-}
+/* =========================================================================== *
+ *  global base variables
+ * =========================================================================== */
+@root-font-size: 13px;
+@root-font-family: 'Open Sans', sans-serif;
+@root-text-color: @color-neutral-x-dark;
 
-// namespace for elements
-@ns: ~".ui";
-// namespace for utilities
-@-: ~".-";
+@headings-color: @color-neutral-xx-dark;
 
 /* =========================================================================== *
  *  kabinett buttons variables
  * =========================================================================== */
-// elements buttons
 @btn-default-font-size: 12px;
 @btn-default-height: 34px;
 @btn-default-radius: 3px;
@@ -41,22 +35,14 @@ body {
 @btn-xl-height: 58px;
 @btn-xl-radius: 3px;
 
-// elements checkbox
-@checkbox-size: 14px;
+// kabinett base
+@import '@{kabinet-path}/core/base';
 
-// elements popover
-@popover-arrow-size: 10px;
-
-@color-danger: #e74c3c; // #d0112b;
-@color-info: #3498db; //#0086e6;
-@color-success: #2ecc71;
-@color-warning: #f1c40f;
-
-@kabinet-path: "../../lib/kabinett/source/less";
 @import '@{kabinet-path}/utilities/elements';
 @import '@{kabinet-path}/components/popover';
 @import '@{kabinet-path}/components/lists';
 @import '@{kabinet-path}/components/checkbox';
+
 @import 'variables';
 @import './embed/variables';
 @import './embed/utils';

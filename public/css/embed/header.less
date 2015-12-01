@@ -10,6 +10,8 @@ header {
 }
 
 .header-logo-wrapper {
+  position: absolute;
+  top: 0; left: 0;
   padding: 6px 10px 0 12px;
   height: @header-height - 1;
 }
@@ -22,6 +24,8 @@ header {
 
 .header-meta {
   height: @header-height;
+  max-width: 100%;
+  padding-left: 54px;
 
   &.active > .header-meta__inner {
     transform: translate(0, -50%);
@@ -40,6 +44,15 @@ header {
   color: @color-neutral-mid;
 }
 
+.header-meta__stats,
+.header-meta-voice-title,
+.header-meta-voice-author {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
 .header-stat + .header-stat:not(:empty)::before {
   content: '•';
   padding: 0 7px;
@@ -47,12 +60,12 @@ header {
 
 .header-meta__voice-data {
   height: @header-height;
-  padding-top: 12px;
+  padding-top: 8px;
 }
 
 .header-meta-voice-title {
   font-size: 12px;
-  line-height: 1;
+  line-height: 16px;
 }
 
 .header-meta-voice-author {
@@ -64,10 +77,6 @@ header {
   font-size: 11px;
   line-height: 26px;
   padding: 0 6px 0 0;
-}
-
-.header-left-wrapper {
-  white-space: nowrap;
 }
 
 .header-right-wrapper {
@@ -92,7 +101,7 @@ header {
 
 .voice-share-popover {
   width: 250px;
-  transform: translate(10px, 15px) !important;
+  transform: translate(5px, 5px) !important;
 
   .ui-popover__arrow {
     right: 14px !important;
@@ -127,7 +136,10 @@ header {
   margin-top: 5px;
 }
 
-@media only screen and (max-width: 400px) {
-  .header-meta,
+@media only screen and (max-width: 459px) {
   .header-filter-posts-dropdown {display: none}
+}
+
+@media only screen and (max-width: 359px) {
+  .header-meta {display: none}
 }
