@@ -136,12 +136,16 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport)({
       }, this._resizeTime, this);
     },
 
+    /* Iterates over all the layers and call its `filterPosts` method when they
+     * have at least 1 or more Posts.
+     * @public
+     * @param {Array<string>} sourceTypes - the selected post-types on the dropdown.
+     * @return {Object} EmbedLayersController.
+     */
     filterItems : function filterItems (sourceTypes) {
       this.children.forEach(function(layer) {
         var posts = layer.getPosts();
-        if (posts.length) {
-          layer.filterPosts(sourceTypes, this.viewType);
-        }
+        if (posts.length) { layer.filterPosts(sourceTypes, this.viewType); }
       }, this);
       return this;
     },

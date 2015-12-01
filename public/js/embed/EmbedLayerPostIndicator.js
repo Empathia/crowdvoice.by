@@ -38,11 +38,13 @@ Class(CV, 'EmbedLayerPostIndicator').inherits(Widget).includes(CV.WidgetUtils)({
      * @public
      */
     updatePosition : function updatePosition() {
-      var y, height, alreadyRegistered, _that;
+      var y = 0, height = 0, alreadyRegistered, _that;
 
       _that = this;
-      y = ~~this.refElement.dataset.y || this.refElement.offsetTop;
-      height = ~~this.refElement.dataset.h || this.refElement.offsetHeight;
+      if (this.refElement.offsetParent) {
+        y = ~~this.refElement.dataset.y || this.refElement.offsetTop;
+        height = ~~this.refElement.dataset.h || this.refElement.offsetHeight;
+      }
 
       alreadyRegistered = function(value) {
         return (value === y || y < (value + _that.constructor.ITEM_OVERLAP_DISTANCE));

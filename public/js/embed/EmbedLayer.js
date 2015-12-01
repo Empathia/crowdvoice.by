@@ -62,7 +62,7 @@ Class(CV, 'EmbedLayer').inherits(Widget)({
     },
 
     getPosts : function getPosts() {
-      return this.children;
+      return this._postWidgets;
     },
 
     filterPosts : function filterPosts (sourceTypes, viewType) {
@@ -85,9 +85,9 @@ Class(CV, 'EmbedLayer').inherits(Widget)({
       }
 
       if (showAll) {
-        this.children.forEach(showAllFn);
+        this._postWidgets.forEach(showAllFn);
       } else {
-        this.children.forEach(filterFn);
+        this._postWidgets.forEach(filterFn);
       }
 
       if (viewType === 'cards') { this.waterfall.layout(); }
@@ -95,6 +95,8 @@ Class(CV, 'EmbedLayer').inherits(Widget)({
         this.postsContainer.style.height = '';
         this.postsContainer.style.height = this.postsContainer.offsetHeight + 'px';
       }
+
+      this._updatePostIndicatorsPosition();
     },
 
     /* Sets the heigth of the layer. If a number is provided it will convert it into pixel units.
@@ -113,11 +115,11 @@ Class(CV, 'EmbedLayer').inherits(Widget)({
     reLayout : function reLayout(args) {
       if (this.waterfall.getItems().length) { this.waterfall.layout(); }
       if (!this.getPosts().length) { this.setHeight(args.averageHeigth); }
-      this._updatePostIndicatorsPostion();
+      this._updatePostIndicatorsPosition();
       return this;
     },
 
-    /* Destroy all its posts children.
+    /* Destroy all its children.
      * @return undefined
      */
     empty : function empty() {
@@ -130,44 +132,36 @@ Class(CV, 'EmbedLayer').inherits(Widget)({
       return this;
     },
 
+    /* Create, append and render the posts dates indicators shown on the far right of the screen.
+     * @private
+     * This function is invoked by the `addPosts` public method.
+     * @param {Object} posts - Post instances references.
+     */
     _addPostsIndicators : function _addPostsIndicators (posts) {
       var frag = document.createDocumentFragment();
-      var i = 0;
-      var len = posts.length;
-      var indicator, firstDateCoincidence, currentDate;
 
-      for (i = 0; i < len; i++) {
-        currentDate = posts[i].el.dataset.date.match(/\d{4}-\d{2}-\d{2}/)[0];
+      for (var i = 0, len = posts.length; i < len; i++) {
+        this.appendChild(new CV.EmbedLayerPostIndicator({
+          name : 'indicator_' + i,
+          label : posts[i].el.dataset.date,
+          refElement : posts[i].el,
+          zIndex : (len - i)
+        })).activate().render(frag);
 
-        if (firstDateCoincidence !== currentDate) {
-          firstDateCoincidence = currentDate;
-
-          this.appendChild(new CV.EmbedLayerPostIndicator({
-            name : 'indicator_' + i,
-            label : posts[i].el.dataset.date,
-            refElement : posts[i].el,
-            zIndex : (len - i)
-          })).activate().render(frag);
-
-          this._indicatorWidgets.push(this['indicator_' + i]);
-        }
+        this._indicatorWidgets.push(this['indicator_' + i]);
       }
 
-      // Avoid forced synchronous layout
-      this._updatePostIndicatorsPostion();
+      this._updatePostIndicatorsPosition();
       this.ticksContainerElement.appendChild(frag);
     },
 
     /* Updates the position of each indicator.
      * @private
      */
-    _updatePostIndicatorsPostion : function _updatePostIndicatorsPostion() {
-      var i = 0;
-      var len = this._indicatorWidgets.length;
-
+    _updatePostIndicatorsPosition : function _updatePostIndicatorsPosition() {
       CV.EmbedLayerPostIndicator.flushRegisteredYValues();
 
-      for (i = 0; i < len; i++) {
+      for (var i = 0, len = this._indicatorWidgets.length; i < len; i++) {
         this._indicatorWidgets[i].updatePosition();
       }
     }
