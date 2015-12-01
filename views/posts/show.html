@@ -22,15 +22,14 @@
       </div>
     </div>
   </div>
-  <div class="post-show__description">
-    <%= (readablePost) ? readablePost.data.content : post.description %>
-  </div>
+  <div class="post-show__description"></div>
 </div>
 
 <script>
   var App = new CV.App();
   var Post = new CV.Views.PostShow({
     el : document.querySelector('.readable'),
-    data : <%= JSON.stringify(post) %>
+    post : <%= JSON.stringify(post) %>,
+    readablePost : <%= JSON.stringify(readablePost) %>
   });
 </script>
