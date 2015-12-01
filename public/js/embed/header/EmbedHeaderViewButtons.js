@@ -24,7 +24,7 @@ Class(CV, 'EmbedHeaderViewButtons').inherits(Widget).includes(BubblingSupport)({
     _setup : function _setup () {
       this.appendChild(new CV.UI.Button({
         name : 'cardsView',
-        className : 'tiny ' + this.theme
+        className : 'header-switch-view-cards-button tiny ' + this.theme
       }))
       .updateHTML('<svg class="-s16"><use xlink:href="#svg-cards"></use></svg>')
       .render(this.el);
