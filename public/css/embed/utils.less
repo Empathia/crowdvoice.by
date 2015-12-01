@@ -49,7 +49,7 @@
 .-full-height {height: 100%}
 
 /* icon size modifiers */
-@icon-sizes: 8, 10, 16, 20;
+@icon-sizes: 8, 10, 14, 16, 20;
 .createiconsizes(@i:1) when(@i <= length(@icon-sizes)) {
   @value: extract(@icon-sizes, @i);
   &@{value} {
