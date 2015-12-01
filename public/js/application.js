@@ -2,7 +2,7 @@
 require('./../css/style.less');
 // Fonts
 window.WebFontConfig = {
-    google: { families: [ 'Open+Sans:400,300,600,700,800:latin' ] }
+    google: { families: [ 'Open+Sans:400,300,600,700,800:latin', 'Merriweather:400,700:latin' ] }
 };
 (function() {
     var wf = document.createElement('script');
