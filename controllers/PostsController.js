@@ -76,6 +76,10 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
             readerable: readability.isProbablyReaderable(),
           });
 
+          if (!readablePost.data) {
+            return readablePost.save(done);
+          }
+
           var defaults = _.clone(sanitizer.defaults.allowedTags);
           defaults.splice(sanitizer.defaults.allowedTags.indexOf('a'), 1);
 

@@ -1,7 +1,7 @@
 var ReadablePost = Class('ReadablePost').inherits(Argon.KnexModel)({
   validations: {
     post_id: ['required'],
-    data: ['required'],
+    data: [],
     readerable: ['required'],
   },
 
