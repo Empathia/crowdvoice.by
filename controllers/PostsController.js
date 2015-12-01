@@ -65,12 +65,15 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           return done();
         }
 
-        ReadabilityParser.prototype.parse(post.sourceUrl, function(err, parsed) {
+        var parser = new ReadabilityParser(post.sourceUrl);
+
+        parser.fetch(function(err, readability) {
           if (err) { return done(err); }
 
           readablePost = new ReadablePost({
             post_id: hashids.decode(post.id)[0],
-            data: parsed,
+            data: readability.parse(),
+            readerable: readability.isProbablyReaderable(),
           });
 
           var defaults = _.clone(sanitizer.defaults.allowedTags);
