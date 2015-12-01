@@ -1,11 +1,7 @@
 var Scrapper = require(process.cwd() + '/lib/cvscrapper');
 var sanitizer = require('sanitize-html');
-
-var readability = require('readability-api');
-
-var rParser = new readability.parser();
-
-readability.configure(CONFIG.readability);
+var ReadabilityParser = require(path.join(__dirname, '../lib/ReadabilityParser.js'));
+var truncatise = require('truncatise')
 
 var PostsController = Class('PostsController').includes(BlackListFilter)({
   prototype : {
@@ -22,11 +18,9 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
     },
 
     show : function show(req, res, next) {
-
-      if (req.params.postId === 'edit') { next(); return; }
-
-      var post;
-      var readablePost;
+      var post,
+        readablePost,
+        already = false;
 
       async.series([function(done) {
         Post.findById(hashids.decode(req.params.postId)[0], function(err, result) {
@@ -49,51 +43,74 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           return done();
         }
 
-        rParser.parse(post.sourceUrl, function(err, parsed) {
-          if (err) {
-            return done(err);
+        ReadablePost.find({
+          post_id: hashids.decode(post.id)[0]
+        }, function (err, readablePosts) {
+          if (err) { return done(err); }
+
+          if (readablePosts[0]) {
+            already = true;
+            readablePost = new ReadablePost(readablePosts[0]);
           }
 
-          db('ReadablePosts')
-          .insert({
-            'post_id' : hashids.decode(post.id)[0],
-            data : parsed,
-            created_at : new Date(),
-            updated_at : new Date()
-          })
-          .returning('id').exec(function(err, returning) {
-            if (err) {
-              return done(err);
-            }
-
-            db('ReadablePosts').where({id : returning[0]}).exec(function(err, result) {
-              if (err) {
-                return done(err);
-              }
-
-              readablePost = result[0];
-
-              return done();
-            });
-          });
-        })
-      }], function(err) {
-        if (err) {
-          return next(err)
+          return done();
+        });
+      }, function(done) {
+        if (post.sourceType !== Post.SOURCE_TYPE_LINK && post.sourceService !== Post.SOURCE_SERVICE_LINK) {
+          return done();
         }
+
+        // we already found something
+        if (already) {
+          return done();
+        }
+
+        var parser = new ReadabilityParser(post.sourceUrl);
+
+        parser.fetch(function(err, readability) {
+          if (err) { return done(err); }
+
+          readablePost = new ReadablePost({
+            post_id: hashids.decode(post.id)[0],
+            data: readability.parse(),
+            readerable: readability.isProbablyReaderable(),
+          });
+
+          if (!readablePost.data) {
+            return readablePost.save(done);
+          }
+
+          var defaults = _.clone(sanitizer.defaults.allowedTags);
+          defaults.splice(sanitizer.defaults.allowedTags.indexOf('a'), 1);
+
+          readablePost.data.content = sanitizer(readablePost.data.content, {
+            allowedTags: defaults
+          });
+
+          readablePost.data.content = truncatise(readablePost.data.content, {
+            TruncateLength: 199, // seems to sometimes miscount upwards by one word
+            TruncatedBy: 'words',
+            Strict: false,
+            StripHTML: false,
+            Suffix: '...',
+          });
+
+          readablePost.save(done)
+        });
+      }], function(err) {
+        if (err) { return next(err); }
 
         res.locals.post = post;
         res.locals.readablePost = readablePost;
 
         res.format({
           json : function() {
-            res.json(post.toJSON());
+            res.json(post);
           },
           html : function() {
             res.render('posts/show', { layout : 'postShow' });
           }
-        })
-
+        });
       });
     },
 
