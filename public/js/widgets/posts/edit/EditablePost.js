@@ -289,7 +289,7 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
             return this;
         },
 
-        addLinkNewtab : function addLinkWrapper() {
+        addLinkNewtab : function addLinkNewtab() {
             if(this.sourceType !== 'text' && this.sourceType !== 'image'){
                 var url = this.sourceUrl;
 
