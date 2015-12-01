@@ -18,6 +18,7 @@ They might well be outsourced to an external stylesheet of course.
 -->
 
 <style type="text/css">
+	..svg-svg-add-dims { width: 14px; height: 14px; }
 	..svg-svg-arrow-down-dims { width: 10px; height: 6px; }
 	..svg-svg-article-dims { width: 13px; height: 16px; }
 	..svg-svg-cards-dims { width: 15px; height: 14px; }
@@ -52,6 +53,7 @@ further details on how to create this embeddable sprite variant.
 -->
 
 <svg width="0" height="0" style="position:absolute">
+		<symbol viewBox="0 0 14 14" id="svg-add"><title>icon (add)</title><path d="M6 6H0v2h6v6h2V8h6V6H8V0H6v6z" fill-rule="evenodd"/></symbol>
 		<symbol viewBox="0 0 10 6" id="svg-arrow-down"><title>icon (arrow down)</title><path d="M9.883.117C9.805.04 9.71 0 9.603 0c-.11 0-.202.04-.28.117L5 4.83.677.118C.6.04.507 0 .397 0 .29 0 .195.04.117.117.04.195 0 .29 0 .397c0 .11.04.202.117.28l.716.788c.478.525 1 1.102 1.57 1.732.568.63 1.093 1.204 1.575 1.725.482.52.723.785.723.794.044.044.092.074.144.09.052.02.104.027.156.027.052 0 .104-.008.156-.026.052-.017.1-.047.143-.09 0-.01.238-.274.716-.795.477-.52 1.002-1.096 1.575-1.725l1.577-1.732.716-.788C9.96.6 10 .507 10 .397c0-.108-.04-.202-.117-.28z" fill-rule="evenodd"/></symbol>
 		<symbol viewBox="0 0 13 16" id="svg-article"><title>icon-article</title><path d="M9.5 11h-6c-.135 0-.253.05-.352.148-.1.1-.148.217-.148.352 0 .135.05.253.148.352.1.1.217.148.352.148h6c.135 0 .253-.05.352-.148.1-.1.148-.217.148-.352 0-.135-.05-.253-.148-.352-.1-.1-.217-.148-.352-.148zM3 8.5c0 .135.05.253.148.352.1.1.217.148.352.148h6c.135 0 .253-.05.352-.148.1-.1.148-.217.148-.352 0-.135-.05-.253-.148-.352-.1-.1-.217-.148-.352-.148h-6c-.135 0-.253.05-.352.148-.1.1-.148.217-.148.352zM9 0H.5C.365 0 .247.05.148.148.048.248 0 .365 0 .5v15c0 .135.05.253.148.352.1.1.217.148.352.148h12c.135 0 .253-.05.352-.148.1-.1.148-.217.148-.352V4L9 0zm0 1.813L11.187 4H9V1.813zM12 14.5c0 .135-.05.253-.148.352-.1.1-.217.148-.352.148h-10c-.135 0-.253-.05-.352-.148-.1-.1-.148-.217-.148-.352v-13c0-.135.05-.253.148-.352.1-.1.217-.148.352-.148H8v4h4v9.5z" fill-rule="evenodd"/></symbol>
 		<symbol viewBox="0 0 15 14" id="svg-cards"><title>icon (cards)</title><path d="M15 4H8V0h7v4zm0 10H8V5h7v9zM0 10h7v4H0v-4zM0 0h7v9H0V0z" stroke="#000" fill="none" fill-rule="evenodd"/></symbol>
@@ -96,6 +98,17 @@ embedded above. They may be styled via CSS.
 			<h3>A) Inline SVG with embedded sprite</h3>
 			<ul>
 
+				<li title="svg-add">
+					<div class="icon-box">
+						
+						<!-- svg-add -->
+						<svg class="svg-svg-add-dims">
+							<use xlink:href="#svg-add"></use>
+						</svg>
+						
+					</div>
+					<h2>svg-add</h2>
+				</li>
 				<li title="svg-arrow-down">
 					<div class="icon-box">
 						
@@ -288,7 +301,7 @@ SVG sprite. They may be styled via CSS. (IE 9-11 with polyfill only)
 
 		</section>
 		<footer>
-			<p>Generated at Tue, 01 Dec 2015 00:26:23 GMT by <a href="https://github.com/jkphl/svg-sprite" target="_blank">svg-sprite</a>.</p>
+			<p>Generated at Tue, 01 Dec 2015 03:48:53 GMT by <a href="https://github.com/jkphl/svg-sprite" target="_blank">svg-sprite</a>.</p>
 		</footer>
 	</body>
 </html>
