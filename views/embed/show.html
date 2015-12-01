@@ -51,15 +51,16 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
+  window.App = new CV.App().socketStart();
+
   window.Embed = new CV.Embeddable({
     voiceData : <%= JSON.stringify(voice) %>,
     reqQuery : <%= JSON.stringify(params) %>,
     firstPostDate : <%= JSON.stringify(firstPostDate) %>,
     lastPostDate : <%= JSON.stringify(lastPostDate) %>,
-    postsCount : <%= JSON.stringify(postsCount) %>
+    postsCount : <%= JSON.stringify(postsCount) %>,
+    socket : App.getSocket()
   });
-
-  Embed.socketStart();
 
   setTimeout(function() {
     window.scrollTo(0,0);

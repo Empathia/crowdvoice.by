@@ -23,11 +23,14 @@ require('neon/stdlib');
 window.CV = {UI: {}};
 require('./lib/widget-utils');
 require('./lib/Widget');
+require('./app');
 require('./lib/image-halt');
 
 require('./widgets/ui/Button');
 require('./widgets/ui/Checkbox');
 require('./widgets/Dropdown');
+require('./widgets/PopoverBlocker');
+require('./widgets/popovers/PopoverShare');
 
 require('./widgets/voice/PostsRegistry');
 require('./embed/helpers/Voice');

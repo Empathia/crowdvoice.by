@@ -38,10 +38,10 @@ Class(CV, 'EmbedHeader').inherits(Widget).includes(BubblingSupport)({
       if (this.reqQuery.share) {
         this.appendChild(new CV.EmbedHeaderShareButton({
           name : 'shareButton',
-          className : 'tiny ' + this.reqQuery.theme
-        }))
-        .updateHTML('<svg class="-s16"><use xlink:href="#svg-share"></use></svg>')
-        .render(this.rightWrapperElement);
+          className : '-inline-block',
+          theme : this.reqQuery.theme,
+          voiceData : this.voiceData
+        })).render(this.rightWrapperElement);
       }
     }
   }

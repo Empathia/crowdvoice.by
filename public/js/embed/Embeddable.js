@@ -1,4 +1,3 @@
-/* globals io */
 Class(CV, 'Embeddable').includes(NodeSupport, CustomEventSupport, CV.HelperVoice)({
   prototype : {
     /**
@@ -16,34 +15,6 @@ Class(CV, 'Embeddable').includes(NodeSupport, CustomEventSupport, CV.HelperVoice
       this.totalPosts = this._getTotalPostCount(this.postsCount);
 
       console.log(config);
-    },
-
-    /* Start socketio connection
-     * @public
-     * @return {Object} this
-     */
-    socketStart : function socketStart() {
-      if (!this._socket) {
-        this._socket = io(window.location.origin, {
-          'reconnection': true,
-          'reconnectionDelay': 1000,
-          'reconnectionDelayMax' : 5000,
-          'reconnectionAttempts': 5
-        });
-      }
-      return this;
-    },
-
-    /* Return the socketio instance
-     * @public
-     * @return {Object} socketio instance
-     */
-    getSocket : function getSocket() {
-      if (this._socket) {
-        return this._socket;
-      }
-
-      return this.socketStart().getSocket();
     },
 
     /* Initialize its children widgets.
@@ -68,7 +39,7 @@ Class(CV, 'Embeddable').includes(NodeSupport, CustomEventSupport, CV.HelperVoice
           firstPostDate : this.firstPostDate,
           lastPostDate : this.lastPostDate,
           postsCount : this.postsCount,
-          socket : this.getSocket()
+          socket : this.socket
         }));
       } else {
         this.postsContainerElement.className += ' -no-posts';
