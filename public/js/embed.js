@@ -43,6 +43,8 @@ require('./embed/header/EmbedHeaderViewButtons');
 require('./embed/header/EmbedHeaderShareButton');
 require('./embed/EmbedLayersController');
 require('./embed/EmbedLayer');
+require('./embed/EmbedLayerPostIndicator');
+require('./embed/timeline/Timeline');
 
 require('./embed/posts/modules/PostModuleImages');
 require('./embed/posts/Post');

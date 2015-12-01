@@ -16,7 +16,7 @@ Class(CV, 'Post').inherits(Widget).includes(
    * @param {Object} config - The Post Model Data.
    * @return {Object} new CV.Post[type]
    */
-   create : function create (config) {
+  create : function create (config) {
     var type = this.prototype.format.capitalizeFirstLetter(config.sourceType);
     return new window.CV['Post' + type](config);
   }

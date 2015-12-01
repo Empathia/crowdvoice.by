@@ -41,6 +41,8 @@ Class(CV, 'PostImage').inherits(CV.Post)({
     },
 
     _setup : function _setup () {
+      this.el.dataset.date = moment(this.publishedAt).format('YYYY-MM-DD');
+
       if (this.hasCoverImage()) {
         this.setImageHeight(this.imageMeta.medium.height);
       } else {

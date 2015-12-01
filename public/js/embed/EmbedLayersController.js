@@ -8,7 +8,7 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport)({
     averagePostHeight : 500,
 
     _resizeTimer : null,
-    _resizeTime : 250,
+    _resizeTime : 500,
     _scrollTimer : null,
     _scrollTime : 250,
     SWITCH_HEADER_MIN_WIDTH : 360,
@@ -34,18 +34,27 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport)({
       this._listenScrollEvent = true;
       this._averageLayerHeight = 0;
       this._lazyLoadingImageArray = [];
+
+      this.headerElement = document.querySelector('header');
+      this.headerMetaElement = document.querySelector('.header-meta');
       this.switchHeaderTitleHeight = (
-        document.querySelector('header').offsetHeight +
+        this.headerElement.offsetHeight +
         document.querySelector('.voice-title').offsetHeight
       );
-      this.headerMetaElement = document.querySelector('.header-meta');
+      this.mainContent = document.getElementsByClassName('main')[0];
+      this._firstDateMS = moment(this.firstPostDate).format('x') * 1000;
+      this._lastDateMS = moment(this.lastPostDate).format('x') * 1000;
 
       this.registry.setup(this.postsCount);
 
       this._setGlobarVars();
       this._bindEvents()._createEmptyLayers(this.postsCount)._requestAll();
 
+      this.timeline = new CV.Timeline().render(this.headerElement);
+
       this._beforeRequest(this.children[0].dateString);
+      this._lastScrollDate = moment(this.lastPostDate).format('x') * 1000;
+      this.timeline.run(document.documentElement.clientWidth - 14);
     },
 
     /* Subscribe the widget’s events and the widget’s children events if needed.
@@ -75,12 +84,24 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport)({
       if (!this._listenScrollEvent) { return; }
       if (!scrollingUpwards) { y = (this._windowInnerHeight - 1); }
 
-      el = document.elementFromPoint(1, y);
+      this.headerElement.style.pointerEvents = 'none';
 
-      if (el.classList.contains('posts-layer__detector')) {
-        if (el.dataset.date !== this._currentMonthString) {
-          this.fillLayer(el.dataset.date, scrollingUpwards);
-        }
+      // update timeline feedback
+      var scrollPercentage, scrollViewportPixels, elem, scaledPercentage;
+      scrollPercentage = 100 * st / (this._totalHeight - this._windowInnerHeight);
+      scrollViewportPixels = scrollPercentage * this._windowInnerHeight / 100;
+      elem = document.elementFromPoint(this._clientWidth - 1, scrollViewportPixels);
+      if (elem && elem.classList.contains(CV.EmbedLayerPostIndicator.ELEMENT_CLASS)) {
+        this._lastScrollDate = elem.dataset.timestamp;
+      }
+      scaledPercentage = ((100 * (this._lastScrollDate - this._firstDateMS)) / (this._lastDateMS - this._firstDateMS));
+      if (scaledPercentage < 0) { scaledPercentage = 0; }
+      this.timeline.update(~~((this._clientWidth - 14) * scaledPercentage / 100));
+
+      // load layer posts
+      el = document.elementFromPoint(1, y);
+      if (el.classList.contains('posts-layer__detector') && (el.dataset.date !== this._currentMonthString)) {
+        this.fillLayer(el.dataset.date, scrollingUpwards);
       }
 
       /* header title transition */
@@ -99,21 +120,20 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport)({
       this._lastScrollTop = st;
 
       if (this._scrollTimer) { this._window.clearTimeout(this._scrollTimer); }
+      this._scrollTimer = this._window.setTimeout(function() {
+          this.headerElement.style.pointerEvents = '';
+      }.bind(this), this._scrollTime);
     },
 
     /* Handle the window resize event.
      * @private
      */
     _resizeHandler : function _resizeHandler() {
-      var _this = this;
+      if (this._resizeTimer) { this._window.clearTimeout(this._resizeTimer); }
 
-      if (this._resizeTimer) {
-          this._window.clearTimeout(this._resizeTimer);
-      }
-
-      this._resizeTimer = this._window.setTimeout(function() {
+      this._resizeTimer = this._window.setTimeout(function(_this) {
           _this.update();
-      }, this._resizeTime);
+      }, this._resizeTime, this);
     },
 
     filterItems : function filterItems (sourceTypes) {
@@ -137,6 +157,8 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport)({
           this.addPosts(layer, this.getPostsRegistry(layer.dateString));
         }
       }, this);
+
+      this._updateLayers();
     },
 
     /* Update globar variables and every layer with posts.
@@ -190,6 +212,7 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport)({
       }
 
       this.addPosts(currentLayer, postsData);
+      this._setGlobarVars();
 
       if (scrollDirection) {
         var next2 = next && next.getNextSibling();
@@ -308,8 +331,10 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport)({
     },
 
     _setGlobarVars : function _setGlobarVars() {
+      this._totalHeight = this.mainContent.offsetHeight;
       this._windowInnerHeight = this._window.innerHeight;
       this._availableWidth = this._window.innerWidth;
+      this._clientWidth = document.documentElement.clientWidth;
       this._updateAverageLayerHeight();
       this._scrollHeight = this._body.clientHeight;
       return this;
