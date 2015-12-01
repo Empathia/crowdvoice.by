@@ -383,3 +383,68 @@
 .moderate-dropdown-delete-all-option {
   border-top: 1px solid rgba(0, 0, 0, 0.2);
 }
+
+/******************************************************************************
+ * Twitter Help Popover
+ *****************************************************************************/
+.twitter-help-popover{
+  width: 633px;
+  height: 623px;
+  left: 50%;
+  -webkit-transform: translate(-21%, -62px) !important;
+  transform: translate(-21%, -62%) !important;
+  bottom: inherit !important;
+  z-index: 1;
+  .popover-title{
+    font-size: 22px;
+    padding: 0px 20px;
+    padding-top: 25px;
+    color: black;
+  }
+  .line{
+    width: 100%;
+    background: #ccc;
+    height: 1px;
+  }
+  p{
+    padding: 0px 20px;
+    padding-bottom: 25px;
+    padding-top: 5px;
+  }
+  span{
+    color: #A9A9A9;
+  }
+  .list-containers{
+    padding: 20px 20px;
+    ul{
+      list-style: none;
+      font-size: 12px;
+      li:first-child{
+        color: #B8B8B8;
+        font-weight: 800;
+      }
+      li{
+        color: #4D4D4D;
+        margin-bottom: 7px;
+      }
+    }
+  }
+  .twitter__help-arrow{
+    position: absolute;
+    border-color: inherit;
+    left: -21px;
+    top: 51%;
+  }
+  .twitter__help-arrow:before, .twitter__help-arrow:after{
+    content: '';
+    position: absolute;
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent;
+    border-right-color: rgba(0, 0, 0, 0.2);
+  }
+  .twitter__help-arrow:after{
+    margin-left: 1px;
+    border-right-color: #fff;
+  }
+}

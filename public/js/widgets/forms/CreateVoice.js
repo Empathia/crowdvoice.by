@@ -49,7 +49,7 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
         isAdmin : null,
 
         _flashMessage : null,
-
+        twitterButtonBubble : null,
         MAX_TITLE_LENGTH : 65,
         MAX_DESCRIPTION_LENGTH : 180,
         _autoGenerateSlug : true,
@@ -207,6 +207,53 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
                 }
             })).render(this.el.querySelector('[data-twitter]'));
 
+            this.voiceHashtags.el.querySelector('.cv-caption').innerHTML = '<i>You can use <a class="twitter-help-bubble">search operators</a> (?) to find especific information</i>';
+            this.twitterButtonBubble = this.voiceHashtags.el.querySelector('.twitter-help-bubble');
+
+            this.appendChild(new CV.Popover({
+                name : 'popoverTwitterHelp',
+                className : 'twitter-help-popover',
+                placement : '',
+                toggler : this.twitterButtonBubble,
+                container : this.voiceHashtags.el,
+                title : 'Refine your twitter search with operators',
+                content : '\
+                    <p>Look for the kind of information you wish to find and adapt the <span>(examples)</span> to your needs</p>\
+                    <div class="line"></div>\
+                    <div class="list-containers">\
+                        <ul>\
+                            <li>Words</li>\
+                            <li>Containing all words in any position  <span>(Crowd Voice)</span></li>\
+                            <li>Containing exact phrases  <span>(“Crowd Voice”)</span></li>\
+                            <li>Containing any of the words <span>(“Crowd” OR “Voice”)</span></li>\
+                            <li>Excluding specific words <span>(Crowd -Voice)</span></li>\
+                            <li>With a specific hashtag <span>(#crowdvoiceby)</span></li>\
+                        </ul>\
+                        <ul>\
+                            <li>People</li>\
+                            <li>Sent from person “@USERNAME” <span>(from:USERNAME)</span></li>\
+                            <li>To person “@USERNAME” <span>(to:USERNAME)</span></li>\
+                            <li>Referencing a person “USERNAME” <span>(@USERNAME)</span></li>\
+                        </ul>\
+                        <ul>\
+                            <li>Places</li>\
+                            <li>Containing a exact phrase “Crowd Voice” and sent near “san francisco” <span>(“crowd voice” near:”san francisco”)</span></li>\
+                            <li>Sent Within 15 miles of “NYC”  <span>(“near:NYC within:15mi”)</span></li>\
+                        </ul>\
+                        <ul>\
+                            <li>Dates</li>\
+                            <li>Containing “activism” and sent since date “2010-12-27” <span>(activism since:2010-12-17)</span></li>\
+                            <li>Containing “human” and sent up to date “2010-12-27” <span>(human since:2010-12-17)</span></li>\
+                        </ul>\
+                        <ul>\
+                            <li>Twitter Feed</li>\
+                            <li>Containing “news” and entered via TwitterFeed <span>(news source:twitterfeed)</span></li>\
+                        </ul>\
+                    </div>\
+                    <div class="twitter__help-arrow"></div>\
+                '
+            })).render(this.el);
+                        
             // this.appendChild(new CV.UI.Input({
             //     name : 'voiceRssfeed',
             //     data : {
@@ -314,12 +361,23 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
             return this;
         },
 
+        _twitterHelpActivate : function _twitterHelpActivate(){
+            this.popoverTwitterHelp.activate();
+        },
+
+        _twitterHelpDeactivate : function _twitterHelpActivate(){
+            this.popoverTwitterHelp.deactivate();
+        },
+
         _bindEvents : function _bindEvents() {
             this._getLocationRef = this._getLocationHandler.bind(this);
             this.detectLocation.bind('location', this._getLocationRef);
 
             this._sendFormHandlerRef = this._sendFormHandler.bind(this);
             Events.on(this.buttonSend.el, 'click', this._sendFormHandlerRef);
+
+            this.twitterButtonBubble.addEventListener('mouseover', this._twitterHelpActivate.bind(this));
+            this.twitterButtonBubble.addEventListener('mouseout', this._twitterHelpDeactivate.bind(this));
 
             if (this._autoGenerateSlug) {
                 this._generateSlughandlerRef = this._generateSlugHandler.bind(this);
@@ -791,6 +849,9 @@ Class(CV, 'CreateVoice').inherits(Widget).includes(CV.WidgetUtils)({
         },
 
         destroy : function destroy() {
+            this.twitterButtonBubble.removeEventListener('mouseover', this._twitterHelpActivate.bind(this));
+            this.twitterButtonBubble.removeEventListener('mouseout', this._twitterHelpDeactivate.bind(this));
+
             Events.off(this.buttonSend.el, 'click', this._sendFormHandlerRef);
             this._sendFormHandlerRef = null;
 
