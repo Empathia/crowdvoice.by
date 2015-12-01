@@ -105,7 +105,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
         res.format({
           json : function() {
-            res.json(post.toJSON());
+            res.json(post);
           },
           html : function() {
             res.render('posts/show', { layout : 'postShow' });

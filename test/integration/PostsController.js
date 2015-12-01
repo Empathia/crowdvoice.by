@@ -19,7 +19,8 @@ application._serverStart()
 logger.log = function () {}
 
 var login = require(path.join(__dirname, 'login.js')),
-  expect = require('chai').expect
+  expect = require('chai').expect,
+  request = require('superagent')
 
 CONFIG.database.logQueries = false
 
@@ -333,6 +334,157 @@ describe('PostsController', function () {
               return doneTest()
             })
           })
+      })
+    })
+
+  })
+
+  describe('#show', function () {
+
+    // Requires data_generator to have generated 0 posts
+    it('Should create ReadablePost record, with data not null', function (doneTest) {
+      login('cersei-lannister', function (err, agent, csrf) {
+        if (err) { return doneTest(err) }
+
+        var postId
+
+        async.series([
+          function (nextSeries) {
+            agent
+              .post(urlBase + '/cersei-lannister/walk-of-atonement/')
+              .accept('application/json')
+              .send({
+                _csrf: csrf,
+                posts: [
+                  {
+                    title: 'My switch to OpenBSD, first impressions - Blog - Greduan.com',
+                    description: 'A story talking about my switch to OpenBSD.',
+                    publishedAt: 'Thu Oct 15 2015 12:20:00 GMT-0500 (CDT)',
+                    image: '',
+                    imageWidth: '0',
+                    imageHeight: '0',
+                    sourceType: 'link',
+                    sourceService: 'link',
+                    sourceUrl: 'http://blog.greduan.com/2015-04-19-mstobfi.html',
+                    imagePath: '',
+                  },
+                ],
+              })
+              .end(function (err, res) {
+                if (err) { return nextSeries(err) }
+
+                expect(res.status).to.equal(200)
+
+                Post.find({ source_url: 'http://blog.greduan.com/2015-04-19-mstobfi.html' }, function (err, post) {
+                  if (err) { return nextSeries(err) }
+
+                  expect(post.length).to.equal(1)
+                  postId = post[0].id
+
+                  return nextSeries()
+                })
+              })
+          },
+
+          function (nextSeries) {
+            request
+              .get(urlBase + '/cersei-lannister/walk-of-atonement/' + hashids.encode(postId))
+              .end(function (err, res) {
+                if (err) { return nextSeries(err) }
+
+                expect(res.status).to.equal(200)
+
+                return nextSeries()
+              })
+          },
+        ], function (err) {
+          if (err) { return doneTest(err) }
+
+          ReadablePost.find({
+            post_id: postId
+          }, function (err, post) {
+            if (err) { return doneTest(post) }
+
+            expect(post.length).to.equal(1)
+            expect(post[0].data).to.not.equal(null)
+            expect(post[0].readerable).to.exist
+
+            return doneTest()
+          })
+        })
+      })
+    })
+
+    it('Should create ReadablePost record, with data null', function (doneTest) {
+      login('cersei-lannister', function (err, agent, csrf) {
+        if (err) { return doneTest(err) }
+
+        var postId
+
+        async.series([
+          function (nextSeries) {
+            agent
+              .post(urlBase + '/cersei-lannister/walk-of-atonement/')
+              .accept('application/json')
+              .send({
+                _csrf: csrf,
+                posts: [
+                  {
+                    title: 'SecuriTay on Twitter - booop boop',
+                    description: 'A tweet',
+                    publishedAt: 'Thu Oct 15 2015 12:20:00 GMT-0500 (CDT)',
+                    image: '',
+                    imageWidth: '0',
+                    imageHeight: '0',
+                    sourceType: 'link',
+                    sourceService: 'link',
+                    sourceUrl: 'https://twitter.com/SwiftOnSecurity/status/671553990203588609',
+                    imagePath: '',
+                  },
+                ],
+              })
+              .end(function (err, res) {
+                if (err) { return nextSeries(err) }
+
+                expect(res.status).to.equal(200)
+
+                Post.find({ source_url: 'https://twitter.com/SwiftOnSecurity/status/671553990203588609' }, function (err, post) {
+                  if (err) { return nextSeries(err) }
+
+                  expect(post.length).to.equal(1)
+                  postId = post[0].id
+
+                  return nextSeries()
+                })
+              })
+          },
+
+          function (nextSeries) {
+            request
+              .get(urlBase + '/cersei-lannister/walk-of-atonement/' + hashids.encode(postId))
+              .end(function (err, res) {
+                if (err) { return nextSeries(err) }
+
+                expect(res.status).to.equal(200)
+
+                return nextSeries()
+              })
+          },
+        ], function (err) {
+          if (err) { return doneTest(err) }
+
+          ReadablePost.find({
+            post_id: postId
+          }, function (err, post) {
+            if (err) { return doneTest(post) }
+
+            expect(post.length).to.equal(1)
+            expect(post[0].data).to.equal(null)
+            expect(post[0].readerable).to.exist
+
+            return doneTest()
+          })
+        })
       })
     })
 
