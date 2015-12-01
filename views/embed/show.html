@@ -1,11 +1,11 @@
 <header class="-clearfix">
   <div class="header-right-wrapper -float-right"></div>
   <div class="header-left-wrapper -overflow-hidden">
-    <div class="header-logo-wrapper -inline-block">
+    <a href="<%= CONFIG.environment === 'development' ? CONFIG.siteUrl.development : CONFIG.siteUrl.production %>" target="_blank" title="CrowdVoice.by" class="header-logo-wrapper -inline-block">
       <svg class="header-logo__svg">
         <use xlink:href="#svg-logo"></use>
       </svg>
-    </div>
+    </a>
     <div class="header-meta -inline-block -overflow-hidden">
       <div class="header-meta__inner">
         <div class="header-meta__stats">
