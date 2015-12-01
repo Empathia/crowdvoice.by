@@ -290,7 +290,7 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
         },
 
         addLinkNewtab : function addLinkWrapper() {
-            if(this.sourceType !== 'text'){
+            if(this.sourceType !== 'text' && this.sourceType !== 'image'){
                 var url = this.sourceUrl;
 
                 this.el.querySelector('.post-card-info').addEventListener("click", function( e ){
