@@ -28,9 +28,6 @@ Class(CV, 'PostCreatorWriteArticleEditorBody').inherits(Widget)({
 
         _setup : function _setup() {
             this.editor = new MediumEditor(this.body, {
-                buttons: ['bold', 'italic', 'underline', 'anchor', 'header1', 'header2', 'quote'],
-                firstHeader: 'h2',
-                secondHeader: 'h3',
                 targetBlank: true,
                 anchor: {
                     linkValidation: true
@@ -49,7 +46,12 @@ Class(CV, 'PostCreatorWriteArticleEditorBody').inherits(Widget)({
                 checkboxCookieName : 'onboardingArticle'
             })).render(this.el);
 
-            this.centeredModal.activate();
+            if (document.cookie.indexOf(this.centeredModal.checkboxCookieName) >= 0) {
+                this.centeredModal.destroy();
+            } else {
+                this.centeredModal.activate();
+            }
+            
 
             return this;
         },
