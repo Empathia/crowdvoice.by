@@ -7,8 +7,8 @@
   }
 
   header {
-    background: whitesmoke;
-    box-shadow: 0 -1px 0 0 whitesmoke;
+    background: #fff;
+    box-shadow: 0 -1px 0 0 #fff;
   }
 
   .voice-background-cover::after {background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0) 50%, @embed_light_bg);}
@@ -17,6 +17,11 @@
   &.theme_bg-true .voice-title {
     color: #fff;
     text-shadow: 0 1px 2px rgba(0,0,0,.35);
+  }
+
+  .header-meta {
+    &::before {background-image: linear-gradient(#fff 20%, rgba(255,255,255,0));}
+    &::after {background-image: linear-gradient(rgba(255,255,255,0), #fff 80%);}
   }
 
   .header-meta-voice-title {
