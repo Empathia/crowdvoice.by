@@ -7,8 +7,10 @@ var EmbedController = Class('EmbedController')({
 
         // defaulting config options
         var params = {};
+
         var isValidHex = new RegExp("^(#)?([0-9a-fA-F]{3})([0-9a-fA-F]{3})?$");
         if (!isValidHex.test(req.query.accent)) { req.query.accent = 'FF9400'; }
+        params.accent = req.query.accent;
 
         if (!['dark', 'light'].some(function (propertyName) {
           return (req.query.theme === propertyName);
