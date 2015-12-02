@@ -1,5 +1,3 @@
-var origin = require('get-location-origin');
-
 Class(CV, 'EmbedHeader').inherits(Widget).includes(BubblingSupport)({
   prototype : {
     /**
@@ -47,26 +45,11 @@ Class(CV, 'EmbedHeader').inherits(Widget).includes(BubblingSupport)({
       }
 
       if (this.voiceData.type === 'TYPE_PUBLIC') {
-        this.appendChild(new Widget({
-          name: 'openVoiceButtonContainer',
-          className : 'header-open-voice-button-container -inline-block'
-        }));
-
-        this.appendChild(new CV.UI.Button({
+        this.appendChild(new CV.EmbedOpenVoiceButton({
           name : 'openVoiceButton',
-          className : 'header-open-voice-button primary tiny',
-          data : {
-            href: origin + '/' + this.voiceData.owner.profileName + '/' + this.voiceData.slug + '/',
-            attr : {
-              target: '_blank',
-              title: 'Edit ' + this.voiceData.title + ' voice'
-            }
-          }
-        }))
-        .updateHTML('<svg class="-s14"><use xlink:href="#svg-add"></use></svg>')
-        .render(this.openVoiceButtonContainer.element);
-
-        this.openVoiceButtonContainer.render(this.rightWrapperElement);
+          accent : this.reqQuery.accent,
+          voiceData : this.voiceData
+        })).render(this.rightWrapperElement);
       }
     }
   }

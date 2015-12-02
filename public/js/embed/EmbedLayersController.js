@@ -44,17 +44,21 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport)({
       this.mainContent = document.getElementsByClassName('main')[0];
       this._firstDateMS = moment(this.firstPostDate).format('x') * 1000;
       this._lastDateMS = moment(this.lastPostDate).format('x') * 1000;
+      this._lastScrollDate = this._lastDateMS;
 
       this.registry.setup(this.postsCount);
 
       this._setGlobarVars();
       this._bindEvents()._createEmptyLayers(this.postsCount)._requestAll();
+    },
+
+    setup : function setup () {
+      this._beforeRequest(this.children[0].dateString);
 
       this.timeline = new CV.Timeline().render(this.headerElement);
-
-      this._beforeRequest(this.children[0].dateString);
-      this._lastScrollDate = moment(this.lastPostDate).format('x') * 1000;
+      this.timeline.updateBgColor('#' + this.parent.reqQuery.accent);
       this.timeline.run(document.documentElement.clientWidth - 14);
+      return this;
     },
 
     /* Subscribe the widget’s events and the widget’s children events if needed.

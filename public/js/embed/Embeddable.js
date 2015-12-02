@@ -40,7 +40,7 @@ Class(CV, 'Embeddable').includes(NodeSupport, CustomEventSupport, CV.HelperVoice
           lastPostDate : this.lastPostDate,
           postsCount : this.postsCount,
           socket : this.socket
-        }));
+        })).setup();
       } else {
         this.postsContainerElement.className += ' -no-posts';
         this.postsContainerElement.textContent = 'No posts to show';

@@ -41,6 +41,7 @@ require('./embed/VoiceFilterPostsDropdown');
 require('./embed/EmbedVoiceDescription');
 require('./embed/header/EmbedHeaderViewButtons');
 require('./embed/header/EmbedHeaderShareButton');
+require('./embed/header/EmbedOpenVoiceButton');
 require('./embed/EmbedLayersController');
 require('./embed/EmbedLayer');
 require('./embed/EmbedLayerPostIndicator');

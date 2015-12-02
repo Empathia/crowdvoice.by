@@ -18,17 +18,34 @@ Class(CV, 'Timeline').inherits(Widget)({
       this.clockWrapper = this.el.querySelector('.cv-voice-timeline-feedback');
     },
 
+    /* Sets the initial position of the progress feedback.
+     * Activate itself so it became visible to interact with.
+     * @public
+     * @param {number} px - the x position for the initial feedback scaled to pixels.
+     */
     run : function run (px) {
       this.update(px);
       this.enable();
     },
 
+    /* Updates the feedback progress x position.
+     * @public
+     * @param {number} px - the x position scaled to pixels.
+     */
     update : function update (px) {
       var translate = 'translateX(' + px + 'px)';
       this.clockWrapper.style.webkitTransform = translate;
       this.clockWrapper.style.msTransform = translate;
       this.clockWrapper.style.transform = translate;
       return this;
+    },
+
+    /* Sets the main progress bar color.
+     * Useful to accept dynamic color values depending on the embeddable configuration.
+     * @public
+     */
+    updateBgColor : function updateBgColor (color) {
+      this.clockWrapper.style.backgroundColor = color;
     }
   }
 });
