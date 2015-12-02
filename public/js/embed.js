@@ -28,6 +28,8 @@ require('./lib/image-halt');
 
 require('./widgets/ui/Button');
 require('./widgets/ui/Checkbox');
+require('./widgets/ui/Close');
+
 require('./widgets/Dropdown');
 require('./widgets/PopoverBlocker');
 require('./widgets/popovers/PopoverShare');
@@ -53,3 +55,15 @@ require('./embed/posts/PostImage');
 require('./embed/posts/PostVideo');
 require('./embed/posts/PostLink');
 require('./embed/posts/PostText');
+
+require('./embed/post-details/controllers/PostDetailController');
+require('./embed/post-details/PostDetail');
+require('./embed/post-details/PostDetailNavigation');
+require('./embed/post-details/PostDetailTimeline');
+require('./embed/post-details/PostDetailSidebar');
+require('./embed/post-details/PostDetailSidebarItem');
+require('./embed/post-details/PostDetailInfo');
+require('./embed/post-details/PostDetailInfoMedia');
+require('./embed/post-details/PostDetailInfoArticle');
+require('./embed/post-details/actions/PostDetailActionsSave');
+require('./embed/post-details/actions/PostDetailActionsShare');

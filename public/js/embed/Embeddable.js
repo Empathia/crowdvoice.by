@@ -66,6 +66,9 @@ Class(CV, 'Embeddable').includes(NodeSupport, CustomEventSupport, CV.HelperVoice
      * @private
      */
     _bindEvents : function _bindEvents() {
+      this._displayContentViewerRef = this._displayContentViewer.bind(this);
+      this.bind('post:display:detail', this._displayContentViewerRef);
+
       this._changePostsViewHandlerRef = this._changePostsViewHandler.bind(this);
       this.bind('changedView', this._changePostsViewHandlerRef);
 
@@ -73,6 +76,27 @@ Class(CV, 'Embeddable').includes(NodeSupport, CustomEventSupport, CV.HelperVoice
       this.bind('selectionUpdated', this._filterSelectionUpdatedRef);
 
       return this;
+    },
+
+    /* Renders the PostDetail Content Viewer Overlay
+     * @private
+    */
+    _displayContentViewer : function _displayContentViewer(ev) {
+      if (this.postDetailController) {
+        this.postDetailController = this.postDetailController.destroy();
+      }
+
+      this.postDetailController = new CV.PostDetailController({
+        socket : this.socket,
+        postData : ev.data,
+        registry : CV.PostsRegistry,
+        requestPostsSocketEventName : 'approvedMonthPosts',
+        responsePostsSocketEventName : 'getApprovedMonthPosts'
+      });
+
+      this.postDetailController.postDetailWidget.bind('deactivate', function() {
+        this.postDetailController = this.postDetailController.destroy();
+      }.bind(this));
     },
 
     /* Sets the Voice background image

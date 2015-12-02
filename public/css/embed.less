@@ -1,4 +1,5 @@
 @import (inline) "../../node_modules/sanitize.css/dist/sanitize.css";
+@import (inline) "../../node_modules/gemini-scrollbar/gemini-scrollbar.css";
 
 @kabinet-path: "../../lib/kabinett/source/less";
 @import '@{kabinet-path}/core/_variables';
@@ -42,6 +43,7 @@
 @import '@{kabinet-path}/components/popover';
 @import '@{kabinet-path}/components/lists';
 @import '@{kabinet-path}/components/checkbox';
+@import '@{kabinet-path}/utilities/colors/base';
 
 @import 'variables';
 @import './embed/variables';
@@ -53,6 +55,9 @@
 @import './embed/widgets/timeline';
 @import './embed/widgets/post';
 @import './embed/widgets/post-indicator';
+@import './embed/widgets/post-detail';
+
+@import './components/ui/close-button';
 
 @import './embed/header';
 @import './embed/voice';

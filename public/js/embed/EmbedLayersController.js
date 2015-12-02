@@ -1,7 +1,7 @@
 var moment = require('moment');
 var Events = require('./../lib/events');
 
-Class(CV, 'EmbedLayersController').includes(NodeSupport)({
+Class(CV, 'EmbedLayersController').includes(NodeSupport, CustomEventSupport, BubblingSupport)({
   prototype : {
     averagePostTotal : 50,
     averagePostWidth : 300,

@@ -1,6 +1,6 @@
 var Waterfall = require('./../lib/waterfall');
 
-Class(CV, 'EmbedLayer').inherits(Widget)({
+Class(CV, 'EmbedLayer').inherits(Widget).includes(BubblingSupport)({
   ELEMENT_CLASS : 'posts-layer -rel -clearfix',
   HTML : '\
     <section>\
