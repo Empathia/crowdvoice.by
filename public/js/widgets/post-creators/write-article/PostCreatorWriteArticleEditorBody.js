@@ -40,6 +40,17 @@ Class(CV, 'PostCreatorWriteArticleEditorBody').inherits(Widget)({
                 }
             });
 
+            this.appendChild(new CV.UI.CenterModal({
+                name : 'centeredModal',
+                title : 'Give Your Article Some Style',
+                buttonLabel : 'Got it',
+                imageContent : '/img/article-editor.gif',
+                checkbox : true,
+                checkboxCookieName : 'onboardingArticle'
+            })).render(this.el);
+
+            this.centeredModal.activate();
+
             return this;
         },
 

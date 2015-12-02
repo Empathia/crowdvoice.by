@@ -36,6 +36,7 @@ require('./app');
 
 // Global Widgets
 require('./widgets/ui/Modal');
+require('./widgets/ui/CenterModal');
 require('./widgets/ui/Input');
 require('./widgets/ui/Button');
 require('./widgets/ui/Checkbox');
