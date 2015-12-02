@@ -69,10 +69,6 @@ Class(CV.UI, 'CenterModal').inherits(Widget)({
                 })).render(this.bodyElement);
 
                 this.cookieCheckbox.activate();
-
-                if (document.cookie.indexOf(this.checkboxCookieName) >= 0) {
-                    this.cookieCheckbox.deactivate();
-                }
             }
             
             

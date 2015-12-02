@@ -45,7 +45,7 @@
     "less": "^2.4.0",
     "less-loader": "^2.2.0",
     "mandrill-api": "^1.0.45",
-    "medium-editor": "^4.12.3",
+    "medium-editor": "^5.10.0",
     "method-override": "^2.3.3",
     "moment": "^2.10.2",
     "multer": "^0.1.8",
