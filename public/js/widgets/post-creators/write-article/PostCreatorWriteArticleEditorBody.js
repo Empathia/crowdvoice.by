@@ -28,10 +28,28 @@ Class(CV, 'PostCreatorWriteArticleEditorBody').inherits(Widget)({
 
         _setup : function _setup() {
             this.editor = new MediumEditor(this.body, {
-                anchor : {
-                    linkValidation : true
+                buttons: ['bold', 'italic', 'underline', 'anchor', 'header1', 'header2', 'quote'],
+                firstHeader: 'h2',
+                secondHeader: 'h3',
+                targetBlank: true,
+                anchor: {
+                    linkValidation: true
+                },
+                placeholder: {
+                    text: 'Start writing your article.'
                 }
             });
+
+            this.appendChild(new CV.UI.CenterModal({
+                name : 'centeredModal',
+                title : 'Give Your Article Some Style',
+                buttonLabel : 'Got it',
+                imageContent : '/img/article-editor.gif',
+                checkbox : true,
+                checkboxCookieName : 'onboardingArticle'
+            })).render(this.el);
+
+            this.centeredModal.activate();
 
             return this;
         },
