@@ -76,7 +76,7 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport)({
       return this;
     },
 
-    /* Handle the scrollableArea scroll event.
+    /* Handle the window.scroll event
      * @private
      */
     _scrollHandler : function _scrollHandler() {
@@ -94,6 +94,8 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport)({
       var scrollPercentage, scrollViewportPixels, elem, scaledPercentage;
       scrollPercentage = 100 * st / (this._totalHeight - this._windowInnerHeight);
       scrollViewportPixels = scrollPercentage * this._windowInnerHeight / 100;
+
+      el = document.elementFromPoint(1, y);
       elem = document.elementFromPoint(this._clientWidth - 1, scrollViewportPixels);
       if (elem && elem.classList.contains(CV.EmbedLayerPostIndicator.ELEMENT_CLASS)) {
         this._lastScrollDate = elem.dataset.timestamp;
@@ -103,7 +105,6 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport)({
       this.timeline.update(~~((this._clientWidth - 14) * scaledPercentage / 100));
 
       // load layer posts
-      el = document.elementFromPoint(1, y);
       if (el.classList.contains('posts-layer__detector') && (el.dataset.date !== this._currentMonthString)) {
         this.fillLayer(el.dataset.date, scrollingUpwards);
       }
