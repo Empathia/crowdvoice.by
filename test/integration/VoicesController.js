@@ -17,7 +17,8 @@ application._serverStart()
 logger.log = function () {}
 
 var login = require(path.join(__dirname, 'login.js')),
-  expect = require('chai').expect
+  expect = require('chai').expect,
+  request = require('superagent')
 
 CONFIG.database.logQueries = false
 
@@ -321,6 +322,20 @@ describe('VoicesController', function () {
         })
 
       })
+    })
+
+  })
+
+  describe('#show', function () {
+
+    it('Should let you see unlisted voice', function (doneTest) {
+      request
+        .get(urlBase + '/cersei-lannister/mereen-siege')
+        .end(function (err, res) {
+          if (err) { return doneTest() }
+
+          expect(res.status).to.equal(200)
+        })
     })
 
   })
