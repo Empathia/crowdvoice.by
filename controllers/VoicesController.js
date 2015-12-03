@@ -2,6 +2,8 @@ var BlackListFilter = require(__dirname + '/BlackListFilter');
 var EntitiesPresenter = require(path.join(process.cwd(), '/presenters/EntitiesPresenter.js'));
 var NotificationMailer = require(path.join(__dirname, '../mailers/NotificationMailer.js'));
 
+require(path.join(__dirname, '../lib/TwitterFetcher.js'));
+
 var domain = require('domain');
 
 var d = domain.create();
@@ -452,6 +454,8 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           oldDescription = req.activeVoice.description,
           oldStatus = req.activeVoice.status;
 
+        // This is here so that fields that can be empty (like locationName or
+        // twitterSearch) CAN be empty.
         var useDefault = function (newVal, oldVal) {
           if (newVal === undefined || newVal === 'undefined') {
             return oldVal
@@ -499,13 +503,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
           voice.addSlug(req.body.slug, done);
         }, function(done) {
-          voice.save(function(err, result) {
-            if (err) {
-              return done(err)
-            }
-
-            done();
-          });
+          voice.save(done);
         }, function(done) {
           req.body.topics = req.body.topics.split(',');
 
@@ -555,7 +553,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           }
 
           // Load tweets in the background
-          if (voice.twitterSearch) {
+          if (req.body.twitterSearch && req.body.twitterSearch !== '') {
             d.run(function() {
               var tf = new TwitterFetcher({
                 voice : voice,
