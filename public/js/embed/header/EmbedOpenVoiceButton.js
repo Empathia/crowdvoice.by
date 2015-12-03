@@ -24,7 +24,7 @@ Class(CV, 'EmbedOpenVoiceButton').inherits(Widget)({
 
       this.appendChild(new CV.UI.Button({
         name : 'openVoiceButton',
-        className : this.constructor.BUTTON_CLASSNAME + ' tiny',
+        className : this.constructor.BUTTON_CLASSNAME + ' tiny -inline-block',
         data : {
           href: origin + '/' + this.voiceData.owner.profileName + '/' + this.voiceData.slug + '/',
           attr : {
