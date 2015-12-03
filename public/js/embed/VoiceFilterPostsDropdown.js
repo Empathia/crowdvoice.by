@@ -6,7 +6,6 @@ var Options = [
 ];
 
 Class(CV, 'VoiceFilterPostsDropdown').inherits(Widget).includes(BubblingSupport)({
-  ELEMENT_CLASS : '-inline-block',
   HTML : '\
     <div>\
       <span class="voice-filter-posts__label">View:</span>\
