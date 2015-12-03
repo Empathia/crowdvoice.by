@@ -5,6 +5,8 @@
 <html lang="en" class="theme_<%= params.theme %> theme_bg-<%= params.background %>">
 <head>
   <meta charset="UTF-8">
+  <meta content="authenticity_token" name="csrf-param" />
+  <meta content="<%= csrfToken %>" name="csrf-token" />
   <title>CrowdVoice.by — <%= voice.title %></title>
   <meta name="description" content="<%= voice.description %>">
   <%= renderPartial('shared/favicon.html') %>
