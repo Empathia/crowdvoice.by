@@ -8,6 +8,11 @@ var SessionsController = Class('SessionsController')({
      * @method: login
      */
     login : function (req, res) {
+      if (req.currentPerson) {
+        req.flash('info', 'You must be logged out in order to perform the previous action.');
+        return res.redirect('/');
+      }
+
       res.render('sessions/login.html', {layout : 'login'});
     },
 
@@ -172,6 +177,11 @@ var SessionsController = Class('SessionsController')({
      * @method logout
      */
     logout : function (req, res) {
+      if (!req.currentPerson) {
+        req.flash('info', 'You must be logged in in order to perform the previous action.');
+        return res.redirect('/');
+      }
+
       req.logout();
       return res.redirect('/');
     },
