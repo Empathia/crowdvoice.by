@@ -12,16 +12,6 @@ Class(CV, 'PostDetailInfoMedia').inherits(Widget).includes(CV.WidgetUtils)({
                     <span class="pd__info-media-meta__source"></span>\
                 </p>\
                 <p class="pd__info-media-title -font-bold"></p>\
-                <div class="pd__info-media-actions cv-post-detail-actions">\
-                    <div class="pd__info-media-saved -inline-block">\
-                        <svg class="-s16"><use xlink:href="#svg-save-outline"></use></svg>\
-                        <span data-saved></span>\
-                    </div>\
-                    <div class="cv-button-group multiple"></div>\
-                    <div class="-inline-block -ml1 -hide">\
-                        <a class="actions-view-original-btn cv-button tiny dark" target="_blank">View Original</a>\
-                    </div>\
-                </div>\
                 <p class="pd__info-media-description"></p>\
             </div>\
         </div>',
@@ -44,26 +34,11 @@ Class(CV, 'PostDetailInfoMedia').inherits(Widget).includes(CV.WidgetUtils)({
             this.headerElement = this.el.querySelector('.pd__info-media-header');
             this.sourceElement = this.el.querySelector('.pd__info-media-meta__source');
             this.dateTimeElement = this.el.querySelector('.pd__info-media-meta > time');
-            this.savedElement = this.el.querySelector('[data-saved]');
-            this.actionsGroup = this.el.querySelector('.pd__info-media-actions .multiple');
-
-            this.appendChild(new CV.PostDetailActionsSave({
-                name : 'actionSave',
-                className : 'dark'
-            })).render(this.actionsGroup);
-
-            this.appendChild(new CV.PostDetailActionsShare({
-                name : 'actionShare',
-                className : 'dark',
-                tooltipPostition : 'top'
-            })).render(this.actionsGroup);
 
             this._setup();
         },
 
         _setup : function _setup() {
-            // this.dom.updateAttr('href', this.el.querySelector('.actions-view-original-btn'), this.data.sourceUrl);
-            //
             if (this.data.sourceType === 'image') {
                 this._appendImage(this.data);
             }
@@ -85,15 +60,6 @@ Class(CV, 'PostDetailInfoMedia').inherits(Widget).includes(CV.WidgetUtils)({
             this.dom.updateText(this.el.querySelector('.pd__info-media-title'), this.data.title);
             this.dom.updateText(this.el.querySelector('.pd__info-media-description'), this.dom.decodeHTML(this.data.description));
 
-            this.updateSaves(this.data);
-            this.actionSave.update(this.data);
-            this.actionShare.update(this.data);
-
-            return this;
-        },
-
-        updateSaves : function updateSaves(data) {
-            this.dom.updateText(this.savedElement, data.totalSaves || 0);
             return this;
         },
 

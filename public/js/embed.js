@@ -65,5 +65,3 @@ require('./embed/post-details/PostDetailSidebarItem');
 require('./embed/post-details/PostDetailInfo');
 require('./embed/post-details/PostDetailInfoMedia');
 require('./embed/post-details/PostDetailInfoArticle');
-require('./embed/post-details/actions/PostDetailActionsSave');
-require('./embed/post-details/actions/PostDetailActionsShare');
