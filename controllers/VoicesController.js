@@ -2,6 +2,8 @@ var BlackListFilter = require(__dirname + '/BlackListFilter');
 var EntitiesPresenter = require(path.join(process.cwd(), '/presenters/EntitiesPresenter.js'));
 var NotificationMailer = require(path.join(__dirname, '../mailers/NotificationMailer.js'));
 
+require(path.join(__dirname, '../lib/TwitterFetcher.js'));
+
 var domain = require('domain');
 
 var d = domain.create();
@@ -447,22 +449,30 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           return next(new ForbiddenError());
         }
 
-        var voice = req.activeVoice,
-          oldTitle = voice.title,
-          oldDescription = voice.description,
-          oldStatus = voice.status;
+        var voice = new Voice(req.activeVoice),
+          oldTitle = req.activeVoice.title,
+          oldDescription = req.activeVoice.description,
+          oldStatus = req.activeVoice.status;
 
-        voice.setProperties({
-          title: req.body.title || voice.title,
-          status: req.body.status || voice.status,
-          description: req.body.description || voice.description,
-          type: req.body.type || voice.type,
-          twitterSearch: req.body.twitterSearch || voice.twitterSearch,
-          rssUrl: req.body.rssUrl || voice.rssUrl,
-          locationName: req.body.locationName || voice.locationName,
-          latitude: req.body.latitude || voice.latitude,
-          longitude: req.body.longitude || voice.longitude
-        });
+        // This is here so that fields that can be empty (like locationName or
+        // twitterSearch) CAN be empty.
+        var useDefault = function (newVal, oldVal) {
+          if (newVal === undefined || newVal === 'undefined') {
+            return oldVal
+          } else {
+            return newVal
+          }
+        };
+
+        voice.title = useDefault(req.body.title, voice.title);
+        voice.status = useDefault(req.body.status, voice.status);
+        voice.description = useDefault(req.body.description, voice.description);
+        voice.type = useDefault(req.body.type, voice.type);
+        voice.twitterSearch = useDefault(req.body.twitterSearch, voice.twitterSearch);
+        voice.rssUrl = useDefault(req.body.rssUrl, voice.rssUrl);
+        voice.locationName = useDefault(req.body.locationName, voice.locationName);
+        voice.latitude = useDefault(req.body.latitude, voice.latitude);
+        voice.longitude = useDefault(req.body.longitude, voice.longitude);
 
         async.series([function (done) {
           Entity.find({
@@ -493,13 +503,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
           voice.addSlug(req.body.slug, done);
         }, function(done) {
-          voice.save(function(err, result) {
-            if (err) {
-              return done(err)
-            }
-
-            done();
-          });
+          voice.save(done);
         }, function(done) {
           req.body.topics = req.body.topics.split(',');
 
@@ -549,7 +553,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           }
 
           // Load tweets in the background
-          if (voice.twitterSearch) {
+          if (req.body.twitterSearch && req.body.twitterSearch !== '') {
             d.run(function() {
               var tf = new TwitterFetcher({
                 voice : voice,
