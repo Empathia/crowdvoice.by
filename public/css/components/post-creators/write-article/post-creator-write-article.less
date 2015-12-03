@@ -64,12 +64,50 @@
 
 .write-article-editor-body {
   font-size: 14px;
-  padding: 50px 0;
   color: @color-neutral-xx-dark;
+  height: 100%;
+  width: 606px;
+  margin: 50px auto;
 
   .write-article-body-editable {
-    width: 606px;
-    margin: 0 auto;
     outline: none;
+    height: 100%;
+    cursor: text;
+    font-size: 16px;
+    color: #666666;
+  }
+  p{
+    font-family: 'Merriweather', serif;
+  }
+  
+  u{
+    text-decoration: underline;
+  }
+  h2{
+    font-size: 36px;
+    font-weight: bold;
+    color: #000;
+  }
+
+  h3{
+    font-size: 26px;
+    font-weight: bold;
+    color: #808080;
+  }
+
+  blockquote{
+    font-size: 22px;
+    text-align: center;
+    font-weight: lighter;
+    font-style: italic;
+    color: #595959;
+  }
+
+  blockquote:before{
+    content: '“';
+  }
+
+  blockquote:after{
+    content:'”';
   }
 }
