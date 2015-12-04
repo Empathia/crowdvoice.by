@@ -269,23 +269,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
               done();
             }, function(done) {
-              post.save(function(err, resave) {
-                if (err) { return done(err); }
-
-                done();
-              });
-            }, function(done) {
-              if (!post.approved) {
-                return done();
-              }
-
-              Voice.findById(post.voiceId, function (err, voice) {
-                if (err) { return done(err); }
-
-                var voiceToUpdate = new Voice(voice[0]);
-
-                voiceToUpdate.save(done);
-              });
+              post.save(done);
             }], function(err) {
               if (err) { return next(err); }
 
