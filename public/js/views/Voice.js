@@ -140,6 +140,8 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
                 name : 'embedOverlay'
             })).render(document.body);
 
+            this.embedOverlay.activate();
+            
             if (this.onboarding){
                 this.onboarding.setup();
             }

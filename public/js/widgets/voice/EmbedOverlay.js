@@ -1,5 +1,5 @@
 Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
-  ELEMENT_CLASS : 'cv-embed-modal-container ui-modal active',
+  ELEMENT_CLASS : 'cv-embed-modal-container ui-modal',
 
   HTML: '\
     <div>\
@@ -53,7 +53,6 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
     },
 
     _setup : function _setup() {
-      console.log('Embed overlay loaded');
       var voiceIframe = document.createElement('iframe');
       var iframeAdvice = document.createElement('p');
 
@@ -62,6 +61,12 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
       this.iframeInner.appendChild(voiceIframe);
       this.embedWidgetContainer.appendChild(iframeAdvice);
 
+      this.appendChild(new CV.UI.Close({
+        name : 'closeButton',
+        className : '-clickable -color-white -abs',
+        svgClassName : '-s18'
+      })).render(this.el.querySelector('.cv-modal__inner'));
+      
       /* 
        * Widget Height Radios
        */
