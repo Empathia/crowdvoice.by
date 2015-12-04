@@ -84,7 +84,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           defaults.splice(sanitizer.defaults.allowedTags.indexOf('a'), 1);
 
           readablePost.data.content = sanitizer(readablePost.data.content, {
-            allowedTags: defaults
+            allowedTags: defaults.concat(['img'])
           });
 
           readablePost.data.content = truncatise(readablePost.data.content, {
