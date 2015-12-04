@@ -168,6 +168,52 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
         }
       });
 
+      this.bind('afterCreate', function () {
+        if (model.approved !== true) {
+          return;
+        }
+
+        Voice.find({
+          id: model.voiceId
+        }, function (err, voice) {
+          if (err) {
+            logger.error(err);
+            logger.error(err.stack);
+          }
+
+          var newerVoice = new Voice(voice[0]);
+          newerVoice.save(function (err) {
+            if (err) {
+              logger.error(err);
+              logger.error(err.stack);
+            }
+          });
+        });
+      });
+
+      this.bind('afterUpdate', function () {
+        if (model.approved !== true) {
+          return;
+        }
+
+        Voice.find({
+          id: model.voiceId
+        }, function (err, voice) {
+          if (err) {
+            logger.error(err);
+            logger.error(err.stack);
+          }
+
+          var newerVoice = new Voice(voice[0]);
+          newerVoice.save(function (err) {
+            if (err) {
+              logger.error(err);
+              logger.error(err.stack);
+            }
+          });
+        });
+      });
+
       // Add image attachment
       this.hasImage({
         propertyName: 'image',
