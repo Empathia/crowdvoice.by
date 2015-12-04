@@ -9,16 +9,16 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
         <div class="cv-embed-overlay__options">\
           <p class="cv-embed-overlay__title">Widget Settings</p>\
           <div class="cv-embed-overlay__height">\
-            <p>Widget Height:</p>\
+            <p class="option-title">Widget Height:</p>\
           </div>\
           <div class="cv-embed-overlay__view">\
-            <p>Default view:</p>\
+            <p class="option-title">Default view:</p>\
           </div>\
           <div class="cv-embed-overlay__theme">\
-            <p>Theme</p>\
+            <p class="option-title">Theme</p>\
           </div>\
           <div class="cv-embed-overlay__accent">\
-            <p>Pick Accent Color</p>\
+            <p class="option-title">Pick Accent Color</p>\
           </div>\
           <div class="cv-embed-overlay__share"></div>\
           <div class="cv-embed-overlay__code"></div>\
