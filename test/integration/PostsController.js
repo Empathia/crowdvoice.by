@@ -277,6 +277,68 @@ describe('PostsController', function () {
       })
     })
 
+    it('Should change updated_at of Voice when post is insta-published', function (doneTest) {
+        var oldUpdatedAt
+
+        async.series([
+          // Record Voice date
+          function (nextSeries) {
+            Voice.findById(6, function (err, voice) {
+              if (err) { return nextSeries(err) }
+
+              oldUpdatedAt = new Date(voice[0].updatedAt)
+
+              return nextSeries()
+            })
+          },
+
+          // Jon Snow create unapproved post
+          function (nextSeries) {
+            login('cersei-lannister', function (err, agent, csrf) {
+              if (err) { console.log(err); return nextSeries(err) }
+
+              agent
+                .post(urlBase + '/cersei-lannister/walk-of-atonement')
+                .accept('application/json')
+                .send({
+                  _csrf: csrf,
+                  posts: [
+                    {
+                      title: 'A post about colors by master z3bra',
+                      description: 'French Uncomfortable Hacker',
+                      publishedAt: 'Thu Oct 15 2015 12:20:00 GMT-0500 (CDT)',
+                      image: '',
+                      imageWidth: '0',
+                      imageHeight: '0',
+                      sourceType: 'link',
+                      sourceService: 'link',
+                      sourceUrl: 'http://blog.z3bra.org/2015/06/vomiting-colors.html',
+                      imagePath: '',
+                    },
+                  ],
+                })
+                .end(function (err, res) {
+                  if (err) { return nextSeries(err) }
+
+                  expect(res.status).to.equal(200)
+
+                  return nextSeries()
+                })
+            })
+          },
+        ], function (err) {
+          if (err) { return doneTest(err) }
+
+          Voice.find(6, function (err, voice) {
+            if (err) { return doneTest(err) }
+
+            expect(oldUpdatedAt).to.not.eql(new Date(voice[0].updatedAt))
+
+            return doneTest()
+          })
+        })
+    })
+
   })
 
   describe('#preview', function () {
