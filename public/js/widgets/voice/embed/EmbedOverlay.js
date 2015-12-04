@@ -31,7 +31,7 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
       Widget.prototype.init.call(this, config);
       
       this.el = this.element[1];
-
+      console.log(App.Voice);
       this.embedWidgetContainer = this.el.querySelector('.cv-embed-overlay__iframe');
       this.iframeInner = this.el.querySelector('.cv-embed-iframe-wraper');
 
@@ -47,7 +47,7 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
     },
 
     _setup : function _setup() {
-      this.iframeUrl = 'http://localhost:3000/embed/cersei-lannister/walk-of-atonement/?default_view=cards&change_view=true&description=true&background=true&share=true&theme=dark&accent=4DD5B9';
+      this.iframeUrl = '/embed/' + App.Voice.data.owner.profileName + '/' + App.Voice.data.slug + '/?default_view=cards&change_view=true&description=false&background=true&share=true&theme=light&accent=ff9400';
       this.appendChild(new CV.UI.EmbedOverlayIframe({
         name : 'embedableIFrame',
         iframeUrl : this.iframeUrl,
@@ -64,12 +64,13 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
        * Widget Height Radios
        */
       this.appendChild(new CV.UI.Radio({
-        name : 'short',
+        name : 'shortRadio',
         data : {
           label : 'Short',
           checked : true,
           attr : {
-            name : 'heightRadios'
+            name : 'heightRadios',
+            value : '400'
           }
         }
       })).render(this.optionHeight);
@@ -77,15 +78,16 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
       this.shortPixels = document.createElement('i');
       this.shortPixels.innerHTML = '400px';
 
-      this.short.el.querySelector('.ui-radio-label').appendChild(this.shortPixels);
+      this.shortRadio.el.querySelector('.ui-radio-label').appendChild(this.shortPixels);
 
       this.appendChild(new CV.UI.Radio({
-        name : 'medium',
+        name : 'mediumRadio',
         data : {
           label : 'Medium',
           checked : false,
           attr : {
-            name : 'heightRadios'
+            name : 'heightRadios',
+            value : '500'
           }
         }
       })).render(this.optionHeight);
@@ -93,16 +95,17 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
       this.mediumPixels = document.createElement('i');
       this.mediumPixels.innerHTML = '500px';
 
-      this.medium.el.querySelector('.ui-radio-label').appendChild(this.mediumPixels);
+      this.mediumRadio.el.querySelector('.ui-radio-label').appendChild(this.mediumPixels);
 
 
       this.appendChild(new CV.UI.Radio({
-        name : 'tall',
+        name : 'tallRadio',
         data : {
-          label : 'Tall 650px',
+          label : 'Tall',
           checked : false,
           attr : {
-            name : 'heightRadios'
+            name : 'heightRadios',
+            value : '650'
           }
         }
       })).render(this.optionHeight);
@@ -110,7 +113,7 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
       this.tallPixels = document.createElement('i');
       this.tallPixels.innerHTML = '650px';
 
-      this.tall.el.querySelector('.ui-radio-label').appendChild(this.tallPixels);
+      this.tallRadio.el.querySelector('.ui-radio-label').appendChild(this.tallPixels);
 
       /*
        * Default View Radios
@@ -121,7 +124,8 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
           label : 'Cards',
           checked : true,
           attr : {
-            name : 'viewRadios'
+            name : 'viewRadios',
+            value : 'cards'
           }
         }
       })).render(this.optionView);
@@ -132,7 +136,8 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
           label : 'List',
           checked : false,
           attr : {
-            name : 'viewRadios'
+            name : 'viewRadios',
+            value : 'list'
           }
         }
       })).render(this.optionView);
@@ -143,7 +148,8 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
           label : 'Allow users to change view',
           checked : true,
           attr : {
-            name : 'viewRadios'
+            name : 'viewRadios',
+            value : 'true'
           }
         }
       })).render(this.optionView);
@@ -154,7 +160,8 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
           label : 'Show Voice Description',
           checked : false,
           attr : {
-            name : 'viewRadios'
+            name : 'viewRadios',
+            value : 'true'
           }
         }
       })).render(this.optionView);
@@ -168,7 +175,8 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
           label : 'Light',
           checked : true,
           attr : {
-            name : 'themeRadios'
+            name : 'themeRadios',
+            value : 'light'
           }
         }
       })).render(this.optionTheme);
@@ -179,7 +187,8 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
           label : 'Dark',
           checked : false,
           attr : {
-            name : 'themeRadios'
+            name : 'themeRadios',
+            value : 'dark'
           }
         }
       })).render(this.optionTheme);
@@ -188,7 +197,11 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
         name : 'voiceBackgrond',
         data : {
           label : 'Include voice background',
-          checked : true
+          checked : true,
+          attr : {
+            name : 'themeRadios',
+            value : 'true'
+          }
         }
       })).render(this.optionTheme);
 
@@ -198,7 +211,6 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
       this.inputAccent = document.createElement('input');
       this.inputAccent.type = 'color';
       this.inputAccent.value = '#ff9400';
-
       this.optionAccent.appendChild(this.inputAccent);
 
       /* 
@@ -208,7 +220,11 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
         name : 'allowShare',
         data : {
           label : 'Allow to share',
-          checked : true
+          checked : true,
+          attr : {
+            name : 'shareRadio',
+            value : 'true'
+          }
         }
       })).render(this.optionShare);
 
@@ -241,14 +257,31 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
 
     _bindEvents : function _bindEvents(){
       this.closeButton.bind('click', this._overlayDeactivate.bind(this));
-      this.medium.bind('changed', this._mediumSize.bind(this));
+
+      this.shortRadio.bind('changed', this._checkHandler.bind(this));
+      this.mediumRadio.bind('changed', this._checkHandler.bind(this));
+      this.tallRadio.bind('changed', this._checkHandler.bind(this));
+
+      this.cardView.bind('changed', this._checkHandler.bind(this));
+      this.listView.bind('changed', this._checkHandler.bind(this));
+      this.changeView.bind('changed', this._checkHandler.bind(this));
+      this.showDescription.bind('changed', this._checkHandler.bind(this));
+
+      this.lightTheme.bind('changed', this._checkHandler.bind(this));
+      this.darkTheme.bind('changed', this._checkHandler.bind(this));
+      this.voiceBackgrond.bind('changed', this._checkHandler.bind(this));
+
+      this.inputAccent.addEventListener('change', this._checkHandler.bind(this));
+
+      this.allowShare.bind('changed', this._checkHandler.bind(this));
+
     },
 
     _overlayDeactivate : function _overlayDeactivate(){
       this.deactivate();
     },
 
-    _mediumSize : function _mediumSize(){
+    _checkHandler : function _checkHandler(){
       this.embedableIFrame.updateUrl('http://wasd.com.mx/');
       console.log('url cambiada');
     },

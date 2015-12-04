@@ -192,8 +192,8 @@ require('./widgets/view-feed/FeedAnonymousOnboarding');
 
 require('./widgets/voice/PostsRegistry');
 require('./widgets/voice/Onboarding');
-require('./widgets/voice/EmbedOverlay');
-require('./widgets/voice/EmbedOverlayIframe');
+require('./widgets/voice/embed/EmbedOverlay');
+require('./widgets/voice/embed/EmbedOverlayIframe');
 require('./widgets/voice/VoiceHeader');
 require('./widgets/voice/VoiceFooter');
 require('./widgets/voice/VoiceFilterPostsDropdown');
