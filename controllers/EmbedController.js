@@ -1,37 +1,34 @@
-/* globals async, db, Voice, VoicesPresenter */
 var EmbedController = Class('EmbedController')({
   prototype : {
     voice : function voice (req, res, next) {
       Voice.findBySlug(req.params.voice_slug, function (err, voice) {
         if (err) { return next(err); }
 
-        // defaulting config options
-        var params = {};
-
-        var isValidHex = new RegExp("^(#)?([0-9a-fA-F]{3})([0-9a-fA-F]{3})?$");
-        if (!isValidHex.test(req.query.accent)) { req.query.accent = 'FF9400'; }
-        params.accent = req.query.accent;
-
-        if (!['dark', 'light'].some(function (propertyName) {
-          return (req.query.theme === propertyName);
-        })) { params.theme = 'light'; }
-        else { params.theme = req.query.theme; }
-
-        if (!['cards', 'list'].some(function (propertyName) {
-          return (req.query.default_view === propertyName);
-        })) { params.default_view = 'cards'; }
-        else { params.default_view = req.query.default_view; }
-
-        params.change_view = req.query.change_view === 'true';
-        params.description = req.query.description === 'true';
-        params.background = req.query.background === 'true';
-        params.share = req.query.share === 'true';
-
-        // return active voice and locales
-        var dates = { firstPostDate : null, lastPostDate : null };
+        var settings = {
+          theme: 'dark',
+          accent: 'FF9400',
+          default_view: 'cards',
+          change_view: (req.query.change_view === 'true'),
+          description: (req.query.description === 'true'),
+          background: (req.query.background === 'true'),
+          share: (req.query.share === 'true')
+        };
+        var dates = { firstPostDate: null, lastPostDate: null };
         var counts = {};
 
-        async.series([
+        if (req.query.theme && req.query.theme.match(/^(dark|light)$/)) {
+          settings.theme = req.query.theme;
+        }
+
+        if (/^(#)?([0-9a-fA-F]{3})([0-9a-fA-F]{3})?$/.test(req.query.accent)) {
+          settings.accent = req.query.accent;
+        }
+
+        if (req.query.default_view && req.query.default_view.match(/^(cards|list)$/)) {
+          settings.default_view = req.query.default_view;
+        }
+
+        async.parallel([
           function (done) {
             db.raw("SELECT COUNT (*), \
               to_char(\"Posts\".published_at, 'MM') AS MONTH, \
@@ -53,14 +50,18 @@ var EmbedController = Class('EmbedController')({
           },
 
           function (done) {
-            db('Posts').where({ 'voice_id': voice.id, approved : true })
+            db('Posts').where({ 'voice_id': voice.id, approved: true })
             .orderBy('published_at', 'ASC').limit(1)
             .exec(function (err, firstPost) {
               if (err) { return done(err); }
 
               if (firstPost.length) { dates.firstPostDate = firstPost[0].published_at; }
+              done();
+            });
+          },
 
-              db('Posts').where({ 'voice_id': voice.id, approved : true })
+          function (done) {
+            db('Posts').where({ 'voice_id': voice.id, approved : true })
               .orderBy('published_at', 'DESC').limit(1)
               .exec(function (err, lastPost) {
                 if (err) { return done(err); }
@@ -68,20 +69,21 @@ var EmbedController = Class('EmbedController')({
                 if (lastPost.length) { dates.lastPostDate = lastPost[0].published_at; }
                 done();
               });
-            });
           }
-        ], function () {
+        ], function (err) {
+          if (err) { return next(err); }
+
           VoicesPresenter.build([voice], req.currentPerson, function (err, voices) {
             if (err) { return next(err); }
 
-            res.locals.params = params;
+            res.locals.params = settings;
             res.locals.voice = new Voice(voices[0]);
             res.locals.firstPostDate = dates.firstPostDate;
             res.locals.lastPostDate = dates.lastPostDate;
             res.locals.postsCount = counts;
 
             res.format({
-              html : function html () {
+              html : function () {
                 res.render('embed/show.html', { layout : 'embed' });
               }
             });
