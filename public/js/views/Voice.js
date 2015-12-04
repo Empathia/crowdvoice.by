@@ -136,6 +136,12 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
                 scrollableArea : this.scrollableArea
             }));
 
+            this.appendChild(new CV.UI.EmbedOverlay({
+                name : 'embedOverlay'
+            })).render(document.body);
+
+            this.embedOverlay.activate();
+            
             if (this.onboarding){
                 this.onboarding.setup();
             }
