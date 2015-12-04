@@ -22,7 +22,7 @@ Class(CV, 'EmbedHeader').inherits(Widget).includes(BubblingSupport)({
 
       this.appendChild(new CV.VoiceFilterPostsDropdown({
         name : 'filterDropdown',
-        className : 'header-filter-posts-dropdown',
+        className : 'header-filter-posts-dropdown -inline-block',
         dropdownClassName : this.reqQuery.theme
       })).render(this.rightWrapperElement);
 

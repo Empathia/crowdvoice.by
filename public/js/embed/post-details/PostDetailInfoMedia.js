@@ -1,4 +1,5 @@
 var moment = require('moment');
+var Person = require('./../../lib/currentPerson');
 
 Class(CV, 'PostDetailInfoMedia').inherits(Widget).includes(CV.WidgetUtils)({
     ELEMENT_CLASS : 'pd__info-media -full-height',
@@ -12,6 +13,16 @@ Class(CV, 'PostDetailInfoMedia').inherits(Widget).includes(CV.WidgetUtils)({
                     <span class="pd__info-media-meta__source"></span>\
                 </p>\
                 <p class="pd__info-media-title -font-bold"></p>\
+                <div class="pd__info-media-actions cv-post-detail-actions">\
+                    <div class="pd__info-media-saved -inline-block">\
+                        <svg class="-s16"><use xlink:href="#svg-save-outline"></use></svg>\
+                        <span data-saved></span>\
+                    </div>\
+                    <div class="cv-button-group multiple"></div>\
+                    <div class="-inline-block -ml1 -hide">\
+                        <a class="actions-view-original-btn cv-button tiny dark -table-cell -vam" target="_blank">View Original</a>\
+                    </div>\
+                </div>\
                 <p class="pd__info-media-description"></p>\
             </div>\
         </div>',
@@ -34,6 +45,8 @@ Class(CV, 'PostDetailInfoMedia').inherits(Widget).includes(CV.WidgetUtils)({
             this.headerElement = this.el.querySelector('.pd__info-media-header');
             this.sourceElement = this.el.querySelector('.pd__info-media-meta__source');
             this.dateTimeElement = this.el.querySelector('.pd__info-media-meta > time');
+            this.savedElement = this.el.querySelector('[data-saved]');
+            this.actionsGroup = this.el.querySelector('.pd__info-media-actions .multiple');
 
             this._setup();
         },
@@ -60,8 +73,29 @@ Class(CV, 'PostDetailInfoMedia').inherits(Widget).includes(CV.WidgetUtils)({
             this.dom.updateText(this.el.querySelector('.pd__info-media-title'), this.data.title);
             this.dom.updateText(this.el.querySelector('.pd__info-media-description'), this.dom.decodeHTML(this.data.description));
 
+            if (Person.get() && (!Person.anon())) {
+              this.appendChild(new CV.PostDetailActionsSave({
+                  name : 'actionSave',
+                  className : 'dark'
+              })).render(this.actionsGroup).update(this.data);
+            }
+
+            this.appendChild(new CV.PostDetailActionsShare({
+                name : 'actionShare',
+                className : 'dark',
+                tooltipPostition : 'top'
+            })).render(this.actionsGroup).update(this.data);
+
+            this.updateSaves(this.data);
+
             return this;
         },
+
+        updateSaves : function updateSaves(data) {
+            this.dom.updateText(this.savedElement, data.totalSaves || 0);
+            return this;
+        },
+
 
         _appendImage : function _appendImage(data) {
             this.headerElement.insertAdjacentHTML('afterbegin', '<img class="-fit" src="' + data.postImages.original.url + '"/>');

@@ -17,7 +17,8 @@ application._serverStart()
 logger.log = function () {}
 
 var login = require(path.join(__dirname, 'login.js')),
-  expect = require('chai').expect
+  expect = require('chai').expect,
+  request = require('superagent')
 
 CONFIG.database.logQueries = false
 
@@ -219,6 +220,7 @@ describe('VoicesController', function () {
             topics: 'd6wb1XVgRvzm',
             type: 'TYPE_PUBLIC',
             status: 'STATUS_PUBLISHED',
+            twitterSearch: '#csgo',
             locationName: 'Casterly Rock',
             latitude: '4.815',
             longitude: '162.342',
@@ -235,7 +237,7 @@ describe('VoicesController', function () {
 
               expect(voice[0].description).to.equal('This is a new and completely unique description.')
 
-              return done();
+              return done()
             })
           })
       })
@@ -302,7 +304,7 @@ describe('VoicesController', function () {
 
                   expect(voice[0].description).to.equal('This is a new and completely unique description.')
 
-                  return nextSeries();
+                  return nextSeries()
                 })
               })
           },
@@ -321,6 +323,57 @@ describe('VoicesController', function () {
         })
 
       })
+    })
+
+    it('Should update optional fields into empty strings when empty strings are provided', function (doneTest) {
+      login('cersei-lannister', function (err, agent, csrf) {
+        if (err) { return doneTest(err) }
+
+        agent
+          .put(urlBase + '/anonymous/casterly-nock')
+          .field('_csrf', csrf)
+          .field('image', 'undefined')
+          .field('title', 'Casterly nock')
+          .field('slug', 'casterly-nock')
+          .field('description', 'This is a new and completely unique description.')
+          .field('topics', 'd6wb1XVgRvzm')
+          .field('type', 'TYPE_PUBLIC')
+          .field('status', 'STATUS_DRAFT')
+          .field('locationName', 'Casterly Rock')
+          .field('latitude', '4.815')
+          .field('longitude', '162.342')
+          .field('ownerId', 'K8adgKWgZPlo')
+          .field('twitterSearch', '')
+          .end(function (err, res) {
+            if (err) { return doneTest(err) }
+
+            expect(res.status).to.equal(200)
+
+            Voice.find({
+              owner_id: 4,
+            }, function (err, voice) {
+              if (err) { doneTest(err) }
+
+              expect(voice[0].twitterSearch).to.equal('')
+
+              return doneTest()
+            })
+          })
+      })
+    })
+
+  })
+
+  describe('#show', function () {
+
+    it('Should let you see unlisted voice', function (doneTest) {
+      request
+        .get(urlBase + '/cersei-lannister/mereen-siege')
+        .end(function (err, res) {
+          if (err) { return doneTest() }
+
+          expect(res.status).to.equal(200)
+        })
     })
 
   })

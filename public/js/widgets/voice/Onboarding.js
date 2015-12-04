@@ -33,13 +33,25 @@ Class(CV, 'VoiceOboarding').inherits(Widget).includes(CV.WidgetUtils)({
                 })).render(this.el);
 
                 this.popoverOnboarding.activate();
+                this._bindEvents();
+
             } else {
                 return ;
             }
         },
 
+        _bindEvents : function _bindEvents() {            
+            this.popoverOnboarding.bind('deactivate', this._deactivateOnboarding);     
+        },
+
         _deactivateOnboarding : function _deactivateOnboarding() {
             this.destroy();
+        },
+
+        destroy : function destroy (){      
+            Widget.prototype.destroy.call(this);       
+       
+            return null;       
         }
     }
 });

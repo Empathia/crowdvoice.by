@@ -20,11 +20,12 @@ Class(CV, 'PostDetailSidebar').inherits(Widget).includes(BubblingSupport)({
     prototype : {
       _activatedItem : null,
 
-      init : function init(config) {
+      init : function init (config) {
         Widget.prototype.init.call(this, config);
         this.el = this.element[0];
 
         this.filterDropdown = new CV.VoiceFilterPostsDropdown({
+          className : '-rel',
           dropdownClassName : 'dark'
         }).render(this.el.querySelector('.cv-post-detail__sidebar-filter'));
 
@@ -37,7 +38,9 @@ Class(CV, 'PostDetailSidebar').inherits(Widget).includes(BubblingSupport)({
         this._bindEvents();
       },
 
-      _bindEvents : function _bindEvents() {
+      _bindEvents : function _bindEvents () {
+        this._renderHandlerRef = this._renderHandler.bind(this);
+        this.bind('render', this._renderHandlerRef);
         this.bind('deactivate', this._bubbledDeactivate);
 
         this._filterSelectionUpdatedRef = this._filterSelectionUpdated.bind(this);
@@ -51,7 +54,7 @@ Class(CV, 'PostDetailSidebar').inherits(Widget).includes(BubblingSupport)({
        * @public
        * @param {Array} posts - the new fetched posts to add to the sidebar
        */
-      updateItems : function updateItems(posts) {
+      updateItems : function updateItems (posts) {
         while(this.children.length > 0) {
           this.children[0].destroy();
         }
@@ -73,7 +76,7 @@ Class(CV, 'PostDetailSidebar').inherits(Widget).includes(BubblingSupport)({
        * @public
        * @param {Object} item - the current active PostInstance
        */
-      activateItem : function activateItem(item) {
+      activateItem : function activateItem (item) {
         this._activatedItem = null;
 
         this.children.forEach(function(post) {
@@ -93,7 +96,7 @@ Class(CV, 'PostDetailSidebar').inherits(Widget).includes(BubblingSupport)({
         }
       },
 
-      filterItems : function filterItems(sourceTypes) {
+      filterItems : function filterItems (sourceTypes) {
         var showAll = false;
 
         if (!sourceTypes) {
@@ -119,15 +122,27 @@ Class(CV, 'PostDetailSidebar').inherits(Widget).includes(BubblingSupport)({
         }
       },
 
-      _bubbledDeactivate : function _bubbledDeactivate(ev) {
+      /* Render event handler.
+       * @private
+       */
+      _renderHandler : function _renderHandler () {
+        setTimeout(function (that) {
+          that.scrollbar.update();
+        }, 0, this);
+      },
+
+      /* Prevent the `deactiveate` event to be bubbled up.
+       * @private
+       */
+      _bubbledDeactivate : function _bubbledDeactivate (ev) {
         ev.stopPropagation();
       },
 
-      _filterSelectionUpdated : function _filterSelectionUpdated(ev) {
+      _filterSelectionUpdated : function _filterSelectionUpdated (ev) {
         this.filterItems(ev.sourceTypes);
       },
 
-      destroy : function destroy() {
+      destroy : function destroy () {
         this.unbind('deactivate', this._bubbledDeactivate);
         this.scrollbar = this.scrollbar.destroy();
 
