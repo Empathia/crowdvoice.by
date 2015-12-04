@@ -49,7 +49,7 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
       this.optionShare = this.optionsContainer.querySelector('.cv-embed-modal__share');
       this.optionCode = this.optionsContainer.querySelector('.cv-embed-modal__code');
 
-      this._setup();
+      this._setup()._bindEvents();
     },
 
     _setup : function _setup() {
@@ -66,7 +66,7 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
         className : '-clickable -color-white -abs',
         svgClassName : '-s18'
       })).render(this.el.querySelector('.cv-modal__inner'));
-      
+
       /* 
        * Widget Height Radios
        */
@@ -244,6 +244,21 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
       this.optionCode.appendChild(this.pasteAdvice);
 
       return this;    
+    },
+
+    _bindEvents : function _bindEvents(){
+      this.closeButton.bind('click', this._overlayDeactivate.bind(this));
+    },
+
+    _overlayDeactivate : function _overlayDeactivate(){
+      this.deactivate();
+    },
+
+    _destroy : function _destroy(){
+      Widget.prototype.destroy.call(this);
+
+      return null;
     }
+
   }
 });
