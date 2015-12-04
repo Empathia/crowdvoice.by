@@ -26,102 +26,128 @@ CONFIG.database.logQueries = false
 
 var urlBase = 'http://localhost:3000'
 
+// MONKEY PATCH
+// This is in order to fix the issue where if you provide an updatedAt property
+// the updatedAt property will be set to what you provided, thus causing
+// problems.
+Argon.Storage.Knex.prototype.update = function update(requestObj, callback) {
+  var storage = this;
+
+  callback = callback || function defaultPutCallBack() {
+    throw new Error('callback is undefined');
+  };
+
+  if ((typeof requestObj) === 'undefined' || requestObj === null) {
+    return callback('requestObj is undefined');
+  }
+
+  if (requestObj.data) {
+    for (i = 0; i < storage.preprocessors.length; i++) {
+      requestObj.data = storage.preprocessors[i](requestObj.data, requestObj);
+    }
+  }
+
+  var date = new Date(Date.now());
+
+  this.updatedAt = date;
+  requestObj.data.updated_at = date;
+
+  this.queries.update(requestObj, function(err, data) {
+    for (i = 0; i < storage.processors.length; i++) {
+      data = storage.processors[i](data, requestObj);
+    }
+
+    return callback(err, data);
+  });
+};
+
 describe('PostsController', function () {
 
   describe('#update', function () {
 
     it('Should change updated_at of Voice when post is published', function (doneTest) {
-        var oldUpdatedAt
+      async.series([
+        // Jon Snow create unapproved post
+        function (nextSeries) {
+          login('jon-snow', function (err, agent, csrf) {
+            if (err) { return nextSeries(err) }
 
-        async.series([
-          // Jon Snow create unapproved post
-          function (nextSeries) {
-            login('jon-snow', function (err, agent, csrf) {
-              if (err) { console.log(err); return nextSeries(err) }
+            agent
+              .post(urlBase + '/cersei-lannister/walk-of-atonement')
+              .accept('application/json')
+              .send({
+                _csrf: csrf,
+                posts: [
+                  {
+                    title: 'Mirage A Smoke',
+                    description: 'French Uncomfortable Jenny',
+                    publishedAt: 'Thu Oct 15 2015 12:20:00 GMT-0500 (CDT)',
+                    image: '',
+                    imageWidth: '0',
+                    imageHeight: '0',
+                    sourceType: 'link',
+                    sourceService: 'link',
+                    sourceUrl: 'http://gfycat.com/FrenchUncomfortableJenny',
+                    imagePath: '',
+                  },
+                ],
+              })
+              .end(function (err, res) {
+                if (err) { return nextSeries(err) }
 
-              agent
-                .post(urlBase + '/cersei-lannister/walk-of-atonement')
-                .accept('application/json')
-                .send({
-                  _csrf: csrf,
-                  posts: [
-                    {
-                      title: 'Mirage A Smoke',
-                      description: 'French Uncomfortable Jenny',
-                      publishedAt: 'Thu Oct 15 2015 12:20:00 GMT-0500 (CDT)',
-                      image: '',
-                      imageWidth: '0',
-                      imageHeight: '0',
-                      sourceType: 'link',
-                      sourceService: 'link',
-                      sourceUrl: 'http://gfycat.com/FrenchUncomfortableJenny',
-                      imagePath: '',
-                    },
-                  ],
-                })
-                .end(function (err, res) {
-                  if (err) { return nextSeries(err) }
+                expect(res.status).to.equal(200)
 
-                  expect(res.status).to.equal(200)
+                return nextSeries()
+              })
+          })
+        },
 
-                  return nextSeries()
-                })
-            })
-          },
+        // Cersei approve Jon's post
+        function (nextSeries) {
+          login('cersei-lannister', function (err, agent, csrf) {
+            if (err) { return nextSeries(err) }
 
-          // Record Voice date
-          function (nextSeries) {
-            Voice.findById(6, function (err, voice) {
-              if (err) { return nextSeries(err) }
+            agent
+              .put(urlBase + '/cersei-lannister/walk-of-atonement/' + hashids.encode(1))
+              .accept('application/json')
+              .send({
+                _csrf: csrf,
+                title: 'CSGO Mirage Smoke T spawn to Connector Jungle - Gfycat',
+                description: 'new mirage smoke from t spawn to a site',
+                publishedAt: 'Thu Nov 19 2015 11:43:00 GMT-0600 (CST)',
+                image: null,
+                imageWidth: 0,
+                imageHeight: 0,
+                sourceType: 'link',
+                sourceService: 'link',
+                sourceUrl: 'http://gfycat.com/FrenchUncomfortableJenny',
+                imagePath: '/uploads/development/post_' + hashids.encode(1) + '/image_medium.jpeg',
+                approved: true,
+              })
+              .end(function (err, res) {
+                if (err) { return nextSeries(err) }
 
-              oldUpdatedAt = new Date(voice[0].updatedAt)
+                expect(res.status).to.equal(200)
 
-              return nextSeries()
-            })
-          },
+                return nextSeries()
+              })
+          })
+        },
 
-          // Cersei approve Jon's post
-          function (nextSeries) {
-            login('cersei-lannister', function (err, agent, csrf) {
-              if (err) { return nextSeries(err) }
+        function (nextSeries) {
+          setTimeout(nextSeries, 2000)
+        },
+      ], function (err) {
+        if (err) { return doneTest(err) }
 
-              agent
-                .put(urlBase + '/cersei-lannister/walk-of-atonement/' + hashids.encode(1))
-                .accept('application/json')
-                .send({
-                  _csrf: csrf,
-                  title: 'CSGO Mirage Smoke T spawn to Connector Jungle - Gfycat',
-                  description: 'new mirage smoke from t spawn to a site',
-                  publishedAt: 'Thu Nov 19 2015 11:43:00 GMT-0600 (CST)',
-                  image: null,
-                  imageWidth: 0,
-                  imageHeight: 0,
-                  sourceType: 'link',
-                  sourceService: 'link',
-                  sourceUrl: 'http://gfycat.com/FrenchUncomfortableJenny',
-                  imagePath: '/uploads/development/post_' + hashids.encode(1) + '/image_medium.jpeg',
-                  approved: true,
-                })
-                .end(function (err, res) {
-                  if (err) { return nextSeries(err) }
-
-                  expect(res.status).to.equal(200)
-
-                  return nextSeries()
-                })
-            })
-          },
-        ], function (err) {
+        Voice.findById(6, function (err, voice) {
           if (err) { return doneTest(err) }
 
-          Voice.find(6, function (err, voice) {
-            if (err) { return doneTest(err) }
+          expect(new Date(voice[0].createdAt)).to.not.eql(new Date(voice[0].updatedAt))
 
-            expect(oldUpdatedAt).to.not.eql(new Date(voice[0].updatedAt))
-
-            return doneTest()
-          })
+          return doneTest()
         })
+      })
     })
 
   })
@@ -274,6 +300,59 @@ describe('PostsController', function () {
               return done()
             })
           })
+      })
+    })
+
+    it('Should change updated_at of Voice when post is insta-published', function (doneTest) {
+      async.series([
+        // Jon Snow create unapproved post
+        function (nextSeries) {
+          login('cersei-lannister', function (err, agent, csrf) {
+            if (err) { return nextSeries(err) }
+
+            agent
+              .post(urlBase + '/cersei-lannister/walk-of-atonement')
+              .accept('application/json')
+              .send({
+                _csrf: csrf,
+                posts: [
+                  {
+                    title: 'A post about colors by master z3bra',
+                    description: 'French Uncomfortable Hacker',
+                    publishedAt: 'Thu Oct 15 2015 12:20:00 GMT-0500 (CDT)',
+                    image: '',
+                    imageWidth: '0',
+                    imageHeight: '0',
+                    sourceType: 'link',
+                    sourceService: 'link',
+                    sourceUrl: 'http://blog.z3bra.org/2015/06/vomiting-colors.html',
+                    imagePath: '',
+                  },
+                ],
+              })
+              .end(function (err, res) {
+                if (err) { return nextSeries(err) }
+
+                expect(res.status).to.equal(200)
+
+                return nextSeries()
+              })
+          })
+        },
+
+        function (nextSeries) {
+          setTimeout(nextSeries, 2000)
+        },
+      ], function (err) {
+        if (err) { return doneTest(err) }
+
+        Voice.findById(6, function (err, voice) {
+          if (err) { return doneTest(err) }
+
+          expect(new Date(voice[0].createdAt)).to.not.eql(new Date(voice[0].updatedAt))
+
+          return doneTest()
+        })
       })
     })
 
