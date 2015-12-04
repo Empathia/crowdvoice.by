@@ -322,7 +322,7 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport, CustomEventSupport, Bub
       }
 
       // request to the server
-      this.request(this.id, dateString, scrollDirection);
+      this.request(this.voiceData.id, dateString, scrollDirection);
     },
 
     /* Sets the value to the _averageLayerHeight property.
