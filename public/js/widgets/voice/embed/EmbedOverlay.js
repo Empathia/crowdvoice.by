@@ -47,17 +47,16 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
     },
 
     _setup : function _setup() {
-      var voiceIframe = document.createElement('iframe');
-      var iframeAdvice = document.createElement('p');
-
-      voiceIframe.setAttribute('src', 'http://localhost:3000/embed/cersei-lannister/walk-of-atonement/?default_view=cards&change_view=true&description=true&background=true&share=true&theme=dark&accent=4DD5B9');
-      iframeAdvice.innerHTML = '<i>Widget Width is set to 100% (min width 320 px)</i>';
-      this.iframeInner.appendChild(voiceIframe);
-      this.embedWidgetContainer.appendChild(iframeAdvice);
+      this.iframeUrl = 'http://localhost:3000/embed/cersei-lannister/walk-of-atonement/?default_view=cards&change_view=true&description=true&background=true&share=true&theme=dark&accent=4DD5B9';
+      this.appendChild(new CV.UI.EmbedOverlayIframe({
+        name : 'embedableIFrame',
+        iframeUrl : this.iframeUrl,
+        description : 'Widget Width is set to 100% (min width 320 px)'
+      })).render(this.iframeInner);
 
       this.appendChild(new CV.UI.Close({
         name : 'closeButton',
-        className : '-clickable -color-white -abs',
+        className : '-clickable -color-white -abs cv-embed-overlay__closebtn',
         svgClassName : '-s18'
       })).render(this.el);
 
@@ -242,10 +241,16 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
 
     _bindEvents : function _bindEvents(){
       this.closeButton.bind('click', this._overlayDeactivate.bind(this));
+      this.medium.bind('changed', this._mediumSize.bind(this));
     },
 
     _overlayDeactivate : function _overlayDeactivate(){
       this.deactivate();
+    },
+
+    _mediumSize : function _mediumSize(){
+      this.embedableIFrame.updateUrl('http://wasd.com.mx/');
+      console.log('url cambiada');
     },
 
     _destroy : function _destroy(){
