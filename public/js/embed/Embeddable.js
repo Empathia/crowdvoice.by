@@ -46,15 +46,23 @@ Class(CV, 'Embeddable').includes(NodeSupport, CustomEventSupport, CV.HelperVoice
         this.postsContainerElement.textContent = 'No posts to show';
       }
 
-      if (this.reqQuery.description) {
-        this.appendChild(new CV.EmbedVoiceDescription({
-          name : 'descriptionWidget',
-          data : { description : this.voiceData.description }
-        })).render(document.querySelector('.voice-intro'));
-      }
-
       if (this.reqQuery.background) {
         this._updateVoiceBackground();
+      }
+
+      if (this.reqQuery.description) {
+        this.appendChild(new CV.EmbedVoiceDescriptionController({
+          name : 'descriptionController',
+          data : {
+            description : this.voiceData.description,
+            aboutButtonContainer : document.querySelector('.voice-intro'),
+            boxContainer : document.querySelector('.description-container')
+          }
+        })).showDescription();
+
+        this._updateLayerVarsRef = this._updateLayerVars.bind(this);
+        this.descriptionController.bind('showDescription', this._updateLayerVarsRef);
+        this.descriptionController.bind('hideDescription', this._updateLayerVarsRef);
       }
 
       document.querySelector('.Loading').className = 'Loading hide';
@@ -123,6 +131,12 @@ Class(CV, 'Embeddable').includes(NodeSupport, CustomEventSupport, CV.HelperVoice
     _filterSelectionUpdated : function _filterSelectionUpdated (ev) {
       ev.stopPropagation();
       this.layersController.filterItems(ev.sourceTypes);
+    },
+
+    _updateLayerVars : function _updateLayerVars (ev) {
+      ev.stopPropagation();
+      if (!this.layersController) { return; }
+      this.layersController.updateGlobalVars();
     }
   }
 });

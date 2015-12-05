@@ -48,7 +48,7 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport, CustomEventSupport, Bub
 
       this.registry.setup(this.postsCount);
 
-      this._setGlobarVars();
+      this.updateGlobalVars();
       this._bindEvents()._createEmptyLayers(this.postsCount)._requestAll();
     },
 
@@ -174,7 +174,7 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport, CustomEventSupport, Bub
      * @public
      */
     update : function update () {
-      this._setGlobarVars()._updateLayers();
+      this.updateGlobalVars()._updateLayers();
       return this;
     },
 
@@ -221,7 +221,7 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport, CustomEventSupport, Bub
       }
 
       this.addPosts(currentLayer, postsData);
-      this._setGlobarVars();
+      this.updateGlobalVars();
 
       if (scrollDirection) {
         var next2 = next && next.getNextSibling();
@@ -260,6 +260,16 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport, CustomEventSupport, Bub
 
     getCurrentMonthLayer : function getCurrentMonthLayer() {
       return this['layer_' + this._currentMonthString];
+    },
+
+    updateGlobalVars : function updateGlobalVars() {
+      this._totalHeight = this.mainContent.offsetHeight;
+      this._windowInnerHeight = this._window.innerHeight;
+      this._availableWidth = this._window.innerWidth;
+      this._clientWidth = document.documentElement.clientWidth;
+      this._updateAverageLayerHeight();
+      this._scrollHeight = this._body.clientHeight;
+      return this;
     },
 
     /* Creates all the required empty post layers. They will get set a default
@@ -337,16 +347,6 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport, CustomEventSupport, Bub
       this.children.forEach(function (layer) {
         layer.reLayout({ averageHeight : this._averageLayerHeight });
       }, this);
-    },
-
-    _setGlobarVars : function _setGlobarVars() {
-      this._totalHeight = this.mainContent.offsetHeight;
-      this._windowInnerHeight = this._window.innerHeight;
-      this._availableWidth = this._window.innerWidth;
-      this._clientWidth = document.documentElement.clientWidth;
-      this._updateAverageLayerHeight();
-      this._scrollHeight = this._body.clientHeight;
-      return this;
     }
   }
 });
