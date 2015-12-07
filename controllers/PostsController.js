@@ -129,6 +129,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         var approved = false;
 
         if (req.role === 'Admin'
+          || response.isVoiceDirectOwner
           || response.isVoiceIndirectOwner
           || response.isVoiceCollaborator
           || response.isOrganizationMember
@@ -553,6 +554,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         var approved = false;
 
         if (req.role === 'Admin'
+          || response.isVoiceDirectOwner
           || response.isVoiceIndirectOwner
           || response.isVoiceCollaborator
           || response.isOrganizationMember) {
