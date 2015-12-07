@@ -1,3 +1,5 @@
+var Clipboard = require('clipboard');
+
 Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
   HTML: '\
     <div class="cv-embed-overlay__background"></div>\
@@ -25,13 +27,23 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
         </div>\
     </div>\
   ',
+  defaultViewValue : 'cards',
+  changeViewValue : false,
+  voiceDescriptionValue : false,
+  voiceBackgroundValue : false,
+  enableShareValue : false,
+  widgetHeightValue : '400',
+  widgetThemeValue : 'light',
+  accentValue : '#ff9400',
+  iframeUrl : null,
+  copyCode : null,
 
   prototype : {
     init : function(config) {
       Widget.prototype.init.call(this, config);
       
       this.el = this.element[1];
-      console.log(App.Voice);
+
       this.embedWidgetContainer = this.el.querySelector('.cv-embed-overlay__iframe');
       this.iframeInner = this.el.querySelector('.cv-embed-iframe-wraper');
 
@@ -44,6 +56,8 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
       this.optionCode = this.optionsContainer.querySelector('.cv-embed-overlay__code');
 
       this._setup()._bindEvents();
+
+      this.clipboard = new Clipboard(this.codeClipboardButton.el);
     },
 
     _setup : function _setup() {
@@ -237,9 +251,11 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
         isArea : true,
         placeholder : 'Embedding code...'
       })).render(this.optionCode);
+      
+      this.codeClipboard.inputEl[0].querySelector('textarea').innerText = '<iframe style="height: 400px;" src="' + location.protocol +'//' + location.hostname + this.iframeUrl +' "></iframe>';
 
       this.appendChild(new CV.UI.Button({
-        name : 'codeClipboard',
+        name : 'codeClipboardButton',
         data : {
           value : 'Copy to clipboard',
           attr : {
@@ -247,6 +263,8 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
           }
         }
       })).render(this.optionCode);
+
+      this.codeClipboardButton.el.setAttribute('data-clipboard-text', '<iframe style="height: 400px;" src="' + location.protocol +'//' + location.hostname + this.iframeUrl +' "></iframe>');
 
       this.pasteAdvice = document.createElement('p');
       this.pasteAdvice.innerHTML = '<i>Paste the code into the HTML of your site.</i>';
@@ -275,15 +293,97 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
 
       this.allowShare.bind('changed', this._checkHandler.bind(this));
 
+      this.codeClipboardButton.el.addEventListener('click', this._copyToClipboard.bind(this));
+
     },
 
     _overlayDeactivate : function _overlayDeactivate(){
-      this.deactivate();
+      this._destroy();
     },
 
     _checkHandler : function _checkHandler(){
-      this.embedableIFrame.updateUrl('http://wasd.com.mx/');
-      console.log('url cambiada');
+      if (this.shortRadio.isChecked() === true ){
+        this.widgetHeightValue = this.shortRadio.data.attr.value;
+      } else if ( this.mediumRadio.isChecked() === true ){
+        this.widgetHeightValue = this.mediumRadio.data.attr.value;
+      } else {
+        this.widgetHeightValue = this.tallRadio.data.attr.value;
+      }
+
+      if (this.cardView.isChecked() === true){
+        this.defaultViewValue = this.cardView.data.attr.value;
+      } else {
+        this.defaultViewValue = this.listView.data.attr.value;
+      }
+
+      if (this.changeView.isChecked() === true){
+        this.changeViewValue = this.changeView.data.attr.value;
+      } else {
+        this.changeViewValue = false;
+      }
+
+      if (this.showDescription.isChecked() === true){
+        this.voiceDescriptionValue = this.showDescription.data.attr.value;
+      } else {
+        this.voiceDescriptionValue = false;
+      }
+
+
+      if (this.lightTheme.isChecked() === true){
+        this.widgetThemeValue = this.lightTheme.data.attr.value;
+      } else {
+        this.widgetThemeValue = this.darkTheme.data.attr.value;
+      }
+
+      if (this.voiceBackgrond.isChecked() === true){
+        this.voiceBackgroundValue = this.voiceBackgrond.data.attr.value;
+      } else {
+         this.voiceBackgroundValue = false;
+      }
+
+      if (this.allowShare.isChecked() === true){
+        this.enableShareValue = this.allowShare.data.attr.value;
+      } else {
+        this.enableShareValue = false;
+      }
+
+      this.accentValue = this.inputAccent.value;
+      this.accentValue = this.accentValue.replace(/#/g,'');
+
+      this.iframeInner.style.height = this.widgetHeightValue + 'px';
+
+      this.iframeUrl = /*location.protocol + '//' + location.hostname + */'/embed/' + App.Voice.data.owner.profileName + '/' + App.Voice.data.slug + '/?default_view=' + this.defaultViewValue + '&change_view=' + this.changeViewValue + '&description=' + this.voiceDescriptionValue + '&background=' + this.voiceBackgroundValue + '&share=' + this.enableShareValue +' &theme=' + this.widgetThemeValue + '&accent=' + this.accentValue;
+
+      this.codeClipboard.inputEl[0].querySelector('textarea').innerText = '<iframe style="height:' + this.widgetHeightValue + 'px;" src="' + this.iframeUrl + ' "></iframe>';
+      this.codeClipboardButton.el.setAttribute('data-clipboard-text', '<iframe style="height:' + this.widgetHeightValue + 'px;" src="' + this.iframeUrl +' "></iframe>');
+      this.codeClipboardButton.el.innerText = 'Copy to clipboard';
+
+
+      this.embedableIFrame.updateUrl(this.iframeUrl);
+    },
+
+    _copyToClipboard : function _copyToClipboard(){
+      var button = this.codeClipboardButton;
+      var textarea = this.codeClipboard.inputEl[0].querySelector('textarea');
+
+      this.clipboard.on('success', function(e) {
+          button.el.innerText = 'Copied !';
+
+          e.clearSelection();
+      });
+
+      this.clipboard.on('error', function() {
+         var instructions = null;
+
+          if (navigator.appVersion.indexOf("Win")!== -1) {
+              instructions = 'Press CTRL + C to copy';
+          } else if (navigator.appVersion.indexOf("Mac")!== -1) { 
+              instructions = 'Press ⌘ + C to copy';
+          }
+
+          textarea.select();
+          button.el.innerText = instructions;
+      });
     },
 
     _destroy : function _destroy(){
