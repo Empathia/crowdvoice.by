@@ -1,4 +1,5 @@
 /* globals App */
+var origin = require('get-location-origin');
 var Events = require('./../../lib/events');
 var KEYS = require('./../../lib/keycodes');
 
@@ -7,9 +8,17 @@ Class(CV, 'PostDetail').inherits(Widget).includes(CV.WidgetUtils, BubblingSuppor
   HTML : '\
     <div>\
       <header class="cv-post-detail__header -rel -clearfix">\
-        <div class="pd-header__heading">\
-          <p class="pd-header__title -inline-block -font-bold"></p>\
-          <p class="pd-header__author -inline-block"></p>\
+        <div class="pd-header-right-wrapper -float-right"></div>\
+        <div class="pd-header__heading pd-header-left-wrapper -overflow-hidden">\
+          <a target="_blank" title="CrowdVoice.by" class="pd-header-logo-wrapper -inline-block">\
+            <svg class="header-logo__svg">\
+              <use xlink:href="#svg-logo"></use>\
+            </svg>\
+          </a>\
+          <div class="pd-header-meta -inline-block -overflow-hidden">\
+            <p class="pd-header__title -font-bold"></p>\
+            <p class="pd-header__author"></p>\
+          </div>\
         </div>\
       </header>\
       <div class="cv-post-detail__content -clearfix -full-height"></div>\
@@ -33,14 +42,15 @@ Class(CV, 'PostDetail').inherits(Widget).includes(CV.WidgetUtils, BubblingSuppor
      * @return {Object} this
      */
     _setup : function _setup() {
+      this.dom.updateAttr('href', this.el.querySelector('.pd-header-logo-wrapper'), origin);
       this.dom.updateText(this.headerElement.querySelector('.pd-header__title'), this.data.voice.title);
       this.dom.updateText(this.headerElement.querySelector('.pd-header__author'), 'by ' + this.data.voice.owner.name);
 
       this.appendChild(new CV.UI.Close({
         name : 'closeButton',
-        className : 'cv-post-detail__close-button -abs',
+        className : 'cv-post-detail__close-button',
         svgClassName : '-s14 -color-white'
-      })).render(this.el);
+      })).render(this.el.querySelector('.pd-header-right-wrapper'));
 
       this.appendChild(new CV.PostDetailSidebar({
         name : 'sidebar',
