@@ -41,6 +41,20 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
          */
         _layersOffsetLeft : 70,
 
+        /* Tell if a postId has been pased on the url to display the content viewer.
+         * If a `postId` is detected on the `_checkInitialHash` method the value
+         * of this property will be changed to true and the _showContentViewerPostId
+         * property will hold the post id value, so when the first layer data
+         * and the `layerLoadedHandler` method is run the content viewer will
+         * be triggered.
+         * @property <Boolean>
+         */
+        _showContentViewer : '',
+
+         /* @property <string> - the post id encoded found on the initial url.
+          */
+        _showContentViewerPostId : '',
+
         LAYER_CLASSNAME : 'cv-voice-posts-layer__detector',
 
         /* socket io instance holder */
@@ -252,7 +266,15 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
             }
 
             var month = matches[1];
-            // var postId = matches[2];
+            var postId = matches[2];
+
+            if (postId) {
+                postId = postId.replace(/^\//,'');
+                if (/^[a-z0-9]{12}?/i.test(postId)) {
+                    this._showContentViewer = true;
+                    this._showContentViewerPostId = postId;
+                }
+            }
 
             if (month && /^\d{4}-\d{2}/.test(month)) {
                 // if is the very first layer, do not scrollTo, just load it
@@ -337,6 +359,7 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
         },
 
         /* Renders the PostDetail Overlay
+         * @param {Object} ev - the Post instance.
          */
         displayGallery : function displayGallery(ev) {
             if (this.postDetailController) {
@@ -475,8 +498,26 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
         },
 
         layerLoadedHandler : function layerLoadedHandler(data) {
+            var _this = this;
+
             this.voiceFooter.updateTimelineVars();
             this.voiceFooter.updateTimelineDatesMenu(data.dateString);
+
+            if (this._showContentViewer) {
+                var postInstance;
+                this._showContentViewer = false;
+
+                data.target.getLayers().some(function(layer) {
+                    return layer.getPosts().some(function(post) {
+                        if (post.id === _this._showContentViewerPostId) {
+                            postInstance = post;
+                            return true;
+                        }
+                    });
+                });
+
+                if (postInstance) { this.displayGallery({ data: postInstance }); }
+            }
         },
 
         destroy : function destroy() {
