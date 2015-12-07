@@ -1,102 +1,105 @@
-/* jshint multistr: true */
 var moment = require('moment');
 
 Class(CV, 'VoicePostIndicator').inherits(Widget).includes(CV.WidgetUtils)({
-    ELEMENT_CLASS: 'cv-voice-tick-indicator',
+  ELEMENT_CLASS: 'cv-voice-tick-indicator',
 
-    /* Holds the `y` values that are being registed by any instance.
-     * We do not want them to overlap each other.
-     * There is just one group of indicators now, so can safely us this
-     * approach.
+  /* Holds the `y` values that are being registed by any instance.
+   * This allows us to increase the y position of any indicator that will
+   * overlap with any other.
+   */
+  registeredYValues : [],
+
+  ITEM_OVERLAP_DISTANCE : 20,
+
+  flushRegisteredYValues : function flushRegisteredYValues() {
+    this.registeredYValues = [];
+  },
+
+  prototype : {
+    /* @param {Object} config - the widget’s configuration settings.
+     * @property {NodeElement} refElement - the post NodeElement related with this instance.
+     * @property {number} zIndex - the zIndex for the instance.
      */
-    registeredYValues : [],
-
-    ITEM_HEIGHT : 20,
-
-    flushRegisteredYValues : function flushRegisteredYValues() {
-        this.registeredYValues = [];
+    init : function init(config) {
+      Widget.prototype.init.call(this, config);
+      this.el = this.element[0];
+      this.labelElement = this.el.querySelector('.cv-voice-tick-indicator-label');
+      this.el.dataset.date = this.label;
+      this.el.dataset.timestamp = moment(this.label).format('x') * 1000;
     },
 
-    prototype : {
-        /* OPTIONS */
-        label : '',
-        refElement : null,
-        zIndex : 0,
+    /* Sets the indicator position and dimensions.
+     * Checks if the indicator can be positioned on the same y coord of
+     * its CONFIG.refElement reference. This is to avoid collisions with
+     * previous indicators. If it cannot be placed on that coord, its
+     * `y` position will be calculated summing up its height to the last
+     * `y` registed value.
+     * @public
+     */
+    updatePosition : function updatePosition() {
+      var y = 0, height = 0, alreadyRegistered, _that;
 
-        init : function init(config) {
-            Widget.prototype.init.call(this, config);
+      _that = this;
+      if (this.refElement.offsetParent) {
+        y = ~~this.refElement.dataset.y || this.refElement.offsetTop;
+        height = ~~this.refElement.dataset.h || this.refElement.offsetHeight;
+      }
 
-            this.el = this.element[0];
-            this.labelElement = this.el.querySelector('.cv-voice-tick-indicator-label');
+      alreadyRegistered = function(value) {
+        return (value === y || y < (value + this.constructor.ITEM_OVERLAP_DISTANCE));
+      }.bind(this);
 
-            this.el.dataset.timestamp = moment(this.label).format('x') * 1000;
-        },
+      if (this.constructor.registeredYValues.some(alreadyRegistered)) {
+        y = (this._getLastYValue() + this.constructor.ITEM_OVERLAP_DISTANCE);
+      }
 
-        /* Sets the indicator position and dimensions.
-         * Checks if the indicator can be positioned on the same y coord of
-         * its CONFIG.refElement reference. This is to avoid collisions with
-         * previous indicators. If it cannot be placed on that coord, its
-         * `y` position will be calculated summing up its height to the last
-         * `y` registed value.
-         * @public
-         */
-        updatePosition : function updatePosition() {
-            var y, height, alreadyRegistered;
+      this.constructor.registeredYValues.push(y);
 
-            y = ~~this.refElement.dataset.y;
-            height = ~~this.refElement.dataset.h;
+      this.el.style.height = height + 'px';
+      this.el.style.top = y + 'px';
 
-            alreadyRegistered = function(value) {
-                return (value === y || y < (value + this.constructor.ITEM_HEIGHT));
-            }.bind(this);
+      return this;
+    },
 
-            if (this.constructor.registeredYValues.some(alreadyRegistered)) {
-                y = (this._getLastYValue() + this.constructor.ITEM_HEIGHT);
-            }
+    /* Sets the zIndex to the element instance.
+     * @public
+     */
+    addIndex : function addIndex() {
+      this.el.style.zIndex = this.zIndex;
+    },
 
-            this.constructor.registeredYValues.push(y);
+    /* Sets the zIndex to the element instance.
+     * @public
+     */
+    removeIndex : function removeIndex() {
+      this.el.style.zIndex = 'initial';
+    },
 
-            this.el.style.height = height + 'px';
-            this.el.style.top = y + 'px';
+    /* Returns its date as timestamp
+     * @public
+     */
+    getTimestamp : function getTimestamp() {
+      return this.el.dataset.timestamp;
+    },
 
-            y = height = alreadyRegistered = null;
+    /* Returns the last (which is the greatest) registered y value.
+     * @private
+     */
+    _getLastYValue : function _getLastYValue() {
+      return this.constructor.registeredYValues[this.constructor.registeredYValues.length - 1];
+    },
 
-            return this;
-        },
+    destroy : function destroy() {
+      Widget.prototype.destroy.call(this);
 
-        addIndex : function addIndex() {
-            this.el.style.zIndex = this.zIndex;
-        },
+      this.constructor.flushRegisteredYValues();
 
-        removeIndex : function removeIndex() {
-            this.el.style.zIndex = 'initial';
-        },
+      this.label = null;
+      this.refElement = null;
+      this.zIndex = null;
 
-        /* Returns its date as timestamp
-         * @public
-         */
-        getTimestamp : function getTimestamp() {
-            return this.el.dataset.timestamp;
-        },
-
-        /* Returns the last (which is the greatest) registered y value.
-         * @private
-         */
-        _getLastYValue : function _getLastYValue() {
-            return this.constructor.registeredYValues[this.constructor.registeredYValues.length - 1];
-        },
-
-        destroy : function destroy() {
-            Widget.prototype.destroy.call(this);
-
-            this.constructor.flushRegisteredYValues();
-
-            this.label = null;
-            this.refElement = null;
-            this.zIndex = null;
-
-            this.el = null;
-            this.labelElement = null;
-        }
+      this.el = null;
+      this.labelElement = null;
     }
+  }
 });
