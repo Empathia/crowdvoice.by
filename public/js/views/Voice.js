@@ -375,7 +375,7 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
          * @method _scrollHandler <private> [Function]
          */
         _scrollHandler : function _scrollHandler() {
-            var st = this._window.scrollY;
+            var st = this.voicePostLayersManager.getScrollTop();
             var scrollingUpwards = (st < this._lastScrollTop);
             var y = 0;
             var el;
@@ -386,12 +386,10 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
                 this.voiceAddContent.el.style.pointerEvents = 'none';
             }
 
-            if (!this._listenScrollEvent) {
-                return;
-            }
+            if (!this._listenScrollEvent) { return; }
 
             if (!scrollingUpwards) {
-                y = this.voicePostLayersManager._windowInnerHeight - 1;
+                y = (this.voicePostLayersManager._windowInnerHeight - 1);
 
                 this.voicePostLayersManager.getLayers().forEach(function(layer) {
                     var indicators = layer.getIndicators();

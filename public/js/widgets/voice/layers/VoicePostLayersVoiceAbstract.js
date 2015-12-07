@@ -80,7 +80,7 @@ Class(CV, 'VoicePostLayersVoiceAbstract').inherits(CV.VoicePostLayers)({
          * @method getScrollTop <protected> [Function]
          */
         getScrollTop : function getScrollTop() {
-            return this.scrollableArea.scrollY;
+            return this.scrollableArea.pageYOffset;
         },
 
         /* Scroll to a y position of the scrollable area.

@@ -129,7 +129,7 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport, CustomEventSupport, Bub
      * @private
      */
     _scrollHandler : function _scrollHandler() {
-      var st = this._window.scrollY;
+      var st = this._window.pageYOffset;
       var scrollingUpwards = (st < this._lastScrollTop);
       var y = 0;
       var el;
