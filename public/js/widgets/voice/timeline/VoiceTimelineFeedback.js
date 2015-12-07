@@ -102,7 +102,7 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
          * @method _scrollHandler <private> [Function]
          */
         _scrollHandler : function _scrollHandler() {
-            this._lastScrollY = this._body.scrollTop;
+            this._lastScrollY = this._window.pageYOffset;
 
             if (this._scheduledAnimationFrame) {
                 return void 0;
