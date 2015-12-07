@@ -178,8 +178,8 @@ Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
             this.parent._listenScrollEvent = false;
 
             this.getLayers().forEach(function(layer) {
-                if (this._canRemovePosts(layer)) {
-                    this.removePosts(layer);
+                if (_this._canRemovePosts(layer)) {
+                    _this.removePosts(layer);
                 }
             });
 
