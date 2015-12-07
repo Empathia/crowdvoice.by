@@ -21,34 +21,34 @@ Class(CV, 'EmbedHeader').inherits(Widget).includes(BubblingSupport)({
       this.el.querySelector('[data-total-posts]').textContent = this.totalPosts;
 
       this.appendChild(new CV.VoiceFilterPostsDropdown({
-        name : 'filterDropdown',
-        className : 'header-filter-posts-dropdown -inline-block',
-        dropdownClassName : this.reqQuery.theme
+        name: 'filterDropdown',
+        className: 'header-filter-posts-dropdown -inline-block',
+        dropdownClassName: (this.reqQuery.theme === 'dark') ? 'grey' : this.reqQuery.theme
       })).render(this.rightWrapperElement);
 
       if (this.reqQuery.change_view) {
         this.appendChild(new CV.EmbedHeaderViewButtons({
-          name : 'viewButtons',
-          className : 'header-switch-view-buttons-group',
-          defaultView : this.reqQuery.default_view,
-          theme : this.reqQuery.theme
+          name: 'viewButtons',
+          className: 'header-switch-view-buttons-group',
+          defaultView: this.reqQuery.default_view,
+          theme: (this.reqQuery.theme === 'dark') ? 'grey' : this.reqQuery.theme
         })).render(this.rightWrapperElement);
       }
 
       if (this.reqQuery.share) {
         this.appendChild(new CV.EmbedHeaderShareButton({
-          name : 'shareButton',
-          className : '-inline-block',
-          theme : this.reqQuery.theme,
-          voiceData : this.voiceData
+          name: 'shareButton',
+          className: '-inline-block',
+          theme: (this.reqQuery.theme === 'dark') ? 'grey' : this.reqQuery.theme,
+          voiceData: this.voiceData
         })).render(this.rightWrapperElement);
       }
 
       if (this.voiceData.type === 'TYPE_PUBLIC') {
         this.appendChild(new CV.EmbedOpenVoiceButton({
-          name : 'openVoiceButton',
-          accent : this.reqQuery.accent,
-          voiceData : this.voiceData
+          name: 'openVoiceButton',
+          accent: this.reqQuery.accent,
+          voiceData: this.voiceData
         })).render(this.rightWrapperElement);
       }
     }
