@@ -28,7 +28,6 @@ Class(CV, 'EmbedLayerPostIndicator').inherits(Widget).includes(CV.WidgetUtils)({
       this.el.dataset.timestamp = moment(this.label).format('x') * 1000;
     },
 
-
     /* Sets the indicator position and dimensions.
      * Checks if the indicator can be positioned on the same y coord of
      * its CONFIG.refElement reference. This is to avoid collisions with
