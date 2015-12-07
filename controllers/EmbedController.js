@@ -8,8 +8,6 @@ var EmbedController = Class('EmbedController')({
       }, function (err, result) {
         if (err) { return next(err); }
 
-        console.log(result)
-
         if (!result.isAllowed) {
           return next(new ForbiddenError());
         }
