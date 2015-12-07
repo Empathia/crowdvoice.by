@@ -1,4 +1,10 @@
+var origin = require('get-location-origin');
+var moment = require('moment');
+var Events = require('./../lib/events');
+
 Class(CV, 'Embeddable').includes(NodeSupport, CustomEventSupport, CV.HelperVoice)({
+  MIN_CONTENT_VIEWER_WIDTH: 420,
+
   prototype : {
     /**
      * @param {Object} config - the configuration object
@@ -10,11 +16,12 @@ Class(CV, 'Embeddable').includes(NodeSupport, CustomEventSupport, CV.HelperVoice
         this[propertyName] =  config[propertyName];
       }, this);
 
+      this._window = window;
       this.postsContainerElement = document.querySelector('.posts-container');
       this.postsCount = this._formatPostsCountObject(this.postsCount);
       this.totalPosts = this._getTotalPostCount(this.postsCount);
 
-      console.log(config);
+      this._updateVars();
     },
 
     /* Initialize its children widgets.
@@ -74,6 +81,9 @@ Class(CV, 'Embeddable').includes(NodeSupport, CustomEventSupport, CV.HelperVoice
      * @private
      */
     _bindEvents : function _bindEvents() {
+      this._updateVarsRef = this._updateVars.bind(this);
+      Events.on(this._window, 'resize', this._updateVarsRef);
+
       this._displayContentViewerRef = this._displayContentViewer.bind(this);
       this.bind('post:display:detail', this._displayContentViewerRef);
 
@@ -90,6 +100,12 @@ Class(CV, 'Embeddable').includes(NodeSupport, CustomEventSupport, CV.HelperVoice
      * @private
     */
     _displayContentViewer : function _displayContentViewer(ev) {
+      ev.stopPropagation();
+
+      if (this._innerWidth < this.constructor.MIN_CONTENT_VIEWER_WIDTH) {
+        return this._sendToVoice(ev.data);
+      }
+
       if (this.postDetailController) {
         this.postDetailController = this.postDetailController.destroy();
       }
@@ -137,6 +153,42 @@ Class(CV, 'Embeddable').includes(NodeSupport, CustomEventSupport, CV.HelperVoice
       ev.stopPropagation();
       if (!this.layersController) { return; }
       this.layersController.updateGlobalVars();
+    },
+
+    /* Opens a new tab with the voice.post url.
+     * @private
+     * @param {Object} data - the Post data.
+     */
+    _sendToVoice: function _sendToVoice(data) {
+      var url = origin + '/' + data.voice.owner.profileName + '/';
+        url += data.voice.slug + '/';
+        url += '#!' + moment(data.publishedAt).format('YYYY-MM') + '/';
+        url += data.id;
+
+        this._openNewTab(url);
+    },
+
+    /* Creates a temporal anchor tag, sets its href, its target attribute as `_blank`
+     * and trigger its click event to open a new tab.
+     * @private
+     */
+    _openNewTab: function _openNewTab(url) {
+      var anchor = document.createElement('a');
+      anchor.setAttribute('href', url);
+      anchor.setAttribute('target', '_blank');
+      anchor.click();
+      anchor = null;
+    },
+
+    _updateVars : function _updateVars() {
+      this._innerWidth = this._window.innerWidth;
+    },
+
+    destroy : function destroy() {
+      Widget.prototype.destroy.call(this);
+      Events.off(this._window, 'resize', this._updateLayerVarsRef);
+      this._updateLayerVarsRef = null;
+      return null;
     }
   }
 });
