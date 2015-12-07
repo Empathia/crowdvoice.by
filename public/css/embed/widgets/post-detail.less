@@ -1,3 +1,5 @@
+@header-height: 43px;
+
 .cv-post-detail {
   position: fixed;
   top: 0;
@@ -63,32 +65,32 @@
   will-change: transform;
 }
 
-.cv-post-detail__header-navigation {
-  border-left: 1px solid @color-neutral-light;
+.cv-post-detail__nav-button-wrapper {
+  display: none;
+  &:extend(.-abs);
+  top: @header-height;
+  bottom: 0;
+
+  &.prev {left: 0}
+  &.next {right: 0}
 }
 
-.cv-post-detail__header-navigation-button {
+.cv-post-detail__nav-button {
+  width: 40px;
+  height: 100%;
   padding: 0 10px;
-  height: 60px;
   outline: none;
   color: @color-neutral-mid;
   fill: @color-neutral-mid;
-  transition: background-color 140ms ease, box-shadow 140ms ease;
 
   > svg {transition: fill 240ms ease}
 
-  &:last-child {border-bottom-right-radius: 3px}
-
-  &:hover {
+  &:enabled:hover {
     color: @color-primary;
     fill: @color-primary;
   }
 
-  &:active,
-  &.active {
-    background-color: tint(@color-neutral-light, 50);
-    box-shadow: inset 0 3px 0 @color-neutral-light;
-  }
+  &[disabled="true"] {opacity: .25}
 }
 
 .cv-post-detail__content {
@@ -296,4 +298,14 @@
     width: 12px;
     height: 12px;
   }
+}
+
+@media only screen and (max-width: 550px) {
+  .cv-post-detail__sidebar { display: none; }
+  .cv-post-detail__content {
+    height: e('calc(100% - 83px)');
+    margin: 20px 60px 0;
+  }
+  .cv-post-detail__nav-button-wrapper {display: block }
+  .cv-post-detail__info { border-radius: 3px; }
 }
