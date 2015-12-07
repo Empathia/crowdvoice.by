@@ -26,6 +26,7 @@ Class(CV, 'Timeline').inherits(Widget)({
     run : function run (px) {
       this.update(px);
       this.enable();
+      return this;
     },
 
     /* Updates the feedback progress x position.
@@ -46,6 +47,7 @@ Class(CV, 'Timeline').inherits(Widget)({
      */
     updateBgColor : function updateBgColor (color) {
       this.clockWrapper.style.backgroundColor = color;
+      return this;
     }
   }
 });

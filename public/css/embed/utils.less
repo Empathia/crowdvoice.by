@@ -82,4 +82,23 @@
 .-img-cover {background-size: cover}
 .-img-contain {background-size: contain}
 
+.-line-through {
+  position: relative;
+  background-color: @color-white;
 
+  &:before {
+    content: '';
+    height: 1px;
+    right: 0;
+    position: absolute;
+    background-color: @color-neutral-x-light;
+    top: 50%;
+    left: 0;
+  }
+}
+
+.-line-through-label {
+  position: relative;
+  background-color: inherit;
+  padding: 0 .5em;
+}

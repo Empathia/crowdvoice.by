@@ -59,6 +59,7 @@
 @import './embed/widgets/post-detail';
 
 @import './components/ui/close-button';
+@import './components/captions';
 
 @import './embed/header';
 @import './embed/voice';
@@ -66,6 +67,9 @@
 @import './embed/themes/light';
 @import './embed/themes/dark';
 
+body {overflow-x: hidden;}
+
+.mixin-color(@color-neutral-mid, neutral-mid);
 .mixin-color(@color-negative, negative);
 .mixin-color(@color-positive, positive);
 
