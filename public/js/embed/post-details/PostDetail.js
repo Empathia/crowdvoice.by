@@ -49,7 +49,7 @@ Class(CV, 'PostDetail').inherits(Widget).includes(CV.WidgetUtils, BubblingSuppor
       this.appendChild(new CV.UI.Close({
         name : 'closeButton',
         className : 'cv-post-detail__close-button',
-        svgClassName : '-s14 -color-white'
+        svgClassName : '-s14'
       })).render(this.el.querySelector('.pd-header-right-wrapper'));
 
       this.appendChild(new CV.PostDetailSidebar({
