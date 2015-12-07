@@ -187,11 +187,11 @@ describe('PostsController', function () {
     })
 
     it('Should insta-publish article if Voice owner', function (doneTest) {
-      login('cersei-lannister', function (err, agent, csrf) {
+      login('jon-snow', function (err, agent, csrf) {
         if (err) { return doneTest(err) }
 
         agent
-          .post(urlBase + '/cersei-lannister/walk-of-atonement/saveArticle')
+          .post(urlBase + '/jon-snow/battle-of-castle-black/saveArticle')
           .accept('application/json')
           .send({
             _csrf: csrf,
