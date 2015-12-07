@@ -18,9 +18,9 @@ Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
         /* DEFAULT BASIC OPTIONS */
         description : '',
         postsCount : null,
-        averagePostTotal : 100,
+        averagePostTotal : 15,
         averagePostWidth : 300,
-        averagePostHeight : 600,
+        averagePostHeight : 500,
         scrollableArea : null,
 
         /* PRIVATE PROPERTIES */
@@ -417,6 +417,8 @@ Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
             });
 
             this._lazyLoadingImageArray = [];
+
+            if (!this.getCurrentMonthLayer().getPosts().length) { return; }
 
             this.getCurrentMonthLayer().getPosts().forEach(function(post) {
                 if (post.imageLoaded === false) {

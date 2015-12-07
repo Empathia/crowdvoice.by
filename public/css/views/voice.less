@@ -191,8 +191,6 @@
  * POST LAYERS WRAPPER
  *****************************************************************************/
 .voice-posts {
-  padding-bottom: @cv-voice-footer-height;
-
   .post-card {
     width: 300px;
   }
@@ -356,6 +354,8 @@
     -webkit-overflow-scrolling: touch;
     will-change: transform;
   }
+
+  .voice-posts { padding-bottom: @cv-voice-footer-height; }
 }
 
 .voice-moderate-footer {
@@ -427,7 +427,7 @@
     display: inline-block;
     width: 50%;
   }
-  
+
   .cv-embed-overlay__iframe{
     height: 400px;
     p{
@@ -529,7 +529,7 @@
   visibility: visible;
   z-index: 2;
 }
-    
+
 /******************************************************************************
  * Twitter Help Popover
  *****************************************************************************/
