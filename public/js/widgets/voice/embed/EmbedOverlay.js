@@ -62,6 +62,7 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
 
     _setup : function _setup() {
       this.iframeUrl = '/embed/' + App.Voice.data.owner.profileName + '/' + App.Voice.data.slug + '/?default_view=cards&change_view=true&description=false&background=true&share=true&theme=light&accent=ff9400';
+      
       this.appendChild(new CV.UI.EmbedOverlayIframe({
         name : 'embedableIFrame',
         iframeUrl : this.iframeUrl,
@@ -274,7 +275,7 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
     },
 
     _bindEvents : function _bindEvents(){
-      this.closeButton.bind('click', this._overlayDeactivate.bind(this));
+      this.closeButton.bind('click', this._destroy.bind(this));
 
       this.shortRadio.bind('changed', this._checkHandler.bind(this));
       this.mediumRadio.bind('changed', this._checkHandler.bind(this));
@@ -295,10 +296,6 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
 
       this.codeClipboardButton.el.addEventListener('click', this._copyToClipboard.bind(this));
 
-    },
-
-    _overlayDeactivate : function _overlayDeactivate(){
-      this._destroy();
     },
 
     _checkHandler : function _checkHandler(){
@@ -348,11 +345,13 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
       }
 
       this.accentValue = this.inputAccent.value;
+      this.inputAccent.style.backgroundColor = this.accentValue;
+      this.inputAccent.style.borderColor = this.accentValue;
       this.accentValue = this.accentValue.replace(/#/g,'');
 
       this.iframeInner.style.height = this.widgetHeightValue + 'px';
 
-      this.iframeUrl = /*location.protocol + '//' + location.hostname + */'/embed/' + App.Voice.data.owner.profileName + '/' + App.Voice.data.slug + '/?default_view=' + this.defaultViewValue + '&change_view=' + this.changeViewValue + '&description=' + this.voiceDescriptionValue + '&background=' + this.voiceBackgroundValue + '&share=' + this.enableShareValue +' &theme=' + this.widgetThemeValue + '&accent=' + this.accentValue;
+      this.iframeUrl = location.protocol + '//' + location.hostname + '/embed/' + App.Voice.data.owner.profileName + '/' + App.Voice.data.slug + '/?default_view=' + this.defaultViewValue + '&change_view=' + this.changeViewValue + '&description=' + this.voiceDescriptionValue + '&background=' + this.voiceBackgroundValue + '&share=' + this.enableShareValue +' &theme=' + this.widgetThemeValue + '&accent=' + this.accentValue;
 
       this.codeClipboard.inputEl[0].querySelector('textarea').innerText = '<iframe style="height:' + this.widgetHeightValue + 'px;" src="' + this.iframeUrl + ' "></iframe>';
       this.codeClipboardButton.el.setAttribute('data-clipboard-text', '<iframe style="height:' + this.widgetHeightValue + 'px;" src="' + this.iframeUrl +' "></iframe>');
@@ -387,7 +386,7 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
     },
 
     _destroy : function _destroy(){
-      Widget.prototype.destroy.call(this);
+      Widget.prototype._destroy.call(this);
 
       return null;
     }

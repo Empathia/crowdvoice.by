@@ -6,8 +6,8 @@ Class(CV.UI, 'EmbedOverlayIframe').inherits(Widget)({
 	HTML : '\
 		<div>\
 			<iframe></iframe>\
-			<p><i></i></p>\
 		</div>\
+		<p><i></i></p>\
 	',
 
 	prototype:{
@@ -18,10 +18,10 @@ Class(CV.UI, 'EmbedOverlayIframe').inherits(Widget)({
 
 			this.el = this.element[0];
 			this.iframeContainer = this.el.querySelector('iframe');
-			this.adviceContiner = this.el.querySelector('i');
+			this.adviceContainer = this.element[1].querySelector('i');
 
 			this.iframeContainer.setAttribute('src', this.iframeUrl);
-			this.adviceContiner.innerHTML = this.description;
+			this.adviceContainer.innerHTML = this.description;
 		},
 
 		updateUrl : function updateUrl(url){
