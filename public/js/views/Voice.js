@@ -100,7 +100,7 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
             if (!Person.get()) {
                 this.appendChild(new CV.UI.Button({
                     name : 'createVoiceButton',
-                    className : 'small primary',
+                    className : 'small primary -mr2',
                     data : {value: 'Create Voice'}
                 })).render(App.header.buttonActionsWrapper, App.header.buttonActionsWrapper.firstElementChild);
 
@@ -114,7 +114,7 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
 
                 this.appendChild(new CV.UI.Button({
                     name : 'editVoiceButton',
-                    className : 'small primary',
+                    className : 'header- small primary -mr2',
                     data : {value: 'Edit this Voice'}
                 })).render(App.header.buttonActionsWrapper, App.header.buttonActionsWrapper.firstElementChild);
 
@@ -149,7 +149,7 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
                 footerVoiceTitle : document.getElementsByClassName('voice-footer-meta-wrapper')[0],
                 scrollableArea : this.scrollableArea
             }));
-            
+
             if (this.onboarding){
                 this.onboarding.setup();
             }
