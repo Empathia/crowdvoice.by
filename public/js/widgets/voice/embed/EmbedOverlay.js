@@ -8,28 +8,30 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
   HTML: '\
     <div>\
       <div class="cv-embed-overlay__background"></div>\
-      <div class="cv-embed-overlay__body">\
-          <div class="cv-embed-overlay__iframe">\
-            <div class="cv-embed-iframe-wraper">\
+      <div class="cv-embed_overlay_main">\
+        <div class="cv-embed-overlay__body">\
+            <div class="cv-embed-overlay__iframe">\
+              <div class="cv-embed-iframe-wraper">\
+              </div>\
             </div>\
-          </div>\
-          <div class="cv-embed-overlay__options">\
-            <p class="cv-embed-overlay__title">Widget Settings</p>\
-            <div class="cv-embed-overlay__height">\
-              <p class="option-title">Widget Height:</p>\
+            <div class="cv-embed-overlay__options">\
+              <p class="cv-embed-overlay__title ">Widget Settings</p>\
+              <div class="cv-embed-overlay__height ui-form-field">\
+                <p class="option-title ui-input__label -upper -font-bold">Widget Height:</p>\
+              </div>\
+              <div class="cv-embed-overlay__view ui-form-field">\
+                <p class="option-title ui-input__label -upper -font-bold">Default view:</p>\
+              </div>\
+              <div class="cv-embed-overlay__theme ui-form-field">\
+                <p class="option-title ui-input__label -upper -font-bold">Theme</p>\
+              </div>\
+              <div class="cv-embed-overlay__accent ui-form-field">\
+                <p class="option-title ui-input__label -upper -font-bold">Pick Accent Color</p>\
+              </div>\
+              <div class="cv-embed-overlay__share"></div>\
+              <div class="cv-embed-overlay__code"></div>\
             </div>\
-            <div class="cv-embed-overlay__view">\
-              <p class="option-title">Default view:</p>\
-            </div>\
-            <div class="cv-embed-overlay__theme">\
-              <p class="option-title">Theme</p>\
-            </div>\
-            <div class="cv-embed-overlay__accent">\
-              <p class="option-title">Pick Accent Color</p>\
-            </div>\
-            <div class="cv-embed-overlay__share"></div>\
-            <div class="cv-embed-overlay__code"></div>\
-          </div>\
+        </div>\
       </div>\
     </div>\
   ',
@@ -50,7 +52,8 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
       Widget.prototype.init.call(this, config);
       
       this.el = this.element[0];
-      this.embedWidgetBackground = this.el.querySelector('.cv-embed-overlay__body');
+      this.embedWidgetBackground = this.el.querySelector('.cv-embed_overlay_main');
+      
       this.embedWidgetContainer = this.el.querySelector('.cv-embed-overlay__iframe');
       this.iframeInner = this.el.querySelector('.cv-embed-iframe-wraper');
 
@@ -64,7 +67,7 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
 
       this._setup()._bindEvents();
       this._checkHandler();
-      
+
       this.clipboard = new Clipboard(this.codeClipboardButton.el);
 
     },
@@ -376,7 +379,7 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
       
 
       this.iframeInner.style.height = this.widgetHeightValue + 'px';
-      this.iframeUrl = Origin + '/embed/' + App.Voice.data.owner.profileName + '/' + App.Voice.data.slug + '/?default_view=' + this.defaultViewValue + '&change_view=' + this.changeViewValue + '&description=' + this.voiceDescriptionValue + '&background=' + this.voiceBackgroundValue + '&share=' + this.enableShareValue +' &theme=' + this.widgetThemeValue + '&accent=' + this.accentValue;
+      this.iframeUrl = Origin + '/embed/' + App.Voice.data.owner.profileName + '/' + App.Voice.data.slug + '/?default_view=' + this.defaultViewValue + '&change_view=' + this.changeViewValue + '&description=' + this.voiceDescriptionValue + '&background=' + this.voiceBackgroundValue + '&share=' + this.enableShareValue + '&theme=' + this.widgetThemeValue + '&accent=' + this.accentValue;
 
       this.codeClipboard.inputEl[0].querySelector('textarea').innerText = '<iframe style="height:' + this.widgetHeightValue + 'px;" src="' + this.iframeUrl + ' "></iframe>';
       this.codeClipboardButton.el.setAttribute('data-clipboard-text', '<iframe style="height:' + this.widgetHeightValue + 'px;" src="' + this.iframeUrl +' "></iframe>');
