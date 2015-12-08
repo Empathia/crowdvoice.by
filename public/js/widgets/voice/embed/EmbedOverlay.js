@@ -329,6 +329,12 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
 
     _checkHandler : function _checkHandler(){
       this.accentValue = this.inputAccent.value;
+      if ( this.accentValue === 'ffffff' || this.accentValue === 'FFFFFF' ){
+        this.inputAccent.style.color = '#a1b0b3';
+      } else {
+        this.inputAccent.style.color = '#FFFFFF';
+      }
+      this.inputAccent.value = '#' + this.accentValue;
       this.inputAccent.style.backgroundColor = '#' + this.accentValue;
       this.inputAccent.style.borderColor = '#' + this.accentValue;
 
