@@ -98,6 +98,8 @@ Class(CV, 'SendMessage').inherits(Widget).includes(CV.WidgetUtils)({
                 return void 0;
             }
 
+            this.formButton.disable();
+
             API.sendMessage({
                 profileName : this.data.profileName,
                 data : {
@@ -113,6 +115,8 @@ Class(CV, 'SendMessage').inherits(Widget).includes(CV.WidgetUtils)({
          * @messages _sendMessageResponseHandler <private>
          */
         _sendMessageResponseHandler : function _sendMessageResponseHandler(err, res) {
+            this.formButton.enable();
+
             if (err) {
                 console.log(err);
                 return void 0;
