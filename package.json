@@ -12,6 +12,7 @@
     "dev": "webpack -d -w",
     "svg": "svg-sprite -s --symbol-dest=svg --symbol-prefix=.svg- --ss=sprite.svg --si --sx --shape-id-generator=svg-%s --dest=views/shared public/svg/*.svg",
     "svg:embed": "svg-sprite -s --symbol-dest=svg-embed --symbol-prefix=.svg- --ss=sprite-embed.svg --si --sx --shape-id-generator=svg-%s --dest=views/shared public/svg-embed/*.svg",
+    "deploy:staging": "pm2 deploy ecosystem.json staging",
     "feed-test": "export ENV=feedTest NODE_ENV=feedTest; knex migrate:rollback; knex migrate:latest; echo \"\n\"; node test/feed/clean.js && node test/feed/FeedInjector.js"
   },
   "dependencies": {
