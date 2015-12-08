@@ -59,7 +59,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
             })).render(this.element.find('.message-create'));
 
             // New Conversation Button
-            if (Person.get('organizations').length > 0) {
+            if (Person.ownsOrganizations()) {
                 // Show select widget if currentPerson owns or is member of organizations
                 this.newConversationOptions = {};
 
