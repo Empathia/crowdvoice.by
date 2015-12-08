@@ -68,7 +68,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
                     label: "Myself"
                 };
 
-                Person.get('organizations').forEach(function(organization) {
+                Person.get('ownedOrganizations').forEach(function(organization) {
                     this.newConversationOptions[organization.id] = {
                         label : organization.name,
                         name : organization.profileName
