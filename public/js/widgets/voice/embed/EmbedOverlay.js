@@ -1,31 +1,38 @@
 var Clipboard = require('clipboard');
+var Origin = require('get-location-origin');
 require('jquery-colpick');
 
+
 Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
+  ELEMENT_CLASS : 'cv-embed-overlay-main',
   HTML: '\
-    <div class="cv-embed-overlay__background"></div>\
-    <div class="cv-embed-overlay__body">\
-        <div class="cv-embed-overlay__iframe">\
-          <div class="cv-embed-iframe-wraper">\
-          </div>\
+    <div>\
+      <div class="cv-embed-overlay__background"></div>\
+      <div class="cv-embed_overlay_main">\
+        <div class="cv-embed-overlay__body">\
+            <div class="cv-embed-overlay__iframe">\
+              <div class="cv-embed-iframe-wraper">\
+              </div>\
+            </div>\
+            <div class="cv-embed-overlay__options">\
+              <p class="cv-embed-overlay__title ">Widget Settings</p>\
+              <div class="cv-embed-overlay__height ui-form-field">\
+                <p class="option-title ui-input__label -upper -font-bold">Widget Height:</p>\
+              </div>\
+              <div class="cv-embed-overlay__view ui-form-field">\
+                <p class="option-title ui-input__label -upper -font-bold">Default view:</p>\
+              </div>\
+              <div class="cv-embed-overlay__theme ui-form-field">\
+                <p class="option-title ui-input__label -upper -font-bold">Theme</p>\
+              </div>\
+              <div class="cv-embed-overlay__accent ui-form-field">\
+                <p class="option-title ui-input__label -upper -font-bold">Pick Accent Color</p>\
+              </div>\
+              <div class="cv-embed-overlay__share"></div>\
+              <div class="cv-embed-overlay__code"></div>\
+            </div>\
         </div>\
-        <div class="cv-embed-overlay__options">\
-          <p class="cv-embed-overlay__title">Widget Settings</p>\
-          <div class="cv-embed-overlay__height">\
-            <p class="option-title">Widget Height:</p>\
-          </div>\
-          <div class="cv-embed-overlay__view">\
-            <p class="option-title">Default view:</p>\
-          </div>\
-          <div class="cv-embed-overlay__theme">\
-            <p class="option-title">Theme</p>\
-          </div>\
-          <div class="cv-embed-overlay__accent">\
-            <p class="option-title">Pick Accent Color</p>\
-          </div>\
-          <div class="cv-embed-overlay__share"></div>\
-          <div class="cv-embed-overlay__code"></div>\
-        </div>\
+      </div>\
     </div>\
   ',
 
@@ -44,8 +51,9 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
     init : function(config) {
       Widget.prototype.init.call(this, config);
       
-      this.el = this.element[1];
-
+      this.el = this.element[0];
+      this.embedWidgetBackground = this.el.querySelector('.cv-embed_overlay_main');
+      
       this.embedWidgetContainer = this.el.querySelector('.cv-embed-overlay__iframe');
       this.iframeInner = this.el.querySelector('.cv-embed-iframe-wraper');
 
@@ -58,25 +66,25 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
       this.optionCode = this.optionsContainer.querySelector('.cv-embed-overlay__code');
 
       this._setup()._bindEvents();
+      this._checkHandler();
 
       this.clipboard = new Clipboard(this.codeClipboardButton.el);
 
     },
 
     _setup : function _setup() {
-      this.iframeUrl = '/embed/' + App.Voice.data.owner.profileName + '/' + App.Voice.data.slug + '/?default_view=cards&change_view=true&description=false&background=true&share=true&theme=light&accent=ff9400';
-      
+
       this.appendChild(new CV.UI.EmbedOverlayIframe({
         name : 'embedableIFrame',
-        iframeUrl : this.iframeUrl,
         description : 'Widget Width is set to 100% (min width 320 px)'
       })).render(this.iframeInner);
+
 
       this.appendChild(new CV.UI.Close({
         name : 'closeButton',
         className : '-clickable -color-white -abs cv-embed-overlay__closebtn',
         svgClassName : '-s18'
-      })).render(this.el);
+      })).render(this.embedWidgetBackground);
 
       /* 
        * Widget Height Radios
@@ -264,7 +272,7 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
         placeholder : 'Embedding code...'
       })).render(this.optionCode);
       
-      this.codeClipboard.inputEl[0].querySelector('textarea').innerText = '<iframe style="height: 400px;" src="' + location.protocol +'//' + location.hostname + this.iframeUrl +' "></iframe>';
+      this.codeClipboard.inputEl[0].querySelector('textarea').innerText = '<iframe style="height: 400px;" src="' + this.iframeUrl +' "></iframe>';
       this.codeClipboard.inputEl[0].querySelector('textarea').setAttribute('readonly', 'true');
 
       this.appendChild(new CV.UI.Button({
@@ -288,24 +296,27 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
     },
 
     _bindEvents : function _bindEvents(){
-      this.closeButton.bind('click', this._deactivateOverlay.bind(this));
+      this._checkHandlerRef = this._checkHandler.bind(this);
+      this._deactivateOverlayRef = this._deactivateOverlay.bind(this);
 
-      this.shortRadio.bind('changed', this._checkHandler.bind(this));
-      this.mediumRadio.bind('changed', this._checkHandler.bind(this));
-      this.tallRadio.bind('changed', this._checkHandler.bind(this));
+      this.closeButton.bind('click', this._deactivateOverlayRef);
 
-      this.cardView.bind('changed', this._checkHandler.bind(this));
-      this.listView.bind('changed', this._checkHandler.bind(this));
-      this.changeView.bind('changed', this._checkHandler.bind(this));
-      this.showDescription.bind('changed', this._checkHandler.bind(this));
+      this.shortRadio.bind('changed', this._checkHandlerRef);
+      this.mediumRadio.bind('changed', this._checkHandlerRef);
+      this.tallRadio.bind('changed', this._checkHandlerRef);
 
-      this.lightTheme.bind('changed', this._checkHandler.bind(this));
-      this.darkTheme.bind('changed', this._checkHandler.bind(this));
-      this.voiceBackgrond.bind('changed', this._checkHandler.bind(this));
+      this.cardView.bind('changed', this._checkHandlerRef);
+      this.listView.bind('changed', this._checkHandlerRef);
+      this.changeView.bind('changed', this._checkHandlerRef);
+      this.showDescription.bind('changed', this._checkHandlerRef);
 
-      this.allowShare.bind('changed', this._checkHandler.bind(this));
+      this.lightTheme.bind('changed', this._checkHandlerRef);
+      this.darkTheme.bind('changed', this._checkHandlerRef);
+      this.voiceBackgrond.bind('changed', this._checkHandlerRef);
 
-      $(this.inputAccent).bind('changed', this._checkHandler.bind(this));
+      this.allowShare.bind('changed', this._checkHandlerRef);
+
+      $(this.inputAccent).bind('changed', this._checkHandlerRef);
 
       this.codeClipboardButton.el.addEventListener('click', this._copyToClipboard.bind(this));
 
@@ -318,6 +329,12 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
 
     _checkHandler : function _checkHandler(){
       this.accentValue = this.inputAccent.value;
+      if ( this.accentValue === 'ffffff' || this.accentValue === 'FFFFFF' ){
+        this.inputAccent.style.color = '#a1b0b3';
+      } else {
+        this.inputAccent.style.color = '#FFFFFF';
+      }
+      this.inputAccent.value = '#' + this.accentValue;
       this.inputAccent.style.backgroundColor = '#' + this.accentValue;
       this.inputAccent.style.borderColor = '#' + this.accentValue;
 
@@ -368,8 +385,7 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
       
 
       this.iframeInner.style.height = this.widgetHeightValue + 'px';
-
-      this.iframeUrl = location.protocol + '//' + location.hostname + '/embed/' + App.Voice.data.owner.profileName + '/' + App.Voice.data.slug + '/?default_view=' + this.defaultViewValue + '&change_view=' + this.changeViewValue + '&description=' + this.voiceDescriptionValue + '&background=' + this.voiceBackgroundValue + '&share=' + this.enableShareValue +' &theme=' + this.widgetThemeValue + '&accent=' + this.accentValue;
+      this.iframeUrl = Origin + '/embed/' + App.Voice.data.owner.profileName + '/' + App.Voice.data.slug + '/?default_view=' + this.defaultViewValue + '&change_view=' + this.changeViewValue + '&description=' + this.voiceDescriptionValue + '&background=' + this.voiceBackgroundValue + '&share=' + this.enableShareValue + '&theme=' + this.widgetThemeValue + '&accent=' + this.accentValue;
 
       this.codeClipboard.inputEl[0].querySelector('textarea').innerText = '<iframe style="height:' + this.widgetHeightValue + 'px;" src="' + this.iframeUrl + ' "></iframe>';
       this.codeClipboardButton.el.setAttribute('data-clipboard-text', '<iframe style="height:' + this.widgetHeightValue + 'px;" src="' + this.iframeUrl +' "></iframe>');
@@ -403,8 +419,11 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
       });
     },
 
-    _destroy : function _destroy(){
-      Widget.prototype._destroy.call(this);
+    destroy : function destroy(){
+      Widget.prototype.destroy.call(this);
+      this._checkHandlerRef = null;
+      this._deactivateOverlayRef = null;
+      this.codeClipboardButton.el.removeEventListener('click', this._copyToClipboard.bind(this));
 
       return null;
     }

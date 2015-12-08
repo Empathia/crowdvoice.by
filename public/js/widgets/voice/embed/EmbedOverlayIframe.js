@@ -1,13 +1,12 @@
 /* Help/Support - Help Desk Iframe */
 
 Class(CV.UI, 'EmbedOverlayIframe').inherits(Widget)({
-	ELEMENT_CLASS : 'iframe-container',
-
+	ELEMENT_CLASS : 'cv-embed-iframe-wraper__main',
 	HTML : '\
 		<div>\
-			<iframe></iframe>\
+			<div class="iframe-container"><iframe></iframe></div>\
+			<p><i></i></p>\
 		</div>\
-		<p><i></i></p>\
 	',
 
 	prototype:{
@@ -18,14 +17,27 @@ Class(CV.UI, 'EmbedOverlayIframe').inherits(Widget)({
 
 			this.el = this.element[0];
 			this.iframeContainer = this.el.querySelector('iframe');
-			this.adviceContainer = this.element[1].querySelector('i');
+			this.adviceContainer = this.el.querySelector('i');
 
-			this.iframeContainer.setAttribute('src', this.iframeUrl);
+			//this.iframeContainer.setAttribute('onload', this.updateUrl);
 			this.adviceContainer.innerHTML = this.description;
 		},
 
 		updateUrl : function updateUrl(url){
 			this.iframeContainer.src = url;
+			var iframe = this.iframeContainer;
+
+			$(this.iframeContainer).load(function(){
+				var iframeContent = iframe.contentWindow.document;
+	    
+	      setTimeout(function(){ 
+	      	var anchors = iframeContent.getElementsByTagName('a');
+	      	for(var i=0; i < anchors.length; i++){
+	      		anchors[i].setAttribute('href', 'javascript:;'); 
+	      	}
+	      }, 1000);
+
+			});
 		}
 	}
 });

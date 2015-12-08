@@ -22,9 +22,10 @@
   padding: 4px;
   margin-top: 6px;
 }
-.cv-embed-overlay__background.active{
-  opacity: 1;
-  visibility: visible;
+
+.cv-embed-overlay__closebtn{
+  right: 15px;
+  top: 15px;
   z-index: 2;
 }
 
@@ -34,13 +35,14 @@
   left: 0;
   right: 0;
   bottom: 0;
-  overflow: scroll;
+  overflow: auto;
   opacity: 0;
   transition-property: opacity;
   transition-duration: 150ms;
   transition-timing-function: ease;
   visibility: hidden;
-  padding: 30px;
+  padding: 0px 30px;
+  padding-top: 25px;
   max-width: 1300px;
   margin: 0 auto;
   color: white;
@@ -59,7 +61,10 @@
       min-width: 320px;
       height: 400px;
       border-radius: 8px;
-      transition: height 1s;
+      transition: height 300ms;
+      .cv-embed-iframe-wraper__main{
+        height: 100%;
+      }
       .iframe-container{
         height: inherit;
         overflow: hidden;
@@ -103,9 +108,10 @@
 
     .cv-embed-overlay__accent{
       input{
-        width: 50px;
-        height: 30px;
-        border-radius: 8px;
+        width: 70px;
+        height: 40px;
+        padding: 10px;
+        border-radius: 5px;
         background-color:#ff9400;
         border: 1px solid #e68600;
         box-shadow: inset 0px -3px 0px rgba(0, 0, 0, 0.05);
@@ -113,7 +119,8 @@
         cursor: pointer;
         outline: none;
         margin-bottom: 15px;
-        color: transparent;
+        color: #fff;
+        text-align: center;
       }
       input::-webkit-color-swatch{
         border:none;
@@ -151,8 +158,24 @@
   }
 }
 
-.cv-embed-overlay__body.active{
-  opacity: 1;
-  visibility: visible;
-  z-index: 2;
+.cv-embed-overlay-main.active{
+  .cv-embed-overlay__background{
+    opacity: 1;
+    visibility: visible;
+    z-index: 2;
+  }
+  .cv-embed-overlay__body{
+    opacity: 1;
+    visibility: visible;
+    z-index: 2;
+  }
+}
+
+/*
+ * Media queries
+ */
+@media only screen and (min-width: 1300px) {
+  .cv-embed-overlay__body{
+  padding-top: 25vh;
+ }
 }
