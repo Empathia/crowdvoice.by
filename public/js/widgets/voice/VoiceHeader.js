@@ -12,6 +12,7 @@ Class(CV, 'VoiceHeader').inherits(Widget)({
         TITLE_OFF_PAGE : 0,
         DELTA : 5,
         backgroundElementHeigth : 0,
+        backgroundElementHeigth2x : 0,
         _backgroundSizeKnow : false,
         _lastScrollTop : 0,
 
@@ -39,6 +40,7 @@ Class(CV, 'VoiceHeader').inherits(Widget)({
             if (backgroundImage) {
                 Events.once(backgroundImage, 'load', function(ev) {
                     this.backgroundElementHeigth = ev.currentTarget.clientHeight;
+                    this.backgroundElementHeigth2x = (this.backgroundElementHeigth * 2);
                     this._backgroundSizeKnow = true;
                 }.bind(this));
             } else {
@@ -52,11 +54,11 @@ Class(CV, 'VoiceHeader').inherits(Widget)({
          * @method _scrollHandler <private> [Function]
          */
         _scrollHandler : function _scrollHandler() {
-            var y = this._window.scrollY;
+            var y = this._window.pageYOffset;
             var scrollingDown = (y > this._lastScrollTop);
 
             if (this._backgroundSizeKnow) {
-                if (y <= (this.backgroundElementHeigth * 2)) {
+                if (y <= this.backgroundElementHeigth2x) {
                     var yHalf = (y/2);
                     inlineStyle(this.backgroundElement, {
                         msTransform: 'translate(0px, '+ yHalf +'px)',
@@ -66,9 +68,7 @@ Class(CV, 'VoiceHeader').inherits(Widget)({
                 }
             }
 
-            if (Math.abs(this._lastScrollTop - y) <= this.DELTA) {
-                return;
-            }
+            if (Math.abs(this._lastScrollTop - y) <= this.DELTA) { return; }
 
             this._lastScrollTop = y;
 

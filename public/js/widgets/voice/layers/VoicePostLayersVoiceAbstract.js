@@ -87,7 +87,7 @@ Class(CV, 'VoicePostLayersVoiceAbstract').inherits(CV.VoicePostLayers)({
          * @method getScrollTo <protected> [Function]
          */
         scrollTo : function scrollTo(y) {
-            this.scrollableArea.scrollY = y;
+            this.scrollableArea.scrollTo(0, y);
         },
 
         /* Implementation for custom bindings required by this subclass.

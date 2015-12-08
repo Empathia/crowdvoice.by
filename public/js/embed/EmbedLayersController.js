@@ -8,7 +8,7 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport, CustomEventSupport, Bub
   HEADER_HEIGHT : 52,
 
   prototype : {
-    averagePostTotal : 50,
+    averagePostTotal : 15,
     averagePostWidth : 300,
     averagePostHeight : 500,
 

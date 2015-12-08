@@ -3,6 +3,7 @@
     padding: 0 25px 50px;
   }
 }
+
 .browse-page .browse-element{
 	float: left;
 	padding-bottom: 100px;
@@ -21,21 +22,6 @@
 			background-position: center;
 			background-size: cover;
 			transition: background-size 250ms ease;
-			&.browse-element-button-trending{
-				.browse-bg-image{
-						background-image: url('/img/browse-button-trending.jpg');
-				}
-			}
-			&.browse-element-button-newest{
-				.browse-bg-image{
-					background-image: url('/img/browse-button-newest.jpg');
-				}
-			}
-			&.browse-element-button-recommended{
-				.browse-bg-image{
-					background-image: url('/img/browse-button-recommended.jpg');
-				}
-			}
 
 			.browse-element-overlay{
 				position: absolute;
@@ -52,9 +38,7 @@
 			    left: 0;
 			    width: 100%;
 			    height: 100%;
-			    -webkit-transform: scale(1);
 			    transform: scale(1);
-			    transition: -webkit-transform 160ms linear;
 			    transition: transform 160ms linear;
 			    will-change: transform;
 				}
