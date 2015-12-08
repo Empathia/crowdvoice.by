@@ -228,7 +228,7 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
        */
       this.inputAccent = document.createElement('input');
       this.inputAccent.setAttribute('type', 'text');
-      this.inputAccent.setAttribute('value', '');
+      this.inputAccent.setAttribute('value', 'ff9400');
 
       this.optionAccent.appendChild(this.inputAccent);
       
@@ -282,12 +282,13 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
       this.pasteAdvice = document.createElement('p');
       this.pasteAdvice.innerHTML = '<i>Paste the code into the HTML of your site.</i>';
       this.optionCode.appendChild(this.pasteAdvice);
+      $(document.body).addClass('embed-no-scroll');
 
       return this;    
     },
 
     _bindEvents : function _bindEvents(){
-      this.closeButton.bind('click', this._destroy.bind(this));
+      this.closeButton.bind('click', this._deactivateOverlay.bind(this));
 
       this.shortRadio.bind('changed', this._checkHandler.bind(this));
       this.mediumRadio.bind('changed', this._checkHandler.bind(this));
@@ -308,6 +309,11 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
 
       this.codeClipboardButton.el.addEventListener('click', this._copyToClipboard.bind(this));
 
+    },
+
+    _deactivateOverlay : function _deactivateOverlay(){
+      $(document.body).removeClass('embed-no-scroll');
+      this._destroy();
     },
 
     _checkHandler : function _checkHandler(){
