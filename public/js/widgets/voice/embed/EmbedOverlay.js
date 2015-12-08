@@ -363,7 +363,7 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
 
       this.iframeInner.style.height = this.widgetHeightValue + 'px';
 
-      this.iframeUrl = /*location.protocol + '//' + location.hostname + */'/embed/' + App.Voice.data.owner.profileName + '/' + App.Voice.data.slug + '/?default_view=' + this.defaultViewValue + '&change_view=' + this.changeViewValue + '&description=' + this.voiceDescriptionValue + '&background=' + this.voiceBackgroundValue + '&share=' + this.enableShareValue +' &theme=' + this.widgetThemeValue + '&accent=' + this.accentValue;
+      this.iframeUrl = location.protocol + '//' + location.hostname + '/embed/' + App.Voice.data.owner.profileName + '/' + App.Voice.data.slug + '/?default_view=' + this.defaultViewValue + '&change_view=' + this.changeViewValue + '&description=' + this.voiceDescriptionValue + '&background=' + this.voiceBackgroundValue + '&share=' + this.enableShareValue +' &theme=' + this.widgetThemeValue + '&accent=' + this.accentValue;
 
       this.codeClipboard.inputEl[0].querySelector('textarea').innerText = '<iframe style="height:' + this.widgetHeightValue + 'px;" src="' + this.iframeUrl + ' "></iframe>';
       this.codeClipboardButton.el.setAttribute('data-clipboard-text', '<iframe style="height:' + this.widgetHeightValue + 'px;" src="' + this.iframeUrl +' "></iframe>');
