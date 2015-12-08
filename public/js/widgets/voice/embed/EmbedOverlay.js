@@ -236,13 +236,13 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
        */
       this.inputAccent = document.createElement('input');
       this.inputAccent.setAttribute('type', 'text');
-      this.inputAccent.setAttribute('value', 'ff9400');
+      this.inputAccent.setAttribute('value', '#ff9400');
 
       this.optionAccent.appendChild(this.inputAccent);
       
       $(this.inputAccent).colpick({
         color : 'ff9400',
-        onChange : function(hsb, hex, rgb, el){ $(el).val(hex).trigger('changed'); },
+        onChange : function(hsb, hex, rgb, el){ $(el).val('#'+hex).trigger('changed'); },
         submit : false,
         layout : 'full'
       });
@@ -328,13 +328,15 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
     },
 
     _checkHandler : function _checkHandler(){
-      this.accentValue = this.inputAccent.value;
+      var hexColor = this.inputAccent.value.replace("#","");
+      this.accentValue = hexColor;
+
       if ( this.accentValue === 'ffffff' || this.accentValue === 'FFFFFF' ){
         this.inputAccent.style.color = '#a1b0b3';
       } else {
         this.inputAccent.style.color = '#FFFFFF';
       }
-      this.inputAccent.value = '#' + this.accentValue;
+
       this.inputAccent.style.backgroundColor = '#' + this.accentValue;
       this.inputAccent.style.borderColor = '#' + this.accentValue;
 
