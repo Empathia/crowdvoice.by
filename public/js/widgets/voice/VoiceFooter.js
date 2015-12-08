@@ -134,10 +134,6 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
                 })).render(this.actionsColumn);
             }
 
-            this.appendChild(new CV.VoiceFooterEmbedButton({
-                name : 'voiceEmbed'
-            })).render(this.actionsColumn);
-
             if ((Person.ownerOf('voice', this.voice.id) === false) &&
                 (this.voice.type === CV.VoiceView.TYPE_CLOSED)) {
 
