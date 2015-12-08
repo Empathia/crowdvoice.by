@@ -40,7 +40,8 @@
   transition-duration: 150ms;
   transition-timing-function: ease;
   visibility: hidden;
-  padding: 20px 30px;
+  padding: 0px 30px;
+  padding-top: 25px;
   max-width: 1300px;
   margin: 0 auto;
   color: white;
@@ -166,4 +167,13 @@
     visibility: visible;
     z-index: 2;
   }
+}
+
+/*
+ * Media queries
+ */
+@media only screen and (min-width: 1300px) {
+  .cv-embed-overlay__body{
+  padding-top: 25vh;
+ }
 }
