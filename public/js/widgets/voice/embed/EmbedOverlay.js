@@ -1,4 +1,5 @@
 var Clipboard = require('clipboard');
+require('jquery-colpick');
 
 Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
   HTML: '\
@@ -27,18 +28,19 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
         </div>\
     </div>\
   ',
-  defaultViewValue : 'cards',
-  changeViewValue : false,
-  voiceDescriptionValue : false,
-  voiceBackgroundValue : false,
-  enableShareValue : false,
-  widgetHeightValue : '400',
-  widgetThemeValue : 'light',
-  accentValue : '#ff9400',
-  iframeUrl : null,
-  copyCode : null,
 
   prototype : {
+    defaultViewValue : 'cards',
+    changeViewValue : false,
+    voiceDescriptionValue : false,
+    voiceBackgroundValue : false,
+    enableShareValue : false,
+    widgetHeightValue : '400',
+    widgetThemeValue : 'light',
+    accentValue : 'ff9400',
+    iframeUrl : null,
+    copyCode : null,
+
     init : function(config) {
       Widget.prototype.init.call(this, config);
       
@@ -58,6 +60,7 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
       this._setup()._bindEvents();
 
       this.clipboard = new Clipboard(this.codeClipboardButton.el);
+
     },
 
     _setup : function _setup() {
@@ -224,9 +227,17 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
        * Accent Color Picker 
        */
       this.inputAccent = document.createElement('input');
-      this.inputAccent.type = 'color';
-      this.inputAccent.value = '#ff9400';
+      this.inputAccent.setAttribute('type', 'text');
+      this.inputAccent.setAttribute('value', '');
+
       this.optionAccent.appendChild(this.inputAccent);
+      
+      $(this.inputAccent).colpick({
+        color : 'ff9400',
+        onChange : function(hsb, hex, rgb, el){ $(el).val(hex).trigger('changed'); },
+        submit : false,
+        layout : 'full'
+      });
 
       /* 
        * Allow to share Radios
@@ -290,15 +301,19 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
       this.darkTheme.bind('changed', this._checkHandler.bind(this));
       this.voiceBackgrond.bind('changed', this._checkHandler.bind(this));
 
-      this.inputAccent.addEventListener('change', this._checkHandler.bind(this));
-
       this.allowShare.bind('changed', this._checkHandler.bind(this));
+
+      $(this.inputAccent).bind('changed', this._checkHandler.bind(this));
 
       this.codeClipboardButton.el.addEventListener('click', this._copyToClipboard.bind(this));
 
     },
 
     _checkHandler : function _checkHandler(){
+      this.accentValue = this.inputAccent.value;
+      this.inputAccent.style.backgroundColor = '#' + this.accentValue;
+      this.inputAccent.style.borderColor = '#' + this.accentValue;
+
       if (this.shortRadio.isChecked() === true ){
         this.widgetHeightValue = this.shortRadio.data.attr.value;
       } else if ( this.mediumRadio.isChecked() === true ){
@@ -343,11 +358,7 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
       } else {
         this.enableShareValue = false;
       }
-
-      this.accentValue = this.inputAccent.value;
-      this.inputAccent.style.backgroundColor = this.accentValue;
-      this.inputAccent.style.borderColor = this.accentValue;
-      this.accentValue = this.accentValue.replace(/#/g,'');
+      
 
       this.iframeInner.style.height = this.widgetHeightValue + 'px';
 
