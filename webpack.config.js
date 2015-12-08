@@ -6,7 +6,8 @@ module.exports = {
   entry: {
       bundle : path.join(__dirname, '/public/js/application.js'),
       postShow : path.join(__dirname, '/public/js/postShow.js'),
-      systemStatus : path.join(__dirname, '/public/js/systemStatus.js')
+      systemStatus : path.join(__dirname, '/public/js/systemStatus.js'),
+      embed : path.join(__dirname, '/public/js/embed')
   },
   output: {
     path: path.join(__dirname, './public/dist'),

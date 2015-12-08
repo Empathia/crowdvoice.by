@@ -12,14 +12,15 @@ var ScrollTo = require('./../../../lib/scrollto');
 
 Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
     HTML : '<section class="voice-posts -rel"></section>',
+    MIN_LAYERS_POST : 20,
 
     prototype : {
         /* DEFAULT BASIC OPTIONS */
         description : '',
         postsCount : null,
-        averagePostTotal : 100,
+        averagePostTotal : 15,
         averagePostWidth : 300,
-        averagePostHeight : 600,
+        averagePostHeight : 500,
         scrollableArea : null,
 
         /* PRIVATE PROPERTIES */
@@ -171,19 +172,14 @@ Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
             var layer = this['postsLayer_' + data.dateString];
             var _this = this;
 
-            if (!layer) {
-                return;
-            }
-
-            if (layer === this.getCurrentMonthLayer()) {
-                return;
-            }
+            if (!layer) { return; }
+            if (layer === this.getCurrentMonthLayer()) { return; }
 
             this.parent._listenScrollEvent = false;
 
-            this._layers.forEach(function(l) {
-                if (l.getPosts().length) {
-                    l.empty();
+            this.getLayers().forEach(function(layer) {
+                if (_this._canRemovePosts(layer)) {
+                    _this.removePosts(layer);
                 }
             });
 
@@ -369,8 +365,7 @@ Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
 
             if (scrollDirection) {
                 var next2 = next && next.getNextSibling();
-
-                if (next2) {
+                if (next2 && this._canRemovePosts(next2)) {
                     this.removePosts(next2);
                     next2.arrangeReset();
                 }
@@ -392,8 +387,7 @@ Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
             }
 
             var prev2 = prev && prev.getPreviousSibling();
-
-            if (prev2) {
+            if (prev2 && this._canRemovePosts(prev2)) {
                 this.removePosts(prev2);
                 prev2.arrangeReset();
             }
@@ -424,6 +418,8 @@ Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
 
             this._lazyLoadingImageArray = [];
 
+            if (!this.getCurrentMonthLayer().getPosts().length) { return; }
+
             this.getCurrentMonthLayer().getPosts().forEach(function(post) {
                 if (post.imageLoaded === false) {
                     if (this.isScrolledIntoView(post.el)) {
@@ -431,6 +427,14 @@ Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
                     }
                 }
             }, this);
+        },
+
+        /* Returns if a layer has posts to remove and also fulfills the MIN_LAYERS_POST
+         * constraint.
+         * @return {Boolean}
+         */
+        _canRemovePosts : function _canRemovePosts(layer) {
+            return (layer.getPosts() && (layer.getPosts().length > this.constructor.MIN_LAYERS_POST));
         },
 
         destroy : function destroy() {

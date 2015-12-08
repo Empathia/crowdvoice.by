@@ -19,7 +19,7 @@ Class(CV, 'Dropdown').inherits(Widget).includes(CV.WidgetUtils)({
             <div class="ui-dropdown__head -full-height -clickable">\
                 <span class="ui-dropdown-label"></span>\
             </div>\
-            <div class="ui-dropdown__body -abs -color-border-grey-light">\
+            <div class="ui-dropdown__body -abs">\
             </div>\
         </div>',
 

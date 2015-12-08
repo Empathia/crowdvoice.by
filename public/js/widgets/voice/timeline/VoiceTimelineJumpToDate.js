@@ -25,7 +25,7 @@ Class(CV, 'VoiceTimelineJumpToDate').inherits(Widget)({
         _autoSetup : function _autoSetup() {
             this.appendChild(new CV.PopoverBlocker({
                 name : 'jumpToDatePopover',
-                className : 'voice-timeline-popover -color-border-grey-light',
+                className : 'voice-timeline-popover',
                 title : 'Jump to',
                 placement : 'bottom',
                 showCloseButton : true,

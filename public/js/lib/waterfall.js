@@ -10,39 +10,42 @@
     'use strict';
 
     function Waterfall(config) {
-        this.containerElement = window;
-        this.items = [];
-        this.columnWidth = 0;
-        this.gutter = 0;
-        this.centerItems = false;
+        this.settings = {
+            containerElement : document.body,
+            items : [],
+            columnWidth : 0,
+            gutter : 0,
+            centerItems : false,
+            positioning : '2d' // 2d|3d|xy
+        };
 
         Object.keys(config || {}).forEach(function(propertyName) {
-            this[propertyName] = config[propertyName];
+            this.settings[propertyName] = config[propertyName];
         }, this);
 
         this.AVAILABLE_WIDTH = 0;
         this._blocks = [];
-        this._items = [].slice.call(this.items, 0);
+        this._items = [].slice.call(this.settings.items, 0);
         this._spaceLeft = 0;
 
-        this.containerElement.style.position = 'relative';
+        this.settings.containerElement.style.position = 'relative';
     }
 
     Waterfall.prototype._setup = function _setup() {
-        var c = this.containerElement;
+        var c = this.settings.containerElement;
         var columnsCount = 0;
 
         this.AVAILABLE_WIDTH = (c.offsetWidth || c.innerWidth);
-        this._colWidth = this.columnWidth || this._getVisibleItems()[0].offsetWidth;
+        this._colWidth = (this.settings.columnWidth || (this._getVisibleItems()[0] && ~~this._getVisibleItems()[0].getBoundingClientRect().width)) || 0;
         this._blocks = [];
-        columnsCount = ~~(this.AVAILABLE_WIDTH / (this._colWidth + this.gutter));
+        columnsCount = ~~(this.AVAILABLE_WIDTH / (this._colWidth + this.settings.gutter));
 
-        if (this.centerItems) {
-            this._spaceLeft = (this.AVAILABLE_WIDTH - ((this._colWidth * columnsCount) + (this.gutter * columnsCount - 1))) / 2;
+        if (this.settings.centerItems) {
+            this._spaceLeft = (this.AVAILABLE_WIDTH - ((this._colWidth * columnsCount) + (this.settings.gutter * columnsCount - 1))) / 2;
         }
 
         for (var i = 0; i < columnsCount; i++) {
-            this._blocks.push(this.gutter);
+            this._blocks.push(this.settings.gutter);
         }
 
         this._fit();
@@ -54,7 +57,7 @@
             coordsY = [],
             items = this._getVisibleItems(),
             len = items.length,
-            gutter = this.gutter,
+            gutter = this.settings.gutter,
             colWidth = this._colWidth,
             spaceLeft = this._spaceLeft;
 
@@ -77,11 +80,18 @@
         for (i = 0; i < len; i++) {
             item = items[i];
             item.style.position = 'absolute';
-            item.style.left = (coordsX[i] + spaceLeft) + 'px';
-            item.style.top = coordsY[i] + 'px';
+
+            if (this.settings.positioning === '3d') {
+                item.style.transform = 'translate3d(' + (coordsX[i] + spaceLeft) + 'px,' + coordsY[i] + 'px,0)';
+            } else if (this.settings.positioning === '2d') {
+                item.style.transform = 'translateX(' + (coordsX[i] + spaceLeft) + 'px) translateY(' + coordsY[i] + 'px)';
+            } else {
+                item.style.left = (coordsX[i] + spaceLeft) + 'px';
+                item.style.top = coordsY[i] + 'px';
+            }
         }
 
-        this.containerElement.style.height = Math.max.apply(Math, this._blocks) + 'px';
+        this.settings.containerElement.style.height = ~~Math.max.apply(Math, this._blocks) + 'px';
 
         i = x = y = index = item = coordsX = coordsY = items = len = gutter = colWidth = spaceLeft = null;
     };
@@ -98,7 +108,6 @@
 
     Waterfall.prototype.addItems = function addItems(items) {
         this._items = this._items.concat([].slice.call(items, 0));
-
         return this;
     };
 
@@ -120,16 +129,30 @@
     };
 
     Waterfall.prototype.destroy = function destroy() {
-        this.containerElement = null;
-        this.items = null;
-        this.columnWidth = null;
-        this.gutter = null;
-        this.centerItems = null;
+        var items = this._getVisibleItems();
+        var i = 0, len = items.length, item;
 
-        this.AVAILABLE_WIDTH = null;
-        this._blocks = null;
-        this._items = null;
-        this._spaceLeft = null;
+        for (; i < len; i++) {
+            item = items[i];
+            item.removeAttribute('data-h');
+            item.removeAttribute('data-y');
+            item.style.position = '';
+
+            if (this.settings.positioning === '3d' || this.settings.positioning === '2d') {
+                item.style.transform = '';
+            } else {
+                item.style.left = '';
+                item.style.top = '';
+            }
+        }
+
+        this.settings.containerElement.style.position = '';
+        this.settings.containerElement.style.height = '';
+
+        this.settings = null;
+        this.AVAILABLE_WIDTH = this._blocks = this._items = this._spaceLeft = null;
+
+        return null;
     };
 
     return Waterfall;

@@ -1,3 +1,4 @@
+var Person = require('./../../lib/currentPerson');
 var moment = require('moment');
 
 Class(CV, 'PostDetailInfoMedia').inherits(Widget).includes(CV.WidgetUtils)({
@@ -47,23 +48,10 @@ Class(CV, 'PostDetailInfoMedia').inherits(Widget).includes(CV.WidgetUtils)({
             this.savedElement = this.el.querySelector('[data-saved]');
             this.actionsGroup = this.el.querySelector('.pd__info-media-actions .multiple');
 
-            this.appendChild(new CV.PostDetailActionsSave({
-                name : 'actionSave',
-                className : 'dark'
-            })).render(this.actionsGroup);
-
-            this.appendChild(new CV.PostDetailActionsShare({
-                name : 'actionShare',
-                className : 'dark',
-                tooltipPostition : 'top'
-            })).render(this.actionsGroup);
-
             this._setup();
         },
 
         _setup : function _setup() {
-            // this.dom.updateAttr('href', this.el.querySelector('.actions-view-original-btn'), this.data.sourceUrl);
-            //
             if (this.data.sourceType === 'image') {
                 this._appendImage(this.data);
             }
@@ -85,9 +73,20 @@ Class(CV, 'PostDetailInfoMedia').inherits(Widget).includes(CV.WidgetUtils)({
             this.dom.updateText(this.el.querySelector('.pd__info-media-title'), this.data.title);
             this.dom.updateText(this.el.querySelector('.pd__info-media-description'), this.dom.decodeHTML(this.data.description));
 
+            if (Person.get() && (!Person.anon())) {
+              this.appendChild(new CV.PostDetailActionsSave({
+                  name : 'actionSave',
+                  className : 'dark'
+              })).render(this.actionsGroup).update(this.data);
+            }
+
+            this.appendChild(new CV.PostDetailActionsShare({
+                name : 'actionShare',
+                className : 'dark',
+                tooltipPostition : 'top'
+            })).render(this.actionsGroup).update(this.data);
+
             this.updateSaves(this.data);
-            this.actionSave.update(this.data);
-            this.actionShare.update(this.data);
 
             return this;
         },
