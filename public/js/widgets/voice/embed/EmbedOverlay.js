@@ -414,6 +414,7 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
           this.codeClipboardButton.el.innerText = 'Copy to clipboard';
           this.codeClipboardButton.el.classList.add('primary');
           this.codeClipboardButton.el.classList.remove('positive');
+          this.codeClipboardButton.el.disabled = false;
 
           this.iframeInner.style.height = this.widgetHeightValue + 'px';
       }.bind(this), 100);
@@ -434,6 +435,7 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
 
       this.codeClipboardButton.el.classList.remove('primary');
       this.codeClipboardButton.el.classList.add('positive');
+      this.codeClipboardButton.el.disabled = true;
 
       this.clipboard.on('success', function(e) {
           button.el.innerText = 'Copied! Now paste the code into the HTML of your site.';
