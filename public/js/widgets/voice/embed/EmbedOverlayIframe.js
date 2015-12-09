@@ -25,17 +25,20 @@ Class(CV.UI, 'EmbedOverlayIframe').inherits(Widget)({
 
 		updateUrl : function updateUrl(url){
 			this.iframeContainer.src = url;
-			var iframe = this.iframeContainer;
 
+			var iframe = this.iframeContainer;
+			var scope = this;
 			$(this.iframeContainer).load(function(){
 				var iframeContent = iframe.contentWindow.document;
 	    
 	      setTimeout(function(){ 
+	      	scope.activate();
 	      	var anchors = iframeContent.getElementsByTagName('a');
 	      	for(var i=0; i < anchors.length; i++){
 	      		anchors[i].setAttribute('href', 'javascript:;'); 
 	      	}
-	      }, 1000);
+	      	scope.dispatch('removeLoader');
+	      }, 50);
 
 			});
 		}

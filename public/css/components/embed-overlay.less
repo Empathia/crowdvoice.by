@@ -10,7 +10,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.9);
   opacity: 0;
   transition-property: opacity;
   transition-duration: 150ms;
@@ -53,6 +53,7 @@
 
   .cv-embed-overlay__iframe{
     height: 400px;
+    position: relative;
     p{
       text-align: center;
       color: #a1b0b3;
@@ -61,13 +62,23 @@
       min-width: 320px;
       height: 400px;
       border-radius: 8px;
-      transition: height 300ms;
+      .cv-loading{
+        top: 30%;
+        left: 35%;
+        position: absolute
+      }
       .cv-embed-iframe-wraper__main{
         height: 100%;
+        p{
+          opacity: 0;
+          transition: all ease 150ms;
+        }
       }
       .iframe-container{
         height: inherit;
         overflow: hidden;
+        opacity: 0;
+        transition: all ease 150ms;
         border: 1px transparent solid;
         position: relative;
         border-radius: 8px;
@@ -107,24 +118,39 @@
     }
 
     .cv-embed-overlay__accent{
-      input{
-        width: 70px;
+      .input-background{
+        width: 85px;
         height: 40px;
-        padding: 10px;
+        padding: 10px 0px;
         border-radius: 5px;
         background-color:#ff9400;
         border: 1px solid #e68600;
         box-shadow: inset 0px -3px 0px rgba(0, 0, 0, 0.05);
         overflow: hidden;
         cursor: pointer;
-        outline: none;
         margin-bottom: 15px;
         color: #fff;
         font-size: 11px;
-        text-align: center;
-      }
-      input::-webkit-color-swatch{
-        border:none;
+        input{
+          width: 45px;
+          display: inline-block;
+          outline: none;
+          cursor: pointer;
+          text-align: center;
+          margin-left: 9px;
+        }
+        svg{
+          display: inline-block;
+          width: 12px;
+          height: 15px;
+          margin-left: 5px;
+          vertical-align: bottom;
+          color: #ffffff;
+          fill: #ffffff;
+        }
+        input::-webkit-color-swatch{
+          border:none;
+        }
       }
     }
 
@@ -172,10 +198,19 @@
   }
 }
 
+.cv-embed-iframe-wraper__main.active{
+  .iframe-container{
+    opacity: 1 !important;
+  }
+  p{
+    opacity: 1 !important;
+  }
+}
+
 /*
  * Media queries
  */
-@media only screen and (min-width: 1300px) {
+@media only screen and (min-width: 1400px) {
   .cv-embed-overlay__body{
   padding-top: 25vh;
  }

@@ -27,6 +27,12 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
               </div>\
               <div class="cv-embed-overlay__accent ui-form-field">\
                 <p class="option-title ui-input__label -upper -font-bold">Pick Accent Color</p>\
+                <div class="input-background" >\
+                <input class="color" type="text" value="#ff9400" disabled>\
+                  <svg class="ui-dropwdown-arrow">\
+                    <use xlink:href="#svg-arrow-down"></use>\
+                  </svg>\
+                </div>\
               </div>\
               <div class="cv-embed-overlay__share"></div>\
               <div class="cv-embed-overlay__code"></div>\
@@ -46,7 +52,6 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
     widgetThemeValue : 'light',
     accentValue : 'ff9400',
     iframeUrl : null,
-    copyCode : null,
 
     init : function(config) {
       Widget.prototype.init.call(this, config);
@@ -62,6 +67,8 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
       this.optionView = this.optionsContainer.querySelector('.cv-embed-overlay__view');
       this.optionTheme = this.optionsContainer.querySelector('.cv-embed-overlay__theme');
       this.optionAccent = this.optionsContainer.querySelector('.cv-embed-overlay__accent');
+      this.inputBackground = this.optionAccent.querySelector('.input-background');
+      this.inputSVG = this.inputBackground.querySelector('svg');
       this.optionShare = this.optionsContainer.querySelector('.cv-embed-overlay__share');
       this.optionCode = this.optionsContainer.querySelector('.cv-embed-overlay__code');
 
@@ -79,6 +86,9 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
         description : 'Widget Width is set to 100% (min width 320 px)'
       })).render(this.iframeInner);
 
+      this.appendChild(new CV.Loading({
+        name : 'loader'
+      })).render(this.iframeInner);
 
       this.appendChild(new CV.UI.Close({
         name : 'closeButton',
@@ -234,15 +244,14 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
       /*
        * Accent Color Picker 
        */
-      this.inputAccent = document.createElement('input');
-      this.inputAccent.setAttribute('type', 'text');
-      this.inputAccent.setAttribute('value', '#ff9400');
-
-      this.optionAccent.appendChild(this.inputAccent);
+      this.inputAccent = this.optionAccent.querySelector('input');
       
-      $(this.inputAccent).colpick({
+      $(this.inputBackground).colpick({
         color : 'ff9400',
-        onChange : function(hsb, hex, rgb, el){ $(el).val('#'+hex).trigger('changed'); },
+        onChange : function(hsb, hex, rgb, el){ 
+          var input = $(el).children('.color');
+          input.val('#'+hex).trigger('changed'); 
+        },
         submit : false,
         layout : 'full'
       });
@@ -287,9 +296,6 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
 
       this.codeClipboardButton.el.setAttribute('data-clipboard-text', '<iframe style="height: 400px;" src="' + location.protocol +'//' + location.hostname + this.iframeUrl +' "></iframe>');
 
-      this.pasteAdvice = document.createElement('p');
-      this.pasteAdvice.innerHTML = '<i>Paste the code into the HTML of your site.</i>';
-      this.optionCode.appendChild(this.pasteAdvice);
       $(document.body).addClass('embed-no-scroll');
 
       return this;    
@@ -320,6 +326,8 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
 
       this.codeClipboardButton.el.addEventListener('click', this._copyToClipboard.bind(this));
 
+      this.embedableIFrame.bind('removeLoader', this._disableLoader.bind(this));
+
     },
 
     _deactivateOverlay : function _deactivateOverlay(){
@@ -329,16 +337,22 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
 
     _checkHandler : function _checkHandler(){
       var hexColor = this.inputAccent.value.replace("#","");
+      var background = this.inputBackground;
+      var SVG = this.inputSVG;
       this.accentValue = hexColor;
-
+      
       if ( this.accentValue === 'ffffff' || this.accentValue === 'FFFFFF' ){
-        this.inputAccent.style.color = '#a1b0b3';
+        background.style.color = '#a1b0b3';
+        SVG.style.fill = '#a1b0b3';
+        SVG.style.color = '#a1b0b3';
       } else {
-        this.inputAccent.style.color = '#FFFFFF';
+        background.style.color = '#FFFFFF';
+        SVG.style.fill = '#FFFFFF';
+        SVG.style.color = '#FFFFFF';
       }
 
-      this.inputAccent.style.backgroundColor = '#' + this.accentValue;
-      this.inputAccent.style.borderColor = '#' + this.accentValue;
+      this.inputBackground.style.backgroundColor = '#' + this.accentValue;
+      this.inputBackground.style.borderColor = '#' + this.accentValue;
 
       if (this.shortRadio.isChecked() === true ){
         this.widgetHeightValue = this.shortRadio.data.attr.value;
@@ -385,25 +399,44 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
         this.enableShareValue = false;
       }
       
+      if (this.embedableIFrame.active === true){
+        this.embedableIFrame.deactivate();
+      }
+    
+      this._enableLoader();
 
-      this.iframeInner.style.height = this.widgetHeightValue + 'px';
-      this.iframeUrl = Origin + '/embed/' + App.Voice.data.owner.profileName + '/' + App.Voice.data.slug + '/?default_view=' + this.defaultViewValue + '&change_view=' + this.changeViewValue + '&description=' + this.voiceDescriptionValue + '&background=' + this.voiceBackgroundValue + '&share=' + this.enableShareValue + '&theme=' + this.widgetThemeValue + '&accent=' + this.accentValue;
+      setTimeout(function(){ 
+          this.iframeUrl = Origin + '/embed/' + App.Voice.data.owner.profileName + '/' + App.Voice.data.slug + '/?default_view=' + this.defaultViewValue + '&change_view=' + this.changeViewValue + '&description=' + this.voiceDescriptionValue + '&background=' + this.voiceBackgroundValue + '&share=' + this.enableShareValue + '&theme=' + this.widgetThemeValue + '&accent=' + this.accentValue;
+          this.embedableIFrame.updateUrl(this.iframeUrl);
 
-      this.codeClipboard.inputEl[0].querySelector('textarea').innerText = '<iframe style="height:' + this.widgetHeightValue + 'px;" src="' + this.iframeUrl + ' "></iframe>';
-      this.codeClipboardButton.el.setAttribute('data-clipboard-text', '<iframe style="height:' + this.widgetHeightValue + 'px;" src="' + this.iframeUrl +' "></iframe>');
-      this.codeClipboardButton.el.innerText = 'Copy to clipboard';
+          this.codeClipboard.inputEl[0].querySelector('textarea').innerText = '<iframe style="height:' + this.widgetHeightValue + 'px;" src="' + this.iframeUrl + ' "></iframe>';
+          this.codeClipboardButton.el.setAttribute('data-clipboard-text', '<iframe style="height:' + this.widgetHeightValue + 'px;" src="' + this.iframeUrl +' "></iframe>');
+          this.codeClipboardButton.el.innerText = 'Copy to clipboard';
+          this.codeClipboardButton.el.classList.add('primary');
+          this.codeClipboardButton.el.classList.remove('positive');
 
+          this.iframeInner.style.height = this.widgetHeightValue + 'px';
+      }.bind(this), 100);
+      
+    },
 
-      this.embedableIFrame.updateUrl(this.iframeUrl);
+    _enableLoader : function _enableLoader(){
+      this.loader.enable();
+    },
+
+    _disableLoader : function _disableLoader(){
+      this.loader.disable();
     },
 
     _copyToClipboard : function _copyToClipboard(){
       var button = this.codeClipboardButton;
       var textarea = this.codeClipboard.inputEl[0].querySelector('textarea');
 
-      this.clipboard.on('success', function(e) {
-          button.el.innerText = 'Copied !';
+      this.codeClipboardButton.el.classList.remove('primary');
+      this.codeClipboardButton.el.classList.add('positive');
 
+      this.clipboard.on('success', function(e) {
+          button.el.innerText = 'Copied! Now paste the code into the HTML of your site.';
           e.clearSelection();
       });
 
@@ -411,9 +444,9 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
          var instructions = null;
 
           if (navigator.appVersion.indexOf("Win")!== -1) {
-              instructions = 'Press CTRL + C to copy';
+              instructions = 'Press CTRL + C to copy! And paste the code into the HTML of your site.';
           } else if (navigator.appVersion.indexOf("Mac")!== -1) { 
-              instructions = 'Press ⌘ + C to copy';
+              instructions = 'Press ⌘ + C to copy! And paste the code into the HTML of your site.';
           }
 
           textarea.select();
