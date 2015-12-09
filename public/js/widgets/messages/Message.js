@@ -193,7 +193,7 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
 
       this.appendChild(new CV.UI.Button({
         name : 'actionRejectButton',
-        className : 'micro -ghost negative',
+        className : 'micro -ghost negative -ml10px',
         data: {value: 'Reject'}
       })).render(this.messageActionsWrapper);
 
@@ -233,7 +233,6 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
      * @return Message
      */
     _unbindActionButtonsEvents : function _unbindActionButtonsEvents() {
-      console.log('events unbinded');
       Events.off(this.actionAcceptButton.el, 'click', this._acceptInvitationHandlerRef);
       this._acceptInvitationHandlerRef = null;
 
@@ -249,7 +248,6 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
      * @return undefined
      */
     _acceptInvitationHandler : function _acceptInvitationHandler() {
-      console.log('-- Accept --');
       this._disableActionButtons();
 
       API.threatAnswerInvitation({
@@ -272,7 +270,6 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
      * @return undefined
      */
     _acceptAsAnonInvitationHandler : function _acceptAsAnonInvitationHandler() {
-      console.log('-- Accept As anon --');
       this._disableActionButtons();
 
       API.threatAnswerInvitation({
@@ -295,7 +292,6 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
      * @return undefined
      */
     _rejectInvitationHandler : function _rejectInvitationHandler() {
-      console.log('-- Reject --');
       this._disableActionButtons();
 
       API.threatAnswerInvitation({
