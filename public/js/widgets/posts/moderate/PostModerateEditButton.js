@@ -37,7 +37,7 @@ Class(CV, 'PostModerateEditButton').inherits(Widget).includes(CV.WidgetUtils, Bu
     },
 
     _clickHandler : function _clickHandler() {
-      this.editArticle.activate();
+      this.editArticle.activate().editStartingValues();
     },
 
     destroy : function destroy() {

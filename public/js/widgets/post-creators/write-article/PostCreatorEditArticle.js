@@ -27,7 +27,7 @@ Class(CV, 'PostCreatorEditArticle').inherits(CV.PostCreator)({
       this.content = this.el.querySelector('.cv-post-creator__content');
       this.loadingStep = $(this.el.querySelector('.cv-post-creator__disable'));
 
-      this.addCloseButton()._setup()._bindEvents()._editStartingValues()._enabledPostButton();
+      this.addCloseButton()._setup()._bindEvents()._enabledPostButton();
     },
 
     _setup : function _setup() {
@@ -70,7 +70,7 @@ Class(CV, 'PostCreatorEditArticle').inherits(CV.PostCreator)({
       return this;
     },
 
-    _editStartingValues : function _editStartingValues() {
+    editStartingValues : function editStartingValues() {
       // Voice Content Data
       this.voiceTitle = this.data.voiceData.title;
       this.voiceContent = this.data.voiceData.description;
@@ -81,13 +81,14 @@ Class(CV, 'PostCreatorEditArticle').inherits(CV.PostCreator)({
       this.postDate.el.querySelector('.write-article-title').innerText = 'Edit Article';
       this.articleContent.html(this.voiceContent);
       this.articleContent.removeClass('medium-editor-placeholder');
-      this.articleTitle.text(this.voiceTitle); 
+      this.articleTitle[0].value = this.voiceTitle; 
 
       if( this.data.voiceData.imagePath[0] ){
         this.articleImage = this.data.voiceData.imagePath[0].path;
         this.articleTitle.addClass('editor-title-bg');
         this.coverImage.addClass('-img-cover');
         this.coverImage.css('background-image', 'url(' + this.articleImage + ')');
+        this.editor.el.querySelector('.editor-add-cover').innerText = 'Replace';
       }
 
       return this;
