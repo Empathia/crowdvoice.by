@@ -64,7 +64,7 @@ var FeedPresenter = Module('FeedPresenter')({
           })
         },
       ], function (err) {
-        if (err) { return callback(err) }
+        if (err) { return next(err) }
 
         delete actionInst.itemId
         delete actionInst.who
