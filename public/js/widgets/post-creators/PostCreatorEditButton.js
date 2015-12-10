@@ -5,7 +5,7 @@ Class(CV, 'PostCreatorEditButton').inherits(Widget).includes(CV.WidgetUtils)({
 
   HTML : '\
         <div>\
-            <button class="cv-button small primary -pl2 -pr2" data-button>Save<span data-counter></span></button>\
+            <button class="cv-button small primary -pl2 -pr2" data-button>Save</button>\
         </div>\
   ',
 
@@ -24,20 +24,6 @@ Class(CV, 'PostCreatorEditButton').inherits(Widget).includes(CV.WidgetUtils)({
       this._buttonClickHandlerRef = this._buttonClickHandler.bind(this);
       this.button.addEventListener('click', this._buttonClickHandlerRef);
 
-      return this;
-    },
-
-    /* Updates the button badge counter. Indicates the number of posts added to the queue.
-     * @method updateCounter <public> [Function]
-     */
-    updateCounter : function updateCounter(postCount) {
-      var valueString = '';
-
-      if (postCount) {
-          valueString = ' (' + postCount + ')';
-      }
-
-      this.dom.updateText(this.counter, valueString);
       return this;
     },
 
