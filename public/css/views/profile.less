@@ -243,40 +243,6 @@ hr{
   	display: inline-block;
 }
 
-.profile-stats{
-	background: @color-white;
-	padding-left: 25px;
-	border-top-left-radius: 10px;
-	border-top-right-radius: 10px;
-	color: @color-neutral-dark;
-
-	.stats-col{
-		text-align: center;
-		margin-right: 25px;
-		padding: 8px 0px 15px 0px;
-		border-top: 4px solid transparent;
-		cursor: pointer;
-		&:hover{
-			color: @color-neutral-x-dark;
-		}
-		&.active{
-			color: @color-primary;
-			border-top: 5px solid @color-primary;
-			font-weight: bold;
-		}
-
-	}
-
-	.profile-tabs{
-		float: left;
-	}
-	.profile-actions{
-		float: right;
-		padding: 20px 25px 0px 0px;
-	}
-
-}
-
 .stats-number {
   font-size: 13px;
   text-align: center;
@@ -358,55 +324,6 @@ hr{
 	}
 	&.-mid-height{
 		padding-top: 80px;
-	}
-}
-
-.profile-sidebar{
-	.voices-stats{
-		div:first-child{
-			padding-right: 5px;
-		}
-		div:last-child{
-			padding-left: 5px;
-		}
-	}
-
-	.profile-stat{
-		border: 1px solid @color-menu-border;
-		text-align: center;
-		border-radius: 3px;
-		padding: 20px 10px;
-
-		.stat-num{
-			font-size: 48px;
-			font-weight: bold;
-			line-height: 48px;
-		}
-		p{
-			font-weight: bold;
-			font-size: 13px;
-			padding: 5px 0px;
-		}
-		span{
-			color: @color-neutral-x-mid;
-			font-size: 11px;
-		}
-
-	}
-	@media screen and (max-width: 1133px) {
-		.voices-stats {
-			div:first-child{
-				width: 100%;
-				padding-right: 0px;
-			}
-			div:last-child{
-				width: 100%;
-				padding-left: 0px;
-			}
-			.profile-stat{
-				margin-bottom: 10px;
-			}
-		}
 	}
 }
 
@@ -544,6 +461,12 @@ hr{
 			border-top: 4px solid 5px solid @color-primary;
 		}
 	}
+}
+
+.profile-stats {
+  background-color: @color-white;
+  padding-left: 25px;
+  border-radius: 10px 10px 0 0;
 }
 
 .-nobg{

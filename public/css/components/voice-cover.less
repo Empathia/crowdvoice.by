@@ -69,17 +69,9 @@
   width: 100px;
   height: 26px;
   margin: -13px 0 0 -50px;
-  border-color: fade(@color-white, 70%);
-  color: @color-white;
-  background-color: fade(@color-black, 60%);
   transform: scale(.8);
   transition: transform 220ms ease;
   will-change: transform;
-
-  &:hover,
-  &:hover:enabled {
-    color: @color-white;
-  }
 }
 
 .voice-cover-main-image-wrapper {
@@ -193,4 +185,17 @@
   .voice-cover-title {
     line-height: 1em;
   }
+}
+
+/******************************************************************************
+  MEDIUM LIST
+ *****************************************************************************/
+.cv-voice-cover.medium-list {
+  .voice-cover {
+    width: 155px;
+    height: 155px;
+    margin-right: 20px;
+    border-radius: 8px;
+  }
+  .author {margin-top: 0}
 }

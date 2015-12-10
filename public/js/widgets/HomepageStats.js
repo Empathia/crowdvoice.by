@@ -20,19 +20,19 @@ Class('HomepageStats').inherits(Widget)({
         template : function() {
           return <article role="article" className="stats -row">
               <div className="stats-col -inline-block">
-                <p className="stats-number -font-bold">{this.data.cities}</p>
+                <p className="stats-number -font-bold -color-white">{this.data.cities}</p>
                 <p className="stats-label">Cities</p>
               </div>
               <div className="stats-col -inline-block">
-                <p className="stats-number -font-bold">{this.data.organizations}</p>
+                <p className="stats-number -font-bold -color-white">{this.data.organizations}</p>
                 <p className="stats-label">Organizations</p>
               </div>
               <div className="stats-col -inline-block">
-                <p className="stats-number -font-bold">{this.data.voices}</p>
+                <p className="stats-number -font-bold -color-white">{this.data.voices}</p>
                 <p className="stats-label">Voices Created</p>
               </div>
               <div className="stats-col -inline-block">
-                <p className="stats-number -font-bold">{this.data.posts}</p>
+                <p className="stats-number -font-bold -color-white">{this.data.posts}</p>
                 <p className="stats-label">Posts Published</p>
               </div>
             </article>

@@ -75,8 +75,6 @@ Class(CV, 'OrganizationProfileEditMembersTab').inherits(Widget)({
             API.getOrganizationMembers({
                 profileName : this.data.entity.profileName
             }, function(err,res) {
-                this.loader.disable();
-
                 res.forEach(function(member) {
                     this._memeberIds.push(member.id);
                 }, this);
@@ -89,6 +87,7 @@ Class(CV, 'OrganizationProfileEditMembersTab').inherits(Widget)({
                 })).render(this.listElement);
 
                 this._updateListState();
+                this.loader.disable().remove();
             }.bind(this));
 
             this.appendChild(new CV.UI.InputButton({

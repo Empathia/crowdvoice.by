@@ -55,6 +55,7 @@ require('./widgets/notifications/NotificationReadMore');
 
 // feed items
 require('./widgets/feed/FeedItem');
+require('./widgets/feed/FeedMessage');
 require('./widgets/feed/FeedChangedAvatar');
 require('./widgets/feed/FeedChangedBackground');
 require('./widgets/feed/FeedNewPosts');
@@ -84,6 +85,7 @@ require('./widgets/EmptyState');
 require('./widgets/Popover');
 require('./widgets/PopoverBlocker');
 require('./widgets/responsive-slider.js');
+require('./widgets/Slider');
 require('./widgets/InputClearable');
 require('./widgets/input-counter.js');
 require('./widgets/Dropdown');
@@ -101,6 +103,7 @@ require('./widgets/tabs/TabNav');
 require('./widgets/tabs/TabContent');
 require('./widgets/tabs/TabIndicator');
 require('./widgets/HelpDeskOverlay');
+require('./widgets/DiscoverCover');
 
 // components
 require('./widgets/cards/Card');
@@ -118,6 +121,7 @@ require('./widgets/cards/actions/CardUnfollowPopover');
 require('./widgets/cards/actions/CardInviteToPopover');
 
 require('./widgets/voice-cover/VoiceCover');
+require('./widgets/voice-cover/VoiceCoverMediumList');
 require('./widgets/voice-cover/VoiceCoverMini');
 require('./widgets/voice-cover/VoiceCoverMiniClean');
 require('./widgets/voice-cover/VoiceCoverTitle');
@@ -126,6 +130,7 @@ require('./widgets/voice-cover/actions/VoiceCoverActionsEdit');
 require('./widgets/voice-cover/actions/VoiceCoverActionsArchive');
 require('./widgets/CategoryCover');
 require('./widgets/TopicCard');
+require('./widgets/TopVoice');
 
 
 // views
@@ -185,10 +190,11 @@ require('./widgets/view-organization-profile-edit/OrganizationProfileEditMembers
 require('./widgets/view-organization-profile-edit/OrganizationProfileEditMembersList');
 require('./views/Feed');
 require('./widgets/view-feed/FeedDropdown');
+require('./widgets/view-feed/FeedFeaturedVoices');
+require('./widgets/view-feed/FeedRecommended');
+require('./widgets/view-feed/FeedDiscover');
 require('./widgets/view-feed/FeedSidebar');
-require('./widgets/view-feed/FeedSidebarStats');
 require('./widgets/view-feed/FeedOnboarding');
-require('./widgets/view-feed/FeedAnonymousOnboarding');
 
 require('./widgets/voice/PostsRegistry');
 require('./widgets/voice/Onboarding');

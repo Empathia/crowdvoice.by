@@ -77,7 +77,7 @@ Class(CV, 'DiscoverTrendingUpdatedVoicesTab').inherits(Widget)({
 
             this.el.appendChild(fragment);
 
-            this.loader.disable();
+            this.loader.disable().remove();
         },
 
         _renderEmptyState : function _renderEmptyState() {
@@ -87,7 +87,7 @@ Class(CV, 'DiscoverTrendingUpdatedVoicesTab').inherits(Widget)({
                 message : 'there are no most updated voices yet.'
             })).render(this.el);
 
-            this.loader.disable();
+            this.loader.disable().remove();
         },
 
         _activate : function _activate() {

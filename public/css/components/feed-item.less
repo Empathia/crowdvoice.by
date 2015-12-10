@@ -21,7 +21,8 @@
       color: inherit;
       opacity: 1;
       &:extend(.-tdn);
-      &:hover {opacity: .7}
+      &:extend(.-font-semi-bold);
+      &:hover {color: @color-primary}
     }
   }
 }
@@ -32,17 +33,16 @@
 }
 
 .cv-feed-item__time {
-  font-size: 11px;
-  line-height: 1;
-  text-align: right;
-  color: @color-neutral-mid;
+  margin-top: 5px;
+  font-style: italic;
+  color: #B3B3B3;
 }
 
 /* message */
-.cv-feed-item.message .cv-feed-item__info-extra {
-  font-size: 11px;
-  color: @color-neutral-mid;
+// .cv-feed-item.message .cv-feed-item__info-extra {
+//   font-size: 11px;
+//   color: @color-neutral-mid;
 
-  &:before {content: '“'}
-  &:after {content: '...”'}
-}
+//   &:before {content: '“'}
+//   &:after {content: '...”'}
+// }

@@ -152,7 +152,7 @@ Class(CV, 'UserProfileFollowingTab').inherits(Widget)({
                 })).render(this.cardsContainer);
              }
 
-            this.loader.disable();
+            this.loader.disable().remove();
         },
 
         _renderVoicesResults : function _renderVoicesResults(voices) {
@@ -184,7 +184,7 @@ Class(CV, 'UserProfileFollowingTab').inherits(Widget)({
                 })).render(this.voicesContainer);
             }
 
-            this.loader.disable();
+            this.loader.disable().remove();
         },
 
         _showUsers : function _showUsers() {

@@ -17,13 +17,12 @@ Class(CV, 'Dropdown').inherits(Widget).includes(CV.WidgetUtils)({
     HTML : '\
         <div class="ui-dropdown -rel">\
             <div class="ui-dropdown__head -full-height -clickable">\
-                <span class="ui-dropdown-label"></span>\
+                <div class="ui-dropdown-label"></div>\
             </div>\
-            <div class="ui-dropdown__body -abs">\
-            </div>\
+            <div class="ui-dropdown__body -abs"></div>\
         </div>',
 
-    HTML_LABEL : '<span class="ui-dropdown-label"></span>',
+    HTML_LABEL : '<div class="ui-dropdown-label"></div>',
 
     ARROW_HTML : '\
         <svg class="ui-dropdown-arrow">\

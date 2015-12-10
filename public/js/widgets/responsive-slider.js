@@ -1,14 +1,14 @@
 Class(CV, 'ResponsiveSlider').inherits(Widget)({
     HTML: '\
         <div class="widget-responsive-slider">\
-          <div class="slider-list"></div>\
-          <button class="slider-prev">\
-            <svg class="slider-arrow slider-arrow-svg"><use xlink:href="#svg-arrow-left"></use></svg>\
+          <div class="rs-list"></div>\
+          <button class="rs-prev">\
+            <svg class="rs-arrow rs-arrow-svg"><use xlink:href="#svg-arrow-left"></use></svg>\
           </button>\
-          <button class="slider-arrow slider-next">\
-            <svg class="slider-arrow-svg"><use xlink:href="#svg-arrow-right"></use></svg>\
+          <button class="rs-arrow rs-next">\
+            <svg class="rs-arrow-svg"><use xlink:href="#svg-arrow-right"></use></svg>\
           </button>\
-          <div class="slider-dots"></div>\
+          <div class="rs-dots"></div>\
         </div>\
     ',
 
@@ -30,13 +30,13 @@ Class(CV, 'ResponsiveSlider').inherits(Widget)({
             this.el = this.element;
             this._window = window;
 
-            this.sliderElement = this.el.querySelector('.slider-list');
-            this.itemElements = this.sliderElement.querySelectorAll('.slider-item');
-            this.dotsWrapper = this.el.querySelector('.slider-dots');
-            this.prevButtonElement = this.el.querySelector('.slider-prev');
-            this.nextButtonElement = this.el.querySelector('.slider-next');
+            this.sliderElement = this.el.querySelector('.rs-list');
+            this.itemElements = this.sliderElement.querySelectorAll('.rs-item');
+            this.dotsWrapper = this.el.querySelector('.rs-dots');
+            this.prevButtonElement = this.el.querySelector('.rs-prev');
+            this.nextButtonElement = this.el.querySelector('.rs-next');
 
-            this.itemElements = this.sliderElement.querySelectorAll('.slider-item');
+            this.itemElements = this.sliderElement.querySelectorAll('.rs-item');
             this.itemsLen = this.itemElements.length;
 
             if (this.arrows) {
@@ -49,9 +49,13 @@ Class(CV, 'ResponsiveSlider').inherits(Widget)({
 
         _bindEvents : function _bindEvents() {
             this._window.addEventListener('resize', this._setup.bind(this));
-            if (this.arrows) this.prevButtonElement.addEventListener('click', this.prev.bind(this));
-            if (this.arrows) this.nextButtonElement.addEventListener('click', this.next.bind(this));
-            if (this.dots) this.dotsWrapper.addEventListener('click', this._dotsClickHandler.bind(this));
+            if (this.arrows) {
+              this.prevButtonElement.addEventListener('click', this.prev.bind(this));
+              this.nextButtonElement.addEventListener('click', this.next.bind(this));
+            }
+            if (this.dots) {
+              this.dotsWrapper.addEventListener('click', this._dotsClickHandler.bind(this));
+            }
 
             return this;
         },
@@ -61,19 +65,22 @@ Class(CV, 'ResponsiveSlider').inherits(Widget)({
             var slidesNumber = 1;
 
             if (this.minSlideWidth) {
-                if (sliderWidth > this.minSlideWidth)
+                if (sliderWidth > this.minSlideWidth) {
                     slidesNumber = Math.floor(sliderWidth / this.minSlideWidth);
+                }
             }
 
             this.index = 0;
             this._totalSlides = Math.ceil(this.itemsLen / slidesNumber) - 1;
 
-            if (this.dots) this._createDots();
+            if (this.dots) {
+              this._createDots();
+            }
 
             this.updateSlidesWidth(slidesNumber);
             this.updatePosition();
 
-            slideWidth = slidesNumber = null;
+            sliderWidth = slidesNumber = null;
 
             return this;
         },
@@ -82,10 +89,10 @@ Class(CV, 'ResponsiveSlider').inherits(Widget)({
             var child = ev.target;
             var i = 0;
 
-            if (child.nodeName !== "BUTTON") return;
-            while((child = child.previousSibling) != null) i++;
+            if (child.nodeName !== "BUTTON") {return;}
+            while((child = child.previousSibling) != null) {i++;}
 
-            if (i === this.index) return;
+            if (i === this.index) {return;}
 
             this.index = i;
             this.updatePosition();
@@ -109,10 +116,11 @@ Class(CV, 'ResponsiveSlider').inherits(Widget)({
         },
 
         _updateDots : function _updateDots() {
-            if (!this.dots) return this;
+            if (!this.dots) {return this;}
 
-            for (var i = 0; i < this.dotsWrapper.childElementCount; i++)
+            for (var i = 0; i < this.dotsWrapper.childElementCount; i++) {
                 this.dotsWrapper.childNodes[i].classList.remove('active');
+            }
 
             this.dotsWrapper.childNodes[this.index].classList.add('active');
 
@@ -140,7 +148,7 @@ Class(CV, 'ResponsiveSlider').inherits(Widget)({
         },
 
         prev : function prev() {
-            if (this.index <= 0) return this;
+            if (this.index <= 0) {return this;}
 
             this.index--;
 
@@ -148,7 +156,7 @@ Class(CV, 'ResponsiveSlider').inherits(Widget)({
         },
 
         next : function next() {
-            if (this.index >= this._totalSlides) return this;
+            if (this.index >= this._totalSlides) {return this;}
 
             this.index++;
 
@@ -160,8 +168,9 @@ Class(CV, 'ResponsiveSlider').inherits(Widget)({
 
             this._slidesShown = numberOfSlides;
 
-            for (var i = 0; i < this.itemsLen; i ++)
+            for (var i = 0; i < this.itemsLen; i ++) {
                 this.itemElements[i].style.width = slideWidth;
+            }
 
             return this;
         },

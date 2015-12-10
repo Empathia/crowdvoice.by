@@ -4,7 +4,7 @@ Class(CV, 'AccountDropdownMenu').inherits(Widget)({
     ELEMENT_CLASS : '-inline-block -full-height',
 
     LABEL_TEMPLATE : '\
-        <img src="{avatar_source}" class="-rounded" width="28" height="28"/>\
+        <img src="{avatar_source}" class="-rounded" width="28" height="28" alt="{alt}"/>\
         <span class="account-menu-label">{name}</span>',
 
     prototype : {
@@ -28,6 +28,7 @@ Class(CV, 'AccountDropdownMenu').inherits(Widget)({
             var label = this.constructor.LABEL_TEMPLATE;
             label = label.replace(/{avatar_source}/, Person.getImage('notification'));
             label = label.replace(/{name}/, Person.get('name'));
+            label = label.replace(/{alt}/, Person.get('name') + '’s avatar image');
             this.dropdown.setLabel(label);
 
             if (Person.anon() === true) {

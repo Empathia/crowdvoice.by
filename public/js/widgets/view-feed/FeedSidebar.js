@@ -1,53 +1,63 @@
-var API = require('./../../lib/api');
+var Person = require('./../../lib/currentPerson');
 
 Class(CV, 'FeedSidebar').inherits(Widget)({
-    prototype : {
-        init : function init(config) {
-            Widget.prototype.init.call(this, config);
-            this.voicesList = this.el.querySelector('.feed__top-voices-list');
+  prototype: {
+    _onboarding: null,
 
-            this.appendChild(new CV.Loading({
-                name : 'loader'
-            })).render(this.voicesList).center().setStyle({
-                top: '74px'
-            });
-        },
+    init: function init(config) {
+      Widget.prototype.init.call(this, config);
 
-        /* Fetch and render the first 6 trending voices.
-         * Hides the loader on success response.
-         * @method fetchTopVoices <public> [Function]
-         * @return FeedSidebar
-         */
-        fetchTopVoices : function fetchTopVoices() {
-            API.getTrendingVoices(function(err, res) {
-                if (res.length > 6) {
-                    res = res.slice(0,6);
-                }
+      this._setup()._updateFeed();
+    },
 
-                res.forEach(function(voice, index) {
-                    this.appendChild(new CV.VoiceCoverMini({
-                        name : 'top_voice_' + index,
-                        className : '-mb1',
-                        data : voice
-                    })).render(this.voicesList);
-                }, this);
+    _setup: function _setup() {
+      if (Person.ownsOrganizations()) {
+        var currentEntityView = Person.get();
 
-                this.loader.disable();
-            }.bind(this));
+        this.appendChild(new CV.UI.FeedDropdown({
+          name: 'dropdown'
+        })).render(this.el.querySelector('.profile-select-options'));
 
-            return this;
-        },
-
-        /* Display the stats.
-         * @method showStats <public> [Function]
-         * @return FeedSidebar
-         */
-        showStats : function showStats() {
-            this.appendChild(new CV.FeedSidebarStats({
-                name : 'stats'
-            })).render(this.el.querySelector('.profile-sidebar'));
-
-            return this;
+        if (this.organization) {
+          currentEntityView = this.organization;
         }
+
+        this.dropdown.selectByEntity(currentEntityView);
+      }
+
+      return this;
+    },
+
+    _updateFeed: function _updateFeed() {
+      var feedList = document.createElement('div');
+      feedList.className = 'feed__list';
+
+      this.feedItems.feed.reverse().forEach(function(item, index) {
+        this.appendChild(CV.FeedItem.create({
+          name: 'feed-item__' + index,
+          data: item
+        })).render(feedList).showDate();
+      }, this);
+
+      this.appendChild(CV.FeedItem.create({
+        name: 'feed-item__welcome',
+        data: {
+          action: 'message',
+          text: 'You joined CrowdVoice! 🎉',
+          actionDoer: Person.get(),
+          createdAt: Person.get('createdAt')
+        }
+      })).render(feedList).showDate();
+
+      this.el.querySelector('.profile-sidebar').appendChild(feedList);
+
+      if (this.feedItems && this.feedItems.feed.length === 0) {
+        if (this._onboarding) {return;}
+        this._onboarding = document.createElement('div');
+        this._onboarding.className = 'feed__list-onboarding';
+        this._onboarding.textContent = 'Activity from voices and people you follow will appear here';
+        feedList.appendChild(this._onboarding);
+      }
     }
+  }
 });

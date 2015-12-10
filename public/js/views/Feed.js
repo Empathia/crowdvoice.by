@@ -1,75 +1,58 @@
-var Person = require('./../lib/currentPerson');
-
 Class(CV.Views, 'Feed').includes(NodeSupport, CV.WidgetUtils)({
-    prototype : {
-        organization: null,
-        feedItems : null,
+  prototype: {
+    organization: null,
+    feedItems: null,
+    topVoice: null,
 
-        init : function init(config) {
-            Object.keys(config || {}).forEach(function(propertyName) {
-                this[propertyName] = config[propertyName];
-            }, this);
+    init: function init(config) {
+      Object.keys(config || {}).forEach(function(propertyName) {
+        this[propertyName] = config[propertyName];
+      }, this);
 
-            this._setup();
-        },
+      this._setup();
+    },
 
-        _setup : function _setup() {
-            if (Person.ownsOrganizations()) {
-                var currentEntityView = Person.get();
+    _setup: function _setup() {
+      var time = 1000;
 
-                this.appendChild(new CV.UI.FeedDropdown({
-                    name : 'dropdown'
-                })).render(this.el.querySelector('.profile-select-options'));
+      if (this.topVoice) {
+        this.appendChild(new CV.TopVoice({
+          name: 'topVoice',
+          data: this.topVoice,
+          ENV: this.ENV
+        })).render(this.el.querySelector('.feed-top-voice'));
+      }
 
-                if (this.organization) {
-                    currentEntityView = this.organization;
-                }
+      this.appendChild(new CV.FeedFeaturedVoices({
+        name: 'featuredVoices',
+        element: this.el.querySelector('.feed__featured-voices')
+      }));
+      window.setTimeout(function(_that) {
+        _that.featuredVoices.fetch();
+      }, time, this);
 
-                this.dropdown.selectByEntity(currentEntityView);
-            }
+      this.appendChild(new CV.FeedRecommended({
+        name: 'recommended',
+        element: this.el.querySelector('.feed__recommended')
+      }));
+      window.setTimeout(function(_that) {
+        _that.recommended.fetch();
+      }, time + 1, this);
 
-            this.appendChild(new CV.FeedSidebar({
-                name : 'sidebar',
-                el : this.el.querySelector('[data-feed-sidebar]')
-            }));
+      this.appendChild(new CV.FeedDiscover({
+        name: 'discover',
+        element: $(this.el.querySelector('.feed__discover'))
+      }));
+      window.setTimeout(function(_that) {
+        _that.discover.fetchImages();
+      }, time + 2, this);
 
-            if (Person.anon()) {
-                this.appendChild(new CV.FeedAnonymousOnboarding({
-                    name: 'onboarding'
-                })).render(this.el.querySelector('.profile-body'));
-
-                this.sidebar.fetchTopVoices();
-
-                return;
-            }
-
-            this._updateFeed();
-            this.sidebar.fetchTopVoices().showStats();
-        },
-
-        _updateFeed : function _updateFeed() {
-            if (this.feedItems && this.feedItems.feed.length) {
-                return this._renderFeed();
-            }
-
-            this.appendChild(new CV.FeedOnboarding({
-                name: 'onboarding'
-            })).render(this.el.querySelector('.profile-body'));
-        },
-
-        _renderFeed : function _renderFeed() {
-            var feedList = document.createElement('div');
-            feedList.className = 'feed__list';
-
-            this.feedItems.feed.reverse().forEach(function(item, index) {
-                this.appendChild(CV.FeedItem.create({
-                    name : 'feed-item__' + index,
-                    className : 'cv-items-list',
-                    data : item
-                })).render(feedList).showDate();
-            }, this);
-
-            this.el.querySelector('.profile-body').appendChild(feedList);
-        }
+      this.appendChild(new CV.FeedSidebar({
+        name : 'sidebar',
+        el : this.el.querySelector('[data-feed-sidebar]'),
+        feedItems: this.feedItems,
+        organization: this.organization
+      }));
     }
+  }
 });

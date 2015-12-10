@@ -10,11 +10,11 @@ Class(CV.Views, 'UserProfile').includes(NodeSupport, CV.WidgetUtils)({
             <div class="-inline-block -ml1">\
                 <div class="profile-actions-settings-dropdown ui-dropdown ui-dropdown-styled disable -md has-arrow">\
                     <div class="ui-dropdown__head -full-height -clickable">\
-                        <span class="ui-dropdown-label">\
+                        <div class="ui-dropdown-label">\
                             <svg class="-s16 -color-grey-light">\
                                 <use xlink:href="#svg-settings"></use>\
                             </svg>\
-                        </span>\
+                        </div>\
                         <svg class="ui-dropdown-arrow -s8 -color-grey">\
                             <use xlink:href="#svg-arrow-down"></use>\
                         </svg>\
@@ -180,7 +180,7 @@ Class(CV.Views, 'UserProfile').includes(NodeSupport, CV.WidgetUtils)({
          * Applies Resize and z-index changes to hide the image when scrolling
          */
         _scaleProfileImage : function _scaleProfileImage(){
-            window.addEventListener('scroll', function(e){
+            window.addEventListener('scroll', function(){
                 var distanceY = window.pageYOffset || document.documentElement.scrollTop;
                 var profileImage = document.querySelector('.profile-image');
                 var newScale = 1 - (distanceY / 100);

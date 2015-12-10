@@ -76,7 +76,7 @@ Class(CV, 'UserProfileVoicesTab').inherits(Widget)({
                 })).render(this.containerElement);
             }
 
-            this.loader.disable();
+            this.loader.disable().remove();
         },
 
         _activate : function _activate() {

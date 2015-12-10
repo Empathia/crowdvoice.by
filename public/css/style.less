@@ -44,6 +44,12 @@ header{
   }
 }
 
+.topvoice-container{
+  p{
+    margin-top: 14px;
+  }
+}
+
 .yield{
   &.-is-admin{
     padding-top: 64px;
@@ -137,8 +143,8 @@ a {
   text-decoration: underline;
 }
 
-.app-wrapper > .yield {
-  padding-top: @cv-header-height;
+.yield {
+  padding-left: @cv-sidebar-collapsed-width;
 }
 
 .dark-background,
@@ -203,6 +209,7 @@ a {
 @import './components/voice-cover';
 @import './components/topic-card';
 @import './components/card';
+@import './components/slider';
 @import './components/responsive-slider';
 @import './components/post';
 @import './components/date-picker';
@@ -226,6 +233,7 @@ a {
 @import './components/list-results';
 @import './components/empty-state';
 @import './components/help-desk-overlay';
+@import './components/discover-cover';
 
 @import './components/voice-posts-layer';
 @import './components/voice-add-content';
@@ -243,6 +251,7 @@ a {
 @import './components/related-voices/related-voices.less';
 @import './components/voice-contributors/voice-contributors.less';
 @import './components/embed-overlay.less';
+@import './components/top-voice';
 /* =========================================================================== *
  * cv views
  * =========================================================================== */
