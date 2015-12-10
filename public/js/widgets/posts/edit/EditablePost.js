@@ -219,7 +219,7 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
 
             this.romeTime = rome(this.timePickerInput, {
                 inputFormat : 'DD MMM, YYYY HH:mm',
-                initialValue : moment(this.updatedAt)
+                initialValue : moment(this.publishedAt)
             });
 
             this._bindEditEvents();
@@ -274,6 +274,24 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
             return this;
         },
 
+        addButtonRow : function addButtonRow(){
+            this.buttonRow = document.createElement('div');
+            this.el.classList.add('has-bottom-actions');
+            this.el.appendChild(this.buttonRow);
+
+             if(this.sourceType !== 'text' && this.sourceType !== 'image'){
+                this.buttonRow.setAttribute('class', 'post-moderate-button-row');
+                this.addPublishButton();
+                this.addViewOriginalButton(this.sourceUrl);
+            } else if(this.sourceType === 'text'){
+                this.buttonRow.setAttribute('class', 'post-moderate-button-row');
+                this.addPublishButton();
+                this.addEditArticleButton();
+            }else{
+                this.addPublishButton();
+            }
+            return this;
+        },
         /* Adds the publish post button (for moderation management)
          * @method addPublishButton <public> [Function]
          * @return EditablePost
@@ -283,34 +301,34 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
                 name : 'publishButton',
                 postId : this.id,
                 className : '-m0'
-            }));
-            this.el.appendChild(this.publishButton.el);
-            this.el.classList.add('has-bottom-actions');
+            })).render(this.buttonRow);
+            
             return this;
         },
 
-        addLinkNewtab : function addLinkNewtab() {
-            if(this.sourceType !== 'text' && this.sourceType !== 'image'){
-                var url = this.sourceUrl;
+        addViewOriginalButton : function addViewOriginalButton(url) {
+            this.appendChild(new CV.PostModerateOriginalButton({
+                name: 'viewOriginal',
+                originalUrl : url,
+            })).render(this.buttonRow);
 
-                this.el.querySelector('.post-card-info').addEventListener("click", function( e ){
-                    e = window.event || e; 
-                    if(this === e.target) {
-                        var win = window.open(url, '_blank');
-                        win.focus();
-                    }
-                });
+            return this;
+        },
 
-                this.el.querySelector('.post-card-image-wrapper').addEventListener("click", function( e ){
-                    var svgIcon = this.querySelector('use');
-                    e = window.event || e; 
-                    if(this === e.target || svgIcon === e.target) {
-                        var win = window.open(url, '_blank');
-                        win.focus();
-                    }
-                });
-            }
-
+        addEditArticleButton : function addEditArticleButton() {
+            this.appendChild(new CV.PostModerateEditButton({
+                name: 'editArticle',
+                data : {
+                    title: this.title,
+                    description: this.description,
+                    publishedAt: this.romeTime,
+                    imagePath : this.images,
+                    postId: this.id,
+                    profileName : App.Voice.data.owner.profileName,
+                    voiceSlug : App.Voice.data.slug
+                }
+            })).render(this.buttonRow);
+            
             return this;
         },
 
