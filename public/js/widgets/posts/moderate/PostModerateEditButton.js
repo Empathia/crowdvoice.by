@@ -7,7 +7,7 @@ Class(CV, 'PostModerateEditButton').inherits(Widget).includes(CV.WidgetUtils, Bu
       <svg class="-s16 -mr1">\
         <use xlink:href="#svg-pencil"></use>\
       </svg>\
-      <span>Edit</span>\
+      <span>Edit Post</span>\
     </button>\
   ',
 

@@ -71,11 +71,13 @@ Class(CV, 'PostCreatorEditArticle').inherits(CV.PostCreator)({
     },
 
     _editStartingValues : function _editStartingValues() {
+      // Voice Content Data
       this.voiceTitle = this.data.voiceData.title;
       this.voiceContent = this.data.voiceData.description;
       this.voicePublishedDate = this.data.voiceData.publishedAt;
       this.postDate.timePickerInput.value = this.voicePublishedDate.associated.value;
 
+      // Voice Content Modification
       this.postDate.el.querySelector('.write-article-title').innerText = 'Edit Article';
       this.articleContent.html(this.voiceContent);
       this.articleContent.removeClass('medium-editor-placeholder');
@@ -116,29 +118,34 @@ Class(CV, 'PostCreatorEditArticle').inherits(CV.PostCreator)({
      * API Endpoint
      */
     _buttonClick : function _buttonClick(){
-      // Disables button and activates the loader
       this._disablePostButton();
       this.loadingStep.addClass('active');
-      console.log('LOL');
-      /*if(this.articleImage !== null){
-        API.voiceNewArticle({
-          userSlug : App.Voice.data.owner.profileName,
-          voiceSlug : App.Voice.data.slug,
-          articleTitle : this.articleTitle.val(),
-          articleContent : this.articleContent.html(),
-          articleImage : this.articleImage.path,
-          articleDate : this.postDate.timePickerInput.value
+      
+      if(this.articleImage !== null){
+        API.postUpdate({
+          profileName : this.data.voiceData.profileName,
+          voiceSlug : this.data.voiceData.voiceSlug,
+          postId : this.data.voiceData.postId,
+          data : {
+            title : this.articleTitle.val(),
+            description : this.articleContent.html(),
+            imagePath : this.articleImage,
+            publishedAt : this.postDate.timePickerInput.value
+          }
         }, this._responseHandler.bind(this));
       }else{
-        API.voiceNewArticle({
-          userSlug : App.Voice.data.owner.profileName,
-          voiceSlug : App.Voice.data.slug,
-          articleTitle : this.articleTitle.val(),
-          articleContent : this.articleContent.html(),
-          articleImage : '',
-          articleDate : this.postDate.timePickerInput.value
+        API.postUpdate({
+          profileName : this.data.voiceData.profileName,
+          voiceSlug : this.data.voiceData.voiceSlug,
+          postId : this.data.voiceData.postId,
+          data : {
+            title : this.articleTitle.val(),
+            description : this.articleContent.html(),
+            imagePath : '',
+            publishedAt : this.postDate.timePickerInput.value
+          }
         }, this._responseHandler.bind(this));
-      }*/
+      }
     },
 
     _responseHandler : function _responseHandler(err, res){
@@ -160,10 +167,10 @@ Class(CV, 'PostCreatorEditArticle').inherits(CV.PostCreator)({
       // Success feedack
       this.loader.disable();
       this.loaderSuccess.activate();
-
       window.setTimeout(function() {
-        window.location.reload();
-      }, 2000);
+        this.loaderSuccess.deactivate();
+        this.destroy();
+      }.bind(this), 2000);
     },
 
     // Gets the <INPUT> IMAGE and sent it to the API
@@ -188,10 +195,10 @@ Class(CV, 'PostCreatorEditArticle').inherits(CV.PostCreator)({
 
     //Gets the API response and applies the header background
     _imageUploaded : function _imageUploaded(image){
-      this.articleImage = image;
+      this.articleImage = image.path;
       this.articleTitle.addClass('editor-title-bg');
       this.coverImage.addClass('-img-cover');
-      this.coverImage.css('background-image', 'url(' + this.articleImage.path + ')');
+      this.coverImage.css('background-image', 'url(' + this.articleImage + ')');
     },
 
     _contentFilled : function _contentFilled(){

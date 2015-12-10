@@ -7,7 +7,7 @@ Class(CV, 'PostModerateOriginalButton').inherits(Widget).includes(CV.WidgetUtils
       <svg class="-s16 -mr1">\
         <use xlink:href="#svg-sources"></use>\
       </svg>\
-      <span>Source</span>\
+      <span>View Source</span>\
     </button>\
   ',
 

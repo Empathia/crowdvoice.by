@@ -219,7 +219,7 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
 
             this.romeTime = rome(this.timePickerInput, {
                 inputFormat : 'DD MMM, YYYY HH:mm',
-                initialValue : moment(this.updatedAt)
+                initialValue : moment(this.publishedAt)
             });
 
             this._bindEditEvents();
@@ -321,12 +321,14 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
                 data : {
                     title: this.title,
                     description: this.description,
-                    image: this.image,
                     publishedAt: this.romeTime,
-                    imagePath : this.images
+                    imagePath : this.images,
+                    postId: this.id,
+                    profileName : App.Voice.data.owner.profileName,
+                    voiceSlug : App.Voice.data.slug
                 }
             })).render(this.buttonRow);
-
+            
             return this;
         },
 
