@@ -274,10 +274,6 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
             return this;
         },
 
-        /* Adds the publish post button (for moderation management)
-         * @method addPublishButton <public> [Function]
-         * @return EditablePost
-         */
         addButtonRow : function addButtonRow(){
             this.buttonRow = document.createElement('div');
             this.el.classList.add('has-bottom-actions');
@@ -296,7 +292,10 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
             }
             return this;
         },
-
+        /* Adds the publish post button (for moderation management)
+         * @method addPublishButton <public> [Function]
+         * @return EditablePost
+         */
         addPublishButton : function addPublishButton() {
             this.appendChild(new CV.PostModeratePublishButton({
                 name : 'publishButton',
