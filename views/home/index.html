@@ -77,16 +77,15 @@
 
 <script>
   var App = new CV.App().setup();
+  App.addInteractiveSidebar();
   App.socketStart();
 
-  App.appendChild(
-    new CV.HomeView({
-      name : 'homeView',
-      featuredVoicesData : <%= JSON.stringify(featuredVoices) %>,
-      orgsData : <%= JSON.stringify(mostActiveOrganizations) %>,
-      categoriesData : <%= JSON.stringify(topics) %>
-    })
-  );
+  App.appendChild(new CV.HomeView({
+    name: 'homeView',
+    featuredVoicesData: <%= JSON.stringify(featuredVoices) %>,
+    orgsData: <%= JSON.stringify(mostActiveOrganizations) %>,
+    categoriesData: <%= JSON.stringify(topics) %>
+  }));
 
   window.stats = new HomepageStats({
       name : 'stats',
