@@ -52,7 +52,7 @@ Class(CV, 'VoicePostLayersModerateAbstract').inherits(CV.VoicePostLayers)({
             layer.addEditablePosts(postsData).getPosts().forEach(function(post) {
                 // Voice Owner / Org Member / Contributor
                 if (layers.allowPostEditing) {
-                    post.edit().addImageControls().addRemoveButton().addPublishButton().addLinkNewtab();
+                    post.edit().addImageControls().addRemoveButton().addButtonRow();
                     post.bind('dimensionsChanged', layers._reLayoutLayer);
                     return;
                 }
