@@ -167,9 +167,10 @@ Class(CV, 'PostCreatorEditArticle').inherits(CV.PostCreator)({
       // Success feedack
       this.loader.disable();
       this.loaderSuccess.activate();
+
       window.setTimeout(function() {
         this.loaderSuccess.deactivate();
-        this.destroy();
+        window.location.reload();
       }.bind(this), 2000);
     },
 

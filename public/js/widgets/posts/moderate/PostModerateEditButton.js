@@ -33,10 +33,11 @@ Class(CV, 'PostModerateEditButton').inherits(Widget).includes(CV.WidgetUtils, Bu
     _bindEvents : function _bindEvents() {
       this._clickHandlerRef = this._clickHandler.bind(this);
       this.el.addEventListener('click', this._clickHandlerRef);
+      
     },
 
     _clickHandler : function _clickHandler() {
-      this.editArticle.activate();
+      this.editArticle.activate().editStartingValues();
     },
 
     destroy : function destroy() {
