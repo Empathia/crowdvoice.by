@@ -286,7 +286,7 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
                   return next(err);
                 }
 
-                ThreadsPresenter.build(req, [thread], function(err, threads) {
+                ThreadsPresenter.build([thread], req.currentPerson, function(err, threads) {
                   if (err) {
                     return next(err);
                   }

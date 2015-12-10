@@ -1,7 +1,6 @@
 var BlackListFilter = require(__dirname + '/BlackListFilter');
 var VoicesPresenter = require(path.join(process.cwd(), '/presenters/VoicesPresenter.js'));
 var FeedPresenter = require(__dirname + '/../presenters/FeedPresenter.js');
-var NotificationMailer = require(path.join(__dirname, '../mailers/NotificationMailer.js'));
 var isProfileNameAvailable = require(path.join(__dirname, '../lib/util/isProfileNameAvailable.js'))
 
 var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
@@ -414,68 +413,14 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
                   });
                 },
 
-                // generate feed and notifications
+                // feed
                 function (next) {
-                  FeedInjector().inject(follower.id, 'who entityFollowsEntity', entityFollowerRecord, function (err) {
-                    if (err) { return next(err); }
+                  FeedInjector().inject(follower.id, 'who entityFollowsEntity', entityFollowerRecord, next);
+                },
 
-                    var receiverEntity,
-                      realReceiverEntity,
-                      receiverUser
-
-                    async.series([
-                      // get receiver entity, could be org or person
-                      function (next) {
-                        Entity.findById(entityFollowerRecord.followedId, function (err, entity) {
-                          if (err) { return next(err) }
-
-                          receiverEntity = entity[0]
-
-                          return next()
-                        })
-                      },
-
-                      // get real receiver entity, can only be person
-                      function (next) {
-                        if (receiverEntity.type === 'person' && !receiverEntity.isAnonymous) {
-                          realReceiverEntity = receiverEntity
-                          return next()
-                        }
-
-                        EntityOwner.find({ owned_id: receiverEntity.id }, function (err, ownership) {
-                          if (err) { return next(err) }
-
-                          Entity.findById(ownership[0].ownerId, function (err, entity) {
-                            if (err) { return next(err) }
-
-                            realReceiverEntity = entity[0]
-
-                            return next()
-                          })
-                        })
-                      },
-
-                      // get user of real receiver entity
-                      function (next) {
-                        User.find({ entity_id: realReceiverEntity.id }, function (err, user) {
-                          if (err) { return next(err) }
-
-                          receiverUser = user[0]
-
-                          return next()
-                        })
-                      },
-
-                      // send email
-                      function (next) {
-                        NotificationMailer.newEntityFollower({
-                          entity: receiverEntity,
-                          realEntity: realReceiverEntity,
-                          user: receiverUser,
-                        }, follower, next);
-                      },
-                    ], next);
-                  });
+                // notifications
+                function (next) {
+                  FeedInjector().injectNotification(follower.id, 'notifNewEntityFollower', entityFollowerRecord, next);
                 },
               ], function (err) {
                 if (err) {
@@ -806,7 +751,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
         ], function (err) { // async.series
           if (err) { return next(err); }
 
-          ThreadsPresenter.build(req, threads, function (err, result) {
+          ThreadsPresenter.build(threads, req.currentPerson, function (err, result) {
             if (err) { return next(err); }
 
             res.json({ status: 'ok' });
@@ -817,7 +762,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
     feed : function (req, res, next) {
       /* GET
-       * req.query.page = Number // page
+       * req.query.page = Number of page
        */
 
       ACL.isAllowed('feed', 'entities', req.role, {
@@ -827,7 +772,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
         if (err) { return next(err); }
 
         if (!response.isAllowed) {
-          return next(new ForbiddenError('Unauthorized.'));
+          return next(new ForbiddenError());
         }
 
         var page = req.query.page || 1,
@@ -839,9 +784,10 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
           'WHERE follower_id = ?) ' +
           'FROM "Notifications" ' +
           'WHERE follower_id = ? ' +
+          'AND for_feed = ? ' +
           'ORDER BY created_at DESC ' +
           'LIMIT ? ' +
-          'OFFSET ?', [response.follower.id, response.follower.id, pageLength, (page - 1) * pageLength])
+          'OFFSET ?', [response.follower.id, response.follower.id, true, pageLength, (page - 1) * pageLength])
           .exec(function (err, result) {
             if (err) { return next(err); }
 

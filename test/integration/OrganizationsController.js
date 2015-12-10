@@ -28,9 +28,9 @@ describe('OrganizationsController', function () {
 
   describe('#requestMembership', function () {
 
-    it('Should request membership with no errors', function (done) {
+    it('Should request membership with no errors', function (doneTest) {
       login('jon-snow', function (err, agent, csrf) {
-        if (err) { return done(err) }
+        if (err) { return doneTest(err) }
 
         agent
           .post(urlBase + '/house-targaryen/requestMembership')
@@ -38,14 +38,37 @@ describe('OrganizationsController', function () {
           .send({
             _csrf: csrf,
             orgId: hashids.encode(23), // House Targaryen
-            message: 'I wanna join you so bad!'
+            message: '8554773235'
           })
           .end(function (err, res) {
-            if (err) { return done(err) }
+            if (err) { return doneTest(err) }
 
             expect(res.status).to.equal(200)
 
-            return done()
+            FeedAction.find({
+              item_type: 'entity',
+              item_id: 23,
+              action: 'requested to become a member',
+              who: 9,
+            }, function (err, result) {
+              if (err) { return doneTest(err) }
+
+              expect(result.length).to.equal(1)
+
+              Notification.find({
+                action_id: result[0].id,
+                follower_id: 7,
+              }, function (err, result) {
+                if (err) { return doneTest(err) }
+
+                expect(result.length).to.equal(1)
+
+                expect(result[0].read).to.equal(false)
+                expect(result[0].forFeed).to.equal(false)
+
+                return doneTest()
+              })
+            })
           })
       })
     })

@@ -28,9 +28,9 @@ describe('VoicesController', function () {
 
   describe('#follow', function () {
 
-    it('Follow voice', function (done) {
+    it('Should follow voice', function (doneTest) {
       login('cersei-lannister', function (err, agent, csrf) {
-        if (err) { return done(err) }
+        if (err) { return doneTest(err) }
 
         agent
           .post(urlBase + '/jon-snow/white-walkers/follow')
@@ -40,12 +40,73 @@ describe('VoicesController', function () {
             followerId : hashids.encode(3) // Cersei
           })
           .end(function (err, res) {
-            if (err) { return done(err) }
+            if (err) { return doneTest(err) }
 
             expect(res.status).to.equal(200)
             expect(res.body.status).to.equal('followed')
 
-            return done()
+            // FeedInjector tests
+            async.series([
+              // Feed record not created when it answers to front
+              function (nextSeries) {
+                setTimeout(nextSeries, 2000)
+              },
+
+              // feed
+              function (nextSeries) {
+                FeedAction.find({
+                  item_type: 'voice',
+                  item_id: 12,
+                  action: 'followed',
+                  who: 3,
+                }, function (err, result) {
+                  if (err) { return nextSeries(err) }
+
+                  expect(result.length).to.equal(1)
+
+                  Notification.find({ action_id: result[0].id }, function (err, result) {
+                    if (err) { return nextSeries(err) }
+
+                    expect(result.length).to.equal(3)
+
+                    result.forEach(function (val) {
+                      expect(val.read).to.equal(true)
+                      expect(val.forFeed).to.equal(true)
+                    })
+
+                    return nextSeries()
+                  })
+                })
+              },
+
+              // notification
+              function (nextSeries) {
+                FeedAction.find({
+                  item_type: 'voice',
+                  item_id: 12,
+                  action: 'followed your voice',
+                  who: 3,
+                }, function (err, result) {
+                  if (err) { return nextSeries(err) }
+
+                  expect(result.length).to.equal(1)
+
+                  Notification.find({
+                    action_id: result[0].id,
+                    follower_id: 9,
+                  }, function (err, result) {
+                    if (err) { return nextSeries(err) }
+
+                    expect(result.length).to.equal(1)
+
+                    expect(result[0].read).to.equal(false)
+                    expect(result[0].forFeed).to.equal(false)
+
+                    return nextSeries()
+                  })
+                })
+              },
+            ], doneTest)
           })
       })
     })

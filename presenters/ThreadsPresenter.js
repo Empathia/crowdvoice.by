@@ -1,11 +1,15 @@
 var EntitiesPresenter = require('./EntitiesPresenter.js');
 
 Module('ThreadsPresenter')({
-  build : function build(req, threads, callback) {
+  build : function build(threads, currentPerson, callback) {
+    if (currentPerson === null) {
+      return callback(new Error('ThreadsPresenter requires the \'currentPerson\' argument'));
+    }
+
     async.eachLimit(threads, 1, function(thread, next) {
       var threadInstance = new MessageThread(thread);
 
-      var isThreadSender = threadInstance.isPersonSender(hashids.decode(req.currentPerson.id)[0]);
+      var isThreadSender = threadInstance.isPersonSender(hashids.decode(currentPerson.id)[0]);
 
       thread.lastSeen = thread['lastSeen' + (isThreadSender ? 'Sender' : 'Receiver')]
       thread.messageCount = thread['messageCount' + (isThreadSender ? 'Sender' : 'Receiver')];
@@ -21,7 +25,7 @@ Module('ThreadsPresenter')({
       delete thread.eventListeners;
 
       async.series([function(done){
-        if (hashids.decode(req.currentPerson.id)[0] !== thread.senderPersonId) {
+        if (hashids.decode(currentPerson.id)[0] !== thread.senderPersonId) {
           thread.senderPerson = null;
           delete thread.senderPersonId;
           return done();
@@ -68,10 +72,10 @@ Module('ThreadsPresenter')({
 
           async.each(messages, function (message, nextMessage) {
             EntityOwner.find({
-              owner_id: hashids.decode(req.currentPerson.id)[0]
+              owner_id: hashids.decode(currentPerson.id)[0]
             }, function (err, orgs) {
               var ownedIds = orgs.map(function (owner) { return owner.ownedId; });
-              ownedIds.push(hashids.decode(req.currentPerson.id)[0]);
+              ownedIds.push(hashids.decode(currentPerson.id)[0]);
 
               var isMsgSender = (ownedIds.indexOf(message.senderEntityId) !== -1),
                 msgSenderIsThreadSender = (message.senderEntityId === hashids.decode(thread.senderEntity.id)[0]);
@@ -177,7 +181,7 @@ Module('ThreadsPresenter')({
                   message.reportId = hashids.encode(message.reportId);
 
                   Entity.find({ id: report[0].reportedId }, function (err, org) {
-                    EntitiesPresenter.build(org, req.currentPerson, function (err, presentedOrg) {
+                    EntitiesPresenter.build(org, currentPerson, function (err, presentedOrg) {
                       if (err) { return doneMessageInfo(err); }
 
                       message.organization = presentedOrg[0];
@@ -250,3 +254,5 @@ Module('ThreadsPresenter')({
     });
   }
 });
+
+module.exports = ThreadsPresenter

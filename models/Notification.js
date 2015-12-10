@@ -3,6 +3,7 @@ var Notification = Class('Notification').inherits(Argon.KnexModel)({
     actionId: ['required'],
     followerId: ['required'],
     read: ['required'],
+    forFeed: ['required'],
   },
 
   storage: (new Argon.Storage.Knex({
@@ -16,6 +17,8 @@ var Notification = Class('Notification').inherits(Argon.KnexModel)({
     followerId: null,
     // whether the followerId has read the notification or not
     read: null,
+    // whether it should be displayed in the feed (true) or notifications (false)
+    forFeed: null,
   },
 })
 
