@@ -16,6 +16,17 @@ var HomeController = Class('HomeController')({
         return res.redirect('/' + req.currentPerson.profileName + '/feed/');
       }
 
+      res.locals.topVoice = {
+        voice: {
+          title: 'Ferguson riots: Ruling sparks night of violence.',
+          description: 'The US town of Ferguson has seen rioting and looting after a jury decided not to bring charges over the killing of a black teenager.'
+        },
+
+        video_path: '/media/MET_low',
+        video_source: 'https://www.youtube.com/user/Oldskoolbball',
+        description: 'The US town of Ferguson has seen rioting and looting after a jury decided not to bring charges over the killing of a black teenager.'
+      };
+
       ACL.isAllowed('show', 'homepage', req.role, {}, function(err, isAllowed) {
         if (err) { return next(err); }
 
