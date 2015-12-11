@@ -16,18 +16,7 @@ Class(CV, 'PostModerateEditButton').inherits(Widget).includes(CV.WidgetUtils, Bu
     init : function init(config) {
       Widget.prototype.init.call(this, config);
       this.el = this.element[0];
-      this._setup()._bindEvents();
-    },
-
-    _setup : function _setup(){
-      this.appendChild(new CV.PostCreatorEditArticle({
-        name : 'editArticle',
-        data : {
-          voiceData : this.data,
-        }
-      })).render(document.body);
-
-      return this;
+      this._bindEvents();
     },
 
     _bindEvents : function _bindEvents() {
@@ -37,6 +26,13 @@ Class(CV, 'PostModerateEditButton').inherits(Widget).includes(CV.WidgetUtils, Bu
     },
 
     _clickHandler : function _clickHandler() {
+      this.appendChild(new CV.PostCreatorEditArticle({
+        name : 'editArticle',
+        data : {
+          voiceData : this.data,
+        }
+      })).render(document.body);
+
       this.editArticle.activate().editStartingValues();
     },
 

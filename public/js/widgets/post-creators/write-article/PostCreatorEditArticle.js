@@ -1,7 +1,7 @@
 /* globals App */
 var API = require('./../../../lib/api');
 
-Class(CV, 'PostCreatorEditArticle').inherits(CV.PostCreator)({
+Class(CV, 'PostCreatorEditArticle').inherits(CV.PostCreator).includes(BubblingSupport)({
   ELEMENT_CLASS : 'cv-post-creator post-creator-write-article',
 
   HTML : '\
@@ -171,7 +171,9 @@ Class(CV, 'PostCreatorEditArticle').inherits(CV.PostCreator)({
 
       window.setTimeout(function() {
         this.loaderSuccess.deactivate();
-        window.location.reload();
+        this.dispatch('articleEdited');
+        this.destroy();
+        //window.location.reload();
       }.bind(this), 2000);
     },
 
