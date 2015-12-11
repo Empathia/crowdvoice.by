@@ -31,7 +31,7 @@ Class(CV, 'VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
                     <div class="voice-cover-main-image -img-cover"></div>\
                 </div>\
                 <a class="voice-cover-hover-overlay -tdn" data-voice-anchor href="">\
-                    <button class="voice-cover-hover-overlay-button cv-button tiny -font-semi-bold">View Voice</button>\
+                    <button class="voice-cover-hover-overlay-button cv-button tiny -ghost dark-transparent -font-semi-bold">View Voice</button>\
                 </a>\
             </div>\
             <div class="voice-content">\
