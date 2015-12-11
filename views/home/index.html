@@ -1,10 +1,26 @@
 <main role="main" class="cv-main-content">
   <section class="homepage-top-voice -overflow-hidden -rel ">
-    <video class="top-voice-video" muted="true">
+    <video class="top-voice__video" muted="true">
       <source type="video/webm" src="<%= topVoice.video_path %>.webm">
       <source type="video/ogg"  src="<%= topVoice.video_path %>.ogv">
       <source type="video/mp4"  src="<%= topVoice.video_path %>.mp4">
     </video>
+    <div class="top-voice__info -abs">
+      <p class="top-voice__info-label -upper -color-primary -font-bold">Top Voice</p>
+      <p class="top-voice__info-title -color-white -font-bold"><%= topVoice.voice.title %></p>
+      <p class="top-voice__info-author -color-white -font-light">
+        by <a href="/<%= topVoice.voice.owner.profileName %>/">
+          <%= topVoice.voice.owner.name %>
+        </a>
+      </p>
+      <p class="top-voice__info-description -font-light -color-white"><%= topVoice.description || topVoice.voice.description %></p>
+      <div class="-mt3">
+        <a class="cv-button small -ghost dark-transparent -font-semi-bold" href="/<%= topVoice.voice.owner.profileName %>/<%= topVoice.voice.slug %>/">Go to Voice</a>
+      </div>
+    </div>
+    <p class="top-voice__video-source -abs -color-white -font-light">
+      Video via <a class="-font-bold -tdn" href="<%= topVoice.video_source.url %>" target="_blank"><%= topVoice.video_source.text %></a>
+    </p>
   </section>
 
   <section class="homepage-featured-voices home-section-padding">

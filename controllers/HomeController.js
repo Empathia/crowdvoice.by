@@ -19,11 +19,19 @@ var HomeController = Class('HomeController')({
       res.locals.topVoice = {
         voice: {
           title: 'Ferguson riots: Ruling sparks night of violence.',
-          description: 'The US town of Ferguson has seen rioting and looting after a jury decided not to bring charges over the killing of a black teenager.'
+          description: 'The US town of Ferguson has seen rioting and looting after a jury decided not to bring charges over the killing of a black teenager.',
+          slug: 'slayer-reign-in-blood',
+          owner: {
+            name: 'The International Planned Parenthood Federation',
+            profileName: 'noeldelgado'
+          }
         },
 
         video_path: '/media/MET_low',
-        video_source: 'https://www.youtube.com/user/Oldskoolbball',
+        video_source: {
+          url: 'https://www.youtube.com/user/Oldskoolbball',
+          text: 'Youtube.com/noeldelgado'
+        },
         description: 'The US town of Ferguson has seen rioting and looting after a jury decided not to bring charges over the killing of a black teenager.'
       };
 
@@ -47,7 +55,7 @@ var HomeController = Class('HomeController')({
               if (err) { return done(err); }
 
               var publishedVoices = voicesResult.filter(function (voice) {
-                return voice.status === Voice.STATUS_PUBLISHED
+                return voice.status === Voice.STATUS_PUBLISHED;
               });
 
               VoicesPresenter.build(publishedVoices, req.currentPerson, function (err, voices) {
