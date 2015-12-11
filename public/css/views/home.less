@@ -17,10 +17,62 @@
 /******************************************************************************
  INTRO
  *****************************************************************************/
-.homepage-top-voice {
+.homepage-intro {
   height: 70vh;
   background: #000;
 }
+
+.homepage-intro__logo {
+  padding-top: 40px;
+}
+
+.hi__logo-heading {
+  font-size: 72px;
+  line-height: 98px;
+  letter-spacing: -3px;
+  margin: 0;
+}
+
+.hi__logo-subheading {
+  font-size: 21px;
+  line-height: 38px;
+  margin: 0;
+}
+
+.hi__logo-subheading-inner {
+  position: relative;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 40px;
+    height: 1px;
+    margin-top: 1px;
+    background-color: @color-white;
+    opacity: .5;
+  }
+
+  &::before {left: -50px;}
+  &::after {right: -50px;}
+}
+
+.homepage-intro .top-voice {
+  top: 0;
+  left: 0;
+}
+
+.homepage-intro__links {
+  font-size: 14px;
+  top: 40px;
+  right: 40px;
+  z-index: 0;
+}
+
+.hi__links-link:hover {opacity: 0.8;}
+
+.hi__links-login {margin-left: 20px;}
 
 .home-stats {
   background-color: #2E3233;
