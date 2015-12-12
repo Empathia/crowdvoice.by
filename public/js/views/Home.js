@@ -17,19 +17,21 @@ Class(CV, 'HomeView').includes(NodeSupport, CV.WidgetUtils)({
 
       /* FEATURED VOICES */
       var featuredVoicesWrapper = document.querySelector('.homepage-featured-voices-container');
+      var featuredVoicesList = featuredVoicesWrapper.querySelector('.slider-list');
       var featuredVoicesElements = [];
       this.featuredVoicesData.forEach(function(voice, index) {
         featuredVoicesElements.push(this.appendChild(new CV.VoiceCover({
           name: 'featuredVoice_' + index,
+          className: 'slider-item',
           data: voice
-        })).render(featuredVoicesWrapper).el);
+        })).render(featuredVoicesList).el);
       }, this);
 
-      new CV.ResponsiveWidth({
-        container: featuredVoicesWrapper,
-        items: [].slice.call(featuredVoicesElements, 0),
-        minWidth: 300
-      }).setup();
+      new CV.ResponsiveSlider({
+        element: featuredVoicesWrapper,
+        dots: true,
+        minSlideWidth: 300
+      });
 
       /* CATEGORIES */
       var categoriesHolder = document.querySelector('.homepage-category-list-row');

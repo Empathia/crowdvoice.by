@@ -82,56 +82,24 @@
 .homepage-signup__text {
   font-size: 23px;
   line-height: 37px;
-  margin-bottom: 45px;
-}
-
-.home-stats {
-  background-color: #2E3233;
-  background-image: url("/img/home-wave-left.png"), url("/img/home-wave-right.png");
-  background-position: left bottom, right top;
-  background-repeat: no-repeat;
-  padding-top:75px;
-  padding-bottom:108px;
-  color:white;
-
-  .statsTitle, .stats-number{
-    font-size: 48px;
-    text-align: center;
-  }
-
-  .stats{
-    text-align: center;
-    margin-top:53px;
-
-    .stats-col{
-      padding: 15px 50px;
-    }
-
-    .stats-col:not(:last-child){
-        border-right: 1px solid #454B4D;
-    }
-  }
-
-  .stats-label{
-    color:#8A9699;
-    font-size: 14px;
-    font-weight: bold;
-  }
+  max-width: 920px;
+  margin: 0 auto 45px;
 }
 
 /* =========================================================================== *
  *  featured voices
  * =========================================================================== */
 .homepage-featured-voices {
-  padding-bottom: 30px;
+  padding-top: 60px;
+  padding-bottom: 120px;
 
   .homepage-featured-voices-container {
-    margin: 0 -25px;
+    margin: 0 -20px;
   }
 
   .cv-voice-cover {
     display: inline-block;
-    padding: 0 25px 40px;
+    padding: 0 20px 40px;
   }
 
   .heading-right {
@@ -140,20 +108,54 @@
   }
 }
 /* =========================================================================== *
- *  Button between divs
+ *  Stats
  * =========================================================================== */
-.betweenDivs{
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
-    margin-top: -30px;
-    line-height: 50px;
-    font-size: 16px;
-    height: 56px;
-    width: 240px;
+.home-stats {
+  background-color: @color-neutral-xx-dark;
+  background-image: url("/img/page-home/wave-bottom-left.jpg"), url("/img/page-home/wave-top-right.jpg");
+  background-position: left bottom, right top;
+  background-repeat: no-repeat;
+  background-size: 149px 159px, 114px 80px;
+  padding: 60px 20px 110px;
 
+  .statsTitle,
+  .stats-number {
+    font-size: 48px;
+  }
+
+  .stats-number {
+    line-height: 1;
+    margin-bottom: 20px;
+  }
+
+  .stats {
+    text-align: center;
+    margin-top: 30px;
+  }
+
+  .stats-col {
+    padding: 20px 50px;
+  }
+
+  .stats-col:not(:last-child) {
+    border-right: 1px solid #454B4D;
+  }
+
+  .stats-label {
+    color: #8A9699;
+    font-size: 14px;
+    font-weight: bold;
+  }
 }
+
+.betweenDivs {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: -30px;
+  width: 240px;
+}
+
 /* =========================================================================== *
  *  category list
  * =========================================================================== */
@@ -233,23 +235,22 @@
 /* =========================================================================== *
  *  Media queries - Home Stats
  * =========================================================================== */
-@media only screen and (max-width: 480px){
-  .home-stats .stats .stats-col{
-    padding:0px;
+@media only screen and (max-width: 870px){
+  .home-stats .stats-col {
+    width: 40%;
+    border-right:0 !important;
+    margin: 0px 10px;
+
+    &:nth-child(-n+2){
+      border-bottom:1px solid #454B4D;
+      padding: 10px 0px;
+    }
   }
 }
-@media only screen and (max-width: 800px){
-  .home-stats{
-    .stats{
-      .stats-col{
-        width: 40%;
-        border-right:0 !important;
-        margin: 0px 10px;
-      }
-      .stats-col:nth-child(-n+2){
-        border-bottom:1px solid #454B4D;
-        padding: 10px 0px;
-      }
-    }
+
+@media only screen and (max-width: 480px){
+  .home-stats .stats .stats-col {
+    padding-left: 0;
+    padding-right: 0;
   }
 }
