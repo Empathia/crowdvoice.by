@@ -125,12 +125,16 @@
 a.cv-button:hover {
   color: @color-neutral-x-dark;
   fill: @color-neutral-x-dark;
-  border: 1px solid @color-primary-dark;
+  border-color: @color-primary-dark;
 }
 
-a.cv-button{
-  display: table-cell;
-  vertical-align: middle;
+a.cv-button {
+  padding-top: 11px;
+  &.micro {padding-top: 3px}
+  &.tiny {padding-top: 4px}
+  &.small {padding-top: 7px}
+  &.large {padding-top: 17px}
+  &.huge {padding-top: 22px}
 }
 .cv-button.activated{
   padding-left: 27px;
@@ -221,15 +225,20 @@ a.cv-button{
 }
 
 .cv-button.-ghost {
+  border-width: 2px;
   box-shadow: none;
   background-color: transparent;
+
+  &.small, &.tiny, &.micro {border-width: 1px;}
+
+  &.white {color: @color-white;}
 
   &.dark-transparent {
     border-color: fade(@color-white, 70%);
     background-color: fade(@color-black, 60%);
     color: @color-white;
 
-    &:hover {border-color: @color-primary-dark}
+    &:hover {border-color: @color-primary-dark;}
   }
 
   &.positive {
