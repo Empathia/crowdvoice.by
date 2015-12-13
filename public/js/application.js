@@ -126,6 +126,7 @@ require('./widgets/voice-cover/actions/VoiceCoverActionsEdit');
 require('./widgets/voice-cover/actions/VoiceCoverActionsArchive');
 require('./widgets/CategoryCover');
 require('./widgets/TopicCard');
+require('./widgets/TopVoice');
 
 
 // views
