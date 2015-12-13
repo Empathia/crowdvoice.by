@@ -34,7 +34,7 @@ Class(CV, 'FeedRecommended').inherits(Widget).includes(CV.WidgetUtils)({
 
     _fetchResponse: function _fetchResponse(err, res) {
       if (res.length === 0) {
-        return;
+        return this._displayNoRecommendations();
       }
 
       if (res[0].voices.length) {
@@ -100,6 +100,20 @@ Class(CV, 'FeedRecommended').inherits(Widget).includes(CV.WidgetUtils)({
       this.usersLoader.disable();
 
       return this;
+    },
+
+    _displayNoRecommendations: function _displayNoRecommendations() {
+      // this.appendChild(new CV.DiscoverRecommendedOnboarding({
+      //   name: 'onboarding'
+      // })).render(this.voicesList);
+
+      // this.voicesLoader.disable();
+      // this.usersLoader.disable();
+
+      // this.el.querySelector('.feed__recommended-users').remove();
+      // this.el.querySelector('.feed__top-voices-title .profile-heading').textContent = 'Recommended';
+
+      this.destroy();
     }
   }
 });
