@@ -111,8 +111,6 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
       this.userAnchors = [].slice.call(this.el.querySelectorAll('[data-user-anchor]'), 0);
       this.profileCoverEl = this.el.querySelector('.card_background-image-wrapper');
       this.avatarEl = this.el.querySelector('.card_avatar');
-      this.usernameEl = this.el.querySelector('.card_username-link');
-      this.fullNameEl = this.el.querySelector('.card_fullname-link');
       this.statsWrapper = this.el.querySelector('.card_stats');
       this.descriptionEl = this.el.querySelector('.card_description');
       this.locationEl = this.el.querySelector('.card_meta-location-text');
@@ -196,7 +194,6 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
         this.dom.updateAttr('title', anchor, this.data.name + '’s profile');
       }, this);
 
-
       if (this.data.backgrounds.card) {
         this.dom.updateBgImage(this.profileCoverEl, this.data.backgrounds.card.url);
       } else {
@@ -210,13 +207,13 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
         this.dom.updateAttr('src', this.avatarEl, PLACEHOLDERS.card);
       }
 
-      this.dom.updateText(this.usernameEl, "@" + this.data.profileName);
+      this.dom.updateText(this.el.querySelector('.card_username-link'), "@" + this.data.profileName);
 
       if (this.data.followsCurrentPerson) {
         this.el.querySelector('.card_username').insertAdjacentHTML('beforeend', this.constructor.FOLLOWS_CURRENT_PERSON_TEMPLATE);
       }
 
-      this.dom.updateText(this.fullNameEl, this.data.name);
+      this.dom.updateText(this.el.querySelector('.card_fullname-link'), this.data.name);
 
       var description = Autolinker.link(this.format.truncate(this.data.description || '', this.constructor.MAX_DESCRIPTION_LENGTH, true));
       if (description != null){

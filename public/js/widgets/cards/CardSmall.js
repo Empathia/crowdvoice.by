@@ -7,15 +7,15 @@ Class(CV, 'CardSmall').inherits(Widget).includes(CV.WidgetUtils, BubblingSupport
   HTML: '\
     <article role="article">\
       <div class="card-inner">\
-        <div class="card_background-image-wrapper -img-cover -text-center">\
+        <a class="card_background-image-wrapper -img-cover -text-center" data-user-anchor>\
           <img class="card_avatar -rounded" alt="{{author.full_name}}’s avatar image"/>\
-        </div>\
+        </a>\
         <div class="card_info-wrapper">\
           <p class="card_username -rel">\
-            <a class="card_username-link"></a>\
+            <a class="card_username-link" data-user-anchor></a>\
           </p>\
           <h3 class="card_fullname -rel -font-bold">\
-            <a class="card_fullname-link -tdn"></a>\
+            <a class="card_fullname-link -tdn" data-user-anchor></a>\
           </h3>\
           <p class="card_description"></p>\
           <div class="card_stats -rel"></div>\
@@ -26,7 +26,7 @@ Class(CV, 'CardSmall').inherits(Widget).includes(CV.WidgetUtils, BubblingSupport
       </div>\
     </article>',
 
-  HTML_STATS_ORGANIZATION : '\
+  HTML_STATS_ORGANIZATION: '\
     <div class="-row">\
       <a class="card-stat-item" data-stats-voices>\
         <p class="stats-number -font-semi-bold"></p>\
@@ -79,10 +79,9 @@ Class(CV, 'CardSmall').inherits(Widget).includes(CV.WidgetUtils, BubblingSupport
       Widget.prototype.init.call(this, config);
       this.el = this.element[0];
 
+      this.userAnchors = [].slice.call(this.el.querySelectorAll('[data-user-anchor]'), 0);
       this.profileCoverEl = this.el.querySelector('.card_background-image-wrapper');
       this.avatarEl = this.el.querySelector('.card_avatar');
-      this.usernameEl = this.el.querySelector('.card_username-link');
-      this.fullNameEl = this.el.querySelector('.card_fullname-link');
       this.statsWrapper = this.el.querySelector('.card_stats');
       this.descriptionEl = this.el.querySelector('.card_description');
       this.actionsEl = this.el.querySelector('.card_actions .-row');
@@ -163,6 +162,11 @@ Class(CV, 'CardSmall').inherits(Widget).includes(CV.WidgetUtils, BubblingSupport
      * @return Card [Object]
      */
     _setupDefaultElements: function _setupDefaultElements() {
+      this.userAnchors.forEach(function(anchor) {
+        this.dom.updateAttr('href', anchor, '/' + this.data.profileName + '/');
+        this.dom.updateAttr('title', anchor, this.data.name + '’s profile');
+      }, this);
+
       if (this.data.backgrounds.bluredCard) {
         this.dom.updateBgImage(this.profileCoverEl, this.data.backgrounds.bluredCard.url);
       } else {
@@ -176,17 +180,13 @@ Class(CV, 'CardSmall').inherits(Widget).includes(CV.WidgetUtils, BubblingSupport
         this.dom.updateAttr('src', this.avatarEl, PLACEHOLDERS.card);
       }
 
-      this.dom.updateText(this.usernameEl, "@" + this.data.profileName);
-      this.dom.updateAttr('href', this.usernameEl, '/' + this.data.profileName + '/');
-      this.dom.updateAttr('title', this.usernameEl, "@" + this.data.profileName + '’s profile');
+      this.dom.updateText(this.el.querySelector('.card_username-link'), "@" + this.data.profileName);
 
       if (this.data.followsCurrentPerson) {
         this.el.querySelector('.card_username').insertAdjacentHTML('beforeend', this.constructor.FOLLOWS_CURRENT_PERSON_TEMPLATE);
       }
 
-      this.dom.updateText(this.fullNameEl, this.data.name);
-      this.dom.updateAttr('href', this.fullNameEl, '/' + this.data.profileName + '/');
-      this.dom.updateAttr('title', this.fullNameEl, this.data.name + '’s profile');
+      this.dom.updateText(this.el.querySelector('.card_fullname-link'), this.data.name);
 
       var description = Autolinker.link(this.format.truncate(this.data.description || '', this.constructor.MAX_DESCRIPTION_LENGTH, true));
       if (description != null){
