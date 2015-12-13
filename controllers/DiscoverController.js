@@ -497,9 +497,15 @@ var DiscoverController = Class('DiscoverController')({
           }
         });
 
-        res.locals.recommended = items;
-
-        res.render('discover/recommended')
+        return res.format({
+          html: function () {
+            res.locals.recommended = items;
+            res.render('discover/recommended')
+          },
+          json: function () {
+            res.json(items);
+          }
+        });
       });
     },
 
