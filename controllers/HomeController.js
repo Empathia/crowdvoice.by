@@ -29,9 +29,10 @@ var HomeController = Class('HomeController')({
 
         video_path: '/media/MET_low',
         video_source: {
-          url: 'https://www.youtube.com/user/Oldskoolbball',
+          url: 'https://www.youtube.com/user/noeldelgado',
           text: 'Youtube.com/noeldelgado'
         },
+        video_poster: '/media/MET_img.jpg',
         description: 'The US town of Ferguson has seen rioting and looting after a jury decided not to bring charges over the killing of a black teenager.'
       };
 
