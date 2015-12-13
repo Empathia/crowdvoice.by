@@ -47,52 +47,16 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
             <span class="card_meta-location-text"></span>\
           </div>\
           <p class="card_description"></p>\
-          <div class="card_stats -rel"></div>\
+          <div class="card_stats -rel">\
+            <a class="card_stats-voice-count -tdn">0 Voices</a>\
+          </div>\
         </div>\
-        <div class="card_actions">\
-          <div class="-row -full-height"></div>\
-        </div>\
+        <div class="card_actions"></div>\
       </div>\
     </article>',
 
-    HTML_STATS_ORGANIZATION : '\
-      <div class="-row">\
-        <a class="card-stat-item" data-stats-voices>\
-          <p class="stats-number -font-semi-bold"></p>\
-          <p class="stats-label">Voices</p>\
-        </a>\
-        <a class="card-stat-item" data-stats-followers>\
-          <p class="stats-number -font-semi-bold"></p>\
-          <p class="stats-label">Followers</p>\
-        </a>\
-        <a class="card-stat-item" data-stats-following>\
-          <p class="stats-number -font-semi-bold"></p>\
-          <p class="stats-label">Following</p>\
-        </a>\
-        <a class="card-stat-item last" data-stats-members>\
-          <p class="stats-number -font-semi-bold"></p>\
-          <p class="stats-label">Members</p>\
-        </a>\
-      </div>',
-
-    HTML_STATS_PERSON : '\
-      <div class="-row">\
-        <a class="card-stat-item" data-stats-voices>\
-          <p class="stats-number -font-semi-bold"></p>\
-          <p class="stats-label">Voices</p>\
-        </a>\
-        <a class="card-stat-item" data-stats-followers>\
-          <p class="stats-number -font-semi-bold"></p>\
-          <p class="stats-label">Followers</p>\
-        </a>\
-        <a class="card-stat-item last" data-stats-following>\
-          <p class="stats-number -font-semi-bold"></p>\
-          <p class="stats-label">Following</p>\
-        </a>\
-      </div>',
-
-    FOLLOWS_CURRENT_PERSON_TEMPLATE : '<span class="badge-follows card-follows-you">Follows You</span>',
-    MAX_DESCRIPTION_LENGTH : 180,
+  FOLLOWS_CURRENT_PERSON_TEMPLATE : '<span class="badge-follows card-follows-you">Follows You</span>',
+  MAX_DESCRIPTION_LENGTH : 180,
 
   prototype : {
     followersCount : 0,
@@ -114,16 +78,63 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
       this.statsWrapper = this.el.querySelector('.card_stats');
       this.descriptionEl = this.el.querySelector('.card_description');
       this.locationEl = this.el.querySelector('.card_meta-location-text');
+      this.totalVoices = this.el.querySelector('.card_stats-voice-count');
       this.actionsEl = this.el.querySelector('.card_actions .-row');
 
-      if (this.data.type === "organization") {
-        this._setupOrganizationElements();
+      this._setup();
+      this._addActionButtons();
+    },
+
+    /**
+     * Update its content with the received data.
+     * @method _setup <private> [Function]
+     * @return Card [Object]
+     */
+    _setup : function _setup() {
+      this.userAnchors.forEach(function(anchor) {
+        this.dom.updateAttr('href', anchor, '/' + this.data.profileName + '/');
+        this.dom.updateAttr('title', anchor, this.data.name + '’s profile');
+      }, this);
+
+      if (this.data.backgrounds.card) {
+        this.dom.updateBgImage(this.profileCoverEl, this.data.backgrounds.card.url);
       } else {
-        this._setupUserElements();
+        this.profileCoverEl.classList.add('-colored-background');
       }
 
-      this._setupDefaultElements();
-      this._addActionButtons();
+      if (this.data.images.card && this.data.images.card.url) {
+        this.dom.updateAttr('src', this.avatarEl, this.data.images.card.url);
+        this.dom.updateAttr('alt', this.avatarEl, this.data.profileName + "’s avatar image");
+      } else {
+        this.dom.updateAttr('src', this.avatarEl, PLACEHOLDERS.card);
+      }
+
+      this.dom.updateText(this.el.querySelector('.card_username-link'), "@" + this.data.profileName);
+
+      if (this.data.followsCurrentPerson) {
+        this.el.querySelector('.card_username').insertAdjacentHTML('beforeend', this.constructor.FOLLOWS_CURRENT_PERSON_TEMPLATE);
+      }
+
+      this.dom.updateText(this.el.querySelector('.card_fullname-link'), this.data.name);
+
+      var description = Autolinker.link(this.format.truncate(this.data.description || '', this.constructor.MAX_DESCRIPTION_LENGTH, true));
+      if (description != null){
+        this.dom.updateHTML(this.descriptionEl, description);
+      } else {
+        this.dom.updateHTML(this.descriptionEl, "");
+      }
+
+      if (this.data.location) {
+        this.dom.updateText(this.locationEl, 'from ' + this.data.location);
+      } else {
+        this.locationEl.parentNode.classList.add('-hide');
+      }
+
+      this.dom.updateAttr('href', this.totalVoices, '/' + this.data.profileName + '/#voices');
+      this.dom.updateAttr('title', this.totalVoices, this.data.voicesCount + ' voices');
+      this.dom.updateText(this.totalVoices, this.data.voicesCount + ' Voices');
+
+      return this;
     },
 
     /* Adds the necessary action buttons automatically - per user's role-based (follow, message, invite to, join, etc).
@@ -179,142 +190,6 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
       });
 
       this.el.classList.add('has-actions');
-
-      return this;
-    },
-
-    /**
-     * Update its content with the received data.
-     * @method _setupDefaultElements <private> [Function]
-     * @return Card [Object]
-     */
-    _setupDefaultElements : function _setupDefaultElements() {
-      this.userAnchors.forEach(function(anchor) {
-        this.dom.updateAttr('href', anchor, '/' + this.data.profileName + '/');
-        this.dom.updateAttr('title', anchor, this.data.name + '’s profile');
-      }, this);
-
-      if (this.data.backgrounds.card) {
-        this.dom.updateBgImage(this.profileCoverEl, this.data.backgrounds.card.url);
-      } else {
-        this.profileCoverEl.classList.add('-colored-background');
-      }
-
-      if (this.data.images.card && this.data.images.card.url) {
-        this.dom.updateAttr('src', this.avatarEl, this.data.images.card.url);
-        this.dom.updateAttr('alt', this.avatarEl, this.data.profileName + "’s avatar image");
-      } else {
-        this.dom.updateAttr('src', this.avatarEl, PLACEHOLDERS.card);
-      }
-
-      this.dom.updateText(this.el.querySelector('.card_username-link'), "@" + this.data.profileName);
-
-      if (this.data.followsCurrentPerson) {
-        this.el.querySelector('.card_username').insertAdjacentHTML('beforeend', this.constructor.FOLLOWS_CURRENT_PERSON_TEMPLATE);
-      }
-
-      this.dom.updateText(this.el.querySelector('.card_fullname-link'), this.data.name);
-
-      var description = Autolinker.link(this.format.truncate(this.data.description || '', this.constructor.MAX_DESCRIPTION_LENGTH, true));
-      if (description != null){
-        this.dom.updateHTML(this.descriptionEl, description);
-      } else {
-        this.dom.updateHTML(this.descriptionEl, "");
-      }
-
-      if (this.data.location) {
-        this.dom.updateText(this.locationEl, 'from ' + this.data.location);
-      } else {
-        this.locationEl.parentNode.classList.add('-hide');
-      }
-
-      return this;
-    },
-
-    _setupOrganizationElements : function _setupOrganizationElements() {
-      var voices, followers, following, members;
-      var total_voices = this.format.numberUS(this.data.voicesCount);
-      var total_followers = this.format.numberUS(this.data.followersCount);
-      var total_following = this.format.numberUS(this.data.followingCount);
-      var total_members = this.format.numberUS(this.data.membershipCount);
-
-      this.statsWrapper.insertAdjacentHTML('afterbegin', this.constructor.HTML_STATS_ORGANIZATION);
-
-      voices = this.statsWrapper.querySelector('[data-stats-voices]');
-      followers = this.statsWrapper.querySelector('[data-stats-followers]');
-      following = this.statsWrapper.querySelector('[data-stats-following]');
-      members = this.statsWrapper.querySelector('[data-stats-members]');
-
-      if (total_voices != 0) {
-        this.dom.updateAttr('href', voices, '/' + this.data.profileName + '/#voices');
-        this.dom.updateAttr('title', voices, total_voices + ' Voices');
-        this.dom.updateText(voices.querySelector('.stats-number'), total_voices);
-      } else {
-        voices.parentNode.removeChild(voices);
-      }
-
-      if (total_followers != 0) {
-        this.dom.updateAttr('href', followers, '/' + this.data.profileName + '/#followers');
-        this.dom.updateAttr('title', followers, total_followers + ' Followers');
-        this.dom.updateText(followers.querySelector('.stats-number'), total_followers);
-      } else {
-        followers.parentNode.removeChild(followers);
-      }
-
-      if (total_following != 0) {
-        this.dom.updateAttr('href', following, '/' + this.data.profileName + '/#following');
-        this.dom.updateAttr('title', following, total_following + ' Following');
-        this.dom.updateText(following.querySelector('.stats-number'), total_following);
-      } else {
-        following.parentNode.removeChild(following);
-      }
-
-      if (total_members != 0) {
-        this.dom.updateAttr('href', members, '/' + this.data.profileName + '/#members');
-        this.dom.updateAttr('title', members, total_members + ' Members');
-        this.dom.updateText(members.querySelector('.stats-number'), total_members);
-      } else {
-        members.parentNode.removeChild(members);
-      }
-
-      return this;
-    },
-
-    _setupUserElements : function _setupUserElements() {
-      var voices, followers, following;
-      var total_voices = this.format.numberUS(this.data.voicesCount);
-      var total_followers = this.format.numberUS(this.data.followersCount);
-      var total_following = this.format.numberUS(this.data.followingCount);
-
-      this.statsWrapper.insertAdjacentHTML('afterbegin', this.constructor.HTML_STATS_PERSON);
-
-      voices = this.statsWrapper.querySelector('[data-stats-voices]');
-      followers = this.statsWrapper.querySelector('[data-stats-followers]');
-      following = this.statsWrapper.querySelector('[data-stats-following]');
-
-      if (total_voices != 0) {
-        this.dom.updateAttr('href', voices, '/' + this.data.profileName + '/#voices');
-        this.dom.updateAttr('title', voices, total_voices + ' Voices');
-        this.dom.updateText(voices.querySelector('.stats-number'), total_voices);
-      } else {
-        voices.parentNode.removeChild(voices);
-      }
-
-      if (total_followers != 0) {
-        this.dom.updateAttr('href', followers, '/' + this.data.profileName + '/#followers');
-        this.dom.updateAttr('title', followers, total_followers + ' Followers');
-        this.dom.updateText(followers.querySelector('.stats-number'), total_followers);
-      } else {
-        followers.parentNode.removeChild(followers);
-      }
-
-      if (total_following != 0) {
-        this.dom.updateAttr('href', following, '/' + this.data.profileName + '/#following');
-        this.dom.updateAttr('title', following, total_following + ' Following');
-        this.dom.updateText(following.querySelector('.stats-number'), total_following);
-      } else {
-        following.parentNode.removeChild(following);
-      }
 
       return this;
     }

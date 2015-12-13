@@ -96,26 +96,16 @@
 }
 
 .card_stats {
-  margin: 34px 0 0 0;
+  margin: 30px 0 0 0;
 }
-
-.card-stat-item {
-  float: left;
-  text-decoration: none;
-  margin-right: 15px;
-
-  &.last {margin-right: 0;}
-}
-
-.card-stat-item > .stats-number {
-  font-size: 16px;
-  text-align: left;
-  color: @color-neutral-dark;
-}
-
-.card-stat-item > .stats-label {
-  text-align: left;
-  color: @color-neutral-mid;
+.card_stats-voice-count {
+  display: inline-block;
+  font-size: 12px;
+  line-height: 27px;
+  height: 27px;
+  padding: 0 15px;
+  border: 1px solid @color-primary;
+  border-radius: 14px;
 }
 
 .follow-status {
@@ -313,17 +303,11 @@
     margin-top: 10px;
   }
 
-  .card-stat-item {
-    margin-right: 11px;
-    &.last {margin-right: 0;}
-  }
-
-  .card-stat-item > .stats-number {
-    font-size: 13px;
-  }
-
-  .card-stat-item > .stats-label {
+  .card_stats-voice-count {
     font-size: 10px;
+    height: 22px;
+    line-height: 22px;
+    padding: 0 12px;
   }
 }
 
