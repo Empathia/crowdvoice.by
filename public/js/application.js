@@ -118,6 +118,7 @@ require('./widgets/cards/actions/CardUnfollowPopover');
 require('./widgets/cards/actions/CardInviteToPopover');
 
 require('./widgets/voice-cover/VoiceCover');
+require('./widgets/voice-cover/VoiceCoverMediumList');
 require('./widgets/voice-cover/VoiceCoverMini');
 require('./widgets/voice-cover/VoiceCoverMiniClean');
 require('./widgets/voice-cover/VoiceCoverTitle');
