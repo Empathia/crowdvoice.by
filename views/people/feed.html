@@ -1,4 +1,6 @@
 <main role="main" class="cv-main-content -rel -row">
+  <div class="feed-top-voice"></div>
+
   <div class="-col-9 -pr2">
     <div class="page-heading cv-items-list">
       <h1 class="page-heading__title -mt0 -inline-block">My Feed</h1>
@@ -25,6 +27,7 @@
   var feedConfig = {
     el: document.querySelector('.cv-main-content'),
     feedItems: <%= JSON.stringify(feed) %>,
+    topVoice: <%= JSON.stringify(topVoice) %>,
     organization: null
   };
 

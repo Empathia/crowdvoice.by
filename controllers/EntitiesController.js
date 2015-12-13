@@ -830,6 +830,25 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
           return next(new ForbiddenError('Unauthorized.'));
         }
 
+        res.locals.topVoice = {
+          voice: {
+            title: 'Ferguson riots: Ruling sparks night of violence.',
+            description: 'The US town of Ferguson has seen rioting and looting after a jury decided not to bring charges over the killing of a black teenager.',
+            slug: 'slayer-reign-in-blood',
+            owner: {
+              name: 'The International Planned Parenthood Federation',
+              profileName: 'noeldelgado'
+            }
+          },
+          video_path: '/media/MET_low',
+          video_source: {
+            url: 'https://www.youtube.com/user/noeldelgado',
+            text: 'Youtube.com/noeldelgado'
+          },
+          video_poster: '/media/MET_img.jpg',
+          description: 'The US town of Ferguson has seen rioting and looting after a jury decided not to bring charges over the killing of a black teenager.'
+        };
+
         var page = req.query.page || 1,
           pageLength = 20;
 
