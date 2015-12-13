@@ -23,6 +23,11 @@ Class(CV.Views, 'Feed').includes(NodeSupport, CV.WidgetUtils)({
         element: this.el.querySelector('.feed__featured-voices')
       })).fetch();
 
+      this.appendChild(new CV.FeedRecommended({
+        name: 'recommended',
+        element: this.el.querySelector('.feed__recommended')
+      })).fetch();
+
       this.appendChild(new CV.FeedSidebar({
         name : 'sidebar',
         el : this.el.querySelector('[data-feed-sidebar]'),

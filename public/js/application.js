@@ -188,6 +188,7 @@ require('./widgets/view-organization-profile-edit/OrganizationProfileEditMembers
 require('./views/Feed');
 require('./widgets/view-feed/FeedDropdown');
 require('./widgets/view-feed/FeedFeaturedVoices');
+require('./widgets/view-feed/FeedRecommended');
 require('./widgets/view-feed/FeedSidebar');
 require('./widgets/view-feed/FeedOnboarding');
 require('./widgets/view-feed/FeedAnonymousOnboarding');
