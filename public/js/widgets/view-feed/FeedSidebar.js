@@ -49,9 +49,8 @@ Class(CV, 'FeedSidebar').inherits(Widget)({
 
       this.feedItems.feed.reverse().forEach(function(item, index) {
         this.appendChild(CV.FeedItem.create({
-          name : 'feed-item__' + index,
-          className : 'cv-items-list',
-          data : item
+          name: 'feed-item__' + index,
+          data: item
         })).render(feedList).showDate();
       }, this);
 

@@ -60,7 +60,7 @@ Class(CV, 'FeedItem').inherits(Widget).includes(CV.WidgetUtils)({
     showDate: function showDate() {
       var timeFromNow = moment(this.data.createdAt).fromNow();
       var templateString = this.constructor.DATE_TEMPLATE.replace(/{date}/, timeFromNow);
-      this.el.insertAdjacentHTML('afterbegin', templateString);
+      this.el.insertAdjacentHTML('beforeend', templateString);
       return this;
     },
 

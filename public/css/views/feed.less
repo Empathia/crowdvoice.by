@@ -28,10 +28,36 @@
   FEED LIST
  *****************************************************************************/
 .feed__list {
-  border-top: 1px solid @color-neutral-x-light;
-
   .cv-feed-item {
-    padding: 9px 0 20px;
+    position: relative;
+    margin: 9px 0 25px;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 26px;
+      left: 8px;
+      bottom: 0;
+      width: 1px;
+      background-color: @color-neutral-x-light;
+    }
+  }
+
+  .main-avatar {
+    width: 16px;
+    height: 16px;
+  }
+
+  .main-text {
+    margin: -3px 0 0 26px;
+  }
+
+  .cv-feed-item__info-extra {
+    margin: 0 0 0 26px;
+  }
+
+  .cv-feed-item__time {
+    margin: 5px 0 0 26px;
   }
 }
 
