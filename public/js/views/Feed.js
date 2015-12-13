@@ -28,6 +28,11 @@ Class(CV.Views, 'Feed').includes(NodeSupport, CV.WidgetUtils)({
         element: this.el.querySelector('.feed__recommended')
       })).fetch();
 
+      this.appendChild(new CV.FeedDiscover({
+        name: 'discover',
+        element: $(this.el.querySelector('.feed__discover'))
+      }));
+
       this.appendChild(new CV.FeedSidebar({
         name : 'sidebar',
         el : this.el.querySelector('[data-feed-sidebar]'),
