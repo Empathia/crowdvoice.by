@@ -20,14 +20,6 @@ Class(CV, 'FeedRecommended').inherits(Widget).includes(CV.WidgetUtils)({
       })).render(this.usersList).center().setStyle({
         top: '74px'
       });
-
-      // this.voicesList = this.el.querySelector('.feed__featured-voices-list');
-
-      // this.appendChild(new CV.Loading({
-      //   name : 'loader'
-      // })).render(this.voicesList).center().setStyle({
-      //   top: '74px'
-      // });
     },
 
     /* Fetch and render the first 3 featured voices.
@@ -37,23 +29,6 @@ Class(CV, 'FeedRecommended').inherits(Widget).includes(CV.WidgetUtils)({
      */
     fetch: function fetch() {
       API.getRecommened(this._fetchResponse.bind(this));
-      // API.getRecommened(function(err, res) {
-      //   console.log(res);
-        // if (res.length > this.MAX_VOICES) {
-        //   res = res.slice(0,this.MAX_VOICES);
-        // }
-
-        // res.forEach(function(voice, index) {
-        //   this.appendChild(new CV.VoiceCoverMediumList({
-        //     name: 'top_voice_' + index,
-        //     className: '-mb3',
-        //     data: voice
-        //   })).render(this.voicesList);
-        // }, this);
-
-        // this.loader.disable();
-      // }.bind(this));
-
       return this;
     },
 

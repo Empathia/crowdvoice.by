@@ -1,5 +1,4 @@
 var Person = require('./../../lib/currentPerson');
-// var API = require('./../../lib/api');
 
 Class(CV, 'FeedSidebar').inherits(Widget)({
   prototype: {
