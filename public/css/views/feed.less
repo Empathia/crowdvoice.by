@@ -1,14 +1,24 @@
 .page-feed {}
 
+.feed-main-content {}
+
 .feed-top-voice {
   height: 400px;
-  margin: 0 -40px;
   background-color: @color-black;
 }
 
-.feed__account-dropdown {
-  margin-top: 7px;
+.feed-contents {
+  padding: 0 40px;
+}
 
+.feed-notifications-sidebar {
+  width: 310px;
+  min-height: e('calc(100vh - 464px)');
+  padding: 0 20px;
+  background-color: @color-neutral-xx-light;
+}
+
+.feed__account-dropdown {
   .dropdown-feed-accounts .ui-vertical-list-item {
     line-height: inherit;
   }
@@ -26,12 +36,12 @@
 }
 
 /******************************************************************************
-  TOP VOICES
+  FEATURED VOICES
  *****************************************************************************/
 .feed__top-voices-title {
-  padding-top: 60px;
+  padding-top: 40px;
 }
 
-.feed__top-voices-list {
+.feed__featured-voices-list {
   min-height: 170px;
 }

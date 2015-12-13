@@ -1,22 +1,33 @@
-<main role="main" class="cv-main-content -rel -row">
+<main role="main" class="feed-main-content -rel -row">
   <div class="feed-top-voice"></div>
 
-  <div class="-col-9 -pr2">
-    <div class="page-heading cv-items-list">
-      <h1 class="page-heading__title -mt0 -inline-block">My Feed</h1>
+  <div class="feed-notifications-sidebar -float-right" data-feed-sidebar>
+    <div class="feed__top-voices-title page-heading cv-items-list">
+      <h3 class="profile-heading -inline-block -font-bold -m0">My Feed</h3>
       <div class="feed__account-dropdown -ml1 profile-select-options -inline-block"></div>
     </div>
-    <div class="profile-body -rel"></div>
+    <div class="profile-sidebar -rel -pt2">
+      <!-- <a class="ui-btn -primary -md -block -mb2 -text-center" href="/discover/trending/">Discover More</a> -->
+    </div>
   </div>
 
-  <div class="-col-3 -pl2" data-feed-sidebar>
-    <div class="feed__top-voices-title page-heading cv-items-list">
-      <h3 class="profile-heading -inline-block -font-bold -m0">Top Voices</h3>
+  <div class="feed-contents -overflow-hidden">
+    <div class="feed__featured-voices">
+      <div class="feed__top-voices-title cv-items-list">
+        <h3 class="profile-heading -inline-block -font-bold -m0">Featured Voices</h3>
+      </div>
+      <div class="feed__featured-voices-list -rel -pt3"></div>
     </div>
-    <div class="profile-sidebar -rel -pt2">
-      <div class="feed__top-voices-list -rel -pb2"></div>
-      <a class="ui-btn -primary -md -block -mb2 -text-center" href="/discover/trending/">Discover More</a>
+
+    <div class="feed__top-voices-title cv-items-list">
+      <h3 class="profile-heading -inline-block -font-bold -m0">Recomemended Voices</h3>
     </div>
+
+    <div class="feed__top-voices-title cv-items-list">
+      <h3 class="profile-heading -inline-block -font-bold -m0">Recommended Users</h3>
+    </div>
+
+    <div class="profile-body -rel"></div>
   </div>
 </main>
 
@@ -25,7 +36,7 @@
   App.addInteractiveSidebar();
 
   var feedConfig = {
-    el: document.querySelector('.cv-main-content'),
+    el: document.querySelector('.feed-main-content'),
     feedItems: <%= JSON.stringify(feed) %>,
     topVoice: <%= JSON.stringify(topVoice) %>,
     organization: null

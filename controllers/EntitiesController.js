@@ -872,7 +872,9 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
                 html: function () {
                   req.feed = empty;
                   res.locals.feed = empty;
-                  res.render('people/feed');
+                  res.render('people/feed', {
+                    pageName: 'page-feed page-inner'
+                  });
                 },
                 json: function () {
                   res.json(empty);

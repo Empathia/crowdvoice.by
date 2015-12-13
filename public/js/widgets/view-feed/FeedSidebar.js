@@ -1,53 +1,61 @@
-var API = require('./../../lib/api');
+var Person = require('./../../lib/currentPerson');
+// var API = require('./../../lib/api');
 
 Class(CV, 'FeedSidebar').inherits(Widget)({
-    prototype : {
-        init : function init(config) {
-            Widget.prototype.init.call(this, config);
-            this.voicesList = this.el.querySelector('.feed__top-voices-list');
+  prototype: {
+    init: function init(config) {
+      Widget.prototype.init.call(this, config);
 
-            this.appendChild(new CV.Loading({
-                name : 'loader'
-            })).render(this.voicesList).center().setStyle({
-                top: '74px'
-            });
-        },
+      this._setup()._updateFeed();
+    },
 
-        /* Fetch and render the first 6 trending voices.
-         * Hides the loader on success response.
-         * @method fetchTopVoices <public> [Function]
-         * @return FeedSidebar
-         */
-        fetchTopVoices : function fetchTopVoices() {
-            API.getTrendingVoices(function(err, res) {
-                if (res.length > 6) {
-                    res = res.slice(0,6);
-                }
+    _setup: function _setup() {
+      if (Person.ownsOrganizations()) {
+        var currentEntityView = Person.get();
 
-                res.forEach(function(voice, index) {
-                    this.appendChild(new CV.VoiceCoverMini({
-                        name : 'top_voice_' + index,
-                        className : '-mb1',
-                        data : voice
-                    })).render(this.voicesList);
-                }, this);
+        this.appendChild(new CV.UI.FeedDropdown({
+          name : 'dropdown'
+        })).render(this.el.querySelector('.profile-select-options'));
 
-                this.loader.disable();
-            }.bind(this));
-
-            return this;
-        },
-
-        /* Display the stats.
-         * @method showStats <public> [Function]
-         * @return FeedSidebar
-         */
-        showStats : function showStats() {
-            this.appendChild(new CV.FeedSidebarStats({
-                name : 'stats'
-            })).render(this.el.querySelector('.profile-sidebar'));
-
-            return this;
+        if (this.organization) {
+          currentEntityView = this.organization;
         }
+
+        this.dropdown.selectByEntity(currentEntityView);
+      }
+
+      if (Person.anon()) {
+        this.appendChild(new CV.FeedAnonymousOnboarding({
+          name: 'onboarding'
+        })).render(this.el.querySelector('.profile-sidebar'));
+      }
+
+      return this;
+    },
+
+    _updateFeed: function _updateFeed() {
+      if (this.feedItems && this.feedItems.feed.length) {
+        return this._renderFeed();
+      }
+
+      this.appendChild(new CV.FeedOnboarding({
+        name: 'onboarding'
+      })).render(this.el.querySelector('.profile-sidebar'));
+    },
+
+    _renderFeed: function _renderFeed() {
+      var feedList = document.createElement('div');
+      feedList.className = 'feed__list';
+
+      this.feedItems.feed.reverse().forEach(function(item, index) {
+        this.appendChild(CV.FeedItem.create({
+          name : 'feed-item__' + index,
+          className : 'cv-items-list',
+          data : item
+        })).render(feedList).showDate();
+      }, this);
+
+      this.el.querySelector('.profile-sidebar').appendChild(feedList);
     }
+  }
 });
