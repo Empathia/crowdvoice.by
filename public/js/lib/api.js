@@ -1348,6 +1348,25 @@ module.exports = {
         });
     },
 
+    /* Get a list of Voices, People and Organizations that follows the things
+     * that the currentPerson follows.
+     * @argument {Function} callback
+     */
+    getRecommened: function getRecommened(callback) {
+      if ((typeof callback).toLowerCase() !== "function") {
+        throw new Error('Callback should be a function');
+      }
+
+      $.ajax({
+        type: 'GET',
+        url: '/discover/recommended',
+        headers: {'csrf-token' : this.token},
+        dataType: 'json',
+        success: function success(data) {callback(false, data);},
+        error: function error(err) {callback(true, err);}
+      });
+    },
+
     /**************************************************************************
      * BROWSE
      *************************************************************************/
