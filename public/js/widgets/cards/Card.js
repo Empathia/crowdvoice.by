@@ -32,15 +32,15 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
   HTML : '\
     <article role="article">\
       <div class="card-inner">\
-        <div class="card_background-image-wrapper -img-cover -text-center">\
+        <a class="card_background-image-wrapper -img-cover -text-center" data-user-anchor>\
           <img class="card_avatar -rounded" alt="{{author.full_name}}’s avatar image"/>\
-        </div>\
+        </a>\
         <div class="card_info-wrapper">\
           <p class="card_username -rel -m0">\
-            <a class="card_username-link"></a>\
+            <a class="card_username-link" data-user-anchor></a>\
           </p>\
           <h3 class="card_fullname -rel -font-bold">\
-            <a class="card_fullname-link -tdn"></a>\
+            <a class="card_fullname-link -tdn" data-user-anchor></a>\
           </h3>\
           <div class="card_meta-location -nw -ellipsis">\
             <svg class="card_meta-svg"><use xlink:href="#svg-location"></use></svg>\
@@ -108,6 +108,7 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
       Widget.prototype.init.call(this, config);
       this.el = this.element[0];
 
+      this.userAnchors = [].slice.call(this.el.querySelectorAll('[data-user-anchor]'), 0);
       this.profileCoverEl = this.el.querySelector('.card_background-image-wrapper');
       this.avatarEl = this.el.querySelector('.card_avatar');
       this.usernameEl = this.el.querySelector('.card_username-link');
@@ -190,6 +191,12 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
      * @return Card [Object]
      */
     _setupDefaultElements : function _setupDefaultElements() {
+      this.userAnchors.forEach(function(anchor) {
+        this.dom.updateAttr('href', anchor, '/' + this.data.profileName + '/');
+        this.dom.updateAttr('title', anchor, this.data.name + '’s profile');
+      }, this);
+
+
       if (this.data.backgrounds.card) {
         this.dom.updateBgImage(this.profileCoverEl, this.data.backgrounds.card.url);
       } else {
@@ -204,19 +211,14 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
       }
 
       this.dom.updateText(this.usernameEl, "@" + this.data.profileName);
-      this.dom.updateAttr('href', this.usernameEl, '/' + this.data.profileName + '/');
-      this.dom.updateAttr('title', this.usernameEl, "@" + this.data.profileName + '’s profile');
 
       if (this.data.followsCurrentPerson) {
         this.el.querySelector('.card_username').insertAdjacentHTML('beforeend', this.constructor.FOLLOWS_CURRENT_PERSON_TEMPLATE);
       }
 
       this.dom.updateText(this.fullNameEl, this.data.name);
-      this.dom.updateAttr('href', this.fullNameEl, '/' + this.data.profileName + '/');
-      this.dom.updateAttr('title', this.fullNameEl, this.data.name + '’s profile');
 
       var description = Autolinker.link(this.format.truncate(this.data.description || '', this.constructor.MAX_DESCRIPTION_LENGTH, true));
-
       if (description != null){
         this.dom.updateHTML(this.descriptionEl, description);
       } else {
