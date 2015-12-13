@@ -5,9 +5,7 @@ Class(CV, 'VoiceCoverMediumList').inherits(Widget).includes(CV.WidgetUtils)({
 
   HTML: '\
     <article role="article">\
-      <a href="#" class="voice-cover-link -float-left" data-voice-anchor>\
-        <img class="voice-cover" width="155" height="155"/>\
-      </a>\
+      <a href="#" class="voice-cover -img-cover -float-left" data-voice-anchor></a>\
       <div class="voice-content -overflow-hidden">\
         <div class="author">\
           <a class="author-anchor -inline-block">\
@@ -64,7 +62,7 @@ Class(CV, 'VoiceCoverMediumList').inherits(Widget).includes(CV.WidgetUtils)({
       }, this);
 
       if (this.data.images.card) {
-        this.dom.updateAttr('src', this.el.querySelector('.voice-cover'), this.data.images.card.url);
+        this.dom.updateBgImage(this.el.querySelector('.voice-cover'), this.data.images.card.url);
       } else {
         this.el.querySelector('.voice-cover').classList.add('-colored-background');
       }
