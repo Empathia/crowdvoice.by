@@ -991,17 +991,20 @@ async.series([function(next) {
     {
       actionId: data.feedActions['9-followed-voice-9'].id,
       followerId: 3, // Cersei
-      read: false
+      read: true,
+      forFeed: true
     },
     {
       actionId: data.feedActions['9-followed-voice-13'].id,
       followerId: 3,
-      read: false
+      read: true,
+      forFeed: true
     },
     {
       actionId: data.feedActions['9-followed-voice-15'].id,
       followerId: 22, // House Lannister
-      read: false
+      read: true,
+      forFeed: true
     }
   ];
 
