@@ -196,31 +196,18 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
             // notification settings
             function (next) {
               // NOTE: WHEN ADDING NEW FEED ACTIONS YOU NEED TO UPDATE THIS!!
-              var feedDefaults = {
-                  entityFollowsEntity: true,
-                  entityFollowsVoice: true,
-                  entityArchivesVoice: true,
-                  entityUpdatesAvatar: true,
-                  entityUpdatesBackground: true,
-                  entityBecomesOrgPublicMember: true,
-                  voiceIsPublished: true,
-                  voiceNewPosts: true,
-                  voiceNewTitle: true,
-                  voiceNewDescription: true,
-                  voiceNewPublicContributor: true,
-                },
-                clone = _.clone(feedDefaults);
+              var defaults = {
+                selfNewMessage: true,
+                selfNewInvitation: true,
+                selfNewRequest: true,
+                selfNewVoiceFollower: true,
+                selfNewEntityFollower: true
+              }
 
               var setting = new NotificationSetting({
                 entityId: org.id,
-                webSettings: feedDefaults,
-                emailSettings: _.defaults(clone, {
-                  selfNewMessage: true,
-                  selfNewInvitation: true,
-                  selfNewRequest: true,
-                  selfNewVoiceFollower: true,
-                  selfNewEntityFollower: true
-                })
+                webSettings: defaults,
+                emailSettings: defaults
               });
 
               setting.save(next);

@@ -786,12 +786,10 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
                 // generate feed and notifications
                 function (next) {
-                  console.log('BOOOOP')
                   FeedInjector().inject(follower.id, 'who entityFollowsVoice', voiceFollowerRecord, next);
                 },
 
                 function (next) {
-                  console.log('BEEEEEP')
                   FeedInjector().injectNotification(follower.id, 'notifNewVoiceFollower', voiceFollowerRecord, next);
                 },
               ], function (err) {
