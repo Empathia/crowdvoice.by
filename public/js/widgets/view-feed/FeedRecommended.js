@@ -10,15 +10,15 @@ Class(CV, 'FeedRecommended').inherits(Widget).includes(CV.WidgetUtils)({
       this.usersList = this.el.querySelector('.feed__recommended-users-list');
 
       this.appendChild(new CV.Loading({
-        name : 'voicesLoader'
+        name: 'voicesLoader'
       })).render(this.voicesList).center().setStyle({
-        top: '74px'
+        top: '80px'
       });
 
       this.appendChild(new CV.Loading({
         name : 'usersLoader'
       })).render(this.usersList).center().setStyle({
-        top: '74px'
+        top: '80px'
       });
     },
 
@@ -74,7 +74,7 @@ Class(CV, 'FeedRecommended').inherits(Widget).includes(CV.WidgetUtils)({
 
       this.voicesSection.containerElement.classList.add('-pt3');
       this.voicesSection.containerElement.appendChild(fragment);
-      this.voicesLoader.disable();
+      this.voicesLoader.disable().remove();
 
       return this;
     },
@@ -97,7 +97,7 @@ Class(CV, 'FeedRecommended').inherits(Widget).includes(CV.WidgetUtils)({
 
       this.usersSection.containerElement.className += ' data-container -pt3 -clearfix';
       this.usersSection.containerElement.appendChild(fragment);
-      this.usersLoader.disable();
+      this.usersLoader.disable().remove();
 
       return this;
     },
