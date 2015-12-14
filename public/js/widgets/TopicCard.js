@@ -79,7 +79,7 @@ Class(CV, 'TopicCard').inherits(Widget).includes(CV.WidgetUtils)({
          */
         _showNoVoicesToDisplayMessage : function _showNoVoicesToDisplayMessage() {
             this.voicesContainer.insertAdjacentHTML('beforeend', this.constructor.NO_DATA);
-            this.loader.disable();
+            this.loader.disable().remove();
             this.el.querySelector('.topic-card__see-all-link').style.visibility = 'hidden';
         },
 
@@ -99,7 +99,7 @@ Class(CV, 'TopicCard').inherits(Widget).includes(CV.WidgetUtils)({
 
             this.voicesContainer.appendChild(fragment);
 
-            this.loader.disable();
+            this.loader.disable().remove();
         }
     }
 });

@@ -74,7 +74,7 @@ Class(CV, 'UserProfileFollowersTab').inherits(Widget)({
 
              this.containerElement.appendChild(fragment);
 
-             this.loader.disable();
+             this.loader.disable().remove();
         },
 
         _setEmptyState : function _setEmptyState() {

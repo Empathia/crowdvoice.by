@@ -16,7 +16,7 @@ Class(CV, 'DiscoverBrowseVoicesTab').inherits(Widget)({
             Widget.prototype.init.call(this, config);
             this.el = this.element[0];
             this.loader = new CV.Loading().render(this.el).center().setStyle({
-                top : '100px'
+                top: '100px'
             });
         },
 
@@ -62,7 +62,7 @@ Class(CV, 'DiscoverBrowseVoicesTab').inherits(Widget)({
                 message : 'there are no featured voices yet.'
             })).render(this.el);
 
-            this.loader.disable();
+            this.loader.disable().remove();
         },
 
         /* Render the getBrowseFeaturedVoices response VoiceCovers.
@@ -87,7 +87,7 @@ Class(CV, 'DiscoverBrowseVoicesTab').inherits(Widget)({
 
             this.el.appendChild(fragment);
 
-            this.loader.disable();
+            this.loader.disable().remove();
         },
 
         _activate : function _activate() {

@@ -77,7 +77,7 @@ Class(CV, 'DiscoverBrowseOrganizationsTab').inherits(Widget)({
 
             this.el.appendChild(fragment);
 
-            this.loader.disable();
+            this.loader.disable().remove();
         },
 
         _renderEmptyState : function _renderEmptyState() {
@@ -87,7 +87,7 @@ Class(CV, 'DiscoverBrowseOrganizationsTab').inherits(Widget)({
                 message : 'there are no featured organizations yet.'
             })).render(this.el);
 
-            this.loader.disable();
+            this.loader.disable().remove();
         },
 
         _activate : function _activate() {

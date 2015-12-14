@@ -62,7 +62,7 @@ Class(CV, 'DiscoverTrendingVoicesTab').inherits(Widget)({
                 message : 'there are no pupular voices yet.'
             })).render(this.el);
 
-            this.loader.disable();
+            this.loader.disable().remove();
         },
 
         /* Render the getNewVoices response VoiceCovers.
@@ -87,7 +87,7 @@ Class(CV, 'DiscoverTrendingVoicesTab').inherits(Widget)({
 
             this.el.appendChild(fragment);
 
-            this.loader.disable();
+            this.loader.disable().remove();
         },
 
         _activate : function _activate() {

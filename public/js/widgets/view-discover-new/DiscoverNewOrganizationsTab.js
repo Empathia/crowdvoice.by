@@ -72,7 +72,7 @@ Class(CV, 'DiscoverNewOrganizationsTab').inherits(Widget)({
 
             this.el.appendChild(fragment);
 
-            this.loader.disable();
+            this.loader.disable().remove();
         },
 
         _activate : function _activate() {
