@@ -95,12 +95,14 @@ Class(CV, 'FeedItem').inherits(Widget).includes(CV.WidgetUtils)({
      */
     updateAvatar: function updateAvatar(avatarPath) {
       var path = this.getAvatar();
+      var avatar = this.el.querySelector('.main-avatar');
 
       if (avatarPath) {
         path = avatarPath;
       }
 
-      this.dom.updateAttr('src', this.el.querySelector('.main-avatar'), path);
+      this.dom.updateAttr('src', avatar, path);
+      this.dom.updateAttr('alt', avatar, this.getName());
     },
 
     /* Sets the description text.

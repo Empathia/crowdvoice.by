@@ -37,7 +37,7 @@ Class(CV, 'VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
             <div class="voice-content">\
                 <div class="author">\
                     <a class="author-anchor -inline-block">\
-                        <img class="author-avatar -rounded" src="" alt="">\
+                        <img class="author-avatar -rounded">\
                     </a>\
                     by <a class="author-anchor -inline-block">\
                         <span class="author-username"></span>\

@@ -9,7 +9,7 @@ Class(CV, 'VoiceCoverMediumList').inherits(Widget).includes(CV.WidgetUtils)({
       <div class="voice-content -overflow-hidden">\
         <div class="author">\
           <a class="author-anchor -inline-block">\
-            <img class="author-avatar -rounded" src="" alt="">\
+            <img class="author-avatar -rounded">\
           </a>\
           by <a class="author-anchor -inline-block">\
             <span class="author-username">Noel Delgado</span>\
@@ -55,6 +55,7 @@ Class(CV, 'VoiceCoverMediumList').inherits(Widget).includes(CV.WidgetUtils)({
 
     _setup: function _setup() {
       var dateTimeElement = this.el.querySelector('.voice-cover-datetime');
+      var authorAvatar = this.el.querySelector('.author-avatar');
 
       this.voiceAnchors.forEach(function(anchor) {
         this.dom.updateAttr('href', anchor, '/' + this.data.owner.profileName + '/' + this.data.slug + '/');
@@ -79,7 +80,8 @@ Class(CV, 'VoiceCoverMediumList').inherits(Widget).includes(CV.WidgetUtils)({
           this.dom.updateAttr('href', anchor, '/' + this.data.owner.profileName + '/');
         }
       }, this);
-      this.dom.updateAttr('src', this.el.querySelector('.author-avatar'), this.data.owner.images.icon.url);
+      this.dom.updateAttr('src', authorAvatar, this.data.owner.images.icon.url);
+      this.dom.updateAttr('alt', authorAvatar, this.data.owner.name);
       this.dom.updateText(this.el.querySelector('.author-username'), this.data.owner.name);
 
       this.dom.updateText(this.el.querySelector('.voice-cover-title-anchor'), this.data.title);
@@ -103,7 +105,7 @@ Class(CV, 'VoiceCoverMediumList').inherits(Widget).includes(CV.WidgetUtils)({
       this.dom.updateText(dateTimeElement, moment(this.data.updatedAt).fromNow());
       this.dom.updateAttr('datetime', dateTimeElement, this.data.updatedAt);
 
-      dateTimeElement = null;
+      dateTimeElement = authorAvatar = null;
     },
 
     /**
