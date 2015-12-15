@@ -172,8 +172,6 @@ Class(CV, 'PostCreatorEditArticle').inherits(CV.PostCreator).includes(BubblingSu
       window.setTimeout(function() {
         this.loaderSuccess.deactivate();
         this.dispatch('articleEdited');
-        this.destroy();
-        //window.location.reload();
       }.bind(this), 2000);
     },
 

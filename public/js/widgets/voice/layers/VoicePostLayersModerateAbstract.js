@@ -120,7 +120,12 @@ Class(CV, 'VoicePostLayersModerateAbstract').inherits(CV.VoicePostLayers)({
          */
         __bindEvents : function __bindEvents() {
             this._socket.on('unapprovedMonthPosts', this._loadLayerRef);
+            this.bind('articleEdited', this._reloadLayer.bind(this));
             return this;
+        },
+
+        _reloadLayer : function _reLayoutLayer(){
+            this.dispatch('reload');
         },
 
         /* Implementation to remove custom bindings required by this subclass.
