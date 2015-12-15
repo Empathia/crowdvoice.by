@@ -1,7 +1,9 @@
 .page-feed {}
-
 .feed-main-content {}
 
+/******************************************************************************
+  TOP VOICE
+ *****************************************************************************/
 .feed-top-voice {
   height: 400px;
   background-color: @color-black;
@@ -12,71 +14,14 @@
   margin-right: 310px;
 }
 
-.feed-notifications-sidebar {
-  position: absolute;
-  top: 0;
-  right: 0;
-  height: 100%;
-  width: 310px;
-  padding: 0 20px;
-  background-color: @color-neutral-xx-light;
-}
-
-.feed__account-dropdown {
-  .dropdown-feed-accounts .ui-vertical-list-item {
-    line-height: inherit;
-  }
-}
-
-/******************************************************************************
-  FEED LIST
- *****************************************************************************/
-.feed__list {
-  .cv-feed-item {
-    position: relative;
-    margin: 9px 0 25px;
-
-    &::before {
-      content: '';
-      position: absolute;
-      top: 26px;
-      left: 8px;
-      bottom: 0;
-      width: 1px;
-      background-color: @color-neutral-x-light;
-    }
-  }
-
-  .main-avatar {
-    width: 16px;
-    height: 16px;
-  }
-
-  .main-text {
-    margin: -3px 0 0 26px;
-  }
-
-  .cv-feed-item__info-extra {
-    margin: 0 0 0 26px;
-  }
-
-  .cv-feed-item__time {
-    margin: 5px 0 0 26px;
-  }
-}
-
-.feed__list-onboarding {
-  padding: 10px 0;
-  border-top: 1px solid @color-neutral-x-light;
-  color: @color-neutral-x-mid;
-  font-style: italic;
-}
-
-/******************************************************************************
-  FEATURED VOICES
- *****************************************************************************/
-.feed__top-voices-title {
+.feed__heading-wrapper {
   padding-top: 40px;
+}
+
+.feed__heading-button.cv-button {
+  margin: 2px 0 0 20px;
+  padding-left: 9px;
+  padding-right: 9px;
 }
 
 .feed__featured-voices-list,
@@ -84,6 +29,10 @@
 .feed__recommended-users-list {
   min-height: 170px;
 }
+
+/******************************************************************************
+  FEATURED VOICES
+ *****************************************************************************/
 
 /******************************************************************************
   RECOMMENDED
@@ -126,3 +75,64 @@
   color: #B3B3B3;
   font-style: italic;
 }
+
+/******************************************************************************
+  SIDEBAR: FEED LISt
+ *****************************************************************************/
+.feed-notifications-sidebar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 310px;
+  padding: 0 20px;
+  background-color: @color-neutral-xx-light;
+}
+
+.feed__account-dropdown {
+  .dropdown-feed-accounts .ui-vertical-list-item {
+    line-height: inherit;
+  }
+}
+
+.feed__list {
+  .cv-feed-item {
+    position: relative;
+    margin: 9px 0 25px;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 26px;
+      left: 8px;
+      bottom: 0;
+      width: 1px;
+      background-color: @color-neutral-x-light;
+    }
+  }
+
+  .main-avatar {
+    width: 16px;
+    height: 16px;
+  }
+
+  .main-text {
+    margin: -3px 0 0 26px;
+  }
+
+  .cv-feed-item__info-extra {
+    margin: 0 0 0 26px;
+  }
+
+  .cv-feed-item__time {
+    margin: 5px 0 0 26px;
+  }
+}
+
+.feed__list-onboarding {
+  padding: 10px 0;
+  border-top: 1px solid @color-neutral-x-light;
+  color: @color-neutral-x-mid;
+  font-style: italic;
+}
+
