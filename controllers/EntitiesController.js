@@ -752,7 +752,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
         ], function (err) { // async.series
           if (err) { return next(err); }
 
-          ThreadsPresenter.build(req, threads, function (err, result) {
+          ThreadsPresenter.build(threads, req.currentPerson, function (err, result) {
             if (err) { return next(err); }
 
             res.json({ status: 'ok' });

@@ -667,7 +667,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         ], function(err) {
           if (err) { return next(err); }
 
-          ThreadsPresenter.build(req, [thread], function(err, result) {
+          ThreadsPresenter.build([thread], req.currentPerson, function(err, result) {
             if (err) { return next(err); }
 
             res.json(result[0]);

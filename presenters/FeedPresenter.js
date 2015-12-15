@@ -2,6 +2,7 @@
 
 var EntitiesPresenter = require('./EntitiesPresenter.js')
 var VoicesPresenter = require('./VoicesPresenter.js')
+var ThreadsPresenter = require('./ThreadsPresenter.js')
 
 var FeedPresenter = Module('FeedPresenter')({
   build: function (feedActions, currentPerson, callback) {
@@ -20,31 +21,74 @@ var FeedPresenter = Module('FeedPresenter')({
 
         // itemType
         function (next) {
-          if (action.itemType === 'voice') {
-            Voice.findById(action.itemId, function (err, voice) {
-              if (err) { return next(err) }
+          async.series([
+            // voice
+            function (next) {
+              if (action.itemType !== 'voice') {
+                return next()
+              }
 
-              VoicesPresenter.build(voice, currentPerson, function (err, presentedVoice) {
+              Voice.findById(action.itemId, function (err, voice) {
                 if (err) { return next(err) }
 
-                actionInst.voice = presentedVoice[0]
+                VoicesPresenter.build(voice, currentPerson, function (err, presentedVoice) {
+                  if (err) { return next(err) }
 
-                return next()
+                  actionInst.voice = presentedVoice[0]
+
+                  return next()
+                })
               })
-            })
-          } else if (action.itemType === 'entity') {
-            Entity.findById(action.itemId, function (err, entity) {
-              if (err) { return next(err) }
+            },
 
-              EntitiesPresenter.build(entity, currentPerson, function (err, presentedEntity) {
+            // entity
+            function (next) {
+              if (action.itemType !== 'entity') {
+                return next()
+              }
+
+              Entity.findById(action.itemId, function (err, entity) {
                 if (err) { return next(err) }
 
-                actionInst.entity = presentedEntity[0]
+                EntitiesPresenter.build(entity, currentPerson, function (err, presentedEntity) {
+                  if (err) { return next(err) }
 
-                return next()
+                  actionInst.entity = presentedEntity[0]
+
+                  return next()
+                })
               })
-            })
-          }
+            },
+
+            // message (and the thread that comes with it)
+            function (next) {
+              if (action.itemType !== 'message') {
+                return next()
+              }
+
+              Message.find({ id: action.itemId }, function (err, message) {
+                if (err) { return next(err) }
+
+                MessageThread.find({ id: message[0].threadId }, function (err, thread) {
+                  if (err) { return next(err) }
+
+                  ThreadsPresenter.build(thread, currentPerson, function (err, presented) {
+                    if (err) { return next(err) }
+
+                    var thread = presented[0]
+
+                    thread.messages = thread.messages.filter(function (val) {
+                      return (val.id === hashids.encode(message.id))
+                    })
+
+                    actionInst.thread = thread
+
+                    return next()
+                  })
+                })
+              })
+            },
+          ], next)
         },
 
         // actionDoer

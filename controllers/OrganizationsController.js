@@ -102,7 +102,7 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
         ], function (err) {
           if (err) { return next(err); }
 
-          ThreadsPresenter.build(req, [thread], function (err, result) {
+          ThreadsPresenter.build([thread], req.currentPerson, function (err, result) {
             if (err) { return next(err); }
 
             res.json(result[0]);
