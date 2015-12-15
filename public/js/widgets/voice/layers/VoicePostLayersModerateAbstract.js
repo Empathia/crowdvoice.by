@@ -9,6 +9,7 @@ Class(CV, 'VoicePostLayersModerateAbstract').inherits(CV.VoicePostLayers)({
             CV.VoicePostLayers.prototype.setup.call(this);
             this.registry.setup(this.postsCount);
             this.requestAll();
+
             return this;
         },
 
@@ -37,10 +38,12 @@ Class(CV, 'VoicePostLayersModerateAbstract').inherits(CV.VoicePostLayers)({
             var storedData = this.getPostsRegistry();
             Object.keys(storedData).forEach(function(propertyName) {
                 var posts = storedData[propertyName];
-                if (!posts) {
+                if (posts) {
                     this.request(this.id, propertyName);
                 }
             }, this);
+
+            console.log(this.registry._);
         },
 
         /* Implementation to add and render posts to a layer.
@@ -125,6 +128,7 @@ Class(CV, 'VoicePostLayersModerateAbstract').inherits(CV.VoicePostLayers)({
         },
 
         _reloadLayer : function _reLayoutLayer(){
+            this.registry._ = {};
             this.dispatch('reload');
         },
 

@@ -47,7 +47,7 @@ Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
                 scrollableArea : this.voicePostsWrapper,
                 totalPosts : this._getTotalPostCount(App.Voice.postsCountUnapproved)
             })).render(this.el);
-
+            
             return  this._bindEvents();
         },
 
