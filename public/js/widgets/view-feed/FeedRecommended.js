@@ -32,6 +32,9 @@ Class(CV, 'FeedRecommended').inherits(Widget).includes(CV.WidgetUtils)({
       return this;
     },
 
+    /* Handles the `fetch` response.
+     * @private
+     */
     _fetchResponse: function _fetchResponse(err, res) {
       if (res.length === 0) {
         return this._displayNoRecommendations();
@@ -72,7 +75,7 @@ Class(CV, 'FeedRecommended').inherits(Widget).includes(CV.WidgetUtils)({
         })).el);
       }
 
-      this.voicesSection.containerElement.classList.add('-pt3');
+      this.voicesSection.containerElement.classList.add('-pt2');
       this.voicesSection.containerElement.appendChild(fragment);
       this.voicesLoader.disable().remove();
 
@@ -95,7 +98,7 @@ Class(CV, 'FeedRecommended').inherits(Widget).includes(CV.WidgetUtils)({
         })).el);
       }
 
-      this.usersSection.containerElement.className += ' data-container -pt3 -clearfix';
+      this.usersSection.containerElement.className += ' data-container -pt2 -clearfix';
       this.usersSection.containerElement.appendChild(fragment);
       this.usersLoader.disable().remove();
 
@@ -103,16 +106,6 @@ Class(CV, 'FeedRecommended').inherits(Widget).includes(CV.WidgetUtils)({
     },
 
     _displayNoRecommendations: function _displayNoRecommendations() {
-      // this.appendChild(new CV.DiscoverRecommendedOnboarding({
-      //   name: 'onboarding'
-      // })).render(this.voicesList);
-
-      // this.voicesLoader.disable();
-      // this.usersLoader.disable();
-
-      // this.el.querySelector('.feed__recommended-users').remove();
-      // this.el.querySelector('.feed__top-voices-title .profile-heading').textContent = 'Recommended';
-
       this.destroy();
     }
   }

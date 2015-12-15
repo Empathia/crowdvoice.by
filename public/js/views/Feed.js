@@ -13,6 +13,8 @@ Class(CV.Views, 'Feed').includes(NodeSupport, CV.WidgetUtils)({
     },
 
     _setup: function _setup() {
+      var time = 1000;
+
       this.appendChild(new CV.TopVoice({
         name: 'topVoice',
         data: this.topVoice
@@ -21,17 +23,26 @@ Class(CV.Views, 'Feed').includes(NodeSupport, CV.WidgetUtils)({
       this.appendChild(new CV.FeedFeaturedVoices({
         name: 'featuredVoices',
         element: this.el.querySelector('.feed__featured-voices')
-      })).fetch();
+      }));
+      window.setTimeout(function(_that) {
+        _that.featuredVoices.fetch();
+      }, time, this);
 
       this.appendChild(new CV.FeedRecommended({
         name: 'recommended',
         element: this.el.querySelector('.feed__recommended')
-      })).fetch();
+      }));
+      window.setTimeout(function(_that) {
+        _that.recommended.fetch();
+      }, time + 1, this);
 
       this.appendChild(new CV.FeedDiscover({
         name: 'discover',
         element: $(this.el.querySelector('.feed__discover'))
       }));
+      window.setTimeout(function(_that) {
+        _that.discover.fetchImages();
+      }, time + 2, this);
 
       this.appendChild(new CV.FeedSidebar({
         name : 'sidebar',

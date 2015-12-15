@@ -6,7 +6,7 @@ Class(CV, 'FeedDiscover').inherits(Widget)({
       Widget.prototype.init.call(this, config);
       this.el = this.element[0];
 
-      this._setup()._requestImages();
+      this._setup();
     },
 
     _setup: function _setup() {
@@ -40,7 +40,7 @@ Class(CV, 'FeedDiscover').inherits(Widget)({
       return this;
     },
 
-    _requestImages: function _requestImages() {
+    fetchImages: function fetchImages() {
       API.getTrendingVoices(function (err, res){
         if (err) {return;}
         var r = res[Math.floor(Math.random()*res.length)];

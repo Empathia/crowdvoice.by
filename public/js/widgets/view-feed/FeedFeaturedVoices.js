@@ -24,6 +24,9 @@ Class(CV, 'FeedFeaturedVoices').inherits(Widget).includes(CV.WidgetUtils)({
       return this;
     },
 
+    /* Handles the `fetch` response.
+     * @private
+     */
     _fetchResponse: function _fetchResponse(err, res) {
       var container = this.el.querySelector('.feed__featured-voices-list');
       var fragment = document.createDocumentFragment();
