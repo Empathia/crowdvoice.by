@@ -1,28 +1,3 @@
-/**
- * Card Widget (Display Entity Cards)
- *
- * backgrounds      {Object}
- *                  {big, bluredCard, card, original: {url}}
- * createdAt        {String} timestamp of registry creation
- * description      {String} entity description
- * id               {String} entity unique id
- * imageMeta        {Object} information about the avatar images
- *                  {card, icon, medium, notification, original, small: {channels, format, hasAlpha, hasProfile, height, space, width}}
- * images           {Object} entity's avatar images formats available
- *                  {card, icon, medium, notification, original, small: {url}}
- * isAnonymous      {Boolean} indicates if the entity's session has been started anonymously
- * location         {String} entity's location name string
- * name             {String} entity's name
- * profileName      {String} entity's profile name
- * type             {String} ("organization", "user") indicates if the data belongs to an organization or user
- * updatedAt        {String} timestamp of last update
- * followersCount   {Number} Entity's followers total
- * voicesCount      {Number} Entity's published voices total
- * membershipCount  {Number} total of members (for 'organization' Entities)
- * followingCount   {Number} total of entities following
- * followed         {Boolean} Flag for currentPerson. Indicates if currentPerson is following this entity
- */
-
 var Person = require('./../../lib/currentPerson');
 var PLACEHOLDERS = require('./../../lib/placeholders');
 var Autolinker = require( 'autolinker' );
@@ -51,9 +26,13 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
             <a class="card_stats-voice-count -tdn">0 Voices</a>\
           </div>\
         </div>\
-        <div class="card_actions"></div>\
       </div>\
     </article>',
+
+  ACTIONS_HTML: '\
+    <div class="card_actions">\
+      <div class="-row -full-height"></div>\
+    </div>',
 
   FOLLOWS_CURRENT_PERSON_TEMPLATE : '<span class="badge-follows card-follows-you">Follows You</span>',
   MAX_DESCRIPTION_LENGTH : 180,
@@ -79,7 +58,6 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
       this.descriptionEl = this.el.querySelector('.card_description');
       this.locationEl = this.el.querySelector('.card_meta-location-text');
       this.totalVoices = this.el.querySelector('.card_stats-voice-count');
-      this.actionsEl = this.el.querySelector('.card_actions .-row');
 
       this._setup();
       this._addActionButtons();
@@ -145,17 +123,20 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
       if (!Person.get()) { return; }
       if (Person.is(this.data.id) || Person.anon()) { return; }
 
+      this.el.querySelector('.card-inner').insertAdjacentHTML('beforeend', this.constructor.ACTIONS_HTML);
+      var actionsEl = this.el.querySelector('.card_actions .-row');
+
       if (Person.ownerOf('organization', this.data.id) === false) {
         if (Person.get().ownedOrganizations.length === 0) {
           this.appendChild(new CV.CardActionFollow({
             name : 'followButton',
             entity :  this.data
-          })).render(this.actionsEl);
+          })).render(actionsEl);
         } else {
           this.appendChild(new CV.CardActionFollowMultiple({
             name : 'followButton',
             entity :  this.data
-          })).render(this.actionsEl);
+          })).render(actionsEl);
         }
         this._totalCountActions++;
       }
@@ -165,21 +146,21 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
           this.appendChild(new CV.CardActionJoin({
             name : 'joinButton',
             entity : this.data
-          })).render(this.actionsEl);
+          })).render(actionsEl);
           this._totalCountActions++;
         }
       } else {
         this.appendChild(new CV.CardActionMessage({
           name : 'messageButton',
           id : this.data.id
-        })).render(this.actionsEl);
+        })).render(actionsEl);
         this._totalCountActions++;
 
         if (Person.canInviteEntity(this.data)) {
           this.appendChild(new CV.CardActionInvite({
             name : 'inviteButton',
             entity : this.data
-          })).render(this.actionsEl);
+          })).render(actionsEl);
           this._totalCountActions++;
         }
       }
