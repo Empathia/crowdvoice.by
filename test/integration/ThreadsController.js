@@ -176,8 +176,8 @@ describe('ThreadsController', function () {
               })
             },
 
-            // feed
-            function (next) {
+            // notification
+            function (nextSeries) {
               FeedAction.find({
                 item_type: 'entity',
                 item_id: 22,
@@ -199,7 +199,7 @@ describe('ThreadsController', function () {
                   expect(result[0].read).to.equal(false)
                   expect(result[0].forFeed).to.equal(false)
 
-                  return next()
+                  return nextSeries()
                 })
               })
             },
