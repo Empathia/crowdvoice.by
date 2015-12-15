@@ -81,7 +81,7 @@ Class(CV, 'VoiceCoverMediumList').inherits(Widget).includes(CV.WidgetUtils)({
         }
       }, this);
       this.dom.updateAttr('src', authorAvatar, this.data.owner.images.icon.url);
-      this.dom.updateAttr('alt', authorAvatar, this.data.owner.name);
+      this.dom.updateAttr('alt', authorAvatar, this.data.owner.name + '’s avatar image');
       this.dom.updateText(this.el.querySelector('.author-username'), this.data.owner.name);
 
       this.dom.updateText(this.el.querySelector('.voice-cover-title-anchor'), this.data.title);
