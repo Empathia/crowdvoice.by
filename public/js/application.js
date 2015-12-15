@@ -55,6 +55,7 @@ require('./widgets/notifications/NotificationReadMore');
 
 // feed items
 require('./widgets/feed/FeedItem');
+require('./widgets/feed/FeedMessage');
 require('./widgets/feed/FeedChangedAvatar');
 require('./widgets/feed/FeedChangedBackground');
 require('./widgets/feed/FeedNewPosts');
@@ -193,7 +194,6 @@ require('./widgets/view-feed/FeedRecommended');
 require('./widgets/view-feed/FeedDiscover');
 require('./widgets/view-feed/FeedSidebar');
 require('./widgets/view-feed/FeedOnboarding');
-require('./widgets/view-feed/FeedAnonymousOnboarding');
 
 require('./widgets/voice/PostsRegistry');
 require('./widgets/voice/Onboarding');

@@ -2,6 +2,8 @@ var Person = require('./../../lib/currentPerson');
 
 Class(CV, 'FeedSidebar').inherits(Widget)({
   prototype: {
+    _onboarding: null,
+
     init: function init(config) {
       Widget.prototype.init.call(this, config);
 
@@ -13,7 +15,7 @@ Class(CV, 'FeedSidebar').inherits(Widget)({
         var currentEntityView = Person.get();
 
         this.appendChild(new CV.UI.FeedDropdown({
-          name : 'dropdown'
+          name: 'dropdown'
         })).render(this.el.querySelector('.profile-select-options'));
 
         if (this.organization) {
@@ -23,26 +25,10 @@ Class(CV, 'FeedSidebar').inherits(Widget)({
         this.dropdown.selectByEntity(currentEntityView);
       }
 
-      if (Person.anon()) {
-        this.appendChild(new CV.FeedAnonymousOnboarding({
-          name: 'onboarding'
-        })).render(this.el.querySelector('.profile-sidebar'));
-      }
-
       return this;
     },
 
     _updateFeed: function _updateFeed() {
-      if (this.feedItems && this.feedItems.feed.length) {
-        return this._renderFeed();
-      }
-
-      this.appendChild(new CV.FeedOnboarding({
-        name: 'onboarding'
-      })).render(this.el.querySelector('.profile-sidebar'));
-    },
-
-    _renderFeed: function _renderFeed() {
       var feedList = document.createElement('div');
       feedList.className = 'feed__list';
 
@@ -53,7 +39,25 @@ Class(CV, 'FeedSidebar').inherits(Widget)({
         })).render(feedList).showDate();
       }, this);
 
+      this.appendChild(CV.FeedItem.create({
+        name: 'feed-item__welcome',
+        data: {
+          action: 'message',
+          text: 'You joined CrowdVoice! 🎉',
+          actionDoer: Person.get(),
+          createdAt: Person.get('createdAt')
+        }
+      })).render(feedList).showDate();
+
       this.el.querySelector('.profile-sidebar').appendChild(feedList);
+
+      if (this.feedItems && this.feedItems.feed.length === 0) {
+        if (this._onboarding) {return;}
+        this._onboarding = document.createElement('div');
+        this._onboarding.className = 'feed__list-onboarding';
+        this._onboarding.textContent = 'Activity from voices and people you follow will appear here';
+        feedList.appendChild(this._onboarding);
+      }
     }
   }
 });
