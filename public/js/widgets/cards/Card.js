@@ -165,6 +165,11 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
         }
       }
 
+      if (!this._totalCountActions) {
+        this.el.querySelector('.card-inner').removeChild(this.el.querySelector('.card_actions'));
+        return;
+      }
+
       var n = 12 / this._totalCountActions;
       [].slice.call(this.el.querySelectorAll('.card-actions-item'), 0).forEach(function(item) {
         item.classList.add('-col-' + n);
@@ -172,7 +177,7 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
 
       this.el.classList.add('has-actions');
 
-      return this;
+      return;
     }
   }
 });
