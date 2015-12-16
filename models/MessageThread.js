@@ -1,3 +1,5 @@
+var FeedInjector = require(path.join(__dirname, '../lib/FeedInjector.js'));
+
 var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
 
   validations: {
@@ -381,95 +383,20 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
         message.save(function (err) {
           if (err) { return callback(err) }
 
-          var receiverEntity,
-            realReceiverEntity,
-            receiverUser
+          var messageInfo = {
+            message: message,
+            thread: thread
+          }
 
-          // setup for sending emails
-          async.series([
-            // get receiver entity, could be org or person
-            function (next) {
-              Entity.findById(message.receiverEntityId, function (err, entity) {
-                if (err) { return next(err) }
-
-                receiverEntity = entity[0]
-
-                return next()
-              })
-            },
-
-            // get real receiver entity, can only be person
-            function (next) {
-              if (receiverEntity.type === 'person' && !receiverEntity.isAnonymous) {
-                realReceiverEntity = receiverEntity
-                return next()
-              }
-
-              EntityOwner.find({ owned_id: receiverEntity.id }, function (err, ownership) {
-                if (err) { return next(err) }
-
-                Entity.findById(ownership[0].ownerId, function (err, entity) {
-                  if (err) { return next(err) }
-
-                  realReceiverEntity = entity[0]
-
-                  return next()
-                })
-              })
-            },
-
-            // get user of real receiver entity
-            function (next) {
-              User.find({ entity_id: realReceiverEntity.id }, function (err, user) {
-                if (err) { return next(err) }
-
-                receiverUser = user[0]
-
-                return next()
-              })
-            },
-
-            // send emails
-            function (next) {
-              if (params.type === 'message') {
-
-                NotificationMailer.newMessage({
-                  entity: receiverEntity,
-                  realEntity: realReceiverEntity,
-                  user: receiverUser,
-                }, {
-                  thread: thread,
-                  message: message
-                }, next);
-
-              } else if (params.type.match(/request_(voice|organization)/)) {
-
-                NotificationMailer.newRequest({
-                  entity: receiverEntity,
-                  realEntity: realReceiverEntity,
-                  user: receiverUser,
-                }, {
-                  thread: thread,
-                  message: message
-                }, next);
-
-              } else if (params.type.match(/invitation_(voice|organization)/)) {
-
-                NotificationMailer.newInvitation({
-                  entity: receiverEntity,
-                  realEntity: realReceiverEntity,
-                  user: receiverUser,
-                }, {
-                  thread: thread,
-                  message: message
-                }, next);
-              }
-            },
-          ], function (err) {
-            return callback(err, message)
-          })
+          if (params.type === 'message') {
+            return FeedInjector().injectNotification(message.senderEntityId, 'notifNewMessage', message, function (err) { callback(err, message); })
+          } else if (params.type.match(/request_(voice|organization)/)) {
+            return FeedInjector().injectNotification(message.senderEntityId, 'notifNewRequest', message, function (err) { callback(err, message); })
+          } else if (params.type.match(/invitation_(voice|organization)/)) {
+            return FeedInjector().injectNotification(message.senderEntityId, 'notifNewInvitation', message, function (err) { callback(err, message); })
+          }
         });
-      })
+      });
     },
 
     /* Has Many Messages Relationship

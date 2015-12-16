@@ -667,7 +667,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         ], function(err) {
           if (err) { return next(err); }
 
-          ThreadsPresenter.build(req, [thread], function(err, result) {
+          ThreadsPresenter.build([thread], req.currentPerson, function(err, result) {
             if (err) { return next(err); }
 
             res.json(result[0]);
@@ -742,7 +742,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                       entity: { id: follower.id }
                     });
                   }
-                })
+                });
               });
             } else {
               var voiceFollowerRecordId,
@@ -786,66 +786,11 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
                 // generate feed and notifications
                 function (next) {
-                  FeedInjector().inject(follower.id, 'who entityFollowsVoice', voiceFollowerRecord, function (err) {
-                    if (err) { return next(err); }
+                  FeedInjector().inject(follower.id, 'who entityFollowsVoice', voiceFollowerRecord, next);
+                },
 
-                    var receiverEntity,
-                      realReceiverEntity,
-                      receiverUser
-
-                    async.series([
-                      // get receiver entity, could be org or person
-                      function (next) {
-                        Entity.findById(req.activeVoice.ownerId, function (err, entity) {
-                          if (err) { return next(err) }
-
-                          receiverEntity = entity[0]
-
-                          return next()
-                        })
-                      },
-
-                      // get real receiver entity, can only be person
-                      function (next) {
-                        if (receiverEntity.type === 'person' && !receiverEntity.isAnonymous) {
-                          realReceiverEntity = receiverEntity
-                          return next()
-                        }
-
-                        EntityOwner.find({ owned_id: receiverEntity.id }, function (err, ownership) {
-                          if (err) { return next(err) }
-
-                          Entity.findById(ownership[0].ownerId, function (err, entity) {
-                            if (err) { return next(err) }
-
-                            realReceiverEntity = entity[0]
-
-                            return next()
-                          })
-                        })
-                      },
-
-                      // get user of real receiver entity
-                      function (next) {
-                        User.find({ entity_id: realReceiverEntity.id }, function (err, user) {
-                          if (err) { return next(err) }
-
-                          receiverUser = user[0]
-
-                          return next()
-                        })
-                      },
-
-                      // send email
-                      function (next) {
-                        NotificationMailer.newVoiceFollower({
-                          entity: receiverEntity,
-                          realEntity: realReceiverEntity,
-                          user: receiverUser,
-                        }, follower, req.activeVoice, next);
-                      },
-                    ], next);
-                  });
+                function (next) {
+                  FeedInjector().injectNotification(follower.id, 'notifNewVoiceFollower', voiceFollowerRecord, next);
                 },
               ], function (err) {
                 if (err) {

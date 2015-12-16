@@ -38,7 +38,7 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
 
               var threads = Argon.Storage.Knex.processors[0](rows);
 
-              ThreadsPresenter.build(req, threads, function(err, threads) {
+              ThreadsPresenter.build(threads, req.currentPerson, function(err, threads) {
                 if (err) { return next(err); }
 
                 res.format({
@@ -187,7 +187,7 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
         ], function(err) {
           if (err) { return next(err); }
 
-          ThreadsPresenter.build(req, [thread], function(err, result) {
+          ThreadsPresenter.build([thread], req.currentPerson, function(err, result) {
             if (err) { return next(err); }
 
             return res.json(result[0]);

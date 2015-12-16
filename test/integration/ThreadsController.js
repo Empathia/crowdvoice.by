@@ -27,7 +27,7 @@ describe('ThreadsController', function () {
 
   describe('#create', function () {
 
-    it('Create new thread', function (done) {
+    it('Create new thread', function (doneTest) {
       login('cersei-lannister', function (err, agent, csrf) {
         agent
           .post(urlBase + '/cersei-lannister/messages')
@@ -40,11 +40,34 @@ describe('ThreadsController', function () {
             message: '2685390919',
           })
           .end(function (err, res) {
-            if (err) { return done(err) }
+            if (err) { return doneTest(err) }
 
             expect(res.status).to.equal(200)
 
-            return done()
+            FeedAction.find({
+              item_type: 'message',
+              item_id: 8,
+              action: 'sent you a message',
+              who: 3,
+            }, function (err, result) {
+              if (err) { return nextSeries(err) }
+
+              expect(result.length).to.equal(1)
+
+              Notification.find({
+                action_id: result[0].id,
+                follower_id: 17,
+              }, function (err, result) {
+                if (err) { return nextSeries(err) }
+
+                expect(result.length).to.equal(1)
+
+                expect(result[0].read).to.equal(false)
+                expect(result[0].forFeed).to.equal(false)
+
+                return doneTest()
+              })
+            })
           })
       })
     })
@@ -150,6 +173,34 @@ describe('ThreadsController', function () {
                 expect(messages[0].message).to.equal('0844856118')
 
                 return next()
+              })
+            },
+
+            // notification
+            function (nextSeries) {
+              FeedAction.find({
+                item_type: 'entity',
+                item_id: 22,
+                action: 'has invited you to become a member',
+                who: 3,
+              }, function (err, result) {
+                if (err) { return nextSeries(err) }
+
+                expect(result.length).to.equal(4)
+
+                Notification.find({
+                  action_id: result[0].id,
+                  follower_id: 17,
+                }, function (err, result) {
+                  if (err) { return nextSeries(err) }
+
+                  expect(result.length).to.equal(1)
+
+                  expect(result[0].read).to.equal(false)
+                  expect(result[0].forFeed).to.equal(false)
+
+                  return nextSeries()
+                })
               })
             },
           ], done)

@@ -398,20 +398,13 @@ async.series([function(next) {
   }, next);
 }, function (next) {
   // NOTE: WHEN ADDING NEW FEED ACTIONS YOU NEED TO UPDATE THIS!!
-  var feedDefaults = {
-      entityFollowsEntity: true,
-      entityFollowsVoice: true,
-      entityArchivesVoice: true,
-      entityUpdatesAvatar: true,
-      entityUpdatesBackground: true,
-      entityBecomesOrgPublicMember: true,
-      voiceIsPublished: true,
-      voiceNewPosts: true,
-      voiceNewTitle: true,
-      voiceNewDescription: true,
-      voiceNewPublicContributor: true,
-    },
-    clone = _.clone(feedDefaults);
+  var defaults = {
+    selfNewMessage: true,
+    selfNewInvitation: true,
+    selfNewRequest: true,
+    selfNewVoiceFollower: true,
+    selfNewEntityFollower: true
+  }
 
   Entity.find({ is_anonymous: false }, function (err, entities) {
     if (err) { return next(err); }
@@ -424,14 +417,8 @@ async.series([function(next) {
     async.each(ids, function (id, next) {
       notification = new NotificationSetting({
         entityId: id,
-        webSettings: feedDefaults,
-        emailSettings: _.defaults(clone, {
-          selfNewMessage: true,
-          selfNewInvitation: true,
-          selfNewRequest: true,
-          selfNewVoiceFollower: true,
-          selfNewEntityFollower: true
-        })
+        webSettings: defaults,
+        emailSettings: defaults
       });
       notification.save(next);
     }, next);
@@ -1004,17 +991,20 @@ async.series([function(next) {
     {
       actionId: data.feedActions['9-followed-voice-9'].id,
       followerId: 3, // Cersei
-      read: false
+      read: true,
+      forFeed: true
     },
     {
       actionId: data.feedActions['9-followed-voice-13'].id,
       followerId: 3,
-      read: false
+      read: true,
+      forFeed: true
     },
     {
       actionId: data.feedActions['9-followed-voice-15'].id,
       followerId: 22, // House Lannister
-      read: false
+      read: true,
+      forFeed: true
     }
   ];
 

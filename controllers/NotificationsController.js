@@ -43,6 +43,7 @@ var NotificationsController = Class('NotificationsController')({
             db('Notifications')
               .whereIn('follower_id', ids)
               .andWhere('read', '=', false)
+              .andWhere('for_feed', '=', false)
               .exec(function (err, result) {
                 if (err) { return next(err) }
 
@@ -116,7 +117,8 @@ var NotificationsController = Class('NotificationsController')({
 
           db('Notifications')
             .whereIn('follower_id', ids)
-            .andWhere('read', false)
+            .andWhere('read', '=', false)
+            .andWhere('for_feed', '=', false)
             .exec(function (err, rows) {
               if (err) { return next(err) }
 
