@@ -273,6 +273,8 @@ require('./widgets/posts/edit/EditablePostImageControls');
 // moderate actions
 require('./widgets/posts/moderate/PostModerateRemoveButton');
 require('./widgets/posts/moderate/PostModeratePublishButton');
+require('./widgets/posts/moderate/PostModerateOriginalButton');
+require('./widgets/posts/moderate/PostModerateEditButton');
 require('./widgets/posts/moderate/PostModerateVoteButtons');
 
 require('./widgets/voice/VoiceRequestToContribute');
@@ -280,6 +282,7 @@ require('./widgets/voice/VoiceRequestToContribute');
 // post creators
 require('./widgets/post-creators/PostCreator');
 require('./widgets/post-creators/PostCreatorPostButton');
+require('./widgets/post-creators/PostCreatorEditButton');
 require('./widgets/post-creators/PostCreatorUploadingTemplate');
 require('./widgets/post-creators/PostCreatorErrorTemplate');
 require('./widgets/post-creators/PostCreatorSuccessTemplate');
@@ -299,6 +302,7 @@ require('./widgets/post-creators/upload-file/PostCreatorUploadFile');
 require('./widgets/post-creators/upload-file/PostCreatorUploadFileHeaderMessages');
 
 require('./widgets/post-creators/write-article/PostCreatorWriteArticle');
+require('./widgets/post-creators/write-article/PostCreatorEditArticle');
 require('./widgets/post-creators/write-article/PostCreatorWriteArticlePostDate');
 require('./widgets/post-creators/write-article/PostCreatorWriteArticleEditor');
 require('./widgets/post-creators/write-article/PostCreatorWriteArticleEditorHeader');

@@ -39,25 +39,16 @@ Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
          */
         setup : function setup() {
             App.hideScrollbar();
-
-            this.appendChild(new CV.VoicePostLayersModerateAbstract({
-                name : 'layersManager',
-                id : App.Voice.data.id,
-                registry: CV.ModeratePostsRegistry,
-                postsCount : App.Voice.postsCountUnapproved,
-                postCount : this._getTotalPostCount(App.Voice.postsCountUnapproved),
-                scrollableArea : this.voicePostsWrapper,
-                allowPostEditing : App.Voice.allowPostEditing,
-                _socket : App.Voice._socket,
-            })).render(this.voicePostsWrapper).setup().loadDefaultLayer();
+        
+            this._addLayerManager();
 
             this.appendChild(new CV.VoiceModerateFooter({
                 name : 'footer',
                 scrollableArea : this.voicePostsWrapper,
                 totalPosts : this._getTotalPostCount(App.Voice.postsCountUnapproved)
             })).render(this.el);
-
-            return this._bindEvents();
+            
+            return  this._bindEvents();
         },
 
         /* Subscribe the event handlers.
@@ -71,6 +62,8 @@ Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
 
             this.bind('post:moderate:delete', this._postModerateDelete.bind(this));
 
+            this.bind('reload', this._newLayerManager.bind(this));
+
             this.footer.bind('done', this.destroy.bind(this));
 
             this._scrollHandlerRef = this._scrollHandler.bind(this);
@@ -81,8 +74,26 @@ Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
 
             this._windowKeydownHandlerRef = this._windowKeydownHandler.bind(this);
             this._window.addEventListener('keydown', this._windowKeydownHandlerRef);
-
+            
             return this;
+        },
+
+        _newLayerManager : function _newLayerManager(){
+            this.layersManager.destroy();
+            this._addLayerManager();
+        },
+
+        _addLayerManager : function _addLayerManager(){
+            this.appendChild(new CV.VoicePostLayersModerateAbstract({
+                name : 'layersManager',
+                id : App.Voice.data.id,
+                registry: CV.ModeratePostsRegistry,
+                postsCount : App.Voice.postsCountUnapproved,
+                postCount : this._getTotalPostCount(App.Voice.postsCountUnapproved),
+                scrollableArea : this.voicePostsWrapper,
+                allowPostEditing : App.Voice.allowPostEditing,
+                _socket : App.Voice._socket,
+            })).render(this.voicePostsWrapper).setup().loadDefaultLayer(); 
         },
 
         /* Listens the `post:moderate:delete` event bubbling up.
