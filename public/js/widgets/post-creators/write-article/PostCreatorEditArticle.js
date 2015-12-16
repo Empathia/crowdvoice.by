@@ -168,7 +168,7 @@ Class(CV, 'PostCreatorEditArticle').inherits(CV.PostCreator).includes(BubblingSu
       // Success feedack
       this.loader.disable();
       this.loaderSuccess.activate();
-
+      console.log(res);
       window.setTimeout(function() {
         this.loaderSuccess.deactivate();
         this.dispatch('articleEdited');
