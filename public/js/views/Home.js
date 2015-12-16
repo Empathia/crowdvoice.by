@@ -1,18 +1,13 @@
 Class(CV, 'HomeView').includes(NodeSupport, CV.WidgetUtils)({
-  prototype : {
+  prototype: {
 
-    featuredVoicesData : null,
-    categoriesData : null,
-    orgsData : null,
+    featuredVoicesData: null,
+    categoriesData: null,
+    orgsData: null,
 
     init: function init(config) {
       Object.keys(config || {}).forEach(function(propertyName) {
         this[propertyName] = config[propertyName];
-      }, this);
-
-      /* STATS */
-      [].slice.call(document.querySelectorAll('.stats .stats-number'), 0).forEach(function(number) {
-        this.dom.updateText(number, this.format.numberUS(number.textContent));
       }, this);
 
       /* FEATURED VOICES */
@@ -22,16 +17,25 @@ Class(CV, 'HomeView').includes(NodeSupport, CV.WidgetUtils)({
       this.featuredVoicesData.forEach(function(voice, index) {
         featuredVoicesElements.push(this.appendChild(new CV.VoiceCover({
           name: 'featuredVoice_' + index,
-          className: 'slider-item',
+          // className: 'slider-item',
           data: voice
         })).render(featuredVoicesList).el);
       }, this);
 
-      new CV.ResponsiveSlider({
-        element: featuredVoicesWrapper,
-        dots: true,
-        minSlideWidth: 300
+      new CV.Slider({
+        appendArrowsTo: document.querySelector('.homepage-featured-voices .arrows-wrapper')
       });
+
+      // new CV.ResponsiveSlider({
+      //   element: featuredVoicesWrapper,
+      //   dots: true,
+      //   minSlideWidth: 300
+      // });
+
+      /* STATS */
+      [].slice.call(document.querySelectorAll('.stats .stats-number'), 0).forEach(function(number) {
+        this.dom.updateText(number, this.format.numberUS(number.textContent));
+      }, this);
 
       /* CATEGORIES */
       var categoriesHolder = document.querySelector('.homepage-category-list-row');

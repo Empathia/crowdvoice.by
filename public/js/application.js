@@ -85,6 +85,7 @@ require('./widgets/EmptyState');
 require('./widgets/Popover');
 require('./widgets/PopoverBlocker');
 require('./widgets/responsive-slider.js');
+require('./widgets/Slider');
 require('./widgets/InputClearable');
 require('./widgets/input-counter.js');
 require('./widgets/Dropdown');
