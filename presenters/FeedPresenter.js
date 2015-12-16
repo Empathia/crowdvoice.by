@@ -78,7 +78,7 @@ var FeedPresenter = Module('FeedPresenter')({
                     var thread = presented[0]
 
                     thread.messages = thread.messages.filter(function (val) {
-                      return (val.id === hashids.encode(message.id))
+                      return (val.id === hashids.encode(message[0].id))
                     })
 
                     actionInst.thread = thread
