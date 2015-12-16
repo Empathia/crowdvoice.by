@@ -130,7 +130,7 @@ Class(CV, 'PostCreatorEditArticle').inherits(CV.PostCreator).includes(BubblingSu
           data : {
             title : this.articleTitle.val(),
             description : this.articleContent.html(),
-            image : this.articleImage,
+            imagePath : this.articleImage,
             publishedAt : this.postDate.timePickerInput.value
           }
         }, this._responseHandler.bind(this));
@@ -142,7 +142,7 @@ Class(CV, 'PostCreatorEditArticle').inherits(CV.PostCreator).includes(BubblingSu
           data : {
             title : this.articleTitle.val(),
             description : this.articleContent.html(),
-            image : '',
+            imagePath : '',
             publishedAt : this.postDate.timePickerInput.value
           }
         }, this._responseHandler.bind(this));
