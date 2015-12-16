@@ -92,7 +92,7 @@ Module(CV, 'PostModuleImages')({
                 return;
             }
 
-            this.setCoverImage(imageObject.src + '?v=' + new Date().getTime());
+            this.setCoverImage(imageObject.src);
             this.imageLoaded = true;
             this.haltImage = null;
         }
