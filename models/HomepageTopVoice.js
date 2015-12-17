@@ -7,6 +7,7 @@ var HomepageTopVoice = Class('HomepageTopVoice').inherits(Argon.KnexModel)({
     posterPath: ['required'],
     description: [],
     active: ['required'],
+    videoUuid: ['required'],
   },
 
   storage: (new Argon.Storage.Knex({
@@ -21,6 +22,7 @@ var HomepageTopVoice = Class('HomepageTopVoice').inherits(Argon.KnexModel)({
     posterPath: null,
     description: null,
     active: null,
+    videoUuid: null,
   },
 })
 
