@@ -1,0 +1,94 @@
+<div class="search-voices">
+</div>
+
+
+<br class="-clear-after">
+
+<div class="admin-voices-list" id="pos-container">
+
+	<div class="admin-user" id="" data-position="">
+		<div class="upload-video-voices">
+		</div>
+		<div class="upload-image-voices">
+		</div>
+		<div class="video-text-voices">
+		</div>
+		<div class="video-url-voices">
+		</div>
+		<div class="video-description-voices">
+		</div>
+	</div>
+
+</div>
+
+<script>
+	var headerEl = document.querySelector('header .header-actions');
+	headerEl.innerHTML = '<h2>Top voice</h2>';
+
+	// Search voice widget
+	var searchInput = new CV.InputButton({
+		style     : 'primary',
+		placeholder : 'Search voice...',
+		title     : "Add Top Voice",
+		buttonLabel : "Search"
+	}).render($('.search-voices'));
+	searchInput.disableButton();
+
+
+	// Voice video
+	var voiceVideo = new CV.InputButton({
+		style     : 'primary',
+		placeholder : 'Upload video...',
+		title     : "Add voice video",
+		buttonLabel : "Search file"
+	}).render($('.upload-video-voices'));
+
+	// Voice image
+	var voiceImage = new CV.InputButton({
+		style     : 'primary',
+		placeholder : 'Upload image...',
+		title     : "Add voice image",
+		buttonLabel : "Search file"
+	}).render($('.upload-image-voices'));
+
+	// Voice text
+	var voiceText = new CV.UI.Input({
+		name : 'voiceText',
+        data: {
+            label : 'Video source title',
+            inputClassName : '-lg -block',
+            attr : {
+                placeholder : 'Source title...'
+            }
+        }
+	}).render($('.video-text-voices'));
+
+	// Voice url
+	var voiceUrl = new CV.UI.Input({
+		name : 'voiceUrl',
+        data: {
+            label : 'Video source url',
+            inputClassName : '-lg -block',
+            attr : {
+                placeholder : 'Source url...'
+            }
+        }
+	}).render($('.video-url-voices'));
+
+	// Upload voice video
+	var voiceDescription = new CV.UI.Input({
+		style     : 'primary',
+		placeholder : 'Add description...',
+		data : {
+            isTextArea : true,
+            label : 'Description',
+            hint : '',
+            inputClassName : '-lg -block',
+            attr : {
+                rows : 3,
+                maxlength: this.MAX_DESCRIPTION_LENGTH
+            }
+        }
+	}).render($('.video-description-voices'));
+
+</script>

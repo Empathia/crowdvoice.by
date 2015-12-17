@@ -149,6 +149,10 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
       return next(new NotFoundError())
     },
 
+    topvoice : function(req, res, next){
+      return res.render('admin/topVoices/index.html', { layout: 'admin' })
+    },
+
     // PUT /admin/featured/voices/:voiceId/edit
     // 404
     update: function (req, res, next) {
