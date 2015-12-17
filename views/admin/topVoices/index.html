@@ -42,6 +42,11 @@
 		title     : "Add voice video",
 		buttonLabel : "Search file"
 	}).render($('.upload-video-voices'));
+	var voiceVideoInput = voiceVideo.el.querySelector('input');
+
+	voiceVideoInput.setAttribute('type', 'file');
+	voiceVideoInput.setAttribute('hidden', 'true');
+	voiceVideo.buttonEl.on('click', function(){ $(voiceVideoInput).click();} );
 
 	// Voice image
 	var voiceImage = new CV.InputButton({

@@ -1,12 +1,12 @@
 var ffmpeg = require('fluent-ffmpeg')
 
-Admin.HomepageTopVoicesController = Class(Admin, 'HomepageTopVoicesController')({
+Admin.HomepageTopVoicessController = Class(Admin, 'HomepageTopVoicesController')({
 
   prototype: {
 
     // GET /admin/topVoices
     index: function (req, res, next) {
-      ACL.isAllowed('index', 'admin.homepageTopVoice', req.role, {
+      ACL.isAllowed('index', 'admin.homepageTopVoices', req.role, {
         currentPerson: req.currentPerson,
       }, function (err, isAllowed) {
         if (err) { return next(err) }
@@ -36,7 +36,7 @@ Admin.HomepageTopVoicesController = Class(Admin, 'HomepageTopVoicesController')(
        * }
        */
 
-      ACL.isAllowed('create', 'admin.homepageTopVoice', req.role, {
+      ACL.isAllowed('create', 'admin.homepageTopVoices', req.role, {
         currentPerson: req.currentPerson,
       }, function (err, isAllowed) {
         if (err) { return next(err) }
@@ -55,7 +55,7 @@ Admin.HomepageTopVoicesController = Class(Admin, 'HomepageTopVoicesController')(
 
     // PUT /admin/topVoices/:voiceId
     update: function (req, res, next) {
-      ACL.isAllowed('update', 'admin.homepageTopVoice', req.role, {
+      ACL.isAllowed('update', 'admin.homepageTopVoices', req.role, {
         currentPerson: req.currentPerson,
       }, function (err, isAllowed) {
         if (err) { return next(err) }
@@ -68,7 +68,7 @@ Admin.HomepageTopVoicesController = Class(Admin, 'HomepageTopVoicesController')(
 
     // DELETE /admin/topVoices/:voiceId
     destroy: function (req, res, next) {
-      ACL.isAllowed('destroy', 'admin.homepageTopVoice', req.role, {
+      ACL.isAllowed('destroy', 'admin.homepageTopVoices', req.role, {
         currentPerson: req.currentPerson,
       }, function (err, isAllowed) {
         if (err) { return next(err) }
