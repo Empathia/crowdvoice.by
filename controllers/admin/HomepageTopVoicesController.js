@@ -1,4 +1,10 @@
-var ffmpeg = require('fluent-ffmpeg')
+'use strict'
+
+var ffmpeg = require('fluent-ffmpeg'),
+  fs = require('fs'),
+  uuid = require('uuid') // use .v4
+
+var VideoFormatter = require(path.join(__dirname, '../../lib/VideoFormatter.js'))
 
 Admin.HomepageTopVoicesController = Class(Admin, 'HomepageTopVoicesController')({
 
@@ -45,7 +51,17 @@ Admin.HomepageTopVoicesController = Class(Admin, 'HomepageTopVoicesController')(
           return next(new NotFoundError())
         }
 
-        var command = new ffmpeg()
+        var sourceReadStream = fs.createReadStream(req.files.video)
+          mp4 = new ffmpeg(sourceReadStream),
+          webm = new ffmpeg(sourceReadStream),
+          ogv = new ffmpeg(sourceReadStream)
+
+        // set ffmpeg options
+        mp4.preset(VideoFormatter.prototype.videoToMp4)
+        webm.preset(VideoFormatter.prototype.videoToWebm)
+        ogv.preset(VideoFormatter.prototype.videoToOgv)
+
+        var outputPath
       })
     },
 
