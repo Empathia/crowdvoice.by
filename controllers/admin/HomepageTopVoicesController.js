@@ -1,4 +1,10 @@
-var ffmpeg = require('fluent-ffmpeg')
+'use strict'
+
+var ffmpeg = require('fluent-ffmpeg'),
+  fs = require('fs'),
+  uuid = require('uuid') // use .v4
+
+var FfmpegPresets = require(path.join(__dirname, '../../lib/FfmpegPresets.js'))
 
 Admin.HomepageTopVoicessController = Class(Admin, 'HomepageTopVoicesController')({
 
@@ -27,15 +33,20 @@ Admin.HomepageTopVoicessController = Class(Admin, 'HomepageTopVoicesController')
       return next(new NotFoundError())
     },
 
-    // POST /admin/topVoices
+    /** POST /admin/topVoices
+     *
+     * req.body = {
+     *   voiceId: Hashids.encode,
+     *   sourceText: String,
+     *   sourceUrl: String,
+     *   description: String (optional),
+     * }
+     *
+     * req.files = {
+     *  video: String,
+     * }
+     */
     create: function (req, res, next) {
-      /** POST
-       * req.body = {}
-       * req.files = {
-       *  video,
-       * }
-       */
-
       ACL.isAllowed('create', 'admin.homepageTopVoices', req.role, {
         currentPerson: req.currentPerson,
       }, function (err, isAllowed) {
@@ -45,7 +56,72 @@ Admin.HomepageTopVoicessController = Class(Admin, 'HomepageTopVoicesController')
           return next(new NotFoundError())
         }
 
-        var command = new ffmpeg()
+        var topVoice = new HomepageTopVoice({
+          voiceId: hashids.decode(req.body.voiceId)[0],
+          sourceText: req.body.sourceText,
+          sourceUrl: req.body.sourceUrl,
+          description: req.body.description,
+          active: true,
+        })
+
+        var versions = {
+          mp4: 'videoToMp4',
+          webm: 'videoToWebm',
+          ogv: 'videoToOgv',
+        }
+
+        var outputBasePath,
+          useAmazon = false
+
+        async.series([
+          // Figure out videoUuid
+          function (nextSeries) {
+            var buffer = new Buffer(16)
+
+            uuid.v4(null, buffer, 0)
+
+            topVoice.videoUuid = uuid.unparse(buffer)
+
+            return nextSeries()
+          },
+
+          // Figure out base path
+          function (nextSeries) {
+            // {env}/{modelName}_{id}/{property}_{versionName}.{extension}
+
+            if (CONFIG.env === 'development') {
+              useAmazon = false
+              // Base path + topVoice_hashids.encode(:voiceId)_:videoUuid
+              outputBasePath = path.join(process.cwd(), '/public/videos/topVoice_' + req.body.voiceId + '_' + topVoice.videoUuid)
+            } else {
+              // Amazon stuff goes in here
+              useAmazon = true
+            }
+          },
+
+          // Process and upload to Amazon S3
+          function (nextSeries) {
+            async.each(Object.keys(versions), function (version, doneEach) {
+              var command = ffmpeg(fs.createReadStream(req.files.video))
+
+              // Apply preset
+              command.preset(FfmpegPresets.prototype[versions[version]])
+
+              var amazonParams = {
+                Bucket: 'crowdvoice.by',
+                ACL: 'public-read',
+              }
+
+              if (useAmazon) {
+                amazonS3.upload(amazonParams)
+              } else {
+                command.save(path.join(outputBasePath, '720.' + version))
+              }
+            }, nextSeries)
+          },
+        ], function (err) {
+          next (err)
+        })
       })
     },
 
