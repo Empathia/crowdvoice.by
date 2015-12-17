@@ -23,10 +23,16 @@
 
 <script>
 	var headerEl = document.querySelector('header .header-actions');
-	var voiceId = null;
 	headerEl.innerHTML = '<h2>Top voice</h2>';
 
-	// Search voice widget
+	var voiceId = null;
+
+	/*************************************************************************************************
+	* Search Voice Input Widgets
+	*************************************************************************************************/
+	/*
+	 * Search Voice Input
+	 */
 	var searchInput = new CV.InputButton({
 		style     : 'primary',
 		placeholder : 'Search voice...',
@@ -36,7 +42,7 @@
 	searchInput.disableButton();
 
 	/*
-	 * Searcb voice event
+	 * Search voice event
 	 */
 	searchInput.inputEl.find('input').on('keyup', function(e){
 
@@ -81,7 +87,9 @@
 		voiceId = selectedVoice.id
 	});
 
-
+	/*************************************************************************************************
+	* Form Data Input Widgets
+	*************************************************************************************************/
 	// Voice video input
 	var voiceVideo = new CV.InputButton({
 		style     : 'primary',
@@ -173,9 +181,9 @@
 	}).render($('.video-description-voices'));
 	
 
-	/*
-	 * Submit Event
-	 */
+	/*************************************************************************************************
+	* Submit Event
+	*************************************************************************************************/
 	$(submitButton.el).on('click', function(){ 
 
 		var videoFile = voiceVideoInput.files[0];
@@ -192,27 +200,29 @@
 		formData.append('sourceUrl', sourceUrl);
 		formData.append('description', description);
 
-		if(videoFile && imageFile && sourceTitle && sourceUrl && voiceId){ 
+		if(videoFile && sourceTitle && sourceUrl && voiceId){ 
 			$.ajax({
 		      type: "POST",
 		      url:'/admin/topVoices',
 		      headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
 		      processData: false,
+		      cache: false,
+		      contentType: false,
 		      data : formData,
 		      success: function(data){
 		      	console.log(data);
-		      	console.log('Nice');
+		      	console.log('Success');
 		      }
 		    });
 		} else {
-			console.log('vacio');
+			console.log('Empty');
 		}
 
 	});
 
-	/*
-	 * Search helper functions
-	 */
+	/*************************************************************************************************
+	* Search helper functions
+	*************************************************************************************************/
 	var voiceElBase = $('<div class="person" id=""></div>');
 
 	// Display users on search dropdown
@@ -247,6 +257,7 @@
 	function setselectedVoice(voice){
 		searchInput.enableButton();
 		selectedVoice = voice;
+		voiceId = selectedVoice.id
 		searchInput.inputEl.find('input').val( searchInput.element.find('.search-results').find('#'+selectedVoice.id).text());
 		searchInput.element.find('.search-results').empty();
 		searchInput.element.find('.search-results').hide();
