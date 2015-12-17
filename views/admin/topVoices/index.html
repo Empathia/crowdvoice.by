@@ -4,7 +4,7 @@
 
 <br class="-clear-after">
 
-<div class="admin-voices-list" id="pos-container">
+<div class="topvoice-container" id="pos-container">
 
 	<div class="admin-user" id="" data-position="">
 		<div class="upload-video-voices">
@@ -46,7 +46,16 @@
 
 	voiceVideoInput.setAttribute('type', 'file');
 	voiceVideoInput.setAttribute('hidden', 'true');
+	voiceVideoInput.setAttribute('accept', 'video/*');
+
 	voiceVideo.buttonEl.on('click', function(){ $(voiceVideoInput).click();} );
+	
+	$(voiceVideoInput).on('change', function(){
+		var element = document.createElement('p');
+		element.innerText = voiceVideoInput.files[0].name;
+		var labelContainer = voiceVideo.el.querySelector('.cv-input');
+		labelContainer.appendChild(element);
+	});
 
 	// Voice image
 	var voiceImage = new CV.InputButton({
@@ -55,6 +64,20 @@
 		title     : "Add voice image",
 		buttonLabel : "Search file"
 	}).render($('.upload-image-voices'));
+	var voiceImageInput = voiceImage.el.querySelector('input');
+
+	voiceImageInput.setAttribute('type', 'file');
+	voiceImageInput.setAttribute('hidden', 'true');
+	voiceImageInput.setAttribute('accept', 'image/*');
+	
+	voiceImage.buttonEl.on('click', function(){ $(voiceImageInput).click();} );
+	
+	$(voiceImageInput).on('change', function(){
+		var element = document.createElement('p');
+		element.innerText = voiceImageInput.files[0].name;
+		var labelContainer = voiceImage.el.querySelector('.cv-input');
+		labelContainer.appendChild(element);
+	});
 
 	// Voice text
 	var voiceText = new CV.UI.Input({
@@ -62,11 +85,9 @@
         data: {
             label : 'Video source title',
             inputClassName : '-lg -block',
-            attr : {
-                placeholder : 'Source title...'
-            }
         }
 	}).render($('.video-text-voices'));
+	var inputText = voiceText.el.querySelector('input');
 
 	// Voice url
 	var voiceUrl = new CV.UI.Input({
@@ -74,16 +95,14 @@
         data: {
             label : 'Video source url',
             inputClassName : '-lg -block',
-            attr : {
-                placeholder : 'Source url...'
-            }
         }
 	}).render($('.video-url-voices'));
+	var inputUrl = voiceUrl.el.querySelector('input');
+	inputUrl.setAttribute('type', 'url');
 
 	// Upload voice video
 	var voiceDescription = new CV.UI.Input({
 		style     : 'primary',
-		placeholder : 'Add description...',
 		data : {
             isTextArea : true,
             label : 'Description',
@@ -95,5 +114,51 @@
             }
         }
 	}).render($('.video-description-voices'));
+	var descriptionInput = voiceDescription.el.querySelector('textarea');
+
+	var submitButton = new CV.UI.Button({
+		name: 'submitButton',
+		className : 'primary',
+		data : {
+			value : 'Submit video'
+		}
+	}).render($('.video-description-voices'));
+	
+	$(submitButton.el).on('click', function(){ 
+
+		var videoFile = voiceVideoInput.files[0];
+		var imageFile = voiceImageInput.files[0];
+		var sourceTitle = inputText.value;
+		var sourceUrl = inputUrl.value;
+		var description = descriptionInput.value;
+		var data = {
+		    files : {
+		      	video : videoFile
+		    },
+		    body : {
+		      	voiceId : '120',
+		      	sourceText : sourceTitle,
+		      	sourceUrl : sourceUrl,
+		      	description : description
+		    }
+		};
+		
+		if(videoFile && imageFile && sourceTitle && sourceUrl){ 
+			$.ajax({
+		      type: "POST",
+		      url:'/admin/topVoices',
+		      headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
+		      processData: false,
+		      data : data,
+		      success: function(data){
+		      	console.log(data);
+		      	console.log('Nice');
+		      }
+		    });
+		} else {
+			console.log('vacio');
+		}
+
+	});
 
 </script>
