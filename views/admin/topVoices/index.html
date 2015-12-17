@@ -183,25 +183,22 @@
 		var sourceTitle = inputText.value;
 		var sourceUrl = inputUrl.value;
 		var description = descriptionInput.value;
-		var data = {
-		    files : {
-		      	video : videoFile
-		    },
-		    body : {
-		      	voiceId : voiceId,
-		      	sourceText : sourceTitle,
-		      	sourceUrl : sourceUrl,
-		      	description : description
-		    }
-		};
-		console.log(data);
+		var formData = new FormData();
+
+		formData.append('video', videoFile);
+		formData.append('poster', imageFile);
+		formData.append('voiceId', voiceId);
+		formData.append('sourceText', sourceTitle);
+		formData.append('sourceUrl', sourceUrl);
+		formData.append('description', description);
+
 		if(videoFile && imageFile && sourceTitle && sourceUrl && voiceId){ 
 			$.ajax({
 		      type: "POST",
 		      url:'/admin/topVoices',
 		      headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
 		      processData: false,
-		      data : data,
+		      data : formData,
 		      success: function(data){
 		      	console.log(data);
 		      	console.log('Nice');
