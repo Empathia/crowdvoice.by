@@ -4,7 +4,7 @@ var ffmpeg = require('fluent-ffmpeg'),
   fs = require('fs'),
   uuid = require('uuid') // use .v4
 
-var VideoFormatter = require(path.join(__dirname, '../../lib/VideoFormatter.js'))
+var FfmpegPresets = require(path.join(__dirname, '../../lib/VideoFormatter.js'))
 
 Admin.HomepageTopVoicesController = Class(Admin, 'HomepageTopVoicesController')({
 
@@ -33,15 +33,20 @@ Admin.HomepageTopVoicesController = Class(Admin, 'HomepageTopVoicesController')(
       return next(new NotFoundError())
     },
 
-    // POST /admin/topVoices
+    /** POST /admin/topVoices
+     *
+     * req.body = {
+     *   voiceId: Hashids.encode,
+     *   sourceText: String,
+     *   sourceUrl: String,
+     *   description: String (optional),
+     * }
+     *
+     * req.files = {
+     *  video: String,
+     * }
+     */
     create: function (req, res, next) {
-      /** POST
-       * req.body = {}
-       * req.files = {
-       *  video,
-       * }
-       */
-
       ACL.isAllowed('create', 'admin.homepageTopVoice', req.role, {
         currentPerson: req.currentPerson,
       }, function (err, isAllowed) {
@@ -51,17 +56,72 @@ Admin.HomepageTopVoicesController = Class(Admin, 'HomepageTopVoicesController')(
           return next(new NotFoundError())
         }
 
-        var sourceReadStream = fs.createReadStream(req.files.video)
-          mp4 = new ffmpeg(sourceReadStream),
-          webm = new ffmpeg(sourceReadStream),
-          ogv = new ffmpeg(sourceReadStream)
+        var topVoice = new HomepageTopVoice({
+          voiceId: hashids.decode(req.body.voiceId)[0],
+          sourceText: req.body.sourceText,
+          sourceUrl: req.body.sourceUrl,
+          description: req.body.description,
+          active: true,
+        })
 
-        // set ffmpeg options
-        mp4.preset(VideoFormatter.prototype.videoToMp4)
-        webm.preset(VideoFormatter.prototype.videoToWebm)
-        ogv.preset(VideoFormatter.prototype.videoToOgv)
+        var versions = {
+          mp4: 'videoToMp4',
+          webm: 'videoToWebm',
+          ogv: 'videoToOgv',
+        }
 
-        var outputPath
+        var outputBasePath,
+          useAmazon = false
+
+        async.series([
+          // Figure out videoUuid
+          function (nextSeries) {
+            var buffer = new Buffer(16)
+
+            uuid.v4(null, buffer, 0)
+
+            topVoice.videoUuid = uuid.unparse(buffer)
+
+            return nextSeries()
+          },
+
+          // Figure out base path
+          function (nextSeries) {
+            // {env}/{modelName}_{id}/{property}_{versionName}.{extension}
+
+            if (CONFIG.env === 'development') {
+              useAmazon = false
+              // Base path + topVoice_hashids.encode(:voiceId)_:videoUuid
+              outputBasePath = path.join(process.cwd(), '/public/videos/topVoice_' + req.body.voiceId + '_' + topVoice.videoUuid)
+            } else {
+              // Amazon stuff goes in here
+              useAmazon = true
+            }
+          },
+
+          // Process and upload to Amazon S3
+          function (nextSeries) {
+            async.each(Object.keys(versions), function (version, doneEach) {
+              var command = ffmpeg(fs.createReadStream(req.files.video))
+
+              // Apply preset
+              command.preset(FfmpegPresets.prototype[versions[version]])
+
+              var amazonParams = {
+                Bucket: 'crowdvoice.by',
+                ACL: 'public-read',
+              }
+
+              if (useAmazon) {
+                amazonS3.upload(amazonParams)
+              } else {
+                command.save(path.join(outputBasePath, '720.' + version))
+              }
+            }, nextSeries)
+          },
+        ], function (err) {
+          next (err)
+        })
       })
     },
 
