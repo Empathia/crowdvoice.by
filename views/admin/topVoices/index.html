@@ -30,16 +30,14 @@
 	var searchInput = new CV.InputButton({
 		style     : 'primary',
 		placeholder : 'Search voice...',
-		title     : "Add Top Voice",
-		buttonLabel : "Search"
+		title     : "Search Voice",
+		buttonLabel : "Select this voice"
 	}).render($('.search-voices'));
 	searchInput.disableButton();
 
 	/*
 	 * Searcb voice event
 	 */
-	// Search event
-	// Search event
 	searchInput.inputEl.find('input').on('keyup', function(e){
 
 		if (e.keyCode == 27) {
@@ -77,6 +75,10 @@
           }
 	    });
 
+	});
+
+	searchInput.buttonEl.on('click', function(){
+		voiceId = selectedVoice.id
 	});
 
 
@@ -248,12 +250,10 @@
 	function setselectedVoice(voice){
 		searchInput.enableButton();
 		selectedVoice = voice;
-		voiceId = voice.id;
-		searchInput.inputEl.find('input').val( searchInput.element.find('.search-results').find('#'+selectedVoice.id).text() );
+		searchInput.inputEl.find('input').val( searchInput.element.find('.search-results').find('#'+selectedVoice.id).text());
 		searchInput.element.find('.search-results').empty();
 		searchInput.element.find('.search-results').hide();
 	}
-
 
 	function getFeaturedIds () {
 		var nodes = document.querySelectorAll('.admin-user:not(.gu-mirror)');
