@@ -192,7 +192,7 @@
 		formData.append('sourceUrl', sourceUrl);
 		formData.append('description', description);
 
-		if(videoFile && imageFile && sourceTitle && sourceUrl && voiceId){ 
+		if(videoFile && sourceTitle && sourceUrl && voiceId){ 
 			$.ajax({
 		      type: "POST",
 		      url:'/admin/topVoices',
@@ -201,11 +201,11 @@
 		      data : formData,
 		      success: function(data){
 		      	console.log(data);
-		      	console.log('Nice');
+		      	console.log('Success');
 		      }
 		    });
 		} else {
-			console.log('vacio');
+			console.log('Empty');
 		}
 
 	});
@@ -247,6 +247,7 @@
 	function setselectedVoice(voice){
 		searchInput.enableButton();
 		selectedVoice = voice;
+		voiceId = selectedVoice.id
 		searchInput.inputEl.find('input').val( searchInput.element.find('.search-results').find('#'+selectedVoice.id).text());
 		searchInput.element.find('.search-results').empty();
 		searchInput.element.find('.search-results').hide();
