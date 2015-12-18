@@ -12,7 +12,7 @@ Class(CV, 'HomeView').includes(NodeSupport, CV.WidgetUtils)({
       if (this.topVoice) {
         this.appendChild(new CV.TopVoice({
           name: 'topVoice',
-          data: this.TopVoice
+          data: this.topVoice
         })).render(document.querySelector('.homepage-intro .top-voice'));
       }
 
