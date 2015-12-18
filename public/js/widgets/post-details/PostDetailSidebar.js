@@ -86,8 +86,7 @@ Class(CV, 'PostDetailSidebar').inherits(Widget).includes(BubblingSupport)({
 
             if (this._activatedItem) {
                 ScrollTo(this.scrollbar.getViewElement(), {
-                    x: 0,
-                    y: (this._activatedItem.el.getBoundingClientRect().top - 83),
+                    y: this._findPos(this._activatedItem.el) - 83,
                     duration: 600
                 });
             }
@@ -125,6 +124,19 @@ Class(CV, 'PostDetailSidebar').inherits(Widget).includes(BubblingSupport)({
 
         _filterSelectionUpdated : function _filterSelectionUpdated(ev) {
             this.filterItems(ev.sourceTypes);
+        },
+
+        /* Returns the Element top position.
+        * @private|helper
+        */
+        _findPos: function _findPos(obj) {
+          var curtop = 0;
+          if (obj.offsetParent) {
+            do {
+              curtop += obj.offsetTop;
+            } while (obj = obj.offsetParent);
+            return curtop;
+          }
         },
 
         destroy : function destroy() {

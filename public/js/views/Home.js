@@ -1,6 +1,5 @@
 Class(CV, 'HomeView').includes(NodeSupport, CV.WidgetUtils)({
   prototype: {
-
     featuredVoicesData: null,
     categoriesData: null,
     orgsData: null,
@@ -17,20 +16,16 @@ Class(CV, 'HomeView').includes(NodeSupport, CV.WidgetUtils)({
       this.featuredVoicesData.forEach(function(voice, index) {
         featuredVoicesElements.push(this.appendChild(new CV.VoiceCover({
           name: 'featuredVoice_' + index,
-          // className: 'slider-item',
+          className: 'slider-item',
           data: voice
         })).render(featuredVoicesList).el);
       }, this);
 
       new CV.Slider({
+        element: $(featuredVoicesWrapper),
+        itemsWidth: 340,
         appendArrowsTo: document.querySelector('.homepage-featured-voices .arrows-wrapper')
-      });
-
-      // new CV.ResponsiveSlider({
-      //   element: featuredVoicesWrapper,
-      //   dots: true,
-      //   minSlideWidth: 300
-      // });
+      }).update();
 
       /* STATS */
       [].slice.call(document.querySelectorAll('.stats .stats-number'), 0).forEach(function(number) {
@@ -63,11 +58,11 @@ Class(CV, 'HomeView').includes(NodeSupport, CV.WidgetUtils)({
         return card.render(orgsList);
       });
 
-      new CV.ResponsiveSlider({
-        element: orgsHolder,
-        dots: true,
-        minSlideWidth: 300
-      });
+      new CV.Slider({
+        element: $(orgsHolder),
+        itemsWidth: 340,
+        appendArrowsTo: document.querySelector('.homepage-organization-cards .arrows-wrapper')
+      }).update();
     }
   }
 });

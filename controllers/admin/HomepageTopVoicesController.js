@@ -43,7 +43,8 @@ Admin.HomepageTopVoicessController = Class(Admin, 'HomepageTopVoicesController')
      * }
      *
      * req.files = {
-     *  video: String,
+     *   video: String,
+     *   poster: String,
      * }
      */
     create: function (req, res, next) {
@@ -93,16 +94,19 @@ Admin.HomepageTopVoicessController = Class(Admin, 'HomepageTopVoicesController')
               useAmazon = false
               // Base path + topVoice_hashids.encode(:voiceId)_:videoUuid
               outputBasePath = path.join(process.cwd(), '/public/videos/topVoice_' + req.body.voiceId + '_' + topVoice.videoUuid)
+              fs.mkdirSync(outputBasePath)
             } else {
               // Amazon stuff goes in here
               useAmazon = true
             }
+
+            return nextSeries()
           },
 
           // Process and upload to Amazon S3
           function (nextSeries) {
             async.each(Object.keys(versions), function (version, doneEach) {
-              var command = ffmpeg(fs.createReadStream(req.files.video))
+              var command = ffmpeg(fs.createReadStream(req.files.video.path))
 
               // Apply preset
               command.preset(FfmpegPresets.prototype[versions[version]])
@@ -110,18 +114,19 @@ Admin.HomepageTopVoicessController = Class(Admin, 'HomepageTopVoicesController')
               var amazonParams = {
                 Bucket: 'crowdvoice.by',
                 ACL: 'public-read',
+                Body: command.pipe()
               }
 
+              // Upload to Amazon S3
               if (useAmazon) {
                 amazonS3.upload(amazonParams)
               } else {
+                // Save to FS
                 command.save(path.join(outputBasePath, '720.' + version))
               }
             }, nextSeries)
           },
-        ], function (err) {
-          next (err)
-        })
+        ], next)
       })
     },
 

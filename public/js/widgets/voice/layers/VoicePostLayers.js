@@ -184,8 +184,7 @@ Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
             });
 
             ScrollTo(this.scrollableArea, {
-                x: 0,
-                y: layer.el.getBoundingClientRect().top,
+                y: layer.element.offset().top,
                 duration: 600,
                 onComplete: function() {
                     _this.parent._listenScrollEvent = true;
