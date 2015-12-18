@@ -14,5 +14,10 @@ exports.down = function(knex, Promise) {
   return knex
     .schema.table('Notifications', function (t) {
       t.dropColumn('for_feed');
+    })
+    .then(function () {
+      return knex('Notifications')
+        .where('item_type', '=', 'message')
+        .del()
     });
 };
