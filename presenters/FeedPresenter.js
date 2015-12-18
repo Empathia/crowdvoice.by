@@ -44,6 +44,8 @@ var FeedPresenter = Module('FeedPresenter')({
                 return next()
               })
             })
+          } else {
+            return next()
           }
         },
 
