@@ -1,0 +1,25 @@
+.widget-slider {
+}
+
+.slider-arrow {
+  width: 10px;
+  height: 20px;
+  fill: @color-primary;
+  outline: none;
+  cursor: pointer;
+}
+
+.slider-arrow-svg {
+  width: 100%;
+  height: 100%;
+}
+.slider-arrow.disabled {
+  cursor: not-allowed;
+  opacity: 0.3;
+}
+
+.slider-list {
+  font-size: 0;
+  transform: translateX(0%);
+  transition: transform 240ms ease;
+}
