@@ -4,9 +4,9 @@
 
 <br class="-clear-after">
 
-<div class="topvoice-container" id="pos-container">
+<div class="topvoice-container" id="pos-container" >
 
-	<div class="admin-user" id="" data-position="">
+	<form class="admin-user" id="voice-video" onsubmit="return false;">
 		<div class="upload-video-voices">
 		</div>
 		<div class="upload-image-voices">
@@ -17,33 +17,33 @@
 		</div>
 		<div class="video-description-voices">
 		</div>
-	</div>
+	</form>
 
 </div>
 
 <script>
+    var videoFile = null;
+    var imageFile = null;
+    var sourceTitle = null;
+    var sourceUrl = null;
+    var description = null;
+    var voiceId = null;
 	var headerEl = document.querySelector('header .header-actions');
 	headerEl.innerHTML = '<h2>Top voice</h2>';
-
-	var voiceId = null;
 
 	/*************************************************************************************************
 	* Search Voice Input Widgets
 	*************************************************************************************************/
-	/*
-	 * Search Voice Input
-	 */
+
 	var searchInput = new CV.InputButton({
 		style     : 'primary',
 		placeholder : 'Search voice...',
 		title     : "Search Voice",
 		buttonLabel : "Select this voice"
 	}).render($('.search-voices'));
+
 	searchInput.disableButton();
 
-	/*
-	 * Search voice event
-	 */
 	searchInput.inputEl.find('input').on('keyup', function(e){
 
 		if (e.keyCode == 27) {
@@ -84,40 +84,44 @@
 	});
 
 	searchInput.buttonEl.on('click', function(){
-		voiceId = selectedVoice.id
+		voiceId = selectedVoice.id;
+        voiceVideo.enableButton();
+        voiceImage.enableButton();
+        $(inputUrl).removeAttr('disabled');
+        $(inputText).removeAttr('disabled');
 	});
 
 	/*************************************************************************************************
 	* Form Data Input Widgets
 	*************************************************************************************************/
-	// Voice video input
 	var voiceVideo = new CV.InputButton({
 		style     : 'primary',
 		placeholder : 'Upload video...',
-		title     : "Add voice video",
-		buttonLabel : "Search file"
+		title     : "Add voice video *",
+		buttonLabel : "Search video file"
 	}).render($('.upload-video-voices'));
 	var voiceVideoInput = voiceVideo.el.querySelector('input');
 
 	voiceVideoInput.setAttribute('type', 'file');
 	voiceVideoInput.setAttribute('hidden', 'true');
 	voiceVideoInput.setAttribute('accept', 'video/*');
-
+    
 	voiceVideo.buttonEl.on('click', function(){ $(voiceVideoInput).click();} );
-	
+	voiceVideo.disableButton();
+
 	$(voiceVideoInput).on('change', function(){
 		var element = document.createElement('p');
 		element.innerText = voiceVideoInput.files[0].name;
 		var labelContainer = voiceVideo.el.querySelector('.cv-input');
 		labelContainer.appendChild(element);
+        checkInputs();
 	});
 
-	// Voice image input
 	var voiceImage = new CV.InputButton({
 		style     : 'primary',
 		placeholder : 'Upload image...',
 		title     : "Add voice image",
-		buttonLabel : "Search file"
+		buttonLabel : "Search image file"
 	}).render($('.upload-image-voices'));
 	var voiceImageInput = voiceImage.el.querySelector('input');
 
@@ -126,34 +130,52 @@
 	voiceImageInput.setAttribute('accept', 'image/*');
 	
 	voiceImage.buttonEl.on('click', function(){ $(voiceImageInput).click();} );
+    voiceImage.disableButton();
 	
 	$(voiceImageInput).on('change', function(){
 		var element = document.createElement('p');
 		element.innerText = voiceImageInput.files[0].name;
 		var labelContainer = voiceImage.el.querySelector('.cv-input');
 		labelContainer.appendChild(element);
+        checkInputs();
 	});
 
 	// Voice text input
 	var voiceText = new CV.UI.Input({
 		name : 'voiceText',
         data: {
-            label : 'Video source title',
+            label : 'Video source title *',
             inputClassName : '-lg -block',
+            attr : {
+                required : 'required'
+            }
         }
 	}).render($('.video-text-voices'));
 	var inputText = voiceText.el.querySelector('input');
+    inputText.setAttribute('disabled', true);
+
+    $(inputText).on('keyup', function(){
+        checkInputs();
+    });
 
 	// Voice url input
 	var voiceUrl = new CV.UI.Input({
 		name : 'voiceUrl',
         data: {
-            label : 'Video source url',
+            label : 'Video source url *',
             inputClassName : '-lg -block',
+            attr : {
+                required : 'required'
+            }
         }
 	}).render($('.video-url-voices'));
 	var inputUrl = voiceUrl.el.querySelector('input');
 	inputUrl.setAttribute('type', 'url');
+    inputUrl.setAttribute('disabled', true);
+
+    $(inputUrl).on('keyup', function(){
+        checkInputs();
+    });
 
 	// Description textarea
 	var voiceDescription = new CV.UI.Input({
@@ -179,46 +201,70 @@
 			value : 'Submit video'
 		}
 	}).render($('.video-description-voices'));
-	
+    submitButton.disable();
+
 
 	/*************************************************************************************************
 	* Submit Event
 	*************************************************************************************************/
-	$(submitButton.el).on('click', function(){ 
+    function checkInputs(){
+        videoFile = voiceVideoInput.files[0];
+        imageFile = voiceImageInput.files[0];
+        sourceTitle = inputText.value;
+        sourceUrl = inputUrl.value;
+        description = descriptionInput.value;
 
-		var videoFile = voiceVideoInput.files[0];
-		var imageFile = voiceImageInput.files[0];
-		var sourceTitle = inputText.value;
-		var sourceUrl = inputUrl.value;
-		var description = descriptionInput.value;
-		var formData = new FormData();
+        if(videoFile && sourceTitle && sourceUrl && voiceId){
+            submitButton.enable();
+            $(inputUrl).removeAttr('disabled');
+            $(inputText).removeAttr('disabled');
+        }else{
+            submitButton.disable();
+        }
+    }
 
-		formData.append('video', videoFile);
-		formData.append('poster', imageFile);
-		formData.append('voiceId', voiceId);
-		formData.append('sourceText', sourceTitle);
-		formData.append('sourceUrl', sourceUrl);
-		formData.append('description', description);
 
-		if(videoFile && sourceTitle && sourceUrl && voiceId){ 
-			$.ajax({
-		      type: "POST",
-		      url:'/admin/topVoices',
-		      headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
-		      processData: false,
-		      cache: false,
-		      contentType: false,
-		      data : formData,
-		      success: function(data){
-		      	console.log(data);
-		      	console.log('Success');
-		      }
-		    });
-		} else {
-			console.log('Empty');
-		}
+    $(submitButton.el).on('click', function(e){ 
+        e.preventDefault();
+        
+        var videoFile = voiceVideoInput.files[0];
+        var imageFile = voiceImageInput.files[0];
+        var sourceTitle = inputText.value;
+        var sourceUrl = inputUrl.value;
+        var description = descriptionInput.value;
+        var formData = new FormData();
 
-	});
+        formData.append('video', videoFile);
+        formData.append('poster', imageFile);
+        formData.append('voiceId', voiceId);
+        formData.append('sourceText', sourceTitle);
+        formData.append('sourceUrl', sourceUrl);
+        formData.append('description', description);
+
+        if(videoFile && sourceTitle && sourceUrl && voiceId){ 
+            $.ajax({
+              type: "POST",
+              url:'/admin/topVoices',
+              headers: { 'csrf-token': $('meta[name="csrf-token"]').attr('content') },
+              processData: false,
+              cache: false,
+              contentType: false,
+              data : formData,
+              success: function(data){
+                console.log(data);
+                console.log('Success');
+              },
+              error: function(err, data){
+                console.log(err);
+                console.log(data);
+              }
+            });
+        } else {
+            console.log('Empty');
+        }
+
+    });
+		
 
 	/*************************************************************************************************
 	* Search helper functions
