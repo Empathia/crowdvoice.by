@@ -52,10 +52,10 @@ Class(CV, 'TopVoice').inherits(Widget).includes(CV.WidgetUtils)({
       var authorLink = this.el.querySelector('.top-voice__info-author a');
       var sourceLink = this.el.querySelector('.top-voice__video-source a');
 
-      this.dom.updateAttr('poster', this.videoElement, this.data.video_poster);
-      this.dom.updateAttr('src', this.el.querySelector('[type="video/webm"]'), this.data.video_path + '.webm');
-      this.dom.updateAttr('src', this.el.querySelector('[type="video/ogg"]'), this.data.video_path + '.ogv');
-      this.dom.updateAttr('src', this.el.querySelector('[type="video/mp4"]'), this.data.video_path + '.mp4');
+      this.dom.updateAttr('poster', this.videoElement, this.data.posterPath);
+      this.dom.updateAttr('src', this.el.querySelector('[type="video/webm"]'), this.data.videoPath + '.webm');
+      this.dom.updateAttr('src', this.el.querySelector('[type="video/ogg"]'), this.data.videoPath + '.ogv');
+      this.dom.updateAttr('src', this.el.querySelector('[type="video/mp4"]'), this.data.videoPath + '.mp4');
 
       this.dom.updateText(this.el.querySelector('.top-voice__info-title'), this.data.voice.title);
       this.dom.updateText(this.el.querySelector('.top-voice__info-description'), this.data.description || this.data.voice.description);
@@ -63,8 +63,8 @@ Class(CV, 'TopVoice').inherits(Widget).includes(CV.WidgetUtils)({
       this.dom.updateAttr('href', authorLink, '/' + this.data.voice.owner.profileName + '/');
       this.dom.updateText(authorLink, this.data.voice.owner.name);
 
-      this.dom.updateAttr('href', sourceLink, this.data.video_source.url);
-      this.dom.updateText(sourceLink, this.data.video_source.text);
+      this.dom.updateAttr('href', sourceLink, this.data.sourceUrl);
+      this.dom.updateText(sourceLink, this.data.sourceText);
 
       authorLink = sourceLink = null;
     },
