@@ -81,6 +81,7 @@
     "underscore": "^1.8.3",
     "unshortener": "^0.1.0",
     "url-loader": "^0.5.5",
+    "uuid": "^2.0.1",
     "values.js": "^1.0.3",
     "velocity-animate": "^1.2.2",
     "webpack": "^1.7.3",
