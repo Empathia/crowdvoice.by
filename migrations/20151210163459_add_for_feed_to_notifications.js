@@ -16,7 +16,7 @@ exports.down = function(knex, Promise) {
       t.dropColumn('for_feed');
     })
     .then(function () {
-      return knex('Notifications')
+      return knex('FeedActions')
         .where('item_type', '=', 'message')
         .del()
     });
