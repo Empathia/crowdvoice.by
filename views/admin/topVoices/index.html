@@ -214,7 +214,7 @@
         sourceUrl = inputUrl.value;
         description = descriptionInput.value;
 
-        if(videoFile && sourceTitle && sourceUrl && voiceId){
+        if(videoFile && sourceTitle && sourceUrl && voiceId && imageFile){
             submitButton.enable();
             $(inputUrl).removeAttr('disabled');
             $(inputText).removeAttr('disabled');
@@ -241,7 +241,7 @@
         formData.append('sourceUrl', sourceUrl);
         formData.append('description', description);
 
-        if(videoFile && sourceTitle && sourceUrl && voiceId){ 
+        if(videoFile && sourceTitle && sourceUrl && voiceId && imageFile){ 
             $.ajax({
               type: "POST",
               url:'/admin/topVoices',
@@ -251,8 +251,11 @@
               contentType: false,
               data : formData,
               success: function(data){
-                console.log(data);
-                console.log('Success');
+                if(data.status === "processing"){
+                    $(submitButton.el).text('Yor video is being processed.');
+                    $(submitButton.el).css('background-color', '#58cc52');
+                    $(submitButton.el).css('border-color', '#fbfefb');
+                }
               },
               error: function(err, data){
                 console.log(err);
