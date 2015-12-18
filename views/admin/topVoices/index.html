@@ -17,6 +17,11 @@
 		</div>
 		<div class="video-description-voices">
 		</div>
+        <div class="video-alert-voices">
+        </div>
+        <br>
+        <div class="video-submit-voices">
+        </div>
 	</form>
 
 </div>
@@ -200,7 +205,7 @@
 		data : {
 			value : 'Submit video'
 		}
-	}).render($('.video-description-voices'));
+	}).render($('.video-submit-voices'));
     submitButton.disable();
 
 
@@ -252,9 +257,15 @@
               data : formData,
               success: function(data){
                 if(data.status === "processing"){
-                    $(submitButton.el).text('Yor video is being processed.');
+                    var alertRow = new CV.Alert({
+                      name : 'myAlert',
+                      text : 'Your video is being processed! It will be ready in about 5 minutes.'
+                     }).render($('.video-alert-voices'));
+
+                    $(submitButton.el).text('Uploaded');
                     $(submitButton.el).css('background-color', '#58cc52');
                     $(submitButton.el).css('border-color', '#fbfefb');
+                    submitButton.disable();
                 }
               },
               error: function(err, data){
