@@ -75,6 +75,13 @@ Admin.HomepageTopVoicessController = Class(Admin, 'HomepageTopVoicesController')
           useAmazon = false
 
         async.series([
+          // Make all other videos inactive
+          function (nextSeries) {
+            db('HomepageTopVoices')
+              .update({ active: false })
+              .exec(nextSeries)
+          },
+
           // Figure out videoUuid
           function (nextSeries) {
             var buffer = new Buffer(16)
@@ -137,7 +144,13 @@ Admin.HomepageTopVoicessController = Class(Admin, 'HomepageTopVoicesController')
 
                 return doneEach()
               })
-            }, nextSeries)
+            }, function (err) {
+              if (err) { return nextSeries(err) }
+
+              logger.log('FFmpeg: Finished!')
+
+              return nextSeries()
+            })
           },
 
           // Upload video to Amazon
@@ -187,11 +200,17 @@ Admin.HomepageTopVoicessController = Class(Admin, 'HomepageTopVoicesController')
               Body: fs.createReadStream(req.files.poster.path),
               ContentType: req.files.poster.mimetype,
             }
+
+            amazonS3.upload(amazonParams, nextSeries)
           },
 
-          // Delete stuff in local
+          // Delete stuff in local (after uploading to Amazon)
           function (nextSeries) {
-            return nextSeries()
+            if (useAmazon) {
+              return nextSeries()
+            }
+
+            fsExtra.remove(outputBasePath, nextSeries)
           },
 
           // Populate and save records
@@ -213,6 +232,8 @@ Admin.HomepageTopVoicessController = Class(Admin, 'HomepageTopVoicesController')
 
     // PUT /admin/topVoices/:voiceId
     update: function (req, res, next) {
+      return next(new NotFoundError())
+
       ACL.isAllowed('update', 'admin.homepageTopVoices', req.role, {
         currentPerson: req.currentPerson,
       }, function (err, isAllowed) {
@@ -226,6 +247,8 @@ Admin.HomepageTopVoicessController = Class(Admin, 'HomepageTopVoicesController')
 
     // DELETE /admin/topVoices/:voiceId
     destroy: function (req, res, next) {
+      return next(new NotFoundError())
+
       ACL.isAllowed('destroy', 'admin.homepageTopVoices', req.role, {
         currentPerson: req.currentPerson,
       }, function (err, isAllowed) {

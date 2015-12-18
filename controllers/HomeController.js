@@ -16,26 +16,6 @@ var HomeController = Class('HomeController')({
         return res.redirect('/' + req.currentPerson.profileName + '/feed/');
       }
 
-      res.locals.topVoice = {
-        voice: {
-          title: 'Ferguson riots: Ruling sparks night of violence.',
-          description: 'The US town of Ferguson has seen rioting and looting after a jury decided not to bring charges over the killing of a black teenager.',
-          slug: 'slayer-reign-in-blood',
-          owner: {
-            name: 'The International Planned Parenthood Federation',
-            profileName: 'noeldelgado'
-          }
-        },
-
-        video_path: '/media/MET_low',
-        video_source: {
-          url: 'https://www.youtube.com/user/noeldelgado',
-          text: 'Youtube.com/noeldelgado'
-        },
-        video_poster: '/media/MET_img.jpg',
-        description: 'The US town of Ferguson has seen rioting and looting after a jury decided not to bring charges over the killing of a black teenager.'
-      };
-
       ACL.isAllowed('show', 'homepage', req.role, {}, function(err, isAllowed) {
         if (err) { return next(err); }
 
@@ -115,6 +95,29 @@ var HomeController = Class('HomeController')({
                 });
               });
             });
+        }, function(done) {
+          HomepageTopVoice.find({ active: true }, function (err, topVoices) {
+            if (err) { return done(err); }
+
+            var topVoice = new HomepageTopVoice(topVoices[0]);
+
+            delete topVoice.id;
+            delete topVoice.voiceId;
+
+            res.locals.topVoice = topVoice;
+
+            Voice.find({ id: topVoices[0].voiceId }, function (err, voice) {
+              if (err) { return done(err); }
+
+              VoicesPresenter.build(voice, req.currentPerson, function (err, presented) {
+                if (err) { return done(err); }
+
+                res.locals.topVoice.voice = presented[0];
+
+                return done();
+              });
+            });
+          });
         }], function(err) {
           if (err) { return next(err); }
 

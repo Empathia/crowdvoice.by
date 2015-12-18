@@ -900,15 +900,38 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
                   isThereNextPage: isThereNextPage
                 };
 
-                return res.format({
-                  html: function () {
-                    req.feed = answer;
-                    res.locals.feed = answer;
-                    res.render('people/feed');
-                  },
-                  json: function () {
-                    res.json(answer);
-                  }
+                HomepageTopVoice.find({ active: true }, function (err, topVoices) {
+                  if (err) { return done(err); }
+
+                  var topVoice = new HomepageTopVoice(topVoices[0]);
+
+                  delete topVoice.id;
+                  delete topVoice.voiceId;
+
+                  res.locals.topVoice = topVoice;
+
+                  Voice.find({ id: topVoices[0].voiceId }, function (err, voice) {
+                    if (err) { return done(err); }
+
+                    console.log(voice)
+
+                    VoicesPresenter.build(voice, req.currentPerson, function (err, presented) {
+                      if (err) { return done(err); }
+
+                      res.locals.topVoice.voice = presented[0];
+
+                      return res.format({
+                        html: function () {
+                          req.feed = answer;
+                          res.locals.feed = answer;
+                          res.render('people/feed');
+                        },
+                        json: function () {
+                          res.json(answer);
+                        }
+                      });
+                    });
+                  });
                 });
               });
             });
