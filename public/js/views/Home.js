@@ -9,6 +9,13 @@ Class(CV, 'HomeView').includes(NodeSupport, CV.WidgetUtils)({
         this[propertyName] = config[propertyName];
       }, this);
 
+      if (this.topVoice) {
+        this.appendChild(new CV.TopVoice({
+          name: 'topVoice',
+          data: this.TopVoice
+        })).render(document.querySelector('.homepage-intro .top-voice'));
+      }
+
       /* FEATURED VOICES */
       var featuredVoicesWrapper = document.querySelector('.homepage-featured-voices-container');
       var featuredVoicesList = featuredVoicesWrapper.querySelector('.slider-list');
