@@ -206,7 +206,7 @@ Admin.HomepageTopVoicessController = Class(Admin, 'HomepageTopVoicesController')
 
           // Delete stuff in local (after uploading to Amazon)
           function (nextSeries) {
-            if (useAmazon) {
+            if (!useAmazon) {
               return nextSeries()
             }
 
