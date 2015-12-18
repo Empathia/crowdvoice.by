@@ -1,8 +1,9 @@
 'use strict'
 
-var ffmpeg = require('fluent-ffmpeg'),
-  fs = require('fs'),
-  uuid = require('uuid') // use .v4
+var fs = require('fs'),
+  uuid = require('uuid'), // use .v4
+  childExec = require('child_process').exec,
+  fsExtra = require('fs-extra')
 
 var FfmpegPresets = require(path.join(__dirname, '../../lib/FfmpegPresets.js'))
 
@@ -48,6 +49,7 @@ Admin.HomepageTopVoicessController = Class(Admin, 'HomepageTopVoicesController')
      * }
      */
     create: function (req, res, next) {
+      console.log(req.files)
       ACL.isAllowed('create', 'admin.homepageTopVoices', req.role, {
         currentPerson: req.currentPerson,
       }, function (err, isAllowed) {
@@ -61,17 +63,15 @@ Admin.HomepageTopVoicessController = Class(Admin, 'HomepageTopVoicesController')
           voiceId: hashids.decode(req.body.voiceId)[0],
           sourceText: req.body.sourceText,
           sourceUrl: req.body.sourceUrl,
-          description: req.body.description,
+          description: req.body.description || null,
           active: true,
         })
 
-        var versions = {
-          mp4: 'videoToMp4',
-          webm: 'videoToWebm',
-          ogv: 'videoToOgv',
-        }
+        var versions = [ 'mp4', 'webm', 'ogv' ]
 
-        var outputBasePath,
+        var videoDir,
+          outputBasePath,
+          amazonBasePath,
           useAmazon = false
 
         async.series([
@@ -86,47 +86,124 @@ Admin.HomepageTopVoicessController = Class(Admin, 'HomepageTopVoicesController')
             return nextSeries()
           },
 
-          // Figure out base path
+          // Figure out base path(s)
           function (nextSeries) {
-            // {env}/{modelName}_{id}/{property}_{versionName}.{extension}
+            videoDir = 'topVoice_' + req.body.voiceId + '_' + topVoice.videoUuid
 
-            if (CONFIG.env === 'development') {
+            outputBasePath = path.join(process.cwd(), 'public/videos/' + videoDir)
+            amazonBasePath = CONFIG.environment + '/videos/' + videoDir
+
+            if (CONFIG.environment === 'development') {
               useAmazon = false
-              // Base path + topVoice_hashids.encode(:voiceId)_:videoUuid
-              outputBasePath = path.join(process.cwd(), '/public/videos/topVoice_' + req.body.voiceId + '_' + topVoice.videoUuid)
-              fs.mkdirSync(outputBasePath)
+              topVoice.videoPath = outputBasePath + '/video'
+              topVoice.posterPath = outputBasePath + '/poster.' + req.files.poster.extension
             } else {
-              // Amazon stuff goes in here
               useAmazon = true
+              topVoice.videoPath = amazonBasePath + '/video'
+              topVoice.posterPath = amazonBasePath + '/poster.' + req.files.poster.extension
             }
+
+            fs.mkdir(outputBasePath, nextSeries)
+          },
+
+          // Let the front end know stuff's happening
+          function (nextSeries) {
+            res.status(200).json({
+              status: 'processing'
+            })
 
             return nextSeries()
           },
 
-          // Process and upload to Amazon S3
+          // Process video
           function (nextSeries) {
-            async.each(Object.keys(versions), function (version, doneEach) {
-              var command = ffmpeg(fs.createReadStream(req.files.video.path))
+            var presets = {
+              mp4: 'toMp4',
+              webm: 'toWebm',
+              ogv: 'toOgv',
+            }
 
-              // Apply preset
-              command.preset(FfmpegPresets.prototype[versions[version]])
+            async.each(versions, function (version, doneEach) {
+              var command = FfmpegPresets[presets[version]]
+              command = command.replace(/{input-path}/g, req.files.video.path)
+              command = command.replace(/{output-dir}/g, outputBasePath)
+              command = command.replace(/{output-file}/g, 'video')
+
+              childExec(command, function (err, stdout, stderr) {
+                if (err) { return doneEach(err) }
+
+                logger.log('FFmpeg STDOUT:', stdout)
+                logger.log('FFmpeg STDERR:', stderr)
+
+                return doneEach()
+              })
+            }, nextSeries)
+          },
+
+          // Upload video to Amazon
+          function (nextSeries) {
+            if (!useAmazon) {
+              return nextSeries()
+            }
+
+            async.each(versions, function (version, doneEach) {
+              var contentTypes = {
+                'ogv': 'ogg',
+                'mp4': 'mp4',
+                'webm': 'webm',
+              }
 
               var amazonParams = {
                 Bucket: 'crowdvoice.by',
                 ACL: 'public-read',
-                Body: command.pipe()
+                Key: amazonBasePath + '/video.' + version,
+                Body: fs.createReadStream(path.join(outputBasePath, 'video.' + version)),
+                ContentType: 'video/' + contentTypes[version],
               }
 
-              // Upload to Amazon S3
-              if (useAmazon) {
-                amazonS3.upload(amazonParams)
-              } else {
-                // Save to FS
-                command.save(path.join(outputBasePath, '720.' + version))
-              }
+              amazonS3.upload(amazonParams, doneEach)
             }, nextSeries)
           },
-        ], next)
+
+          // Move image (development)
+          function (nextSeries) {
+            if (useAmazon) {
+              return nextSeries()
+            }
+
+            fsExtra.move(req.files.poster.path, topVoice.posterPath, nextSeries)
+          },
+
+          // Upload image to Amazon (not development)
+          function (nextSeries) {
+            if (!useAmazon) {
+              return nextSeries()
+            }
+
+            var amazonParams = {
+              Bucket: 'crowdvoice.by',
+              ACL: 'public-read',
+              Key: topVoice.posterPath,
+              Body: fs.createReadStream(req.files.poster.path),
+              ContentType: req.files.poster.mimetype,
+            }
+          },
+
+          // Delete stuff in local
+          function (nextSeries) {
+            return nextSeries()
+          },
+
+          // Populate and save records
+          function (nextSeries) {
+            topVoice.save(nextSeries)
+          },
+        ], function (err) {
+          if (err) {
+            logger.error(err)
+            logger.error(err.stack)
+          }
+        })
       })
     },
 
