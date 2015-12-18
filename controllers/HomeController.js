@@ -99,6 +99,10 @@ var HomeController = Class('HomeController')({
           HomepageTopVoice.find({ active: true }, function (err, topVoices) {
             if (err) { return done(err); }
 
+            if (topVoices.length < 1) {
+              return done();
+            }
+
             var topVoice = new HomepageTopVoice(topVoices[0]);
 
             delete topVoice.id;
