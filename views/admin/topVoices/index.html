@@ -252,9 +252,10 @@
               data : formData,
               success: function(data){
                 if(data.status === "processing"){
-                    $(submitButton.el).text('Yor video is being processed.');
+                    $(submitButton.el).text('Uploaded');
                     $(submitButton.el).css('background-color', '#58cc52');
                     $(submitButton.el).css('border-color', '#fbfefb');
+                    alert("Your video is being processed! Your video will be ready in about 5 minutes.");
                 }
               },
               error: function(err, data){
