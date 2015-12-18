@@ -74,10 +74,17 @@ Class(CV, 'TopVoice').inherits(Widget).includes(CV.WidgetUtils)({
      * @return TopVoice
      */
     showVoiceButton: function showVoiceButton() {
+      var infoElement = this.el.querySelector('.top-voice__info');
       var buttonString = this.constructor.VOICE_BUTTON_TEMPLATE;
+
+      // switch description and author direction
+      var description = this.el.querySelector('.top-voice__info-description');
+      infoElement.appendChild(description);
+
       buttonString = buttonString.replace(/{href}/, '/' + this.data.voice.owner.propertyName + '/' + this.data.voice.slug);
-      this.el.querySelector('.top-voice__info').insertAdjacentHTML('beforeend', buttonString);
-      buttonString = null;
+      infoElement.insertAdjacentHTML('beforeend', buttonString);
+
+      buttonString = infoElement = null;
       return this;
     },
 
