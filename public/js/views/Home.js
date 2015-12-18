@@ -24,7 +24,8 @@ Class(CV, 'HomeView').includes(NodeSupport, CV.WidgetUtils)({
       new CV.Slider({
         element: $(featuredVoicesWrapper),
         itemsWidth: 340,
-        appendArrowsTo: document.querySelector('.homepage-featured-voices .arrows-wrapper')
+        appendArrowsTo: document.querySelector('.homepage-featured-voices .arrows-wrapper'),
+        appendDotsTo: document.querySelector('.homepage-featured-voices .dots-wrapper')
       }).update();
 
       /* STATS */
@@ -61,7 +62,8 @@ Class(CV, 'HomeView').includes(NodeSupport, CV.WidgetUtils)({
       new CV.Slider({
         element: $(orgsHolder),
         itemsWidth: 340,
-        appendArrowsTo: document.querySelector('.homepage-organization-cards .arrows-wrapper')
+        appendArrowsTo: document.querySelector('.homepage-organization-cards .arrows-wrapper'),
+        appendDotsTo: document.querySelector('.homepage-organization-cards .dots-wrapper')
       }).update();
     }
   }
