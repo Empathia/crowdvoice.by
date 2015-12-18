@@ -100,6 +100,7 @@ var HomeController = Class('HomeController')({
             if (err) { return done(err); }
 
             if (topVoices.length < 1) {
+              res.locals.topVoice = null;
               return done();
             }
 

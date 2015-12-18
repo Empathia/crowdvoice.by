@@ -15,10 +15,12 @@ Class(CV.Views, 'Feed').includes(NodeSupport, CV.WidgetUtils)({
     _setup: function _setup() {
       var time = 1000;
 
-      this.appendChild(new CV.TopVoice({
-        name: 'topVoice',
-        data: this.topVoice
-      })).render(this.el.querySelector('.feed-top-voice'));
+      if (this.topVoice) {
+        this.appendChild(new CV.TopVoice({
+          name: 'topVoice',
+          data: this.topVoice
+        })).render(this.el.querySelector('.feed-top-voice'));
+      }
 
       this.appendChild(new CV.FeedFeaturedVoices({
         name: 'featuredVoices',
