@@ -794,6 +794,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
             // no results, i.e. no notifications or a blank page
             if (result.rows.length < 1) {
               var empty = { feed: [], isThereNextPage: false };
+              res.locals.topVoice = null;
 
               return res.format({
                 html: function () {
@@ -853,8 +854,6 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
                   Voice.find({ id: topVoices[0].voiceId }, function (err, voice) {
                     if (err) { return done(err); }
-
-                    console.log(voice)
 
                     VoicesPresenter.build(voice, req.currentPerson, function (err, presented) {
                       if (err) { return done(err); }
