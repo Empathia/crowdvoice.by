@@ -3,7 +3,7 @@ Class(CV, 'TopVoice').inherits(Widget).includes(CV.WidgetUtils)({
   HTML: '\
     <div>\
       <div class="-abs -overflow-hidden -rel -full-height -full-width">\
-        <video class="top-voice__video" muted="true">\
+        <video class="top-voice__video" muted="true" autoplay loop>\
           <source type="video/mp4">\
           <source type="video/ogg">\
         </video>\
@@ -51,9 +51,9 @@ Class(CV, 'TopVoice').inherits(Widget).includes(CV.WidgetUtils)({
       var authorLink = this.el.querySelector('.top-voice__info-author a');
       var sourceLink = this.el.querySelector('.top-voice__video-source a');
 
-      this.dom.updateAttr('poster', this.videoElement, this.data.posterPath);
-      this.dom.updateAttr('src', this.el.querySelector('[type="video/ogg"]'), this.data.videoPath + '.ogv');
-      this.dom.updateAttr('src', this.el.querySelector('[type="video/mp4"]'), this.data.videoPath + '.mp4');
+      this.dom.updateAttr('poster', this.videoElement, '/' + this.data.posterPath);
+      this.dom.updateAttr('src', this.el.querySelector('[type="video/ogg"]'), '/' + this.data.videoPath + '.ogv');
+      this.dom.updateAttr('src', this.el.querySelector('[type="video/mp4"]'), '/' + this.data.videoPath + '.mp4');
 
       this.dom.updateText(this.el.querySelector('.top-voice__info-title'), this.data.voice.title);
       this.dom.updateText(this.el.querySelector('.top-voice__info-description'), this.data.description || this.data.voice.description);
