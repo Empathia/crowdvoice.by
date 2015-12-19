@@ -803,7 +803,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
                   return res.format({
                     html: function () {
                       req.feed = empty;
-                      res.locals.feed = answer;
+                      res.locals.feed = empty;
                       res.render('people/feed');
                     },
                     json: function () {
@@ -840,58 +840,30 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
                   });
                 });
               });
-            }
+            } else {
+              var notifications = Argon.Storage.Knex.processors[0](result.rows),
+                actionIds = notifications.map(function (val) {
+                  return val.actionId;
+                }),
+                totalPages = Math.ceil(result.rows[0].full_count / pageLength),
+                isThereNextPage = page < totalPages;
 
-            var notifications = Argon.Storage.Knex.processors[0](result.rows),
-              actionIds = notifications.map(function (val) {
-                return val.actionId;
-              }),
-              totalPages = Math.ceil(result.rows[0].full_count / pageLength),
-              isThereNextPage = page < totalPages;
-
-            FeedAction.whereIn('id', actionIds, function (err, actions) {
-              if (err) { return next(err); }
-
-              FeedPresenter.build(actions, req.currentPerson, function (err, presentedFeed) {
+              FeedAction.whereIn('id', actionIds, function (err, actions) {
                 if (err) { return next(err); }
 
-                var answer = {
-                  feed: presentedFeed,
-                  isThereNextPage: isThereNextPage
-                };
+                FeedPresenter.build(actions, req.currentPerson, function (err, presentedFeed) {
+                  if (err) { return next(err); }
 
-                HomepageTopVoice.find({ active: true }, function (err, topVoices) {
-                  if (err) { return done(err); }
+                  var answer = {
+                    feed: presentedFeed,
+                    isThereNextPage: isThereNextPage
+                  };
 
-                  if (topVoices.length < 1) {
-                    res.locals.topVoice = null;
-                    return res.format({
-                      html: function () {
-                        req.feed = answer;
-                        res.locals.feed = answer;
-                        res.render('people/feed');
-                      },
-                      json: function () {
-                        res.json(answer);
-                      }
-                    });
-                  }
-
-                  var topVoice = new HomepageTopVoice(topVoices[0]);
-
-                  delete topVoice.id;
-                  delete topVoice.voiceId;
-
-                  res.locals.topVoice = topVoice;
-
-                  Voice.find({ id: topVoices[0].voiceId }, function (err, voice) {
+                  HomepageTopVoice.find({ active: true }, function (err, topVoices) {
                     if (err) { return done(err); }
 
-                    VoicesPresenter.build(voice, req.currentPerson, function (err, presented) {
-                      if (err) { return done(err); }
-
-                      res.locals.topVoice.voice = presented[0];
-
+                    if (topVoices.length < 1) {
+                      res.locals.topVoice = null;
                       return res.format({
                         html: function () {
                           req.feed = answer;
@@ -902,11 +874,39 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
                           res.json(answer);
                         }
                       });
+                    }
+
+                    var topVoice = new HomepageTopVoice(topVoices[0]);
+
+                    delete topVoice.id;
+                    delete topVoice.voiceId;
+
+                    res.locals.topVoice = topVoice;
+
+                    Voice.find({ id: topVoices[0].voiceId }, function (err, voice) {
+                      if (err) { return done(err); }
+
+                      VoicesPresenter.build(voice, req.currentPerson, function (err, presented) {
+                        if (err) { return done(err); }
+
+                        res.locals.topVoice.voice = presented[0];
+
+                        return res.format({
+                          html: function () {
+                            req.feed = answer;
+                            res.locals.feed = answer;
+                            res.render('people/feed');
+                          },
+                          json: function () {
+                            res.json(answer);
+                          }
+                        });
+                      });
                     });
                   });
                 });
               });
-            });
+            }
           });
       });
     }
