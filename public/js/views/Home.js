@@ -13,7 +13,9 @@ Class(CV, 'HomeView').includes(NodeSupport, CV.WidgetUtils)({
         this.appendChild(new CV.TopVoice({
           name: 'topVoice',
           data: this.topVoice
-        })).render(document.querySelector('.homepage-intro .top-voice'));
+        }))
+        .render(document.querySelector('.homepage-intro .top-voice'))
+        .showVoiceButton();
       }
 
       /* FEATURED VOICES */

@@ -4,9 +4,8 @@ Class(CV, 'TopVoice').inherits(Widget).includes(CV.WidgetUtils)({
     <div>\
       <div class="-abs -overflow-hidden -rel -full-height -full-width">\
         <video class="top-voice__video" muted="true">\
-          <source type="video/webm">\
-          <source type="video/ogg">\
           <source type="video/mp4">\
+          <source type="video/ogg">\
         </video>\
         <div class="top-voice__info -abs">\
           <p class="top-voice__info-label -upper -color-primary">Top Voice</p>\
@@ -53,7 +52,6 @@ Class(CV, 'TopVoice').inherits(Widget).includes(CV.WidgetUtils)({
       var sourceLink = this.el.querySelector('.top-voice__video-source a');
 
       this.dom.updateAttr('poster', this.videoElement, this.data.posterPath);
-      this.dom.updateAttr('src', this.el.querySelector('[type="video/webm"]'), this.data.videoPath + '.webm');
       this.dom.updateAttr('src', this.el.querySelector('[type="video/ogg"]'), this.data.videoPath + '.ogv');
       this.dom.updateAttr('src', this.el.querySelector('[type="video/mp4"]'), this.data.videoPath + '.mp4');
 
@@ -74,10 +72,17 @@ Class(CV, 'TopVoice').inherits(Widget).includes(CV.WidgetUtils)({
      * @return TopVoice
      */
     showVoiceButton: function showVoiceButton() {
+      var infoElement = this.el.querySelector('.top-voice__info');
       var buttonString = this.constructor.VOICE_BUTTON_TEMPLATE;
+
+      // switch description and author direction
+      var description = this.el.querySelector('.top-voice__info-description');
+      infoElement.appendChild(description);
+
       buttonString = buttonString.replace(/{href}/, '/' + this.data.voice.owner.propertyName + '/' + this.data.voice.slug);
-      this.el.querySelector('.top-voice__info').insertAdjacentHTML('beforeend', buttonString);
-      buttonString = null;
+      infoElement.insertAdjacentHTML('beforeend', buttonString);
+
+      buttonString = infoElement = null;
       return this;
     },
 
