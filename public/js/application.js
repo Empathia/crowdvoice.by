@@ -66,6 +66,13 @@ require('./widgets/feed/FeedArchived');
 require('./widgets/feed/FeedBecamePublicMember');
 require('./widgets/feed/FeedNewDescription');
 require('./widgets/feed/FeedNewTitle');
+require('./widgets/feed/FeedSentYouAMessage');
+require('./widgets/feed/FeedRequestedToBecomeAMember');
+require('./widgets/feed/FeedRequestedToBecomeAContributor');
+require('./widgets/feed/FeedHasInvitedYouToBecomeAMember');
+require('./widgets/feed/FeedHasInvitedYouToBecomeAContributor');
+require('./widgets/feed/FeedFollowedYourVoice');
+require('./widgets/feed/FeedFollowedYou');
 
 // search
 require('./widgets/search/Search');
