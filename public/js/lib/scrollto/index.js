@@ -28,9 +28,10 @@ module.exports = function scrollTo(element, options) {
     options = options || {};
 
     var start = _scroll(element);
+
     var tween = new TWEEN.Tween(start)
     .easing(options.easing || TWEEN.Easing.Circular.Out)
-    .to({x: start.x + options.x, y: start.y + options.y}, options.duration || 1000)
+    .to({x: options.x, y: options.y}, options.duration || 300)
     .onUpdate(function() {
         var x = this.x | 0;
         var y = this.y | 0;

@@ -36,7 +36,7 @@ var HomeController = Class('HomeController')({
               if (err) { return done(err); }
 
               var publishedVoices = voicesResult.filter(function (voice) {
-                return voice.status === Voice.STATUS_PUBLISHED
+                return voice.status === Voice.STATUS_PUBLISHED;
               });
 
               VoicesPresenter.build(publishedVoices, req.currentPerson, function (err, voices) {
@@ -95,6 +95,34 @@ var HomeController = Class('HomeController')({
                 });
               });
             });
+        }, function(done) {
+          HomepageTopVoice.find({ active: true }, function (err, topVoices) {
+            if (err) { return done(err); }
+
+            if (topVoices.length < 1) {
+              res.locals.topVoice = null;
+              return done();
+            }
+
+            var topVoice = new HomepageTopVoice(topVoices[0]);
+
+            delete topVoice.id;
+            delete topVoice.voiceId;
+
+            res.locals.topVoice = topVoice;
+
+            Voice.find({ id: topVoices[0].voiceId }, function (err, voice) {
+              if (err) { return done(err); }
+
+              VoicesPresenter.build(voice, req.currentPerson, function (err, presented) {
+                if (err) { return done(err); }
+
+                res.locals.topVoice.voice = presented[0];
+
+                return done();
+              });
+            });
+          });
         }], function(err) {
           if (err) { return next(err); }
 

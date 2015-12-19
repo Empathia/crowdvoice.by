@@ -1,15 +1,15 @@
 <div class="category-list topics-page">
 	<div class="-row categories-cards-holder widget-responsive-slider">
-	    <div class="slider-list-wrapper">
-	        <div class="slider-list"></div>
+	    <div class="rs-list-wrapper">
+	        <div class="rs-list"></div>
 	    </div>
-	    <button class="slider-arrow slider-prev">
-	        <svg class="slider-arrow-svg"><use xlink:href="#svg-arrow-left"></use></svg>
+	    <button class="rs-arrow rs-prev">
+	        <svg class="rs-arrow-svg"><use xlink:href="#svg-arrow-left"></use></svg>
 	    </button>
-	    <button class="slider-arrow slider-next">
-	        <svg class="slider-arrow-svg"><use xlink:href="#svg-arrow-right"></use></svg>
+	    <button class="rs-arrow rs-next">
+	        <svg class="rs-arrow-svg"><use xlink:href="#svg-arrow-right"></use></svg>
 	    </button>
-	    <div class="slider-dots"></div>
+	    <div class="rs-dots"></div>
 	</div>
 </div>
 
@@ -76,11 +76,11 @@
     //});
 
     var cardsHolder = document.querySelector('.categories-cards-holder');
-    var cardsList = cardsHolder.querySelector('.slider-list');
+    var cardsList = cardsHolder.querySelector('.rs-list');
 
     categories.map(function(item) {
         var card = new CV.CategoryCover(item);
-        card.element[0].classList.add('slider-item');
+        card.element[0].classList.add('rs-item');
         return card.render(cardsList);
     });
 

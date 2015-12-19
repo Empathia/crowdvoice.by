@@ -31,13 +31,13 @@ Class(CV, 'VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
                     <div class="voice-cover-main-image -img-cover"></div>\
                 </div>\
                 <a class="voice-cover-hover-overlay -tdn" data-voice-anchor href="">\
-                    <button class="voice-cover-hover-overlay-button cv-button tiny -font-semi-bold">View Voice</button>\
+                    <button class="voice-cover-hover-overlay-button cv-button tiny -ghost dark-transparent -font-semi-bold">View Voice</button>\
                 </a>\
             </div>\
             <div class="voice-content">\
                 <div class="author">\
                     <a class="author-anchor -inline-block">\
-                        <img class="author-avatar -rounded" src="" alt="">\
+                        <img class="author-avatar -rounded">\
                     </a>\
                     by <a class="author-anchor -inline-block">\
                         <span class="author-username"></span>\
@@ -99,6 +99,8 @@ Class(CV, 'VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
          * @return [CV.VoiceCover]
          */
         _updateValues : function _updateValues() {
+          var authorAvatar = this.el.querySelector('.author-avatar');
+
             this.voiceAnchors.forEach(function(anchor) {
                 this.dom.updateAttr('href', anchor, '/' + this.data.owner.profileName + '/' + this.data.slug + '/');
                 this.dom.updateAttr('title', anchor, this.data.title + ' voice');
@@ -122,7 +124,8 @@ Class(CV, 'VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
                     this.dom.updateAttr('href', anchor, '/' + this.data.owner.profileName + '/');
                 }
             }, this);
-            this.dom.updateAttr('src', this.el.querySelector('.author-avatar'), this.data.owner.images.icon.url);
+            this.dom.updateAttr('src', authorAvatar, this.data.owner.images.icon.url);
+            this.dom.updateAttr('alt', authorAvatar, this.data.owner.name + '’s avatar image');
             this.dom.updateText(this.el.querySelector('.author-username'), this.data.owner.name);
 
             this.dom.updateText(this.el.querySelector('.voice-cover-title-anchor'), this.data.title);

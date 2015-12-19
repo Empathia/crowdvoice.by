@@ -25,25 +25,27 @@
   <%= renderPartial('shared/sprite-logo.svg') %>
   <%= renderPartial('shared/svg/sprite.svg') %>
   <div class="app-wrapper">
-    <header class="cv-main-header -color-bg-white -clearfix">
-      <div class="-float-left -full-height">
-        <a class="cv-main-logo -inline-block -tdn" href="/">
-          <svg class="cv-main-logo__svg">
-            <use xlink:href="#svg-logo"></use>
-          </svg>
-          <span class="cv-main-logo-type -inline-block">
-            <b>CrowdVoice by</b>
-            <% if (currentPerson === null) { %>
-              <span>&hellip;</span>
-            <% } %>
-          </span>
-        </a>
-        <div class="header-login-actions -inline-block -full-height"></div>
-      </div>
-      <div class="-float-right -full-height -text-right">
-        <div class="header-actions"></div>
-      </div>
-    </header>
+    <% if ((typeof pageName === "undefined") || (pageName && pageName !== 'page-home')) { %>
+      <header class="cv-main-header -color-bg-white -clearfix">
+        <div class="-float-left -full-height">
+          <a class="cv-main-logo -inline-block -tdn" href="/">
+            <svg class="cv-main-logo__svg">
+              <use xlink:href="#svg-logo"></use>
+            </svg>
+            <span class="cv-main-logo-type -inline-block">
+              <b>CrowdVoice by</b>
+              <% if (currentPerson === null) { %>
+                <span>&hellip;</span>
+              <% } %>
+            </span>
+          </a>
+          <div class="header-login-actions -inline-block -full-height"></div>
+        </div>
+        <div class="-float-right -full-height -text-right">
+          <div class="header-actions"></div>
+        </div>
+      </header>
+    <% } %>
 
     <aside role="complementary" class="cv-main-sidebar">
       <nav role="navigation" class="sidebar-nav">

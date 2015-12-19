@@ -26,6 +26,7 @@
     "async",
     "Voice",
     "db",
-    "VoicesPresenter"
+    "VoicesPresenter",
+    "path"
   ]
 }

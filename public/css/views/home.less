@@ -1,10 +1,5 @@
-.homepage-intro,
-.homepage-featured-voices,
-.homepage-organization-cards,
-.home-stats,
-.homepage-category-list {
-  padding-left: @cv-sidebar-width;
-  padding-right: 2rem;
+.home-section-padding {
+  padding: 0 40px 0 40px;
 }
 
 .homepage-heading-wrapper {
@@ -22,130 +17,111 @@
 /******************************************************************************
  INTRO
  *****************************************************************************/
-.cv-main-content.home {
-  background-image: url("/img/views/home/illustration-30-b.jpg");
-  background-position: right top;
-  background-repeat: no-repeat;
-}
-
 .homepage-intro {
-  padding-top: 65px;
-  padding-bottom: 80px;
+  height: 70vh;
+  min-height: 600px;
+  background: #000;
 
-  .intro-description {
-    font-size: 17px;
-    margin-bottom: 60px;
-    width: 45vw;
-  }
-
-  .intro-description-text {
-    font-size: 1.125em;
-  }
-
-  > .homepage-intro-main-cta-dl {
-    display: inline-block;
-    height: 64px;
-    padding: 8px 25px;
-    margin: 0 27px 0 0;
-
-    b {
-      font-size: 18px;
-      line-height: 24px;
-    }
-
-    span {
-      font-size: 12px;
-      line-height: 17px;
-      color: #FFDAA6;
-    }
-  }
-
-  > .homepage-intro-main-cta {
-    font-size: 14px;
-    display: inline-block;
-    height: 64px;
-    padding: 20px 60px;
-    margin: 0;
+  .top-voice {
+    position: absolute;
+    top: 0;
+    left: 0;
   }
 }
 
-.home-stats {
-  background-color: #2E3233;
-  background-image: url("/img/home-wave-left.png"), url("/img/home-wave-right.png");
-  background-position: left bottom, right top;
-  background-repeat: no-repeat;
-  padding-top:75px;
-  padding-bottom:108px;
-  color:white;
-
-  .statsTitle, .stats-number{
-    font-size: 48px;
-    text-align: center;
-  }
-
-  .stats{
-    text-align: center;
-    margin-top:53px;
-
-    .stats-col{
-      padding: 15px 50px;
-    }
-
-    .stats-col:not(:last-child){
-        border-right: 1px solid #454B4D;
-    }
-  }
-
-  .stats-label{
-    color:#8A9699;
-    font-size: 14px;
-    font-weight: bold;
-  }
+.homepage-intro__logo {
+  padding-top: 40px;
 }
 
-.homepage-intro-banner {
-  font-size: 1rem;
-
-  .intro-heading {
-    font-size: 2.308em;
-  }
-
-  .intro-sub-heading {
-    font-size: 6.154em;
-    line-height: 1em;
-    letter-spacing: -4px;
-  }
+.hi__logo-heading {
+  font-size: 72px;
+  line-height: 98px;
+  letter-spacing: -3px;
+  margin: 0;
 }
 
-@media (min-width: 1300px) {
-  .homepage-intro {
-    .homepage-intro-banner,
-    .intro-description-text,
-    .stats {font-size: 1.25em}
-  }
+.hi__logo-subheading {
+  font-size: 21px;
+  line-height: 38px;
+  margin: 0;
 }
 
-@media (min-width: 1500px) {
-  .homepage-intro {
-    .homepage-intro-banner,
-    .intro-description-text,
-    .stats {font-size: 1.4em}
+.hi__logo-subheading-inner {
+  position: relative;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 40px;
+    height: 1px;
+    margin-top: 1px;
+    background-color: @color-white;
+    opacity: .5;
   }
+
+  &::before {left: -50px;}
+  &::after {right: -50px;}
+}
+
+.homepage-intro .top-voice {
+  top: 0;
+  left: 0;
+}
+
+.homepage-intro__links {
+  font-size: 14px;
+  top: 40px;
+  right: 40px;
+  z-index: 0;
+}
+
+.hi__links-link:hover {opacity: 0.8;}
+
+.hi__links-login {margin-left: 20px;}
+
+.homepage-signup {
+  padding: 60px 40px;
+  background-color: @color-neutral-xx-dark;
+}
+
+.homepage-signup__text {
+  font-size: 23px;
+  line-height: 37px;
+  max-width: 920px;
+  margin: 0 auto 45px;
 }
 
 /* =========================================================================== *
  *  featured voices
  * =========================================================================== */
 .homepage-featured-voices {
-  padding-bottom: 30px;
+  padding: 60px 0 120px 40px;
+
+  .arrows-wrapper {
+    position: relative;
+    top: 13px;
+  }
+
+  .slider-arrow {
+    width: 50px;
+    height: 40px;
+    padding: 5px 20px 15px;
+  }
+
+  .slider-prev {
+    border-right: 1px solid @color-neutral-x-light;
+  }
 
   .homepage-featured-voices-container {
-    margin: 0 -25px;
+    margin-left: -20px;
   }
 
   .cv-voice-cover {
     display: inline-block;
-    padding: 0 25px 40px;
+    width: 340px;
+    padding: 0 20px;
   }
 
   .heading-right {
@@ -154,19 +130,54 @@
   }
 }
 /* =========================================================================== *
- *  Button between divs
+ *  Stats
  * =========================================================================== */
-.betweenDivs{
-    position: absolute;
-    text-align: center;
-    margin-top: -30px;
-    margin-left: 46%;
-    line-height: 50px;
-    font-size: 16px;
-    height: 56px;
-    width: 240px;
+.home-stats {
+  background-color: @color-neutral-xx-dark;
+  background-image: url("/img/page-home/wave-bottom-left.jpg"), url("/img/page-home/wave-top-right.jpg");
+  background-position: left bottom, right top;
+  background-repeat: no-repeat;
+  background-size: 149px 159px, 114px 80px;
+  padding: 60px 20px 110px;
 
+  .statsTitle,
+  .stats-number {
+    font-size: 48px;
+  }
+
+  .stats-number {
+    line-height: 1;
+    margin-bottom: 20px;
+  }
+
+  .stats {
+    text-align: center;
+    margin-top: 30px;
+  }
+
+  .stats-col {
+    padding: 20px 50px;
+  }
+
+  .stats-col:not(:last-child) {
+    border-right: 1px solid #454B4D;
+  }
+
+  .stats-label {
+    color: #8A9699;
+    font-size: 14px;
+    font-weight: bold;
+  }
 }
+
+.betweenDivs {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: -30px;
+  width: 240px;
+}
+
 /* =========================================================================== *
  *  category list
  * =========================================================================== */
@@ -230,39 +241,58 @@
  *  organization cards
  * =========================================================================== */
 .homepage-organization-cards {
-  padding-top: 80px;
-  padding-bottom: 80px;
+  padding: 80px 0 80px 40px;
 
   div.heading-right{
       margin-top:13px;
       margin-left: 15px;
   }
 
+  .homepage-organization-cards-holder {
+    margin-left: -10px;
+  }
+
+  .arrows-wrapper {
+    position: relative;
+    top: 13px;
+  }
+
+  .slider-arrow {
+    width: 50px;
+    height: 40px;
+    padding: 5px 20px 15px;
+  }
+
+  .slider-prev {
+    border-right: 1px solid @color-neutral-x-light;
+  }
+
   .widget-card {
-    padding-left: 1rem;
-    padding-right: 1rem;
+    display: inline-block;
+    width: 320px;
+    padding-left: 10px;
+    padding-right: 10px;
   }
 }
 /* =========================================================================== *
  *  Media queries - Home Stats
  * =========================================================================== */
-@media only screen and (max-width: 480px){
-  .home-stats .stats .stats-col{
-    padding:0px;
+@media only screen and (max-width: 870px){
+  .home-stats .stats-col {
+    width: 40%;
+    border-right:0 !important;
+    margin: 0px 10px;
+
+    &:nth-child(-n+2){
+      border-bottom:1px solid #454B4D;
+      padding: 10px 0px;
+    }
   }
 }
-@media only screen and (max-width: 800px){
-  .home-stats{
-    .stats{
-      .stats-col{
-        width: 40%;
-        border-right:0 !important;
-        margin: 0px 10px;
-      }
-      .stats-col:nth-child(-n+2){
-        border-bottom:1px solid #454B4D;
-        padding: 10px 0px;
-      }
-    }
+
+@media only screen and (max-width: 480px){
+  .home-stats .stats .stats-col {
+    padding-left: 0;
+    padding-right: 0;
   }
 }

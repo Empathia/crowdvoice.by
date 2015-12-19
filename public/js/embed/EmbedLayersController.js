@@ -100,8 +100,7 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport, CustomEventSupport, Bub
       }, this);
 
       ScrollTo(this._window, {
-        x: 0,
-        y: layer.el.getBoundingClientRect().top - this.constructor.HEADER_HEIGHT,
+        y: (layer.element.offset().top - this.constructor.HEADER_HEIGHT),
         duration: 600,
         onComplete: function onComplete() {
           _this._listenScrollEvent = true;

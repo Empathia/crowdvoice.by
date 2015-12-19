@@ -3,22 +3,22 @@
   white-space: nowrap;
 }
 
-.slider-list-wrapper {
+.rs-list-wrapper {
   overflow: hidden;
 }
-.slider-list {
+.rs-list {
   font-size: 0;
   transform: translateX(0%);
   transition: transform 240ms ease;
 }
 
-.slider-item {
+.rs-item {
   font-size: 1rem;
   display: inline-block;
   width: 100%;
 }
 
-.slider-arrow {
+.rs-arrow {
   z-index: 2;
   position: absolute;
   top: 50%;
@@ -31,24 +31,24 @@
   outline: none;
   cursor: pointer;
 }
-.slider-next {right: -1rem}
-.slider-prev {left: -1rem}
-.slider-arrow.active {display: block}
-.slider-arrow-svg {
+.rs-next {right: -1rem}
+.rs-prev {left: -1rem}
+.rs-arrow.active {display: block}
+.rs-arrow-svg {
   width: 100%;
   height: 100%;
 }
-.slider-arrow.disabled {
+.rs-arrow.disabled {
   cursor: not-allowed;
   opacity: 0.3;
 }
 
-.slider-dots {
+.rs-dots {
   margin-top: 2rem;
   text-align: center;
 }
 
-.slider-dots > button {
+.rs-dots > button {
   border: 0;
   width: 12px;
   height: 12px;
@@ -61,7 +61,7 @@
   cursor: pointer;
 }
 
-.slider-dots > button.active {
+.rs-dots > button.active {
   border-color: @color-primary-dark;
   background-color: @color-primary;
   box-shadow: none;

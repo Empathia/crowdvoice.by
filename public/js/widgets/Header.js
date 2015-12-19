@@ -30,8 +30,10 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
 
         init : function init(config) {
             Widget.prototype.init.call(this, config);
-
             this.el = this.element[0];
+
+            if (!this.el) { return; }
+
             this.loginActionsWrapper = this.el.querySelector('.header-login-actions');
             this.buttonActionsWrapper = this.el.querySelector('.header-actions');
         },
@@ -41,6 +43,8 @@ Class(CV, 'Header').inherits(Widget).includes(CV.WidgetUtils)({
          * @return undefined
          */
         setup : function setup() {
+            if (!this.el) { return; }
+
             if (!Person.get()) {
                 this._setupVisitor();
             } else {
