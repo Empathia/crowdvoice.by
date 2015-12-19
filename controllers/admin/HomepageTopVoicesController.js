@@ -67,12 +67,17 @@ Admin.HomepageTopVoicessController = Class(Admin, 'HomepageTopVoicesController')
           active: true,
         })
 
-        var versions = [ 'mp4', 'webm', 'ogv' ]
+        var versions = [
+          'mp4',
+          // 'webm',
+          'ogv'
+        ]
 
         var videoDir,
           outputBasePath,
           amazonBasePath,
-          useAmazon = false
+          useAmazon = false,
+          relativeBasePath = ''
 
         async.series([
           // Make all other videos inactive
@@ -102,12 +107,14 @@ Admin.HomepageTopVoicessController = Class(Admin, 'HomepageTopVoicesController')
 
             if (CONFIG.environment === 'development') {
               useAmazon = false
-              topVoice.videoPath = outputBasePath + '/video'
-              topVoice.posterPath = outputBasePath + '/poster.' + req.files.poster.extension
+              relativeBasePath = 'videos/' + videoDir
+              topVoice.videoPath = relativeBasePath + '/video'
+              topVoice.posterPath = relativeBasePath + '/poster.' + req.files.poster.extension
             } else {
               useAmazon = true
-              topVoice.videoPath = amazonBasePath + '/video'
-              topVoice.posterPath = amazonBasePath + '/poster.' + req.files.poster.extension
+              relativeBasePath = amazonBasePath
+              topVoice.videoPath = relativeBasePath + '/video'
+              topVoice.posterPath = relativeBasePath + '/poster.' + req.files.poster.extension
             }
 
             fs.mkdir(outputBasePath, nextSeries)
@@ -126,7 +133,7 @@ Admin.HomepageTopVoicessController = Class(Admin, 'HomepageTopVoicesController')
           function (nextSeries) {
             var presets = {
               mp4: 'toMp4',
-              webm: 'toWebm',
+              // webm: 'toWebm',
               ogv: 'toOgv',
             }
 
@@ -136,11 +143,13 @@ Admin.HomepageTopVoicessController = Class(Admin, 'HomepageTopVoicesController')
               command = command.replace(/{output-dir}/g, outputBasePath)
               command = command.replace(/{output-file}/g, 'video')
 
+              logger.log('FFmpeg: Started working on ' + version + '...')
+
               childExec(command, function (err, stdout, stderr) {
                 if (err) { return doneEach(err) }
 
-                logger.log('FFmpeg STDOUT:', stdout)
-                logger.log('FFmpeg STDERR:', stderr)
+                logger.log('FFmpeg: STDOUT:', stdout)
+                logger.log('FFmpeg: STDERR:', stderr)
 
                 return doneEach()
               })
@@ -163,13 +172,13 @@ Admin.HomepageTopVoicessController = Class(Admin, 'HomepageTopVoicesController')
               var contentTypes = {
                 'ogv': 'ogg',
                 'mp4': 'mp4',
-                'webm': 'webm',
+                // 'webm': 'webm',
               }
 
               var amazonParams = {
                 Bucket: 'crowdvoice.by',
                 ACL: 'public-read',
-                Key: amazonBasePath + '/video.' + version,
+                Key: relativeBasePath + '/video.' + version,
                 Body: fs.createReadStream(path.join(outputBasePath, 'video.' + version)),
                 ContentType: 'video/' + contentTypes[version],
               }
@@ -184,7 +193,7 @@ Admin.HomepageTopVoicessController = Class(Admin, 'HomepageTopVoicesController')
               return nextSeries()
             }
 
-            fsExtra.move(req.files.poster.path, topVoice.posterPath, nextSeries)
+            fsExtra.move(req.files.poster.path, path.join(outputBasePath, 'poster.' + req.files.poster.extension), nextSeries)
           },
 
           // Upload image to Amazon (not development)
