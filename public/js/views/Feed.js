@@ -18,7 +18,8 @@ Class(CV.Views, 'Feed').includes(NodeSupport, CV.WidgetUtils)({
       if (this.topVoice) {
         this.appendChild(new CV.TopVoice({
           name: 'topVoice',
-          data: this.topVoice
+          data: this.topVoice,
+          ENV: this.ENV
         })).render(this.el.querySelector('.feed-top-voice'));
       }
 

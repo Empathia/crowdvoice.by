@@ -94,7 +94,8 @@
     featuredVoicesData: <%= JSON.stringify(featuredVoices) %>,
     orgsData: <%= JSON.stringify(mostActiveOrganizations) %>,
     categoriesData: <%= JSON.stringify(topics) %>,
-    topVoice: <%= JSON.stringify(topVoice) %>
+    topVoice: <%= JSON.stringify(topVoice) %>,
+    ENV: "<%= CONFIG.environment %>"
   }));
 
   window.stats = new HomepageStats({
