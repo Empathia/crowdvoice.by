@@ -133,7 +133,6 @@ Admin.HomepageTopVoicessController = Class(Admin, 'HomepageTopVoicesController')
           function (nextSeries) {
             var presets = {
               mp4: 'toMp4',
-            // webm: 'toWebm',
               ogv: 'toOgv',
             }
 
