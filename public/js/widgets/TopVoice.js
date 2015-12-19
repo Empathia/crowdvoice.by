@@ -50,10 +50,15 @@ Class(CV, 'TopVoice').inherits(Widget).includes(CV.WidgetUtils)({
     _setup: function _setup() {
       var authorLink = this.el.querySelector('.top-voice__info-author a');
       var sourceLink = this.el.querySelector('.top-voice__video-source a');
+      var mediaPath = '/';
 
-      this.dom.updateAttr('poster', this.videoElement, '/' + this.data.posterPath);
-      this.dom.updateAttr('src', this.el.querySelector('[type="video/ogg"]'), '/' + this.data.videoPath + '.ogv');
-      this.dom.updateAttr('src', this.el.querySelector('[type="video/mp4"]'), '/' + this.data.videoPath + '.mp4');
+      if (this.ENV !== 'development') {
+        mediaPath = 'https://s3.amazonaws.com/crowdvoice.by/';
+      }
+
+      this.dom.updateAttr('poster', this.videoElement, mediaPath + this.data.posterPath);
+      this.dom.updateAttr('src', this.el.querySelector('[type="video/ogg"]'), mediaPath + this.data.videoPath + '.ogv');
+      this.dom.updateAttr('src', this.el.querySelector('[type="video/mp4"]'), mediaPath + this.data.videoPath + '.mp4');
 
       this.dom.updateText(this.el.querySelector('.top-voice__info-title'), this.data.voice.title);
       this.dom.updateText(this.el.querySelector('.top-voice__info-description'), this.data.description || this.data.voice.description);

@@ -12,7 +12,8 @@ Class(CV, 'HomeView').includes(NodeSupport, CV.WidgetUtils)({
       if (this.topVoice) {
         this.appendChild(new CV.TopVoice({
           name: 'topVoice',
-          data: this.topVoice
+          data: this.topVoice,
+          ENV: this.ENV
         }))
         .render(document.querySelector('.homepage-intro .top-voice'))
         .showVoiceButton();

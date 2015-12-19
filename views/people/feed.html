@@ -62,6 +62,7 @@
     el: document.querySelector('.feed-main-content'),
     feedItems: <%= JSON.stringify(feed) %>,
     topVoice: <%= JSON.stringify(topVoice) %>,
+    ENV: "<%= CONFIG.environment %>",
     organization: null
   };
 
