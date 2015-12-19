@@ -5,7 +5,7 @@ var fs = require('fs'),
   childExec = require('child_process').exec,
   fsExtra = require('fs-extra')
 
-var FfmpegPresets = require(path.join(__dirname, '../../lib/VideoFormatter.js'))
+var FfmpegPresets = require(path.join(__dirname, '../../lib/FfmpegPresets.js'))
 
 Admin.HomepageTopVoicessController = Class(Admin, 'HomepageTopVoicesController')({
 
@@ -133,7 +133,7 @@ Admin.HomepageTopVoicessController = Class(Admin, 'HomepageTopVoicesController')
           function (nextSeries) {
             var presets = {
               mp4: 'toMp4',
-              // webm: 'toWebm',
+            // webm: 'toWebm',
               ogv: 'toOgv',
             }
 

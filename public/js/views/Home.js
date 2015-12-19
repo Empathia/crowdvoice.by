@@ -78,4 +78,3 @@ Class(CV, 'HomeView').includes(NodeSupport, CV.WidgetUtils)({
     }
   }
 });
-
