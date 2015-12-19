@@ -795,17 +795,50 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
             if (result.rows.length < 1) {
               var empty = { feed: [], isThereNextPage: false };
 
-              return res.format({
-                html: function () {
-                  req.feed = empty;
-                  res.locals.feed = empty;
-                  res.render('people/feed', {
-                    pageName: 'page-feed page-inner'
+              HomepageTopVoice.find({ active: true }, function (err, topVoices) {
+                if (err) { return done(err); }
+
+                if (topVoices.length < 1) {
+                  res.locals.topVoice = null;
+                  return res.format({
+                    html: function () {
+                      req.feed = empty;
+                      res.locals.feed = answer;
+                      res.render('people/feed');
+                    },
+                    json: function () {
+                      res.json(empty);
+                    }
                   });
-                },
-                json: function () {
-                  res.json(empty);
                 }
+
+                var topVoice = new HomepageTopVoice(topVoices[0]);
+
+                delete topVoice.id;
+                delete topVoice.voiceId;
+
+                res.locals.topVoice = topVoice;
+
+                Voice.find({ id: topVoices[0].voiceId }, function (err, voice) {
+                  if (err) { return done(err); }
+
+                  VoicesPresenter.build(voice, req.currentPerson, function (err, presented) {
+                    if (err) { return done(err); }
+
+                    res.locals.topVoice.voice = presented[0];
+
+                    return res.format({
+                      html: function () {
+                        req.feed = empty;
+                        res.locals.feed = empty;
+                        res.render('people/feed');
+                      },
+                      json: function () {
+                        res.json(empty);
+                      }
+                    });
+                  });
+                });
               });
             }
 
@@ -853,8 +886,6 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
                   Voice.find({ id: topVoices[0].voiceId }, function (err, voice) {
                     if (err) { return done(err); }
-
-                    console.log(voice)
 
                     VoicesPresenter.build(voice, req.currentPerson, function (err, presented) {
                       if (err) { return done(err); }
