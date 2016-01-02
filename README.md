@@ -10,7 +10,7 @@ These instructions are to install a development (not live) version of CrowdVoice
 # Run the following commands
 brew install postgres
 postgres -D /usr/local/var/postgres
-createdb crowdvoice.by
+createdb "crowdvoice.by" # Your DB name of preference
 ```
 
 ### Memory database
@@ -36,7 +36,7 @@ development: {
   client: 'postgresql',
 
   connection: {
-    database: 'crowdvoice.by',
+    database: 'crowdvoice.by', // Your DB name of preference
     user: 'your_user',
     password: ''
   },
