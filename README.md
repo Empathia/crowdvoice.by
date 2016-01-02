@@ -82,8 +82,8 @@ Additionally you can check the `sharp` module's readme for more information on t
 
 ``` sh
 # Run the following commands
-brew install x264 theora libvpx
-brew install ffmpeg --with-theora --with-libvpx
+brew install x264 theora
+brew install ffmpeg --with-theora --with-x264
 ```
 
 ## Generate mock data
