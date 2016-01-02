@@ -1,72 +1,104 @@
-## Install instructions for OSX
+# CrowdVoice.by
 
-#### Apps
-- Download and install [Postgress App](http://postgresapp.com)
-- Download [Navicat Premium](https://www.dropbox.com/s/xqzrhopznmbviwj/Navicat%20Premium%2011.1.5%20v2.dmg?dl=0)
-	- To connecto use your OSX username w/out password, the default database is "postgres" otherwise it will not connect
-	- Create a database for the app: "__crowdvoice.by__"
-- Install Redis | brew install redis
+## Install instructions for OS X
 
-#### Config
+These instructions are to install a development (not live) version of CrowdVoice app.
 
-- cp ./config/config-example.js to config/config.js
-- Edit config.js
-	- set database.development to "postgres://your_user@localhost/crowdvoice.by",
-	- set enableRedis to true
-	- set enablePassport to true
+### Database
 
-#### Knex
-
-- run **npm install knex -g**
-- run **knex init**
-- open ./knexfile.js and edit :
-
-```javascript
-development: {
-    client: 'postgresql',
-    connection: {
-      database: 'crowdvoice.by',
-      user:     'your_user',
-      password: ''
-    },
-    pool: {
-      min: 2,
-      max: 10
-    },
-    migrations: {
-      tableName: 'knex_migrations'
-    },
-    seeds : {
-      directory : './seeds/dev'
-    }
-  },
+``` sh
+# Run the following commands
+brew install postgres
+postgres -D /usr/local/var/postgres
+createdb crowdvoice.by
 ```
 
-- run **knex migrate:latest**
-- run **knex seed:run**
+### Memory database
 
-#### Application
+``` sh
+# Run the following commands
+brew install redis
+redis-server /usr/local/etc/redis.conf
+```
 
-##### Prerequisites for OS X
+### Knex
 
-- XQuarts
-- libvips
+``` sh
+# Run the following commands
+npm i -g knex
+knex init
+```
 
-Required for [sharp](https://www.npmjs.com/package/sharp) module.
+Open `knexfile.js` and edit it with the following example (adjust for your own setup):
 
-You can install them via [homebrew](http://brew.sh/):
+``` javascript
+development: {
+  client: 'postgresql',
 
-```sh
+  connection: {
+    database: 'crowdvoice.by',
+    user: 'your_user',
+    password: ''
+  },
+
+  pool: {
+    min: 2,
+    max: 10
+  },
+
+  migrations: {
+    tableName: 'knex_migrations'
+  },
+
+  seeds: {
+    directory: './seeds/dev'
+  }
+},
+```
+
+``` sh
+# Run the following commands
+knex migrate:latest
+knex seed:run
+```
+
+### Config
+
+- Copy `config/config-example.js` to `config/config.js` (`cp config/config-example.js config/config.js`)
+- Edit `config.js`
+  - Update `database` for your own setup, most likely the same as your `knexfile.js`
+
+### Image processing
+
+``` sh
+# Run the following commands
 brew install Caskroom/cask/xquartz
 brew install homebrew/science/vips --with-webp --with-graphicsmagick
 ```
 
-or check the sharp's module readme for more information.
+Additionally you can check the `sharp` module's readme for more information on the dependencies.
 
-##### Run the app
+### Video processing
+
+``` sh
+# Run the following commands
+brew install x264 theora libvpx
+brew install ffmpeg --with-theora --with-libvpx
+```
+
+## Generate mock data
+
+``` sh
+node bin/data_generator.js POSTS
+```
+
+Replace `POSTS` with whatever amount of posts you want per voice, 10 by default.  This is a time consuming operation so if you don't need posts it is recommended to not generate any posts (`0`).
+
+## Run the app
 
 ```sh
-npm install
+npm i
+npm i -g webpack
 webpack -d
 npm start
 ```
