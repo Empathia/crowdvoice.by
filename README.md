@@ -13,7 +13,7 @@ postgres -D /usr/local/var/postgres
 createdb "crowdvoice.by" # Your DB name of preference
 ```
 
-### Memory database
+### Session storage
 
 ``` sh
 # Run the following commands
@@ -48,10 +48,6 @@ development: {
 
   migrations: {
     tableName: 'knex_migrations'
-  },
-
-  seeds: {
-    directory: './seeds/dev'
   }
 },
 ```
@@ -59,7 +55,6 @@ development: {
 ``` sh
 # Run the following commands
 knex migrate:latest
-knex seed:run
 ```
 
 ### Config
