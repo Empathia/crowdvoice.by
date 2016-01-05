@@ -1,18 +1,23 @@
 Class(CV, 'HomeView').includes(NodeSupport, CV.WidgetUtils)({
   prototype: {
+    /* @property {Object} topVoice - the top voice data. */
+    topVoiceData: null,
+    /* @property {Object} featuredVoicesData - the featured voices data. */
     featuredVoicesData: null,
+    /* @property {Object} organizationsData - the most active organizations data. */
+    organizationsData: null,
+    /* @property {Object} categoriesData - the categories data. */
     categoriesData: null,
-    orgsData: null,
 
     init: function init(config) {
       Object.keys(config || {}).forEach(function(propertyName) {
         this[propertyName] = config[propertyName];
       }, this);
 
-      if (this.topVoice) {
+      if (this.topVoiceData) {
         this.appendChild(new CV.TopVoice({
           name: 'topVoice',
-          data: this.topVoice,
+          data: this.topVoiceData,
           ENV: this.ENV
         }))
         .render(document.querySelector('.homepage-intro .top-voice'))
@@ -63,7 +68,7 @@ Class(CV, 'HomeView').includes(NodeSupport, CV.WidgetUtils)({
       /* ORGANIZATIONS */
       var orgsHolder = document.querySelector('.homepage-organization-cards-holder');
       var orgsList = orgsHolder.querySelector('.slider-list');
-      this.orgsData.map(function(org) {
+      this.organizationsData.map(function(org) {
         var card = new CV.Card({data: org});
         card.element[0].classList.add('slider-item');
         return card.render(orgsList);

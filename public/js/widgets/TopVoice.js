@@ -47,6 +47,8 @@ Class(CV, 'TopVoice').inherits(Widget).includes(CV.WidgetUtils)({
       this._setup();
     },
 
+    /* @private
+     */
     _setup: function _setup() {
       var authorLink = this.el.querySelector('.top-voice__info-author a');
       var sourceLink = this.el.querySelector('.top-voice__video-source a');
@@ -74,26 +76,21 @@ Class(CV, 'TopVoice').inherits(Widget).includes(CV.WidgetUtils)({
 
     /* Appends the `Go to Voice` link.
      * @public
-     * @return TopVoice
+     * @return {Object} TopVoice
      */
     showVoiceButton: function showVoiceButton() {
       var infoElement = this.el.querySelector('.top-voice__info');
       var buttonString = this.constructor.VOICE_BUTTON_TEMPLATE;
 
-      // switch description and author direction
+      // switch description and author direction-flow
       var description = this.el.querySelector('.top-voice__info-description');
       infoElement.appendChild(description);
 
-      buttonString = buttonString.replace(/{href}/, '/' + this.data.voice.owner.propertyName + '/' + this.data.voice.slug);
+      buttonString = buttonString.replace(/{href}/, '/' + this.data.voice.owner.profileName + '/' + this.data.voice.slug + '/');
       infoElement.insertAdjacentHTML('beforeend', buttonString);
 
       buttonString = infoElement = null;
       return this;
-    },
-
-    destroy: function destroy() {
-      Widget.prototype.destroy.call(this);
-      return null;
     }
   }
 });

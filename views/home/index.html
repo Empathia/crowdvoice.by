@@ -91,10 +91,10 @@
 
   App.appendChild(new CV.HomeView({
     name: 'homeView',
+    topVoiceData: <%= JSON.stringify(topVoice) %>,
     featuredVoicesData: <%= JSON.stringify(featuredVoices) %>,
-    orgsData: <%= JSON.stringify(mostActiveOrganizations) %>,
+    organizationsData: <%= JSON.stringify(mostActiveOrganizations) %>,
     categoriesData: <%= JSON.stringify(topics) %>,
-    topVoice: <%= JSON.stringify(topVoice) %>,
     ENV: "<%= CONFIG.environment %>"
   }));
 
