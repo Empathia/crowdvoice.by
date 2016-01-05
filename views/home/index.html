@@ -30,10 +30,11 @@
         <div class="-float-left">
           <h2 class="homepage-heading -font-light">Featured Voices</h2>
         </div>
-        <div class="heading-right -float-left">
-          <a href="/discover/browse/" class="cv-button tiny">Explore All</a>
+        <div class="arrows-wrapper -mr2 -float-right -clearfix">
+          <div class="heading-right -float-left">
+            <a href="/discover/browse/" class="cv-button tiny">Explore All</a>
+          </div>
         </div>
-        <div class="arrows-wrapper -mr2 -float-right"></div>
       </div>
     </div>
     <div class="homepage-featured-voices-container -rel -nw">
@@ -66,10 +67,11 @@
         <div class="-float-left">
           <h2 class="homepage-heading -font-light -float-left">Most Active Users & Organizations</h2>
         </div>
-        <div class="heading-right -float-left">
-          <a href="/discover/browse/" class="cv-button tiny">Explore All</a>
+        <div class="arrows-wrapper -float-right -mr2 -clearfix">
+          <div class="heading-right -float-left">
+            <a href="/discover/browse/" class="cv-button tiny">Explore All</a>
+          </div>
         </div>
-        <div class="arrows-wrapper -float-right -mr2"></div>
       </div>
     </div>
 
@@ -91,10 +93,10 @@
 
   App.appendChild(new CV.HomeView({
     name: 'homeView',
+    topVoiceData: <%= JSON.stringify(topVoice) %>,
     featuredVoicesData: <%= JSON.stringify(featuredVoices) %>,
-    orgsData: <%= JSON.stringify(mostActiveOrganizations) %>,
+    organizationsData: <%= JSON.stringify(mostActiveOrganizations) %>,
     categoriesData: <%= JSON.stringify(topics) %>,
-    topVoice: <%= JSON.stringify(topVoice) %>,
     ENV: "<%= CONFIG.environment %>"
   }));
 
