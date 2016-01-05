@@ -9,7 +9,9 @@ Class(CV, 'TopVoice').inherits(Widget).includes(CV.WidgetUtils)({
         </video>\
         <div class="top-voice__info -abs">\
           <p class="top-voice__info-label -upper -color-primary">Top Voice</p>\
-          <p class="top-voice__info-title -color-white -font-bold"></p>\
+          <p class="top-voice__info-title">\
+            <a class="top-voice__info-title-anchor -inline-block -tdn -font-bold" href="/"></a>\
+          </p>\
           <p class="top-voice__info-description -font-light -color-white"></p>\
           <p class="top-voice__info-author -color-white -font-light">\
             by <a href="/"></a>\
@@ -50,9 +52,10 @@ Class(CV, 'TopVoice').inherits(Widget).includes(CV.WidgetUtils)({
     /* @private
      */
     _setup: function _setup() {
-      var authorLink = this.el.querySelector('.top-voice__info-author a');
-      var sourceLink = this.el.querySelector('.top-voice__video-source a');
-      var mediaPath = '/';
+      var voiceLink = this.el.querySelector('.top-voice__info-title-anchor')
+        , authorLink = this.el.querySelector('.top-voice__info-author a')
+        , sourceLink = this.el.querySelector('.top-voice__video-source a')
+        , mediaPath = '/';
 
       if (this.ENV !== 'development') {
         mediaPath = 'https://s3.amazonaws.com/crowdvoice.by/';
@@ -62,7 +65,10 @@ Class(CV, 'TopVoice').inherits(Widget).includes(CV.WidgetUtils)({
       this.dom.updateAttr('src', this.el.querySelector('[type="video/ogg"]'), mediaPath + this.data.videoPath + '.ogv');
       this.dom.updateAttr('src', this.el.querySelector('[type="video/mp4"]'), mediaPath + this.data.videoPath + '.mp4');
 
-      this.dom.updateText(this.el.querySelector('.top-voice__info-title'), this.data.voice.title);
+      this.dom.updateText(voiceLink, this.data.voice.title);
+      this.dom.updateAttr('href', voiceLink, this._getVoiceUrl());
+      this.dom.updateAttr('title', voiceLink, this.data.voice.title);
+
       this.dom.updateText(this.el.querySelector('.top-voice__info-description'), this.data.description || this.data.voice.description);
 
       this.dom.updateAttr('href', authorLink, '/' + this.data.voice.owner.profileName + '/');
@@ -74,19 +80,27 @@ Class(CV, 'TopVoice').inherits(Widget).includes(CV.WidgetUtils)({
       authorLink = sourceLink = null;
     },
 
+    /* Returns the voice url.
+     * @private
+     * @return {string} the voice url
+     */
+    _getVoiceUrl: function _getVoiceUrl() {
+      return ('/' + this.data.voice.owner.profileName + '/' + this.data.voice.slug + '/');
+    },
+
     /* Appends the `Go to Voice` link.
      * @public
      * @return {Object} TopVoice
      */
     showVoiceButton: function showVoiceButton() {
-      var infoElement = this.el.querySelector('.top-voice__info');
-      var buttonString = this.constructor.VOICE_BUTTON_TEMPLATE;
+      var infoElement = this.el.querySelector('.top-voice__info')
+        , buttonString = this.constructor.VOICE_BUTTON_TEMPLATE
+        , description = this.el.querySelector('.top-voice__info-description');
 
       // switch description and author direction-flow
-      var description = this.el.querySelector('.top-voice__info-description');
       infoElement.appendChild(description);
 
-      buttonString = buttonString.replace(/{href}/, '/' + this.data.voice.owner.profileName + '/' + this.data.voice.slug + '/');
+      buttonString = buttonString.replace(/{href}/, this._getVoiceUrl());
       infoElement.insertAdjacentHTML('beforeend', buttonString);
 
       buttonString = infoElement = null;
