@@ -21,7 +21,7 @@ Class(CV, 'MyVoicesOnboarding').inherits(Widget)({
             })).render(this.el);
 
             Events.on(this.buttonCreate.el, 'click', function() {
-                App.showCreateVoiceModal({
+                App.showVoiceCreateModal({
                     ownerEntity : Person.get()
                 });
             });

@@ -2,7 +2,6 @@ var Clipboard = require('clipboard');
 var Origin = require('get-location-origin');
 require('jquery-colpick');
 
-
 Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
   ELEMENT_CLASS : 'cv-embed-overlay-main',
   HTML: '\
@@ -55,10 +54,10 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
 
     init : function(config) {
       Widget.prototype.init.call(this, config);
-      
+
       this.el = this.element[0];
       this.embedWidgetBackground = this.el.querySelector('.cv-embed_overlay_main');
-      
+
       this.embedWidgetContainer = this.el.querySelector('.cv-embed-overlay__iframe');
       this.iframeInner = this.el.querySelector('.cv-embed-iframe-wraper');
 
@@ -96,7 +95,7 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
         svgClassName : '-s18'
       })).render(this.embedWidgetBackground);
 
-      /* 
+      /*
        * Widget Height Radios
        */
       this.appendChild(new CV.UI.Radio({
@@ -242,21 +241,21 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
       })).render(this.optionTheme);
 
       /*
-       * Accent Color Picker 
+       * Accent Color Picker
        */
       this.inputAccent = this.optionAccent.querySelector('input');
-      
+
       $(this.inputBackground).colpick({
         color : 'ff9400',
-        onChange : function(hsb, hex, rgb, el){ 
+        onChange : function(hsb, hex, rgb, el){
           var input = $(el).children('.color');
-          input.val('#'+hex).trigger('changed'); 
+          input.val('#'+hex).trigger('changed');
         },
         submit : false,
         layout : 'full'
       });
 
-      /* 
+      /*
        * Allow to share Radios
        */
       this.appendChild(new CV.UI.Checkbox({
@@ -271,7 +270,7 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
         }
       })).render(this.optionShare);
 
-      /* 
+      /*
        * Code snippet
        */
       this.appendChild(new CV.Input({
@@ -280,8 +279,8 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
         isArea : true,
         placeholder : 'Embedding code...'
       })).render(this.optionCode);
-      
-      this.codeClipboard.inputEl[0].querySelector('textarea').innerText = '<iframe style="height: 400px;" src="' + this.iframeUrl +' "></iframe>';
+
+      this.codeClipboard.inputEl[0].querySelector('textarea').innerText = '<iframe style="height: 400px; width: 100%;" src="' + this.iframeUrl +' "></iframe>';
       this.codeClipboard.inputEl[0].querySelector('textarea').setAttribute('readonly', 'true');
 
       this.appendChild(new CV.UI.Button({
@@ -294,11 +293,11 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
         }
       })).render(this.optionCode);
 
-      this.codeClipboardButton.el.setAttribute('data-clipboard-text', '<iframe style="height: 400px;" src="' + location.protocol +'//' + location.hostname + this.iframeUrl +' "></iframe>');
+      this.codeClipboardButton.el.setAttribute('data-clipboard-text', '<iframe style="height: 400px; width: 100%;" src="' + location.protocol +'//' + location.hostname + this.iframeUrl +' "></iframe>');
 
       $(document.body).addClass('embed-no-scroll');
 
-      return this;    
+      return this;
     },
 
     _bindEvents : function _bindEvents(){
@@ -340,7 +339,7 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
       var background = this.inputBackground;
       var SVG = this.inputSVG;
       this.accentValue = hexColor;
-      
+
       if ( this.accentValue === 'ffffff' || this.accentValue === 'FFFFFF' ){
         background.style.color = '#a1b0b3';
         SVG.style.fill = '#a1b0b3';
@@ -398,27 +397,28 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
       } else {
         this.enableShareValue = false;
       }
-      
+
       if (this.embedableIFrame.active === true){
         this.embedableIFrame.deactivate();
       }
-    
+
       this._enableLoader();
 
-      setTimeout(function(){ 
+      setTimeout(function(){
           this.iframeUrl = Origin + '/embed/' + App.Voice.data.owner.profileName + '/' + App.Voice.data.slug + '/?default_view=' + this.defaultViewValue + '&change_view=' + this.changeViewValue + '&description=' + this.voiceDescriptionValue + '&background=' + this.voiceBackgroundValue + '&share=' + this.enableShareValue + '&theme=' + this.widgetThemeValue + '&accent=' + this.accentValue;
           this.embedableIFrame.updateUrl(this.iframeUrl);
 
-          this.codeClipboard.inputEl[0].querySelector('textarea').innerText = '<iframe style="height:' + this.widgetHeightValue + 'px;" src="' + this.iframeUrl + ' "></iframe>';
-          this.codeClipboardButton.el.setAttribute('data-clipboard-text', '<iframe style="height:' + this.widgetHeightValue + 'px;" src="' + this.iframeUrl +' "></iframe>');
+          this.codeClipboard.inputEl[0].querySelector('textarea').innerText = '<iframe style="height:' + this.widgetHeightValue + 'px; width: 100%;" src="' + this.iframeUrl + ' " frameBorder="0"></iframe>';
+          this.codeClipboardButton.el.setAttribute('data-clipboard-text', '<iframe style="height:' + this.widgetHeightValue + 'px; width: 100%;" src="' + this.iframeUrl +' " frameBorder="0"></iframe>');
           this.codeClipboardButton.el.innerText = 'Copy to clipboard';
           this.codeClipboardButton.el.classList.add('primary');
           this.codeClipboardButton.el.classList.remove('positive');
           this.codeClipboardButton.el.disabled = false;
 
           this.iframeInner.style.height = this.widgetHeightValue + 'px';
+          this.iframeInner.style.width = '100%';
       }.bind(this), 100);
-      
+
     },
 
     _enableLoader : function _enableLoader(){
@@ -447,7 +447,7 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
 
           if (navigator.appVersion.indexOf("Win")!== -1) {
               instructions = 'Press CTRL + C to copy! And paste the code into the HTML of your site.';
-          } else if (navigator.appVersion.indexOf("Mac")!== -1) { 
+          } else if (navigator.appVersion.indexOf("Mac")!== -1) {
               instructions = 'Press ⌘ + C to copy! And paste the code into the HTML of your site.';
           }
 

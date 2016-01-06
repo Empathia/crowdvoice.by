@@ -77,6 +77,12 @@ Class(CV.Views, 'PostShow').includes(CV.WidgetUtils, NodeSupport)({
       } else {
         this.dom.removeClass(this.viewOriginalBtn, ['-hide']);
         this.dom.updateAttr('href', this.viewOriginalBtn, this.post.sourceUrl);
+
+        var readMoreButton = '\
+          <div class="-block -mt1 -text-center">\
+            <a class="cv-button large -font-bold" href="{src}" target="_blank">Read More</a>\
+          </div>'.replace(/{src}/, this.post.sourceUrl);
+        this.descriptionElement.insertAdjacentHTML('beforeend', readMoreButton);
       }
 
       this.updateSaves(this.post);
