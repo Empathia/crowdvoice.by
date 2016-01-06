@@ -41,7 +41,7 @@ Class(CV.UI, 'Input').inherits(Widget).includes(CV.WidgetUtils)({
                 this.labelElement = this.el.getElementsByClassName('ui-input__label')[0];
                 this.hintElement = this.el.getElementsByClassName('cv-caption')[0];
                 this.dom.updateText(this.labelElement, this.data.label);
-                this.dom.updateText(this.hintElement, this.data.hint);
+                this.dom.updateHTML(this.hintElement, this.data.hint || '');
             }
 
             if (this.data.isTextArea) {
