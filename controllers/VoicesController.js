@@ -278,6 +278,23 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           return next(new ForbiddenError());
         }
 
+        var publishErrors = [];
+
+        if (req.body.status === Voice.STATUS_PUBLISHED
+          || req.body.status === Voice.STATUS_UNLISTED
+          ) {
+
+          publishErrors.push('Voice does not have 15 posts.');
+        }
+
+        if (!req.files.image) {
+          publishErrors.push('Voices does not have a background image.');
+        }
+
+        if (publishErrors.length > 0) {
+          return res.status(403).json({ errors: publishErrors })
+        }
+
         var voice = new Voice({
           title: req.body.title,
           status: req.body.status,
@@ -322,8 +339,6 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
               done();
             });
           });
-
-
         }, function(done) {
           voice.save(done);
         }, function(done) {
