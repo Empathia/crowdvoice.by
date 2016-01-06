@@ -52,11 +52,11 @@ Class(CV, 'PostCreatorEditArticle').inherits(CV.PostCreator).includes(BubblingSu
         name : 'postDate',
         className : '-overflow-hidden -full-height'
       })).render(this.header);
-      
+
       this.appendChild(new CV.PostCreatorWriteArticleEditor({
         name : 'editor'
       })).render(this.content);
-      
+
       // Content
       this.articleContent = $(this.content.querySelector('.write-article-body-editable'));
       this.articleTitle = $(this.content.querySelector('.editor-title'));
@@ -81,7 +81,7 @@ Class(CV, 'PostCreatorEditArticle').inherits(CV.PostCreator).includes(BubblingSu
       this.postDate.el.querySelector('.write-article-title').innerText = 'Edit Article';
       this.articleContent.html(this.voiceContent);
       this.articleContent.removeClass('medium-editor-placeholder');
-      this.articleTitle[0].value = this.voiceTitle; 
+      this.articleTitle[0].value = this.voiceTitle;
 
       if( this.data.voiceData.imagePath[0] ){
         this.articleImage = this.data.voiceData.imagePath[0].path;
@@ -121,7 +121,7 @@ Class(CV, 'PostCreatorEditArticle').inherits(CV.PostCreator).includes(BubblingSu
     _buttonClick : function _buttonClick(){
       this._disablePostButton();
       this.loadingStep.addClass('active');
-      
+
       if(this.articleImage !== null){
         API.postUpdate({
           profileName : this.data.voiceData.profileName,
@@ -168,7 +168,7 @@ Class(CV, 'PostCreatorEditArticle').inherits(CV.PostCreator).includes(BubblingSu
       // Success feedack
       this.loader.disable();
       this.loaderSuccess.activate();
-      console.log(res);
+
       window.setTimeout(function() {
         this.loaderSuccess.deactivate();
         this.dispatch('articleEdited');
