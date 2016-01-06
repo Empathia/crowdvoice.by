@@ -547,8 +547,6 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
             return res.status(403).json({ errors: publishErrors });
           }
 
-          return next();
-
           async.series([function (done) {
             Entity.find({
               id: req.activeVoice.ownerId
