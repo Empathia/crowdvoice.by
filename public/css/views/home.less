@@ -110,12 +110,27 @@
     padding: 5px 20px 15px;
   }
 
-  .slider-prev {
-    border-right: 1px solid @color-neutral-x-light;
+  .slider-arrow-wrapper {
+    float: left;
+
+    &:first-child {
+      border-right: 1px solid @color-neutral-x-light;
+    }
   }
 
   .homepage-featured-voices-container {
     margin-left: -20px;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 10px;
+      bottom: 0;
+      z-index: 1;
+      background-image: linear-gradient(to right, @color-white, rgba(0,0,0,0));
+    }
   }
 
   .cv-voice-cover {
@@ -250,6 +265,17 @@
 
   .homepage-organization-cards-holder {
     margin-left: -10px;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 10px;
+      bottom: 0;
+      z-index: 1;
+      background-image: linear-gradient(to right, @color-white, rgba(0,0,0,0));
+    }
   }
 
   .arrows-wrapper {
@@ -263,8 +289,12 @@
     padding: 5px 20px 15px;
   }
 
-  .slider-prev {
-    border-right: 1px solid @color-neutral-x-light;
+  .slider-arrow-wrapper {
+    float: left;
+
+    &:first-child {
+      border-right: 1px solid @color-neutral-x-light;
+    }
   }
 
   .widget-card {
