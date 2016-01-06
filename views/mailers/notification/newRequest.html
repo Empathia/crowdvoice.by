@@ -112,7 +112,7 @@
 			<div style="text-align:center; font-size: 15px; line-height: 23px; color: #a6a39d;;margin-top:70px; margin-bottom:70px">
 				<!-- Invitation notitification reply button <a style="text-decoration:none;color:white;background-color:#FF9400;padding:17px 60px;border-radius:5px;border-bottom:5px solid #E68600;margin-right:10px" href="#">Invite to Join</a> -->
 				<a style="text-decoration:none;color:white;background-color:#FF9400;padding:17px 45px;border-radius:5px;border:1px solid #FF9400;border-bottom:5px solid #E68600;margin-left:10px;" href="<%= CONFIG.siteUrl[application.env] + '/' + params.receiver.entity.profileName + '/messages#' + params.thread.id %>">View Request</a>
-			</div> 
+			</div>
           </td>
         </tr>
       </table>
@@ -130,7 +130,7 @@
         <a target="_blank" href="https://www.facebook.com/crowdvoice" style="padding: 0px 10px;text-decoration:none;vertical-align:super;">
           <img src="<%= CONFIG.siteUrl[application.env] %>/img/icons/icon-circle-facebook.png"/>
         </a>
-        <p style="font-size:12px;color:A1B0B3;">© Majal, 2015. All Rights Reserved</p>
+        <p style="font-size:12px;color:A1B0B3;">© Majal, <%= new Date().getFullYear() %>. All Rights Reserved</p>
       </div>
     </td>
   </tr>
