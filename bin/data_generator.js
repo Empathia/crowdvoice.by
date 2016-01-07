@@ -225,7 +225,7 @@ async.series([function(next) {
         name        : 'Joffrey Baratheon',
         profileName : 'joffrey-baratheon',
         isAnonymous : false,
-        description : 'Prince Joffrey Baratheon is known to the Seven Kingdoms as the eldest son and heir of King Robert Baratheon and Queen Cersei Lannister.',
+        description : null,
         location : 'King\s Landing'
       },
       user : data.users['joffrey@example.com'],
