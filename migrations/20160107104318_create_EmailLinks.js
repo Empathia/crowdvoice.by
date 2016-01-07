@@ -4,7 +4,6 @@ exports.up = function(knex, Promise) {
     t.increments('id').primary()
     t.uuid('email_uuid').index()
     t.integer('entity_id')
-    t.integer('uses')
     t.timestamps()
   })
 };

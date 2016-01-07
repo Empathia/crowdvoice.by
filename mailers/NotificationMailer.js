@@ -69,7 +69,7 @@ var NotificationMailer = Module('NotificationMailer')({
       if (err) { return callback(err) }
 
       if (!setting[0].emailSettings.selfNewMessage) {
-        return callback();
+        return callback()
       }
 
       // CHECK IF THERE'S BEEN A MESSAGE WITHIN THE LAST 24 HOURS BY THE SAME
@@ -180,7 +180,7 @@ var NotificationMailer = Module('NotificationMailer')({
       if (err) { return callback(err) }
 
       if (!setting[0].emailSettings.selfNewInvitation) {
-        return callback();
+        return callback()
       }
 
       Entity.findById(info.message.senderEntityId, function (err, sender) {
@@ -288,7 +288,7 @@ var NotificationMailer = Module('NotificationMailer')({
       if (err) { return callback(err) }
 
       if (!setting[0].emailSettings.selfNewRequest) {
-        return callback();
+        return callback()
       }
 
       Entity.findById(info.message.senderEntityId, function (err, sender) {
@@ -396,7 +396,7 @@ var NotificationMailer = Module('NotificationMailer')({
       if (err) { return callback(err) }
 
       if (!setting[0].emailSettings.selfNewVoiceFollower) {
-        return callback();
+        return callback()
       }
 
       EntitiesPresenter.build([newFollowerEntity], null, function (err, presentedEntity) {
@@ -455,51 +455,56 @@ var NotificationMailer = Module('NotificationMailer')({
       if (err) { return callback(err) }
 
       if (!setting[0].emailSettings.selfNewEntityFollower) {
-        return callback();
+        return callback()
       }
 
       EntitiesPresenter.build([newFollowerEntity], null, function (err, presented) {
-        if (err) { return callback(err); }
+        if (err) { return callback(err) }
 
-        var template = new Thulium({ template: newEntityFollowerViewFile }),
-          message = {
-            html: '',
-            subject: 'CrowdVoice.by - You have a new follower',
-            from_email: 'notifications@crowdvoice.by',
-            from_name: 'CrowdVoice.by',
-            to: [],
-            important: true,
-            auto_text: true,
-            inline_css: true,
-          }
+        NotificationSettingsController.createEmailLink(receiver.realEntity.id, function (err, uuid) {
+          if (err) { return callback(err) }
 
-        template.parseSync().renderSync({
-          params: {
-            receiver: receiver,
-            follower: presented[0],
-          },
+          var template = new Thulium({ template: newEntityFollowerViewFile }),
+            message = {
+              html: '',
+              subject: 'CrowdVoice.by - You have a new follower',
+              from_email: 'notifications@crowdvoice.by',
+              from_name: 'CrowdVoice.by',
+              to: [],
+              important: true,
+              auto_text: true,
+              inline_css: true,
+            }
+
+          template.parseSync().renderSync({
+            params: {
+              receiver: receiver,
+              follower: presented[0],
+              uuid: uuid,
+            },
+          })
+
+          var view = template.view
+
+          message.html = view
+
+          message.to.push({
+            email: receiver.user.email,
+            name: receiver.user.name,
+            type: 'to',
+          })
+
+          client.messages.send({ message: message, async: true }, function (result) {
+            logger.log('NotificationMailer newEntityFollower():')
+            logger.log(result)
+
+            return callback(null, result)
+          }, function (err) {
+            logger.error('NotificationMailer newEntityFollower(): A mandrill error occurred: ' + err.name + ' - ' + err.message)
+            return callback(err)
+          })
         })
-
-        var view = template.view
-
-        message.html = view
-
-        message.to.push({
-          email: receiver.user.email,
-          name: receiver.user.name,
-          type: 'to',
-        })
-
-        client.messages.send({ message: message, async: true }, function (result) {
-          logger.log('NotificationMailer newEntityFollower():')
-          logger.log(result)
-
-          return callback(null, result)
-        }, function (err) {
-          logger.error('NotificationMailer newEntityFollower(): A mandrill error occurred: ' + err.name + ' - ' + err.message)
-          return callback(err)
-        });
-      });
+      })
     })
   },
 })

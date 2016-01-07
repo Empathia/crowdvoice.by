@@ -3,7 +3,6 @@ var EmailLink = Class('EmailLink').inherits(Argon.KnexModel)({
   validations: {
     emailUuid: ['required'],
     entityId: ['required'],
-    uses: ['required'],
   },
 
   storage: (new Argon.Storage.Knex({
@@ -13,7 +12,6 @@ var EmailLink = Class('EmailLink').inherits(Argon.KnexModel)({
   prototype: {
     emailUuid: null,
     entityId: null,
-    uses: null,
   },
 
 })
