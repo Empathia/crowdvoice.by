@@ -14,55 +14,6 @@ var notificationViewFile = fs.readFileSync('./views/mailers/notification/notific
 
 var NotificationMailer = Module('NotificationMailer')({
 
-  // Send feed notification with email
-  notification: function (user, notificationInfo, callback) {
-    Entity.findById(user.entityId, function (err, entity) {
-      if (err) { return callback(err) }
-
-      var template = new Thulium({ template: notificationViewFile }),
-        message = {
-          html: '',
-          subject: 'CrowdVoice.by - You have a new notification',
-          from_email: 'notifications@crowdvoice.by',
-          from_name: 'CrowdVoice.by',
-          to: [],
-          important: true,
-          auto_text: true,
-          inline_css: true,
-        }
-
-      template.parseSync().renderSync({
-        params: {
-          receiver: {
-            user: user,
-            entity: entity[0],
-          },
-          notificationInfo: notificationInfo,
-        },
-      })
-
-      var view = template.view
-
-      message.html = view
-
-      message.to.push({
-        email: user.email,
-        name: user.name,
-        type: 'to',
-      })
-
-      client.messages.send({ message: message, async: true }, function (result) {
-        logger.log('NotificationMailer notification():')
-        logger.log(result)
-
-        return callback(null, result)
-      }, function (err) {
-        logger.error('NotificationMailer notification(): A mandrill error occurred: ' + err.name + ' - ' + err.message)
-        return callback(err)
-      })
-    })
-  },
-
   // Send notification about new message
   newMessage: function (receiver, info, callback) {
     NotificationSetting.find({ entity_id: (receiver.entity.isAnonymous ? receiver.realEntity.id : receiver.entity.id) }, function (err, setting) {
@@ -125,48 +76,53 @@ var NotificationMailer = Module('NotificationMailer')({
           EntitiesPresenter.build(sender, null, function (err, presented) {
             if (err) { return callback(err) }
 
-            var template = new Thulium({ template: newMessageViewFile }),
-              message = {
-                html: '',
-                subject: 'CrowdVoice.by - You have received a new message from ' + sender[0].name,
-                from_email: 'notifications@crowdvoice.by',
-                from_name: 'CrowdVoice.by',
-                to: [],
-                important: true,
-                auto_text: true,
-                inline_css: true,
-              },
-              realThread = _.clone(info.thread)
+            NotificationSettingsController.createEmailLink(receiver.realEntity.id, function (err, uuid) {
+              if (err) { return callback(err) }
 
-            realThread.id = hashids.encode(realThread.id)
+              var template = new Thulium({ template: newMessageViewFile }),
+                message = {
+                  html: '',
+                  subject: 'CrowdVoice.by - You have received a new message from ' + sender[0].name,
+                  from_email: 'notifications@crowdvoice.by',
+                  from_name: 'CrowdVoice.by',
+                  to: [],
+                  important: true,
+                  auto_text: true,
+                  inline_css: true,
+                },
+                realThread = _.clone(info.thread)
 
-            template.parseSync().renderSync({
-              params: {
-                receiver: receiver,
-                thread: realThread,
-                message: info.message,
-                sender: presented[0],
-              },
-            })
+              realThread.id = hashids.encode(realThread.id)
 
-            var view = template.view
+              template.parseSync().renderSync({
+                params: {
+                  receiver: receiver,
+                  thread: realThread,
+                  message: info.message,
+                  sender: presented[0],
+                  uuid: uuid,
+                },
+              })
 
-            message.html = view
+              var view = template.view
 
-            message.to.push({
-              email: receiver.user.email,
-              name: receiver.user.name,
-              type: 'to',
-            })
+              message.html = view
 
-            client.messages.send({ message: message, async: true }, function (result) {
-              logger.log('NotificationMailer newMessage():')
-              logger.log(result)
+              message.to.push({
+                email: receiver.user.email,
+                name: receiver.user.name,
+                type: 'to',
+              })
 
-              return callback(null, result)
-            }, function (err) {
-              logger.error('NotificationMailer newMessage(): A mandrill error occurred: ' + err.name + ' - ' + err.message)
-              return callback(err)
+              client.messages.send({ message: message, async: true }, function (result) {
+                logger.log('NotificationMailer newMessage():')
+                logger.log(result)
+
+                return callback(null, result)
+              }, function (err) {
+                logger.error('NotificationMailer newMessage(): A mandrill error occurred: ' + err.name + ' - ' + err.message)
+                return callback(err)
+              })
             })
           })
         })
@@ -231,50 +187,55 @@ var NotificationMailer = Module('NotificationMailer')({
           ], function (err) {
             if (err) { return callback(err) }
 
-            var template = new Thulium({ template: newInvitationViewFile }),
-              message = {
-                html: '',
-                subject: 'CrowdVoice.by - You have received a new invitation from ' + sender[0].name,
-                from_email: 'notifications@crowdvoice.by',
-                from_name: 'CrowdVoice.by',
-                to: [],
-                important: true,
-                auto_text: true,
-                inline_css: true,
-              },
-              realThread = _.clone(info.thread)
+            NotificationSettingsController.createEmailLink(receiver.realEntity.id, function (err, uuid) {
+              if (err) { return callback(err) }
 
-            realThread.id = hashids.encode(realThread.id)
+              var template = new Thulium({ template: newInvitationViewFile }),
+                message = {
+                  html: '',
+                  subject: 'CrowdVoice.by - You have received a new invitation from ' + sender[0].name,
+                  from_email: 'notifications@crowdvoice.by',
+                  from_name: 'CrowdVoice.by',
+                  to: [],
+                  important: true,
+                  auto_text: true,
+                  inline_css: true,
+                },
+                realThread = _.clone(info.thread)
 
-            template.parseSync().renderSync({
-              params: {
-                receiver: receiver,
-                thread: realThread,
-                message: info.message,
-                sender: presented[0],
-                invitationVoice: invitationVoice,
-                invitationOrganization: invitationOrganization,
-              },
-            })
+              realThread.id = hashids.encode(realThread.id)
 
-            var view = template.view
+              template.parseSync().renderSync({
+                params: {
+                  receiver: receiver,
+                  thread: realThread,
+                  message: info.message,
+                  sender: presented[0],
+                  invitationVoice: invitationVoice,
+                  invitationOrganization: invitationOrganization,
+                  uuid: uuid,
+                },
+              })
 
-            message.html = view
+              var view = template.view
 
-            message.to.push({
-              email: receiver.user.email,
-              name: receiver.user.name,
-              type: 'to',
-            })
+              message.html = view
 
-            client.messages.send({ message: message, async: true }, function (result) {
-              logger.log('NotificationMailer newInvitation():')
-              logger.log(result)
+              message.to.push({
+                email: receiver.user.email,
+                name: receiver.user.name,
+                type: 'to',
+              })
 
-              return callback(null, result)
-            }, function (err) {
-              logger.error('NotificationMailer newInvitation(): A mandrill error occurred: ' + err.name + ' - ' + err.message)
-              return callback(err)
+              client.messages.send({ message: message, async: true }, function (result) {
+                logger.log('NotificationMailer newInvitation():')
+                logger.log(result)
+
+                return callback(null, result)
+              }, function (err) {
+                logger.error('NotificationMailer newInvitation(): A mandrill error occurred: ' + err.name + ' - ' + err.message)
+                return callback(err)
+              })
             })
           })
         })
@@ -339,50 +300,55 @@ var NotificationMailer = Module('NotificationMailer')({
           ], function (err) {
             if (err) { return callback(err) }
 
-            var template = new Thulium({ template: newRequestViewFile }),
-              message = {
-                html: '',
-                subject: 'CrowdVoice.by - You have received a new request from ' + sender[0].name,
-                from_email: 'notifications@crowdvoice.by',
-                from_name: 'CrowdVoice.by',
-                to: [],
-                important: true,
-                auto_text: true,
-                inline_css: true,
-              },
-              realThread = _.clone(info.thread)
+            NotificationSettingsController.createEmailLink(receiver.realEntity.id, function (err, uuid) {
+              if (err) { return callback(err) }
 
-            realThread.id = hashids.encode(realThread.id)
+              var template = new Thulium({ template: newRequestViewFile }),
+                message = {
+                  html: '',
+                  subject: 'CrowdVoice.by - You have received a new request from ' + sender[0].name,
+                  from_email: 'notifications@crowdvoice.by',
+                  from_name: 'CrowdVoice.by',
+                  to: [],
+                  important: true,
+                  auto_text: true,
+                  inline_css: true,
+                },
+                realThread = _.clone(info.thread)
 
-            template.parseSync().renderSync({
-              params: {
-                receiver: receiver,
-                thread: realThread,
-                message: info.message,
-                sender: presented[0],
-                requestVoice: requestVoice,
-                requestOrganization: requestOrganization,
-              },
-            })
+              realThread.id = hashids.encode(realThread.id)
 
-            var view = template.view
+              template.parseSync().renderSync({
+                params: {
+                  receiver: receiver,
+                  thread: realThread,
+                  message: info.message,
+                  sender: presented[0],
+                  requestVoice: requestVoice,
+                  requestOrganization: requestOrganization,
+                  uuid: uuid,
+                },
+              })
 
-            message.html = view
+              var view = template.view
 
-            message.to.push({
-              email: receiver.user.email,
-              name: receiver.user.name,
-              type: 'to',
-            })
+              message.html = view
 
-            client.messages.send({ message: message, async: true }, function (result) {
-              logger.log('NotificationMailer newRequest():')
-              logger.log(result)
+              message.to.push({
+                email: receiver.user.email,
+                name: receiver.user.name,
+                type: 'to',
+              })
 
-              return callback(null, result)
-            }, function (err) {
-              logger.error('NotificationMailer newRequest(): A mandrill error occurred: ' + err.name + ' - ' + err.message)
-              return callback(err)
+              client.messages.send({ message: message, async: true }, function (result) {
+                logger.log('NotificationMailer newRequest():')
+                logger.log(result)
+
+                return callback(null, result)
+              }, function (err) {
+                logger.error('NotificationMailer newRequest(): A mandrill error occurred: ' + err.name + ' - ' + err.message)
+                return callback(err)
+              })
             })
           })
         })
@@ -405,44 +371,49 @@ var NotificationMailer = Module('NotificationMailer')({
         VoicesPresenter.build([followedVoice], null, function (err, presentedVoice) {
           if (err) { return callback(err) }
 
-          var template = new Thulium({ template: newVoiceFollowerViewFile }),
-            message = {
-              html: '',
-              subject: 'CrowdVoice.by - Your voice has a new follower',
-              from_email: 'notifications@crowdvoice.by',
-              from_name: 'CrowdVoice.by',
-              to: [],
-              important: true,
-              auto_text: true,
-              inline_css: true,
-            }
+          NotificationSettingsController.createEmailLink(receiver.realEntity.id, function (err, uuid) {
+            if (err) { return callback(err) }
 
-          template.parseSync().renderSync({
-            params: {
-              receiver: receiver,
-              follower: presentedEntity[0],
-              voice: presentedVoice[0],
-            },
-          })
+            var template = new Thulium({ template: newVoiceFollowerViewFile }),
+              message = {
+                html: '',
+                subject: 'CrowdVoice.by - Your voice has a new follower',
+                from_email: 'notifications@crowdvoice.by',
+                from_name: 'CrowdVoice.by',
+                to: [],
+                important: true,
+                auto_text: true,
+                inline_css: true,
+              }
 
-          var view = template.view
+            template.parseSync().renderSync({
+              params: {
+                receiver: receiver,
+                follower: presentedEntity[0],
+                voice: presentedVoice[0],
+                uuid: uuid,
+              },
+            })
 
-          message.html = view
+            var view = template.view
 
-          message.to.push({
-            email: receiver.user.email,
-            name: receiver.user.name,
-            type: 'to',
-          })
+            message.html = view
 
-          client.messages.send({ message: message, async: true }, function (result) {
-            logger.log('NotificationMailer newVoiceFollower():')
-            logger.log(result)
+            message.to.push({
+              email: receiver.user.email,
+              name: receiver.user.name,
+              type: 'to',
+            })
 
-            return callback(null, result)
-          }, function (err) {
-            logger.error('NotificationMailer newVoiceFollower(): A mandrill error occurred: ' + err.name + ' - ' + err.message)
-            return callback(err)
+            client.messages.send({ message: message, async: true }, function (result) {
+              logger.log('NotificationMailer newVoiceFollower():')
+              logger.log(result)
+
+              return callback(null, result)
+            }, function (err) {
+              logger.error('NotificationMailer newVoiceFollower(): A mandrill error occurred: ' + err.name + ' - ' + err.message)
+              return callback(err)
+            })
           })
         })
       })
