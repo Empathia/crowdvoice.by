@@ -49,7 +49,6 @@ Admin.HomepageTopVoicessController = Class(Admin, 'HomepageTopVoicesController')
      * }
      */
     create: function (req, res, next) {
-      console.log(req.files)
       ACL.isAllowed('create', 'admin.homepageTopVoices', req.role, {
         currentPerson: req.currentPerson,
       }, function (err, isAllowed) {
