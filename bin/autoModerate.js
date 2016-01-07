@@ -10,6 +10,25 @@ var path = require('path'),
   moment = require('moment'),
   d = require('domain').create()
 
+/**
+ * NEONODE
+ */
+
+global.Admin = {}
+
+var application = require('neonode-core')
+require(path.join(__dirname, '../lib/routes.js'))
+
+// Load moment
+global.moment = require('moment')
+
+global.FeedInjector = require(path.join(__dirname, '../lib/FeedInjector.js'))
+require(path.join(__dirname, '../presenters/PostsPresenter'))
+
+/**
+ * NEONODE END
+ */
+
 // NEEDS FIX, LOGGER IS NOT ACTUALLY DEFINED!!
 d.on('error', function (err) {
   logger.error('Post auto-moderate script error')
@@ -118,7 +137,10 @@ d.run(function () {
             })
         })
         .then(function () {})
-        .catch(console.error.bind(console))
+        .catch(function (err) {
+          logger.error(err)
+          logger.error(err.stack)
+        })
 
     },
 
