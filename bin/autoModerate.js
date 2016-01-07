@@ -10,6 +10,7 @@ var path = require('path'),
   moment = require('moment'),
   d = require('domain').create()
 
+// NEEDS FIX, LOGGER IS NOT ACTUALLY DEFINED!!
 d.on('error', function (err) {
   logger.error('Post auto-moderate script error')
   logger.error(err)
@@ -122,7 +123,7 @@ d.run(function () {
     },
 
     start: true,
-    timeZone: 'UTC'
+    timeZone: 'UTC',
   })
 
 })
