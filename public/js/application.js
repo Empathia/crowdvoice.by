@@ -249,6 +249,7 @@ require('./widgets/voice/contributors/ManageContributorsList');
 require('./widgets/popovers/PopoverConfirm');
 require('./widgets/popovers/PopoverUnsave');
 require('./widgets/popovers/PopoverShare');
+require('./widgets/popovers/PopoverTwitterHelp');
 
 // posts
 require('./widgets/posts/modules/PostModuleImages');
