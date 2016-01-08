@@ -88,7 +88,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           });
 
           readablePost.data.content = truncatise(readablePost.data.content, {
-            TruncateLength: 199, // seems to sometimes miscount upwards by one word
+            TruncateLength: 199, // seems to miscount upwards by one word, so give it one less word
             TruncatedBy: 'words',
             Strict: false,
             StripHTML: false,
@@ -173,7 +173,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
             var imagePath = '';
             if (item.imagePath.length > 0) {
-              imagePath = process.cwd() + '/public' + item.imagePath;
+              imagePath = path.join(process.cwd(), 'public', item.imagePath.replace(/preview_/, ''));
             }
 
             post.uploadImage('image', imagePath, function() {
@@ -187,6 +187,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
                     item.images.forEach(function(image) {
                       // NOTE: this is sync, not async. maybe not good.
                       fs.unlinkSync(process.cwd() + '/public' + image);
+                      fs.unlinkSync(process.cwd() + '/public' + image.replace(/preview_/, ''));
                       logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image);
                     });
                   }
@@ -347,32 +348,57 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           .background('#FFFFFF')
           .quality(100);
 
-        var savePath = path.join(process.cwd(),  '/public/posts_images/');
+        var savePath = path.join(process.cwd(),  '/public/posts_images/'),
+          hrtime = process.hrtime(),
+          filename = 'upload_' + (hrtime[0] + hrtime[1] / 1000000) + '.jpg';
 
-        var hrtime = process.hrtime();
+        var post = {
+          sourceUrl : 'local_image',
+          sourceType : 'image',
+          sourceService : 'raw',
+          title : 'No Title',
+          description : 'No Description',
+          images : null
+        };
 
-        var filename = 'upload_' + (hrtime[0] + hrtime[1] / 1000000) + '.jpg';
+        async.series([
+          // save original
+          function (nextSeries) {
+            var rs = fs.createReadStream(req.files.image.path),
+              ws = fs.createWriteStream(path.join(savePath, filename));
 
-        var toFile = sharp().toFile(savePath + filename, function(err, info) {
-          if (err) {
-            return next(err);
+            rs.pipe(ws);
+
+            rs.on('end', function () {
+              ws.end();
+              return nextSeries();
+            });
+
+            rs.on('error', function (err) {
+              return nextSeries(err);
+            });
+            ws.on('error', function (err) {
+              return nextSeries(err);
+            });
+          },
+
+          // make preview from original
+          function (nextSeries) {
+            transform.pipe(sharp().toFile(savePath + 'preview_' + filename, function(err, info) {
+              if (err) { return nextSeries(err); }
+
+              info.path = '/posts_images/preview_' + filename;
+
+              post.images = [info];
+
+              return nextSeries();
+            }));
           }
-
-          info.path = '/posts_images/' + filename;
-
-          var post = {
-            sourceUrl : 'local_image',
-            sourceType : 'image',
-            sourceService : 'raw',
-            title : 'No Title',
-            description : 'No Description',
-            images : [info]
-          }
+        ], function (err) {
+          if (err) { return next(err); }
 
           res.json(post);
         });
-
-        transform.pipe(toFile);
       });
     },
 
