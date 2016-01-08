@@ -31,7 +31,21 @@ var data = {
   feedActions: {}
 };
 
+var fse = require('fs-extra')
+
 async.series([function(next) {
+  // Delete all the old posts and entities images, to avoid wasting disk space
+  // and to always have a clean environment.
+  return async.parallel([
+    function (doneParal) {
+      return fse.remove(path.join(process.cwd(), 'public/uploads/development'), doneParal);
+    },
+
+    function (doneParal) {
+      return fse.remove(path.join(process.cwd(), 'public/uploads/favicons'), doneParal);
+    }
+  ], next);
+}, function(next) {
   var users = [
     {
       email    : 'tyrion@example.com',
