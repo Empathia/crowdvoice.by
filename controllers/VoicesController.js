@@ -897,7 +897,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           return res.json({ 'status' : 'taken' });
         }
 
-        Slug.find(['url = ?', [value, req.activeVoice.id]], function(err, result) {
+        Slug.find(['url = ?', [value]], function(err, result) {
           if (err) {
             return next(err);
           }
