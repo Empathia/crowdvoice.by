@@ -88,7 +88,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           });
 
           readablePost.data.content = truncatise(readablePost.data.content, {
-            TruncateLength: 199, // seems to sometimes miscount upwards by one word
+            TruncateLength: 199, // seems to miscount upwards by one word, so give it one less word
             TruncatedBy: 'words',
             Strict: false,
             StripHTML: false,
@@ -187,6 +187,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
                     item.images.forEach(function(image) {
                       // NOTE: this is sync, not async. maybe not good.
                       fs.unlinkSync(process.cwd() + '/public' + image);
+                      fs.unlinkSync(process.cwd() + '/public' + image.replace(/preview_/, ''));
                       logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image);
                     });
                   }
