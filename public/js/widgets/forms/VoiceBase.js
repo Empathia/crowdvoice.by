@@ -23,7 +23,6 @@ Class(CV, 'VoiceBase').inherits(Widget).includes(CV.WidgetUtils)({
       <div data-row-voice-info class="-col-12">\
         <div data-topics></div>\
         <div data-type></div>\
-        <div data-status></div>\
       </div>\
       <div class="-col-12">\
         <div data-twitter class="-col-12"></div>\
@@ -81,7 +80,7 @@ Class(CV, 'VoiceBase').inherits(Widget).includes(CV.WidgetUtils)({
      * @protected
      */
     _slugAvailabilityHandler: function _slugAvailabilityHandler(err, res) {
-      if (err) {return;}
+      if (err) return;
 
       if (res.status === "taken") {
         this.voiceSlug.clearState().error();
@@ -187,8 +186,7 @@ Class(CV, 'VoiceBase').inherits(Widget).includes(CV.WidgetUtils)({
         slug: this.voiceSlug.getValue().trim(),
         description: this.voiceDescription.getValue().trim(),
         topicsDropdown: this.voiceTopicsDropdown.getSelection(),
-        typesDropdown: this.voiceTypesDropdown.getValue(),
-        statusDropdown: this.voiceStatusDropdown.getValue()
+        typesDropdown: this.voiceTypesDropdown.getValue()
       };
 
       if (this.voiceOwnershipDropdown) {
@@ -218,7 +216,6 @@ Class(CV, 'VoiceBase').inherits(Widget).includes(CV.WidgetUtils)({
       data.append('description', this.voiceDescription.getValue().trim());
       data.append('topics', this.voiceTopicsDropdown.getSelection().map(function(topic) {return topic.id;}));
       data.append('type', this.voiceTypesDropdown.getValue());
-      data.append('status', this.voiceStatusDropdown.getValue());
       data.append('twitterSearch', this.voiceHashtags.getValue().trim());
       data.append('locationName', this.voiceLocation.getValue().trim());
       data.append('latitude', this.voiceLatitude.getValue().trim());

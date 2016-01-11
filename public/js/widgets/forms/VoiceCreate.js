@@ -14,12 +14,12 @@ Class(CV, 'VoiceCreate').inherits(CV.VoiceBase)({
       this.sendElement = this.el.querySelector('.send');
 
       this.checkitProps = {
-        title : ['required', 'maxLength:' + this.MAX_TITLE_LENGTH],
-        slug : ['required', 'alphaDash', 'maxLength:' + this.MAX_TITLE_LENGTH],
-        description : ['required', 'maxLength:' + this.MAX_DESCRIPTION_LENGTH],
-        topicsDropdown : ['array', 'minLength:1'],
-        typesDropdown : 'required',
-        statusDropdown : 'required'
+        title: ['required', 'maxLength:' + this.MAX_TITLE_LENGTH],
+        slug: ['required', 'alphaDash', 'maxLength:' + this.MAX_TITLE_LENGTH],
+        description: ['required', 'maxLength:' + this.MAX_DESCRIPTION_LENGTH],
+        topicsDropdown: ['array', 'minLength:1'],
+        typesDropdown: 'required',
+        status: 'required'
       };
 
       this._setup()._updateInfoRow();
@@ -100,11 +100,6 @@ Class(CV, 'VoiceCreate').inherits(CV.VoiceBase)({
         name: 'voiceTypesDropdown'
       })).render(this.el.querySelector('[data-type]'));
       this.voiceTypesDropdown.selectByValue(CV.VoiceView.TYPE_PUBLIC);
-
-      this.appendChild(new CV.UI.DropdownVoiceStatus({
-        name: 'voiceStatusDropdown'
-      })).render(this.el.querySelector('[data-status]'));
-      this.voiceStatusDropdown.selectByValue(CV.VoiceView.STATUS_DRAFT);
 
       this.appendChild(new CV.UI.Input({
         name: 'voiceHashtags',
@@ -230,9 +225,6 @@ Class(CV, 'VoiceCreate').inherits(CV.VoiceBase)({
       this._letFreeSlugRef = this._letFreeSlug.bind(this);
       Events.on(this.voiceSlug.getInput(), 'keyup', this._letFreeSlugRef);
 
-      this._statusChangedHandlerRef = this._statusChangedHandler.bind(this);
-      this.voiceStatusDropdown.bind('status:changed', this._statusChangedHandlerRef);
-
       return this;
     },
 
@@ -266,24 +258,6 @@ Class(CV, 'VoiceCreate').inherits(CV.VoiceBase)({
       } else {
         this.checkAnon.enable();
       }
-    },
-
-    /* @private
-     */
-    _statusChangedHandler: function _statusChangedHandler(ev) {
-      ev.stopPropagation();
-
-      if (((this.voiceStatusDropdown.getValue() === CV.VoiceView.STATUS_UNLISTED) ||
-          (this.voiceStatusDropdown.getValue() === CV.VoiceView.STATUS_PUBLISHED)) &&
-          (this.voiceImage.isEmpty())) {
-        this.checkitProps.image = 'required';
-        this.checkit = new Checkit(this.checkitProps);
-      } else {
-        delete this.checkitProps.image;
-        this.checkit = new Checkit(this.checkitProps);
-      }
-
-      this.voiceImage.clearState();
     },
 
     /* Watch the voiceTitle input change event, auto-generates a valid slug
@@ -359,6 +333,15 @@ Class(CV, 'VoiceCreate').inherits(CV.VoiceBase)({
       return this;
     },
 
+    /* Returns the data to be validated using Checkit module
+     * @protected
+     */
+    _getCurrentData: function _getCurrentData() {
+      var body = CV.VoiceBase.prototype._getCurrentData.call(this);
+      body.status = CV.VoiceView.STATUS_DRAFT;
+      return body;
+    },
+
     /* Returns the data to be sent to server to create a new Voice.
      * @private, override
      */
@@ -376,6 +359,8 @@ Class(CV, 'VoiceCreate').inherits(CV.VoiceBase)({
       } else {
         data.append('ownerId', Person.get().id);
       }
+
+      data.append('status', CV.VoiceView.STATUS_DRAFT);
 
       return data;
     },
