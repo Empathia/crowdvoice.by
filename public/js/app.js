@@ -119,34 +119,51 @@ Class(CV, 'App').includes(NodeSupport)({
         .getPropertyValue('overflow');
     },
 
-    /* Display the CreateVoiceModal.
-     * @method showCreateVoiceModal <public> [Function]
+    /* Display the VoiceCreate Modal.
+     * @public
      */
-    showCreateVoiceModal: function showCreateVoiceModal(config) {
+    showVoiceCreateModal: function showVoiceCreateModal(config) {
       if (!Person.get()) {
         throw new Error('Not autorized to perform this action.');
       }
 
-      var modalLabel = 'Create a Voice';
+      this.appendChild(new CV.UI.Modal({
+        title: 'Create a Voice',
+        name: 'createAVoiceModal',
+        action: CV.VoiceCreate,
+        width: 960,
+        data: {
+          ownerEntity: config.ownerEntity || Person.get()
+        },
+      })).render(document.body);
 
-      if (config.voiceEntity) {
-        modalLabel = 'Update Voice';
+      requestAnimationFrame(function () {
+        this.createAVoiceModal.activate();
+      }.bind(this));
+    },
+
+    /* Display the VoiceEdit Modal.
+     * @public
+     */
+    showVoiceEditModal: function showVoiceEditModal(config) {
+      if (!Person.get() || !config.voiceEntity) {
+        throw new Error('Not autorized to perform this action.');
       }
 
       this.appendChild(new CV.UI.Modal({
-        title: modalLabel,
-        name: 'createAVoiceModal',
-        action: CV.CreateVoice,
+        title: 'Edit Voice',
+        name: 'editVoiceModal',
+        action: CV.VoiceEdit,
         width: 960,
         data: {
           voiceEntity: config.voiceEntity,
-          ownerEntity: config.ownerEntity
+          ownerEntity: config.ownerEntity || Person.get()
         },
         isAdmin: config.isAdmin
       })).render(config.renderTo || document.body);
 
       requestAnimationFrame(function () {
-        this.createAVoiceModal.activate();
+        this.editVoiceModal.activate();
       }.bind(this));
     },
 

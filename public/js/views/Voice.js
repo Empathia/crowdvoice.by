@@ -317,7 +317,7 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
         },
 
         _editVoiceButtonClicked : function _editVoiceButtonClicked() {
-            App.showCreateVoiceModal({
+            App.showVoiceEditModal({
                 voiceEntity : this.data,
                 ownerEntity: Person.get()
             });
