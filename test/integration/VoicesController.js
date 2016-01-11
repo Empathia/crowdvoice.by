@@ -439,4 +439,29 @@ describe('VoicesController', function () {
 
   })
 
+  describe('#isVoiceSlugAvailable', function () {
+
+    it('Should not return 500', function (doneTest) {
+      login('jamie-lannister', function (err, agent, csrf) {
+        if (err) { return doneTest(err) }
+
+        agent
+          .post(urlBase + '/jamie-lannister/roberts-rebelion/isVoiceSlugAvailable')
+          .send({
+            _csrf: csrf,
+            value: 'roberts-rebellion',
+          })
+          .end(function (err, res) {
+            if (err) { return doneTest(err) }
+
+            expect(res.status).to.equal(200)
+            expect(res.body.status).to.equal('available')
+
+            return doneTest()
+          })
+      })
+    })
+
+  })
+
 })
