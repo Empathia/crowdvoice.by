@@ -304,7 +304,7 @@ Class(CV, 'VoiceEdit').inherits(CV.VoiceBase)({
       var message = "“" + res.title + '” was updated! You will be redirected to your voices in a couple of seconds.'
         , url = '/' + Person.get('profileName') + '/myvoices/';
 
-      switch(this.data.voiceEntity.status) {
+      switch(res.status) {
         case CV.VoiceView.STATUS_ARCHIVED : url += '#archived'; break;
         case CV.VoiceView.STATUS_DRAFT : url += '#drafts'; break;
         case CV.VoiceView.STATUS_PUBLISHED : url += '#published'; break;
