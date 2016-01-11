@@ -222,6 +222,9 @@ Class(CV, 'VoiceEdit').inherits(CV.VoiceBase)({
       Events.on(this.voiceSlug.getInput(), 'keyup', this._sanitezeSlugRef);
       this._lastFreeSlug = this.voiceSlug.getValue();
 
+      this._statusChangedHandlerRef = this._statusChangedHandler.bind(this);
+      this.voiceStatusDropdown.bind('status:changed', this._statusChangedHandlerRef);
+
       return this;
     },
 
@@ -255,6 +258,24 @@ Class(CV, 'VoiceEdit').inherits(CV.VoiceBase)({
       if (this.checkAnon && voice.owner.isAnonymous) {
         this.checkAnon.check();
       }
+    },
+
+    /* @private
+     */
+    _statusChangedHandler: function _statusChangedHandler(ev) {
+      ev.stopPropagation();
+
+      if (((this.voiceStatusDropdown.getValue() === CV.VoiceView.STATUS_UNLISTED) ||
+          (this.voiceStatusDropdown.getValue() === CV.VoiceView.STATUS_PUBLISHED)) &&
+          (this.voiceImage.isEmpty())) {
+        this.checkitProps.image = 'required';
+        this.checkit = new Checkit(this.checkitProps);
+      } else {
+        delete this.checkitProps.image;
+        this.checkit = new Checkit(this.checkitProps);
+      }
+
+      this.voiceImage.clearState();
     },
 
     _sendFormHandler: function _sendFormHandler() {
