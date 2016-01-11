@@ -249,6 +249,7 @@ require('./widgets/voice/contributors/ManageContributorsList');
 require('./widgets/popovers/PopoverConfirm');
 require('./widgets/popovers/PopoverUnsave');
 require('./widgets/popovers/PopoverShare');
+require('./widgets/popovers/PopoverTwitterHelp');
 
 // posts
 require('./widgets/posts/modules/PostModuleImages');
@@ -286,6 +287,8 @@ require('./widgets/posts/edit/EditablePostImageControls');
 // moderate actions
 require('./widgets/posts/moderate/PostModerateRemoveButton');
 require('./widgets/posts/moderate/PostModeratePublishButton');
+require('./widgets/posts/moderate/PostModerateOriginalButton');
+require('./widgets/posts/moderate/PostModerateEditButton');
 require('./widgets/posts/moderate/PostModerateVoteButtons');
 
 require('./widgets/voice/VoiceRequestToContribute');
@@ -293,6 +296,7 @@ require('./widgets/voice/VoiceRequestToContribute');
 // post creators
 require('./widgets/post-creators/PostCreator');
 require('./widgets/post-creators/PostCreatorPostButton');
+require('./widgets/post-creators/PostCreatorEditButton');
 require('./widgets/post-creators/PostCreatorUploadingTemplate');
 require('./widgets/post-creators/PostCreatorErrorTemplate');
 require('./widgets/post-creators/PostCreatorSuccessTemplate');
@@ -312,6 +316,7 @@ require('./widgets/post-creators/upload-file/PostCreatorUploadFile');
 require('./widgets/post-creators/upload-file/PostCreatorUploadFileHeaderMessages');
 
 require('./widgets/post-creators/write-article/PostCreatorWriteArticle');
+require('./widgets/post-creators/write-article/PostCreatorEditArticle');
 require('./widgets/post-creators/write-article/PostCreatorWriteArticlePostDate');
 require('./widgets/post-creators/write-article/PostCreatorWriteArticleEditor');
 require('./widgets/post-creators/write-article/PostCreatorWriteArticleEditorHeader');
@@ -325,7 +330,9 @@ require('./widgets/login.js');
 require('./widgets/formUtils.js');
 require('./widgets/forms/send-message.js');
 require('./widgets/forms/RequestToContribute');
-require('./widgets/forms/CreateVoice');
+require('./widgets/forms/VoiceBase');
+require('./widgets/forms/VoiceCreate');
+require('./widgets/forms/VoiceEdit');
 require('./widgets/forms/CreateOrganization');
 require('./widgets/forms/InviteToContribute');
 require('./widgets/forms/InviteToOrganization');

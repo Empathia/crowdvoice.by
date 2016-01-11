@@ -103,6 +103,22 @@
       border-left-color: @color-white;
     }
   }
+
+  /* right */
+  &@{-}right @{ns}-popover__arrow {
+    top: 50%;
+    right: 100%;
+    margin-top: unit(-@popover-arrow-size, px);
+    margin-left: unit(-@popover-arrow-size, px);
+
+    &::before {
+      border-right-color: inherit;
+      left: -1px;
+    }
+    &::after {
+      border-right-color: @color-white;
+    }
+  }
 }
 
 @{ns}-popover__arrow {
@@ -209,6 +225,12 @@
       right: 100%;
       top: 50%;
       transform: translate(-15px, -50%);
+    }
+
+    &@{-}right {
+      left: 100%;
+      top: 50%;
+      transform: translate(15px, -50%);
     }
   }
 }

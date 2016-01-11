@@ -47,7 +47,7 @@ Class(CV, 'MyVoicesTab').inherits(Widget)({
 
             Events.on(this.el.getElementsByTagName('a')[0], 'click', function(ev) {
                 ev.preventDefault();
-                App.showCreateVoiceModal({
+                App.showVoiceCreateModal({
                     ownerEntity : Person.get()
                 });
             });
