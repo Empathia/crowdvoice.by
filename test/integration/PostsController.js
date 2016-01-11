@@ -356,6 +356,46 @@ describe('PostsController', function () {
       })
     })
 
+    it('Should not crash when favicon does not return a content-type header', function (doneTest) {
+      login('jon-snow', function (err, agent, csrf) {
+        if (err) { return doneTest(err) }
+
+        agent
+          .post(urlBase + '/jon-snow/white-walkers')
+          .accept('application/json')
+          .send({
+            _csrf: csrf,
+            posts: [
+              {
+                title: 'Bangladesh can now send male workers to Saudi Arabia: Secretary -',
+                description: 'WHAT EVER',
+                publishedAt: 'Thu Oct 15 2015 12:20:00 GMT-0500 (CDT)',
+                image: '',
+                imageWidth: '0',
+                imageHeight: '0',
+                sourceType: 'link',
+                sourceService: 'link',
+                sourceUrl: 'http://bdnews24.com/economy/2016/01/04/bangladesh-can-now-send-male-workers-to-saudi-arabia-secretary',
+                imagePath: '',
+              },
+            ],
+          })
+          .end(function (err, res) {
+            if (err) { return doneTest(err) }
+
+            expect(res.status).to.equal(200)
+
+            Post.find({ source_url: 'http://bdnews24.com/economy/2016/01/04/bangladesh-can-now-send-male-workers-to-saudi-arabia-secretary' }, function (err, post) {
+              if (err) { return doneTest(err) }
+
+              expect(post.length).to.equal(1)
+
+              return doneTest()
+            })
+          })
+      })
+    })
+
   })
 
   describe('#preview', function () {
