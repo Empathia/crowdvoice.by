@@ -15,22 +15,31 @@ Class(CV.UI, 'DropdownVoiceTypes').inherits(Widget)({
     init: function init(config) {
       Widget.prototype.init.call(this, config);
       this.el = this.element[0];
+      this._setup()._bindEvents();
+    },
 
+    _setup: function _setup() {
       this.appendChild(new CV.Dropdown({
         name: 'dropdown',
         label: '- Select the voice type',
         showArrow: true,
-        className: 'dropdown-topics ui-dropdown-styled -lg',
+        className: 'dropdown-voice-types ui-dropdown-styled -lg',
         arrowClassName: '-s10 -color-grey',
-        bodyClassName: 'ui-vertical-list hoverable -block',
+        bodyClassName: 'ui-vertical-list hoverable -nw',
         content: '\
-          <div class="ui-vertical-list-item" data-value="TYPE_PUBLIC">Public</div>\
-          <div class="ui-vertical-list-item" data-value="TYPE_CLOSED">Closed</div>'
+          <div class="ui-vertical-list-item" data-value="TYPE_PUBLIC" data-text="Open">\
+            <p class="voice-types-item__title -font-bold">Open</p>\
+            <p class="voice-types-item__subtitle">Anyone can post and moderate content.</p>\
+          </div>\
+          <div class="ui-vertical-list-item" data-value="TYPE_CLOSED" data-text="Close">\
+            <p class="voice-types-item__title -font-bold">Close</p>\
+            <p class="voice-types-item__subtitle">Content Posting and moderation is only available upon invitation.</p>\
+          </div>'
       })).render(this.el);
 
       this._items = [].slice.call(this.dropdown.getContent());
 
-      this._bindEvents();
+      return this;
     },
 
     /* Subscribe widget’s events.
@@ -48,7 +57,7 @@ Class(CV.UI, 'DropdownVoiceTypes').inherits(Widget)({
      * @private
      */
     _clickHandler: function _clickHandler(ev) {
-      this.selectByElement(ev.target);
+      this.selectByElement(ev.currentTarget);
     },
 
     /* Selects dropdown option by item element.
@@ -61,7 +70,7 @@ Class(CV.UI, 'DropdownVoiceTypes').inherits(Widget)({
         item.classList.remove('active');
       });
       element.classList.add('active');
-      this.dropdown.setLabel(element.textContent).deactivate();
+      this.dropdown.setLabel(element.getAttribute('data-text')).deactivate();
       return this;
     },
 

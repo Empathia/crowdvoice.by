@@ -28,8 +28,6 @@ Class(CV, 'VoiceCoverMini').inherits(Widget).includes(CV.WidgetUtils)({
       <a class="cv-tags-tag" href="{{tag-url}}">{{tag-name}}</a>\
     </li>',
 
-  TEMPLATE: '<span class="badge-follows voice-cover-type-badge">{TYPE}</span>',
-
   prototype: {
     /* VoiceEntity
      * @property {Object} data
@@ -95,7 +93,9 @@ Class(CV, 'VoiceCoverMini').inherits(Widget).includes(CV.WidgetUtils)({
     },
 
     _addTypeBadge: function _addTypeBadge() {
-      var text = '';
+      var template = '<span class="badge-follows voice-cover-type-badge">{TYPE}</span>'
+        , text = '';
+
       switch(this.data.type) {
         case CV.VoiceView.TYPE_PUBLIC:
           text = 'OPEN';
@@ -104,7 +104,8 @@ Class(CV, 'VoiceCoverMini').inherits(Widget).includes(CV.WidgetUtils)({
           text = 'CLOSED';
           break;
       }
-      this.el.querySelector('.voice-cover-title-wrapper').insertAdjacentHTML('beforeend', this.constructor.TEMPLATE.replace(/{TYPE}/, text));
+
+      this.el.querySelector('.voice-cover-title-wrapper').insertAdjacentHTML('beforeend', template.replace(/{TYPE}/, text));
     },
 
     /**
