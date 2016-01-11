@@ -99,7 +99,6 @@ Class(CV, 'VoiceCreate').inherits(CV.VoiceBase)({
       this.appendChild(new CV.UI.DropdownVoiceTypes({
         name: 'voiceTypesDropdown'
       })).render(this.el.querySelector('[data-type]'));
-      this.voiceTypesDropdown.selectByValue(CV.VoiceView.TYPE_PUBLIC);
 
       this.appendChild(new CV.UI.Input({
         name: 'voiceHashtags',
