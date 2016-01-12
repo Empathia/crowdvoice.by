@@ -248,7 +248,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
             if (err) { return next(err); }
 
             var imagePath = body.imagePath;
-            if (body.imagePath !== '' && CONFIG.environment === 'development') {
+            if (body.imagePath !== '') {
               imagePath = process.cwd() + '/public' + body.imagePath;
             }
 
@@ -663,7 +663,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         if (err) { return next(err); }
 
         if (!response.isAllowed) {
-          return next(new ForbiddenError('Unauthorized.'));
+          return next(new ForbiddenError());
         }
 
         if (!req.files.image) {
