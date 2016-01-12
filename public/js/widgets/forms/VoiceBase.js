@@ -8,7 +8,7 @@ Class(CV, 'VoiceBase').inherits(Widget).includes(CV.WidgetUtils)({
   ELEMENT_CLASS: 'cv-form-create-voice -clearfix',
   HTML: '\
     <div>\
-      <div class="-col-12">\
+      <div class="-row">\
         <div data-background class="-col-3 -pr1"></div>\
         <div class="-col-9">\
           <div class="-col-12">\
@@ -20,20 +20,20 @@ Class(CV, 'VoiceBase').inherits(Widget).includes(CV.WidgetUtils)({
           </div>\
         </div>\
       </div>\
-      <div data-row-voice-info class="-col-12">\
+      <div data-row-voice-info class="-row">\
         <div data-topics></div>\
         <div data-type></div>\
       </div>\
-      <div class="-col-12">\
+      <div class="-row">\
         <div data-twitter class="-col-12"></div>\
         <div data-rss class="-col-6 -pl1"></div>\
       </div>\
-      <div data-location-wrapper class="-col-12 -rel">\
+      <div data-location-wrapper class="-row -rel">\
         <div data-location class="-col-4"></div>\
         <div data-latitude class="-col-4 -pl1"></div>\
         <div data-longitude class="-col-4 -pl1"></div>\
       </div>\
-      <div class="send -col-12 -text-center"></div>\
+      <div class="send -row -text-center"></div>\
     </div>',
 
   REDIRECT_DELAY: 2000,
