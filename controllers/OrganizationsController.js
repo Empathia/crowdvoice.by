@@ -185,12 +185,24 @@ var OrganizationsController = Class('OrganizationsController').inherits(Entities
 
             // ownership
             function (next) {
+              var person = new Entity(req.currentPerson);
+              person.id = hashids.decode(person.id)[0];
+
               owner = new EntityOwner({
-                ownerId: hashids.decode(req.currentPerson.id)[0],
                 ownedId: org.id
               });
 
-              owner.save(next);
+              person.owner(function (err, result) {
+                if (err) { return next(err); }
+
+                if (person.isAnonymous) {
+                  owner.ownerId = result.id;
+                } else {
+                  owner.ownerId = person.id;
+                }
+
+                return owner.save(next);
+              });
             },
 
             // notification settings
