@@ -72,7 +72,7 @@ io.on('connection', function(socket) {
     var posts = 0;
 
     async.series([function(done) {
-      db.raw('SELECT COUNT(DISTINCT location) FROM "Entities" WHERE type = \'person\' OR type = \'organization\' AND is_anonymous = false;').exec(function(err, result) {
+      db.raw('SELECT COUNT(DISTINCT x) FROM (SELECT location from "Entities" WHERE is_anonymous = false UNION ALL SELECT location_name FROM "Voices") AS x;').exec(function(err, result) {
         if (err) {
           done(err);
         }
