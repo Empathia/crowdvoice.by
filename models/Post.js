@@ -349,6 +349,12 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
                 req.get(faviconURL.url, function(res) {
                   var extension;
 
+                  // Sometimes they may send an image but give no content-type header,
+                  // we can't trust that it's an image if the content-type doesn't exist.
+                  if (!res.headers['content-type']) {
+                    return next();
+                  }
+
                   if (!res.headers['content-type'].match('image')) {
                     return next();
                   }
