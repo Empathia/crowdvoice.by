@@ -3,16 +3,20 @@ var ScrollTo = require('./../lib/scrollto');
 
 Class(CV, 'Slider').inherits(Widget)({
   ARROWS_HTML: '\
-    <button class="slider-arrow slider-prev">\
-      <svg class="slider-arrow-svg">\
-        <use xlink:href="#svg-arrow-left"></use>\
-      </svg>\
-    </button>\
-    <button class="slider-arrow slider-next">\
-      <svg class="slider-arrow-svg">\
-        <use xlink:href="#svg-arrow-right"></use>\
-      </svg>\
-    </button>',
+    <div class="slider-arrow-wrapper -prev">\
+      <button class="slider-arrow slider-prev">\
+        <svg class="slider-arrow-svg">\
+          <use xlink:href="#svg-arrow-left"></use>\
+        </svg>\
+      </button>\
+    </div>\
+    <div class="slider-arrow-wrapper -next">\
+      <button class="slider-arrow slider-next">\
+        <svg class="slider-arrow-svg">\
+          <use xlink:href="#svg-arrow-right"></use>\
+        </svg>\
+      </button>\
+    </div>',
 
   prototype: {
     appendArrowsTo: null,
@@ -133,7 +137,7 @@ Class(CV, 'Slider').inherits(Widget)({
      * @param {NodeElement} element - the element to append the arrows to.
      */
     _appendArrows: function _appendArrows(element) {
-      element.insertAdjacentHTML('afterbegin', this.constructor.ARROWS_HTML);
+      element.insertAdjacentHTML('beforeend', this.constructor.ARROWS_HTML);
       this.prevButton = element.querySelector('.slider-prev');
       this.nextButton = element.querySelector('.slider-next');
     },

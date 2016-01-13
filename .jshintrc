@@ -1,6 +1,6 @@
 {
   "laxcomma": true,
-  "curly": false,
+  "curly": true,
   "eqeqeq": true,
   "eqnull": true,
   "expr": true,
