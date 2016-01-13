@@ -150,6 +150,94 @@ describe('PostsController', function () {
       })
     })
 
+    it('Should save image properly when post is being updated with new image', function (doneTest) {
+      var imageInfo
+
+      async.series([
+        function (nextSeries) {
+          login('jon-snow', function (err, agent, csrf) {
+            if (err) { return nextSeries(err) }
+
+            agent
+              .post(urlBase + '/tyrion-lannister/blackwater-battle/saveArticle')
+              .accept('application/json')
+              .send({
+                _csrf: csrf,
+                title: 'This will go to moderation.',
+                content: 'This will eventually have an image...',
+                publishedAt: new Date(),
+              })
+              .end(nextSeries)
+          })
+        },
+
+        function (nextSeries) {
+          login('tyrion-lannister', function (err, agent, csrf) {
+            if (err) { return nextSeries(err) }
+
+            agent
+              .post(urlBase + '/tyrion-lannister/blackwater-battle/uploadPostImage')
+              .attach('image', path.join(process.cwd(), 'public/generator/users/tyrion.jpg'))
+              .field('_csrf', csrf)
+              .end(function (err, res) {
+                if (err) { return nextSeries(err) }
+
+                expect(res.status).to.equal(200)
+
+                imageInfo = res.body
+
+                return nextSeries()
+              })
+          })
+        },
+
+        function (nextSeries) {
+          login('tyrion-lannister', function (err, agent, csrf) {
+            if (err) { return nextSeries(err) }
+
+            agent
+              .post(urlBase + '/tyrion-lannister/blackwater-battle/' + hashids.encode(2))
+              .send({
+                _csrf: csrf,
+                title: 'This will go to moderation',
+                description: 'This will eventually have an image...',
+                publishedAt: 'Thu Nov 19 2015 11:43:00 GMT-0600 (CST)',
+                image: '',
+                imageWidth: imageInfo.width,
+                imageHeight: imageInfo.height,
+                sourceType: 'text',
+                sourceService: 'local',
+                sourceUrl: '',
+                images: [ imageInfo.path ],
+                imagePath: imageInfo.path,
+                approved: true,
+              })
+              .end(function (err, res) {
+                if (err) { return nextSeries(err) }
+
+                expect(res.status).to.equal(200)
+
+                return nextSeries()
+              })
+          })
+        },
+
+        function (nextSeries) {
+          return nextSeries()
+        },
+
+        function (nextSeries) {
+          return nextSeries()
+        },
+
+        function (nextSeries) {
+          return nextSeries()
+        },
+      ], function (err) {
+        return doneTest(err)
+      })
+    })
+
   })
 
   describe('#saveArticle', function () {
