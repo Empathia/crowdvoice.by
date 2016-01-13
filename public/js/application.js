@@ -333,6 +333,7 @@ require('./widgets/forms/RequestToContribute');
 require('./widgets/forms/VoiceBase');
 require('./widgets/forms/VoiceCreate');
 require('./widgets/forms/VoiceEdit');
+require('./widgets/forms/VoiceStatusOptions');
 require('./widgets/forms/CreateOrganization');
 require('./widgets/forms/InviteToContribute');
 require('./widgets/forms/InviteToOrganization');

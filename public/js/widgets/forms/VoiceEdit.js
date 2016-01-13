@@ -4,6 +4,7 @@ var Person = require('./../../lib/currentPerson')
   , Checkit = require('checkit');
 
 Class(CV, 'VoiceEdit').inherits(CV.VoiceBase)({
+  MIN_POST_REQUIRED_TO_PUBLISH: 20,
   prototype: {
     isAdmin: null,
 
@@ -18,7 +19,7 @@ Class(CV, 'VoiceEdit').inherits(CV.VoiceBase)({
         description: ['required', 'maxLength:' + this.MAX_DESCRIPTION_LENGTH],
         topicsDropdown: ['array', 'minLength:1'],
         typesDropdown: 'required',
-        statusDropdown: 'required'
+        status: 'required'
       };
 
       this._setup()._updateInfoRow()._bindEvents();
@@ -90,12 +91,6 @@ Class(CV, 'VoiceEdit').inherits(CV.VoiceBase)({
       this.appendChild(new CV.UI.DropdownVoiceTypes({
         name: 'voiceTypesDropdown'
       })).render(this.el.querySelector('[data-type]'));
-      this.voiceTypesDropdown.selectByValue(CV.VoiceView.TYPE_PUBLIC);
-
-      this.appendChild(new CV.UI.DropdownVoiceStatus({
-        name: 'voiceStatusDropdown'
-      })).render(this.el.querySelector('[data-status]'));
-      this.voiceStatusDropdown.selectByValue(CV.VoiceView.STATUS_DRAFT);
 
       this.appendChild(new CV.UI.Input({
         name: 'voiceHashtags',
@@ -222,9 +217,6 @@ Class(CV, 'VoiceEdit').inherits(CV.VoiceBase)({
       Events.on(this.voiceSlug.getInput(), 'keyup', this._sanitezeSlugRef);
       this._lastFreeSlug = this.voiceSlug.getValue();
 
-      this._statusChangedHandlerRef = this._statusChangedHandler.bind(this);
-      this.voiceStatusDropdown.bind('status:changed', this._statusChangedHandlerRef);
-
       return this;
     },
 
@@ -244,7 +236,6 @@ Class(CV, 'VoiceEdit').inherits(CV.VoiceBase)({
         return topic.id;
       }));
       this.voiceTypesDropdown.selectByValue(voice.type);
-      this.voiceStatusDropdown.selectByValue(voice.status);
 
       if (this.voiceOwnershipDropdown) {
         this.voiceOwnershipDropdown.selectByEntity(voice.owner);
@@ -255,27 +246,39 @@ Class(CV, 'VoiceEdit').inherits(CV.VoiceBase)({
       this.voiceLatitude.setValue(voice.latitude);
       this.voiceLongitude.setValue(voice.longitude);
 
-      if (this.checkAnon && voice.owner.isAnonymous) {
+      if (voice.owner.isAnonymous) {
         this.checkAnon.check();
       }
+
+      this._appendStatusOptions();
     },
 
-    /* @private
+    /* Checks if the `status` options can be shown.
+     * @private
      */
-    _statusChangedHandler: function _statusChangedHandler(ev) {
-      ev.stopPropagation();
-
-      if (((this.voiceStatusDropdown.getValue() === CV.VoiceView.STATUS_UNLISTED) ||
-          (this.voiceStatusDropdown.getValue() === CV.VoiceView.STATUS_PUBLISHED)) &&
-          (this.voiceImage.isEmpty())) {
-        this.checkitProps.image = 'required';
-        this.checkit = new Checkit(this.checkitProps);
-      } else {
-        delete this.checkitProps.image;
-        this.checkit = new Checkit(this.checkitProps);
+    _appendStatusOptions: function _appendStatusOptions() {
+      if (this._canBePublished() === false) {
+        return this.el.insertAdjacentHTML('beforeend', '\
+            <p class="form-create-voice__bottom-help-text -mt2 -text-center">\
+            To be able to publish the voice and share it, you need to add at least 20 posts and a cover image.\
+            </p>');
       }
 
-      this.voiceImage.clearState();
+      this.appendChild(new CV.VoiceStatusOptions({
+        name: 'voiceStatus'
+      })).render(this.el, this.sendElement);
+      this.voiceStatus.selectByValue(this.data.voiceEntity.status);
+    },
+
+    /* Checks if the voice fullfil the minimum requirements to be published:
+     * - the voice has a cover image
+     * - the voice has at least 20 posts
+     * @private
+     */
+    _canBePublished: function _canBePublished() {
+      var hasImage = (this.voiceImage.isEmpty() === false)
+        , hasEnoughPosts = (this.data.voiceEntity.postsCount >= this.constructor.MIN_POST_REQUIRED_TO_PUBLISH);
+      return (hasImage && hasEnoughPosts);
     },
 
     _sendFormHandler: function _sendFormHandler() {
@@ -378,6 +381,16 @@ Class(CV, 'VoiceEdit').inherits(CV.VoiceBase)({
       }, this.constructor.REDIRECT_DELAY);
     },
 
+    _getCurrentData: function _getCurrentData() {
+      var body = CV.VoiceBase.prototype._getCurrentData.call(this);
+      if (this.voiceStatus) {
+        body.status = (this.voiceStatus.getValue() || this.data.voiceEntity.status);
+      } else {
+        body.status = this.data.voiceEntity.status;
+      }
+      return body;
+    },
+
     /* Returns the data to be sent to server to update current voice.
      * @private, override
      */
@@ -394,6 +407,10 @@ Class(CV, 'VoiceEdit').inherits(CV.VoiceBase)({
         data.append('ownerId', this.voiceOwnershipDropdown.getValue());
       } else {
         data.append('ownerId', this.data.ownerEntity.id);
+      }
+
+      if (this.voiceStatus) {
+        data.append('status', this.voiceStatus.getValue());
       }
 
       return data;
