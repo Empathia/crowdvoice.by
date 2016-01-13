@@ -180,7 +180,7 @@ describe('PostsController', function () {
               .attach('image', path.join(process.cwd(), 'public/generator/users/tyrion.jpg'))
               .field('_csrf', csrf)
               .end(function (err, res) {
-                if (err) { return nextSeries(err) }
+                if (err) { console.log(err); return nextSeries(err) }
 
                 expect(res.status).to.equal(200)
 
@@ -196,7 +196,7 @@ describe('PostsController', function () {
             if (err) { return nextSeries(err) }
 
             agent
-              .post(urlBase + '/tyrion-lannister/blackwater-battle/' + hashids.encode(2))
+              .put(urlBase + '/tyrion-lannister/blackwater-battle/' + hashids.encode(2))
               .send({
                 _csrf: csrf,
                 title: 'This will go to moderation',
@@ -213,7 +213,7 @@ describe('PostsController', function () {
                 approved: true,
               })
               .end(function (err, res) {
-                if (err) { return nextSeries(err) }
+                if (err) { console.log(err); return nextSeries(err) }
 
                 expect(res.status).to.equal(200)
 
@@ -221,20 +221,19 @@ describe('PostsController', function () {
               })
           })
         },
-
-        function (nextSeries) {
-          return nextSeries()
-        },
-
-        function (nextSeries) {
-          return nextSeries()
-        },
-
-        function (nextSeries) {
-          return nextSeries()
-        },
       ], function (err) {
-        return doneTest(err)
+        if (err) { return doneTest(err) }
+
+        Post.find({ title: 'This will go to moderation' }, function (err, post) {
+          if (err) { return doneTest(err) }
+
+          expect(post.length).to.equal(1)
+
+          expect(post[0].imageBaseUrl).to.not.be.empty
+          expect(post[0].imageMeta).to.not.be.empty
+
+          return doneTest()
+        })
       })
     })
 
