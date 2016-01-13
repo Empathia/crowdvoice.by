@@ -3,7 +3,7 @@
 
 <% var voiceDate = new Date();  %>
 <% var monthNames = ["January", "February", "March","April", "May", "June", "July","August", "September", "October","November", "December"];%>
-<% var day = voiceDate.getDate(); %> 
+<% var day = voiceDate.getDate(); %>
 <% var monthIndex = voiceDate.getMonth(); %>
 <% var year = voiceDate.getFullYear(); var voiceImage; %>
 <% if(Object.getOwnPropertyNames(voiceInfo.images).length === 0){ voiceImage = CONFIG.siteUrl[application.env]+'/img/img-placeholder.png'; }else{ voiceImage = voiceInfo.images.small.url;} %>
@@ -62,7 +62,8 @@
 	        <a target="_blank" href="https://www.facebook.com/crowdvoice" style="padding: 0px 10px;text-decoration:none;vertical-align:super;">
 	          	<img src="<%= CONFIG.siteUrl[application.env] %>/img/icons/icon-circle-facebook.png"/>
 	        </a>
-	        <p style="font-size:12px;color:A1B0B3;">© Majal, 2015. All Rights Reserved</p>
+            <p style="font-size:12px;color:A1B0B3;">© Majal, <%= year %>. All Rights Reserved</p>
+            <p style="font-size:12px;color:A1B0B3;"><a style="color:#4d4d4d;" href="<%= CONFIG.siteUrl[application.env] + '/deactivateEmailSetting?s=selfNewVoiceFollower&u=' + params.uuid %>">Unsubscribe</a> from these emails.</p>
       	</div>
     </td>
   </tr>
