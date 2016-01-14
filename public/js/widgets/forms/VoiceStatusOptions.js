@@ -62,6 +62,8 @@ Class(CV, 'VoiceStatusOptions').inherits(Widget)({
       this.children.forEach(function (radio) {
         radio[radio.isChecked() ? 'activate' : 'deactivate']();
       }, this);
+
+      this.dispatch('optionChanged');
     },
 
     selectByValue: function selectByValue(value) {

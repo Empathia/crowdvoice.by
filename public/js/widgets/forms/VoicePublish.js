@@ -10,11 +10,11 @@ Class(CV.Forms, 'VoicePublish').inherits(Widget).includes(CV.WidgetUtils)({
     init: function init(config) {
       Widget.prototype.init.call(this, config);
       this.el = this.element[0];
-      this._setup();
+      this._setup()._bindEvents();
     },
 
     _setup: function _setup() {
-      if (!this.data.voice) return;
+      if (!this.data.voice) return this;
 
       this.dom.updateText(this.el.querySelector('[data-voice-title]'), this.data.voice.title);
 
@@ -33,9 +33,16 @@ Class(CV.Forms, 'VoicePublish').inherits(Widget).includes(CV.WidgetUtils)({
       return this;
     },
 
-    destroy: function destroy() {
-      Widget.prototype.destroy.call(this);
-      return null;
+    _bindEvents: function _bindEvents() {
+      if (!this.data.voice) return this;
+
+      this._statusOptionChangedRef = this._statusOptionChanged.bind(this);
+      this.voiceStatus.bind('optionChanged', this._statusOptionChangedRef);
+    },
+
+    _statusOptionChanged: function _statusOptionChanged(ev) {
+      ev.stopPropagation();
+      this.buttonSend[ev.target.getValue() ? 'enable' : 'disable']();
     }
   }
 });
