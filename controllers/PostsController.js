@@ -251,7 +251,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
             var imagePath = body.imagePath;
 
             if (body.imagePath.length > 0) {
-              imagePath = process.cwd() + '/public' + body.imagePath;
+              imagePath = path.join(process.cwd(), '/public', body.imagePath);
             }
 
             async.series([function(done) {
