@@ -114,12 +114,20 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
 
                 this.appendChild(new CV.UI.Button({
                     name : 'editVoiceButton',
-                    className : 'header- small primary -mr2',
+                    className : 'small -mr2',
                     data : {value: 'Edit this Voice'}
                 })).render(App.header.buttonActionsWrapper, App.header.buttonActionsWrapper.firstElementChild);
 
                 this._editVoiceButtonClickedRef = this._editVoiceButtonClicked.bind(this);
                 Events.on(this.editVoiceButton.el, 'click', this._editVoiceButtonClickedRef);
+
+                if (this.data.status === CV.VoiceView.STATUS_DRAFT) {
+                  this.appendChild(new CV.VoicePublishButton({
+                    name: 'voicePublishButton',
+                    data: {voice: this.data},
+                    className: '-inline-block'
+                  })).render(App.header.buttonActionsWrapper, App.header.buttonActionsWrapper.firstElementChild);
+                }
             }
 
             // display the create content button if the voice allows posting.

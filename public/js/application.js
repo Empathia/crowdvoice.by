@@ -210,6 +210,7 @@ require('./widgets/voice/embed/EmbedOverlayIframe');
 require('./widgets/voice/VoiceHeader');
 require('./widgets/voice/VoiceFooter');
 require('./widgets/voice/VoiceFilterPostsDropdown');
+require('./widgets/voice/VoicePublishButton');
 require('./widgets/voice/footer/VoiceFooterShareButtonsGroup');
 require('./widgets/voice/footer/VoiceFooterShareButton');
 require('./widgets/voice/footer/VoiceFooterEmbedButton');
