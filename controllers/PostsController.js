@@ -249,6 +249,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
             if (err) { return next(err); }
 
             var imagePath = body.imagePath;
+
             if (body.imagePath !== '') {
               imagePath = process.cwd() + '/public' + body.imagePath;
             }
