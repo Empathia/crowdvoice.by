@@ -574,10 +574,18 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
               return done();
             }
 
+            if (!req.body.slug) {
+              return done();
+            }
+
             voice.addSlug(req.body.slug, done);
           }, function(done) {
             voice.save(done);
           }, function(done) {
+            if (!req.body.topics) {
+              return done();
+            }
+
             req.body.topics = req.body.topics.split(',');
 
             db('VoiceTopic').where({
