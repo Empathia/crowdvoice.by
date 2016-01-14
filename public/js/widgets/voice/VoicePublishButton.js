@@ -40,7 +40,6 @@ Class(CV, 'VoicePublishButton').inherits(Widget)({
      * @private
      */
     _clickHandler: function _clickHandler() {
-      console.log('clicked');
       if (this.publishModal) {
         this.publishModal = this.publishModal.destroy();
       }

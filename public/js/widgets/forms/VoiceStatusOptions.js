@@ -1,4 +1,4 @@
-Class(CV, 'VoiceStatusOptions').inherits(Widget)({
+Class(CV, 'VoiceStatusOptions').inherits(Widget).includes(CV.WidgetUtils)({
   ELEMENT_CLASS: 'voice-form__status-wrapper',
 
   HTML: '\
@@ -63,6 +63,7 @@ Class(CV, 'VoiceStatusOptions').inherits(Widget)({
         radio[radio.isChecked() ? 'activate' : 'deactivate']();
       }, this);
 
+      this.clearState();
       this.dispatch('optionChanged');
     },
 
@@ -87,6 +88,19 @@ Class(CV, 'VoiceStatusOptions').inherits(Widget)({
         }
       });
       return value;
+    },
+
+    clearState: function clearState() {
+      this.dom.removeClass(this.el, ['-is-error']);
+      return this;
+    },
+
+    /* Sets error state.
+     * @method error <public>
+     */
+    error: function error() {
+      this.dom.addClass(this.el, ['-is-error']);
+      return this;
     },
 
     destroy: function destroy() {
