@@ -6,7 +6,7 @@ var truncatise = require('truncatise')
 var PostsController = Class('PostsController').includes(BlackListFilter)({
   prototype : {
     init : function (config){
-      this.name = this.constructor.className.replace('Controller', '')
+      this.name = this.constructor.className.replace('Controller', '');
 
       return this;
     },
