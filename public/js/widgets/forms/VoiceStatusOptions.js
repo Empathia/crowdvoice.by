@@ -16,7 +16,7 @@ Class(CV, 'VoiceStatusOptions').inherits(Widget)({
     init: function init(config) {
       Widget.prototype.init.call(this, config);
       this.el = this.element[0];
-      this._setup();
+      this._setup()._bindEvents();
     },
 
     _setup: function _setup() {
@@ -45,6 +45,23 @@ Class(CV, 'VoiceStatusOptions').inherits(Widget)({
         }
       })).render(this.el.querySelector('[data-unlisted]'));
       this.unlisted.el.querySelector('label').insertAdjacentHTML('beforeend', '<p class="voice-form__status-item-desc -ml2">Accessible only to those with the link. it won’t be visible in voice listings or your public profile.</p>');
+
+      return this;
+    },
+
+    _bindEvents: function _bindEvents() {
+      this._statusChangedRef = this._statusChanged.bind(this);
+
+      this.children.forEach(function (radio) {
+        radio.bind('changed', this._statusChangedRef);
+      }, this);
+    },
+
+    _statusChanged: function _statusChanged(ev) {
+      ev.stopPropagation();
+      this.children.forEach(function (radio) {
+        radio[radio.isChecked() ? 'activate' : 'deactivate']();
+      }, this);
     },
 
     selectByValue: function selectByValue(value) {

@@ -312,9 +312,9 @@ Class(CV, 'VoiceEdit').inherits(CV.VoiceBase)({
       }
 
       return API.voiceEdit({
-        profileName : profileName,
-        voiceSlug : this.data.voiceEntity.slug,
-        data : this._dataPresenter()
+        profileName: profileName,
+        voiceSlug: this.data.voiceEntity.slug,
+        data: this._dataPresenter()
       }, function (err, res) {
         if (err) return this._setErrorState(res.status + ': ' + res.statusText);
         this._setSuccessState(res);
@@ -329,10 +329,10 @@ Class(CV, 'VoiceEdit').inherits(CV.VoiceBase)({
         , url = '/' + Person.get('profileName') + '/myvoices/';
 
       switch(res.status) {
-        case CV.VoiceView.STATUS_ARCHIVED : url += '#archived'; break;
-        case CV.VoiceView.STATUS_DRAFT : url += '#drafts'; break;
-        case CV.VoiceView.STATUS_PUBLISHED : url += '#published'; break;
-        case CV.VoiceView.STATUS_UNLISTED : url += '#unlisted'; break;
+        case CV.VoiceView.STATUS_ARCHIVED: url += '#archived'; break;
+        case CV.VoiceView.STATUS_DRAFT: url += '#drafts'; break;
+        case CV.VoiceView.STATUS_PUBLISHED: url += '#published'; break;
+        case CV.VoiceView.STATUS_UNLISTED: url += '#unlisted'; break;
       }
 
       window.setTimeout(function() {
@@ -345,17 +345,17 @@ Class(CV, 'VoiceEdit').inherits(CV.VoiceBase)({
 
       if (this._flashMessage) {
         this._flashMessage.update({
-          type : 'positive',
-          text : message
+          type: 'positive',
+          text: message
         }).shake();
         return this;
       }
 
       this.appendChild(new CV.Alert({
-        name : '_flashMessage',
-        type : 'positive',
-        text : message,
-        className : '-mb1'
+        name: '_flashMessage',
+        type: 'positive',
+        text: message,
+        className: '-mb1'
       })).render(this.el, this.el.firstElementChild);
 
       return this;
