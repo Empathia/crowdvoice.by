@@ -41,6 +41,23 @@ Class(CV, 'VoicePublishButton').inherits(Widget)({
      */
     _clickHandler: function _clickHandler() {
       console.log('clicked');
+      if (this.publishModal) {
+        this.publishModal = this.publishModal.destroy();
+      }
+
+      this.appendChild(new CV.UI.Modal({
+        name: 'publishModal',
+        title: 'Publish Voice',
+        action: CV.Forms.VoicePublish,
+        width: 800,
+        data: {
+          voice: this.data.voice
+        }
+      })).render(document.body);
+
+      requestAnimationFrame(function () {
+        this.publishModal.activate();
+      }.bind(this));
     },
 
     destroy: function destroy() {

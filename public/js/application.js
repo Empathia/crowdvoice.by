@@ -27,7 +27,7 @@ window.dragula = require('dragula');
 // JS » Our stack, namespace, lib
 require('neon');
 require('neon/stdlib');
-window.CV = {UI: {}, Views: {}};
+window.CV = {UI: {}, Views: {}, Forms: {}};
 require('./lib/widget-utils.js');
 require('./lib/Widget.js');
 require('./lib/image-halt');
@@ -334,6 +334,7 @@ require('./widgets/forms/RequestToContribute');
 require('./widgets/forms/VoiceBase');
 require('./widgets/forms/VoiceCreate');
 require('./widgets/forms/VoiceEdit');
+require('./widgets/forms/VoicePublish');
 require('./widgets/forms/VoiceStatusOptions');
 require('./widgets/forms/CreateOrganization');
 require('./widgets/forms/InviteToContribute');
