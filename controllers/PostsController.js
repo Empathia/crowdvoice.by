@@ -250,7 +250,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
             var imagePath = body.imagePath;
 
-            if (body.imagePath !== '') {
+            if (body.imagePath.length > 0) {
               imagePath = process.cwd() + '/public' + body.imagePath;
             }
 
