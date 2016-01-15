@@ -9,7 +9,10 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
     },
 
     index : function index(req, res, next) {
-      ACL.isAllowed('show', 'threads', req.role, {currentPerson : req.currentPerson},  function(err, isAllowed) {
+      ACL.isAllowed('show', 'threads', req.role, {
+        currentPerson: req.currentPerson,
+        profileName: req.params.profileName
+      },  function(err, isAllowed) {
         if (err) { return next(err); }
 
         if (!isAllowed) {
