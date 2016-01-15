@@ -255,6 +255,63 @@ describe('ThreadsController', function () {
       })
     })
 
+    it('Should not create a new thread to send invitation', function (doneTest) {
+      async.series([
+        // Arya to House Targaryen
+        function (nextSeries) {
+          login('arya-stark', function (err, agent, csrf) {
+            if (err) { return nextSeries(err) }
+
+            agent
+              .post(urlBase + '/arya-stark/messages')
+              .accept('application/json')
+              .send({
+                _csrf: csrf,
+                type: 'message',
+                senderEntityId: hashids.encode(11), // Arya
+                receiverEntityId: hashids.encode(23), // House Targaryen
+                message: '148164312'
+              })
+              .end(function (err, res) {
+                console.log(err)
+                console.log(res.body)
+                return nextSeries(err)
+              })
+          })
+        },
+
+        // Daenerys to House Targaryen to Arya (invite)
+        function (nextSeries) {
+          login('daenerys-targaryen', function (err, agent, csrf) {
+            if (err) { return nextSeries(err) }
+
+            agent
+              .post(urlBase + '/arya-stark/messages')
+              .accept('application/json')
+              .send({
+                _csrf: csrf,
+                type: 'invitation_organization',
+                senderEntityId: hashids.encode(23), // House Targaryen
+                receiverEntityId: hashids.encode(11), // Arya
+                organizationId: hashids.encode(23), // House Targaryen
+                message: '369169861',
+              })
+              .end(function (err, res) {
+                console.log(err)
+                console.log(res.body)
+                return nextSeries(err)
+              })
+          })
+        },
+      ], function (err) {
+        if (err) { return doneTest(err) }
+
+        // Confirm stuff's alright
+
+        return doneTest()
+      })
+    })
+
   })
 
   describe('#destroy', function () {
