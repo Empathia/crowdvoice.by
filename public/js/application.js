@@ -135,6 +135,7 @@ require('./widgets/voice-cover/VoiceCoverTitle');
 require('./widgets/voice-cover/actions/VoiceCoverActions');
 require('./widgets/voice-cover/actions/VoiceCoverActionsEdit');
 require('./widgets/voice-cover/actions/VoiceCoverActionsArchive');
+require('./widgets/voice-cover/actions/VoiceCoverActionsPublish');
 require('./widgets/CategoryCover');
 require('./widgets/TopicCard');
 require('./widgets/TopVoice');

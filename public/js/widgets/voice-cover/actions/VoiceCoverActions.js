@@ -6,6 +6,14 @@ Class(CV, 'VoiceCoverActions').inherits(Widget).includes(CV.WidgetUtils)({
       Widget.prototype.init.call(this, config);
       this.el = this.element[0];
 
+      if (this.voiceEntity.status === CV.VoiceView.STATUS_DRAFT) {
+        this.appendChild(new CV.VoiceCoverActionsPublish({
+          name: 'publish',
+          voiceEntity: this.voiceEntity,
+          data: {value: 'Publish'}
+        })).render(this.el);
+      }
+
       this.appendChild(new CV.VoiceCoverActionsEdit({
         name: 'edit',
         voiceEntity: this.voiceEntity,
