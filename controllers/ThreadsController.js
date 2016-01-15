@@ -9,7 +9,10 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
     },
 
     index : function index(req, res, next) {
-      ACL.isAllowed('show', 'threads', req.role, {currentPerson : req.currentPerson},  function(err, isAllowed) {
+      ACL.isAllowed('show', 'threads', req.role, {
+        currentPerson: req.currentPerson,
+        profileName: req.params.profileName
+      },  function(err, isAllowed) {
         if (err) { return next(err); }
 
         if (!isAllowed) {
@@ -204,19 +207,14 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
         threadId : threadId,
         currentPersonId : currentPersonId
       }, function(err, isAllowed) {
-
-        if (err) {
-          return next(err);
-        }
+        if (err) { return next(err); }
 
         if (!isAllowed) {
           return next(new ForbiddenError());
         }
 
         MessageThread.findById(threadId, function(err, thread) {
-          if (err) {
-            return next(err);
-          }
+          if (err) { return next(err); }
 
           if (thread.length === 0) {
             return next(new NotFoundError('Thread Not Found'));
@@ -228,12 +226,8 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
 
           thread['lastSeen' + senderOrReceiver] = new Date(Date.now());
 
-          thread.updatedAt = thread.updatedAt;
-
           thread.save(function(err, result) {
-            if (err) {
-              return next(err);
-            }
+            if (err) { return next(err); }
 
             res.json({status : 'ok', data : result});
           })
