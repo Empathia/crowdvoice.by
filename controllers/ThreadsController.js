@@ -204,19 +204,14 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
         threadId : threadId,
         currentPersonId : currentPersonId
       }, function(err, isAllowed) {
-
-        if (err) {
-          return next(err);
-        }
+        if (err) { return next(err); }
 
         if (!isAllowed) {
           return next(new ForbiddenError());
         }
 
         MessageThread.findById(threadId, function(err, thread) {
-          if (err) {
-            return next(err);
-          }
+          if (err) { return next(err); }
 
           if (thread.length === 0) {
             return next(new NotFoundError('Thread Not Found'));
@@ -228,12 +223,8 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
 
           thread['lastSeen' + senderOrReceiver] = new Date(Date.now());
 
-          thread.updatedAt = thread.updatedAt;
-
           thread.save(function(err, result) {
-            if (err) {
-              return next(err);
-            }
+            if (err) { return next(err); }
 
             res.json({status : 'ok', data : result});
           })
