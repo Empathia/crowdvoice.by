@@ -205,7 +205,10 @@ require('./widgets/view-feed/FeedSidebar');
 require('./widgets/view-feed/FeedOnboarding');
 
 require('./widgets/voice/PostsRegistry');
-require('./widgets/voice/Onboarding');
+require('./widgets/voice/publish-onboarding/VoicePublishOnboardingManager');
+require('./widgets/voice/publish-onboarding/VoicePublishOnboardingCannot');
+require('./widgets/voice/publish-onboarding/VoicePublishOnboardingCan');
+require('./widgets/voice/publish-onboarding/VoicePublishOnboardingAddContent');
 require('./widgets/voice/embed/EmbedOverlay');
 require('./widgets/voice/embed/EmbedOverlayIframe');
 require('./widgets/voice/VoiceHeader');

@@ -1,6 +1,6 @@
 var Events = require('./../../lib/events');
 
-Class(CV, 'VoicePublishButton').inherits(Widget)({
+Class(CV, 'VoicePublishButton').inherits(Widget).includes(CV.WidgetUtils)({
   prototype: {
     init: function init(config) {
       Widget.prototype.init.call(this, config);
@@ -15,15 +15,23 @@ Class(CV, 'VoicePublishButton').inherits(Widget)({
     _setup: function _setup() {
       this.appendChild(new CV.UI.Button({
         name: 'button',
-        className : 'small primary -mr1',
+        className : 'small primary',
         data: {value: 'Publish'}
-      })).render(this.el).disable();
+      })).render(this.el);
 
-
-      if ((this.data.voice.postsCount >= 20) &&
-          Object.keys(this.data.voice.images).length) {
-        this.button.enable();
+      if (this._canBePublish() === false) {
+        this.dom.addClass(this.button.el, ['disable']);
       }
+
+      this.appendChild(new CV.VoicePublishOnboardingManager({
+        name: 'publishFlowManager',
+        publishButtonWrapper: this.el,
+        voiceData: this.data.voice
+      }));
+
+      requestAnimationFrame(function () {
+        this.publishFlowManager.showOnboarding();
+      }.bind(this));
 
       return this;
     },
@@ -40,6 +48,10 @@ Class(CV, 'VoicePublishButton').inherits(Widget)({
      * @private
      */
     _clickHandler: function _clickHandler() {
+      if (this._canBePublish() === false) {
+        return this.publishFlowManager.showOnboarding();
+      }
+
       if (this.publishModal) {
         this.publishModal = this.publishModal.destroy();
       }
@@ -57,6 +69,12 @@ Class(CV, 'VoicePublishButton').inherits(Widget)({
       requestAnimationFrame(function () {
         this.publishModal.activate();
       }.bind(this));
+    },
+
+    _canBePublish: function _canBePublish() {
+      var hasPosts = (this.data.voice.postsCount >= 20)
+        , hasImage = (Object.keys(this.data.voice.images).length >= 1);
+      return (hasPosts && hasImage);
     },
 
     destroy: function destroy() {

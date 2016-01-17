@@ -15,70 +15,24 @@
 /******************************************************************************
  * ONBOARDING
  *****************************************************************************/
-.cv-voice-onboarding {
-  width: 272px;
-  bottom: 100px;
-  right: 15px;
-  .onboarding-popover{
-    width: 272px;
-    height: 127px;
-    right: 15px;
-  }
-  .popover-title{
-    float: left;
-    margin: 10px 0px 0px 10px;
-    padding: 0px 7px 0px 7px;
-    color: #707070;
-    font-size: 17px;
-    background-color: #fff;
-    position: relative;
-    z-index: 1;
-  }
-  .line{
-    width: 100%;
-    background: #ccc;
-    height: 1px;
-    position: absolute;
-    top: 25px;
-  }
-  .cv-onboarding__close{
-    right: 10px;
-    top: 20px;
-    padding: 0 5px;
-    background-color: #fff;
-    svg{
-      fill: #707070;
-    }
-  }
-  .cv-voice-onboarding__desc{
-    display: inline-block;
-    text-align: left;
-    margin-left: 19px;
-    margin-top: 15px;
-    font-size: 14px;
-    color: #808080;
-    b{
-      color: #5F5F5F;
-    }
-  }
+.popover__voice-onboarding {
+  width: 340px;
+  z-index: 1;
 
-  .cv-voice-onboarding__arrow{
-    position: absolute;
-    border-color: inherit;
-    right: 53px;
-    top: 125px;
-    &::before, &::after{
-      content: '';
-      position: absolute;
-      border-width: 10px;
-      border-style: solid;
-      border-color: transparent;
-      border-top-color: rgba(0, 0, 0, 0.2);
-    }
-    &::after{
-      margin-top: -1px;
-      border-top-color: #fff;
-    }
+  .ui-popover-body {
+    padding: 0 2rem 2rem;
+  }
+}
+.voice-onboarding__constraint {
+  > svg {margin: 5px 5px 0 0}
+  .-checked {color: @color-neutral-light}
+}
+
+.voice-raise-your-voice-bubble {
+  width: 355px;
+
+  &.-top-right .ui-popover__arrow {
+    right: 43px;
   }
 }
 
