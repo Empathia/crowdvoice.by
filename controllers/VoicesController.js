@@ -283,7 +283,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         if (req.body.status === Voice.STATUS_PUBLISHED
           || req.body.status === Voice.STATUS_UNLISTED) {
 
-          publishErrors.push('Voice does not have 15 posts.');
+          publishErrors.push('Voice does not have 20 posts.');
 
           if (!req.files.image) {
             publishErrors.push('Voices does not have a background image.');
@@ -489,7 +489,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
         // Check some requirements before being published
         async.series([
-          // 15 posts
+          // 20 posts
           function (nextSeries) {
             if (req.body.status !== Voice.STATUS_PUBLISHED
               && req.body.status !== Voice.STATUS_UNLISTED) {
@@ -503,8 +503,8 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
             }, function (err, posts) {
               if (err) { return nextSeries(err); }
 
-              if (posts.length < 15) {
-                publishErrors.push('Voice does not have 15 posts.');
+              if (posts.length < 20) {
+                publishErrors.push('Voice does not have 20 posts.');
               }
 
               return nextSeries();
