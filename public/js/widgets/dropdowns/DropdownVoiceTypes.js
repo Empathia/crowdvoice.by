@@ -32,7 +32,7 @@ Class(CV.UI, 'DropdownVoiceTypes').inherits(Widget)({
             <p class="voice-types-item__subtitle">Anyone can post and moderate content.</p>\
           </div>\
           <div class="ui-vertical-list-item" data-value="TYPE_CLOSED" data-text="Close">\
-            <p class="voice-types-item__title -font-bold">Close</p>\
+            <p class="voice-types-item__title -font-bold">Closed</p>\
             <p class="voice-types-item__subtitle">Content Posting and moderation is only available upon invitation.</p>\
           </div>'
       })).render(this.el);
