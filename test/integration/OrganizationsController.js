@@ -162,6 +162,62 @@ describe('OrganizationsController', function () {
       })
     })
 
+    it('Should allow you to create organization when in Anonymous mode', function (doneTest) {
+      login('jon-snow', function (err, agent, csrf) {
+        if (err) { return testDone(err) }
+
+        async.series([
+          function (seriesNext) {
+            agent
+              .get(urlBase + '/switchPerson')
+              .end(function (err, res) {
+                if (err) { return seriesNext(err) }
+
+                expect(res.status).to.equal(200)
+
+                return seriesNext()
+              })
+          },
+
+          function (seriesNext) {
+            agent
+              .post(urlBase + '/jon-snow/newOrganization')
+              .type('form')
+              .accept('application/json')
+              .send({
+                _csrf: csrf,
+                title: 'Anon test org',
+                profileName: 'anon-test-org',
+                description: 'The true organization, the one in the blacklist for naughtiness.',
+                locationName: '',
+                imageLogo: undefined,
+                imageBackground: undefined,
+              })
+              .end(function (err, res) {
+                if (err) { return seriesNext(err) }
+
+                expect(res.status).to.equal(200)
+
+                Entity.find({ profile_name: 'anon-test-org' }, function (err, entity) {
+                  if (err) { return seriesNext(err) }
+
+                  expect(entity.length).to.be.above(0)
+
+                  EntityOwner.find({ owned_id: entity[0].id }, function (err, owner) {
+                    if (err) { return seriesNext(err) }
+
+                    expect(owner.length).to.be.above(0)
+                    expect(owner[0].ownerId).to.equal(9)
+
+                    return seriesNext()
+                  })
+                })
+              })
+          },
+        ], doneTest)
+      })
+    })
+
   })
 
   describe('#members', function () {
