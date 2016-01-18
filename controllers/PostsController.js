@@ -185,10 +185,23 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
                   if (item.images) {
                     item.images.forEach(function(image) {
-                      // NOTE: this is sync, not async. maybe not good.
-                      fs.unlinkSync(process.cwd() + '/public' + image);
-                      fs.unlinkSync(process.cwd() + '/public' + image.replace(/preview_/, ''));
-                      logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image);
+                      try {
+                        fs.accessSync(process.cwd() + '/public' + image.replace(/preview_/, ''), fs.F_OK);
+                        fs.unlinkSync(process.cwd() + '/public' + image.replace(/preview_/, ''));
+                        logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image.replace(/preview_/, ''));
+                      } catch (err) {
+                        logger.error(err);
+                        logger.error(err.stack);
+                      }
+
+                      try {
+                        fs.accessSync(process.cwd() + '/public' + image.replace(/preview_/, ''), fs.F_OK);
+                        fs.unlinkSync(process.cwd() + '/public' + image.replace(/preview_/, ''));
+                        logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image.replace(/preview_/, ''));
+                      } catch (err) {
+                        logger.error(err);
+                        logger.error(err.stack);
+                      }
                     });
                   }
 
