@@ -15,70 +15,24 @@
 /******************************************************************************
  * ONBOARDING
  *****************************************************************************/
-.cv-voice-onboarding {
-  width: 272px;
-  bottom: 100px;
-  right: 15px;
-  .onboarding-popover{
-    width: 272px;
-    height: 127px;
-    right: 15px;
-  }
-  .popover-title{
-    float: left;
-    margin: 10px 0px 0px 10px;
-    padding: 0px 7px 0px 7px;
-    color: #707070;
-    font-size: 17px;
-    background-color: #fff;
-    position: relative;
-    z-index: 1;
-  }
-  .line{
-    width: 100%;
-    background: #ccc;
-    height: 1px;
-    position: absolute;
-    top: 25px;
-  }
-  .cv-onboarding__close{
-    right: 10px;
-    top: 20px;
-    padding: 0 5px;
-    background-color: #fff;
-    svg{
-      fill: #707070;
-    }
-  }
-  .cv-voice-onboarding__desc{
-    display: inline-block;
-    text-align: left;
-    margin-left: 19px;
-    margin-top: 15px;
-    font-size: 14px;
-    color: #808080;
-    b{
-      color: #5F5F5F;
-    }
-  }
+.popover__voice-onboarding {
+  width: 340px;
+  z-index: 1;
 
-  .cv-voice-onboarding__arrow{
-    position: absolute;
-    border-color: inherit;
-    right: 53px;
-    top: 125px;
-    &::before, &::after{
-      content: '';
-      position: absolute;
-      border-width: 10px;
-      border-style: solid;
-      border-color: transparent;
-      border-top-color: rgba(0, 0, 0, 0.2);
-    }
-    &::after{
-      margin-top: -1px;
-      border-top-color: #fff;
-    }
+  .ui-popover-body {
+    padding: 0 2rem 2rem;
+  }
+}
+.voice-onboarding__constraint {
+  > svg {margin: 5px 5px 0 0}
+  .-checked {color: @color-neutral-light}
+}
+
+.voice-raise-your-voice-bubble {
+  width: 355px;
+
+  &.-top-right .ui-popover__arrow {
+    right: 43px;
   }
 }
 
@@ -381,85 +335,4 @@
 
 .moderate-dropdown-delete-all-option {
   border-top: 1px solid rgba(0, 0, 0, 0.2);
-}
-
-/******************************************************************************
- * Twitter Help Popover
- *****************************************************************************/
-.twitter-help-popover{
-  width: 633px;
-  height: 623px;
-  left: 50%;
-  -webkit-transform: translate(-21%, -62px) !important;
-  transform: translate(-21%, -62%) !important;
-  bottom: inherit !important;
-  z-index: 1;
-  .popover-title{
-    font-size: 22px;
-    padding: 0px 20px;
-    padding-top: 25px;
-    color: black;
-  }
-  .line{
-    width: 100%;
-    background: #ccc;
-    height: 1px;
-  }
-  .twitter-help-description{
-    padding: 0px 20px;
-    padding-bottom: 15px;
-    padding-top: 5px;
-  }
-  span{
-    color: #A9A9A9;
-  }
-  .list-containers{
-    padding: 15px 20px;
-    ul{
-      list-style: none;
-      font-size: 12px;
-      li{
-        font-size: 13px;
-        color: #4D4D4D;
-        margin-bottom: 5px;
-      }
-    }
-
-    .operators-row{
-      width: 572px;
-      margin: 0 auto;
-      margin-bottom: 25px;
-      div:first-child{
-        width: 50px;
-        margin-right: 18px;
-        font-size: 13px;
-        font-weight: bold;
-        color: #5C6466;
-        line-height: 15px;
-        text-align: right;
-      }
-      div{
-        display: inline-block;
-        width: 500px;
-      }
-    }
-  }
-  .twitter__help-arrow{
-    position: absolute;
-    border-color: inherit;
-    left: -21px;
-    top: 51%;
-  }
-  .twitter__help-arrow:before, .twitter__help-arrow:after{
-    content: '';
-    position: absolute;
-    border-width: 10px;
-    border-style: solid;
-    border-color: transparent;
-    border-right-color: rgba(0, 0, 0, 0.2);
-  }
-  .twitter__help-arrow:after{
-    margin-left: 1px;
-    border-right-color: #fff;
-  }
 }

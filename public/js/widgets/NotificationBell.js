@@ -4,11 +4,12 @@ var Events = require('./../lib/events');
 
 Class('NotificationBell').inherits(Widget).includes(CV.WidgetUtils)({
     HTML : '\
-        <button class="header-notification-button header-actions-button cv-button small rounded -p0 -rel">\
+        <button class="header-notification-button header-actions-button cv-button small rounded -p0 -rel ui-has-tooltip">\
             <svg class="header-actions-svg -s17">\
                 <use xlink:href="#svg-notifications"></use>\
             </svg>\
             <span class="ui-badge -abs"></span>\
+            <span class="ui-tooltip -bottom -nw">Notifications</span>\
         </button>',
 
     prototype : {

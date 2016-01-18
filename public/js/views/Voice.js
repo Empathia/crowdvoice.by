@@ -82,7 +82,7 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
             window.CardHoverWidget.register(document.querySelector('.voice-info__author'), this.data.owner);
 
             if (this.postCount === 0) {
-                this._showOnboarding();
+                this._updateStateForEmptyVoice();
             } else {
                 this._appendLayersManager();
                 this._checkInitialHash();
@@ -114,12 +114,20 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
 
                 this.appendChild(new CV.UI.Button({
                     name : 'editVoiceButton',
-                    className : 'header- small primary -mr2',
+                    className : 'small -mr2',
                     data : {value: 'Edit this Voice'}
                 })).render(App.header.buttonActionsWrapper, App.header.buttonActionsWrapper.firstElementChild);
 
                 this._editVoiceButtonClickedRef = this._editVoiceButtonClicked.bind(this);
                 Events.on(this.editVoiceButton.el, 'click', this._editVoiceButtonClickedRef);
+
+                if (this.data.status === CV.VoiceView.STATUS_DRAFT) {
+                  this.appendChild(new CV.VoicePublishButton({
+                    name: 'voicePublishButton',
+                    data: {voice: this.data},
+                    className: '-inline-block -mr1'
+                  })).render(App.header.buttonActionsWrapper, App.header.buttonActionsWrapper.firstElementChild);
+                }
             }
 
             // display the create content button if the voice allows posting.
@@ -150,10 +158,6 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
                 scrollableArea : this.scrollableArea
             }));
 
-            if (this.onboarding){
-                this.onboarding.setup();
-            }
-
             return this;
         },
 
@@ -174,15 +178,10 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
             return this;
         },
 
-        /* Show the onboarding message.
-         * @method _showOnboarding <private>
+        /* Handle the empty voice state (no posts).
+         * @private
          */
-        _showOnboarding : function _showOnboarding() {
-            this.appendChild(new CV.VoiceOboarding({
-                name : 'onboarding',
-                className : '-fixed -text-center'
-            })).render(document.querySelector('.cv-main-content'));
-
+        _updateStateForEmptyVoice : function _updateStateForEmptyVoice() {
             document.querySelector('.cv-main-content').insertAdjacentHTML('beforeend', '\
                 <section class="voice-posts -rel">\
                     <div class="cv-voice-posts-layer first">\
@@ -317,7 +316,7 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
         },
 
         _editVoiceButtonClicked : function _editVoiceButtonClicked() {
-            App.showCreateVoiceModal({
+            App.showVoiceEditModal({
                 voiceEntity : this.data,
                 ownerEntity: Person.get()
             });

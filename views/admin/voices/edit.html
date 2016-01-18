@@ -5,11 +5,11 @@
   var App = new CV.App();
   var editVoiceEl = $('.edit-voice');
 
-  App.showCreateVoiceModal({
-    ownerEntity : voice.owner,
-    voiceEntity : voice,
-    renderTo : editVoiceEl,
-    isAdmin : true
+  App.showVoiceEditModal({
+    ownerEntity: voice.owner,
+    voiceEntity: voice,
+    renderTo: editVoiceEl,
+    isAdmin: true
   });
 
   if (editVoiceEl.find('> .cv-modal-container').length > 0 ){

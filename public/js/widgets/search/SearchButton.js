@@ -2,10 +2,11 @@ var Events = require('../../lib/events');
 
 Class(CV, 'SearchButton').inherits(Widget)({
     HTML : '\
-    <button class="cv-button small rounded -p0">\
+    <button class="cv-button small rounded -p0 ui-has-tooltip">\
         <svg class="header-actions-svg header-search-svg -s14">\
             <use xlink:href="#svg-search"></use>\
         </svg>\
+        <span class="ui-tooltip -bottom-right -nw">Search</span>\
     </button>',
 
     prototype : {
