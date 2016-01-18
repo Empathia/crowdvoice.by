@@ -14,7 +14,7 @@ Class(CV, 'VoiceCoverActionsEdit').inherits(CV.UI.Button)({
         },
 
         _clickHandler : function _clickHandler() {
-            App.showCreateVoiceModal({
+            App.showVoiceEditModal({
                 voiceEntity : this.voiceEntity,
                 ownerEntity : Person.get()
             });

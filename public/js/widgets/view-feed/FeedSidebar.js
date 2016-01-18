@@ -2,6 +2,8 @@ var Person = require('./../../lib/currentPerson');
 
 Class(CV, 'FeedSidebar').inherits(Widget)({
   prototype: {
+    feedItems: null,
+    organization: null,
     _onboarding: null,
 
     init: function init(config) {
@@ -39,15 +41,7 @@ Class(CV, 'FeedSidebar').inherits(Widget)({
         })).render(feedList).showDate();
       }, this);
 
-      this.appendChild(CV.FeedItem.create({
-        name: 'feed-item__welcome',
-        data: {
-          action: 'message',
-          text: 'You joined CrowdVoice! 🎉',
-          actionDoer: Person.get(),
-          createdAt: Person.get('createdAt')
-        }
-      })).render(feedList).showDate();
+      this._addWelcomeItem(feedList);
 
       this.el.querySelector('.profile-sidebar').appendChild(feedList);
 
@@ -58,6 +52,26 @@ Class(CV, 'FeedSidebar').inherits(Widget)({
         this._onboarding.textContent = 'Activity from voices and people you follow will appear here';
         feedList.appendChild(this._onboarding);
       }
+    },
+
+    _addWelcomeItem: function _addWelcomeItem(feedList) {
+      var currentEntityView = Person.get();
+
+      if (this.organization) {
+        currentEntityView = this.organization;
+      }
+
+      this.appendChild(CV.FeedItem.create({
+        name: 'feed-item__welcome',
+        data: {
+          action: 'message',
+          text: 'You joined CrowdVoice! 🎉',
+          actionDoer: currentEntityView,
+          createdAt: currentEntityView.createdAt
+        }
+      })).render(feedList).showDate();
+
+      this.el.querySelector('.profile-sidebar').appendChild(feedList);
     }
   }
 });

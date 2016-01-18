@@ -180,6 +180,17 @@ var VoicesPresenter = Module('VoicesPresenter')({
 
                 return next();
               });
+            }, function (done) {
+              db('Posts').count('*').where({
+                'voice_id': voice.id,
+                'approved': true
+              }).exec(function (err, rows) {
+                if (err) { return done(err); }
+
+                voiceInstance.postsCount = parseInt(rows[0].count, 10);
+
+                return done();
+              });
             }], function(err) {
               if (err) {
                 return nextVoice(err);
