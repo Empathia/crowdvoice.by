@@ -396,6 +396,48 @@ describe('PostsController', function () {
       })
     })
 
+    it('Should not return 403 on Closed Voice when Voice owner', function (doneTest) {
+      login('tyrion-lannister', function (err, agent, csrf) {
+        if (err) { return doneTest(err) }
+
+        agent
+          .post(urlBase + '/tyrion-lannister/war-of-the-5-kings')
+          .accept('application/json')
+          .send({
+            _csrf: csrf,
+            posts: [
+              {
+                title: 'Test for 403 when Voice owner but Voice closed',
+                description: 'WHAT EVER',
+                publishedAt: 'Thu Oct 15 2015 12:20:00 GMT-0500 (CDT)',
+                image: '',
+                imageWidth: '0',
+                imageHeight: '0',
+                sourceType: 'link',
+                sourceService: 'link',
+                sourceUrl: 'https://github.com/mhinz',
+                imagePath: '',
+              },
+            ],
+          })
+          .end(function (err, res) {
+            if (err) { return doneTest(err) }
+
+            expect(res.status).to.equal(200)
+
+            Post.find({
+              title: 'Test for 403 when Voice owner but Voice closed',
+            }, function (err, post) {
+              if (err) { return doneTest(err) }
+
+              expect(post[0].approved).to.equal(true)
+
+              return doneTest()
+            })
+          })
+      })
+    })
+
   })
 
   describe('#preview', function () {
