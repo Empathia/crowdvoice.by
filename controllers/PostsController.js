@@ -186,7 +186,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
                   if (item.images) {
                     item.images.forEach(function(image) {
                       try {
-                        fs.ascessSync(process.cwd() + '/public' + image.replace(/preview_/, ''), fs.F_OK);
+                        fs.accessSync(process.cwd() + '/public' + image.replace(/preview_/, ''), fs.F_OK);
                         fs.unlinkSync(process.cwd() + '/public' + image.replace(/preview_/, ''));
                         logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image.replace(/preview_/, ''));
                       } catch (err) {
@@ -195,7 +195,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
                       }
 
                       try {
-                        fs.ascessSync(process.cwd() + '/public' + image.replace(/preview_/, ''), fs.F_OK);
+                        fs.accessSync(process.cwd() + '/public' + image.replace(/preview_/, ''), fs.F_OK);
                         fs.unlinkSync(process.cwd() + '/public' + image.replace(/preview_/, ''));
                         logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image.replace(/preview_/, ''));
                       } catch (err) {
