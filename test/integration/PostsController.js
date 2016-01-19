@@ -304,6 +304,44 @@ describe('PostsController', function () {
       })
     })
 
+    it('Should not give 403 when publishing on Org\'s Closed Voice', function (doneTest) {
+      db('Voices')
+        .update('type', Voice.TYPE_CLOSED)
+        .where('owner_id', '=', 24)
+        .exec(function (err) {
+          if (err) { return doneTest(err) }
+
+          login('robert-baratheon', function (err, agent, csrf) {
+            if (err) { return doneTest(err) }
+
+            agent
+              .post(urlBase + '/house-baratheon/kings-landing/saveArticle')
+              .accept('application/json')
+              .send({
+                _csrf: csrf,
+                title: 'THIS CAN BE PUBLISHED BY ORG OWNER, SHOULD NOT GIVE 403',
+                content: 'THIS IS THE VERY INSIGHTFUL CONTENT OF THIS POST ABOUT THE WALK OF ATONEMENT.',
+                publishedAt: new Date(),
+              })
+              .end(function (err, res) {
+                if (err) { console.log('!!!!!!!'); console.log(err); return doneTest(err) }
+
+                expect(res.status).to.equal(200)
+
+                Post.find({
+                  title: 'THIS CAN BE PUBLISHED BY ORG OWNER, SHOULD NOT GIVE 403',
+                }, function (err, post) {
+                  if (err) { return doneTest(err) }
+
+                  expect(post[0].approved).to.equal(true)
+
+                  return doneTest()
+                })
+              })
+          })
+        })
+    })
+
   })
 
   describe('#create', function () {

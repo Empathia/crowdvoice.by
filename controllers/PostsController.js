@@ -582,7 +582,8 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           || response.isVoiceDirectOwner
           || response.isVoiceIndirectOwner
           || response.isVoiceCollaborator
-          || response.isOrganizationMember) {
+          || response.isOrganizationMember
+          || response.isOrganizationOwner) {
 
           approved = true;
         }
