@@ -256,9 +256,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
             var imagePath = body.imagePath;
 
             if (body.imagePath.length > 0) {
-              if (imagePath.trim().match(/^https?/) !== null) {
-                // Do nothing
-              } else {
+              if (imagePath.trim().match(/^https?/) === null) {
                 imagePath = path.join(process.cwd(), 'public', body.imagePath.replace(/preview_/, ''));
               }
             }
