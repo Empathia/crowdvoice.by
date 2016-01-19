@@ -265,7 +265,104 @@ describe('VoicesController', function () {
 
   })
 
+  describe('#create', function () {
+
+    it('Should prevent from insta-publishing', function (doneTest) {
+      login('cersei-lannister', function (err, agent, csrf) {
+        if (err) { return doneTest(err) }
+
+        agent
+          .post(urlBase + '/voice')
+          .accept('application/json')
+          .send({
+            _csrf: csrf,
+            image: 'undefined',
+            title: 'Deez nuts',
+            slug: 'deez-nuts',
+            description: 'This is a new and completely unique description.',
+            topics: 'd6wb1XVgRvzm',
+            type: 'TYPE_PUBLIC',
+            status: 'STATUS_PUBLISHED',
+            twitterSearch: '#csgo',
+            locationName: 'Casterly Rock',
+            latitude: '4.815',
+            longitude: '162.342',
+            anonymously: 'false',
+            ownerId: hashids.encode(3), // Cersei
+          })
+          .end(function (err, res) {
+            expect(res.status).to.equal(403)
+
+            return doneTest()
+          })
+      })
+    })
+
+  })
+
   describe('#update', function () {
+
+    it('Should prevent from publishing without fulfilling requirements', function (doneTest) {
+      login('tyrion-lannister', function (err, agent, csrf) {
+        if (err) { return doneTest(err) }
+
+        agent
+          .put(urlBase + '/tyrion-lannister/valyrian-roads')
+          .accept('application/json')
+          .send({
+            _csrf: csrf,
+            image: 'undefined',
+            title: 'Valyrian roads',
+            slug: 'valyrian-roads',
+            description: 'Valyrian roads are broad stone highways built when the Valyrian Freehold dominated Essos.',
+            topics: '8ZnLyQLgNaME,K8adgKWgZPlo,5q7WBDqgOlG8',
+            type: 'TYPE_CLOSED',
+            status: 'STATUS_PUBLISHED',
+            twitterSearch: '',
+            locationName: 'Valyria',
+            latitude: '4.815',
+            longitude: '162.342',
+            anonymously: 'false',
+            ownerId: hashids.encode(1), // Tyrion
+          })
+          .end(function (err, res) {
+            expect(res.status).to.equal(403)
+
+            return doneTest()
+          })
+      })
+    })
+
+    it('Should prevent from drafting once published or unlisted', function (doneTest) {
+      login('cersei-lannister', function (err, agent, csrf) {
+        if (err) { return doneTest(err) }
+
+        agent
+          .put(urlBase + '/house-lannister/casterly-rock')
+          .accept('application/json')
+          .send({
+            _csrf: csrf,
+            image: 'undefined',
+            title: 'Casterly Rock',
+            slug: 'casterly-rock',
+            description: 'This is a new and completely unique description.',
+            topics: 'd6wb1XVgRvzm',
+            type: 'TYPE_PUBLIC',
+            status: 'STATUS_DRAFT',
+            twitterSearch: '#csgo',
+            locationName: 'Casterly Rock',
+            latitude: '4.815',
+            longitude: '162.342',
+            anonymously: 'false',
+            ownerId: 'dWK6yYeyk8P4'
+          })
+          .end(function (err, res) {
+            expect(res.status).to.equal(403)
+
+            return doneTest()
+          })
+      })
+    })
 
     it('Update voice owned by organization you own', function (done) {
       login('cersei-lannister', function (err, agent, csrf) {
@@ -280,7 +377,7 @@ describe('VoicesController', function () {
             description: 'This is a new and completely unique description.',
             topics: 'd6wb1XVgRvzm',
             type: 'TYPE_PUBLIC',
-            status: 'STATUS_PUBLISHED',
+            // status: 'STATUS_PUBLISHED', // Removed in order to work around issues
             twitterSearch: '#csgo',
             locationName: 'Casterly Rock',
             latitude: '4.815',
@@ -361,7 +458,7 @@ describe('VoicesController', function () {
                 expect(res.status).to.equal(200)
 
                 Voice.findById(15, function (err, voice) {
-                  if (err) { nextSeries(err) }
+                  if (err) { return nextSeries(err) }
 
                   expect(voice[0].description).to.equal('This is a new and completely unique description.')
 
@@ -429,11 +526,13 @@ describe('VoicesController', function () {
 
     it('Should let you see unlisted voice', function (doneTest) {
       request
-        .get(urlBase + '/cersei-lannister/mereen-siege')
+        .get(urlBase + '/cersei-lannister/meereen-siege')
         .end(function (err, res) {
-          if (err) { return doneTest() }
+          if (err) { return doneTest(err) }
 
           expect(res.status).to.equal(200)
+
+          return doneTest()
         })
     })
 
