@@ -185,22 +185,14 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
                   if (item.images) {
                     item.images.forEach(function(image) {
-                      try {
-                        fs.accessSync(process.cwd() + '/public' + image.replace(/preview_/, ''), fs.F_OK);
-                        fs.unlinkSync(process.cwd() + '/public' + image.replace(/preview_/, ''));
-                        logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image.replace(/preview_/, ''));
-                      } catch (err) {
-                        logger.error(err);
-                        logger.error(err.stack);
+                      if (fs.existsSync(process.cwd() + '/public' + image)) {
+                        fs.unlinkSync(process.cwd() + '/public' + image);
+                        logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image);
                       }
 
-                      try {
-                        fs.accessSync(process.cwd() + '/public' + image.replace(/preview_/, ''), fs.F_OK);
+                      if (fs.existsSync(process.cwd() + '/public' + image.replace(/preview_/, ''))) {
                         fs.unlinkSync(process.cwd() + '/public' + image.replace(/preview_/, ''));
                         logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image.replace(/preview_/, ''));
-                      } catch (err) {
-                        logger.error(err);
-                        logger.error(err.stack);
                       }
                     });
                   }
@@ -264,7 +256,9 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
             var imagePath = body.imagePath;
 
             if (body.imagePath.length > 0) {
-              imagePath = path.join(process.cwd(), 'public', body.imagePath.replace(/preview_/, ''));
+              if (imagePath.trim().match(/^https?/) === null) {
+                imagePath = path.join(process.cwd(), 'public', body.imagePath.replace(/preview_/, ''));
+              }
             }
 
             async.series([function(done) {
@@ -294,9 +288,15 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
                 if (body.images) {
                   body.images.forEach(function(image) {
-                    fs.unlinkSync(process.cwd() + '/public' + image);
-                    fs.unlinkSync(process.cwd() + '/public' + image.replace(/preview_/, ''));
-                    logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image);
+                    if (fs.existsSync(process.cwd() + '/public' + image)) {
+                      fs.unlinkSync(process.cwd() + '/public' + image);
+                      logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image);
+                    }
+
+                    if (fs.existsSync(process.cwd() + '/public' + image.replace(/preview_/, ''))) {
+                      fs.unlinkSync(process.cwd() + '/public' + image.replace(/preview_/, ''));
+                      logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image.replace(/preview_/, ''));
+                    }
                   });
                 }
 
