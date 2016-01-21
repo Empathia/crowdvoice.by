@@ -13,7 +13,7 @@
     "svg": "svg-sprite -s --symbol-dest=svg --symbol-prefix=.svg- --ss=sprite.svg --si --sx --shape-id-generator=svg-%s --dest=views/shared public/svg/*.svg",
     "svg:embed": "svg-sprite -s --symbol-dest=svg-embed --symbol-prefix=.svg- --ss=sprite-embed.svg --si --sx --shape-id-generator=svg-%s --dest=views/shared public/svg-embed/*.svg",
     "deploy:staging": "pm2 deploy ecosystem.json staging",
-    "feed-test": "export ENV=feedTest NODE_ENV=feedTest; knex migrate:rollback; knex migrate:latest; echo \"\n\"; node test/feed/clean.js && node test/feed/FeedInjector.js"
+    "regen-db": "knex migrate:rollback ; knex migrate:latest ; node bin/data_generator.js"
   },
   "dependencies": {
     "SoundManager2": "scottschiller/SoundManager2",
@@ -72,6 +72,7 @@
     "share-url": "^1.0.0",
     "sharp": "^0.11.1",
     "socket.io": "^1.3.5",
+    "superagent": "^1.2.0",
     "style-loader": "^0.9.0",
     "syringe.js": "^0.4.0",
     "truncatise": "0.0.2",
@@ -94,10 +95,9 @@
     "chai": "^3.3.0",
     "cli-table": "^0.3.1",
     "clone": "^1.0.2",
-    "gemini-scrollbar": "^1.2.8",
+    "gemini-scrollbar": "^1.3.1",
     "slug": "^0.9.1",
-    "superagent": "^1.2.0",
-    "tape-catch": "^1.0.4",
+    "socket.io-client": "^1.4.4",
     "tellurium": "git://github.com/benbeltran/tellurium.git"
   }
 }

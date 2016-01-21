@@ -87,6 +87,13 @@
       env : {
         "NODE_ENV" : "staging"
       }
+    },
+    {
+      name : "Clean old links from EmailLinks Worker",
+      script : "bin/cleanEmailLinks.js",
+      env : {
+        "NODE_ENV": "staging"
+      }
     }
   ],
 

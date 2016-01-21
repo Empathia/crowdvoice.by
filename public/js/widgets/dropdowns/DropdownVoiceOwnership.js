@@ -118,6 +118,11 @@ Class(CV.UI, 'DropdownVoiceOwnership').inherits(Widget).includes(CV.WidgetUtils)
             return this;
         },
 
+        disable: function disable() {
+          Widget.prototype.disable.call(this);
+          this.dropdown.disable();
+        },
+
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
             this._items.forEach(function(item) {

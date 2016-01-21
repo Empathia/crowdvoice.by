@@ -150,6 +150,93 @@ describe('PostsController', function () {
       })
     })
 
+    it('Should save image properly when post is being updated with new image', function (doneTest) {
+      var imageInfo
+
+      async.series([
+        function (nextSeries) {
+          login('jon-snow', function (err, agent, csrf) {
+            if (err) { return nextSeries(err) }
+
+            agent
+              .post(urlBase + '/tyrion-lannister/blackwater-battle/saveArticle')
+              .accept('application/json')
+              .send({
+                _csrf: csrf,
+                title: 'This will go to moderation.',
+                content: 'This will eventually have an image...',
+                publishedAt: new Date(),
+              })
+              .end(nextSeries)
+          })
+        },
+
+        function (nextSeries) {
+          login('tyrion-lannister', function (err, agent, csrf) {
+            if (err) { return nextSeries(err) }
+
+            agent
+              .post(urlBase + '/tyrion-lannister/blackwater-battle/uploadPostImage')
+              .attach('image', path.join(process.cwd(), 'public/generator/users/tyrion.jpg'))
+              .field('_csrf', csrf)
+              .end(function (err, res) {
+                if (err) { console.log(err); return nextSeries(err) }
+
+                expect(res.status).to.equal(200)
+
+                imageInfo = res.body
+
+                return nextSeries()
+              })
+          })
+        },
+
+        function (nextSeries) {
+          login('tyrion-lannister', function (err, agent, csrf) {
+            if (err) { return nextSeries(err) }
+
+            agent
+              .put(urlBase + '/tyrion-lannister/blackwater-battle/' + hashids.encode(2))
+              .send({
+                _csrf: csrf,
+                title: 'This will go to moderation',
+                description: 'This will eventually have an image...',
+                publishedAt: 'Thu Nov 19 2015 11:43:00 GMT-0600 (CST)',
+                image: '',
+                imageWidth: imageInfo.width,
+                imageHeight: imageInfo.height,
+                sourceType: 'text',
+                sourceService: 'local',
+                sourceUrl: '',
+                images: [ imageInfo.path ],
+                imagePath: imageInfo.path,
+                approved: true,
+              })
+              .end(function (err, res) {
+                if (err) { console.log(err); return nextSeries(err) }
+
+                expect(res.status).to.equal(200)
+
+                return nextSeries()
+              })
+          })
+        },
+      ], function (err) {
+        if (err) { return doneTest(err) }
+
+        Post.find({ title: 'This will go to moderation' }, function (err, post) {
+          if (err) { return doneTest(err) }
+
+          expect(post.length).to.equal(1)
+
+          expect(post[0].imageBaseUrl).to.not.be.empty
+          expect(post[0].imageMeta).to.not.be.empty
+
+          return doneTest()
+        })
+      })
+    })
+
   })
 
   describe('#saveArticle', function () {
@@ -215,6 +302,44 @@ describe('PostsController', function () {
             })
           })
       })
+    })
+
+    it('Should not give 403 when publishing on Org\'s Closed Voice', function (doneTest) {
+      db('Voices')
+        .update('type', Voice.TYPE_CLOSED)
+        .where('owner_id', '=', 24)
+        .exec(function (err) {
+          if (err) { return doneTest(err) }
+
+          login('robert-baratheon', function (err, agent, csrf) {
+            if (err) { return doneTest(err) }
+
+            agent
+              .post(urlBase + '/house-baratheon/kings-landing/saveArticle')
+              .accept('application/json')
+              .send({
+                _csrf: csrf,
+                title: 'THIS CAN BE PUBLISHED BY ORG OWNER, SHOULD NOT GIVE 403',
+                content: 'THIS IS THE VERY INSIGHTFUL CONTENT OF THIS POST ABOUT THE WALK OF ATONEMENT.',
+                publishedAt: new Date(),
+              })
+              .end(function (err, res) {
+                if (err) { console.log('!!!!!!!'); console.log(err); return doneTest(err) }
+
+                expect(res.status).to.equal(200)
+
+                Post.find({
+                  title: 'THIS CAN BE PUBLISHED BY ORG OWNER, SHOULD NOT GIVE 403',
+                }, function (err, post) {
+                  if (err) { return doneTest(err) }
+
+                  expect(post[0].approved).to.equal(true)
+
+                  return doneTest()
+                })
+              })
+          })
+        })
     })
 
   })
@@ -389,6 +514,48 @@ describe('PostsController', function () {
               if (err) { return doneTest(err) }
 
               expect(post.length).to.equal(1)
+
+              return doneTest()
+            })
+          })
+      })
+    })
+
+    it('Should not return 403 on Closed Voice when Voice owner', function (doneTest) {
+      login('tyrion-lannister', function (err, agent, csrf) {
+        if (err) { return doneTest(err) }
+
+        agent
+          .post(urlBase + '/tyrion-lannister/war-of-the-5-kings')
+          .accept('application/json')
+          .send({
+            _csrf: csrf,
+            posts: [
+              {
+                title: 'Test for 403 when Voice owner but Voice closed',
+                description: 'WHAT EVER',
+                publishedAt: 'Thu Oct 15 2015 12:20:00 GMT-0500 (CDT)',
+                image: '',
+                imageWidth: '0',
+                imageHeight: '0',
+                sourceType: 'link',
+                sourceService: 'link',
+                sourceUrl: 'https://github.com/mhinz',
+                imagePath: '',
+              },
+            ],
+          })
+          .end(function (err, res) {
+            if (err) { return doneTest(err) }
+
+            expect(res.status).to.equal(200)
+
+            Post.find({
+              title: 'Test for 403 when Voice owner but Voice closed',
+            }, function (err, post) {
+              if (err) { return doneTest(err) }
+
+              expect(post[0].approved).to.equal(true)
 
               return doneTest()
             })

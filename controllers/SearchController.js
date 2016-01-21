@@ -147,8 +147,8 @@ var SearchController = Class('SearchController')({
       db.raw('SELECT * FROM ( \
         SELECT "Voices".*, \
         setweight(to_tsvector("Voices".title), \'A\') || \
-        setweight(to_tsvector("Voices".description), \'B\') || \
-        setweight(to_tsvector("Voices".location_name), \'C\') || \
+        setweight(to_tsvector(coalesce(("Voices".description), \'\')), \'B\') || \
+        setweight(to_tsvector(coalesce(("Voices".location_name), \'\')), \'C\') || \
         setweight(to_tsvector("Entities".name), \'C\') AS document \
         FROM "Voices" \
         JOIN "Entities" ON "Entities".id = "Voices".owner_id \
@@ -187,8 +187,8 @@ var SearchController = Class('SearchController')({
         SELECT "Entities".*, \
         setweight(to_tsvector("Entities".name), \'A\') || \
         setweight(to_tsvector("Entities".profile_name), \'B\') || \
-        setweight(to_tsvector("Entities".description), \'C\') || \
-        setweight(to_tsvector("Entities".location), \'D\') \
+        setweight(to_tsvector(coalesce(("Entities".description), \'\')), \'C\') || \
+        setweight(to_tsvector(coalesce(("Entities".location), \'\')), \'D\') \
         AS document \
         FROM "Entities" \
         WHERE "Entities".is_anonymous = ? AND "Entities".type = ? AND "Entities".deleted = ?) search \
@@ -225,8 +225,8 @@ var SearchController = Class('SearchController')({
         SELECT "Entities".*, \
         setweight(to_tsvector("Entities".name), \'A\') || \
         setweight(to_tsvector("Entities".profile_name), \'B\') || \
-        setweight(to_tsvector("Entities".description), \'C\') || \
-        setweight(to_tsvector("Entities".location), \'D\') \
+        setweight(to_tsvector(coalesce(("Entities".description), \'\')), \'C\') || \
+        setweight(to_tsvector(coalesce(("Entities".location), \'\')), \'D\') \
         AS document \
         FROM "Entities" \
         WHERE "Entities".is_anonymous = ? AND "Entities".type = ? AND "Entities".deleted = ?) search \
