@@ -220,14 +220,14 @@ Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
          */
         _createEmptyLayers : function _createEmptyLayers() {
             var frag = document.createDocumentFragment();
-
+            var layerIndex = 0;
             this.postsCount.forEach(function(yearItem) {
                 var year = yearItem.year;
 
-                yearItem.months.forEach(function(monthItem, index) {
+                yearItem.months.forEach(function(monthItem) {
                     var dateString = moment(year + '-' + monthItem.month + '-01', 'YYYY-MM-DD').format('YYYY-MM');
                     var layer = new CV.VoicePostsLayer({
-                        id : index,
+                        id : layerIndex,
                         name : 'postsLayer_' + dateString,
                         dateString : dateString,
                         columnWidth : this.averagePostWidth
@@ -238,7 +238,7 @@ Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
                     this._layers.push(layer);
                     this.appendChild(layer);
                     frag.appendChild(layer.el);
-
+                    layerIndex++;
                     dateString = layer = null;
                 }, this);
 
