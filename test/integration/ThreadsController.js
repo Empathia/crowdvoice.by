@@ -272,21 +272,17 @@ describe('ThreadsController', function () {
                 receiverEntityId: hashids.encode(23), // House Targaryen
                 message: '148164312'
               })
-              .end(function (err, res) {
-                console.log(err)
-                console.log(res.body)
-                return nextSeries(err)
-              })
+              .end(nextSeries)
           })
         },
 
-        // Daenerys to House Targaryen to Arya (invite)
+        // Daenerys as House Targaryen to Arya (invite)
         function (nextSeries) {
           login('daenerys-targaryen', function (err, agent, csrf) {
             if (err) { return nextSeries(err) }
 
             agent
-              .post(urlBase + '/arya-stark/messages')
+              .post(urlBase + '/daenerys-targaryen/messages')
               .accept('application/json')
               .send({
                 _csrf: csrf,
@@ -296,19 +292,22 @@ describe('ThreadsController', function () {
                 organizationId: hashids.encode(23), // House Targaryen
                 message: '369169861',
               })
-              .end(function (err, res) {
-                console.log(err)
-                console.log(res.body)
-                return nextSeries(err)
-              })
+              .end(nextSeries)
           })
         },
       ], function (err) {
         if (err) { return doneTest(err) }
 
-        // Confirm stuff's alright
+        db('MessageThreads')
+          .where('sender_entity_id', 'in', [23, 11])
+          .andWhere('receiver_entity_id', 'in', [23, 11])
+          .exec(function(err, rows) {
+            if (err) { return doneTest(err) }
 
-        return doneTest()
+            expect(rows.length).to.equal(1)
+
+            return doneTest()
+          })
       })
     })
 
