@@ -59,7 +59,8 @@ Class(CV, 'VoiceCreate').inherits(CV.VoiceBase)({
           hint: this.MAX_TITLE_LENGTH + ' characters max',
           attr: {
             type: 'text',
-            maxlength: this.MAX_TITLE_LENGTH
+            maxlength: this.MAX_TITLE_LENGTH,
+            autofocus: true
           },
           inputClassName: '-lg -block'
         }
