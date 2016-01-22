@@ -64,6 +64,7 @@ var HomeController = Class('HomeController')({
               done();
             });
           });
+        /*
         }, function(done) {
           db.raw('SELECT ' +
             'count(DISTINCT "Voices"."id") AS "voices_count", ' +
@@ -95,6 +96,52 @@ var HomeController = Class('HomeController')({
                 });
               });
             });
+        */
+        }, function(done) {
+          var ids,
+            entities;
+
+          async.series([
+            function (nextSeries) {
+              FeaturedPerson.all(function (err, featuredPeople) {
+                if (err) { return nextSeries(err); }
+
+                ids = featuredPeople.map(function (f) { return f.entityId; });
+
+                return nextSeries();
+              });
+            },
+
+            function (nextSeries) {
+              FeaturedOrganization.all(function (err, featuredOrganizations) {
+                if (err) { return nextSeries(err); }
+
+                ids = ids.concat(featuredOrganizations.map(function (f) { return f.entityId; }));
+
+                return nextSeries();
+              });
+            },
+
+            function (nextSeries) {
+              Entity.whereIn('id', ids, function (err, result) {
+                if (err) { return nextSeries(err); }
+
+                entities = result;
+
+                return nextSeries();
+              });
+            },
+          ], function (err) {
+            if (err) { return done(err); }
+
+            EntitiesPresenter.build(entities, req.currentPerson, function (err, result) {
+              if (err) { return done(err); }
+
+              res.locals.mostActiveOrganizations = result;
+
+              return done();
+            });
+          });
         }, function(done) {
           HomepageTopVoice.find({ active: true }, function (err, topVoices) {
             if (err) { return done(err); }
@@ -126,9 +173,17 @@ var HomeController = Class('HomeController')({
         }], function(err) {
           if (err) { return next(err); }
 
-          res.render('home/index', {
-            layout : 'application',
-            pageName : 'page-home'
+          res.format({
+            html: function () {
+              res.render('home/index', {
+                layout : 'application',
+                pageName : 'page-home'
+              });
+            },
+
+            json: function () {
+              res.json({ status: 'ok', featuredEntities: res.locals.mostActiveOrganizations });
+            }
           });
         });
       });
