@@ -76,11 +76,11 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
         },
 
         createJumpToDateBubble : function createJumpToDateBubble(postsCount) {
-            this.appendChild(new CV.VoiceTimelineJumpToDate({
-                name : 'jumpToDate',
-                postsCount : postsCount,
-                container : this.el
-            })).render(this.el);
+            // this.appendChild(new CV.VoiceTimelineJumpToDate({
+            //     name : 'jumpToDate',
+            //     postsCount : postsCount,
+            //     container : this.el
+            // })).render(this.el);
         },
 
         /* Subscribe and listen to events.
@@ -178,7 +178,7 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
         },
 
         activateJumpToDateOption : function activateJumpToDateOption(dateString) {
-            this.jumpToDate.updateActivateOption(dateString);
+            // this.jumpToDate.updateActivateOption(dateString);
         },
 
         /* Unlisten events, release any HTMLElement reference, free variables...
