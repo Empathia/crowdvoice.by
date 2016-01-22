@@ -13,6 +13,7 @@ var ScrollTo = require('./../../../lib/scrollto');
 Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
     HTML : '<section class="voice-posts -rel"></section>',
     MIN_LAYERS_POST : 20,
+    INIT_LAYER_POSTS_THRESHOLD: 20,
 
     prototype : {
         /* DEFAULT BASIC OPTIONS */
@@ -317,15 +318,28 @@ Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
         loadLayer : function loadLayer(postsData, dateString, scrollDirection) {
             this.registry.set(dateString, postsData);
 
+            /* temporal hack */
+            var currentLayer = this.getCurrentMonthLayer();
             if (dateString !== this._currentMonthString) {
-                return;
+              if (currentLayer && (currentLayer.getPosts().length < this.constructor.INIT_LAYER_POSTS_THRESHOLD)) {
+                var a = this['postsLayer_' + dateString];
+                var b = a.getPreviousSibling();
+                if (b === currentLayer) {
+                  this.registry.add(currentLayer.dateString, postsData);
+                  this.addPosts(currentLayer, postsData);
+                  var i = this.getLayers().indexOf(a);
+                  if (i) this._layers.splice(i, 1);
+                  a = a.destroy();
+                }
+              }
+              return;
             }
+            /* temporal hack */
 
             if (this['postsLayer_' + dateString].getPosts().length) {
                 return;
             }
 
-            var currentLayer = this.getCurrentMonthLayer();
             var prev = currentLayer.getPreviousSibling();
             var next = currentLayer.getNextSibling();
             var calculateScrollDiff = false;

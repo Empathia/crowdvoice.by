@@ -50,6 +50,17 @@ Module(CV, 'PostsRegistry')({
         this._[name] = posts;
     },
 
+    /* Append the post data passed to the passed key (month)  of the registry.
+     * @public
+     * @param {string} name
+     * @param {Array} posts
+     * @exmple add('2015-07', [{PostInstance, ...}]
+     */
+    add: function add(name, posts) {
+      var r = this._[name];
+      if (r) this._[name] = r.concat(posts);
+    },
+
     /* Returns all the cached object data.
      */
     getAll : function getAll() {
