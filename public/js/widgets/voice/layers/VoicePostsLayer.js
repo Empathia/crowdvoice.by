@@ -88,9 +88,9 @@ Class(CV, 'VoicePostsLayer').inherits(Widget).includes(BubblingSupport)({
         },
 
         hideLoaders : function hideLoaders() {
-            this.loadingTop.disable();
-            this.loadingMiddle.disable();
-            this.loadingBottom.disable();
+            this.loadingTop.disable().remove();
+            this.loadingMiddle.disable().remove();
+            this.loadingBottom.disable().remove();
             return this;
         },
 
