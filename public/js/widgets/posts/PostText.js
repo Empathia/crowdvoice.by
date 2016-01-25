@@ -1,12 +1,12 @@
 Class(CV, 'PostText').inherits(CV.PostLink)({
-  ICON : '<svg class="post-card-meta-icon"><use xlink:href="#svg-article"></use></svg>',
+  ICON: '<svg class="post-card-meta-icon"><use xlink:href="#svg-article"></use></svg>',
 
-  prototype : {
-    init : function(config) {
+  prototype: {
+    init: function(config) {
       CV.PostLink.prototype.init.call(this, config);
     },
 
-    _setup : function() {
+    _setup: function() {
       CV.PostLink.prototype._setup.call(this);
 
       this.dom.updateText(this.descriptionElement, this.format.truncate(this.stripHTML(this.description), 180, true));
@@ -14,15 +14,13 @@ Class(CV, 'PostText').inherits(CV.PostLink)({
       return this;
     },
 
-    _bindEvents : function() {
+    _bindEvents: function() {
       CV.PostLink.prototype._bindEvents.call(this);
     },
 
-    stripHTML : function(html) {
+    stripHTML: function(html) {
       var tmpEl = document.createElement('DIV');
-
       tmpEl.innerHTML = html;
-
       return tmpEl.textContent;
     }
   }
