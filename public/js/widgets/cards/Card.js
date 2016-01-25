@@ -108,9 +108,13 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
         this.locationEl.parentNode.classList.add('-hide');
       }
 
-      this.dom.updateAttr('href', this.totalVoices, '/' + this.data.profileName + '/#voices');
-      this.dom.updateAttr('title', this.totalVoices, this.data.voicesCount + ' voices');
-      this.dom.updateText(this.totalVoices, this.data.voicesCount + ' Voices');
+      if (this.data.voicesCount) {
+        this.dom.updateAttr('href', this.totalVoices, '/' + this.data.profileName + '/#voices');
+        this.dom.updateAttr('title', this.totalVoices, this.data.voicesCount + ' voices');
+        this.dom.updateText(this.totalVoices, this.data.voicesCount + ' Voices');
+      } else {
+        this.totalVoices.parentNode.removeChild(this.totalVoices);
+      }
 
       return this;
     },
