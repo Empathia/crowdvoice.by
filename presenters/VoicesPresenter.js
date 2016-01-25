@@ -1,3 +1,4 @@
+var sanitize = require("sanitize-html");
 var EntitiesPresenter = require('./EntitiesPresenter.js');
 var TopicsPresenter = require('./TopicsPresenter.js');
 
@@ -8,6 +9,12 @@ var VoicesPresenter = Module('VoicesPresenter')({
       var voiceInstance = new Voice(voice);
       voiceInstance.id = hashids.encode(voiceInstance.id);
       voiceInstance.ownerId = hashids.encode(voiceInstance.ownerId);
+      voiceInstance.title = sanitize(voiceInstance.title);
+      voiceInstance.description = sanitize(voiceInstance.description);
+      voiceInstance.twitterSearch = sanitize(voiceInstance.twitterSearch);
+      voiceInstance.locationName = sanitize(voiceInstance.locationName);
+      voiceInstance.longitude = sanitize(voiceInstance.longitude);
+      voiceInstance.latitude = sanitize(voiceInstance.latitude);
 
       // skip deleted voices
       if (voiceInstance.deleted) {
