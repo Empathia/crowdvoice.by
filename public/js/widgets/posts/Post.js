@@ -75,7 +75,7 @@ Class(CV, 'Post').inherits(Widget).includes(
      * @return CV.Post[type]
      */
     updateSaves: function updateSaves(data) {
-      this.dom.updateText(this.savedElement, data.totalSaves || 0);
+      this.dom.updateText(this.savedElement, data.totalSaves || '');
       return this;
     },
 

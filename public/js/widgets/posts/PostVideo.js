@@ -74,7 +74,7 @@ Class(CV, 'PostVideo').inherits(CV.Post)({
       this.dom.updateText(this.titleElement, this.dom.decodeHTML(this.title));
       this.dom.updateText(this.descriptionElement, this.dom.decodeHTML(this.description).trim());
 
-      this.dom.updateText(this.savedElement, this.totalSaves);
+      this.updateSaves(this);
 
       return this;
     },
