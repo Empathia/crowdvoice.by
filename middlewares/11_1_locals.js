@@ -1,5 +1,5 @@
+var sanitize = require("sanitize-html");
 var EntitiesPresenter = require(path.join(process.cwd(), '/presenters/EntitiesPresenter.js'));
-
 var VoicesPresenter = require(path.join(process.cwd(), '/presenters/VoicesPresenter.js'));
 
 module.exports = function(req, res, next) {
@@ -242,7 +242,7 @@ module.exports = function(req, res, next) {
                 var voiceTitles = voices.map(function(item) {
                   return {
                     id : hashids.encode(item.id),
-                    name : item.title,
+                    name : sanitize(item.title),
                     type : item.type
                   }
                 });

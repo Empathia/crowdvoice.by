@@ -1,4 +1,5 @@
 'use strict'
+var sanitize = require("sanitize-html");
 
 var PostsPresenter = Module('PostsPresenter')({
   build : function build(posts, currentPerson, callback) {
@@ -11,6 +12,8 @@ var PostsPresenter = Module('PostsPresenter')({
       post.id = hashids.encode(post.id);
       post.voiceId = hashids.encode(post.voiceId);
       post.ownerId = hashids.encode(post.ownerId);
+      post.title = sanitize(post.title) || "No title";
+      post.description = sanitize(post.description) || "No description";
 
       var images = {};
 
@@ -76,7 +79,6 @@ var PostsPresenter = Module('PostsPresenter')({
               }
 
               post.currentPerson = currentPerson;
-              post.postInstance = postInstance
 
               return done();
             });
