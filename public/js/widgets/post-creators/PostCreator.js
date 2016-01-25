@@ -84,8 +84,10 @@ Class(CV, 'PostCreator').inherits(Widget).includes(CV.WidgetUtils)({
         destroy : function destroy() {
             Widget.prototype.destroy.call(this);
 
-            Events.off(this._window, 'keydown', this._windowKeydownHandlerRef);
-            this._windowKeydownHandlerRef = null;
+            if (this._windowKeydownHandlerRef) {
+              Events.off(this._window, 'keydown', this._windowKeydownHandlerRef);
+              this._windowKeydownHandlerRef = null;
+            }
 
             this._window = null;
 

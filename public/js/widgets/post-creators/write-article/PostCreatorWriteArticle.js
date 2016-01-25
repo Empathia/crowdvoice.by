@@ -70,12 +70,10 @@ Class(CV, 'PostCreatorWriteArticle').inherits(CV.PostCreator)({
         },
 
         /* Binds the events.
-         * @method _bindEvents <private> [Function]
+         * @override
          * @return [PostCreatorFromUrl]
          */
         _bindEvents : function _bindEvents() {
-            CV.PostCreator.prototype._bindEvents.call(this);
-
             this._buttonClickRef = this._buttonClick.bind(this);
             this.postButton.bind('buttonClick', this._buttonClickRef);
 

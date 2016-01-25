@@ -39,7 +39,7 @@ Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
          */
         setup : function setup() {
             App.hideScrollbar();
-        
+
             this._addLayerManager();
 
             this.appendChild(new CV.VoiceModerateFooter({
@@ -47,7 +47,7 @@ Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
                 scrollableArea : this.voicePostsWrapper,
                 totalPosts : this._getTotalPostCount(App.Voice.postsCountUnapproved)
             })).render(this.el);
-            
+
             return  this._bindEvents();
         },
 
@@ -74,7 +74,7 @@ Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
 
             this._windowKeydownHandlerRef = this._windowKeydownHandler.bind(this);
             this._window.addEventListener('keydown', this._windowKeydownHandlerRef);
-            
+
             return this;
         },
 
@@ -93,7 +93,7 @@ Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
                 scrollableArea : this.voicePostsWrapper,
                 allowPostEditing : App.Voice.allowPostEditing,
                 _socket : App.Voice._socket,
-            })).render(this.voicePostsWrapper).setup().loadDefaultLayer(); 
+            })).render(this.voicePostsWrapper).setup().loadDefaultLayer();
         },
 
         /* Listens the `post:moderate:delete` event bubbling up.
