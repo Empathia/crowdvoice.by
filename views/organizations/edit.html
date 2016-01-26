@@ -12,6 +12,7 @@
   App.addInteractiveSidebar();
 
   var OrganizationProfileEdit = new CV.Views.OrganizationProfileEdit({
-    entity : <%= JSON.stringify(organization) %>
+    entity : <%= JSON.stringify(organization) %>,
+    notificationSettings : <%= JSON.stringify(notificationSettings) %>
   });
 </script>
