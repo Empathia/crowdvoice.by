@@ -110,7 +110,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
         async.series([
           // Notification Settings
           function (nextSeries) {
-            NotificationSetting.find({ entity_id: hashids.decode(req.currentPerson.id)[0] }, function (err, settings) {
+            NotificationSetting.find({ entity_id: hashids.decode(req.entity.id)[0] }, function (err, settings) {
               if (err) { return next(err); }
 
               var setting = {

@@ -194,6 +194,7 @@ require('./widgets/view-user-profile-edit/notifications/EditNotificationsNotifyM
 require('./widgets/view-user-profile-edit/notifications/EditNotificationsEmailDigestsItem');
 require('./views/OrganizationProfileEdit');
 require('./widgets/view-organization-profile-edit/OrganizationProfileEditTab');
+require('./widgets/view-organization-profile-edit/OrganizationProfileEditNotificationsTab');
 require('./widgets/view-organization-profile-edit/OrganizationProfileEditMembersTab');
 require('./widgets/view-organization-profile-edit/OrganizationProfileEditMembersList');
 require('./views/Feed');
