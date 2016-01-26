@@ -1,0 +1,14 @@
+<a class="oauth-twitter" href="#">Authorize</a>
+
+<script type="text/javascript">
+    $('.oauth-twitter').bind('click', function() {
+        var authWindow = window.open('/twitter/oauth');
+
+        authWindow.onclose = function() {
+            console.log('closed');
+        };
+
+        return false;
+    });
+    window.close();
+</script>
