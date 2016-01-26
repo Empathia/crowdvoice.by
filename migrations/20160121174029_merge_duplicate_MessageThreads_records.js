@@ -1,19 +1,25 @@
-var async = require('async'),
-  _ = require('underscore')
+var _ = require('underscore')
 
 exports.up = function(knex, Promise) {
-  return knex('Entities').where('type', '=', 'organization').then(function (err, organizations) {
-    // async.each, with promises
-    return new Promise.all(organizations.map(function (organization) {
-      return new Promise(function (resolve1, reject1) {
-        return knex('MessageThreads').where('receiver_entity_id', '=', organization.id).then(function (threads) {
-          var senderIds = threads.map(function (t) { return t.sender_entity_id })
+  return knex('Entities')
+    .where('type', '=', 'organization')
+    .then(function (organizations) {
+      return Promise.all(organizations.map(function (organization) {
+        return knex('MessageThreads')
+          .where('receiver_entity_id', '=', organization.id)
+          .then(function (organizationThreads) {
+            var senderIds = organizationThreads.map(function (t) { return t.sender_entity_id })
 
-          return knex('MessageThreads').where('sender_entity_id', '=', organization.id).andWhere('receiver_entity_id', 'in', senderIds).then(function (totalThreads) {
+            return knex('MessageThreads')
+              .where('sender_entity_id', '=', organization.id)
+              .andWhere('receiver_entity_id', 'in', senderIds)
+          })
+          .then(function (totalThreads) {
             var uniqueOldestThreads = []
 
-            var receiverGroups = {} // receiver IDs will be the properties
+            var receiverGroups = {} // duplicate threads receiver IDs will be the properties
 
+            // create or add new receiver ID to object
             totalThreads.forEach(function (thread) {
               if (receiverGroups[thread.receiver_entity_id]) {
                 receiverGroups[thread.receiver_entity_id].push(thread)
@@ -22,6 +28,7 @@ exports.up = function(knex, Promise) {
               }
             })
 
+            // go over each group, sort it and grab the oldest one
             Object.keys(receiverGroups).forEach(function (key) {
               var arr = receiverGroups[key]
 
@@ -29,34 +36,45 @@ exports.up = function(knex, Promise) {
                 return new Date(a.created_at) - new Date(b.created_at)
               })
 
-              uniqueOldestThreads.push(arr[0]) // push the oldest thread
+              uniqueOldestThreads.push(arr[0])
             })
 
-            // async.each, with promises
-            return new Promise.all(uniqueOldestThreads.map(function (thread) {
-              return new Promise(function (resolve2, reject2) {
-                var loopThreads = _.tail(receiverGroups[thread.receiver_entity_id])
+            return Promise.resolve({
+              uniqueOldestThreads: uniqueOldestThreads,
+              receiverGroups: receiverGroups,
+            })
+          })
+          .then(function (threadsInfo) {
+            return Promise.all(threadsInfo.uniqueOldestThreads.map(function (thread) {
+              var loopThreads = _.tail(threadsInfo.receiverGroups[thread.receiver_entity_id]),
+                ids = loopThreads.map(function (t) { return t.id })
 
-                var ids = loopThreads.map(function (t) { return t.id })
+              return new Promise(function () {
+                return knex('Messages')
+                  .whereIn('thread_id', ids)
+              }).then(function (messages) {
+                var threadsToDeleteIds = ids
 
-                return knex('Messages').whereIn('thread_id', ids).then(function (messages) {
-                  var threadsToDeleteIds = ids
+                return new Promise.all(messages.map(function (message) {
+                  return new Promise(function () {
+                    var newThread = _.first(threadsInfo.receiverGroups[thread.receiver_entity_id])
 
-                    return new Promise.all(messages.map(function (message) {
-                      return new Promise(function (resolve3, reject3) {
-                        knex('Messages').where('id', '=', message.id)
-                      })
-                    }))
-                }).catch(reject2)
+                    return knex('Messages')
+                      .where('id', '=', message.id)
+                      .update('thread_id', newThread.id)
+                  }).then(function () {
+                    return knex('MessageThreads')
+                      .where('id', 'in', threadsToDeleteIds)
+                      .delete()
+                  })
+                }))
               })
             }))
-          }).catch(reject1)
-        }).catch(reject1)
-      })
-    }))
-  })
+          })
+      }))
+    })
 }
 
 exports.down = function(knex, Promise) {
-
+  return Promise.resolve()
 }
