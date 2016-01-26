@@ -173,9 +173,17 @@ var HomeController = Class('HomeController')({
         }], function(err) {
           if (err) { return next(err); }
 
-          res.render('home/index', {
-            layout : 'application',
-            pageName : 'page-home'
+          res.format({
+            html: function () {
+              res.render('home/index', {
+                layout : 'application',
+                pageName : 'page-home'
+              });
+            },
+
+            json: function () {
+              res.json({ status: 'ok', featuredEntities: res.locals.mostActiveOrganizations });
+            }
           });
         });
       });
