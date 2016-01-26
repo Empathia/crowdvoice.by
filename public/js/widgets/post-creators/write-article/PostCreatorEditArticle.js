@@ -1,5 +1,6 @@
 /* globals App */
-var API = require('./../../../lib/api');
+var key = require('keymaster')
+  , API = require('./../../../lib/api');
 
 Class(CV, 'PostCreatorEditArticle').inherits(CV.PostCreator).includes(BubblingSupport)({
   ELEMENT_CLASS : 'cv-post-creator post-creator-write-article',
@@ -52,11 +53,11 @@ Class(CV, 'PostCreatorEditArticle').inherits(CV.PostCreator).includes(BubblingSu
         name : 'postDate',
         className : '-overflow-hidden -full-height'
       })).render(this.header);
-      
+
       this.appendChild(new CV.PostCreatorWriteArticleEditor({
         name : 'editor'
       })).render(this.content);
-      
+
       // Content
       this.articleContent = $(this.content.querySelector('.write-article-body-editable'));
       this.articleTitle = $(this.content.querySelector('.editor-title'));
@@ -81,7 +82,7 @@ Class(CV, 'PostCreatorEditArticle').inherits(CV.PostCreator).includes(BubblingSu
       this.postDate.el.querySelector('.write-article-title').innerText = 'Edit Article';
       this.articleContent.html(this.voiceContent);
       this.articleContent.removeClass('medium-editor-placeholder');
-      this.articleTitle[0].value = this.voiceTitle; 
+      this.articleTitle[0].value = this.voiceTitle;
 
       if( this.data.voiceData.imagePath[0] ){
         this.articleImage = this.data.voiceData.imagePath[0].path;
@@ -94,12 +95,14 @@ Class(CV, 'PostCreatorEditArticle').inherits(CV.PostCreator).includes(BubblingSu
       return this;
     },
 
-    /* Binds the events.
-     * @method _bindEvents <private> [Function]
+    /* Subscribe the widget’s events.
+     * @private
      * @return [PostCreatorFromUrl]
      */
-    _bindEvents : function _bindEvents() {
-      CV.PostCreator.prototype._bindEvents.call(this);
+    _bindEvents: function _bindEvents() {
+      this._preventESCKeyRef =  this._preventESCKey.bind(this);
+      key('esc', 'EditArticleModal', this._preventESCKeyRef);
+      key.setScope('EditArticleModal');
 
       this._buttonClickRef = this._buttonClick.bind(this);
       this.postButton.bind('editButtonClick', this._buttonClickRef);
@@ -114,6 +117,13 @@ Class(CV, 'PostCreatorEditArticle').inherits(CV.PostCreator).includes(BubblingSu
       return this;
     },
 
+    /* Prevent and stop propagation if the ESC key is pressed.
+     * @private
+     */
+    _preventESCKey: function _preventESCKey() {
+      return false;
+    },
+
     /* Add the data from the DOM
      * And sents it to voiceNewArticle
      * API Endpoint
@@ -121,7 +131,7 @@ Class(CV, 'PostCreatorEditArticle').inherits(CV.PostCreator).includes(BubblingSu
     _buttonClick : function _buttonClick(){
       this._disablePostButton();
       this.loadingStep.addClass('active');
-      
+
       if(this.articleImage !== null){
         API.postUpdate({
           profileName : this.data.voiceData.profileName,
@@ -231,8 +241,10 @@ Class(CV, 'PostCreatorEditArticle').inherits(CV.PostCreator).includes(BubblingSu
       return this;
     },
 
-    destroy : function destroy() {
+    destroy: function destroy() {
       CV.PostCreator.prototype.destroy.call(this);
+      key.unbind('esc', 'EditArticleModal');
+      this._preventESCKeyRef =  null;
 
       this.articleTitle.off('change keyup paste',this._contentFilledRef);
       this.articleContent.off('change keyup paste',this._contentFilledRef);

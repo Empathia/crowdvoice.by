@@ -1,6 +1,3 @@
-/* globals App */
-var API = require('../../../lib/api');
-
 Class(CV, 'PostModerateEditButton').inherits(Widget).includes(CV.WidgetUtils, BubblingSupport)({
   HTML : '\
     <button class="-abs cv-button post-moderate-view-original-btn -m0 -color-primary">\
@@ -11,37 +8,47 @@ Class(CV, 'PostModerateEditButton').inherits(Widget).includes(CV.WidgetUtils, Bu
     </button>\
   ',
 
-  prototype : {
-
-    init : function init(config) {
+  prototype: {
+    init: function init(config) {
       Widget.prototype.init.call(this, config);
       this.el = this.element[0];
       this._bindEvents();
     },
 
-    _bindEvents : function _bindEvents() {
+    _bindEvents: function _bindEvents() {
       this._clickHandlerRef = this._clickHandler.bind(this);
       this.el.addEventListener('click', this._clickHandlerRef);
-
     },
 
-    _clickHandler : function _clickHandler() {
+    _clickHandler: function _clickHandler() {
       this.appendChild(new CV.PostCreatorEditArticle({
-        name : 'editArticle',
-        data : {
-          voiceData : this.data,
+        name: 'editArticle',
+        data: {
+          voiceData: this.data
         }
       })).render(document.body);
 
       this.editArticle.activate().editStartingValues();
+
+      this._editArticleDeactivateHandlerRef = this._editArticleDeactivateHandler.bind(this);
+      this.editArticle.bind('deactivate', this._editArticleDeactivateHandlerRef);
     },
 
-    destroy : function destroy() {
-      Widget.prototype.destroy.call(this);
+    _editArticleDeactivateHandler: function _editArticleDeactivateHandler() {
+      this.editArticle.unbind('deactivate', this._editArticleDeactivateHandlerRef);
+      this._editArticleDeactivateHandlerRef = null;
+      this.editArticle = this.editArticle.destroy();
+    },
 
+    destroy: function destroy() {
+      if (this.editArticle) {
+        this.editArticle.unbind('deactivate', this._editArticleDeactivateHandlerRef);
+        this._editArticleDeactivateHandlerRef = null;
+      }
+
+      Widget.prototype.destroy.call(this);
       this.el.removeEventListener('click', this._clickHandlerRef);
       this._clickHandlerRef = null;
-
       return null;
     }
   }
