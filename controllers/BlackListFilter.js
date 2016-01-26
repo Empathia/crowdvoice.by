@@ -1,8 +1,8 @@
 /* globals ForbiddenError */
 var BlackListFilter = Module('BlackListFilter')({
   routesBlackList: [
-    /^\/(search|discover|post|switchPerson|person|people|signup|login|logout|user|organization|entity|dist|session|page|root|admin|voice|dev|embed)(es|s|$|\/)/,
-    /^(search|discover|post|switchPerson|person|people|signup|login|logout|user|organization|entity|dist|session|page|root|admin|voice|dev|anonymous|embed)(es|s|$|\/)/
+    /^\/(search|discover|post|switchPerson|person|people|signup|login|logout|user|organization|entity|dist|session|page|root|admin|voice|dev|embed|twitter)(es|s|$|\/)/,
+    /^(search|discover|post|switchPerson|person|people|signup|login|logout|user|organization|entity|dist|session|page|root|admin|voice|dev|anonymous|embed|twitter)(es|s|$|\/)/
   ],
 
   isBlackListed : function isBlackListed (path) {
