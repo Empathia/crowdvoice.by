@@ -23,6 +23,7 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
   SOURCE_TYPE_VIDEO:      'video',
   SOURCE_TYPE_LINK:       'link',
   SOURCE_TYPE_TEXT:       'text',
+  SOURCE_TYPE_TWEET:      'tweet',
 
   validations : {
     ownerId       : ['required'],
@@ -123,6 +124,24 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
     return this;
   },
 
+  buildFromTweet : function buildFromTweet(tweet) {
+    var post = new Post();
+
+    post.sourceType = this.SOURCE_TYPE_TWEET;
+    post.sourceService = this.SOURCE_SERVICE_LOCAL;
+    post.sourceUrl = 'http://twitter.com/statuses/' + tweet.id_str;
+    post.sourceDomain = 'twitter.com';
+    post.title = tweet.user.name;
+    post.description = tweet.text;
+
+    post.extras = {
+      profileImageURL : tweet.user.profile_image_url_https,
+      id_str: tweet.id_str
+    };
+
+    return post;
+  },
+
   prototype : {
     id            : null,
     ownerId       : null,
@@ -140,6 +159,7 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
     publishedAt   : null,
     createdAt     : null,
     updatedAt     : null,
+    extras        : {},
 
     init : function init(config) {
       Argon.KnexModel.prototype.init.call(this, config);

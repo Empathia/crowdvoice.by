@@ -1,5 +1,7 @@
 <%= JSON.stringify(authorized, null , 2) %>
 
 <script type="text/javascript">
-    // window.close();
+  window.CV = window.CV || {};
+  window.CV.oauthCallbackHasTwitterCredentials = <%= JSON.stringify(authorized) %>;
+  window.close();
 </script>
