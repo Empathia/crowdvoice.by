@@ -2,13 +2,20 @@
 
 <script type="text/javascript">
     $('.oauth-twitter').bind('click', function() {
-        var authWindow = window.open('/twitter/oauth');
+        window.authWindow = window.open('/twitter/oauth', 'name', 'height=600,width=500');
 
-        authWindow.onclose = function() {
-            console.log('closed');
-        };
+        var interval = window.setInterval(function () {
+          try {
+            if (authWindow === null || authWindow.closed) {
+              window.clearInterval(interval);
+              console.log('window closed');
+              console.log(authWindow.CV.oauthCallbackHasTwitterCredentials);
+            }
+          } catch(e) {
+            console.log(e);
+          }
+        }, 1000);
 
         return false;
     });
-    window.close();
 </script>
