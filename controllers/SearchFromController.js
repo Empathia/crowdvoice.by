@@ -19,16 +19,17 @@ var consumer = new OAuth(oauthOptions.requestTokenURL, oauthOptions.requestAcces
 // Youtube API
 var YouTube = require('youtube-node');
 
-var youtube = new YouTube();
-
-youtube.setKey(CONFIG.youtube.key);
-
 var SearchFrom = Class('SearchFrom')({
   prototype : {
-    google : function(req, res, next) {
-      var q = req.params.q;
 
-      parser('https://news.google.com/news?q=' +  q + '&output=rss', function(err, response) {
+    google : function(req, res, next) {
+      /**
+       * req.body = {
+       *   query: <String>,
+       * }
+       */
+
+      parser('https://news.google.com/news?q=' + encodeURIComponent(req.body.query) + '&output=rss', function(err, response) {
         if (err) {
           return next(err);
         }
@@ -55,14 +56,28 @@ var SearchFrom = Class('SearchFrom')({
     },
 
     youtube : function(req, res, next) {
-      var q = req.params.q;
+      /**
+       * req.body = {
+       *   query: <String>,
+       *   nextPageToken: null | <String>,
+       * }
+       */
 
-      youtube.search(q, 50, function(err, response) {
-        if (err) {
-          return next(err);
-        }
+      var youtube = new YouTube();
+      youtube.setKey(CONFIG.youtube.key);
 
-        var result = [];
+      if (req.body.nextPageToken) {
+        youtube.addParam('pageToken', req.body.nextPageToken)
+      }
+
+      youtube.search(req.body.query, 50, function(err, response) {
+        if (err) { return next(err); }
+
+        var result = {
+          nextPageToken: response.nextPageToken || null,
+          pageInfo: response.pageInfo,
+          videos: []
+        };
 
         response.items.forEach(function(item) {
           if (item.id.kind === 'youtube#video') {
@@ -74,13 +89,12 @@ var SearchFrom = Class('SearchFrom')({
               sourceUrl : 'http://youtube.com/watch?v=' + item.id.videoId
             }
 
-            result.push(obj);
+            result.videos.push(obj);
           }
         });
 
         res.json(result);
-      })
-
+      });
     },
 
     twitterOpen : function(req, res, next) {
@@ -186,8 +200,8 @@ var SearchFrom = Class('SearchFrom')({
           res.json(tweets);
         }
       );
-
     }
+
   }
 });
 

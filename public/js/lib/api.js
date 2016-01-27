@@ -588,11 +588,12 @@ module.exports = {
    * @argument args.profileName <required> [String] the voice owner profileName
    * @argument args.voiceSlug <required> [String] the voice slug
    * @argument args.source <required> [String] the source to search on ['googleNews', 'youtube']
-   * @argument args.query <required> [String] the query string
+   * @argument args.data <required> [Object]
+   * @argument args.data.query <required> [String] the query string
    * @argument callback <required> [Function]
    */
   searchPostsInSource: function searchPostsInSource(args, callback) {
-    if (!args.profileName || !args.voiceSlug || !args.source || !args.query|| !callback) {
+    if (!args.profileName || !args.voiceSlug || !args.source || !args.data || !callback) {
       throw new Error('Missing required params');
     }
 
@@ -600,10 +601,17 @@ module.exports = {
       throw new Error('Callback should be a function');
     }
 
+    var data = {};
+    Object.keys(args.data).forEach(function (key) {
+      data[key] = args.data[key];
+    });
+    data.query = encodeURIComponent(args.data.query);
+
     $.ajax({
-      type: 'GET',
+      type: 'POST',
       dataType: 'json',
-      url: '/' + args.profileName + '/' + args.voiceSlug + '/' + args.source + '/' + encodeURIComponent(args.query),
+      data: data,
+      url: '/' + args.profileName + '/' + args.voiceSlug + '/' + args.source,
       headers: {'csrf-token' : this.token},
       success: function success(data) { callback(false, data); },
       error: function error(err) { callback(true, err); }
