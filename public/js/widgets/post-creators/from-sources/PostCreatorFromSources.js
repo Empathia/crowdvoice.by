@@ -133,14 +133,14 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
     _addPost: function _addPost(ev) {
       this.queuePanel.setAddingPost();
 
-      if (this.resultsPanel.children.indexOf(ev.data) >= 0) {
-        Velocity(ev.data.el, 'slideUp', {delay: 500, duration : 400});
+      if (this.resultsPanel.source.children.indexOf(ev.data) >= 0) {
+        Velocity(ev.data.element[0], 'slideUp', {delay: 500, duration : 400});
       }
 
       API.postPreview({
         profileName: App.Voice.data.owner.profileName,
         voiceSlug: App.Voice.data.slug,
-        url: ev.data.sourceUrl
+        url: ev.data.data.sourceUrl
       }, this._requestPreviewHandler.bind(this, ev));
     },
 
@@ -251,7 +251,9 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
         profileName: App.Voice.data.owner.profileName,
         voiceSlug: App.Voice.data.slug,
         source: this._currentSource,
-        query: this._query
+        data: {
+          query: this._query
+        }
       };
 
       API.searchPostsInSource(args, this._requestResponseHandler.bind(this));
@@ -259,23 +261,25 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
 
     _requestResponseHandler: function _requestResponseHandler(err, response) {
       if (err) {
-        console.log(response);
         return this._setErrorState({
           message: response.status + ' - ' + response.statusText
         });
       }
 
-      this.resultsPanel.renderResults({
-        source: this._currentSource,
-        data: response,
-        query: this._query
-      });
+      var responseLength = 0;
+      if (response instanceof Array) {
+        responseLength = response.length;
+      } else if (response.videos !== undefined) {
+        responseLength = response.videos.length;
+      }
 
-      if (!response.length) {
+      if (!responseLength) {
         this._setNoResultsState();
       } else {
+        this.resultsPanel.renderResults(this._currentSource, response, this._query, responseLength);
         this._setResultsState();
-      } },
+      }
+    },
 
     _showContent: function _showContent() {
       this.content.classList.add('active');
