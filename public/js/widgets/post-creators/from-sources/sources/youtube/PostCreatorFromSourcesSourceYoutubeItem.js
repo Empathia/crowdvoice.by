@@ -5,10 +5,15 @@ Class(CV, 'PostCreatorFromSourcesSourceYoutubeItem').inherits(Widget).includes(C
   ELEMENT_CLASS: 'pcfs__youtube -rel',
   HTML: '\
     <article>\
-      <div class="source-preview-wrapper">\
-        <p class="source-title -font-bold -inline"></p>\
-        <p class="source-date -inline"></p>\
-        <p class="source-description"></p>\
+      <div class="source-preview-wrapper -clearfix">\
+        <div class="-float-left -mr1">\
+          <img class="source-preview-thumb" width="100"/>\
+        </div>\
+        <div class="-overflow-hidden">\
+          <p class="source-title -font-bold -inline"></p>\
+          <p class="source-date -inline"></p>\
+          <p class="source-description"></p>\
+        </div>\
       </div>\
       <div class="source-add-button -abs">\
         <button class="cv-button tiny">+ Add This</button>\
@@ -16,12 +21,17 @@ Class(CV, 'PostCreatorFromSourcesSourceYoutubeItem').inherits(Widget).includes(C
     </article>',
 
   prototype: {
-    data: {
-      title: '',
-      description: '',
-      date: '',
-      sourceUrl: ''
-    },
+    /* The item data to be rendered.
+     * @property {String} data.date - published video date. @example "2012-10-18T07:57:11.000Z"
+     * @property {String} data.description - video’s description.
+     * @property {String} data.sourceUrl - video’s full url.
+     * @property {String} data.title - video’s title
+     * @property {Object} data.thumb - videos’s thumbnail.
+     * @property {Number} data.thumb.height
+     * @property {Number} data.thumb.width
+     * @property {String} data.thumb.url
+     */
+    data: null,
     init: function init(config) {
       Widget.prototype.init.call(this, config);
       this._setup()._bindEvents();
@@ -34,6 +44,7 @@ Class(CV, 'PostCreatorFromSourcesSourceYoutubeItem').inherits(Widget).includes(C
     _setup: function _setup() {
       var el = this.element[0];
       this.addButton = el.querySelector('.source-add-button button');
+      this.dom.updateAttr('src', el.querySelector('.source-preview-thumb'), this.data.thumb.url);
       this.dom.updateText(el.querySelector('.source-title'), this.data.title);
       this.dom.updateText(el.querySelector('.source-date'), moment(this.data.date).format('MMM, YYYY'));
       this.dom.updateText(el.querySelector('.source-description'), this.data.description);
