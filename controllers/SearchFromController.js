@@ -162,9 +162,30 @@ var SearchFrom = Class('SearchFrom')({
 
       if (req.session.twitterAccessToken && req.session.twitterAccessTokenSecret) {
         response.hasTwitterCredentials = true;
+      } else {
+        return res.json(response);
       }
 
-      res.json(response);
+      var TwitterClient = new Twitter({
+        'consumer_key' : CONFIG.twitter['consumer_key'],
+        'consumer_secret' : CONFIG.twitter['consumer_secret'],
+        'access_token_key' : req.session.twitterAccessToken,
+        'access_token_secret' : req.session.twitterAccessTokenSecret
+      });
+
+      TwitterClient.get('https://api.twitter.com/1.1/account/verify_credentials.json', false, function(data) {
+        if (!data) {
+          return res.json(response);
+        }
+
+        var errorMessages = data.map(function(item) {
+          return item.message;
+        });
+
+        return res.json({
+          errors : errorMessages
+        });
+      });
     },
 
     twitterSearch : function twitterSearch(req, res, next) {
@@ -178,12 +199,9 @@ var SearchFrom = Class('SearchFrom')({
       TwitterClient.get(
         'search/tweets',
         {
-          // q : 'mexico exclude:retweets exclude:replies',
-          q : 'mexico exclude:retweets',
-          // 'result_type' : 'recent',
+          q : req.body.query + ' exclude:retweets',
           'result_type' : 'mixed',
-          // 'since_id' : fetcher.lastIdStr,
-          'max_id' : req.query.maxId || null,
+          'max_id' : req.body.maxId || null,
           count : 50
         },
         function(err, tweets, response) {
@@ -193,7 +211,7 @@ var SearchFrom = Class('SearchFrom')({
 
           logger.log('Got ' +  tweets.statuses.length + ' tweets...');
 
-          res.json(tweets);
+          res.json(tweets.statuses);
         }
       );
     }
