@@ -142,7 +142,7 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
             var args = {
                 profileName : App.Voice.data.owner.profileName,
                 voiceSlug : App.Voice.data.slug,
-                url : url
+                data: {url: url}
             };
             API.postPreview(args, this._requestResponseHandler.bind(this));
         },

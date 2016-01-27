@@ -39,8 +39,8 @@ module.exports = function(req, res, next) {
 
     // Add Twitter Credentials to session
     if (req.user.twitterCredentials) {
-      req.session.twitterAccessToken = req.user.twitterCredentials.twitterAccessToken;
-      req.session.twitterAccessTokenSecret = req.user.twitterCredentials.twitterAccessTokenSecret;
+      req.session.twitterAccessToken = req.user.twitterCredentials.accessToken;
+      req.session.twitterAccessTokenSecret = req.user.twitterCredentials.accessTokenSecret;
     }
 
     if (req.session.isAnonymous) {

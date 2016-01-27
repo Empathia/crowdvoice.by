@@ -1,7 +1,7 @@
 var parser = require('parse-rss');
 var OAuth = require('oauth').OAuth;
-
 var Twitter = require('twitter');
+var YouTube = require('youtube-node');
 
 var oauthOptions = {
   key : CONFIG.twitter.consumer_key,
@@ -16,19 +16,17 @@ var oauthOptions = {
 var consumer = new OAuth(oauthOptions.requestTokenURL, oauthOptions.requestAccessURL,
   oauthOptions.key, oauthOptions.secret, oauthOptions.version, oauthOptions.callback, oauthOptions.method);
 
-// Youtube API
-var YouTube = require('youtube-node');
-
-var youtube = new YouTube();
-
-youtube.setKey(CONFIG.youtube.key);
-
 var SearchFrom = Class('SearchFrom')({
   prototype : {
-    google : function(req, res, next) {
-      var q = req.params.q;
 
-      parser('https://news.google.com/news?q=' +  q + '&output=rss', function(err, response) {
+    google : function(req, res, next) {
+      /**
+       * req.body = {
+       *   query: <String>,
+       * }
+       */
+
+      parser('https://news.google.com/news?q=' + encodeURIComponent(req.body.query) + '&output=rss', function(err, response) {
         if (err) {
           return next(err);
         }
@@ -55,14 +53,28 @@ var SearchFrom = Class('SearchFrom')({
     },
 
     youtube : function(req, res, next) {
-      var q = req.params.q;
+      /**
+       * req.body = {
+       *   query: <String>,
+       *   nextPageToken: null | <String>,
+       * }
+       */
 
-      youtube.search(q, 50, function(err, response) {
-        if (err) {
-          return next(err);
-        }
+      var youtube = new YouTube();
+      youtube.setKey(CONFIG.youtube.key);
 
-        var result = [];
+      if (req.body.nextPageToken) {
+        youtube.addParam('pageToken', req.body.nextPageToken)
+      }
+
+      youtube.search(req.body.query, 50, function(err, response) {
+        if (err) { return next(err); }
+
+        var result = {
+          nextPageToken: response.nextPageToken || null,
+          pageInfo: response.pageInfo,
+          videos: []
+        };
 
         response.items.forEach(function(item) {
           if (item.id.kind === 'youtube#video') {
@@ -74,13 +86,12 @@ var SearchFrom = Class('SearchFrom')({
               sourceUrl : 'http://youtube.com/watch?v=' + item.id.videoId
             }
 
-            result.push(obj);
+            result.videos.push(obj);
           }
         });
 
         res.json(result);
-      })
-
+      });
     },
 
     twitterOpen : function(req, res, next) {
@@ -151,9 +162,34 @@ var SearchFrom = Class('SearchFrom')({
 
       if (req.session.twitterAccessToken && req.session.twitterAccessTokenSecret) {
         response.hasTwitterCredentials = true;
+      } else {
+        return res.json(response);
       }
 
-      res.json(response);
+      var TwitterClient = new Twitter({
+        'consumer_key' : CONFIG.twitter['consumer_key'],
+        'consumer_secret' : CONFIG.twitter['consumer_secret'],
+        'access_token_key' : req.session.twitterAccessToken,
+        'access_token_secret' : req.session.twitterAccessTokenSecret
+      });
+
+      TwitterClient.get('/account/verify_credentials', false, function(err, data) {
+        if (err) {
+          var errors = ['Unknown Error'];
+
+          if (err.length > 0) {
+            errors = err.map(function(item) {
+              return item.message;
+            });
+          }
+
+          return res.json({errors : errors});
+        }
+
+        if (data) {
+          return res.json(response);
+        }
+      });
     },
 
     twitterSearch : function twitterSearch(req, res, next) {
@@ -164,16 +200,12 @@ var SearchFrom = Class('SearchFrom')({
         'access_token_secret' : req.session.twitterAccessTokenSecret
       });
 
-
       TwitterClient.get(
         'search/tweets',
         {
-          // q : 'mexico exclude:retweets exclude:replies',
-          q : 'mexico exclude:retweets',
-          // 'result_type' : 'recent',
+          q : req.body.query + ' exclude:retweets',
           'result_type' : 'mixed',
-          // 'since_id' : fetcher.lastIdStr,
-          'max_id' : req.query.maxId || null,
+          'max_id' : req.body.maxId || null,
           count : 50
         },
         function(err, tweets, response) {
@@ -183,11 +215,11 @@ var SearchFrom = Class('SearchFrom')({
 
           logger.log('Got ' +  tweets.statuses.length + ' tweets...');
 
-          res.json(tweets);
+          res.json(tweets.statuses);
         }
       );
-
     }
+
   }
 });
 
