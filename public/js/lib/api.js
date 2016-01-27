@@ -605,7 +605,6 @@ module.exports = {
     Object.keys(args.data).forEach(function (key) {
       data[key] = args.data[key];
     });
-    data.query = encodeURIComponent(args.data.query);
 
     $.ajax({
       type: 'POST',
