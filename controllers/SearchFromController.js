@@ -5,6 +5,12 @@ var SearchFrom = Class('SearchFrom')({
   prototype : {
 
     google : function(req, res, next) {
+      /**
+       * req.body = {
+       *   query: <String>,
+       * }
+       */
+
       parser('https://news.google.com/news?q=' + encodeURIComponent(req.body.query) + '&output=rss', function(err, response) {
         if (err) {
           return next(err);
