@@ -133,14 +133,14 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
     _addPost: function _addPost(ev) {
       this.queuePanel.setAddingPost();
 
-      if (this.resultsPanel.children.indexOf(ev.data) >= 0) {
-        Velocity(ev.data.el, 'slideUp', {delay: 500, duration : 400});
+      if (this.resultsPanel.source.children.indexOf(ev.data) >= 0) {
+        Velocity(ev.data.element[0], 'slideUp', {delay: 500, duration : 400});
       }
 
       API.postPreview({
         profileName: App.Voice.data.owner.profileName,
         voiceSlug: App.Voice.data.slug,
-        url: ev.data.sourceUrl
+        url: ev.data.data.sourceUrl
       }, this._requestPreviewHandler.bind(this, ev));
     },
 
@@ -259,7 +259,6 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
 
     _requestResponseHandler: function _requestResponseHandler(err, response) {
       if (err) {
-        console.log(response);
         return this._setErrorState({
           message: response.status + ' - ' + response.statusText
         });
