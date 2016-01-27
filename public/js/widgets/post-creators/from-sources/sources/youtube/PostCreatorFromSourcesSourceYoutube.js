@@ -47,7 +47,10 @@ Class(CV, 'PostCreatorFromSourcesSourceYoutube').inherits(Widget).includes(CV.Wi
         profileName: App.Voice.data.owner.profileName,
         voiceSlug: App.Voice.data.slug,
         source: 'youtube',
-        query: this.query
+        data: {
+          query: this.query,
+          nextPageToken: this.data.nextPageToken
+        }
       }, this._requestResponseHandler.bind(this));
     },
 
@@ -64,15 +67,16 @@ Class(CV, 'PostCreatorFromSourcesSourceYoutube').inherits(Widget).includes(CV.Wi
       var child = CV[this.constructor.className + 'Item']
         , fragment = document.createDocumentFragment();
 
-      res.forEach(function(data, index) {
+      res.videos.forEach(function(data, index) {
         this.appendChild(new child({
-          name: 'item' + (index * this._requestsCounter),
+          name: 'item-y-' + (index * this._requestsCounter),
           data: data
         })).render(fragment);
       }, this);
       this.element[0].querySelector('[data-list]').appendChild(fragment);
 
-      this._totalItems += res.length;
+      this.data = res;
+      this._totalItems += this.data.videos.length;
     }
   }
 });

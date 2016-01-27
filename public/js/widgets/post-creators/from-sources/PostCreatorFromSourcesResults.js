@@ -47,8 +47,15 @@ Class(CV, 'PostCreatorFromSourcesResults').inherits(Widget).includes(CV.WidgetUt
       this.dispatch('addPost', {data: ev.data});
     },
 
-    renderResults: function renderResults(config) {
-      var type = this.format.capitalizeFirstLetter(config.source)
+    /* Updates the results panel with the given source.
+     * @param {String} source - the current source selectedA
+     * @param {Object|Array} data - the data returned by the endpoint.
+     * @param {String} query - the current query search
+     * @param {Number} totals - the total response items
+     * @return {Object} this
+     */
+    renderResults: function renderResults(source, data, query, totals) {
+      var type = this.format.capitalizeFirstLetter(source)
         , factory = window.CV['PostCreatorFromSourcesSource' + type];
 
       if (typeof factory !== 'function') {
@@ -56,18 +63,22 @@ Class(CV, 'PostCreatorFromSourcesResults').inherits(Widget).includes(CV.WidgetUt
         return this;
       }
 
-      this.clearResults();
-      this.updateHeaderText(config.data.length, config.query);
+      this.clearResults().updateHeaderText(totals, query);
 
       this.appendChild(new factory({
         name: 'source',
-        data: config.data,
-        query: config.query
+        data: data,
+        query: query
       })).render(this.resultList);
 
       return this;
     },
 
+    /* Updates the top list text. (#{n} results for #{query})
+     * @param {Number} totals - the total response items
+     * @param {String} query - the current query search
+     * @public
+     */
     updateHeaderText: function updateHeaderText(totals, query) {
       this.dom.updateText(this.totalsElement, totals);
       this.dom.updateText(this.queryElement, query);
@@ -75,7 +86,8 @@ Class(CV, 'PostCreatorFromSourcesResults').inherits(Widget).includes(CV.WidgetUt
     },
 
     /* Destroy any children without destroying itself.
-     * @method clearResults <public> [Function]
+     * @public
+     * @return {Object} this
      */
     clearResults: function clearResults() {
       while(this.children.length > 0) {
@@ -85,7 +97,6 @@ Class(CV, 'PostCreatorFromSourcesResults').inherits(Widget).includes(CV.WidgetUt
     },
 
     setSearchingState: function setSearchingState() {
-      // this.loader.enable();
       this.processingLayer.classList.add('active');
       this.resultsWrapper.classList.remove('active');
       this.noResults.classList.remove('active');
@@ -95,7 +106,6 @@ Class(CV, 'PostCreatorFromSourcesResults').inherits(Widget).includes(CV.WidgetUt
     setResultsState: function setResultsState() {
       this.resultsWrapper.classList.add('active');
       this.processingLayer.classList.remove('active');
-      // this.loader.disable();
       this.noResults.classList.remove('active');
       return this;
     },
@@ -104,7 +114,6 @@ Class(CV, 'PostCreatorFromSourcesResults').inherits(Widget).includes(CV.WidgetUt
       this.dom.updateText(this.noResultsQuery, queryString);
       this.noResults.classList.add('active');
       this.resultsWrapper.classList.remove('active');
-      // this.loader.disable();
       this.processingLayer.classList.remove('active');
       return this;
     },

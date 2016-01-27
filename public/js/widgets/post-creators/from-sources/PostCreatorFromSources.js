@@ -251,7 +251,9 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
         profileName: App.Voice.data.owner.profileName,
         voiceSlug: App.Voice.data.slug,
         source: this._currentSource,
-        query: this._query
+        data: {
+          query: this._query
+        }
       };
 
       API.searchPostsInSource(args, this._requestResponseHandler.bind(this));
@@ -264,17 +266,20 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
         });
       }
 
-      this.resultsPanel.renderResults({
-        source: this._currentSource,
-        data: response,
-        query: this._query
-      });
+      var responseLength = 0;
+      if (response instanceof Array) {
+        responseLength = response.length;
+      } else if (response.videos !== undefined) {
+        responseLength = response.videos.length;
+      }
 
-      if (!response.length) {
+      if (!responseLength) {
         this._setNoResultsState();
       } else {
+        this.resultsPanel.renderResults(this._currentSource, response, this._query, responseLength);
         this._setResultsState();
-      } },
+      }
+    },
 
     _showContent: function _showContent() {
       this.content.classList.add('active');
