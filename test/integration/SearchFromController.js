@@ -29,16 +29,139 @@ describe('SearchFromController', function () {
   describe('#youtube', function () {
 
     it('Should not crash on anonymous voices when search term has a space', function (doneTest) {
-      request
-        .get(urlBase + '/anonymous_' + hashids.encode(2) + '/second-trial-by-combat/youtube/' + encodeURIComponent('pokemon rocks'))
-        .accept('application/json')
-        .end(function (err, res) {
-          if (err) { return doneTest(err) }
+      var agent = request.agent(),
+        csrf
 
-          expect(res.status).to.equal(200)
+      async.series([
+        function (nextSeries) {
+          agent
+            .get(urlBase + '/csrf')
+            .end(function (err, res) {
+              if (err) { return nextSeries(err) }
 
-          return doneTest()
-        })
+              csrf = res.text
+
+              return nextSeries()
+            })
+        },
+      ], function (err) {
+        if (err) { return doneTest(err) }
+
+        agent
+          .post(urlBase + '/anonymous_' + hashids.encode(2) + '/second-trial-by-combat/youtube')
+          .accept('application/json')
+          .send({
+            _csrf: csrf,
+            query: 'pokemon rocks',
+          })
+          .end(function (err, res) {
+            if (err) { return doneTest(err) }
+
+            expect(res.status).to.equal(200)
+
+            return doneTest()
+          })
+      })
+    })
+
+    it('Should return the correct result format', function (doneTest) {
+      var agent = request.agent(),
+        csrf
+
+      async.series([
+        function (nextSeries) {
+          agent
+            .get(urlBase + '/csrf')
+            .end(function (err, res) {
+              if (err) { return nextSeries(err) }
+
+              csrf = res.text
+
+              return nextSeries()
+            })
+        },
+      ], function (err) {
+        if (err) { return doneTest(err) }
+
+        agent
+          .post(urlBase + '/anonymous_' + hashids.encode(2) + '/second-trial-by-combat/youtube')
+          .accept('application/json')
+          .send({
+            _csrf: csrf,
+            query: 'pokemon',
+          })
+          .end(function (err, res) {
+            if (err) { return doneTest(err) }
+
+            expect(res.status).to.equal(200)
+
+            expect(res.body.nextPageToken).to.not.be.null
+            expect(res.body.pageInfo).to.not.be.null
+            expect(res.body.videos.length).to.be.above(0)
+
+            return doneTest()
+          })
+      })
+    })
+
+    it('Should load the next page if provided the nextPageToken', function (doneTest) {
+      var agent = request.agent(),
+        csrf,
+        nextPageToken
+
+      async.series([
+        function (nextSeries) {
+          agent
+            .get(urlBase + '/csrf')
+            .end(function (err, res) {
+              if (err) { return nextSeries(err) }
+
+              csrf = res.text
+
+              return nextSeries()
+            })
+        },
+
+        function (nextSeries) {
+          agent
+            .post(urlBase + '/anonymous_' + hashids.encode(2) + '/second-trial-by-combat/youtube')
+            .accept('application/json')
+            .send({
+              _csrf: csrf,
+              query: 'pokemon',
+            })
+            .end(function (err, res) {
+              if (err) { return nextSeries(err) }
+
+              nextPageToken = res.body.nextPageToken
+
+              return nextSeries()
+            })
+        },
+      ], function (err) {
+        if (err) { return doneTest(err) }
+
+        agent
+          .post(urlBase + '/anonymous_' + hashids.encode(2) + '/second-trial-by-combat/youtube')
+          .accept('application/json')
+          .send({
+            _csrf: csrf,
+            query: 'pokemon',
+            nextPageToken: nextPageToken,
+          })
+          .end(function (err, res) {
+            if (err) { return doneTest(err) }
+
+            expect(res.status).to.equal(200)
+
+            expect(res.body.nextPageToken).to.not.be.null
+            expect(res.body.nextPageToken).to.not.equal(nextPageToken)
+            expect(res.body.pageInfo).to.not.be.null
+            expect(res.body.videos.length).to.be.above(0)
+
+            return doneTest()
+          })
+      })
     })
 
   })
