@@ -7,7 +7,7 @@ Class(CV, 'PostCreatorFromSourcesSourceYoutubeItem').inherits(Widget).includes(C
     <article>\
       <div class="source-preview-wrapper -clearfix">\
         <div class="-float-left -mr1">\
-          <img class="source-preview-thumb" width="100"/>\
+          <img class="source-preview-thumb" width="100" height="56"/>\
         </div>\
         <div class="-overflow-hidden">\
           <p class="source-title -font-bold -inline"></p>\
