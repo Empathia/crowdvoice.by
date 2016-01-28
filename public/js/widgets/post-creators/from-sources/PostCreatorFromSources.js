@@ -142,10 +142,17 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
         Velocity(ev.data.element[0], 'slideUp', {delay: 500, duration : 400});
       }
 
+      var _data = {};
+      if (ev.data.data.sourceUrl) {
+        _data.url = ev.data.data.sourceUrl;
+      }
+      if (ev.data.data.id_str) {
+        _data.id_str = ev.data.data.id_str;
+      }
       API.postPreview({
         profileName: App.Voice.data.owner.profileName,
         voiceSlug: App.Voice.data.slug,
-        url: ev.data.data.sourceUrl
+        data: _data
       }, this._requestPreviewHandler.bind(this, ev));
     },
 
@@ -246,8 +253,11 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
 
       if (this._currentSource === 'twitter') {
         CV.PostCreatorFromSourcesSourceTwitter.isAuth(function (err, res) {
-          if (err) return console.log('ERR', err);
-          if (res) return this._autoSearchSourceUpdate();
+          if (err) {
+            console.warn(err);
+            return this._setTwitterAuthState();
+          }
+          if (res === true) return this._autoSearchSourceUpdate();
           this._setTwitterAuthState();
         }.bind(this));
       } else {

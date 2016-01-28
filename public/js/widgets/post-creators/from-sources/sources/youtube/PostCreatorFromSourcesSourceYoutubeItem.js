@@ -11,7 +11,7 @@ Class(CV, 'PostCreatorFromSourcesSourceYoutubeItem').inherits(Widget).includes(C
         </div>\
         <div class="-overflow-hidden">\
           <p class="source-title -font-bold -inline"></p>\
-          <p class="source-date -inline"></p>\
+          <p class="source-date -color-neutral-mid -inline"></p>\
           <p class="source-description"></p>\
         </div>\
       </div>\

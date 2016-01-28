@@ -41,6 +41,7 @@ Class(CV, 'PostCreatorFromSourcesResults').inherits(Widget).includes(CV.WidgetUt
       this._addPostRef = this._addPost.bind(this);
       CV.PostCreatorFromSourcesSourceYoutubeItem.bind('addPost', this._addPostRef);
       CV.PostCreatorFromSourcesSourceGoogleNewsItem.bind('addPost', this._addPostRef);
+      CV.PostCreatorFromSourcesSourceTwitterItem.bind('addPost', this._addPostRef);
     },
 
     _addPost: function _addPost(ev) {
