@@ -131,7 +131,7 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
     post.sourceService = this.SOURCE_SERVICE_LOCAL;
     post.sourceUrl = 'http://twitter.com/statuses/' + tweet.id_str;
     post.sourceDomain = 'twitter.com';
-    post.title = '';
+    post.title = tweet.user.name;
     post.description = tweet.text;
 
     return post;
