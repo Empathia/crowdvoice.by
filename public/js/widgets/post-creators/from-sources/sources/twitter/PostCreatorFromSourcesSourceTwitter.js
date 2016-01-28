@@ -7,6 +7,7 @@ Class(CV, 'PostCreatorFromSourcesSourceTwitter').inherits(Widget).includes(CV.Wi
         console.log(err);
         return callback(err);
       }
+      console.log(res);
       return callback(res.hasTwitterCredentials);
     });
   },
