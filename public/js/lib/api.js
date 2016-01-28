@@ -617,6 +617,26 @@ module.exports = {
     });
   },
 
+  /* Checks if sessionUser has valid twitter credentials for Crowdvoice.by app.
+   * @param {Function} callback
+   */
+  hasTwitterCredentials: function hasTwitterCredentials(callback) {
+    if (!callback) {
+      throw new Error('Missing required params');
+    }
+
+    if ((typeof callback).toLowerCase() !== "function") {
+      throw new Error('Callback should be a function');
+    }
+
+    $.ajax({
+      type: 'GET',
+      url: '/twitter/hasTwitterCredentials',
+      success: function success(data) { callback(false, data); },
+      error: function error(err) { callback(true, err); }
+    });
+  },
+
   /**************************************************************************
    * ENTITIES
    *************************************************************************/

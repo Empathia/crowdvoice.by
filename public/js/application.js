@@ -315,6 +315,7 @@ require('./widgets/post-creators/from-sources/PostCreatorFromSourcesDropdown');
 require('./widgets/post-creators/from-sources/PostCreatorFromSourcesDropdownOption');
 require('./widgets/post-creators/from-sources/PostCreatorFromSourcesResults');
 require('./widgets/post-creators/from-sources/PostCreatorFromSourcesQueue');
+require('./widgets/post-creators/from-sources/sources/twitter/PostCreatorFromSourcesSourceTwitter');
 require('./widgets/post-creators/from-sources/sources/youtube/PostCreatorFromSourcesSourceYoutube');
 require('./widgets/post-creators/from-sources/sources/youtube/PostCreatorFromSourcesSourceYoutubeItem');
 require('./widgets/post-creators/from-sources/sources/google-news/PostCreatorFromSourcesSourceGoogleNews');

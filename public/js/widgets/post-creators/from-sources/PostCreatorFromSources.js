@@ -9,7 +9,10 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
   HTML: '\
     <div>\
       <div class="input-error-message -on-error -abs -color-negative"></div>\
-      <header class="cv-post-creator__header -clearfix"></header>\
+      <header class="cv-post-creator__header -clearfix">\
+        <div data-input-wrapper class="-overflow-hidden -full-height">\
+        </div>\
+      </header>\
       <div class="cv-post-creator__content -abs"></div>\
       <div class="cv-post-creator__disable"></div>\
     </div>',
@@ -20,7 +23,6 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
     el: null,
     header: null,
     content: null,
-    inputWrapper: null,
 
     _currentSource: '',
     _addedPostsCounter: 0,
@@ -33,14 +35,12 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
      */
     init: function init(config) {
       CV.PostCreator.prototype.init.call(this, config);
-
       this.el = this.element[0];
       this.header = this.el.querySelector('.cv-post-creator__header');
       this.content = this.el.querySelector('.cv-post-creator__content');
-      this.inputWrapper = document.createElement('div');
       this.errorMessage = this.el.querySelector('.input-error-message');
-
       this.addCloseButton()._setup()._bindEvents();
+      this.sourcesDropdown.setDefaultOption();
     },
 
     /* Appends any required children.
@@ -48,26 +48,30 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
      * @return [PostCreatorFromUrl]
      */
     _setup: function _setup() {
+      var inputWrapper = this.el.querySelector('[data-input-wrapper]');
+
+      this.appendChild(new CV.PostCreatorPostButton({
+        name: 'postButton',
+        className: '-float-right -full-height -color-border-grey-light'
+      })).render(this.header, this.header.firstChild).disable();
+
       this.appendChild(new CV.PostCreatorFromSourcesDropdown({
         name: 'sourcesDropdown',
         className: '-float-left -full-height'
-      })).render(this.header);
+      })).render(this.header, this.header.firstChild);
 
-      this.appendChild( new CV.PostCreatorPostButton({
-        name: 'postButton',
-        className: '-float-right -full-height -color-border-grey-light'
-      })).render(this.header).disable();
-
-      this.inputWrapper.className = '-overflow-hidden -full-height';
+      this.appendChild(new CV.UI.Button({
+        name: 'authTwitterButton',
+        className: 'small dark -mt1 -ml1',
+        data: {value: 'Connect to Twitter'}
+      })).render(inputWrapper);
 
       this.appendChild(new CV.InputClearable({
         name: 'input',
         placeholder: 'Search for content',
         inputClass: '-block -lg -br0 -bw0 -full-height',
         className: '-full-height'
-      })).render(this.inputWrapper);
-
-      this.header.appendChild(this.inputWrapper);
+      })).render(inputWrapper);
 
       this.appendChild(new CV.PostCreatorFromSourcesQueue({
         name: 'queuePanel',
@@ -79,8 +83,6 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
         className: '-color-bg-white -full-height -overflow-hidden'
       })).render(this.content);
 
-      this._currentSource = this.sourcesDropdown.getSource();
-
       return this;
     },
 
@@ -90,6 +92,9 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
      */
     _bindEvents: function _bindEvents() {
       CV.PostCreator.prototype._bindEvents.call(this);
+
+      this._authTwitterHandlerRef = this._authTwitterHandler.bind(this);
+      Events.on(this.authTwitterButton.el, 'click', this._authTwitterHandlerRef);
 
       this._sourceChangedRef = this._sourceChanged.bind(this);
       this.sourcesDropdown.bind('sourceChanged', this._sourceChangedRef);
@@ -233,17 +238,65 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
       return this;
     },
 
+    /* Handles the sources dropdown change event.
+     * @private
+     */
     _sourceChanged: function _sourceChanged(ev) {
       this._currentSource = ev.source;
 
+      if (this._currentSource === 'twitter') {
+        CV.PostCreatorFromSourcesSourceTwitter.isAuth(function (err, res) {
+          if (err) return console.log('ERR', err);
+          if (res) return this._autoSearchSourceUpdate();
+          this._setTwitterAuthState();
+        }.bind(this));
+      } else {
+        this._setNormalSearchState();
+        this._autoSearchSourceUpdate();
+      }
+    },
+
+    /* Checks if it should perform and new request based on the new state.
+     * Useful for when changing the source and a previous query has been made.
+     * @private
+     */
+    _autoSearchSourceUpdate: function _autoSearchSourceUpdate() {
       if (this._query) {
         this.input.setValue(this._query);
         this._setSearching()._request(this._query);
       }
     },
 
+    _setTwitterAuthState: function _setTwitterAuthState() {
+      this.input.el.classList.add('-hide');
+      this.authTwitterButton.el.classList.remove('-hide');
+    },
+
+    _setNormalSearchState: function _setNormalSearchState() {
+      this.input.el.classList.remove('-hide');
+      this.authTwitterButton.el.classList.add('-hide');
+    },
+
+    /* Opens the twitter authorization popup and checks when it gets closed.
+     * @private
+     */
+    _authTwitterHandler: function _authTwitterHandler() {
+      var _this = this;
+      window.authWindow = window.open('/twitter/oauth', 'twitterWindow', 'height=600,width=500');
+
+      var interval = window.setInterval(function () {
+        if (window.authWindow === null || window.authWindow.closed) {
+          window.clearInterval(interval);
+          if (window.authWindow.CV && window.authWindow.CV.oauthCallbackHasTwitterCredentials) {
+            _this._setNormalSearchState();
+          }
+        }
+      }, 1000);
+    },
+
     /* Calls our search API endpoint to search for content on the current source.
-    */
+     * @private
+     */
     _request: function _request(query) {
       this._query = query;
 
