@@ -39,6 +39,7 @@ Class(CV, 'PostTweet').inherits(CV.Post)({
       this.dateTimeElement = this.el.querySelector('.post-card-meta-date');
       this._setup();
     },
+
     _setup: function _setup() {
       if (this.faviconPath) {
         this.el.querySelector('.post-card-meta').insertAdjacentHTML('afterbegin', this.constructor.FAVICON.replace(/{src}/, this.faviconPath));
@@ -52,6 +53,14 @@ Class(CV, 'PostTweet').inherits(CV.Post)({
       this.dom.updateText(this.titleElement, this.dom.decodeHTML(this.title));
       this.dom.updateText(this.descriptionElement, this.dom.decodeHTML(this.description).trim());
       this.updateSaves(this);
+    },
+
+    /* Implementation for the destroy method.
+     * This is run by the destroy method on CV.Post
+     * @private
+     */
+    __destroy: function __destroy() {
+      return null;
     }
   }
 });
