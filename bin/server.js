@@ -2,6 +2,7 @@
 
 // Admin namespace for Admin Controllers
 global.Admin = {};
+global.K = {};
 
 var application = require('neonode-core');
 
@@ -12,6 +13,9 @@ var io = require('socket.io')(application.server);
 global.moment = require('moment');
 
 global.FeedInjector = require(__dirname + '/../lib/FeedInjector.js');
+
+require('krypton-orm')
+Krypton.Model.knex(db)
 
 // Load routes
 require('./../lib/routes.js');
