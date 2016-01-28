@@ -1,7 +1,8 @@
 var Scrapper = require(process.cwd() + '/lib/cvscrapper');
 var sanitizer = require('sanitize-html');
 var ReadabilityParser = require(path.join(__dirname, '../lib/ReadabilityParser.js'));
-var truncatise = require('truncatise')
+var truncatise = require('truncatise');
+var Twitter = require('twitter');
 
 var PostsController = Class('PostsController').includes(BlackListFilter)({
   prototype : {
@@ -418,6 +419,8 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
     },
 
     preview : function preview(req, res, next) {
+      var controller = this;
+
       ACL.isAllowed('preview', 'posts', req.role, {
         currentPerson: req.currentPerson,
         activeVoice: req.activeVoice,
@@ -429,38 +432,89 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           return next(new ForbiddenError());
         }
 
-        var logScrapperError = function (url, error, callback) {
-          var errorLog = new ScrapperError({
-            url: url,
-            error: error,
-            errorStack: error.stack
+        if (req.body.url) {
+          return controller._previewURL(req, res);
+        }
+
+        if (req.body.id_str) {
+          return controller._previewTweet(req, res);
+        }
+
+        return next(new Error('Invalid Parameters'));
+      });
+    },
+
+    _previewTweet : function _previewTweet(req, res) {
+      var TwitterClient = new Twitter({
+        'consumer_key' : CONFIG.twitter['consumer_key'],
+        'consumer_secret' : CONFIG.twitter['consumer_secret'],
+        'access_token_key' : req.session.twitterAccessToken,
+        'access_token_secret' : req.session.twitterAccessTokenSecret
+      });
+
+      TwitterClient.get('/statuses/show/' + req.body.id_str + '.json', {include_entities:true}, function(err, tweet) {
+        if (err) {
+          return res.status(500).json(err);
+        }
+
+        var post = Post.buildFromTweet(tweet);
+        post.images = [];
+        return res.json(post);
+      });
+    },
+
+    _previewURL : function _processURL(req, res) {
+      var logScrapperError = function (url, error, callback) {
+        var errorLog = new ScrapperError({
+          url: url,
+          error: error,
+          errorStack: error.stack
+        });
+
+        logger.error(error);
+        logger.error(error.stack);
+
+        errorLog.save(callback);
+      };
+
+      request({
+        url: req.body.url,
+        headers: {
+          'User-Agent': 'Mozilla/5.0'
+        }
+      }, function (err, response, body) {
+        if (err) {
+          return logScrapperError(req.body.url, err, function (err) {
+            if (err) { return next(err); }
+
+            return res.status(400).json({ status: 'Bad URL' });
           });
+        }
 
-          logger.error(error);
-          logger.error(error.stack);
-
-          errorLog.save(callback);
-        };
-
-        request({
-          url: req.body.url,
-          headers: {
-            'User-Agent': 'Mozilla/5.0'
-          }
-        }, function (err, response, body) {
+        Post.find({
+          source_url: response.request.uri.href
+        }, function (err, posts) {
           if (err) {
-            return logScrapperError(req.body.url, err, function (err) {
+            return logScrapperError(response.request.uri.href, err, function (err) {
               if (err) { return next(err); }
 
-              return res.status(400).json({ status: 'Bad URL' });
+              return res.status(400).json({
+                status: 'There was an error in the request',
+                error: err
+              });
             });
           }
 
-          Post.find({
-            source_url: response.request.uri.href
-          }, function (err, posts) {
+          if (posts.length > 0) {
+            return res.json({
+              status: 'The URL already exists',
+              error: 'The URL already exists'
+            });
+          }
+
+          Scrapper.processUrl(response.request.uri.href, response, function (err, result) {
             if (err) {
-              return logScrapperError(response.request.uri.href, err, function (err) {
+              return logScrapperError(req.body.url, err, function (err) {
                 if (err) { return next(err); }
 
                 return res.status(400).json({
@@ -470,27 +524,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
               });
             }
 
-            if (posts.length > 0) {
-              return res.json({
-                status: 'The URL already exists',
-                error: 'The URL already exists'
-              });
-            }
-
-            Scrapper.processUrl(response.request.uri.href, response, function (err, result) {
-              if (err) {
-                return logScrapperError(req.body.url, err, function (err) {
-                  if (err) { return next(err); }
-
-                  return res.status(400).json({
-                    status: 'There was an error in the request',
-                    error: err
-                  });
-                });
-              }
-
-              return res.json(result);
-            });
+            return res.json(result);
           });
         });
       });
