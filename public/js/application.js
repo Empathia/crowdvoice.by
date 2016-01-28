@@ -264,6 +264,7 @@ require('./widgets/posts/PostImage');
 require('./widgets/posts/PostVideo');
 require('./widgets/posts/PostLink');
 require('./widgets/posts/PostText');
+require('./widgets/posts/PostTweet');
 require('./widgets/posts/actions/PostActionSave');
 require('./widgets/posts/actions/PostActionShare');
 
@@ -288,6 +289,7 @@ require('./widgets/posts/edit/EditablePostLink');
 require('./widgets/posts/edit/EditablePostVideo');
 require('./widgets/posts/edit/EditablePostImage');
 require('./widgets/posts/edit/EditablePostText');
+require('./widgets/posts/edit/EditablePostTweet');
 require('./widgets/posts/edit/EditablePostImageControls');
 
 // moderate actions

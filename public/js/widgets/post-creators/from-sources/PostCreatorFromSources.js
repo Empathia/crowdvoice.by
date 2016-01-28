@@ -180,7 +180,7 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
         }
 
         if (revert) {
-          if (this.resultsPanel.children.indexOf(ev.data) >= 0) {
+          if (this.resultsPanel.source.children.indexOf(ev.data) >= 0) {
             Velocity(ev.data.el, 'slideDown', {duration : 400});
           }
         }
