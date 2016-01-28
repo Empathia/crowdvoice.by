@@ -14,8 +14,9 @@ global.moment = require('moment');
 
 global.FeedInjector = require(__dirname + '/../lib/FeedInjector.js');
 
-require('krypton-orm')
-Krypton.Model.knex(db)
+require('krypton-orm');
+Krypton.Model.knex(db);
+require(path.join(process.cwd(), 'lib', 'krypton', 'load-models.js'));
 
 // Load routes
 require('./../lib/routes.js');

@@ -38,6 +38,7 @@
     "fs-extra": "^0.21.0",
     "get-location-origin": "^1.0.0",
     "git-revision": "0.0.1",
+    "glob": "6.0.4",
     "gm": "^1.18.1",
     "hashids": "^1.0.1",
     "imagesize": "^1.0.0",
