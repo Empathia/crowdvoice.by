@@ -37,39 +37,23 @@ var Message = Class('Message').inherits(Argon.KnexModel)({
         rule : function(val) {
           var rule = this;
 
-          return db('MessageThreads').where({id : val}).then(function(threads) {
-            if (threads.length === 0) {
-              throw new Checkit.FieldError("Thread doesn't exists")
-            }
+          return db('MessageThreads')
+            .where('sender_entity_id', 'in', [rule.target.senderEntityId, rule.target.receiverEntityId])
+            .andWhere('receiver_entity_id', 'in', [rule.target.senderEntityId, rule.target.receiverEntityId])
+            .then(function (thread) {
+              if (thread.length < 1) {
+                throw new Checkit.FieldError("Thread doesn't exists")
+              }
 
-            thread = threads[0];
+              var isThreadParticipant = false;
 
-            var isSenderThreadParticipant = false;
+              if (thread.filter(function (t) { return t.id === val }).length > 0) {
+                isThreadParticipant = true;
+              }
 
-            if (thread['sender_person_id'] === rule.target.senderPersonId
-              || thread['sender_person_id'] === rule.target.receiverEntityId) {
-
-              isSenderThreadParticipant = true;
-            }
-
-            if (!isReceiverThreadParticipant
-              && thread['sender_entity_id'] === rule.target.senderPersonId
-              || thread['sender_entity_id'] === rule.target.receiverEntityId) {
-
-              isSenderThreadParticipant = true;
-            }
-
-            var isReceiverThreadParticipant = false;
-
-            if (thread['receiver_entity_id'] === rule.target.senderPersonId
-              || thread['receiver_entity_id'] === rule.target.receiverEntityId) {
-
-              isReceiverThreadParticipant = true;
-            }
-
-            if (!isSenderThreadParticipant || !isReceiverThreadParticipant) {
-              throw new Checkit.FieldError("Message participants are not part of the thread")
-            }
+              if (!isThreadParticipant) {
+                throw new Checkit.FieldError("Message participants are not part of the thread")
+              }
           });
         },
         message : "Message participants are not part of the thread"
