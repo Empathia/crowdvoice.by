@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-global.Admin = {};
 require('neonode-core');
 
 var models = [

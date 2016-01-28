@@ -1,32 +1,28 @@
 #!/usr/bin/env node
 
-// Admin namespace for Admin Controllers
-global.Admin = {};
-
 var application = require('neonode-core');
 
-// Load socket.io
 var io = require('socket.io')(application.server);
-
-// Load moment
-global.moment = require('moment');
 
 global.FeedInjector = require(__dirname + '/../lib/FeedInjector.js');
 
-// Load routes
-require('./../lib/routes.js');
+require(path.join(process.cwd(), 'lib', 'krypton', 'load-models.js'));
 
-require('./../lib/TwitterFetcher');
+require(path.join(process.cwd(), 'lib', 'routes.js'));
+
+require(path.join(process.cwd(), 'lib', 'TwitterFetcher.js'));
+
+require(path.join(process.cwd(), 'presenters', 'PostsPresenter.js'));
 
 application._serverStart();
-
-require('./../presenters/PostsPresenter');
 
 io.use(function(socket, next) {
   sessionMiddleWare(socket.request, socket.request.res, next);
 });
 
-io.on('connection', require(path.join(process.cwd(), 'lib/socket.js')));
+var socketFuncs = require(path.join(process.cwd(), 'lib/socket.js'));
+
+io.on('connection', socketFuncs);
 
 // MONKEY PATCH
 // This is in order to fix the issue where if you provide an updatedAt property

@@ -1,4 +1,4 @@
-var ImageUploader = require(__dirname + '/../lib/image_uploader.js');
+var ImageUploader = require(path.join(process.cwd(), 'lib', 'image_uploader.js'));
 var url = require('url');
 var favicon = require('find-favicon');
 var crypto = require('crypto');

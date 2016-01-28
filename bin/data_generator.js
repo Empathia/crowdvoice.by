@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 
-global.Admin = {};
-
 var application = require('neonode-core');
 
 global.useGM = false;
@@ -255,7 +253,7 @@ async.series([function(next) {
       if (err) {
         return nextEntity(err);
       }
-      // console.log(entity.image)
+
       entityInstance.uploadImage('image', entity.image, function(err) {
         if (err) {
           return nextEntity(err);
@@ -527,7 +525,9 @@ async.series([function(next) {
       },
       image : path.join(process.cwd(), '/public/generator/voices/blackwater-background.jpg'),
       slug  : 'blackwater-battle',
-      topics : ['politics', 'environment']
+      topics : ['politics', 'environment'],
+      collaborators: [],
+      relatedVoices: [2]
     },
     {
       data : {
@@ -542,7 +542,9 @@ async.series([function(next) {
       },
       image : path.join(process.cwd(), '/public/generator/voices/second-trial-by-combat.jpg'),
       slug  : 'second-trial-by-combat',
-      topics : ['human-rights']
+      topics : ['human-rights'],
+      collaborators: [],
+      relatedVoices: []
     },
     {
       data : {
@@ -557,7 +559,9 @@ async.series([function(next) {
       },
       image : path.join(process.cwd(), '/public/generator/voices/5kings-background.jpg'),
       slug  : 'war-of-the-5-kings',
-      topics : ['politics']
+      topics : ['politics'],
+      collaborators: [],
+      relatedVoices: []
     },
     {
       data : {
@@ -572,7 +576,9 @@ async.series([function(next) {
       },
       image : path.join(process.cwd(), '/public/generator/voices/valyrian-roads.png'),
       slug  : 'valyrian-roads',
-      topics : ['politics', 'environment', 'education']
+      topics : ['politics', 'environment', 'education'],
+      collaborators: [data.entities['jamie-lannister']],
+      relatedVoices: []
     },
     {
       data : {
@@ -587,7 +593,9 @@ async.series([function(next) {
       },
       image : path.join(process.cwd(), '/public/generator/voices/siege-to-mereen.png'),
       slug  : 'meereen-siege',
-      topics : ['politics', 'human-rights', 'environment', 'privacy']
+      topics : ['politics', 'human-rights', 'environment', 'privacy'],
+      collaborators: [],
+      relatedVoices: []
     },
 
     // Cersei
@@ -604,7 +612,9 @@ async.series([function(next) {
       },
       image : path.join(process.cwd(), '/public/generator/voices/walk-of-shame.jpg'),
       slug  : 'walk-of-atonement',
-      topics : ['human-rights']
+      topics : ['human-rights'],
+      collaborators: [],
+      relatedVoices: []
     },
     {
       data : {
@@ -619,7 +629,9 @@ async.series([function(next) {
       },
       image : path.join(process.cwd(), '/public/generator/voices/dead-of-arryn.jpg'),
       slug  : 'dead-of-arryn',
-      topics : ['politics', 'health']
+      topics : ['politics', 'health'],
+      collaborators: [],
+      relatedVoices: []
     },
 
     // Jamie
@@ -636,7 +648,9 @@ async.series([function(next) {
       },
       image : path.join(process.cwd(), '/public/generator/voices/roberts-rebelion.jpg'),
       slug  : 'roberts-rebelion',
-      topics : ['politics']
+      topics : ['politics'],
+      collaborators: [],
+      relatedVoices: []
     },
 
     // Daenerys
@@ -653,7 +667,9 @@ async.series([function(next) {
       },
       image : path.join(process.cwd(), '/public/generator/voices/road-to-meereen.jpg'),
       slug  : 'meereen',
-      topics : ['politics', 'human-rights', 'education']
+      topics : ['politics', 'human-rights', 'education'],
+      collaborators: [],
+      relatedVoices: []
     },
     {
       data : {
@@ -668,7 +684,9 @@ async.series([function(next) {
       },
       image : path.join(process.cwd(), '/public/generator/voices/dance-dragons.jpg'),
       slug  : 'a-dance-with-dragons',
-      topics : ['environment']
+      topics : ['environment'],
+      collaborators: [],
+      relatedVoices: []
     },
 
     // Jon
@@ -685,7 +703,9 @@ async.series([function(next) {
       },
       image : path.join(process.cwd(), '/public/generator/voices/castle-black.jpg'),
       slug  : 'battle-of-castle-black',
-      topics : ['politics']
+      topics : ['politics'],
+      collaborators: [],
+      relatedVoices: []
     },
     {
       data : {
@@ -700,7 +720,9 @@ async.series([function(next) {
       },
       image : path.join(process.cwd(), '/public/generator/voices/white-walkers.png'),
       slug  : 'white-walkers',
-      topics : ['health']
+      topics : ['health'],
+      collaborators: [],
+      relatedVoices: []
     }
   ];
 
@@ -745,7 +767,29 @@ async.series([function(next) {
               }
 
               data.voices[slug.url] = voiceInstance;
-              nextVoice();
+
+              async.each(voice.collaborators, function (collaborator, nextCollab) {
+                var collab = new VoiceCollaborator({
+                  voiceId: voiceInstance.id,
+                  collaboratorId: collaborator.id,
+                  is_anonymous: false
+                });
+
+                collab.save(nextCollab);
+              }, function(err) {
+                if (err) {
+                  return nextVoice(err);
+                }
+
+                async.each(voice.relatedVoices, function (relatedVoiceId, nextRelated) {
+                  var related = new RelatedVoice({
+                    voiceId: voiceInstance.id,
+                    relatedId: relatedVoiceId
+                  });
+
+                  related.save(nextRelated);
+                }, nextVoice)
+              });
             });
           });
         });
@@ -1070,8 +1114,6 @@ async.series([function(next) {
   async.series([function(done) {
     data.entities['tyrion-lannister'].followVoice(data.voices['walk-of-atonement'], done);
   }, function(done) {
-    data.entities['tyrion-lannister'].followVoice(data.voices.meereen, done);
-  }, function(done) {
     data.entities['tyrion-lannister'].followVoice(data.voices['dead-of-arryn'], done);
   }, function(done) {
     data.entities['tyrion-lannister'].followVoice(data.voices['casterly-rock'], done);
@@ -1217,6 +1259,12 @@ async.series([function(next) {
   }], next);
 }, function(next) {
 
+  var times = parseInt(process.argv[2], 10);
+
+  if (!times || typeof times === NaN || times === 0) {
+    return next();
+  }
+
   // Posts
   Voice.all(function(err, voices) {
     if (err) { return next(err); }
@@ -1233,12 +1281,6 @@ async.series([function(next) {
         'https://www.youtube.com/watch?v=tHX55Bxnc-A',
         'https://www.youtube.com/watch?v=f4RGU2jXQiE'
       ];
-
-      var times = parseInt(process.argv[2], 10);
-
-      if (!times || typeof times === NaN) {
-        times = 0;
-      }
 
       async.timesLimit(times, 1, function(id, nextPost) {
         var post =  new Post();
@@ -1360,6 +1402,7 @@ async.series([function(next) {
   if (err) {
     logger.error(err);
     console.error(data);
+    return process.exit(1);
   }
 
   console.log('FINISHED SUCCESSFULLY!');

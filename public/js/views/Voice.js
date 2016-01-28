@@ -459,7 +459,7 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
     /* Initialize child widgets that depends on layerManager to be loaded with content.
      * @method _layerManagerReadyHandler <private> [Function]
      */
-    _layerManagerReadyHandler: function _layerManagerReareldnaHdy(data) {
+    _layerManagerReadyHandler: function _layerManagerReadyHandler(data) {
       var timestamp = data.layer.getIndicators()[0].getTimestamp();
 
       if (this.voiceFooter) {
