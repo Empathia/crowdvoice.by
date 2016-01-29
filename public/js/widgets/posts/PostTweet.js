@@ -41,13 +41,8 @@ Class(CV, 'PostTweet').inherits(CV.Post)({
     },
 
     _setup: function _setup() {
-      if (this.faviconPath) {
-        this.el.querySelector('.post-card-meta').insertAdjacentHTML('afterbegin', this.constructor.FAVICON.replace(/{src}/, this.faviconPath));
-        this.sourceElement.insertAdjacentHTML('beforeend', 'from <a href="' + this.sourceDomain + '" target="_blank">'+ this.sourceDomain.replace(/.*?:\/\/(w{3}.)?/g, "") + '</a> ');
-      } else {
-        this.el.querySelector('.post-card-meta').insertAdjacentHTML('afterbegin', this.constructor.ICON);
-        this.dom.updateText(this.sourceElement, 'posted ');
-      }
+      this.el.querySelector('.post-card-meta').insertAdjacentHTML('afterbegin', this.constructor.ICON);
+      this.sourceElement.insertAdjacentHTML('beforeend', 'from <a href="https://twitter.com/" target="_blank">Twitter</a> ');
       this.dom.updateText(this.dateTimeElement, moment(this.publishedAt || new Date()).format('MMM DD, YYYY'));
       this.dom.updateAttr('datetime', this.dateTimeElement, this.publishedAt || new Date());
       this.dom.updateAttr('src', this.el.querySelector('.post-tweet-avatar'), this.extras.profileImageURL);
