@@ -159,6 +159,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           postData.ownerId = response.postOwner.id;
           postData.voiceId = req.activeVoice.id;
           postData.publishedAt = item.publishedAt;
+          postData.extras = item.extras;
 
           if (postData.sourceUrl === 'local_image') {
             var hrtime = process.hrtime();
