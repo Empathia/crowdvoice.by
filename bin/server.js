@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-// Admin namespace for Admin Controllers
+// Namespaces
 global.Admin = {};
 global.K = {};
 
