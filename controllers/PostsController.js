@@ -446,6 +446,8 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
     },
 
     _previewTweet : function _previewTweet(req, res) {
+      var controller = this;
+
       var TwitterClient = new Twitter({
         'consumer_key' : CONFIG.twitter['consumer_key'],
         'consumer_secret' : CONFIG.twitter['consumer_secret'],
@@ -458,14 +460,47 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           return res.status(500).json(err);
         }
 
-        var post = Post.buildFromTweet(tweet);
-        post.images = [];
+        var posts = [];
 
-        return res.json(post);
+        var tweetPost = Post.buildFromTweet(tweet);
+        tweetPost.images = [];
+
+        posts.push(tweetPost);
+
+        // Extract URLs from tweet;
+        var hasUrls = false;
+
+        if (tweet.entities && tweet.entities.urls && tweet.entities.urls.length > 0) {
+          hasUrls = true;
+        }
+
+        console.log(tweet.entities.urls)
+
+        async.series([function(done) {
+          if (!hasUrls) {
+            return done();
+          }
+
+          async.each(tweet.entities.urls, function(entity, doneEach) {
+            controller._processURL(entity.url, function(err, result) {
+              if (result.status === 200) {
+                posts.push(result.result);
+              }
+
+              return doneEach();
+            });
+          }, done);
+        }], function(err) {
+          if (err) {
+            return res.status(500).json(err);
+          }
+
+          return res.json(posts);
+        });
       });
     },
 
-    _previewURL : function _processURL(req, res) {
+    _processURL : function _processURL(originalURL, callback) {
       var logScrapperError = function (url, error, callback) {
         var errorLog = new ScrapperError({
           url: url,
@@ -480,16 +515,20 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
       };
 
       request({
-        url: req.body.url,
+        url: originalURL,
         headers: {
           'User-Agent': 'Mozilla/5.0'
         }
       }, function (err, response, body) {
         if (err) {
-          return logScrapperError(req.body.url, err, function (err) {
-            if (err) { return next(err); }
+          return logScrapperError(originalURL, err, function (err) {
+            if (err) { return callback(err);; }
 
-            return res.status(400).json({ status: 'Bad URL' });
+            return callback(err, {
+              status : 400,
+              message : 'Bad URL',
+              error : 'Bad URL'
+            });
           });
         }
 
@@ -498,38 +537,61 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         }, function (err, posts) {
           if (err) {
             return logScrapperError(response.request.uri.href, err, function (err) {
-              if (err) { return next(err); }
+              if (err) { return callback(err); }
 
-              return res.status(400).json({
-                status: 'There was an error in the request',
+              return callback(err, {
+                status : 400,
+                message : 'There was an error in the request',
                 error: err
               });
             });
           }
 
           if (posts.length > 0) {
-            return res.json({
-              status: 'The URL already exists',
+            return callback(err, {
+              status : 400,
+              message : 'The URL already exists',
               error: 'The URL already exists'
             });
+
           }
 
           Scrapper.processUrl(response.request.uri.href, response, function (err, result) {
             if (err) {
               return logScrapperError(req.body.url, err, function (err) {
-                if (err) { return next(err); }
+                if (err) { return callback(err); }
 
-                return res.status(400).json({
-                  status: 'There was an error in the request',
+                return callback(err, {
+                  status : 400,
+                  message: 'There was an error in the request',
                   error: err
                 });
               });
             }
 
-            return res.json(result);
+            return callback(err, {
+              status : 200,
+              result : result
+            });
           });
         });
       });
+    },
+
+    _previewURL : function _previewURL(req, res) {
+
+      this._processURL(req.body.url, function(err, result) {
+        if (err) {
+          return res.status(500).json(err);
+        }
+
+        if (result.status !== 200) {
+          return res.status(result.status).json(result.message);
+        }
+
+        res.status(result.status).json(result.result);
+      });
+
     },
 
     // Create reference for SavedPosts
