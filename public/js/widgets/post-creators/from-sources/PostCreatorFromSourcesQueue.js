@@ -64,19 +64,24 @@ Class(CV, 'PostCreatorFromSourcesQueue').inherits(Widget).includes(BubblingSuppo
             return this;
         },
 
-        addPost : function addPost(postData) {
-            this.hideOnboarding();
+        /* Prepend the new Post(s) Widgets to the Queue.
+         * @public
+         * @param {Array} postsData - the postsData
+         */
+        addPosts: function addPosts(postsData) {
+          var fragment = document.createDocumentFragment();
+          this.hideOnboarding();
 
-            postData.name = 'post_' + this._index;
-            this.appendChild(CV.EditablePost.create(postData))
-                .render(this.list, this.list.firstChild)
-                .edit()
-                .addImageControls()
-                .addRemoveButton();
-
-            this.loader.disable();
-
+          postsData.forEach(function (post) {
+            post.name = 'post_' + this._index;
+            this.appendChild(CV.EditablePost.create(post))
+              .edit().addImageControls().addRemoveButton()
+              .render(fragment);
             this._index++;
+          }, this);
+
+          this.list.insertBefore(fragment, this.list.firstChild);
+          this.loader.disable();
         },
 
         removePosts : function removePosts() {

@@ -188,9 +188,13 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
         return this._setErrorState({message: errorMessage});
       }
 
-      this._addedPostsCounter++;
+      if ((response instanceof Array) === false) {
+        response = [response];
+      }
+
+      this._addedPostsCounter += response.length;
       this.postButton.updateCounter(this._addedPostsCounter);
-      this.queuePanel.addPost(response);
+      this.queuePanel.addPosts(response);
       this._enabledPostButton();
     },
 
