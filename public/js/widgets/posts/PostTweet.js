@@ -9,8 +9,8 @@ Class(CV, 'PostTweet').inherits(CV.Post)({
           <span class="post-card-meta-source"></span>\
           on <time class="post-card-meta-date" datetime=""></time>\
         </div>\
-        <div class="-clearfix">\
-          <img class="-float-left -mr1" width="48" height="48"/>\
+        <div class="-clearfix -mb1">\
+          <img class="post-tweet-avatar -float-left -mr1" width="48" height="48"/>\
           <div class="-overflow-hidden">\
             <h2 class="post-card-title"></h2>\
           </div>\
@@ -50,6 +50,7 @@ Class(CV, 'PostTweet').inherits(CV.Post)({
       }
       this.dom.updateText(this.dateTimeElement, moment(this.publishedAt).format('MMM DD, YYYY'));
       this.dom.updateAttr('datetime', this.dateTimeElement, this.publishedAt);
+      this.dom.updateAttr('src', this.el.querySelector('.post-tweet-avatar'), this.extras.profileImageURL);
       this.dom.updateText(this.titleElement, this.dom.decodeHTML(this.title));
       this.dom.updateText(this.descriptionElement, this.dom.decodeHTML(this.description).trim());
       this.updateSaves(this);
