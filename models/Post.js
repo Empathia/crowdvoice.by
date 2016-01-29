@@ -134,7 +134,9 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
     post.title = tweet.user.name;
     post.description = tweet.text;
 
-    post.extras.profileImageURL = tweet.user.profile_image_url_https;
+    post.extras = { profileImageURL : tweet.user.profile_image_url_https };
+
+    console.log('ssss', post)
 
     return post;
   },

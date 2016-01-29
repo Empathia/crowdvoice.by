@@ -459,6 +459,8 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
         var post = Post.buildFromTweet(tweet);
         post.images = [];
+
+        console.log('post', post);
         return res.json(post);
       });
     },
