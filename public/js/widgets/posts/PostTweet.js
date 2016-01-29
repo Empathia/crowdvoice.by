@@ -1,4 +1,5 @@
-var moment = require('moment');
+var moment = require('moment')
+  , Events = require('./../../lib/events');
 
 Class(CV, 'PostTweet').inherits(CV.Post)({
   ELEMENT_CLASS: 'post-card tweet',
@@ -32,12 +33,13 @@ Class(CV, 'PostTweet').inherits(CV.Post)({
     init: function init(config) {
       Widget.prototype.init.call(this, config);
       this.el = this.element[0];
+      this.infoWrapperElement = this.el.querySelector('.post-card-info');
       this.titleElement = this.el.querySelector('.post-card-title');
       this.descriptionElement = this.el.querySelector('.post-card-description');
       this.sourceElement = this.el.querySelector('.post-card-meta-source');
       this.savedElement = this.el.querySelector('.post-card-activity-saved > .post-card-activity-label');
       this.dateTimeElement = this.el.querySelector('.post-card-meta-date');
-      this._setup();
+      this._setup()._bindEvents();
     },
 
     _setup: function _setup() {
@@ -49,6 +51,16 @@ Class(CV, 'PostTweet').inherits(CV.Post)({
       this.dom.updateText(this.titleElement, this.dom.decodeHTML(this.title));
       this.dom.updateText(this.descriptionElement, this.dom.decodeHTML(this.description).trim());
       this.updateSaves(this);
+      return this;
+    },
+
+    _bindEvents: function _bindEvents() {
+      this._clickCardEventHandlerRef = this._clickCardEventHandler.bind(this);
+      Events.on(this.infoWrapperElement, 'click', this._clickCardEventHandlerRef);
+    },
+
+    _clickCardEventHandler: function _clickCardEventHandler() {
+      this.dispatch('post:display:detail', {data: this});
     },
 
     /* Implementation for the destroy method.

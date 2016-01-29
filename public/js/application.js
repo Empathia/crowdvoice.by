@@ -280,6 +280,7 @@ require('./widgets/post-details/PostDetailSidebarItem');
 require('./widgets/post-details/PostDetailInfo');
 require('./widgets/post-details/PostDetailInfoMedia');
 require('./widgets/post-details/PostDetailInfoArticle');
+require('./widgets/post-details/PostDetailInfoTweet');
 require('./widgets/post-details/actions/PostDetailActionsSave');
 require('./widgets/post-details/actions/PostDetailActionsShare');
 
