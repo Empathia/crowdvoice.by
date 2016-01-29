@@ -23,6 +23,18 @@ Class(CV, 'EditablePostTweet').inherits(CV.PostTweet)({
       return this;
     },
 
+    getEditedData: function getEditedData() {
+      return {
+        title: this.title,
+        description: this.description,
+        publishedAt: this.publishedAt || new Date(),
+        sourceType: this.sourceType,
+        sourceService: this.sourceService,
+        sourceUrl: this.sourceUrl,
+        extras: this.extras
+      };
+    },
+
     /* Adds the delete post button (for moderation management)
      * @public
      * @return EditablePostTweet

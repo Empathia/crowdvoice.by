@@ -48,8 +48,8 @@ Class(CV, 'PostTweet').inherits(CV.Post)({
         this.el.querySelector('.post-card-meta').insertAdjacentHTML('afterbegin', this.constructor.ICON);
         this.dom.updateText(this.sourceElement, 'posted ');
       }
-      this.dom.updateText(this.dateTimeElement, moment(this.publishedAt).format('MMM DD, YYYY'));
-      this.dom.updateAttr('datetime', this.dateTimeElement, this.publishedAt);
+      this.dom.updateText(this.dateTimeElement, moment(this.publishedAt || new Date()).format('MMM DD, YYYY'));
+      this.dom.updateAttr('datetime', this.dateTimeElement, this.publishedAt || new Date());
       this.dom.updateAttr('src', this.el.querySelector('.post-tweet-avatar'), this.extras.profileImageURL);
       this.dom.updateText(this.titleElement, this.dom.decodeHTML(this.title));
       this.dom.updateText(this.descriptionElement, this.dom.decodeHTML(this.description).trim());
