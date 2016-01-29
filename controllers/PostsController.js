@@ -474,7 +474,11 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           hasUrls = true;
         }
 
-        console.log(tweet.entities.urls)
+        var hasMedia = false;
+
+        if (tweet.entities && tweet.entities.media && tweet.entities.media.length > 0) {
+          hasMedia = true;
+        }
 
         async.series([function(done) {
           if (!hasUrls) {
@@ -483,6 +487,20 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
           async.each(tweet.entities.urls, function(entity, doneEach) {
             controller._processURL(entity.url, function(err, result) {
+              if (result.status === 200) {
+                posts.push(result.result);
+              }
+
+              return doneEach();
+            });
+          }, done);
+        }, function(done) {
+          if (!hasMedia) {
+            return done();
+          }
+
+          async.each(tweet.entities.media, function(entity, doneEach) {
+            controller._processURL(entity.media_url, function(err, result) {
               if (result.status === 200) {
                 posts.push(result.result);
               }
