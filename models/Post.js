@@ -134,6 +134,8 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
     post.title = tweet.user.name;
     post.description = tweet.text;
 
+    posts.extras.profileImageURL = tweet.user.profile_image_url_https;
+
     return post;
   },
 
@@ -154,6 +156,7 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
     publishedAt   : null,
     createdAt     : null,
     updatedAt     : null,
+    extras        : {},
 
     init : function init(config) {
       Argon.KnexModel.prototype.init.call(this, config);
