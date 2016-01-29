@@ -174,7 +174,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
             }
 
             var imagePath = '';
-            if (item.imagePath.length > 0) {
+            if (item.imagePath && item.imagePath.length > 0) {
               imagePath = path.join(process.cwd(), 'public', item.imagePath.replace(/preview_/, ''));
             }
 
