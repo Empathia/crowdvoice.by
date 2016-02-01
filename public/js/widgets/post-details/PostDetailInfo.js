@@ -36,6 +36,7 @@ Class(CV, 'PostDetailInfo').inherits(Widget).includes(CV.WidgetUtils)({
             name: 'mediaWidget',
             data: postData
           })).render(this.el);
+          break;
       }
       return this;
     }
