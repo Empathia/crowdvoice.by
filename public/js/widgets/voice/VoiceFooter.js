@@ -96,7 +96,7 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
         })).render(this.actionsColumn).disable();
       }
 
-      if ((this.voice.type === CV.VoiceView.TYPE_CLOSED) && (Person.ownerOf('voice', this.voice.id))) {
+      if (Person.ownerOf('voice', this.voice.id)) {
         this.appendChild(new CV.ManageContributorsButton({
           name: 'manageContributors',
           className: 'tiny -ml10px',
