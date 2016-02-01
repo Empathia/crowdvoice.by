@@ -85,6 +85,29 @@ Class(CV, 'EditablePostTweet').inherits(CV.PostTweet)({
       return this;
     },
 
+    /* Adds the publish post button (for moderation management)
+     * @public
+     */
+    addButtonRow: function addButtonRow() {
+      var buttonRow = document.createElement('div');
+      buttonRow.className = 'post-moderate-button-row';
+      this.el.classList.add('has-bottom-actions');
+
+      this.appendChild(new CV.PostModeratePublishButton({
+        name: 'publishButton',
+        postId: this.id,
+        className: '-m0'
+      })).render(buttonRow);
+
+      this.appendChild(new CV.PostModerateOriginalButton({
+        name: 'viewOriginal',
+        originalUrl: this.sourceUrl,
+      })).render(buttonRow);
+
+      this.el.appendChild(buttonRow);
+      return this;
+    },
+
     /* Binds the required events when the edit method is run.
      * @private
      * @return EditablePostTweet
