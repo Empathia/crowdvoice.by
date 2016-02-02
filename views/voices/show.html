@@ -19,20 +19,16 @@
   App.socketStart();
 
   App.appendChild(new CV.VoiceView({
-    name                  : 'Voice',
-    data                  : <%= JSON.stringify(voice) %>,
-    _socket               : App.getSocket(),
-    backgroundElement     : document.querySelector('.voice-background-cover'),
-    followerCount         : <%= voice.followers.length %>,
-    aboutBoxButtonElement : document.querySelector('.voice-about-show-btn'),
-    scrollableArea        : window,
-    postsCount            : <%= JSON.stringify(postsCount) %>,
-    allowPosting          : <%= allowPosting %>,
-    allowPostEditing      : <%= allowPostEditing %>,
-    relatedVoices         : <%= JSON.stringify(relatedVoices) %>,
-    contributors          : <%= JSON.stringify(contributors) %>
+    name: 'Voice',
+    data: <%= JSON.stringify(voice) %>,
+    _socket: App.getSocket(),
+    backgroundElement: document.querySelector('.voice-background-cover'),
+    aboutBoxButtonElement: document.querySelector('.voice-about-show-btn'),
+    scrollableArea: window,
+    pagesForMonths: <%= JSON.stringify(pagesForMonths) %>,
+    allowPosting: <%= allowPosting %>,
+    allowPostEditing: <%= allowPostEditing %>,
+    relatedVoices: <%= JSON.stringify(relatedVoices) %>,
+    contributors: <%= JSON.stringify(contributors) %>
   }));
-
-  App.Voice.updateVoiceInfo();
-  App.Voice.setupVoiceWidgets();
 </script>

@@ -15,6 +15,8 @@ d.on('error', function(err) {
 });
 
 var VoicesController = Class('VoicesController').includes(BlackListFilter)({
+  POSTS_PER_PAGE : 50,
+
   prototype : {
     getActiveVoice : function(req, res, next) {
       Voice.findBySlug(req.params['voice_slug'], function(err, voice) {
@@ -28,10 +30,155 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           unapproved : {}
         };
 
+        res.locals.pagesForMonths = {
+          approved : {},
+          unapproved : {}
+        };
+
         var dates = { firstPostDate : null, lastPostDate : null };
 
         async.series([
           function(done) {
+            db('Posts').where({
+              'voice_id' : voice.id,
+              approved : true
+            }).orderBy('published_at', 'ASC').limit(1)
+            .exec(function(err, firstPost) {
+              if (err) {
+                return done(err);
+              }
+
+              if (firstPost.length !== 0) {
+                dates.firstPostDate = firstPost[0]['published_at'];
+              }
+
+              db('Posts').where({
+                'voice_id' : voice.id, approved: true
+              }).orderBy('published_at', 'DESC').limit(1)
+              .exec(function(err, lastPost) {
+                if (err) {
+                  return done(err);
+                }
+
+                if (lastPost.length !== 0) {
+                  dates.lastPostDate = lastPost[0]['published_at'];
+                }
+
+                res.locals.voice.firstPostDate = dates.firstPostDate;
+                res.locals.voice.lastPostDate = dates.lastPostDate;
+
+                Entity.findById(voice.ownerId, function(err, owner) {
+                  if (err) { return done(err); }
+
+                  res.locals.owner = new Entity(owner[0]);
+
+                  done();
+                });
+              });
+            });
+          }, function(done) {
+            // New pagination feature
+
+            db.raw("SELECT DISTINCT ON (MONTH, YEAR) \
+                  	to_char(\"Posts\".published_at, 'MM') AS MONTH, \
+                  	to_char(\"Posts\".published_at, 'YYYY') AS YEAR, \
+                  	row_number() OVER (ORDER BY \"Posts\".published_at DESC)" + ' / ' + VoicesController.POSTS_PER_PAGE + "as page \
+                  FROM \"Posts\" \
+                  WHERE \"Posts\".voice_id = ? \
+                  AND \"Posts\".approved = true \
+                  ORDER BY YEAR DESC , MONTH DESC", [voice.id])
+              .exec(function(err, result) {
+                if (err) {
+                  return done(err);
+                }
+
+                var counts = {};
+
+                async.each(result.rows, function(row, doneEach) {
+                  if (!counts[row.year]) {
+                    counts[row.year] = {};
+                  }
+
+                  db.raw("SELECT count(*) \
+                          FROM \"Posts\" \
+                          WHERE \"Posts\".voice_id = ? \
+                          AND \"Posts\".approved = true \
+                          AND to_char(\"Posts\".published_at, 'MM') = ? \
+                          AND to_char(\"Posts\".published_at, 'YYYY') = ?", [voice.id, row.month, row.year])
+                    .exec(function(err, count) {
+                      if (err) {
+                        return doneEach(err);
+                      }
+
+                      counts[row.year][row.month] = {
+                        page : row.page,
+                        count : count.rows[0].count || 0
+                      };
+
+                      doneEach();
+                    });
+                }, function(err) {
+                  if (err) {
+                    return done(err);
+                  }
+
+                  res.locals.pagesForMonths.approved = counts;
+
+                  done();
+                });
+              });
+          }, function(done) {
+            // New pagination feature
+
+            db.raw("SELECT DISTINCT ON (MONTH, YEAR) \
+                  	to_char(\"Posts\".published_at, 'MM') AS MONTH, \
+                  	to_char(\"Posts\".published_at, 'YYYY') AS YEAR, \
+                  	row_number() OVER (ORDER BY \"Posts\".published_at DESC)" + ' / ' + VoicesController.POSTS_PER_PAGE + "as page \
+                  FROM \"Posts\" \
+                  WHERE \"Posts\".voice_id = ? \
+                  AND \"Posts\".approved = false \
+                  ORDER BY YEAR DESC , MONTH DESC", [voice.id])
+              .exec(function(err, result) {
+                if (err) {
+                  return done(err);
+                }
+
+                var counts = {};
+
+                async.each(result.rows, function(row, doneEach) {
+                  if (!counts[row.year]) {
+                    counts[row.year] = {};
+                  }
+
+                  db.raw("SELECT count(*) \
+                          FROM \"Posts\" \
+                          WHERE \"Posts\".voice_id = ? \
+                          AND \"Posts\".approved = false \
+                          AND to_char(\"Posts\".published_at, 'MM') = ? \
+                          AND to_char(\"Posts\".published_at, 'YYYY') = ?", [voice.id, row.month, row.year])
+                    .exec(function(err, count) {
+                      if (err) {
+                        return doneEach(err);
+                      }
+
+                      counts[row.year][row.month] = {
+                        page : row.page,
+                        count : count.rows[0].count || 0
+                      };
+
+                      doneEach();
+                    });
+                }, function(err) {
+                  if (err) {
+                    return done(err);
+                  }
+
+                  res.locals.pagesForMonths.unapproved = counts;
+
+                  done();
+                });
+              });
+          }, function(done) {
             db.raw("SELECT COUNT (*), \
               to_char(\"Posts\".published_at, 'MM') AS MONTH, \
               to_char(\"Posts\".published_at, 'YYYY') AS YEAR \
@@ -81,45 +228,6 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
               res.locals.postsCount.unapproved = counts;
               done();
-            });
-          },
-          function(done) {
-            db('Posts').where({
-              'voice_id' : voice.id,
-              approved : true
-            }).orderBy('published_at', 'ASC').limit(1)
-            .exec(function(err, firstPost) {
-              if (err) {
-                return done(err);
-              }
-
-              if (firstPost.length !== 0) {
-                dates.firstPostDate = firstPost[0]['published_at'];
-              }
-
-              db('Posts').where({
-                'voice_id' : voice.id, approved: true
-              }).orderBy('published_at', 'DESC').limit(1)
-              .exec(function(err, lastPost) {
-                if (err) {
-                  return done(err);
-                }
-
-                if (lastPost.length !== 0) {
-                  dates.lastPostDate = lastPost[0]['published_at'];
-                }
-
-                res.locals.voice.firstPostDate = dates.firstPostDate;
-                res.locals.voice.lastPostDate = dates.lastPostDate;
-
-                Entity.findById(voice.ownerId, function(err, owner) {
-                  if (err) { return done(err); }
-
-                  res.locals.owner = new Entity(owner[0]);
-
-                  done();
-                });
-              });
             });
           }, function(done) {
             // Followers
