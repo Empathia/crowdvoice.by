@@ -1255,7 +1255,7 @@ async.series([function(next) {
           post.sourceUrl = casual['random_element'](youtubes) + '?' + casual.random;
         } else {
           post.sourceService = 'link';
-          post.sourceUrl = casual.url  + '?' + casual.random;
+          post.sourceUrl = 'http://google.com/'  + '?' + casual.random;
         }
 
         post.approved = casual['random_element']([true, false]);
