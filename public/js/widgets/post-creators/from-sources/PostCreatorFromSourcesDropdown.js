@@ -1,5 +1,5 @@
-/* jshint multistr: true */
 Class(CV, 'PostCreatorFromSourcesDropdown').inherits(Widget)({
+  ELEMENT_CLASS: 'from-sources-dropdown-wrapper',
   prototype: {
     el : null,
     dropdownOptions : null,
@@ -27,32 +27,43 @@ Class(CV, 'PostCreatorFromSourcesDropdown').inherits(Widget)({
 
       this.appendChild(new CV.PostCreatorFromSourcesDropdownOption({
         name: 'dropdownOptionTwitter',
-        source: 'twitter',
-        iconID: 'twitter-bird',
-        label: 'Twitter',
-        iconClassName: 'twitter-option',
-        className: 'ui-vertical-list-item'
+        className: 'ui-vertical-list-item',
+        data: {
+          source: 'twitter',
+          iconID: 'twitter-bird',
+          label: 'Twitter',
+          description: 'Search for the most relevant tweets',
+          helpText: 'This source requires you to connect a twitter account',
+          iconClassName: 'twitter-option'
+        }
       }));
       this.dropdown.addContent(this.dropdownOptionTwitter.el);
       this.dropdownOptions.push(this.dropdownOptionTwitter);
 
       this.appendChild(new CV.PostCreatorFromSourcesDropdownOption({
         name: 'dropdownOptionYoutube',
-        source: 'youtube',
-        iconID: 'youtube',
-        label: 'Youtube',
-        iconClassName: 'youtube-option',
-        className: 'ui-vertical-list-item'
+        className: 'ui-vertical-list-item',
+        data: {
+          source: 'youtube',
+          iconID: 'youtube',
+          label: 'Youtube',
+          description: 'Search for videos relevant to your voice',
+          iconClassName: 'youtube-option'
+        }
       }));
       this.dropdown.addContent(this.dropdownOptionYoutube.el);
       this.dropdownOptions.push(this.dropdownOptionYoutube);
 
       this.appendChild(new CV.PostCreatorFromSourcesDropdownOption({
         name: 'dropdownOptionGoogleNews',
-        source: 'googleNews',
-        iconID: 'google-news',
-        label: 'Google News',
-        className: 'ui-vertical-list-item'
+        className: 'ui-vertical-list-item',
+        data: {
+          source: 'googleNews',
+          iconID: 'google-news',
+          label: 'Google News',
+          description: 'Search for the top link indexed by google',
+          helpText: 'This source can only load 10 results'
+        }
       }));
       this.dropdown.addContent(this.dropdownOptionGoogleNews.el);
       this.dropdownOptions.push(this.dropdownOptionGoogleNews);
@@ -103,16 +114,14 @@ Class(CV, 'PostCreatorFromSourcesDropdown').inherits(Widget)({
      * @private
      */
     _setActiveOption: function _setActiveOption(optionWidget) {
-      if (this._currentSource === optionWidget.getSource) {
-        return;
-      }
+      if (this._currentSource === optionWidget.getSource) return;
 
       this._currentSource = optionWidget.getSource();
       this._deactivateOptions();
       optionWidget.activate();
       this.setDropdownLabel(optionWidget.getIcon().cloneNode(true));
       this.dropdown.deactivate();
-      this.dispatch('sourceChanged', {source: optionWidget.source});
+      this.dispatch('sourceChanged', {source: optionWidget.data.source});
     },
 
     /* Deactivate all dropdown options.
@@ -122,6 +131,14 @@ Class(CV, 'PostCreatorFromSourcesDropdown').inherits(Widget)({
       this.dropdownOptions.forEach(function(option) {
         option.deactivate();
       });
+    },
+
+    /* Opens the dropdown.
+     * @override, public
+     */
+    _activate: function _activate() {
+      this.dropdown.activate();
+      return this;
     }
   }
 });

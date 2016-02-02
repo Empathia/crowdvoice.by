@@ -1,7 +1,8 @@
 /* globals App */
-var API = require('../../../lib/api');
-var Events = require('../../../lib/events');
-var Velocity = require('velocity-animate');
+var Person = require('../../../lib/currentPerson')
+  , API = require('../../../lib/api')
+  , Events = require('../../../lib/events')
+  , Velocity = require('velocity-animate');
 
 Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
   ELEMENT_CLASS: 'cv-post-creator post-creator-from-sources',
@@ -10,7 +11,24 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
     <div>\
       <div class="input-error-message -on-error -abs -color-negative"></div>\
       <header class="cv-post-creator__header -clearfix">\
-        <div data-input-wrapper class="-overflow-hidden -full-height">\
+        <div class="from-sources__header-main-contents -full-height">\
+          <div data-pick-source class="-full-height -pt1 -pl1">\
+            <p class="from-sources-pick-source-label -inline-block">Pick a Source to add content</p>\
+          </div>\
+          <div class="from-sources-twitter-auth-wrapper -pt1 -pl1 -full-height -hide">\
+            <p class="-inline-block">Please connect a twitter account to use this source.\
+              <span class="ui-has-tooltip">\
+                <em class="-inline-block -color-neutral-mid">Why?</em>\
+                <i class="ui-tooltip -bottom">CrowdVoice.by searches this service via Twitter “Search APIs.”<br/>The APIs of this service requires that any requests for their information (such as a search) must come from an “authorized” account.</i>\
+              </span>\
+            </p>\
+            <div class="twitter-auth-button-holder -inline-block"></div>\
+          </div>\
+          <div class="from-sources-header-input-wrapper -full-height -rel -hide">\
+            <svg class="input-search-icon -s20 -abs -color-neutral-mid">\
+              <use xlink:href="#svg-search"></use>\
+            </svg>\
+          </div>\
         </div>\
       </header>\
       <div class="cv-post-creator__content -abs"></div>\
@@ -39,8 +57,20 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
       this.header = this.el.querySelector('.cv-post-creator__header');
       this.content = this.el.querySelector('.cv-post-creator__content');
       this.errorMessage = this.el.querySelector('.input-error-message');
+      this.inputWrapper = this.el.querySelector('.from-sources-header-input-wrapper');
+      this.twitterAuthWrapper = this.el.querySelector('.from-sources-twitter-auth-wrapper');
+      this.pickSourceWrapper = this.el.querySelector('[data-pick-source]');
       this.addCloseButton()._setup()._bindEvents();
-      this.sourcesDropdown.setDefaultOption();
+
+      if (!window.localStorage['cvby__saw-post-creator']) {
+        window.localStorage['cvby__saw-post-creator'] = true;
+        setTimeout(function (that) {
+          that.sourcesDropdown.activate();
+        }, 500, this);
+      } else {
+        this.sourcesDropdown.setDefaultOption();
+        this._setNormalSearchState();
+      }
     },
 
     /* Appends any required children.
@@ -48,8 +78,6 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
      * @return [PostCreatorFromUrl]
      */
     _setup: function _setup() {
-      var inputWrapper = this.el.querySelector('[data-input-wrapper]');
-
       this.appendChild(new CV.PostCreatorPostButton({
         name: 'postButton',
         className: '-float-right -full-height -color-border-grey-light'
@@ -62,20 +90,34 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
 
       this.appendChild(new CV.UI.Button({
         name: 'authTwitterButton',
-        className: 'small dark -mt1 -ml1',
-        data: {value: 'Connect to Twitter'}
-      })).render(inputWrapper);
+        className: 'small',
+        data: {value: 'Connect account'}
+      })).render(this.twitterAuthWrapper.querySelector('.twitter-auth-button-holder'));
+
+      if (!Person.get()) {
+        this.appendChild(new CV.PopoverTwitterNotLoggedIn({
+          name: 'twitterAuthNotLoggedInPopoverContent'
+        }));
+
+        this.appendChild(new CV.PopoverBlocker({
+          name: 'twitterAuthNotLoggedInPopover',
+          placement: 'bottom',
+          className: 'popover-twitter-not-logged-in',
+          content: this.twitterAuthNotLoggedInPopoverContent.el
+        })).render(this.twitterAuthWrapper.querySelector('.twitter-auth-button-holder'));
+      }
 
       this.appendChild(new CV.InputClearable({
         name: 'input',
         placeholder: 'Search for content',
         inputClass: '-block -lg -br0 -bw0 -full-height',
         className: '-full-height'
-      })).render(inputWrapper);
+      })).render(this.inputWrapper, this.inputWrapper.firstChild);
 
       this.appendChild(new CV.PostCreatorFromSourcesQueue({
         name: 'queuePanel',
-        className: '-color-bg-grey-lighter -color-border-grey-light -full-height -float-right'
+        className: '-color-bg-grey-lighter -color-border-grey-light -full-height -float-right',
+        canPostDirectly: Person.canPostDirectlyOnVoice(App.Voice.data)
       })).render(this.content);
 
       this.appendChild(new CV.PostCreatorFromSourcesResults({
@@ -95,6 +137,11 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
 
       this._authTwitterHandlerRef = this._authTwitterHandler.bind(this);
       Events.on(this.authTwitterButton.el, 'click', this._authTwitterHandlerRef);
+
+      if (this.twitterAuthNotLoggedInPopoverContent) {
+        this._authTwitterAccountRef = this._authTwitterAccount.bind(this);
+        this.twitterAuthNotLoggedInPopoverContent.bind('connect-twitter', this._authTwitterAccountRef);
+      }
 
       this._sourceChangedRef = this._sourceChanged.bind(this);
       this.sourcesDropdown.bind('sourceChanged', this._sourceChangedRef);
@@ -241,7 +288,7 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
     },
 
     _setSuccessState: function _setSuccessState() {
-      this.queuePanel.removePosts();
+      this.queuePanel.setSuccessState();
       this.queuePanel.loader.disable();
       this._addedPostsCounter = 0;
       this.postButton.updateCounter(this._addedPostsCounter);
@@ -254,20 +301,46 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
      */
     _sourceChanged: function _sourceChanged(ev) {
       this._currentSource = ev.source;
+      this._removeErrorState();
+
+      this._updateInputPlaceholder(this._currentSource);
 
       if (this._currentSource === 'twitter') {
         CV.PostCreatorFromSourcesSourceTwitter.isAuth(function (err, res) {
           if (err) {
-            console.warn(err);
-            return this._setTwitterAuthState();
+            this._setTwitterAuthState();
+            return this._setErrorState({
+              message: res.errors[0]
+            });
           }
-          if (res === true) return this._autoSearchSourceUpdate();
+
+          if (res === true) {
+            this._setNormalSearchState();
+            return this._autoSearchSourceUpdate();
+          }
+
           this._setTwitterAuthState();
         }.bind(this));
       } else {
         this._setNormalSearchState();
         this._autoSearchSourceUpdate();
       }
+    },
+
+    _updateInputPlaceholder: function _updateInputPlaceholder(source) {
+      var sourceName = '';
+      switch(source) {
+        case 'twitter':
+          sourceName = 'Twitter';
+          break;
+        case 'youtube':
+          sourceName = 'Youtube';
+          break;
+        case 'googleNews':
+          sourceName = 'Google News';
+          break;
+      }
+      this.dom.updateAttr('placeholder', this.input.getElement(), 'Search for content in ' + sourceName);
     },
 
     /* Checks if it should perform and new request based on the new state.
@@ -282,19 +355,36 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
     },
 
     _setTwitterAuthState: function _setTwitterAuthState() {
-      this.input.el.classList.add('-hide');
-      this.authTwitterButton.el.classList.remove('-hide');
+      this.inputWrapper.classList.add('-hide');
+      this.twitterAuthWrapper.classList.remove('-hide');
+      this.pickSourceWrapper.classList.add('-hide');
+      return this;
     },
 
     _setNormalSearchState: function _setNormalSearchState() {
-      this.input.el.classList.remove('-hide');
-      this.authTwitterButton.el.classList.add('-hide');
+      this.inputWrapper.classList.remove('-hide');
+      this.twitterAuthWrapper.classList.add('-hide');
+      this.pickSourceWrapper.classList.add('-hide');
+      this.input.getElement().focus();
+      return this;
     },
 
     /* Opens the twitter authorization popup and checks when it gets closed.
      * @private
      */
     _authTwitterHandler: function _authTwitterHandler() {
+      if (!Person.get()) {
+        this.twitterAuthNotLoggedInPopover.activate();
+        return;
+      }
+      this._authTwitterAccount();
+    },
+
+    _authTwitterAccount: function _authTwitterAccount() {
+      if (this.twitterAuthNotLoggedInPopover) {
+        this.twitterAuthNotLoggedInPopover.deactivate();
+      }
+
       var _this = this;
       window.authWindow = window.open('/twitter/oauth', 'twitterWindow', 'height=600,width=500');
 
@@ -302,7 +392,7 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
         if (window.authWindow === null || window.authWindow.closed) {
           window.clearInterval(interval);
           if (window.authWindow.CV && window.authWindow.CV.oauthCallbackHasTwitterCredentials) {
-            _this._setNormalSearchState();
+            _this._setNormalSearchState()._removeErrorState()._autoSearchSourceUpdate();
           }
         }
       }, 1000);
@@ -455,6 +545,9 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
     /* @override
      */
     destroy: function destroy() {
+      Events.off(this.authTwitterButton.el, 'click', this._authTwitterHandlerRef);
+      this._authTwitterHandlerRef = null;
+
       Events.off(this.input.getElement(), 'keyup', this._inputKeyUpHandlerRef);
       this._inputKeyUpHandlerRef = null;
 

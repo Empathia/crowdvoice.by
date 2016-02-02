@@ -11,11 +11,9 @@ Class(CV, 'PostCreatorFromSourcesSourceTwitter').inherits(Widget).includes(CV.Wi
 
   isAuth: function isAuth(callback) {
     API.hasTwitterCredentials(function (err, res) {
-      if (err) {
-        console.log(err);
-        return callback(err);
+      if (err || res.errors) {
+        return callback(true, res);
       }
-      console.log(res);
       return callback(false, res.hasTwitterCredentials);
     });
   },
