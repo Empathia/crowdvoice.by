@@ -1,4 +1,5 @@
-var ImageUploader = require(__dirname + '/../lib/image_uploader.js');
+var ImageUploader = require(path.join(process.cwd(), 'lib', 'image_uploader.js'));
+
 var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
 
   validations : {

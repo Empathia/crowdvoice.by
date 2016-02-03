@@ -1,3 +1,5 @@
+var ImageUploader = require(__dirname + '/../lib/image_uploader.js');
+
 var Topic = Class('Topic').inherits(Argon.KnexModel).includes(ImageUploader)({
 
   validations : {
