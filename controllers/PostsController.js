@@ -549,47 +549,22 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           });
         }
 
-        Post.find({
-          source_url: response.request.uri.href
-        }, function (err, posts) {
+        Scrapper.processUrl(response.request.uri.href, response, function (err, result) {
           if (err) {
-            return logScrapperError(response.request.uri.href, err, function (err) {
+            return logScrapperError(req.body.url, err, function (err) {
               if (err) { return callback(err); }
 
               return callback(err, {
                 status : 400,
-                message : 'There was an error in the request',
+                message: 'There was an error in the request',
                 error: err
               });
             });
           }
 
-          if (posts.length > 0) {
-            return callback(err, {
-              status : 400,
-              message : 'The URL already exists',
-              error: 'The URL already exists'
-            });
-
-          }
-
-          Scrapper.processUrl(response.request.uri.href, response, function (err, result) {
-            if (err) {
-              return logScrapperError(req.body.url, err, function (err) {
-                if (err) { return callback(err); }
-
-                return callback(err, {
-                  status : 400,
-                  message: 'There was an error in the request',
-                  error: err
-                });
-              });
-            }
-
-            return callback(err, {
-              status : 200,
-              result : result
-            });
+          return callback(err, {
+            status : 200,
+            result : result
           });
         });
       });
