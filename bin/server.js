@@ -1,9 +1,5 @@
 #!/usr/bin/env node
 
-// Namespaces
-global.Admin = {};
-global.K = {};
-
 var application = require('neonode-core');
 
 // Load socket.io
@@ -14,8 +10,6 @@ global.moment = require('moment');
 
 global.FeedInjector = require(__dirname + '/../lib/FeedInjector.js');
 
-require('krypton-orm');
-Krypton.Model.knex(db);
 require(path.join(process.cwd(), 'lib', 'krypton', 'load-models.js'));
 
 // Load routes
@@ -31,7 +25,9 @@ io.use(function(socket, next) {
   sessionMiddleWare(socket.request, socket.request.res, next);
 });
 
-io.on('connection', require(path.join(process.cwd(), 'lib/socket.js')));
+var socketFuncs = require(path.join(process.cwd(), 'lib/socket.js'));
+
+io.on('connection', socketFuncs);
 
 // MONKEY PATCH
 // This is in order to fix the issue where if you provide an updatedAt property

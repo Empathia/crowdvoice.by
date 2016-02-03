@@ -2,8 +2,6 @@
 
 'use strict'
 
-global.Admin = {}
-
 var application = require('neonode-core')
 require(path.join(__dirname, '../lib/routes.js'))
 

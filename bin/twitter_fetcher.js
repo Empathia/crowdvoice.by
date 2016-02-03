@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 
-global.Admin = {};
-
 var domain = require('domain');
 
 var d = domain.create();

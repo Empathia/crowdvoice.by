@@ -1,5 +1,3 @@
-global.Admin = {};
-
 var application = require('neonode-core');
 
 global.useGM = true;

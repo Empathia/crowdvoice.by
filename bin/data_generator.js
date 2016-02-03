@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 
-global.Admin = {};
-
 var application = require('neonode-core');
 
 global.useGM = false;
@@ -1217,6 +1215,12 @@ async.series([function(next) {
   }], next);
 }, function(next) {
 
+  var times = parseInt(process.argv[2], 10);
+
+  if (!times || typeof times === NaN || times === 0) {
+    return next();
+  }
+
   // Posts
   Voice.all(function(err, voices) {
     if (err) { return next(err); }
@@ -1233,12 +1237,6 @@ async.series([function(next) {
         'https://www.youtube.com/watch?v=tHX55Bxnc-A',
         'https://www.youtube.com/watch?v=f4RGU2jXQiE'
       ];
-
-      var times = parseInt(process.argv[2], 10);
-
-      if (!times || typeof times === NaN) {
-        times = 0;
-      }
 
       async.timesLimit(times, 1, function(id, nextPost) {
         var post =  new Post();
@@ -1360,6 +1358,7 @@ async.series([function(next) {
   if (err) {
     logger.error(err);
     console.error(data);
+    return process.exit(1);
   }
 
   console.log('FINISHED SUCCESSFULLY!');

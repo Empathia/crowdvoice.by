@@ -10,8 +10,6 @@ var path = require('path'),
  * NEONODE
  */
 
-global.Admin = {}
-
 var application = require('neonode-core')
 require(path.join(__dirname, '../lib/routes.js'))
 

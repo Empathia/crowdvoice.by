@@ -1,8 +1,5 @@
 #!/usr/bin/env node
 
-global.Admin = {}
-global.K = {}
-
 var application = require('neonode-core');
 
 require(path.join(process.cwd(), 'lib', 'krypton', 'load-models.js'));
