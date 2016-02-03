@@ -15,7 +15,7 @@ d.on('error', function(err) {
 });
 
 var VoicesController = Class('VoicesController').includes(BlackListFilter)({
-  POST_PER_PAGE : 50,
+  POSTS_PER_PAGE : 50,
 
   prototype : {
     getActiveVoice : function(req, res, next) {
@@ -82,7 +82,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
             db.raw("SELECT DISTINCT ON (MONTH, YEAR) \
                   	to_char(\"Posts\".published_at, 'MM') AS MONTH, \
                   	to_char(\"Posts\".published_at, 'YYYY') AS YEAR, \
-                  	row_number() OVER (ORDER BY \"Posts\".published_at DESC)" + ' / ' + VoicesController.POST_PER_PAGE + "as page \
+                  	row_number() OVER (ORDER BY \"Posts\".published_at DESC)" + ' / ' + VoicesController.POSTS_PER_PAGE + "as page \
                   FROM \"Posts\" \
                   WHERE \"Posts\".voice_id = ? \
                   AND \"Posts\".approved = true \
@@ -112,7 +112,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
             db.raw("SELECT DISTINCT ON (MONTH, YEAR) \
                   	to_char(\"Posts\".published_at, 'MM') AS MONTH, \
                   	to_char(\"Posts\".published_at, 'YYYY') AS YEAR, \
-                  	row_number() OVER (ORDER BY \"Posts\".published_at DESC)" + ' / ' + VoicesController.POST_PER_PAGE + "as page \
+                  	row_number() OVER (ORDER BY \"Posts\".published_at DESC)" + ' / ' + VoicesController.POSTS_PER_PAGE + "as page \
                   FROM \"Posts\" \
                   WHERE \"Posts\".voice_id = ? \
                   AND \"Posts\".approved = false \
