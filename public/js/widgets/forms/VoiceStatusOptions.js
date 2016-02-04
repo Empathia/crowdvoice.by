@@ -1,3 +1,5 @@
+var constants = require('./../../lib/constants');
+
 Class(CV, 'VoiceStatusOptions').inherits(Widget).includes(CV.WidgetUtils)({
   ELEMENT_CLASS: 'voice-form__status-wrapper',
 
@@ -27,7 +29,7 @@ Class(CV, 'VoiceStatusOptions').inherits(Widget).includes(CV.WidgetUtils)({
           label: 'Public',
           attr: {
             name: 'voice-status-radios',
-            value: CV.VoiceView.STATUS_PUBLISHED
+            value: constants.VOICE.STATUS_PUBLISHED
           }
         }
       })).render(this.el.querySelector('[data-public]'));
@@ -40,7 +42,7 @@ Class(CV, 'VoiceStatusOptions').inherits(Widget).includes(CV.WidgetUtils)({
           label: 'Unlisted',
           attr: {
             name: 'voice-status-radios',
-            value: CV.VoiceView.STATUS_UNLISTED
+            value: constants.VOICE.STATUS_UNLISTED
           }
         }
       })).render(this.el.querySelector('[data-unlisted]'));

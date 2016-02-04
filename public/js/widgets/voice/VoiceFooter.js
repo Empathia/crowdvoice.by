@@ -1,5 +1,6 @@
 /* globals App */
-var Person = require('./../../lib/currentPerson');
+var Person = require('./../../lib/currentPerson')
+  , constants = require('./../../lib/constants');
 
 Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
     HTML : '\
@@ -100,7 +101,7 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
                 })).render(this.actionsColumn).disable();
             }
 
-            if ((this.voice.type === CV.VoiceView.TYPE_CLOSED) && (Person.ownerOf('voice', this.voice.id))) {
+            if ((this.voice.type === constants.VOICE.TYPE_CLOSED) && (Person.ownerOf('voice', this.voice.id))) {
                 this.appendChild(new CV.ManageContributorsButton({
                     name : 'manageContributors',
                     className : 'tiny -ml10px',
@@ -128,7 +129,7 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
                 voice : this.voice
             })).render(this.actionsColumn);
 
-            if (this.voice.type !== CV.VoiceView.TYPE_CLOSED || this.allowPostEditing) {
+            if (this.voice.type !== constants.VOICE.TYPE_CLOSED || this.allowPostEditing) {
                 this.appendChild(new CV.VoiceModerateButton({
                     name : 'voiceModerate',
                     className: '-ml10px',
@@ -137,7 +138,7 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
             }
 
             if ((Person.ownerOf('voice', this.voice.id) === false) &&
-                (this.voice.type === CV.VoiceView.TYPE_CLOSED)) {
+                (this.voice.type === constants.VOICE.TYPE_CLOSED)) {
 
                 var _showRequestToContribute = false;
 

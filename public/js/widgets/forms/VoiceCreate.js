@@ -1,5 +1,6 @@
 var Person = require('./../../lib/currentPerson')
   , API = require('./../../lib/api')
+  , constants = require('./../../lib/constants')
   , Events = require('./../../lib/events')
   , Checkit = require('checkit')
   , Slug = require('slug');
@@ -343,7 +344,7 @@ Class(CV, 'VoiceCreate').inherits(CV.VoiceBase)({
      */
     _getCurrentData: function _getCurrentData() {
       var body = CV.VoiceBase.prototype._getCurrentData.call(this);
-      body.status = CV.VoiceView.STATUS_DRAFT;
+      body.status = constants.VOICE.STATUS_DRAFT;
       return body;
     },
 
@@ -365,7 +366,7 @@ Class(CV, 'VoiceCreate').inherits(CV.VoiceBase)({
         data.append('ownerId', Person.get().id);
       }
 
-      data.append('status', CV.VoiceView.STATUS_DRAFT);
+      data.append('status', constants.VOICE.STATUS_DRAFT);
 
       return data;
     },

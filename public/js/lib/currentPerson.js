@@ -8,7 +8,8 @@
  * ownedOrganizations() => returns {true|false} if person is owner of at least 1 organization
  */
 
-var PLACEHOLDERS = require('./placeholders');
+var PLACEHOLDERS = require('./placeholders')
+  , constants = require('./constants');
 
 module.exports = {
   _ : null,
@@ -121,7 +122,7 @@ module.exports = {
     if (!this.get().voiceNames.length) { return false; }
 
     return (this.get().voiceNames.some(function(voice) {
-      if (voice.type === CV.VoiceView.TYPE_CLOSED) {
+      if (voice.type === constants.VOICE.TYPE_CLOSED) {
         return (entity.voiceIds.indexOf(voice.id) === -1);
       }
       return false;
