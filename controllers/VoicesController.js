@@ -94,17 +94,38 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
                 var counts = {};
 
-                result.rows.forEach(function(row) {
+                async.each(result.rows, function(row, doneEach) {
                   if (!counts[row.year]) {
                     counts[row.year] = {};
                   }
 
-                  counts[row.year][row.month] = row.page;
+                  db.raw("SELECT count(*) \
+                          FROM \"Posts\" \
+                          WHERE \"Posts\".voice_id = ? \
+                          AND \"Posts\".approved = true \
+                          AND to_char(\"Posts\".published_at, 'MM') = ? \
+                          AND to_char(\"Posts\".published_at, 'YYYY') = ?", [voice.id, row.month, row.year])
+                    .exec(function(err, count) {
+                      if (err) {
+                        return doneEach(err);
+                      }
+
+                      counts[row.year][row.month] = {
+                        page : row.page,
+                        count : count.rows[0].count || 0
+                      };
+
+                      doneEach();
+                    });
+                }, function(err) {
+                  if (err) {
+                    return done(err);
+                  }
+
+                  res.locals.pagesForMonths.approved = counts;
+
+                  done();
                 });
-
-                res.locals.pagesForMonths.approved = counts;
-
-                done();
               });
           }, function(done) {
             // New pagination feature
@@ -124,17 +145,38 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
                 var counts = {};
 
-                result.rows.forEach(function(row) {
+                async.each(result.rows, function(row, doneEach) {
                   if (!counts[row.year]) {
                     counts[row.year] = {};
                   }
 
-                  counts[row.year][row.month] = row.page;
+                  db.raw("SELECT count(*) \
+                          FROM \"Posts\" \
+                          WHERE \"Posts\".voice_id = ? \
+                          AND \"Posts\".approved = false \
+                          AND to_char(\"Posts\".published_at, 'MM') = ? \
+                          AND to_char(\"Posts\".published_at, 'YYYY') = ?", [voice.id, row.month, row.year])
+                    .exec(function(err, count) {
+                      if (err) {
+                        return doneEach(err);
+                      }
+
+                      counts[row.year][row.month] = {
+                        page : row.page,
+                        count : count.rows[0].count || 0
+                      };
+
+                      doneEach();
+                    });
+                }, function(err) {
+                  if (err) {
+                    return done(err);
+                  }
+
+                  res.locals.pagesForMonths.unapproved = counts;
+
+                  done();
                 });
-
-                res.locals.pagesForMonths.unapproved = counts;
-
-                done();
               });
           }, function(done) {
             db.raw("SELECT COUNT (*), \
