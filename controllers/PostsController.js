@@ -1,7 +1,8 @@
 var Scrapper = require(process.cwd() + '/lib/cvscrapper');
 var sanitizer = require('sanitize-html');
 var ReadabilityParser = require(path.join(__dirname, '../lib/ReadabilityParser.js'));
-var truncatise = require('truncatise')
+var truncatise = require('truncatise');
+var Twitter = require('twitter');
 
 var PostsController = Class('PostsController').includes(BlackListFilter)({
   prototype : {
@@ -158,6 +159,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           postData.ownerId = response.postOwner.id;
           postData.voiceId = req.activeVoice.id;
           postData.publishedAt = item.publishedAt;
+          postData.extras = item.extras;
 
           if (postData.sourceUrl === 'local_image') {
             var hrtime = process.hrtime();
@@ -172,7 +174,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
             }
 
             var imagePath = '';
-            if (item.imagePath.length > 0) {
+            if (item.imagePath && item.imagePath.length > 0) {
               imagePath = path.join(process.cwd(), 'public', item.imagePath.replace(/preview_/, ''));
             }
 
@@ -253,9 +255,8 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           post.save(function(err, result) {
             if (err) { return next(err); }
 
-            var imagePath = body.imagePath;
-
-            if (body.imagePath.length > 0) {
+            var imagePath = '';
+            if (body.imagePath && body.imagePath.length > 0) {
               if (imagePath.trim().match(/^https?/) === null) {
                 imagePath = path.join(process.cwd(), 'public', body.imagePath.replace(/preview_/, ''));
               }
@@ -418,6 +419,8 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
     },
 
     preview : function preview(req, res, next) {
+      var controller = this;
+
       ACL.isAllowed('preview', 'posts', req.role, {
         currentPerson: req.currentPerson,
         activeVoice: req.activeVoice,
@@ -429,71 +432,158 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           return next(new ForbiddenError());
         }
 
-        var logScrapperError = function (url, error, callback) {
-          var errorLog = new ScrapperError({
-            url: url,
-            error: error,
-            errorStack: error.stack
-          });
+        if (req.body.url) {
+          return controller._previewURL(req, res);
+        }
 
-          logger.error(error);
-          logger.error(error.stack);
+        if (req.body.id_str) {
+          return controller._previewTweet(req, res);
+        }
 
-          errorLog.save(callback);
-        };
+        return next(new Error('Invalid Parameters'));
+      });
+    },
 
-        request({
-          url: req.body.url,
-          headers: {
-            'User-Agent': 'Mozilla/5.0'
+    _previewTweet : function _previewTweet(req, res) {
+      var controller = this;
+
+      var TwitterClient = new Twitter({
+        'consumer_key' : CONFIG.twitter['consumer_key'],
+        'consumer_secret' : CONFIG.twitter['consumer_secret'],
+        'access_token_key' : req.session.twitterAccessToken,
+        'access_token_secret' : req.session.twitterAccessTokenSecret
+      });
+
+      TwitterClient.get('/statuses/show/' + req.body.id_str + '.json', {include_entities:true}, function(err, tweet) {
+        if (err) {
+          return res.status(500).json(err);
+        }
+
+        var posts = [];
+
+        var tweetPost = Post.buildFromTweet(tweet);
+        tweetPost.images = [];
+
+        posts.push(tweetPost);
+
+        // Extract URLs from tweet;
+        var hasUrls = false;
+
+        if (tweet.entities && tweet.entities.urls && tweet.entities.urls.length > 0) {
+          hasUrls = true;
+        }
+
+        var hasMedia = false;
+
+        if (tweet.entities && tweet.entities.media && tweet.entities.media.length > 0) {
+          hasMedia = true;
+        }
+
+        async.series([function(done) {
+          if (!hasUrls) {
+            return done();
           }
-        }, function (err, response, body) {
-          if (err) {
-            return logScrapperError(req.body.url, err, function (err) {
-              if (err) { return next(err); }
 
-              return res.status(400).json({ status: 'Bad URL' });
-            });
-          }
-
-          Post.find({
-            source_url: response.request.uri.href
-          }, function (err, posts) {
-            if (err) {
-              return logScrapperError(response.request.uri.href, err, function (err) {
-                if (err) { return next(err); }
-
-                return res.status(400).json({
-                  status: 'There was an error in the request',
-                  error: err
-                });
-              });
-            }
-
-            if (posts.length > 0) {
-              return res.json({
-                status: 'The URL already exists',
-                error: 'The URL already exists'
-              });
-            }
-
-            Scrapper.processUrl(response.request.uri.href, response, function (err, result) {
-              if (err) {
-                return logScrapperError(req.body.url, err, function (err) {
-                  if (err) { return next(err); }
-
-                  return res.status(400).json({
-                    status: 'There was an error in the request',
-                    error: err
-                  });
-                });
+          async.each(tweet.entities.urls, function(entity, doneEach) {
+            controller._processURL(entity.url, function(err, result) {
+              if (result.status === 200) {
+                posts.push(result.result);
               }
 
-              return res.json(result);
+              return doneEach();
             });
+          }, done);
+        }, function(done) {
+          if (!hasMedia) {
+            return done();
+          }
+
+          async.each(tweet.entities.media, function(entity, doneEach) {
+            controller._processURL(entity.media_url, function(err, result) {
+              if (result.status === 200) {
+                posts.push(result.result);
+              }
+
+              return doneEach();
+            });
+          }, done);
+        }], function(err) {
+          if (err) {
+            return res.status(500).json(err);
+          }
+
+          return res.json(posts);
+        });
+      });
+    },
+
+    _processURL : function _processURL(originalURL, callback) {
+      var logScrapperError = function (url, error, callback) {
+        var errorLog = new ScrapperError({
+          url: url,
+          error: error,
+          errorStack: error.stack
+        });
+
+        logger.error(error);
+        logger.error(error.stack);
+
+        errorLog.save(callback);
+      };
+
+      request({
+        url: originalURL,
+        headers: {
+          'User-Agent': 'Mozilla/5.0'
+        }
+      }, function (err, response, body) {
+        if (err) {
+          return logScrapperError(originalURL, err, function (err) {
+            if (err) { return callback(err);; }
+
+            return callback(err, {
+              status : 400,
+              message : 'Bad URL',
+              error : 'Bad URL'
+            });
+          });
+        }
+
+        Scrapper.processUrl(response.request.uri.href, response, function (err, result) {
+          if (err) {
+            return logScrapperError(req.body.url, err, function (err) {
+              if (err) { return callback(err); }
+
+              return callback(err, {
+                status : 400,
+                message: 'There was an error in the request',
+                error: err
+              });
+            });
+          }
+
+          return callback(err, {
+            status : 200,
+            result : result
           });
         });
       });
+    },
+
+    _previewURL : function _previewURL(req, res) {
+
+      this._processURL(req.body.url, function(err, result) {
+        if (err) {
+          return res.status(500).json(err);
+        }
+
+        if (result.status !== 200) {
+          return res.status(result.status).json(result.message);
+        }
+
+        res.status(result.status).json(result.result);
+      });
+
     },
 
     // Create reference for SavedPosts

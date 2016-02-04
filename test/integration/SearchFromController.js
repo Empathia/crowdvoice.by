@@ -104,6 +104,66 @@ describe('SearchFromController', function () {
       })
     })
 
+    it('Should load the next page if provided the nextPageToken', function (doneTest) {
+      var agent = request.agent(),
+        csrf,
+        nextPageToken
+
+      async.series([
+        function (nextSeries) {
+          agent
+            .get(urlBase + '/csrf')
+            .end(function (err, res) {
+              if (err) { return nextSeries(err) }
+
+              csrf = res.text
+
+              return nextSeries()
+            })
+        },
+
+        function (nextSeries) {
+          agent
+            .post(urlBase + '/anonymous_' + hashids.encode(2) + '/second-trial-by-combat/youtube')
+            .accept('application/json')
+            .send({
+              _csrf: csrf,
+              query: 'pokemon',
+            })
+            .end(function (err, res) {
+              if (err) { return nextSeries(err) }
+
+              nextPageToken = res.body.nextPageToken
+
+              return nextSeries()
+            })
+        },
+      ], function (err) {
+        if (err) { return doneTest(err) }
+
+        agent
+          .post(urlBase + '/anonymous_' + hashids.encode(2) + '/second-trial-by-combat/youtube')
+          .accept('application/json')
+          .send({
+            _csrf: csrf,
+            query: 'pokemon',
+            nextPageToken: nextPageToken,
+          })
+          .end(function (err, res) {
+            if (err) { return doneTest(err) }
+
+            expect(res.status).to.equal(200)
+
+            expect(res.body.nextPageToken).to.not.be.null
+            expect(res.body.nextPageToken).to.not.equal(nextPageToken)
+            expect(res.body.pageInfo).to.not.be.null
+            expect(res.body.videos.length).to.be.above(0)
+
+            return doneTest()
+          })
+      })
+    })
+
   })
 
 })

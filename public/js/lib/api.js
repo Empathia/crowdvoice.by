@@ -142,11 +142,13 @@ module.exports = {
   /* Requests the data to create a Post preview on the current Voice.
    * @argument args.profileName <required> [String] the voice owner profileName
    * @argument args.voiceSlug <required> [String] the voice slug
-   * @argument args.url <required> [String] absolute url of a page, image or video (youtube/vimeo)
+   * @argument args.data <required> [Object]
+   *    args.data.url - absolute url of a page, image or video (youtube/vimeo)
+   *    args.data.id_str - tweet id_str
    * @argument callback <required> [Function]
    */
   postPreview: function postPreview(args, callback) {
-    if (!args.profileName || !args.voiceSlug || !args.url || !callback) {
+    if (!args.profileName || !args.voiceSlug || !args.data || !callback) {
       throw new Error('Missing required params');
     }
 
@@ -158,7 +160,7 @@ module.exports = {
       type: 'POST',
       url: '/' + args.profileName + '/' + args.voiceSlug + '/preview',
       headers: {'csrf-token' : this.token},
-      data: {url: args.url},
+      data: args.data,
       success: function success(data) { callback(false, data); },
       error: function error(err) { callback(true, err); }
     });
@@ -612,6 +614,26 @@ module.exports = {
       data: data,
       url: '/' + args.profileName + '/' + args.voiceSlug + '/' + args.source,
       headers: {'csrf-token' : this.token},
+      success: function success(data) { callback(false, data); },
+      error: function error(err) { callback(true, err); }
+    });
+  },
+
+  /* Checks if sessionUser has valid twitter credentials for Crowdvoice.by app.
+   * @param {Function} callback
+   */
+  hasTwitterCredentials: function hasTwitterCredentials(callback) {
+    if (!callback) {
+      throw new Error('Missing required params');
+    }
+
+    if ((typeof callback).toLowerCase() !== "function") {
+      throw new Error('Callback should be a function');
+    }
+
+    $.ajax({
+      type: 'GET',
+      url: '/twitter/hasTwitterCredentials',
       success: function success(data) { callback(false, data); },
       error: function error(err) { callback(true, err); }
     });

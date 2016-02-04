@@ -311,6 +311,62 @@ describe('ThreadsController', function () {
       })
     })
 
+    it('Should not create a new thread to send invitation', function (doneTest) {
+      async.series([
+        // Arya to House Targaryen
+        function (nextSeries) {
+          login('arya-stark', function (err, agent, csrf) {
+            if (err) { return nextSeries(err) }
+
+            agent
+              .post(urlBase + '/arya-stark/messages')
+              .accept('application/json')
+              .send({
+                _csrf: csrf,
+                type: 'message',
+                senderEntityId: hashids.encode(11), // Arya
+                receiverEntityId: hashids.encode(23), // House Targaryen
+                message: '148164312'
+              })
+              .end(nextSeries)
+          })
+        },
+
+        // Daenerys as House Targaryen to Arya (invite)
+        function (nextSeries) {
+          login('daenerys-targaryen', function (err, agent, csrf) {
+            if (err) { return nextSeries(err) }
+
+            agent
+              .post(urlBase + '/daenerys-targaryen/messages')
+              .accept('application/json')
+              .send({
+                _csrf: csrf,
+                type: 'invitation_organization',
+                senderEntityId: hashids.encode(23), // House Targaryen
+                receiverEntityId: hashids.encode(11), // Arya
+                organizationId: hashids.encode(23), // House Targaryen
+                message: '369169861',
+              })
+              .end(nextSeries)
+          })
+        },
+      ], function (err) {
+        if (err) { return doneTest(err) }
+
+        db('MessageThreads')
+          .where('sender_entity_id', 'in', [23, 11])
+          .andWhere('receiver_entity_id', 'in', [23, 11])
+          .exec(function(err, rows) {
+            if (err) { return doneTest(err) }
+
+            expect(rows.length).to.equal(1)
+
+            return doneTest()
+          })
+      })
+    })
+
   })
 
   describe('#destroy', function () {

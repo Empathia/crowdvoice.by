@@ -32,6 +32,13 @@ Class(CV, 'PostDetailInfo').inherits(Widget).includes(CV.WidgetUtils)({
             data : postData
           })).render(this.el);
           break;
+
+        case 'tweet':
+          this.appendChild(new CV.PostDetailInfoTweet({
+            name: 'mediaWidget',
+            data: postData
+          })).render(this.el);
+          break;
       }
 
       return this;
