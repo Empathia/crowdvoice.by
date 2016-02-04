@@ -5,9 +5,6 @@ var application = require('neonode-core');
 // Load socket.io
 var io = require('socket.io')(application.server);
 
-// Load moment
-global.moment = require('moment');
-
 global.FeedInjector = require(__dirname + '/../lib/FeedInjector.js');
 
 require(path.join(process.cwd(), 'lib', 'krypton', 'load-models.js'));

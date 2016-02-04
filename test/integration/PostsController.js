@@ -3,9 +3,6 @@
 var application = require('neonode-core')
 require(path.join(__dirname, '../../lib/routes.js'))
 
-// Load moment
-global.moment = require('moment')
-
 global.FeedInjector = require(path.join(__dirname, '../../lib/FeedInjector.js'))
 require(path.join(__dirname, '../../presenters/PostsPresenter'))
 
