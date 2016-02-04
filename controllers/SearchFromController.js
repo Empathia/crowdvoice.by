@@ -94,9 +94,6 @@ var SearchFrom = Class('SearchFrom')({
         res.json(result);
       });
     },
-<<<<<<< HEAD
-
-=======
 
     twitterOpen : function(req, res, next) {
       res.render('twitter/open');
@@ -224,7 +221,6 @@ var SearchFrom = Class('SearchFrom')({
       );
     },
 
->>>>>>> CVBY-203
     twitterOpen : function(req, res, next) {
       res.render('twitter/open');
     },
