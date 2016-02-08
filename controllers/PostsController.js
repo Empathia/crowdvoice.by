@@ -587,6 +587,22 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
     },
 
+    _previewURL : function _previewURL(req, res) {
+
+      this._processURL(req.body.url, function(err, result) {
+        if (err) {
+          return res.status(500).json(err);
+        }
+
+        if (result.status !== 200) {
+          return res.status(result.status).json(result.message);
+        }
+
+        res.status(result.status).json(result.result);
+      });
+
+    },
+
     // Create reference for SavedPosts
     // NOTE: This creates a SavedPost record, as opposed to creating a post
     savePost : function savePost(req, res, next) {
