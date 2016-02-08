@@ -299,10 +299,8 @@ var SearchFrom = Class('SearchFrom')({
         'access_token_secret' : req.session.twitterAccessTokenSecret
       });
 
-      TwitterClient.get('https://api.twitter.com/1.1/account/verify_credentials.json', false, function(data) {
-        if (!data) {
-          return res.json(response);
-        }
+      TwitterClient.get('https://api.twitter.com/1.1/account/verify_credentials.json', false, function(err, data) {
+        if (err) {
 
           if (err.length > 0) {
             errors = err.map(function(item) {
@@ -313,9 +311,9 @@ var SearchFrom = Class('SearchFrom')({
           return res.json({errors : errors});
         }
 
-        if (data) {
-          return res.json(response);
-        }
+
+        return res.json(response);
+
       });
     },
 
