@@ -1,87 +1,66 @@
 /* globals App */
-var Person = require('./../lib/currentPerson');
-var API = require('./../lib/api');
-var Events = require('./../lib/events');
-var inlineStyle = require('./../lib/inline-style');
+var Person = require('./../lib/currentPerson')
+  , API = require('./../lib/api')
+  , Events = require('./../lib/events')
+  , constants = require('./../lib/constants')
+  , inlineStyle = require('./../lib/inline-style');
 
 Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, CustomEventSupport)({
-    STATUS_DRAFT : 'STATUS_DRAFT',
-    STATUS_UNLISTED : 'STATUS_UNLISTED',
-    STATUS_PUBLISHED : 'STATUS_PUBLISHED',
-    STATUS_ARCHIVED : 'STATUS_ARCHIVED',
+    prototype: {
+        LAYER_CLASSNAME: 'cv-voice-posts-layer__detector',
 
-    TYPE_PUBLIC : 'TYPE_PUBLIC',
-    TYPE_CLOSED : 'TYPE_CLOSED',
-
-    prototype : {
-        followerCount : 0,
-        postCountElement : null,
-        followersCountElement : null,
-        aboutBoxButtonElement : null,
-        scrollableArea : null,
-
-        /* Contains all the years, months and its totals for approved and unapproved posts of the voice - Object */
-        postsCount : null,
-        postsCountApproved : 0,
-        postsCountUnapproved : 0,
         /* Either the voice allows OR the user can create new posts for the current voice - Boolean */
-        allowPosting : false,
+        allowPosting: false,
         /* The user can edit posts on the current voice>? - Boolean */
-        allowPostEditing : false,
+        allowPostEditing: false,
 
-        _window : null,
-        _resizeTimer : null,
-        _resizeTime : 250,
-        _listenScrollEvent : true,
-        _lastScrollTop : 0,
-        _scrollTimer : null,
-        _scrollTime : 250,
+        _resizeTimer: null,
+        _resizeTime: 250,
+        _listenScrollEvent: true,
+        _lastScrollTop: 0,
+        _scrollTimer: null,
+        _scrollTime: 250,
         /* layer offset left to perform hit-test on layer elements
          * sidebar = 60, main-container-padding-left = 40
          */
-        _layersOffsetLeft : 70,
+        _layersOffsetLeft: 70,
 
         /* Tell if a postId has been pased on the url to display the content viewer.
          * If a `postId` is detected on the `_checkInitialHash` method the value
          * of this property will be changed to true and the _showContentViewerPostId
          * property will hold the post id value, so when the first layer data
-         * and the `layerLoadedHandler` method is run the content viewer will
+         * and the `_layerLoadedHandler` method is run the content viewer will
          * be triggered.
-         * @property <Boolean>
+         * @property {Boolean}
          */
-        _showContentViewer : '',
+        _showContentViewer: false,
 
          /* @property <string> - the post id encoded found on the initial url.
           */
-        _showContentViewerPostId : '',
-
-        LAYER_CLASSNAME : 'cv-voice-posts-layer__detector',
-
-        /* socket io instance holder */
-        _socket : null,
+        _showContentViewerPostId: '',
 
         /* @type {Object} VoiceModel
          */
-        data : null,
+        data: null,
 
-        init : function init(config) {
+        init: function init(config) {
             Object.keys(config || {}).forEach(function(propertyName) {
                 this[propertyName] = config[propertyName];
             }, this);
 
             this._window = window;
             this._body = document.body;
-            this.postsCountApproved = this._formatPostsCountObject(this.postsCount.approved);
-            this.postsCountUnapproved = this._formatPostsCountObject(this.postsCount.unapproved);
-            this.postCount = this._getTotalPostCount(this.postsCountApproved);
+            this.pagesApproved = this._formatPagesObject(this.pagesForMonths.approved);
+            this.pagesUnapproved = this._formatPagesObject(this.pagesForMonths.unapproved);
+            this.unapprovedPostsCount = this._getTotalPostCount(this.pagesForMonths.unapproved);
 
-            this._setup();
+            this._setup()._updateVoiceInfo()._setupVoiceWidgets();
         },
 
         _setup : function _setup() {
             window.CardHoverWidget.register(document.querySelector('.voice-info__author'), this.data.owner);
 
-            if (this.postCount === 0) {
+            if (this.data.postsCount === 0) {
                 this._updateStateForEmptyVoice();
             } else {
                 this._appendLayersManager();
@@ -92,11 +71,28 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
             return this;
         },
 
-        /* Instantiate Widgets that give special behaviour to VoiceView, such as the AutoHide Header, Expandable Sidebar, Voice Footer, etc.
-         * @method setupVoiceWidgets <public> [Function]
+        /* Updates DOM Elements that are not direct widgets but are part of
+         * the Voice view such as the backgroundCover.
+         * @private
+         */
+        _updateVoiceInfo: function _updateVoiceInfo() {
+            if (this.data.images.big && this.data.images.big.url) {
+                var image = document.createElement('img');
+                image.className = "voice-background-cover-image";
+                image.src = this.data.images.big.url;
+                this.backgroundElement.appendChild(image);
+            } else {
+                this.backgroundElement.className += ' -colored-background';
+            }
+            return this;
+        },
+
+        /* Instantiate Widgets that give special behaviour to VoiceView, such
+         * as the AutoHide Header, Expandable Sidebar, Voice Footer, etc.
+         * @private
          * @return [CV.VoiceView]
          */
-        setupVoiceWidgets : function setupVoiceWidgets() {
+        _setupVoiceWidgets : function _setupVoiceWidgets() {
             if (!Person.get()) {
                 this.appendChild(new CV.UI.Button({
                     name : 'createVoiceButton',
@@ -121,7 +117,7 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
                 this._editVoiceButtonClickedRef = this._editVoiceButtonClicked.bind(this);
                 Events.on(this.editVoiceButton.el, 'click', this._editVoiceButtonClickedRef);
 
-                if (this.data.status === CV.VoiceView.STATUS_DRAFT) {
+                if (this.data.status === constants.VOICE.STATUS_DRAFT) {
                   this.appendChild(new CV.VoicePublishButton({
                     name: 'voicePublishButton',
                     data: {voice: this.data},
@@ -144,8 +140,9 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
                 allowPosting : this.allowPosting,
                 allowPostEditing : this.allowPostEditing,
                 voiceScrollableArea : this.scrollableArea,
-                postCount : this.postCount,
-                followerCount : this.followerCount,
+                postCount : this.data.postsCount,
+                unapprovedPostsCount: this.unapprovedPostsCount,
+                followerCount : this.data.followers.length,
                 relatedVoices : this.relatedVoices,
                 contributors : this.contributors
             })).render(document.querySelector('.cv-main-header'));
@@ -157,23 +154,6 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
                 footerVoiceTitle : document.getElementsByClassName('voice-footer-meta-wrapper')[0],
                 scrollableArea : this.scrollableArea
             }));
-
-            return this;
-        },
-
-        /* Updates DOM Elements that are not widgets such as the backgroundCover and stats.
-         * @method updateVoiceInfo <public> [Function]
-         * @return [CV.Voice]
-         */
-        updateVoiceInfo : function updateVoiceInfo() {
-            if (this.data.images.big && this.data.images.big.url) {
-                var image = document.createElement('img');
-                image.className = "voice-background-cover-image";
-                image.src = this.data.images.big.url;
-                this.backgroundElement.appendChild(image);
-            } else {
-                this.backgroundElement.className += ' -colored-background';
-            }
 
             return this;
         },
@@ -220,7 +200,7 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
         /* Checks if we have provided the information required before
          * appendind the VoicePostLayersManager Class. This method should be
          * called only once, right now it's being called by the init method.
-         * @method _appendLayersManager <private>
+         * @private
          * @return undefined
          */
         _appendLayersManager : function _appendLayersManager() {
@@ -231,15 +211,13 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
             this.appendChild(new CV.VoicePostLayersVoiceAbstract({
                 name : 'voicePostLayersManager',
                 id : this.data.id,
-                registry : CV.PostsRegistry,
+                registry : CV.VoicePagesRegistry,
+                pages: this.pagesApproved,
                 description : this.data.description,
-                postsCount : this.postsCountApproved,
                 scrollableArea : this.scrollableArea,
                 allowPostEditing : this.allowPostEditing,
                 _socket : this._socket
-            })).render(document.querySelector('.cv-main-content'));
-
-            this.voicePostLayersManager.setup();
+            })).render(document.querySelector('.cv-main-content')).setup();
 
             return this;
         },
@@ -248,7 +226,7 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
          * If the hash does not match the format 'YYYY-MM' it will default to newest month, requesting the latest posts.
          * If necessary, it should scroll to the specific month to load, disabling the scroll-sniffing during the scrollTo animation.
          * This method should be run only once from init.
-         * @method _checkInitialHash <private> [Function]
+         * @private
          */
         _checkInitialHash : function _checkInitialHash() {
             var hash = window.location.hash.replace(/^#!/, '');
@@ -302,14 +280,14 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
             this._activateButtonRef = this._activateButton.bind(this);
             CV.VoiceAboutBox.bind('deactivate', this._activateButtonRef);
 
-            this.layerLoadedRef = this.layerLoadedHandler.bind(this);
+            this.layerLoadedRef = this._layerLoadedHandler.bind(this);
             this.voicePostLayersManager.bind('layerLoaded', this.layerLoadedRef);
 
             this.layerManagerReadyRef = this._layerManagerReadyHandler.bind(this);
             this.voicePostLayersManager.bind('ready', this.layerManagerReadyRef);
 
             this.bind('post:display:detail', function (ev) {
-                this.displayGallery(ev);
+                this._displayGallery(ev);
             }.bind(this));
 
             this.bind('post:moderate:delete', this._postDelete.bind(this));
@@ -324,7 +302,7 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
 
         /* Listens the `post:moderate:delete` event bubbling up.
          * Deletes an specific published Post record.
-         * @method _postDelete <private> [Function]
+         * @private
          * @return undefined
          */
         _postDelete : function _postDelete(ev) {
@@ -352,9 +330,10 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
         },
 
         /* Renders the PostDetail Overlay
+         * @private
          * @param {Object} ev - the Post instance.
          */
-        displayGallery : function displayGallery(ev) {
+        _displayGallery : function _displayGallery(ev) {
             if (this.postDetailController) {
                 this.postDetailController = this.postDetailController.destroy();
             }
@@ -363,9 +342,9 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
                 this.postDetailController = new CV.PostDetailController({
                     socket : this._socket,
                     postData : ev.data,
-                    registry : CV.PostsRegistry,
-                    requestPostsSocketEventName : 'approvedMonthPosts',
-                    responsePostsSocketEventName : 'getApprovedMonthPosts'
+                    registry : CV.VoicePagesRegistry,
+                    requestPostsSocketEventName : 'approvedPostsPage',
+                    responsePostsSocketEventName : 'getApprovedPostsPage'
                 });
             }
 
@@ -429,8 +408,8 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
             el = document.elementFromPoint(this._layersOffsetLeft, y);
 
             if (el.classList.contains(this.LAYER_CLASSNAME)) {
-                if (el.dataset.date !== this.voicePostLayersManager._currentMonthString) {
-                    this.loadLayer(el.dataset.date, scrollingUpwards);
+                if (el.dataset.page !== this.voicePostLayersManager._currentMonthString) {
+                    this.loadLayer(el.dataset.page, scrollingUpwards);
                 }
             }
 
@@ -483,18 +462,25 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
         _layerManagerReadyHandler : function _layerManagerReareldnaHdy(data) {
             var timestamp = data.layer.getIndicators()[0].getTimestamp();
 
-            this.voiceFooter.setTimelineInitialDate(timestamp);
-            this.voiceFooter.createJumpToDateBubble(this.postsCountApproved);
+            if (this.voiceFooter) {
+              this.voiceFooter.setTimelineInitialDate(timestamp);
+              // this.voiceFooter.createJumpToDateBubble(this.postsCountApproved);
+            }
 
             this.voicePostLayersManager.unbind('ready', this.layerManagerReadyRef);
             this.layerManagerReadyRef = null;
         },
 
-        layerLoadedHandler : function layerLoadedHandler(data) {
+        /* Layer loaded handler
+         * @private
+         */
+        _layerLoadedHandler : function _layerLoadedHandler(data) {
             var _this = this;
 
-            this.voiceFooter.updateTimelineVars();
-            this.voiceFooter.updateTimelineDatesMenu(data.dateString);
+            if (this.voiceFooter) {
+              this.voiceFooter.updateTimelineVars();
+              this.voiceFooter.updateTimelineDatesMenu(data.dateString);
+            }
 
             if (this._showContentViewer) {
                 var postInstance;
@@ -509,7 +495,7 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
                     });
                 });
 
-                if (postInstance) { this.displayGallery({ data: postInstance }); }
+                if (postInstance) { this._displayGallery({ data: postInstance }); }
             }
         },
 

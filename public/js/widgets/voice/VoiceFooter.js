@@ -133,7 +133,8 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
                 this.appendChild(new CV.VoiceModerateButton({
                     name : 'voiceModerate',
                     className: '-ml10px',
-                    allowPostEditing : this.allowPostEditing
+                    allowPostEditing : this.allowPostEditing,
+                    unapprovedPostsCount: this.unapprovedPostsCount
                 })).render(this.actionsColumn);
             }
 

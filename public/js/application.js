@@ -205,7 +205,7 @@ require('./widgets/view-feed/FeedDiscover');
 require('./widgets/view-feed/FeedSidebar');
 require('./widgets/view-feed/FeedOnboarding');
 
-require('./widgets/voice/PostsRegistry');
+require('./widgets/voice/registry/VoicePagesRegistry');
 require('./widgets/voice/publish-onboarding/VoicePublishOnboardingManager');
 require('./widgets/voice/publish-onboarding/VoicePublishOnboardingCannot');
 require('./widgets/voice/publish-onboarding/VoicePublishOnboardingCan');
@@ -234,7 +234,7 @@ require('./widgets/voice/layers/VoicePostsLayer');
 require('./widgets/voice/layers/VoicePostIndicator');
 require('./widgets/voice/VoiceAboutBox');
 
-require('./widgets/voice/moderate/ModeratePostsRegistry');
+require('./widgets/voice/registry/VoiceModeratePagesRegistry');
 require('./widgets/voice/moderate/VoiceModerateButton');
 require('./widgets/voice/moderate/VoiceModerateManager');
 require('./widgets/voice/moderate/VoiceModerateDoneButton');
