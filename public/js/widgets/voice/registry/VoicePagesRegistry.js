@@ -40,7 +40,7 @@ Module(CV, 'VoicePagesRegistry')({
    */
   getKeys: function getKeys() {
     return Object.keys(this.get()).sort(function (a, b) {
-      return a < b;
+      return a - b;
     });
   }
 });
