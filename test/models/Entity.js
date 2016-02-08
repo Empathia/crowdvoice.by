@@ -161,6 +161,10 @@ describe('K.Entity', function () {
           .catch(doneTest)
       })
 
+      it('Should return an array with proper Voices for Arya', function (doneTest) {
+        throw 'Not Written Yet'
+      })
+
     })
 
     describe('memberOrganizations', function () {
@@ -195,7 +199,7 @@ describe('K.Entity', function () {
             var tyrion = result[0]
 
             expect(tyrion.followedVoices).to.be.an('array')
-            expect(tyrion.followedVoices.length).to.equal(11)
+            expect(tyrion.followedVoices.length).to.equal(10)
             constructorLoop(tyrion.followedVoices, 'Voice')
 
             return doneTest()
@@ -229,40 +233,111 @@ describe('K.Entity', function () {
 
   describe('#getAnonymousEntity', function () {
 
-    it('Should...', function (doneTest) {
-      return doneTest()
+    it('Should return an Anonymous Entity for Tyrion', function (doneTest) {
+      K.Entity.query()
+        .where('id', 1)
+        .then(function (result) {
+          var tyrion = result[0]
+
+          tyrion.getAnonymousEntity()
+            .then(function (anonEnt) {
+              expect(anonEnt.isAnonymous).to.equal(true)
+              expect(anonEnt.constructor.className).to.equal('Entity')
+
+              return doneTest()
+            })
+            .catch(doneTest)
+        })
+    })
+
+    it('Should throw error for Anonymous Entity', function (doneTest) {
+      K.Entity.query()
+        .where('id', 2)
+        .then(function (result) {
+          var tyrion = result[0]
+
+          tyrion.getAnonymousEntity()
+            .then(function (result) {
+              throw new Error('Shouldn\'t resolve.')
+            })
+            .catch(function (err) {
+              expect(err).to.be.an('Error')
+
+              return doneTest()
+            })
+        })
     })
 
   })
 
-  describe('#getOwner & #getRealEntity', function () {
+  describe('#getOwner', function () {
 
-    it('Should...', function (doneTest) {
-      return doneTest()
+    it('Should return Anonymous Entity\'s owner Entity', function (doneTest) {
+      throw 'Not Written Yet'
+    })
+
+    it('Should return Organization Entity\'s owner Entity', function (doneTest) {
+      throw 'Not Written Yet'
+    })
+
+    it('Should throw if K.Entity is type = \'person\' and .isAnonymous is true', function (doneTest) {
+      throw 'Not Written Yet'
+    })
+
+  })
+
+  describe('#getRealEntity', function () {
+
+    it('Should work the same as #getOwner for Anonymous Entities', function (doneTest) {
+      throw 'Not Written Yet'
+    })
+
+    it('Should throw for non-Anonymous Entities', function (doneTest) {
+      throw 'Not Written Yet'
     })
 
   })
 
   describe('#isOwnerOfEntity', function () {
 
-    it('Should...', function (doneTest) {
-      return doneTest()
+    it('Should return true for Cersei owner of House Lannister', function (doneTest) {
+      throw 'Not Written Yet'
+    })
+
+    it('Should return false for Tyrion owner of House Lannister', function (doneTest) {
+      throw 'Not Written Yet'
+    })
+
+    it('Should return true for ownership of Anonymous Entity', function (doneTest) {
+      throw 'Not Written Yet'
     })
 
   })
 
   describe('#isOwnedBy', function () {
 
-    it('Should...', function (doneTest) {
-      return doneTest()
+    it('Should return true for House Lannister owned by Cersei', function (doneTest) {
+      throw 'Not Written Yet'
+    })
+
+    it('Should return false for House Lannister owned by Tyrion', function (doneTest) {
+      throw 'Not Written Yet'
+    })
+
+    it('Should return true for Anonymous Entity ownership', function (doneTest) {
+      throw 'Not Written Yet'
     })
 
   })
 
   describe('#isOwnerOfVoice', function () {
 
-    it('Should...', function (doneTest) {
-      return doneTest()
+    it('Should return true for Tyrion owner of Valyrian Roads', function (doneTest) {
+      throw 'Not Written Yet'
+    })
+
+    it('Should return false for Cersei owner of Valyrian Roads', function (doneTest) {
+      throw 'Not Written Yet'
     })
 
   })
@@ -270,15 +345,19 @@ describe('K.Entity', function () {
   describe('#hasAccessToVoice', function () {
 
     it('Should...', function (doneTest) {
-      return doneTest()
+      throw 'Not Written Yet'
     })
 
   })
 
   describe('#isFollowedBy', function () {
 
-    it('Should...', function (doneTest) {
-      return doneTest()
+    it('Should return true for Tyrion followed by Jamie', function (doneTest) {
+      throw 'Not Written Yet'
+    })
+
+    it('Should return false for Tyrion followed by Cersei', function (doneTest) {
+      throw 'Not Written Yet'
     })
 
   })
