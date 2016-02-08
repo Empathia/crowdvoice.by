@@ -1068,8 +1068,6 @@ async.series([function(next) {
   async.series([function(done) {
     data.entities['tyrion-lannister'].followVoice(data.voices['walk-of-atonement'], done);
   }, function(done) {
-    data.entities['tyrion-lannister'].followVoice(data.voices.meereen, done);
-  }, function(done) {
     data.entities['tyrion-lannister'].followVoice(data.voices['dead-of-arryn'], done);
   }, function(done) {
     data.entities['tyrion-lannister'].followVoice(data.voices['casterly-rock'], done);
