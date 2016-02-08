@@ -3,6 +3,15 @@
  */
 Class(CV, 'VoicePostLayersModerateAbstract').inherits(CV.VoicePostLayers)({
   prototype: {
+    /* @abstract
+     * @property {string} id The voice id */
+    id: null,
+
+    /* @abstract
+     * @property {Array[string]} _requestedPages Holds the page numbers
+     * that have been already requested, this to avoid duplicated calls
+     * so the server is not loaded with unnecesary work.
+     */
     _requestedPages: null,
 
     setup: function setup() {

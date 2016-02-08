@@ -1,16 +1,17 @@
 /* globals App */
 /* Subclass of VoicePostLayers
- * Declares the required abstract methods to handle the Voice Posts on Normal Mode
+ * Defines the abstract methods to handle the Voice Posts on Normal Mode
  */
 var Person = require('./../../../lib/currentPerson');
 
 Class(CV, 'VoicePostLayersVoiceAbstract').inherits(CV.VoicePostLayers)({
   prototype: {
-    /* @property {string} id The voice id
-    */
+    /* @abstract
+     * @property {string} id The voice id */
     id: null,
 
-    /* @property {Array[string]} _requestedPages Holds the page numbers
+    /* @abstract
+     * @property {Array[string]} _requestedPages Holds the page numbers
      * that have been already requested, this to avoid duplicated calls
      * so the server is not loaded with unnecesary work.
      */

@@ -1,9 +1,8 @@
-
 /* Creates the layers, handle the data requests and fill them with posts.
  * This is the base Class to handle the Layers, but it is not used directly
  * though, instead we use one of its subclasses which overrides important
  * bits of this interface, such as the path for the request, socket events names,
- * etc. The current Subclassses are:
+ * etc. The current Subclasses are:
  * - VoicePostLayersVoiceAbstract : To handle the Voice Posts
  * - VoicePostLayersModerateAbstract : To handle the Voice Posts as on Moderation Mode
  */
@@ -12,7 +11,6 @@ var ScrollTo = require('./../../../lib/scrollto');
 Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
   HTML: '<section class="voice-posts -rel"></section>',
   MIN_LAYERS_POST: 20,
-  INIT_LAYER_POSTS_THRESHOLD: 20,
 
   prototype: {
     /* DEFAULT BASIC OPTIONS */
@@ -36,9 +34,8 @@ Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
     _isInitialLoad: true,
     _lazyLoadingImageArray: null,
 
-    init : function init(config) {
+    init: function init(config) {
       Widget.prototype.init.call(this, config);
-
       this.el = this.element[0];
       this._window = window;
       this._socket = this._socket || this.parent._socket;
