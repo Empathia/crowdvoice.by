@@ -1,6 +1,5 @@
 var parser = require('parse-rss');
 var OAuth = require('oauth').OAuth;
-
 var Twitter = require('twitter');
 var YouTube = require('youtube-node');
 
@@ -217,111 +216,6 @@ var SearchFrom = Class('SearchFrom')({
           logger.log('Got ' +  tweets.statuses.length + ' tweets...');
 
           res.json(tweets.statuses);
-        }
-      );
-    },
-
-    twitterOpen : function(req, res, next) {
-      res.render('twitter/open');
-    },
-
-    authorizeTwitter : function authorizeTwitter(req, res, next) {
-      consumer.getOAuthRequestToken(function(error, oauthToken, oauthTokenSecret, results){
-        if (error) {
-          return next(new Error('Error getting Twitter OAuth request token'));
-        } else {
-          req.session.twitterRequestToken = oauthToken;
-          req.session.twitterRequestTokenSecret = oauthTokenSecret;
-
-          return res.redirect("https://twitter.com/oauth/authorize?oauth_token=" + req.session.twitterRequestToken);
-        }
-      });
-    },
-
-    twitterCallback : function twitterCallback(req, res, next) {
-      if (req.query.denied) {
-        return res.render('twitter/callback', {authorized : false});
-      }
-
-        consumer.getOAuthAccessToken(req.session.twitterRequestToken, req.session.twitterRequestTokenSecret, req.query.oauth_verifier, function(error, twitterAccessToken, twitterAccessTokenSecret, results) {
-          if (error) {
-            logger.error(error);
-
-            return next(new Error(error));
-          } else {
-            req.session.twitterAccessToken = twitterAccessToken;
-            req.session.twitterAccessTokenSecret = twitterAccessTokenSecret;
-
-            async.series([function(done) {
-              if (!req.user) {
-                return done();
-              }
-
-              var user = new User(req.user);
-
-              user.twitterCredentials = {
-                accessToken : twitterAccessToken,
-                accessTokenSecret : twitterAccessTokenSecret
-              };
-
-              user.save(function(err, result) {
-                if (err) {
-                  return done(err);
-                }
-
-                done();
-              });
-            }], function(err) {
-              if (err) {
-                return next(err);
-              }
-
-              return res.render('twitter/callback.html', {authorized : true});
-            });
-          }
-        });
-    },
-
-    hasTwitterCredentials : function hasTwitterCredentials(req, res, next) {
-      var response = {
-        hasTwitterCredentials : false
-      };
-
-      if (req.session.twitterAccessToken && req.session.twitterAccessTokenSecret) {
-        response.hasTwitterCredentials = true;
-      }
-
-      res.json(response);
-    },
-
-    twitterSearch : function twitterSearch(req, res, next) {
-      var TwitterClient = new Twitter({
-        'consumer_key' : CONFIG.twitter['consumer_key'],
-        'consumer_secret' : CONFIG.twitter['consumer_secret'],
-        'access_token_key' : req.session.twitterAccessToken,
-        'access_token_secret' : req.session.twitterAccessTokenSecret
-      });
-
-
-      TwitterClient.get(
-        'search/tweets',
-        {
-          // q : 'mexico exclude:retweets exclude:replies',
-          q : 'mexico exclude:retweets',
-          // 'result_type' : 'recent',
-          'result_type' : 'mixed',
-          // 'since_id' : fetcher.lastIdStr,
-          'max_id' : req.query.maxId || null,
-          count : 50
-        },
-        function(err, tweets, response) {
-          if (err) {
-            return next(new Error(err));
-          }
-
-          logger.log('Got ' +  tweets.statuses.length + ' tweets...');
-
-          res.json(tweets);
         }
       );
     }
