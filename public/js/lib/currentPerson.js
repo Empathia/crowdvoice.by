@@ -105,6 +105,19 @@ module.exports = {
     return this.get().ownedOrganizations.length;
   },
 
+  canPostDirectlyOnVoice: function canPostDirectlyOnVoice(voiceEntity) {
+    if (!this.get()) return false;
+
+    if (this.ownerOf('voice', voiceEntity.id)) return true;
+
+    if (voiceEntity.owner.type === 'organization') {
+      return (this.memberOf('organization', voiceEntity.owner.id) ||
+        this.memberOf('voice', voiceEntity.id));
+    }
+
+    return false;
+  },
+
   /* Checks if an Entity can be invited either to a voice or to an organization.
    * @param {Object} entity - Entity's Model
    * @return {Boolean}

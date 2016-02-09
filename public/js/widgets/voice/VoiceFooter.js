@@ -99,7 +99,7 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
         })).render(this.actionsColumn).disable();
       }
 
-      if ((this.voice.type === constants.VOICE.TYPE_CLOSED) && (Person.ownerOf('voice', this.voice.id))) {
+      if (Person.ownerOf('voice', this.voice.id)) {
         this.appendChild(new CV.ManageContributorsButton({
           name: 'manageContributors',
           className: 'tiny -ml10px',
@@ -181,7 +181,7 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
     },
 
     /* Sets the Timeline's inital date.
-     * @method setTimelineInitialDate <public> [Function]
+     * @public
      */
     setTimelineInitialDate: function setTimelineInitialDate(timestamp) {
       this.voiceTimelineFeedback.setInitialFeedbackDate(timestamp);
@@ -189,7 +189,7 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
     },
 
     /* Updates the timeline's screen size related variables values.
-     * @method updateTimelineVars <public> [Function]
+     * @public
      */
     updateTimelineVars: function updateTimelineVars() {
       this.voiceTimelineFeedback.updateVars();

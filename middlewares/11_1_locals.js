@@ -37,6 +37,12 @@ module.exports = function(req, res, next) {
   if (req.user) {
     var currentUser = new User(req.user);
 
+    // Add Twitter Credentials to session
+    if (req.user.twitterCredentials) {
+      req.session.twitterAccessToken = req.user.twitterCredentials.accessToken;
+      req.session.twitterAccessTokenSecret = req.user.twitterCredentials.accessTokenSecret;
+    }
+
     if (req.session.isAnonymous) {
       currentUser.shadow(function(err, shadowEntity) {
         if (err) {

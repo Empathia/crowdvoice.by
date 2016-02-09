@@ -1,7 +1,8 @@
 /* globals App */
-var API = require('../../../lib/api');
-var Events = require('../../../lib/events');
-var Velocity = require('velocity-animate');
+var Person = require('../../../lib/currentPerson')
+  , API = require('../../../lib/api')
+  , Events = require('../../../lib/events')
+  , Velocity = require('velocity-animate');
 
 Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
   ELEMENT_CLASS: 'cv-post-creator post-creator-from-sources',
@@ -9,7 +10,27 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
   HTML: '\
     <div>\
       <div class="input-error-message -on-error -abs -color-negative"></div>\
-      <header class="cv-post-creator__header -clearfix"></header>\
+      <header class="cv-post-creator__header -clearfix">\
+        <div class="from-sources__header-main-contents -full-height">\
+          <div data-pick-source class="-full-height -pt1 -pl1">\
+            <p class="from-sources-pick-source-label -inline-block">Pick a Source to add content</p>\
+          </div>\
+          <div class="from-sources-twitter-auth-wrapper -pt1 -pl1 -full-height -hide">\
+            <p class="-inline-block">Please connect a twitter account to use this source.\
+              <span class="ui-has-tooltip">\
+                <em class="-inline-block -color-neutral-mid">Why?</em>\
+                <i class="ui-tooltip -bottom">CrowdVoice.by searches this service via Twitter “Search APIs.”<br/>The APIs of this service requires that any requests for their information (such as a search) must come from an “authorized” account.</i>\
+              </span>\
+            </p>\
+            <div class="twitter-auth-button-holder -inline-block"></div>\
+          </div>\
+          <div class="from-sources-header-input-wrapper -full-height -rel -hide">\
+            <svg class="input-search-icon -s20 -abs -color-neutral-mid">\
+              <use xlink:href="#svg-search"></use>\
+            </svg>\
+          </div>\
+        </div>\
+      </header>\
       <div class="cv-post-creator__content -abs"></div>\
       <div class="cv-post-creator__disable"></div>\
     </div>',
@@ -20,7 +41,6 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
     el: null,
     header: null,
     content: null,
-    inputWrapper: null,
 
     _currentSource: '',
     _addedPostsCounter: 0,
@@ -33,14 +53,24 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
      */
     init: function init(config) {
       CV.PostCreator.prototype.init.call(this, config);
-
       this.el = this.element[0];
       this.header = this.el.querySelector('.cv-post-creator__header');
       this.content = this.el.querySelector('.cv-post-creator__content');
-      this.inputWrapper = document.createElement('div');
       this.errorMessage = this.el.querySelector('.input-error-message');
-
+      this.inputWrapper = this.el.querySelector('.from-sources-header-input-wrapper');
+      this.twitterAuthWrapper = this.el.querySelector('.from-sources-twitter-auth-wrapper');
+      this.pickSourceWrapper = this.el.querySelector('[data-pick-source]');
       this.addCloseButton()._setup()._bindEvents();
+
+      if (!window.localStorage['cvby__saw-post-creator']) {
+        window.localStorage['cvby__saw-post-creator'] = true;
+        setTimeout(function (that) {
+          that.sourcesDropdown.activate();
+        }, 500, this);
+      } else {
+        this.sourcesDropdown.setDefaultOption();
+        this._setNormalSearchState();
+      }
     },
 
     /* Appends any required children.
@@ -48,38 +78,52 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
      * @return [PostCreatorFromUrl]
      */
     _setup: function _setup() {
+      this.appendChild(new CV.PostCreatorPostButton({
+        name: 'postButton',
+        className: '-float-right -full-height -color-border-grey-light'
+      })).render(this.header, this.header.firstChild).disable();
+
       this.appendChild(new CV.PostCreatorFromSourcesDropdown({
         name: 'sourcesDropdown',
         className: '-float-left -full-height'
-      })).render(this.header);
+      })).render(this.header, this.header.firstChild);
 
-      this.appendChild( new CV.PostCreatorPostButton({
-        name: 'postButton',
-        className: '-float-right -full-height -color-border-grey-light'
-      })).render(this.header).disable();
+      this.appendChild(new CV.UI.Button({
+        name: 'authTwitterButton',
+        className: 'small',
+        data: {value: 'Connect account'}
+      })).render(this.twitterAuthWrapper.querySelector('.twitter-auth-button-holder'));
 
-      this.inputWrapper.className = '-overflow-hidden -full-height';
+      if (!Person.get()) {
+        this.appendChild(new CV.PopoverTwitterNotLoggedIn({
+          name: 'twitterAuthNotLoggedInPopoverContent'
+        }));
+
+        this.appendChild(new CV.PopoverBlocker({
+          name: 'twitterAuthNotLoggedInPopover',
+          placement: 'bottom',
+          className: 'popover-twitter-not-logged-in',
+          content: this.twitterAuthNotLoggedInPopoverContent.el
+        })).render(this.twitterAuthWrapper.querySelector('.twitter-auth-button-holder'));
+      }
 
       this.appendChild(new CV.InputClearable({
         name: 'input',
         placeholder: 'Search for content',
         inputClass: '-block -lg -br0 -bw0 -full-height',
         className: '-full-height'
-      })).render(this.inputWrapper);
-
-      this.header.appendChild(this.inputWrapper);
+      })).render(this.inputWrapper, this.inputWrapper.firstChild);
 
       this.appendChild(new CV.PostCreatorFromSourcesQueue({
         name: 'queuePanel',
-        className: '-color-bg-grey-lighter -color-border-grey-light -full-height -float-right'
+        className: '-color-bg-grey-lighter -color-border-grey-light -full-height -float-right',
+        canPostDirectly: Person.canPostDirectlyOnVoice(App.Voice.data)
       })).render(this.content);
 
       this.appendChild(new CV.PostCreatorFromSourcesResults({
         name: 'resultsPanel',
         className: '-color-bg-white -full-height -overflow-hidden'
       })).render(this.content);
-
-      this._currentSource = this.sourcesDropdown.getSource();
 
       return this;
     },
@@ -90,6 +134,14 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
      */
     _bindEvents: function _bindEvents() {
       CV.PostCreator.prototype._bindEvents.call(this);
+
+      this._authTwitterHandlerRef = this._authTwitterHandler.bind(this);
+      Events.on(this.authTwitterButton.el, 'click', this._authTwitterHandlerRef);
+
+      if (this.twitterAuthNotLoggedInPopoverContent) {
+        this._authTwitterAccountRef = this._authTwitterAccount.bind(this);
+        this.twitterAuthNotLoggedInPopoverContent.bind('connect-twitter', this._authTwitterAccountRef);
+      }
 
       this._sourceChangedRef = this._sourceChanged.bind(this);
       this.sourcesDropdown.bind('sourceChanged', this._sourceChangedRef);
@@ -133,14 +185,21 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
     _addPost: function _addPost(ev) {
       this.queuePanel.setAddingPost();
 
-      if (this.resultsPanel.children.indexOf(ev.data) >= 0) {
-        Velocity(ev.data.el, 'slideUp', {delay: 500, duration : 400});
+      if (this.resultsPanel.source.children.indexOf(ev.data) >= 0) {
+        Velocity(ev.data.element[0], 'slideUp', {delay: 500, duration : 400});
       }
 
+      var _data = {};
+      if (ev.data.data.sourceUrl) {
+        _data.url = ev.data.data.sourceUrl;
+      }
+      if (ev.data.data.id_str) {
+        _data.id_str = ev.data.data.id_str;
+      }
       API.postPreview({
         profileName: App.Voice.data.owner.profileName,
         voiceSlug: App.Voice.data.slug,
-        url: ev.data.sourceUrl
+        data: _data
       }, this._requestPreviewHandler.bind(this, ev));
     },
 
@@ -168,7 +227,7 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
         }
 
         if (revert) {
-          if (this.resultsPanel.children.indexOf(ev.data) >= 0) {
+          if (this.resultsPanel.source.children.indexOf(ev.data) >= 0) {
             Velocity(ev.data.el, 'slideDown', {duration : 400});
           }
         }
@@ -176,9 +235,13 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
         return this._setErrorState({message: errorMessage});
       }
 
-      this._addedPostsCounter++;
+      if ((response instanceof Array) === false) {
+        response = [response];
+      }
+
+      this._addedPostsCounter += response.length;
       this.postButton.updateCounter(this._addedPostsCounter);
-      this.queuePanel.addPost(response);
+      this.queuePanel.addPosts(response);
       this._enabledPostButton();
     },
 
@@ -225,7 +288,7 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
     },
 
     _setSuccessState: function _setSuccessState() {
-      this.queuePanel.removePosts();
+      this.queuePanel.setSuccessState();
       this.queuePanel.loader.disable();
       this._addedPostsCounter = 0;
       this.postButton.updateCounter(this._addedPostsCounter);
@@ -233,17 +296,111 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
       return this;
     },
 
+    /* Handles the sources dropdown change event.
+     * @private
+     */
     _sourceChanged: function _sourceChanged(ev) {
       this._currentSource = ev.source;
+      this._removeErrorState();
 
+      this._updateInputPlaceholder(this._currentSource);
+
+      if (this._currentSource === 'twitter') {
+        CV.PostCreatorFromSourcesSourceTwitter.isAuth(function (err, res) {
+          if (err) {
+            this._setTwitterAuthState();
+            return this._setErrorState({
+              message: res.errors[0]
+            });
+          }
+
+          if (res === true) {
+            this._setNormalSearchState();
+            return this._autoSearchSourceUpdate();
+          }
+
+          this._setTwitterAuthState();
+        }.bind(this));
+      } else {
+        this._setNormalSearchState();
+        this._autoSearchSourceUpdate();
+      }
+    },
+
+    _updateInputPlaceholder: function _updateInputPlaceholder(source) {
+      var sourceName = '';
+      switch(source) {
+        case 'twitter':
+          sourceName = 'Twitter';
+          break;
+        case 'youtube':
+          sourceName = 'Youtube';
+          break;
+        case 'googleNews':
+          sourceName = 'Google News';
+          break;
+      }
+      this.dom.updateAttr('placeholder', this.input.getElement(), 'Search for content in ' + sourceName);
+    },
+
+    /* Checks if it should perform and new request based on the new state.
+     * Useful for when changing the source and a previous query has been made.
+     * @private
+     */
+    _autoSearchSourceUpdate: function _autoSearchSourceUpdate() {
       if (this._query) {
         this.input.setValue(this._query);
         this._setSearching()._request(this._query);
       }
     },
 
+    _setTwitterAuthState: function _setTwitterAuthState() {
+      this.inputWrapper.classList.add('-hide');
+      this.twitterAuthWrapper.classList.remove('-hide');
+      this.pickSourceWrapper.classList.add('-hide');
+      return this;
+    },
+
+    _setNormalSearchState: function _setNormalSearchState() {
+      this.inputWrapper.classList.remove('-hide');
+      this.twitterAuthWrapper.classList.add('-hide');
+      this.pickSourceWrapper.classList.add('-hide');
+      this.input.getElement().focus();
+      return this;
+    },
+
+    /* Opens the twitter authorization popup and checks when it gets closed.
+     * @private
+     */
+    _authTwitterHandler: function _authTwitterHandler() {
+      if (!Person.get()) {
+        this.twitterAuthNotLoggedInPopover.activate();
+        return;
+      }
+      this._authTwitterAccount();
+    },
+
+    _authTwitterAccount: function _authTwitterAccount() {
+      if (this.twitterAuthNotLoggedInPopover) {
+        this.twitterAuthNotLoggedInPopover.deactivate();
+      }
+
+      var _this = this;
+      window.authWindow = window.open('/twitter/oauth', 'twitterWindow', 'height=600,width=500');
+
+      var interval = window.setInterval(function () {
+        if (window.authWindow === null || window.authWindow.closed) {
+          window.clearInterval(interval);
+          if (window.authWindow.CV && window.authWindow.CV.oauthCallbackHasTwitterCredentials) {
+            _this._setNormalSearchState()._removeErrorState()._autoSearchSourceUpdate();
+          }
+        }
+      }, 1000);
+    },
+
     /* Calls our search API endpoint to search for content on the current source.
-    */
+     * @private
+     */
     _request: function _request(query) {
       this._query = query;
 
@@ -251,7 +408,9 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
         profileName: App.Voice.data.owner.profileName,
         voiceSlug: App.Voice.data.slug,
         source: this._currentSource,
-        query: this._query
+        data: {
+          query: this._query
+        }
       };
 
       API.searchPostsInSource(args, this._requestResponseHandler.bind(this));
@@ -259,23 +418,25 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
 
     _requestResponseHandler: function _requestResponseHandler(err, response) {
       if (err) {
-        console.log(response);
         return this._setErrorState({
           message: response.status + ' - ' + response.statusText
         });
       }
 
-      this.resultsPanel.renderResults({
-        source: this._currentSource,
-        data: response,
-        query: this._query
-      });
+      var responseLength = 0;
+      if (response instanceof Array) {
+        responseLength = response.length;
+      } else if (response.videos !== undefined) {
+        responseLength = response.videos.length;
+      }
 
-      if (!response.length) {
+      if (!responseLength) {
         this._setNoResultsState();
       } else {
+        this.resultsPanel.renderResults(this._currentSource, response, this._query, responseLength);
         this._setResultsState();
-      } },
+      }
+    },
 
     _showContent: function _showContent() {
       this.content.classList.add('active');
@@ -384,6 +545,9 @@ Class(CV, 'PostCreatorFromSources').inherits(CV.PostCreator)({
     /* @override
      */
     destroy: function destroy() {
+      Events.off(this.authTwitterButton.el, 'click', this._authTwitterHandlerRef);
+      this._authTwitterHandlerRef = null;
+
       Events.off(this.input.getElement(), 'keyup', this._inputKeyUpHandlerRef);
       this._inputKeyUpHandlerRef = null;
 
