@@ -219,7 +219,7 @@ Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
       this.pages.forEach(function (page, index) {
         var layer = new CV.VoicePostsLayer({
           id: index,
-          name: 'postsLayer_' + index,
+          name: 'postsLayer_' + page,
           page: page,
           columnWidth: this.averagePostWidth
         });

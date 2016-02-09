@@ -65,12 +65,12 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
       this.updateVars()._bindEvents();
     },
 
-    createJumpToDateBubble : function createJumpToDateBubble(postsCount) {
-      // this.appendChild(new CV.VoiceTimelineJumpToDate({
-      //     name : 'jumpToDate',
-      //     postsCount : postsCount,
-      //     container : this.el
-      // })).render(this.el);
+    createJumpToDateBubble: function createJumpToDateBubble(postsCount) {
+      this.appendChild(new CV.VoiceTimelineJumpToDate({
+        name: 'jumpToDate',
+        postsCount: postsCount,
+        container: this.el
+      })).render(this.el);
     },
 
     /* Subscribe and listen to events.
