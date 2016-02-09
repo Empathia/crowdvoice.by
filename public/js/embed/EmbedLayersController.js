@@ -3,19 +3,19 @@ var Events = require('./../lib/events');
 var ScrollTo = require('./../lib/scrollto');
 
 Class(CV, 'EmbedLayersController').includes(NodeSupport, CustomEventSupport, BubblingSupport)({
-  SWITCH_HEADER_MIN_WIDTH : 360,
-  MIN_LAYERS_POST : 20,
-  HEADER_HEIGHT : 52,
+  SWITCH_HEADER_MIN_WIDTH: 360,
+  MIN_LAYERS_POST: 20,
+  HEADER_HEIGHT: 52,
 
-  prototype : {
-    averagePostTotal : 15,
-    averagePostWidth : 300,
-    averagePostHeight : 500,
+  prototype: {
+    averagePostTotal: 50,
+    averagePostWidth: 300,
+    averagePostHeight: 500,
 
-    _resizeTimer : null,
-    _resizeTime : 500,
-    _scrollTimer : null,
-    _scrollTime : 250,
+    _resizeTimer: null,
+    _resizeTime: 500,
+    _scrollTimer: null,
+    _scrollTime: 250,
 
     /**
      * @param {Object} config - the configuration object
@@ -27,7 +27,7 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport, CustomEventSupport, Bub
      * @property {string} config.lastPostDate - the voice’s last published post date.
      * @property {Object} socket - the socket instance to use to fetch the data.
      */
-    init : function init (config) {
+    init: function init (config) {
       Object.keys(config).forEach(function (propertyName) {
         this[propertyName] =  config[propertyName];
       }, this);
@@ -56,8 +56,8 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport, CustomEventSupport, Bub
       this._bindEvents()._createEmptyLayers(this.postsCount)._requestAll();
     },
 
-    setup : function setup () {
-      this._beforeRequest(this.getLayers()[0].dateString);
+    setup: function setup () {
+      this._beforeRequest(this.getLayers()[0].page);
 
       this.timeline = new CV.Timeline()
         .render(this.headerElement)
@@ -82,9 +82,9 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport, CustomEventSupport, Bub
     },
 
     /* Jump to layer handler
-     * @method _jumpToHandler <private> [Function]
+     * @private
      */
-    _jumpToLayer : function _jumpToLayer(ev) {
+    _jumpToLayer: function _jumpToLayer(ev) {
       var _this = this;
       var layer = this['layer_' + ev.dateString];
 
@@ -112,7 +112,7 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport, CustomEventSupport, Bub
     /* Subscribe the widget’s events and the widget’s children events if needed.
      * @private
      */
-    _bindEvents : function _bindEvents() {
+    _bindEvents: function _bindEvents() {
       this._scrollHandlerRef = this._scrollHandler.bind(this);
       Events.on(this._window, 'scroll', this._scrollHandlerRef);
 
@@ -120,14 +120,14 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport, CustomEventSupport, Bub
       Events.on(this._window, 'resize', this._resizeHandlerRef);
 
       this._loadLayerRef = this.loadLayer.bind(this);
-      this.socket.on('approvedMonthPosts', this._loadLayerRef);
+      this.socket.on('approvedPostsPage', this._loadLayerRef);
       return this;
     },
 
     /* Handle the window.scroll event
      * @private
      */
-    _scrollHandler : function _scrollHandler() {
+    _scrollHandler: function _scrollHandler() {
       var st = this._window.pageYOffset;
       var scrollingUpwards = (st < this._lastScrollTop);
       var y = 0;
@@ -153,8 +153,8 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport, CustomEventSupport, Bub
       this.timeline.update(~~((this._clientWidth - 14) * scaledPercentage / 100));
 
       // load layer posts
-      if (el.classList.contains('posts-layer__detector') && (el.dataset.date !== this._currentMonthString)) {
-        this.fillLayer(el.dataset.date, scrollingUpwards);
+      if (el.classList.contains('posts-layer__detector') && (el.dataset.page !== this._currentMonthString)) {
+        this.fillLayer(el.dataset.page, scrollingUpwards);
       }
 
       /* header title transition */
@@ -181,7 +181,7 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport, CustomEventSupport, Bub
     /* Handle the window resize event.
      * @private
      */
-    _resizeHandler : function _resizeHandler() {
+    _resizeHandler: function _resizeHandler() {
       if (this._resizeTimer) { this._window.clearTimeout(this._resizeTimer); }
 
       this._resizeTimer = this._window.setTimeout(function(_this) {
@@ -195,7 +195,7 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport, CustomEventSupport, Bub
      * @param {Array<string>} sourceTypes - the selected post-types on the dropdown.
      * @return {Object} EmbedLayersController.
      */
-    filterItems : function filterItems (sourceTypes) {
+    filterItems: function filterItems (sourceTypes) {
       this.getLayers().forEach(function(layer) {
         var posts = layer.getPosts();
         if (posts.length) { layer.filterPosts(sourceTypes, this.viewType); }
@@ -207,7 +207,7 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport, CustomEventSupport, Bub
      * @public
      * @param {string} viewType - new view type to switch. [cards|list]
      */
-    updateView : function updateView (viewType) {
+    updateView: function updateView (viewType) {
       if (viewType === this.viewType) { return; }
 
       this.viewType = viewType;
@@ -215,7 +215,7 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport, CustomEventSupport, Bub
       this.getLayers().forEach(function (layer) {
         if (layer.getPosts().length) {
           this.removePosts(layer);
-          this.addPosts(layer, this.getPostsRegistry(layer.dateString));
+          this.addPosts(layer, this.getPostsRegistry(layer.page));
         }
       }, this);
 
@@ -225,7 +225,7 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport, CustomEventSupport, Bub
     /* Update globar variables and every layer with posts.
      * @public
      */
-    update : function update () {
+    update: function update () {
       this.updateGlobalVars()._updateLayers();
       return this;
     },
@@ -233,7 +233,7 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport, CustomEventSupport, Bub
     /* Load a layer’s posts silently
      * @private
      */
-    fillLayer : function fillLayer (dateString, scrollDirection) {
+    fillLayer: function fillLayer (dateString, scrollDirection) {
       this._listenScrollEvent = false;
       this._beforeRequest(dateString, scrollDirection);
       this._listenScrollEvent = true;
@@ -243,23 +243,23 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport, CustomEventSupport, Bub
      * @public
      * @return {Object[]}
      */
-    getLayers : function getLayers () {
+    getLayers: function getLayers () {
       return this._layers || [];
     },
 
-    getPostsRegistry : function getPostsRegistry(date) {
+    getPostsRegistry: function getPostsRegistry(date) {
       return this.registry.get(date);
     },
 
-    setPostsRegistry : function setPostsRegistry(date, posts) {
+    setPostsRegistry: function setPostsRegistry(date, posts) {
       this.registry.set(date, posts);
     },
 
-    request : function request(id, dateString) {
-      this.socket.emit('getApprovedMonthPosts', id, dateString);
+    request: function request(id, dateString) {
+      this.socket.emit('getApprovedPostsPage', id, dateString);
     },
 
-    loadLayer : function loadLayer(postsData, dateString, scrollDirection) {
+    loadLayer: function loadLayer(postsData, dateString, scrollDirection) {
       if (!this.getPostsRegistry(dateString)) {
         this.setPostsRegistry(dateString, postsData);
       }
@@ -306,7 +306,7 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport, CustomEventSupport, Bub
       if (prev2 && this._canRemovePosts(prev2)) { this.removePosts(prev2); }
     },
 
-    addPosts : function addPosts(layer, postsData) {
+    addPosts: function addPosts(layer, postsData) {
       layer.addPosts(postsData, this.viewType);
       layer.filterPosts(this.parent.header.filterDropdown.getSelectedSourceTypes(), this.viewType);
     },
@@ -314,16 +314,16 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport, CustomEventSupport, Bub
     /* Remove/destroy posts from a layer.
      * @public
      */
-    removePosts : function removePosts(layer) {
+    removePosts: function removePosts(layer) {
       layer.empty();
       return this;
     },
 
-    getCurrentMonthLayer : function getCurrentMonthLayer() {
+    getCurrentMonthLayer: function getCurrentMonthLayer() {
       return this['layer_' + this._currentMonthString];
     },
 
-    updateGlobalVars : function updateGlobalVars() {
+    updateGlobalVars: function updateGlobalVars() {
       this._totalHeight = this.mainContent.offsetHeight;
       this._windowInnerHeight = this._window.innerHeight;
       this._availableWidth = this._window.innerWidth;
@@ -340,34 +340,28 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport, CustomEventSupport, Bub
      * more content.
      * @private
      */
-    _createEmptyLayers : function _createEmptyLayers(formattedPosts) {
-      var fragment = document.createDocumentFragment();
+    _createEmptyLayers: function _createEmptyLayers(formattedPosts) {
+      var frag = document.createDocumentFragment();
       this._layers = [];
 
-      formattedPosts.forEach(function (yearItem) {
-        var year = yearItem.year;
-
-        yearItem.months.forEach(function (monthItem, index) {
-          var dateString = moment(year + '-' + monthItem.month + '-01', 'YYYY-MM-DD').format('YYYY-MM');
-          var layerName = 'layer_' + dateString;
-
-          this._layers.push(this.appendChild(new CV.EmbedLayer({
-            name: layerName,
-            id: index,
-            dateString: dateString
-          })));
-
-          this[layerName].setHeight(this._averageLayerHeight);
-          fragment.appendChild(this[layerName].el);
-        }, this);
+      formattedPosts.forEach(function (page, index) {
+        var layer = new CV.EmbedLayer({
+          id: index,
+          name: 'layer_' + index,
+          page: page
+        });
+        layer.setHeight(this._averageLayerHeight);
+        this._layers.push(layer);
+        this.appendChild(layer);
+        frag.appendChild(layer.el);
       }, this);
 
-      this.el.appendChild(fragment);
+      this.el.appendChild(frag);
 
       return this;
     },
 
-    _requestAll : function _requestAll() {
+    _requestAll: function _requestAll() {
       var storedData = this.registry.get();
       Object.keys(storedData).forEach(function(propertyName) {
         var posts = storedData[propertyName];
@@ -375,13 +369,12 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport, CustomEventSupport, Bub
       }, this);
     },
 
-    _beforeRequest : function _beforeRequest(dateString, scrollDirection) {
+    _beforeRequest: function _beforeRequest(dateString, scrollDirection) {
       if (dateString === this._currentMonthString) {
         return;
       }
 
       this._currentMonthString = dateString;
-
       // prevent to append childs if the layer is already filled
       if (this['layer_' + dateString].getPosts().length) {
         return;
@@ -400,12 +393,12 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport, CustomEventSupport, Bub
     /* Sets the value to the _averageLayerHeight property.
      * @private
      */
-    _updateAverageLayerHeight : function _updateAverageLayerHeight () {
+    _updateAverageLayerHeight: function _updateAverageLayerHeight () {
       this._averageLayerHeight = ~~(this.averagePostTotal * this.averagePostHeight / ~~(this._availableWidth / this.averagePostWidth));
       return this;
     },
 
-    _updateLayers : function _updateLayers() {
+    _updateLayers: function _updateLayers() {
       this.getLayers().forEach(function (layer) {
         layer.reLayout({ averageHeight : this._averageLayerHeight });
       }, this);
@@ -415,22 +408,22 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport, CustomEventSupport, Bub
      * constraint.
      * @return {Boolean}
      */
-    _canRemovePosts : function _canRemovePosts(layer) {
+    _canRemovePosts: function _canRemovePosts(layer) {
       return (layer.getPosts() && (layer.getPosts().length > this.constructor.MIN_LAYERS_POST));
     },
 
     /* Handles the jumpToLayer widget `activate` event.
      * @private
      */
-    _activateJumpToPopover : function _activateJumpToPopover() {
+    _activateJumpToPopover: function _activateJumpToPopover() {
       this.timeline.activate();
-      this.jumpToLayer.updateActiveOption(this.getCurrentMonthLayer().dateString);
+      this.jumpToLayer.updateActiveOption(this.getCurrentMonthLayer().page);
     },
 
     /* Handles the jumpToLayer widget `deactivate` event.
      * @private
      */
-    _deactivateJumpToPopover : function _deactivatoTpmuJePopover() {
+    _deactivateJumpToPopover: function _deactivatoTpmuJePopover() {
       this.timeline.deactivate();
     }
   }

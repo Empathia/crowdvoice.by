@@ -15,12 +15,10 @@ Class(CV, 'Embeddable').includes(NodeSupport, CustomEventSupport, CV.HelperVoice
       Object.keys(config).forEach(function (propertyName) {
         this[propertyName] =  config[propertyName];
       }, this);
-
       this._window = window;
       this.postsContainerElement = document.querySelector('.posts-container');
-      this.postsCount = this._formatPostsCountObject(this.postsCount);
-      this.totalPosts = this._getTotalPostCount(this.postsCount);
-
+      this.postsCount = this._formatPagesObject(this.pagesForMonths.approved);
+      this.totalPosts = this.voiceData.postsCount;
       this._updateVars();
     },
 
@@ -42,7 +40,7 @@ Class(CV, 'Embeddable').includes(NodeSupport, CustomEventSupport, CV.HelperVoice
           el : this.postsContainerElement,
           voiceData : this.voiceData,
           viewType : this.reqQuery.default_view,
-          registry : CV.PostsRegistry,
+          registry : CV.VoicePagesRegistry,
           firstPostDate : this.firstPostDate,
           lastPostDate : this.lastPostDate,
           postsCount : this.postsCount,
@@ -113,9 +111,9 @@ Class(CV, 'Embeddable').includes(NodeSupport, CustomEventSupport, CV.HelperVoice
       this.postDetailController = new CV.PostDetailController({
         socket : this.socket,
         postData : ev.data,
-        registry : CV.PostsRegistry,
-        requestPostsSocketEventName : 'approvedMonthPosts',
-        responsePostsSocketEventName : 'getApprovedMonthPosts'
+        registry : CV.VoicePagesRegistry,
+        requestPostsSocketEventName : 'approvedPostsPage',
+        responsePostsSocketEventName : 'getApprovedPostsPage'
       });
 
       this.postDetailController.postDetailWidget.bind('deactivate', function() {

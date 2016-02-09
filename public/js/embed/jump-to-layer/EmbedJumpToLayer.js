@@ -20,7 +20,7 @@ Class(CV, 'EmbedJumpToLayer').inherits(Widget)({
         hasScrollbar : true
       })).render(this.triggerElement);
 
-      this._createJumpToLayerOptions();
+      // this._createJumpToLayerOptions();
 
       return this;
     },
