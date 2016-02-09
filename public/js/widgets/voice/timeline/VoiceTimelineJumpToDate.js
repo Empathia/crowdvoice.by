@@ -1,7 +1,8 @@
-var moment = require('moment');
-var GeminiScrollbar = require('gemini-scrollbar');
-var Events = require('./../../../lib/events');
-var inlineStyle = require('./../../../lib/inline-style');
+/* global App */
+var moment = require('moment')
+  , GeminiScrollbar = require('gemini-scrollbar')
+  , Events = require('./../../../lib/events')
+  , inlineStyle = require('./../../../lib/inline-style');
 
 Class(CV, 'VoiceTimelineJumpToDate').inherits(Widget)({
   prototype: {
@@ -126,6 +127,7 @@ Class(CV, 'VoiceTimelineJumpToDate').inherits(Widget)({
       }
 
       this.parent.activate();
+      this.updateActivateOption(App.Voice.voicePostLayersManager.getCurrentMonthLayer().page);
       this.scrollbar.update();
     },
 
@@ -140,18 +142,22 @@ Class(CV, 'VoiceTimelineJumpToDate').inherits(Widget)({
       this.jumpToDatePopover.arrowElement.style.transform = '';
     },
 
-    /* Deactivate any active option and activate the one that matches the passed string by name.
-     * @method updateActivateOption <public> [Function]
-     * @argument date <required> [String] (undefined) ex. '1987-07'
-     * @return [CV.VoiceTimelineJumpToDate]
+    /* Deactivate any active option and activates the first one that matches
+     * the passed pageString with it’s prop `page`.
+     * @public
+     * @param {string} pageString - @ex `1`
+     * @return {Object} VoiceTimelineJumpToDate
      */
-    updateActivateOption: function updateActivateOption(date) {
-      this._optionChilds.forEach(function(child) {
+    updateActivateOption: function updateActivateOption(pageString) {
+      this._optionChilds.map(function(child) {
         child.deactivate();
+        return child;
+      }).some(function (option) {
+        if (option.page === pageString) {
+          option.activate();
+          return true;
+        }
       });
-
-      this['item_' + date].activate();
-
       return this;
     },
 

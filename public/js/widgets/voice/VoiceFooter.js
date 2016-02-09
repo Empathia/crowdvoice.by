@@ -196,13 +196,6 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
       return this;
     },
 
-    /* Updates the 'jump to date' popover, activating the current option
-     * @method updateTimelineDatesMenu <public> [Function]
-     */
-    updateTimelineDatesMenu: function updateTimelineDatesMenu(dateString) {
-      this.voiceTimelineFeedback.activateJumpToDateOption(dateString);
-    },
-
     /* Instantiate and append the jump to date widget on its timeline chidlren.
      * @method createJumpToDateBubble <public> [Function]
      */

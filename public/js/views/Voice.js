@@ -479,7 +479,6 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
 
       if (this.voiceFooter) {
         this.voiceFooter.updateTimelineVars();
-        this.voiceFooter.updateTimelineDatesMenu(data.dateString);
       }
 
       if (this._showContentViewer) {

@@ -165,7 +165,7 @@ Class(CV, 'VoiceTimelineFeedback').inherits(Widget)({
     },
 
     activateJumpToDateOption: function activateJumpToDateOption(dateString) {
-      // this.jumpToDate.updateActivateOption(dateString);
+      this.jumpToDate.updateActivateOption(dateString);
     },
 
     /* Unlisten events, release any HTMLElement reference, free variables...
