@@ -19,7 +19,10 @@ Class(CV, 'EmbedLayer').inherits(Widget).includes(BubblingSupport)({
       this.el = this.element[0];
       this.postsContainer = this.el.querySelector('.posts-layer__posts');
       this.ticksContainerElement = this.el.querySelector('.cv-voice-posts-layer__ticks');
+      this.el.querySelector('.posts-layer__detector').dataset.date = this.dateString;
       this.el.querySelector('.posts-layer__detector').dataset.page = this.page;
+      this.el.dataset.date = this.dateString;
+      this.el.dataset.page = this.page;
 
       this._postWidgets = [];
       this._indicatorWidgets = [];

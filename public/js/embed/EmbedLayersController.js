@@ -66,7 +66,7 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport, CustomEventSupport, Bub
 
       this.jumpToLayer = new CV.EmbedJumpToLayer({
         triggerElement: this.timeline.el,
-        postsCount: this.postsCount
+        postsCount: Embed.pagesForMonths.approved
       });
 
       this._activateJumpToPopoverRef = this._activateJumpToPopover.bind(this);
@@ -86,7 +86,7 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport, CustomEventSupport, Bub
      */
     _jumpToLayer: function _jumpToLayer(ev) {
       var _this = this;
-      var layer = this['layer_' + ev.dateString];
+      var layer = this['layer_' + ev.page];
 
       if (!layer) { return; }
       if (layer === this.getCurrentMonthLayer()) { return; }
@@ -347,7 +347,7 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport, CustomEventSupport, Bub
       formattedPosts.forEach(function (page, index) {
         var layer = new CV.EmbedLayer({
           id: index,
-          name: 'layer_' + index,
+          name: 'layer_' + page,
           page: page
         });
         layer.setHeight(this._averageLayerHeight);
@@ -417,7 +417,7 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport, CustomEventSupport, Bub
      */
     _activateJumpToPopover: function _activateJumpToPopover() {
       this.timeline.activate();
-      this.jumpToLayer.updateActiveOption(this.getCurrentMonthLayer().page);
+      // this.jumpToLayer.updateActiveOption(this.getCurrentMonthLayer().page);
     },
 
     /* Handles the jumpToLayer widget `deactivate` event.
