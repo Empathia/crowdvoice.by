@@ -1,5 +1,6 @@
 var Person = require('./../../lib/currentPerson')
   , API = require('./../../lib/api')
+  , constants = require('./../../lib/constants')
   , Events = require('./../../lib/events')
   , Checkit = require('checkit');
 
@@ -329,10 +330,10 @@ Class(CV, 'VoiceEdit').inherits(CV.VoiceBase)({
         , url = '/' + Person.get('profileName') + '/myvoices/';
 
       switch(res.status) {
-        case CV.VoiceView.STATUS_ARCHIVED: url += '#archived'; break;
-        case CV.VoiceView.STATUS_DRAFT: url += '#drafts'; break;
-        case CV.VoiceView.STATUS_PUBLISHED: url += '#published'; break;
-        case CV.VoiceView.STATUS_UNLISTED: url += '#unlisted'; break;
+        case constants.VOICE.STATUS_ARCHIVED: url += '#archived'; break;
+        case constants.VOICE.STATUS_DRAFT: url += '#drafts'; break;
+        case constants.VOICE.STATUS_PUBLISHED: url += '#published'; break;
+        case constants.VOICE.STATUS_UNLISTED: url += '#unlisted'; break;
       }
 
       window.setTimeout(function() {

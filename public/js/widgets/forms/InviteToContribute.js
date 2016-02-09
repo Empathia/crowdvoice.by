@@ -1,5 +1,6 @@
 var Person = require('./../../lib/currentPerson');
 var API = require('./../../lib/api');
+var constants = require('./../../lib/constants');
 var Events = require('./../../lib/events');
 var Checkit = require('checkit');
 
@@ -33,7 +34,7 @@ Class(CV, 'InviteToContribute').inherits(Widget).includes(CV.WidgetUtils)({
         _setup : function _setup() {
             var allVoices = [];
             Person.get().voiceNames.forEach(function(voice) {
-                if (voice.type === CV.VoiceView.TYPE_CLOSED) {
+                if (voice.type === constants.VOICE.TYPE_CLOSED) {
                     if (this.data.voiceIds.indexOf(voice.id) === -1) {
                         allVoices.push({
                             label : voice.name,

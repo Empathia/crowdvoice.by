@@ -1,5 +1,6 @@
 /* globals App */
-var Person = require('./../../lib/currentPerson');
+var Person = require('./../../lib/currentPerson')
+  , constants = require('./../../lib/constants');
 
 Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
   HTML: '\
@@ -14,7 +15,9 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
             </div>\
             <div class="voice-footer-owner-data">\
               <div class="voice-footer-title -font-bold"></div>\
-              <div class="voice-footer-by">by <a href=""></a></div>\
+              <div class="voice-footer-by">\
+                by <a href=""></a>\
+              </div>\
             </div>\
           </div>\
         </div>\
@@ -124,16 +127,17 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
         voice: this.voice
       })).render(this.actionsColumn);
 
-      if (this.voice.type !== CV.VoiceView.TYPE_CLOSED || this.allowPostEditing) {
+      if (this.voice.type !== constants.VOICE.TYPE_CLOSED || this.allowPostEditing) {
         this.appendChild(new CV.VoiceModerateButton({
           name: 'voiceModerate',
           className: '-ml10px',
-          allowPostEditing: this.allowPostEditing
+          allowPostEditing: this.allowPostEditing,
+          unapprovedPostsCount: this.unapprovedPostsCount
         })).render(this.actionsColumn);
       }
 
       if ((Person.ownerOf('voice', this.voice.id) === false) &&
-          (this.voice.type === CV.VoiceView.TYPE_CLOSED)) {
+          (this.voice.type === constants.VOICE.TYPE_CLOSED)) {
 
         var _showRequestToContribute = false;
 
@@ -192,15 +196,8 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
       return this;
     },
 
-    /* Updates the 'jump to date' popover, activating the current option
-     * @public
-     */
-    updateTimelineDatesMenu: function updateTimelineDatesMenu(dateString) {
-      this.voiceTimelineFeedback.activateJumpToDateOption(dateString);
-    },
-
     /* Instantiate and append the jump to date widget on its timeline chidlren.
-     * @public
+     * @method createJumpToDateBubble <public> [Function]
      */
     createJumpToDateBubble: function createJumpToDateBubble(totalLayers) {
       this.voiceTimelineFeedback.createJumpToDateBubble(totalLayers);
