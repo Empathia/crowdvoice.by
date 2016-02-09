@@ -71,7 +71,7 @@ Class(CV, 'PostDetailController').includes(NodeSupport, CustomEventSupport)({
      */
     setIndexes: function setIndexes(postEntity) {
       Object.keys(this.registry.get()).some(function (page, pageIndex) {
-        return this.registry.get(page).some(function (post, postIndex) {
+        return (this.registry.get(page) || []).some(function (post, postIndex) {
           if (post.id === postEntity.id) {
             this._currentPageIndex = pageIndex;
             this._currentPostIndex = postIndex;

@@ -263,10 +263,6 @@ Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
      * @method _beforeRequest <private> [Function]
      */
     _beforeRequest: function _beforeRequest(dateString, scrollDirection) {
-      // if (this.name === 'voicePostLayersManager') {
-      //     window.location.hash = '!' + dateString;
-      // }
-
       if (dateString === this._currentMonthString) {
         return;
       }

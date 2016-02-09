@@ -229,15 +229,15 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
      * @private
      */
     _checkInitialHash: function _checkInitialHash() {
-      var hash = window.location.hash.replace(/^#!/, '');
-      var matches = hash.match(/(^\d{4}-\d{2})(\/\w+)?/);
+      var hash = window.location.hash.replace(/^#!/, '')
+        , matches = hash.match(/(^\d{4}-\d{2})(\/\w+)?/);
 
       if (!hash || !matches) {
         return this.voicePostLayersManager.loadDefaultLayer();
       }
 
-      var month = matches[1];
-      var postId = matches[2];
+      var date = matches[1]
+        , postId = matches[2];
 
       if (postId) {
         postId = postId.replace(/^\//,'');
@@ -247,18 +247,21 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
         }
       }
 
-      if (month && /^\d{4}-\d{2}/.test(month)) {
-        // if is the very first layer, do not scrollTo, just load it
-        if (month === this.voicePostLayersManager._layers[0].dateString) {
-          return this.voicePostLayersManager.loadDefaultLayer();
+      if (date && /^\d{4}-\d{2}/.test(date)) {
+        var _date = date.split('-')
+          , year = _date[0]
+          , month = _date[1]
+          , _year = this.pagesForMonths.approved[year];
+
+        if (_year) {
+          var _month = _year[month];
+          if (_month) {
+            return this.voicePostLayersManager._jumpToHandlerRef({
+              dateString: month,
+              page: _month.page
+            });
+          }
         }
-
-        // otherwise, animate the scrolling
-        this.voicePostLayersManager._jumpToHandlerRef({
-          dateString: month
-        });
-
-        return;
       }
 
       this.voicePostLayersManager.loadDefaultLayer();
@@ -326,7 +329,6 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
         layer.removePost(ev.data.parent);
       }.bind(this));
     },
-
     /* Renders the PostDetail Overlay
      * @private
      * @param {Object} ev - the Post instance.
