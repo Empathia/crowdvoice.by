@@ -1,6 +1,6 @@
 var moment = require('moment')
-  , GeminiScrollbar = require('gemini-scrollbar')
-  , Events = require('./../../lib/events');
+  , GeminiScrollbar = require('gemini-scrollbar');
+  // , Events = require('./../../lib/events');
 
 Class(CV, 'EmbedJumpToLayer').inherits(Widget)({
   prototype: {
@@ -29,8 +29,8 @@ Class(CV, 'EmbedJumpToLayer').inherits(Widget)({
      * @private
      */
     _bindEvents : function _bindEvents() {
-      this._activatePopoverRef = this._activatePopover.bind(this);
-      Events.on(this.triggerElement, 'click', this._activatePopoverRef);
+      // this._activatePopoverRef = this._activatePopover.bind(this);
+      // Events.on(this.triggerElement, 'click', this._activatePopoverRef);
 
       this._handleDeactivatePopoverRef = this._handleDeactivatePopover.bind(this);
       this.jumpToDatePopover.bind('deactivate', this._handleDeactivatePopoverRef);
@@ -163,8 +163,8 @@ Class(CV, 'EmbedJumpToLayer').inherits(Widget)({
       Widget.prototype.destroy.call(this);
       this._handleDeactivatePopoverRef = null;
 
-      Events.off(this.triggerElement, 'click', this._activatePopoverRef);
-      this._activatePopoverRef = null;
+      // Events.off(this.triggerElement, 'click', this._activatePopoverRef);
+      // this._activatePopoverRef = null;
 
       return null;
     }
