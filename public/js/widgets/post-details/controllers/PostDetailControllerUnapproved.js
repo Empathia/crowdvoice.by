@@ -10,7 +10,7 @@ Class(CV, 'PostDetailControllerUnapproved').includes(CV.PostDetailController)({
 
         _bindEvents : function _bindEvents() {
             CV.PostDetailController.prototype._bindEvents.call(this);
-            this.socket.on('unapprovedMonthPosts', this.updateRegistryRef);
+            this.socket.on('unApprovedPostsPage', this.updateRegistryRef);
         },
 
         /* Requests the next and prev months data to the socket.
@@ -24,7 +24,7 @@ Class(CV, 'PostDetailControllerUnapproved').includes(CV.PostDetailController)({
             if (prevMonthString) {
                 prev = this.registry.get(prevMonthString);
                 if (!prev) {
-                    this.socket.emit('getUnapprovedMonthPosts', App.Voice.data.id, prevMonthString);
+                    this.socket.emit('getUnApprovedPostsPage', App.Voice.data.id, prevMonthString);
                 } else {
                     this.updateValues(this.keys.indexOf(prevMonthString), prev);
                 }
@@ -33,7 +33,7 @@ Class(CV, 'PostDetailControllerUnapproved').includes(CV.PostDetailController)({
             if (nextMonthString) {
                 next = this.registry.get(nextMonthString);
                 if (!next) {
-                    this.socket.emit('getUnapprovedMonthPosts', App.Voice.data.id, nextMonthString);
+                    this.socket.emit('getUnApprovedPostsPage', App.Voice.data.id, nextMonthString);
                 } else {
                     this.updateValues(this.keys.indexOf(nextMonthString), next);
                 }
@@ -44,7 +44,7 @@ Class(CV, 'PostDetailControllerUnapproved').includes(CV.PostDetailController)({
 
         destroy : function destroy() {
             this.widget = this.widget.destroy();
-            this.socket.removeListener('unapprovedMonthPosts', this.updateRegistryRef);
+            this.socket.removeListener('unApprovedPostsPage', this.updateRegistryRef);
             return null;
         }
     }
