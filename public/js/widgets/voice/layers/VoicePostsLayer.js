@@ -179,7 +179,7 @@ Class(CV, 'VoicePostsLayer').inherits(Widget).includes(BubblingSupport)({
       for (i = 0; i < len; i++) {
         posts[i].name = 'post_' + i;
         post = CV.EditablePost.create(posts[i]);
-        // post.el.dataset.date = moment(posts[i].publishedAt).format('YYYY-MM-DD');
+        post.el.dataset.date = moment(posts[i].publishedAt).format('YYYY-MM-DD');
 
         this.appendChild(post).render(frag);
         this._postWidgets.push(post);
