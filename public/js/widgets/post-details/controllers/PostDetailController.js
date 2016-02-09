@@ -267,4 +267,3 @@ Class(CV, 'PostDetailController').includes(NodeSupport, CustomEventSupport)({
     }
   }
 });
-
