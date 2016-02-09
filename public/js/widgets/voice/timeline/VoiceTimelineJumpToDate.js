@@ -84,8 +84,8 @@ Class(CV, 'VoiceTimelineJumpToDate').inherits(Widget)({
      * @method _bindEvents <private> [Function]
      */
     _bindEvents: function _bindEvents() {
-      this._activatePopoverRef = this._activatePopover.bind(this);
-      Events.on(this.container, 'click', this._activatePopoverRef);
+      // this._activatePopoverRef = this._activatePopover.bind(this);
+      // Events.on(this.container, 'click', this._activatePopoverRef);
       this._handleActivateRef = this._handleActivate.bind(this);
       this.bind('jumpto:popover:position', this._handleActivateRef);
       this._handleDeactivateRef = this._handleDeactivate.bind(this);
