@@ -417,7 +417,7 @@ Class(CV, 'EmbedLayersController').includes(NodeSupport, CustomEventSupport, Bub
      */
     _activateJumpToPopover: function _activateJumpToPopover() {
       this.timeline.activate();
-      // this.jumpToLayer.updateActiveOption(this.getCurrentMonthLayer().page);
+      this.jumpToLayer.updateActiveOption(this.getCurrentMonthLayer().page);
     },
 
     /* Handles the jumpToLayer widget `deactivate` event.

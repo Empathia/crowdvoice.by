@@ -1,6 +1,6 @@
-var moment = require('moment');
-var GeminiScrollbar = require('gemini-scrollbar');
-var Events = require('./../../lib/events');
+var moment = require('moment')
+  , GeminiScrollbar = require('gemini-scrollbar')
+  , Events = require('./../../lib/events');
 
 Class(CV, 'EmbedJumpToLayer').inherits(Widget)({
   prototype: {
@@ -99,17 +99,23 @@ Class(CV, 'EmbedJumpToLayer').inherits(Widget)({
       });
     },
 
-    /* Deactivate any active option and activate the one that matches the passed dateString by name.
+    /* Deactivate any active option and activates the first one that matches
+     * the passed pageString with it’s prop `page`.
      * @public
-     * @param {string} dateString - @ex `1987-07`
+     * @param {string} pageString - @ex `1`
      * @emits {activate} emits EmbedJumpToLayerPopover `activate` event dispatched by the widget.activate method.
      * @return {Object} EmbedJumpToLayerPopover
      */
-    updateActiveOption : function updateActiveOption(dateString) {
-      this._optionChilds.forEach(function(child) {
+    updateActiveOption: function updateActiveOption(pageString) {
+      this._optionChilds.map(function(child) {
         child.deactivate();
+        return child;
+      }).some(function (option) {
+        if (option.page === pageString) {
+          option.activate();
+          return true;
+        }
       });
-      this['item_' + dateString].activate();
       return this;
     },
 
