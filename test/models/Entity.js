@@ -241,8 +241,9 @@ describe('K.Entity', function () {
 
           tyrion.getAnonymousEntity()
             .then(function (anonEnt) {
-              expect(anonEnt.isAnonymous).to.equal(true)
+              expect(anonEnt).to.be.an('object')
               expect(anonEnt.constructor.className).to.equal('Entity')
+              expect(anonEnt.isAnonymous).to.equal(true)
 
               return doneTest()
             })
@@ -261,7 +262,7 @@ describe('K.Entity', function () {
               throw new Error('Shouldn\'t resolve.')
             })
             .catch(function (err) {
-              expect(err).to.be.an('Error')
+              expect(err).to.be.an('error')
 
               return doneTest()
             })
@@ -273,15 +274,59 @@ describe('K.Entity', function () {
   describe('#getOwner', function () {
 
     it('Should return Anonymous Entity\'s owner Entity', function (doneTest) {
-      throw 'Not Written Yet'
+      K.Entity.query()
+        .where('id', 2)
+        .then(function (result) {
+          var anon = result[0]
+
+          anon.getOwner()
+            .then(function (entity) {
+              expect(entity).to.be.an('object')
+              expect(entity.constructor.className).to.equal('Entity')
+              expect(entity.isAnonymous).to.equal(false)
+              expect(entity.id).to.equal(1)
+
+              return doneTest()
+            })
+            .catch(doneTest)
+        })
     })
 
     it('Should return Organization Entity\'s owner Entity', function (doneTest) {
-      throw 'Not Written Yet'
+      K.Entity.query()
+        .where('id', 22)
+        .then(function (result) {
+          var org = result[0]
+
+          org.getOwner()
+            .then(function (entity) {
+              expect(entity).to.be.an('object')
+              expect(entity.constructor.className).to.equal('Entity')
+              expect(entity.isAnonymous).to.equal(false)
+              expect(entity.id).to.equal(3)
+
+              return doneTest()
+            })
+            .catch(doneTest)
+        })
     })
 
-    it('Should throw if K.Entity is type = \'person\' and .isAnonymous is true', function (doneTest) {
-      throw 'Not Written Yet'
+    it('Should throw if K.Entity is type = \'person\' AND isAnonymous = false', function (doneTest) {
+      K.Entity.query()
+        .where('id', 1)
+        .then(function (result) {
+          var tyrion = result[0]
+
+          tyrion.getOwner()
+            .then(function (entity) {
+              throw new Error('Shouldn\'t resolve.')
+            })
+            .catch(function (err) {
+              expect(err).to.be.an('error')
+
+              return doneTest()
+            })
+        })
     })
 
   })
@@ -289,11 +334,40 @@ describe('K.Entity', function () {
   describe('#getRealEntity', function () {
 
     it('Should work the same as #getOwner for Anonymous Entities', function (doneTest) {
-      throw 'Not Written Yet'
+      K.Entity.query()
+        .where('id', 2)
+        .then(function (result) {
+          var anon = result[0]
+
+          anon.getOwner()
+            .then(function (entity) {
+              expect(entity).to.be.an('object')
+              expect(entity.constructor.className).to.equal('Entity')
+              expect(entity.isAnonymous).to.equal(false)
+              expect(entity.id).to.equal(1)
+
+              return doneTest()
+            })
+            .catch(doneTest)
+        })
     })
 
     it('Should throw for non-Anonymous Entities', function (doneTest) {
-      throw 'Not Written Yet'
+      K.Entity.query()
+        .where('id', 1)
+        .then(function (result) {
+          var tyrion = result[0]
+
+          tyrion.getOwner()
+            .then(function (entity) {
+              throw new Error('Shouldn\'t resolve.')
+            })
+            .catch(function (err) {
+              expect(err).to.be.an('error')
+
+              return doneTest()
+            })
+        })
     })
 
   })
@@ -301,15 +375,51 @@ describe('K.Entity', function () {
   describe('#isOwnerOfEntity', function () {
 
     it('Should return true for Cersei owner of House Lannister', function (doneTest) {
-      throw 'Not Written Yet'
+      K.Entity.query()
+        .where('id', 3)
+        .then(function (result) {
+          var cersei = result[0]
+
+          cersei.isOwnerOfEntity(new K.Entity({ id: 22 }))
+            .then(function (result) {
+              expect(result).to.be.a('boolean')
+              expect(result).to.equal(true)
+
+              return doneTest()
+            })
+        })
     })
 
     it('Should return false for Tyrion owner of House Lannister', function (doneTest) {
-      throw 'Not Written Yet'
+      K.Entity.query()
+        .where('id', 1)
+        .then(function (result) {
+          var tyrion = result[0]
+
+          tyrion.isOwnerOfEntity(new K.Entity({ id: 22 }))
+            .then(function (result) {
+              expect(result).to.be.a('boolean')
+              expect(result).to.equal(false)
+
+              return doneTest()
+            })
+        })
     })
 
     it('Should return true for ownership of Anonymous Entity', function (doneTest) {
-      throw 'Not Written Yet'
+      K.Entity.query()
+        .where('id', 1)
+        .then(function (result) {
+          var tyrion = result[0]
+
+          tyrion.isOwnerOfEntity(new K.Entity({ id: 2 }))
+            .then(function (result) {
+              expect(result).to.be.a('boolean')
+              expect(result).to.equal(true)
+
+              return doneTest()
+            })
+        })
     })
 
   })
@@ -317,15 +427,51 @@ describe('K.Entity', function () {
   describe('#isOwnedBy', function () {
 
     it('Should return true for House Lannister owned by Cersei', function (doneTest) {
-      throw 'Not Written Yet'
+      K.Entity.query()
+        .where('id', 22)
+        .then(function (result) {
+          var org = result[0]
+
+          org.isOwnedBy(new K.Entity({ id: 3 }))
+            .then(function (result) {
+              expect(result).to.be.a('boolean')
+              expect(result).to.equal(true)
+
+              return doneTest()
+            })
+        })
     })
 
     it('Should return false for House Lannister owned by Tyrion', function (doneTest) {
-      throw 'Not Written Yet'
+      K.Entity.query()
+        .where('id', 22)
+        .then(function (result) {
+          var org = result[0]
+
+          org.isOwnedBy(new K.Entity({ id: 1 }))
+            .then(function (result) {
+              expect(result).to.be.a('boolean')
+              expect(result).to.equal(false)
+
+              return doneTest()
+            })
+        })
     })
 
     it('Should return true for Anonymous Entity ownership', function (doneTest) {
-      throw 'Not Written Yet'
+      K.Entity.query()
+        .where('id', 2)
+        .then(function (result) {
+          var anonEnt = result[0]
+
+          anonEnt.isOwnedBy(new K.Entity({ id: 1 }))
+            .then(function (result) {
+              expect(result).to.be.a('boolean')
+              expect(result).to.equal(true)
+
+              return doneTest()
+            })
+        })
     })
 
   })
@@ -333,11 +479,35 @@ describe('K.Entity', function () {
   describe('#isOwnerOfVoice', function () {
 
     it('Should return true for Tyrion owner of Valyrian Roads', function (doneTest) {
-      throw 'Not Written Yet'
+      K.Entity.query()
+        .where('id', 1)
+        .then(function (result) {
+          var tyrion = result[0]
+
+          tyrion.isOwnerOfVoice(new K.Voice({ id: 4 }))
+            .then(function (result) {
+              expect(result).to.be.a('boolean')
+              expect(result).to.equal(true)
+
+              return doneTest()
+            })
+        })
     })
 
     it('Should return false for Cersei owner of Valyrian Roads', function (doneTest) {
-      throw 'Not Written Yet'
+      K.Entity.query()
+        .where('id', 3)
+        .then(function (result) {
+          var cersei = result[0]
+
+          cersei.isOwnerOfVoice(new K.Voice({ id: 4 }))
+            .then(function (result) {
+              expect(result).to.be.a('boolean')
+              expect(result).to.equal(false)
+
+              return doneTest()
+            })
+        })
     })
 
   })
@@ -353,11 +523,35 @@ describe('K.Entity', function () {
   describe('#isFollowedBy', function () {
 
     it('Should return true for Tyrion followed by Jamie', function (doneTest) {
-      throw 'Not Written Yet'
+      K.Entity.query()
+        .where('id', 1)
+        .then(function (result) {
+          var tyrion = result[0]
+
+          tyrion.isFollowedBy(new K.Entity({ id: 5 }))
+            .then(function (result) {
+              expect(result).to.be.a('boolean')
+              expect(result).to.equal(false)
+
+              return doneTest()
+            })
+        })
     })
 
     it('Should return false for Tyrion followed by Cersei', function (doneTest) {
-      throw 'Not Written Yet'
+      K.Entity.query()
+        .where('id', 1)
+        .then(function (result) {
+          var tyrion = result[0]
+
+          tyrion.isFollowedBy(new K.Entity({ id: 3 }))
+            .then(function (result) {
+              expect(result).to.be.a('boolean')
+              expect(result).to.equal(false)
+
+              return doneTest()
+            })
+        })
     })
 
   })
