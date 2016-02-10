@@ -53,6 +53,7 @@ describe('K.Entity', function () {
           .then(function (result) {
             var tyrion = result[0]
 
+            expect(tyrion.anonymousEntity).to.be.an('array')
             expect(tyrion.anonymousEntity.length).to.equal(1)
             expect(tyrion.anonymousEntity[0]).to.be.an('object')
             expect(tyrion.anonymousEntity[0].constructor.className).to.equal('Entity')
@@ -764,7 +765,7 @@ describe('K.Entity', function () {
           tyrion.isFollowedBy(new K.Entity({ id: 5 }))
             .then(function (result) {
               expect(result).to.be.a('boolean')
-              expect(result).to.equal(false)
+              expect(result).to.equal(true)
 
               return doneTest()
             })

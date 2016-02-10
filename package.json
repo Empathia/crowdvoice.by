@@ -23,7 +23,7 @@
     "autosize": "3.0.6",
     "aws-sdk": "2.1.33",
     "bcrypt-nodejs": "0.0.3",
-    "bluebird": "2.9.27",
+    "bluebird": "3.2.2",
     "checkit": "0.6.0",
     "clipboard": "1.5.5",
     "compression-webpack-plugin": "0.2.0",
