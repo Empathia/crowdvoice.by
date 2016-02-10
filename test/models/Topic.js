@@ -14,12 +14,6 @@ var constructorLoop = function (array, className) {
   })
 }
 
-var propertyLoop = function (array, propertyName, value) {
-  array.forEach(function (a) {
-    expect(a[propertyName]).to.equal(value)
-  })
-}
-
 describe('K.Topic', function () {
 
   describe('Relations', function () {
