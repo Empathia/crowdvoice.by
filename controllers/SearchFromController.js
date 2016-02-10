@@ -3,6 +3,10 @@ var OAuth = require('oauth').OAuth;
 var Twitter = require('twitter');
 var YouTube = require('youtube-node');
 
+var youtube = new YouTube();
+youtube.setKey(CONFIG.youtube.key);
+youtube.addParam('order', 'date');
+
 var oauthOptions = {
   key : CONFIG.twitter.consumer_key,
   secret : CONFIG.twitter.consumer_secret,
@@ -59,9 +63,6 @@ var SearchFrom = Class('SearchFrom')({
        *   nextPageToken: null | <String>,
        * }
        */
-
-      var youtube = new YouTube();
-      youtube.setKey(CONFIG.youtube.key);
 
       if (req.body.nextPageToken) {
         youtube.addParam('pageToken', req.body.nextPageToken)

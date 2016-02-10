@@ -19,7 +19,7 @@
   width: @cv-sidebar-width;
   background-color: @color-neutral-xxx-dark;
   transform: translateZ(0);
-  transition: transform 300ms ease-in-out;
+  transition: transform 500ms @ease-out;
 }
 
 .cv-main-sidebar.-is-expanded {
@@ -34,7 +34,7 @@
 .sidebar-nav {
   height: 100%;
   transform: translateX(@cv-sidebar-width - @cv-sidebar-collapsed-width);
-  transition: transform 300ms ease-in-out;
+  transition: transform 500ms @ease-out;
 }
 
 .cv-main-sidebar .cv-main-logo {

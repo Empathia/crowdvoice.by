@@ -30,37 +30,53 @@ Class(CV, 'PostCreatorFromSourcesQueue').inherits(Widget).includes(BubblingSuppo
       this.bind('post:moderate:delete', this._deleteFromQueueRef);
     },
 
+    /* Removes a specific Post from the queue.
+     * @private
+     * @listen 'post:moderate:delete' event.
+     */
     _deleteFromQueue: function _deleteFromQueue(ev) {
       var childIndex = this.children.indexOf(ev.data.parent);
       if (childIndex >= 0) {
         this.children[childIndex].unedit().destroy();
         this._index--;
-
         if (this._index === 0) {
           this.showOnboarding();
         }
       }
     },
 
+    /* Hides the onboarding and success messages.
+     * @public
+     * @return this
+     */
     setSearchingState: function setSearchingState() {
-      this.hideOnboarding();
-      this.hideSuccess();
+      this.hideOnboarding().hideSuccess();
       return this;
     },
 
+    /* Hides the messages and display the loader.
+     * @public
+     * @return this
+     */
     setAddingPost: function setAddingPost() {
-      this.hideOnboarding();
+      this.setSearchingState();
       this.loader.enable();
       return this;
     },
 
+    /* If it has 0 posts in queue, displays the onboarding message.
+     * @public
+     * @return this
+     */
     showOnboarding: function showOnboarding() {
       if (this._index) return;
-
       this.onboarding.classList.add('active');
       return this;
     },
 
+    /* @public
+     * @return this
+     */
     hideOnboarding: function hideOnboarding() {
       this.onboarding.classList.remove('active');
       return this;
@@ -82,7 +98,7 @@ Class(CV, 'PostCreatorFromSourcesQueue').inherits(Widget).includes(BubblingSuppo
      */
     addPosts: function addPosts(postsData) {
       var fragment = document.createDocumentFragment();
-      this.hideOnboarding();
+      this.hideOnboarding().hideSuccess();
 
       postsData.forEach(function (post) {
         post.name = 'post_' + this._index;

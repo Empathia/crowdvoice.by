@@ -35,7 +35,7 @@ require('./widgets/PopoverBlocker');
 require('./widgets/popovers/PopoverShare');
 require('./widgets/popovers/PopoverUnsave');
 
-require('./widgets/voice/PostsRegistry');
+require('./widgets/voice/registry/VoicePagesRegistry');
 require('./embed/helpers/Voice');
 
 require('./embed/Embeddable');

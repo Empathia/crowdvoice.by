@@ -1,108 +1,119 @@
 /* globals App */
 /* Subclass of VoicePostLayers
- * Declares the required abstract methods to handle the Voice Posts on Normal Mode
+ * Defines the abstract methods to handle the Voice Posts on Normal Mode
  */
 var Person = require('./../../../lib/currentPerson');
 
 Class(CV, 'VoicePostLayersVoiceAbstract').inherits(CV.VoicePostLayers)({
-    prototype : {
-        registry : CV.PostsRegistry,
+  prototype: {
+    /* @abstract
+     * @property {string} id The voice id */
+    id: null,
 
-        setup : function setup() {
-            CV.VoicePostLayers.prototype.setup.call(this);
-            this.registry.setup(this.postsCount);
-            this.requestAll();
-            return this;
-        },
+    /* @abstract
+     * @property {Array[string]} _requestedPages Holds the page numbers
+     * that have been already requested, this to avoid duplicated calls
+     * so the server is not loaded with unnecesary work.
+     */
+    _requestedPages: null,
 
-        getPostsRegistry : function getPostsRegistry(date) {
-            return this.registry.get(date);
-        },
+    setup: function setup() {
+      CV.VoicePostLayers.prototype.setup.call(this);
+      this.registry.setup(this.pages);
+      this._requestedPages = [];
+      this.requestAll();
+      return this;
+    },
 
-        setPostsRegistry : function setPostsRegistry(date, posts) {
-            this.registry.set(date, posts);
-        },
+    getPostsRegistry: function getPostsRegistry(date) {
+      return this.registry.get(date);
+    },
 
-        /* Implementation to request post data to the server.
-         * @protected|abstract
-         * @param {string} id - the voice id
-         * @param {string} dateString - `YYYY-MM` formatted string of the Posts we are interested in.
-         */
-        request : function request(id, dateString, scrollDirection) {
-            this._socket.emit('getApprovedMonthPosts', id, dateString, scrollDirection);
-        },
+    setPostsRegistry: function setPostsRegistry(date, posts) {
+      this.registry.set(date, posts);
+    },
 
-        /* Iterates over every registry keys and checks if its value is empty,
-         * if so it will ask for its values via socket.
-         * @protected|abstract
-         */
-        requestAll : function requestAll() {
-            var storedData = this.getPostsRegistry();
-            Object.keys(storedData).forEach(function(propertyName) {
-                var posts = storedData[propertyName];
-                if (!posts) {
-                    this.request(this.id, propertyName);
-                }
-            }, this);
-        },
+    /* Implementation to request post data to the server.
+     * @protected, abstract
+     * @param {string} id - the voice id
+     * @param {string} dateString - `YYYY-MM` formatted string of the Posts we are interested in.
+     */
+    request: function request(id, dateString, scrollDirection) {
+      if (this._requestedPages.indexOf(dateString) >= 0) return;
+      this._requestedPages.push(dateString);
+      this._socket.emit('getApprovedPostsPage', id, dateString, scrollDirection);
+    },
 
-        /* Implementation to add and render posts to a layer.
-         * @method addPosts <public, abstract> [Function]
-         */
-        addPosts : function addPosts(layer, postsData) {
-            if (Person.ownerOf('voice', App.Voice.data.id)) {
-                layer.addEditablePosts(postsData).getPosts().forEach(function(post) {
-                    post.addActions().addRemoveButton();
-                });
-            } else {
-                layer.addPosts(postsData);
-            }
+    /* Iterates over every registry keys and checks if its value is empty,
+     * if so it will ask for its values via socket.
+     * @protected, abstract
+     */
+    requestAll: function requestAll() {
+      var storedData = this.getPostsRegistry();
+      Object.keys(storedData).forEach(function(propertyName) {
+        var posts = storedData[propertyName];
+        if (!posts) this.request(this.id, propertyName);
+      }, this);
+    },
 
-            layer.filterPosts(App.Voice.voiceFooter.filterDropdown.getSelectedSourceTypes());
-        },
+    /* Implementation to add and render posts to a layer.
+     * @public, abstract
+     */
+    addPosts: function addPosts(layer, postsData) {
+      if (Person.ownerOf('voice', App.Voice.data.id)) {
+        layer.addEditablePosts(postsData).getPosts().forEach(function(post) {
+          post.addActions().addRemoveButton();
+        });
+      } else {
+        layer.addPosts(postsData);
+      }
 
-        /* Implementation to remove/destroy posts from a layer.
-         * @method removePosts <public, abstract> [Function]
-         */
-        removePosts : function removePosts(layer) {
-            layer.empty();
-            return this;
-        },
+      if (!App.Voice.voiceFooter || !App.Voice.voiceFooter.filterDropdown) return;
+      layer.filterPosts(App.Voice.voiceFooter.filterDropdown.getSelectedSourceTypes());
+    },
 
-        /* Gets the scroll height of the scrollable area.
-         * @method getScrollHeight <protected> [Function]
-         */
-        getScrollHeight : function getScrollHeight() {
-            return document.body.clientHeight;
-        },
+    /* Implementation to remove/destroy posts from a layer.
+     * @public, abstract
+     */
+    removePosts: function removePosts(layer) {
+      layer.empty();
+      return this;
+    },
 
-        /* Gets the scroll top of the scrollable area.
-         * @method getScrollTop <protected> [Function]
-         */
-        getScrollTop : function getScrollTop() {
-            return this.scrollableArea.pageYOffset;
-        },
+    /* Gets the scroll height of the scrollable area.
+     * @protected
+     */
+    getScrollHeight: function getScrollHeight() {
+      return document.body.clientHeight;
+    },
 
-        /* Scroll to a y position of the scrollable area.
-         * @method getScrollTo <protected> [Function]
-         */
-        scrollTo : function scrollTo(y) {
-            this.scrollableArea.scrollTo(0, y);
-        },
+    /* Gets the scroll top of the scrollable area.
+     * @protected
+     */
+    getScrollTop: function getScrollTop() {
+      return this.scrollableArea.pageYOffset;
+    },
 
-        /* Implementation for custom bindings required by this subclass.
-         * @method __bindEvents <protected, abstract> [Function]
-         */
-        __bindEvents : function __bindEvents() {
-            this._socket.on('approvedMonthPosts', this._loadLayerRef);
-            return this;
-        },
+    /* Scroll to a y position of the scrollable area.
+     * @protected
+     */
+    scrollTo: function scrollTo(y) {
+      this.scrollableArea.scrollTo(0, y);
+    },
 
-        /* Implementation to remove custom bindings required by this subclass.
-         * @method __destroy <protected, abstract> [Function]
-         */
-        __destroy : function __destroy() {
-            this._socket.removeListener('approvedMonthPosts', this._loadLayerRef);
-        }
+    /* Implementation for custom bindings required by this subclass.
+     * @protected, abstract
+     */
+    __bindEvents: function __bindEvents() {
+      this._socket.on('approvedPostsPage', this._loadLayerRef);
+      return this;
+    },
+
+    /* Implementation to remove custom bindings required by this subclass.
+     * @protected, abstract
+     */
+    __destroy: function __destroy() {
+      this._socket.removeListener('approvedPostsPage', this._loadLayerRef);
     }
+  }
 });

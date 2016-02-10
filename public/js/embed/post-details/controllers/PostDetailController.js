@@ -1,16 +1,17 @@
-var moment = require('moment');
-
 Class(CV, 'PostDetailController').includes(NodeSupport, CustomEventSupport)({
-  prototype : {
-    /* Holds an array with the year-months as strings found on the specified registry.
-     * @private {Array<string>} - ['2015-01', '2015-02']
+  prototype: {
+    /* Holds an array with the pages as strings found on the specified registry.
+     * @private {Array<string>} - ['0', '1', ...]
      */
-    keys : null,
+    _pages: null,
+    _totalPagesLen: 0,
+    _currentPageIndex: null,
 
-    _values : null,
-    _totalMonthsLen : 0,
-    _currentMonthIndex : null,
-    _currentIndex : null,
+    /* Holds an array of Posts found on the registry.
+     * @private {Array<Object>} - [{Post}, ...]
+     */
+    _posts: null,
+    _currentPostIndex: null,
 
     /* @param {Object} config
      * @param {Object} config.socket - the Socket instance
@@ -21,11 +22,10 @@ Class(CV, 'PostDetailController').includes(NodeSupport, CustomEventSupport)({
      * @param {string} config.responsePostsSocketEventName - the name of
      *  the socket event to bind to receive the posts data as response.
      */
-    init : function init(config) {
+    init: function init(config) {
       Object.keys(config || {}).forEach(function (propertyName) {
         this[propertyName] = config[propertyName];
       }, this);
-
       this._setup()._bindEvents();
     },
 
@@ -33,7 +33,7 @@ Class(CV, 'PostDetailController').includes(NodeSupport, CustomEventSupport)({
      * @private
      * @return {Object} this
      */
-    _setup : function _setup() {
+    _setup: function _setup() {
       this.appendChild(new CV.PostDetail({
         name: 'postDetailWidget',
         data: this.postData
@@ -45,12 +45,12 @@ Class(CV, 'PostDetailController').includes(NodeSupport, CustomEventSupport)({
         renderTo: this.postDetailWidget.el
       }));
 
-      this.keys = this.registry.getKeys();
-      this._values = this.keys.map(function() {return [];});
-      this._totalMonthsLen = this.keys.length;
+      this._pages = this.registry.getKeys();
+      this._posts = this._pages.map(function() {return [];});
+      this._totalPagesLen = this._pages.length;
 
-      var dateString = moment(this.postData.publishedAt).format('YYYY-MM');
-      this._currentMonthIndex = this.keys.indexOf(dateString);
+      this.setIndexes(this.postData);
+
       var storedData = this.registry.get();
       Object.keys(storedData).forEach(function(propertyName, index) {
         var posts = storedData[propertyName];
@@ -58,9 +58,6 @@ Class(CV, 'PostDetailController').includes(NodeSupport, CustomEventSupport)({
           this.updateValues(index, posts);
         }
       }, this);
-      this._currentIndex = this._values[this._currentMonthIndex].map(function(post) {
-        return post.id;
-      }).indexOf(this.postDetailWidget.data.id);
 
       this.update();
 
@@ -73,19 +70,21 @@ Class(CV, 'PostDetailController').includes(NodeSupport, CustomEventSupport)({
       return this;
     },
 
-    /* Updates the current month and post indexes based on the post publishedAt value.
+    /* Updates the current page and post indexes based on the postEntity passed.
      * @public
      * @param {Object} post - a post instance
      * @return {Object} this
      */
-    setIndexes : function setIndexes(post) {
-      var dateString = moment(post.publishedAt).format('YYYY-MM');
-
-      this._currentMonthIndex = this.keys.indexOf(dateString);
-      this._currentIndex = this._values[this._currentMonthIndex].map(function(post) {
-        return post.id;
-      }).indexOf(post.id);
-
+    setIndexes: function setIndexes(postEntity) {
+      Object.keys(this.registry.get()).some(function (page, pageIndex) {
+        return this.registry.get(page).some(function (post, postIndex) {
+          if (post.id === postEntity.id) {
+            this._currentPageIndex = pageIndex;
+            this._currentPostIndex = postIndex;
+            return true;
+          }
+        }, this);
+      }, this);
       return this;
     },
 
@@ -95,7 +94,7 @@ Class(CV, 'PostDetailController').includes(NodeSupport, CustomEventSupport)({
      * @listens {post:details:next}
      * @listens {post:details:prev}
      */
-    _bindEvents : function _bindEvents() {
+    _bindEvents: function _bindEvents() {
       this.updateRegistryRef = this.updateRegistry.bind(this);
       this.socket.on(this.requestPostsSocketEventName, this.updateRegistryRef);
 
@@ -112,7 +111,7 @@ Class(CV, 'PostDetailController').includes(NodeSupport, CustomEventSupport)({
      * if so it will ask for its values via socket.
      * @private
      */
-    _requestAll : function _requestAll() {
+    _requestAll: function _requestAll() {
       var storedData = this.registry.get();
       Object.keys(storedData).forEach(function(propertyName) {
         var posts = storedData[propertyName];
@@ -122,32 +121,32 @@ Class(CV, 'PostDetailController').includes(NodeSupport, CustomEventSupport)({
       }, this);
     },
 
-    /* Checks if previous and next months data is already stored on the registry,
-     * if the data is found on the registry it will update `super._values`
-     * otherwise it will request the month data to the socket.
+    /* Checks if previous and next pages data is already stored on the registry,
+     * if the data is found on the registry it will update `_posts`
+     * otherwise it will request the page data to the socket.
      * @private
      * @return {Object} PostDetailController
      */
-    requestSiblings : function requestSiblings(monthIndex) {
-      var prevMonthString = this.keys[monthIndex - 1];
-      var nextMonthString = this.keys[monthIndex + 1];
-      var prev, next;
+    requestSiblings: function requestSiblings(pageIndex) {
+      var prevPageString = this._pages[pageIndex - 1]
+        , nextPageString = this._pages[pageIndex + 1]
+        , prev, next;
 
-      if (prevMonthString) {
-        prev = this.registry.get(prevMonthString);
+      if (prevPageString) {
+        prev = this.registry.get(prevPageString);
         if (!prev) {
-          this.socket.emit(this.responsePostsSocketEventName, this.postData.voice.id, prevMonthString);
+          this.socket.emit(this.responsePostsSocketEventName, this.postData.voice.id, prevPageString);
         } else {
-          this.updateValues(this.keys.indexOf(prevMonthString), prev);
+          this.updateValues(this._pages.indexOf(prevPageString), prev);
         }
       }
 
-      if (nextMonthString) {
-        next = this.registry.get(nextMonthString);
+      if (nextPageString) {
+        next = this.registry.get(nextPageString);
         if (!next) {
-          this.socket.emit(this.responsePostsSocketEventName, this.postData.voice.id, nextMonthString);
+          this.socket.emit(this.responsePostsSocketEventName, this.postData.voice.id, nextPageString);
         } else {
-          this.updateValues(this.keys.indexOf(nextMonthString), next);
+          this.updateValues(this._pages.indexOf(nextPageString), next);
         }
       }
 
@@ -157,45 +156,43 @@ Class(CV, 'PostDetailController').includes(NodeSupport, CustomEventSupport)({
     /* Updates the registry.
      * @private
      * @param {Array} posts - the posts’ data
-     * @param {string} dateString - the year-month key to save the posts.
+     * @param {string} page - the page key to save the posts.
      */
-    updateRegistry : function updateRegistry(posts, dateString) {
-      this.registry.set(dateString, posts);
-
-      var index = this.keys.indexOf(dateString);
+    updateRegistry: function updateRegistry(posts, page) {
+      this.registry.set(page, posts);
+      var index = this._pages.indexOf(page);
       if (index >= 0) {
         this.updateValues(index, posts);
       }
     },
 
-    /* Updates `_values` array specific index value.
+    /* Updates `_posts` array specific index value.
      * @protected
-     * @param {number} index - the month position on the array.
-     * @param {array} posts - the month posts data.
+     * @param {number} index - the page position on the array.
+     * @param {array} posts - the page posts data.
      */
-    updateValues : function updateValues(index, posts) {
-      if ((index < 0) || (index > this._totalMonthsLen)) {
+    updateValues: function updateValues(index, posts) {
+      if ((index < 0) || (index > this._totalPagesLen)) {
         return;
       }
 
-      this._values[index] = posts;
+      this._posts[index] = posts;
 
-      if (this._values[index].length === 0) {
+      if (this._posts[index].length === 0) {
         this.requestSiblings(index);
       }
 
-      this.postDetailWidget.updatedPosts(this._values.reduce(function(p, n) {
+      this.postDetailWidget.updatedPosts(this._posts.reduce(function(p, n) {
         return p.concat(n);
       }));
     },
 
-    /* Updates the postDetailWidget using the data stored on `_values` on the index
-     * indicated by `_currentIndex` value.
+    /* Updates the postDetailWidget using the data stored on `_posts` on the index
+     * indicated by `_currentPostIndex` value.
      * @private
      */
-    update : function update() {
+    update: function update() {
       var current = this._getCurrentPost();
-
       if (current) {
         this.postDetailWidget.update(current);
         this._updateNavButtonsState();
@@ -209,52 +206,52 @@ Class(CV, 'PostDetailController').includes(NodeSupport, CustomEventSupport)({
       ev.stopPropagation();
       this._updateNavButtonsState();
 
-      if (this._currentIndex === 0) {
-        if (this._currentMonthIndex === 0) {
+      if (this._currentPostIndex === 0) {
+        if (this._currentPageIndex === 0) {
           return;
         }
 
-        this._currentMonthIndex--;
-        this._currentIndex = 0;
+        this._currentPageIndex--;
+        this._currentPostIndex = 0;
 
-        var childLength = this._values[this._currentMonthIndex].length;
+        var childLength = this._posts[this._currentPageIndex].length;
         if (childLength) {
-          this._currentIndex = (childLength - 1);
+          this._currentPostIndex = (childLength - 1);
         } else {
           return this.prevHandler();
         }
 
-        return this.requestSiblings(this._currentMonthIndex).update();
+        return this.requestSiblings(this._currentPageIndex).update();
       }
 
-      this._currentIndex--;
+      this._currentPostIndex--;
       this.update();
     },
 
     /* Next button click handler.
      * @protected
      */
-    nextHandler : function nextHandler(ev) {
+    nextHandler: function nextHandler(ev) {
       ev.stopPropagation();
       this._updateNavButtonsState();
 
-      if (this._currentIndex === this._values[this._currentMonthIndex].length - 1) {
-        if (this._currentMonthIndex === (this._totalMonthsLen - 1)) {
+      if (this._currentPostIndex === this._posts[this._currentPageIndex].length - 1) {
+        if (this._currentPageIndex === (this._totalPagesLen - 1)) {
           return;
         }
 
-        this._currentMonthIndex++;
-        this._currentIndex = 0;
+        this._currentPageIndex++;
+        this._currentPostIndex = 0;
 
-        var childLength = this._values[this._currentMonthIndex].length;
+        var childLength = this._posts[this._currentPageIndex].length;
         if (!childLength) {
           return this.nextHandler();
         }
 
-        return this.requestSiblings(this._currentMonthIndex).update();
+        return this.requestSiblings(this._currentPageIndex).update();
       }
 
-      this._currentIndex++;
+      this._currentPostIndex++;
       this.update();
     },
 
@@ -262,14 +259,14 @@ Class(CV, 'PostDetailController').includes(NodeSupport, CustomEventSupport)({
      * @private
      */
     _updateNavButtonsState : function _updateNavButtonsState() {
-      if ((this._currentIndex === 0) && this._currentMonthIndex === 0) {
+      if ((this._currentPostIndex === 0) && this._currentPageIndex === 0) {
         this.navigation.disablePrevButton();
       } else {
         this.navigation.enablePrevButton();
       }
 
-      if ((this._currentIndex === this._values[this._currentMonthIndex].length - 1) &&
-        (this._currentMonthIndex === (this._totalMonthsLen - 1))) {
+      if ((this._currentPostIndex === this._posts[this._currentPageIndex].length - 1) &&
+        (this._currentPageIndex === (this._totalPagesLen - 1))) {
         this.navigation.disableNextButton();
       } else {
         this.navigation.enableNextButton();
@@ -278,15 +275,15 @@ Class(CV, 'PostDetailController').includes(NodeSupport, CustomEventSupport)({
       return this;
     },
 
-    /* Returns the current month’s data indicated by `_currentMonthIndex` and `_currentIndex`.
+    /* Returns the current page’s data indicated by `_currentPageIndex` and `_currentPostIndex`.
      * @private
      * @return {Object} PostInstance
      */
-    _getCurrentPost : function _getCurrentPost() {
-      return this._values[this._currentMonthIndex][this._currentIndex];
+    _getCurrentPost: function _getCurrentPost() {
+      return this._posts[this._currentPageIndex][this._currentPostIndex];
     },
 
-    destroy : function destroy() {
+    destroy: function destroy() {
       this.unbind('nextPostDetail', this.nextHandlerRef);
       this.unbind('prevPostDetail', this.prevHandlerRef);
       this.postDetailWidget = this.postDetailWidget.destroy();

@@ -39,7 +39,10 @@ Class(CV, 'EmbedJumpToLayerItem').inherits(Widget).includes(CV.WidgetUtils)({
      * @private
      */
     _clickHandler : function _clickHandler() {
-      this.dispatch('jumpToLayerItemClicked', {dateString: this.date});
+      this.dispatch('jumpToLayerItemClicked', {
+        page: this.page,
+        dateString: this.date
+      });
     },
 
     destroy : function destroy() {

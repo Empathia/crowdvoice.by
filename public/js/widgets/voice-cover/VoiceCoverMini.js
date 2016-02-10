@@ -1,4 +1,5 @@
-var Person = require('./../../lib/currentPerson');
+var Person = require('./../../lib/currentPerson')
+  , constants = require('./../../lib/constants');
 
 Class(CV, 'VoiceCoverMini').inherits(Widget).includes(CV.WidgetUtils)({
   HTML: '\
@@ -97,10 +98,10 @@ Class(CV, 'VoiceCoverMini').inherits(Widget).includes(CV.WidgetUtils)({
         , text = '';
 
       switch(this.data.type) {
-        case CV.VoiceView.TYPE_PUBLIC:
+        case constants.VOICE.TYPE_PUBLIC:
           text = 'OPEN';
           break;
-        case CV.VoiceView.TYPE_CLOSED:
+        case constants.VOICE.TYPE_CLOSED:
           text = 'CLOSED';
           break;
       }

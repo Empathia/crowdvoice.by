@@ -1,4 +1,5 @@
-var Events = require('./../../../lib/events');
+var Events = require('./../../../lib/events')
+  , constants = require('./../../../lib/constants');
 
 Class(CV, 'VoiceCoverActionsPublish').inherits(CV.UI.Button)({
   ELEMENT_CLASS: 'cv-button tiny primary -mr1',
@@ -12,7 +13,7 @@ Class(CV, 'VoiceCoverActionsPublish').inherits(CV.UI.Button)({
     _setup: function _setup() {
       this.disable();
 
-      if ((this.voiceEntity.status === CV.VoiceView.STATUS_DRAFT) &&
+      if ((this.voiceEntity.status === constants.VOICE.STATUS_DRAFT) &&
           (this.voiceEntity.postsCount >= 20) &&
           (Object.keys(this.voiceEntity.images).length)) {
         this.enable();

@@ -531,12 +531,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         errorLog.save(callback);
       };
 
-      request({
-        url: originalURL,
-        headers: {
-          'User-Agent': 'Mozilla/5.0'
-        }
-      }, function (err, response, body) {
+      request.get(originalURL, function (err, response) {
         if (err) {
           return logScrapperError(originalURL, err, function (err) {
             if (err) { return callback(err);; }
@@ -551,7 +546,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
         Scrapper.processUrl(response.request.uri.href, response, function (err, result) {
           if (err) {
-            return logScrapperError(req.body.url, err, function (err) {
+            return logScrapperError(response.request.uri.href, err, function (err) {
               if (err) { return callback(err); }
 
               return callback(err, {

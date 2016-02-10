@@ -1,6 +1,6 @@
-var moment = require('moment');
-var GeminiScrollbar = require('gemini-scrollbar');
-var Events = require('./../../lib/events');
+var moment = require('moment')
+  , GeminiScrollbar = require('gemini-scrollbar');
+  // , Events = require('./../../lib/events');
 
 Class(CV, 'EmbedJumpToLayer').inherits(Widget)({
   prototype: {
@@ -29,8 +29,8 @@ Class(CV, 'EmbedJumpToLayer').inherits(Widget)({
      * @private
      */
     _bindEvents : function _bindEvents() {
-      this._activatePopoverRef = this._activatePopover.bind(this);
-      Events.on(this.triggerElement, 'click', this._activatePopoverRef);
+      // this._activatePopoverRef = this._activatePopover.bind(this);
+      // Events.on(this.triggerElement, 'click', this._activatePopoverRef);
 
       this._handleDeactivatePopoverRef = this._handleDeactivatePopover.bind(this);
       this.jumpToDatePopover.bind('deactivate', this._handleDeactivatePopoverRef);
@@ -45,54 +45,45 @@ Class(CV, 'EmbedJumpToLayer').inherits(Widget)({
      * @method _createJumpToLayerOptions <private> [Function]
      */
     _createJumpToLayerOptions : function _createJumpToLayerOptions() {
-      var frag = document.createDocumentFragment();
-      var _lastYear, optionWidget;
+      var frag = document.createDocumentFragment()
+        , _lastYear, optionWidget;
+      var postsCount = this.postsCount;
 
-      this.postsCount.forEach(function(yearItem) {
-        var year = yearItem.year;
-
-        yearItem.months.forEach(function(monthItem) {
-          var date = moment(year + '-' + monthItem.month + '-01', 'YYYY-MM-DD');
-          var dateString = date.format('YYYY-MM');
-          var month = date.format('MMMM');
-
+      Object.keys(postsCount).sort(function (a, b) {
+        return a < b;
+      }).forEach(function(year) {
+        Object.keys(postsCount[year]).sort(function (a, b) {
+          return a < b;
+        }).forEach(function (month) {
+          var date = moment(year + '-' + month + '-01', 'YYYY-MM-DD')
+            , dateString = date.format('YYYY-MM')
+            , monthString = date.format('MMMM');
           if (_lastYear !== year) {
             _lastYear = year;
-
             this.appendChild(new CV.EmbedJumpToLayerLabel({
-              name : 'label_' + year,
-              label : year
+              name: 'label_' + year,
+              label: year
             }));
-
             frag.appendChild(this['label_' + year].el);
           }
-
           optionWidget = new CV.EmbedJumpToLayerItem({
-            name : 'item_' + dateString,
-            label : month,
-            date : dateString,
-            totalPosts : monthItem.total
+            name: 'item_' + dateString,
+            label: monthString,
+            date: dateString,
+            page: postsCount[year][month].page,
+            totalPosts: postsCount[year][month].count
           });
-
           this.appendChild(optionWidget);
           this._optionChilds.push(optionWidget);
-
           frag.appendChild(optionWidget.el);
-
-          dateString = month = null;
         }, this);
-
-        year = null;
       }, this);
 
       this.jumpToDatePopover.getContent().className += ' ui-vertical-list hoverable';
       this.jumpToDatePopover.setContent(frag);
-
       this.scrollbar = new GeminiScrollbar({
-        element : this.jumpToDatePopover.getContent()
+        element: this.jumpToDatePopover.getContent()
       }).create();
-
-      frag = _lastYear = optionWidget = null;
     },
 
     /* Handles the popover item click event.
@@ -102,20 +93,29 @@ Class(CV, 'EmbedJumpToLayer').inherits(Widget)({
       ev.stopPropagation();
       this.updateActiveOption(ev.dateString);
       this.jumpToDatePopover.deactivate();
-      this.dispatch('jumpToLayer', {dateString: ev.dateString});
+      this.dispatch('jumpToLayer', {
+        page: ev.page,
+        dateString: ev.dateString
+      });
     },
 
-    /* Deactivate any active option and activate the one that matches the passed dateString by name.
+    /* Deactivate any active option and activates the first one that matches
+     * the passed pageString with it’s prop `page`.
      * @public
-     * @param {string} dateString - @ex `1987-07`
+     * @param {string} pageString - @ex `1`
      * @emits {activate} emits EmbedJumpToLayerPopover `activate` event dispatched by the widget.activate method.
      * @return {Object} EmbedJumpToLayerPopover
      */
-    updateActiveOption : function updateActiveOption(dateString) {
-      this._optionChilds.forEach(function(child) {
+    updateActiveOption: function updateActiveOption(pageString) {
+      this._optionChilds.map(function(child) {
         child.deactivate();
+        return child;
+      }).some(function (option) {
+        if (option.page === pageString) {
+          option.activate();
+          return true;
+        }
       });
-      this['item_' + dateString].activate();
       return this;
     },
 
@@ -163,8 +163,8 @@ Class(CV, 'EmbedJumpToLayer').inherits(Widget)({
       Widget.prototype.destroy.call(this);
       this._handleDeactivatePopoverRef = null;
 
-      Events.off(this.triggerElement, 'click', this._activatePopoverRef);
-      this._activatePopoverRef = null;
+      // Events.off(this.triggerElement, 'click', this._activatePopoverRef);
+      // this._activatePopoverRef = null;
 
       return null;
     }
