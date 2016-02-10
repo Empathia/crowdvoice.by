@@ -226,7 +226,7 @@ describe('K.Post', function () {
         .catch(doneTest)
     })
 
-    it('Should return false for Tyrion having voted', function (doneTest) {
+    it('Should return false for Tyrion having saved', function (doneTest) {
       K.Post.query()
         .where('voice_id', 15)
         .limit(1)

@@ -526,7 +526,8 @@ async.series([function(next) {
       image : path.join(process.cwd(), '/public/generator/voices/blackwater-background.jpg'),
       slug  : 'blackwater-battle',
       topics : ['politics', 'environment'],
-      collaborators: []
+      collaborators: [],
+      relatedVoices: [data.voices['second-trial-by-combat']]
     },
     {
       data : {
@@ -542,7 +543,8 @@ async.series([function(next) {
       image : path.join(process.cwd(), '/public/generator/voices/second-trial-by-combat.jpg'),
       slug  : 'second-trial-by-combat',
       topics : ['human-rights'],
-      collaborators: []
+      collaborators: [],
+      relatedVoices: []
     },
     {
       data : {
@@ -558,7 +560,8 @@ async.series([function(next) {
       image : path.join(process.cwd(), '/public/generator/voices/5kings-background.jpg'),
       slug  : 'war-of-the-5-kings',
       topics : ['politics'],
-      collaborators: []
+      collaborators: [],
+      relatedVoices: []
     },
     {
       data : {
@@ -574,7 +577,8 @@ async.series([function(next) {
       image : path.join(process.cwd(), '/public/generator/voices/valyrian-roads.png'),
       slug  : 'valyrian-roads',
       topics : ['politics', 'environment', 'education'],
-      collaborators: [data.entities['jamie-lannister']]
+      collaborators: [data.entities['jamie-lannister']],
+      relatedVoices: []
     },
     {
       data : {
@@ -590,7 +594,8 @@ async.series([function(next) {
       image : path.join(process.cwd(), '/public/generator/voices/siege-to-mereen.png'),
       slug  : 'meereen-siege',
       topics : ['politics', 'human-rights', 'environment', 'privacy'],
-      collaborators: []
+      collaborators: [],
+      relatedVoices: []
     },
 
     // Cersei
@@ -608,7 +613,8 @@ async.series([function(next) {
       image : path.join(process.cwd(), '/public/generator/voices/walk-of-shame.jpg'),
       slug  : 'walk-of-atonement',
       topics : ['human-rights'],
-      collaborators: []
+      collaborators: [],
+      relatedVoices: []
     },
     {
       data : {
@@ -624,7 +630,8 @@ async.series([function(next) {
       image : path.join(process.cwd(), '/public/generator/voices/dead-of-arryn.jpg'),
       slug  : 'dead-of-arryn',
       topics : ['politics', 'health'],
-      collaborators: []
+      collaborators: [],
+      relatedVoices: []
     },
 
     // Jamie
@@ -642,7 +649,8 @@ async.series([function(next) {
       image : path.join(process.cwd(), '/public/generator/voices/roberts-rebelion.jpg'),
       slug  : 'roberts-rebelion',
       topics : ['politics'],
-      collaborators: []
+      collaborators: [],
+      relatedVoices: []
     },
 
     // Daenerys
@@ -660,7 +668,8 @@ async.series([function(next) {
       image : path.join(process.cwd(), '/public/generator/voices/road-to-meereen.jpg'),
       slug  : 'meereen',
       topics : ['politics', 'human-rights', 'education'],
-      collaborators: []
+      collaborators: [],
+      relatedVoices: []
     },
     {
       data : {
@@ -676,7 +685,8 @@ async.series([function(next) {
       image : path.join(process.cwd(), '/public/generator/voices/dance-dragons.jpg'),
       slug  : 'a-dance-with-dragons',
       topics : ['environment'],
-      collaborators: []
+      collaborators: [],
+      relatedVoices: []
     },
 
     // Jon
@@ -694,7 +704,8 @@ async.series([function(next) {
       image : path.join(process.cwd(), '/public/generator/voices/castle-black.jpg'),
       slug  : 'battle-of-castle-black',
       topics : ['politics'],
-      collaborators: []
+      collaborators: [],
+      relatedVoices: []
     },
     {
       data : {
@@ -710,7 +721,8 @@ async.series([function(next) {
       image : path.join(process.cwd(), '/public/generator/voices/white-walkers.png'),
       slug  : 'white-walkers',
       topics : ['health'],
-      collaborators: []
+      collaborators: [],
+      relatedVoices: []
     }
   ];
 
@@ -764,7 +776,20 @@ async.series([function(next) {
                 });
 
                 collab.save(nextCollab);
-              }, nextVoice);
+              }, function(err) {
+                if (err) {
+                  return nextVoice(err);
+                }
+
+                async.each(voice.relatedVoices, function (relatedVoice, nextRelated) {
+                  var related = new RelatedVoice({
+                    voiceId: voiceInstance.id,
+                    relatedId: relatedVoice.id
+                  });
+
+                  related.save(nextRelated);
+                }, nextVoice)
+              });
             });
           });
         });
