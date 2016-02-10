@@ -1,13 +1,3 @@
-/**
- * NOTE:
- * These tests require the following stuff to have been done before being run in
- * order tfor all tests to pass.
- *
- * DELETE FROM "Posts" WHERE voice_id = 15
- *
- * $ node bin/posts_generator.js 15 3
- */
-
 'use strict'
 
 var path = require('path')
@@ -17,12 +7,6 @@ require(path.join(process.cwd(), 'bin', 'server.js'))
 logger.log = function () {}
 
 var expect = require('chai').expect
-
-var constructorLoop = function (array, className) {
-  array.forEach(function (a) {
-    expect(a.constructor.className).to.equal(className)
-  })
-}
 
 describe('K.RelatedVoice', function () {
 
