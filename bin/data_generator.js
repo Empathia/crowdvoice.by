@@ -253,7 +253,7 @@ async.series([function(next) {
       if (err) {
         return nextEntity(err);
       }
-      // console.log(entity.image)
+
       entityInstance.uploadImage('image', entity.image, function(err) {
         if (err) {
           return nextEntity(err);
@@ -525,7 +525,8 @@ async.series([function(next) {
       },
       image : path.join(process.cwd(), '/public/generator/voices/blackwater-background.jpg'),
       slug  : 'blackwater-battle',
-      topics : ['politics', 'environment']
+      topics : ['politics', 'environment'],
+      collaborators: []
     },
     {
       data : {
@@ -540,7 +541,8 @@ async.series([function(next) {
       },
       image : path.join(process.cwd(), '/public/generator/voices/second-trial-by-combat.jpg'),
       slug  : 'second-trial-by-combat',
-      topics : ['human-rights']
+      topics : ['human-rights'],
+      collaborators: []
     },
     {
       data : {
@@ -555,7 +557,8 @@ async.series([function(next) {
       },
       image : path.join(process.cwd(), '/public/generator/voices/5kings-background.jpg'),
       slug  : 'war-of-the-5-kings',
-      topics : ['politics']
+      topics : ['politics'],
+      collaborators: []
     },
     {
       data : {
@@ -570,7 +573,8 @@ async.series([function(next) {
       },
       image : path.join(process.cwd(), '/public/generator/voices/valyrian-roads.png'),
       slug  : 'valyrian-roads',
-      topics : ['politics', 'environment', 'education']
+      topics : ['politics', 'environment', 'education'],
+      collaborators: [data.entities['jamie-lannister']]
     },
     {
       data : {
@@ -585,7 +589,8 @@ async.series([function(next) {
       },
       image : path.join(process.cwd(), '/public/generator/voices/siege-to-mereen.png'),
       slug  : 'meereen-siege',
-      topics : ['politics', 'human-rights', 'environment', 'privacy']
+      topics : ['politics', 'human-rights', 'environment', 'privacy'],
+      collaborators: []
     },
 
     // Cersei
@@ -602,7 +607,8 @@ async.series([function(next) {
       },
       image : path.join(process.cwd(), '/public/generator/voices/walk-of-shame.jpg'),
       slug  : 'walk-of-atonement',
-      topics : ['human-rights']
+      topics : ['human-rights'],
+      collaborators: []
     },
     {
       data : {
@@ -617,7 +623,8 @@ async.series([function(next) {
       },
       image : path.join(process.cwd(), '/public/generator/voices/dead-of-arryn.jpg'),
       slug  : 'dead-of-arryn',
-      topics : ['politics', 'health']
+      topics : ['politics', 'health'],
+      collaborators: []
     },
 
     // Jamie
@@ -634,7 +641,8 @@ async.series([function(next) {
       },
       image : path.join(process.cwd(), '/public/generator/voices/roberts-rebelion.jpg'),
       slug  : 'roberts-rebelion',
-      topics : ['politics']
+      topics : ['politics'],
+      collaborators: []
     },
 
     // Daenerys
@@ -651,7 +659,8 @@ async.series([function(next) {
       },
       image : path.join(process.cwd(), '/public/generator/voices/road-to-meereen.jpg'),
       slug  : 'meereen',
-      topics : ['politics', 'human-rights', 'education']
+      topics : ['politics', 'human-rights', 'education'],
+      collaborators: []
     },
     {
       data : {
@@ -666,7 +675,8 @@ async.series([function(next) {
       },
       image : path.join(process.cwd(), '/public/generator/voices/dance-dragons.jpg'),
       slug  : 'a-dance-with-dragons',
-      topics : ['environment']
+      topics : ['environment'],
+      collaborators: []
     },
 
     // Jon
@@ -683,7 +693,8 @@ async.series([function(next) {
       },
       image : path.join(process.cwd(), '/public/generator/voices/castle-black.jpg'),
       slug  : 'battle-of-castle-black',
-      topics : ['politics']
+      topics : ['politics'],
+      collaborators: []
     },
     {
       data : {
@@ -698,7 +709,8 @@ async.series([function(next) {
       },
       image : path.join(process.cwd(), '/public/generator/voices/white-walkers.png'),
       slug  : 'white-walkers',
-      topics : ['health']
+      topics : ['health'],
+      collaborators: []
     }
   ];
 
@@ -743,7 +755,16 @@ async.series([function(next) {
               }
 
               data.voices[slug.url] = voiceInstance;
-              nextVoice();
+
+              async.each(voice.collaborators, function (collaborator, nextCollab) {
+                var collab = new VoiceCollaborator({
+                  voiceId: voice.id,
+                  collaboratorId: collaborator.id,
+                  is_anonymous: false
+                });
+
+                collab.save(nextCollab);
+              }, nextVoice);
             });
           });
         });
