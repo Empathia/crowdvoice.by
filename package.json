@@ -8,12 +8,13 @@
   },
   "scripts": {
     "start": "nodemon --ext js,html --watch public/demo-data --watch views --watch controllers --watch middlewares --watch models --watch presenters --watch lib bin/server.js",
-    "debug": "nodemon --ext js,html --watch public/demo-data --watch views --watch controllers --watch middlewares --watch models --watch presenters --watch lib --debug bin/server.js",
+    "start:debug": "nodemon --ext js,html --watch public/demo-data --watch views --watch controllers --watch middlewares --watch models --watch presenters --watch lib --debug bin/server.js",
     "dev": "webpack -d -w",
     "svg": "svg-sprite -s --symbol-dest=svg --symbol-prefix=.svg- --ss=sprite.svg --si --sx --shape-id-generator=svg-%s --dest=views/shared public/svg/*.svg",
     "svg:embed": "svg-sprite -s --symbol-dest=svg-embed --symbol-prefix=.svg- --ss=sprite-embed.svg --si --sx --shape-id-generator=svg-%s --dest=views/shared public/svg-embed/*.svg",
     "deploy:staging": "pm2 deploy ecosystem.json staging",
-    "regen-db": "knex migrate:rollback ; knex migrate:latest ; node bin/data_generator.js"
+    "regen-db": "knex migrate:rollback ; knex migrate:latest ; node bin/data_generator.js 0",
+    "test:models": "mocha test/models"
   },
   "dependencies": {
     "SoundManager2": "scottschiller/SoundManager2",
