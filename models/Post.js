@@ -379,6 +379,10 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
                     return next();
                   }
 
+                  if (res.headers['content-length'] === '0') {
+                    return next();
+                  }
+
                   if (res.headers['content-type']) {
                     extension = res.headers['content-type'].replace(/image\//, '');
                   }
