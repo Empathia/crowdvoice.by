@@ -8,7 +8,7 @@ logger.log = function () {}
 
 var expect = require('chai').expect
 
-describe('K.EntityFollower', function () {
+describe('K.EntityMembership', function () {
 
   describe('Relations', function () {
 
