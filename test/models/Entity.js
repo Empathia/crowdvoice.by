@@ -44,6 +44,27 @@ describe('K.Entity', function () {
 
     })
 
+    describe('anonymousEntity', function () {
+
+      it('Should return an array with with the Anonymous Entity', function (doneTest) {
+        K.Entity.query()
+          .where('id', 1)
+          .include('anonymousEntity')
+          .then(function (result) {
+            var tyrion = result[0]
+
+            expect(tyrion.anonymousEntity.length).to.equal(1)
+            expect(tyrion.anonymousEntity[0]).to.be.an('object')
+            expect(tyrion.anonymousEntity[0].constructor.className).to.equal('Entity')
+            expect(tyrion.anonymousEntity[0].id).to.equal(2)
+
+            return doneTest()
+          })
+          .catch(doneTest)
+      })
+
+    })
+
     describe('voices', function () {
 
       it('Should return an array with proper Voices', function (doneTest) {
@@ -161,8 +182,20 @@ describe('K.Entity', function () {
           .catch(doneTest)
       })
 
-      it('Should return an array with proper Voices for Arya', function (doneTest) {
-        throw 'Not Written Yet'
+      it('Should return an array with proper Voices for Jaime', function (doneTest) {
+        K.Entity.query()
+          .where('id', 5)
+          .include('contributedVoices')
+          .then(function (result) {
+            var jaime = result[0]
+
+            expect(jaime.contributedVoices).to.be.an('array')
+            expect(jaime.contributedVoices.length).to.equal(1)
+            constructorLoop(jaime.contributedVoices, 'Voice')
+
+            return doneTest()
+          })
+          .catch(doneTest)
       })
 
     })
@@ -259,7 +292,7 @@ describe('K.Entity', function () {
 
           tyrion.getAnonymousEntity()
             .then(function (result) {
-              throw new Error('Shouldn\'t resolve.')
+              throw new Error('Shouldn\'t resolve')
             })
             .catch(function (err) {
               expect(err).to.be.an('error')
@@ -319,7 +352,7 @@ describe('K.Entity', function () {
 
           tyrion.getOwner()
             .then(function (entity) {
-              throw new Error('Shouldn\'t resolve.')
+              throw new Error('Shouldn\'t resolve')
             })
             .catch(function (err) {
               expect(err).to.be.an('error')
@@ -360,7 +393,7 @@ describe('K.Entity', function () {
 
           tyrion.getOwner()
             .then(function (entity) {
-              throw new Error('Shouldn\'t resolve.')
+              throw new Error('Shouldn\'t resolve')
             })
             .catch(function (err) {
               expect(err).to.be.an('error')
@@ -387,6 +420,7 @@ describe('K.Entity', function () {
 
               return doneTest()
             })
+            .catch(doneTest)
         })
     })
 
@@ -403,6 +437,7 @@ describe('K.Entity', function () {
 
               return doneTest()
             })
+            .catch(doneTest)
         })
     })
 
@@ -419,6 +454,7 @@ describe('K.Entity', function () {
 
               return doneTest()
             })
+            .catch(doneTest)
         })
     })
 
@@ -439,6 +475,7 @@ describe('K.Entity', function () {
 
               return doneTest()
             })
+            .catch(doneTest)
         })
     })
 
@@ -455,6 +492,7 @@ describe('K.Entity', function () {
 
               return doneTest()
             })
+            .catch(doneTest)
         })
     })
 
@@ -471,6 +509,7 @@ describe('K.Entity', function () {
 
               return doneTest()
             })
+            .catch(doneTest)
         })
     })
 
@@ -491,6 +530,7 @@ describe('K.Entity', function () {
 
               return doneTest()
             })
+            .catch(doneTest)
         })
     })
 
@@ -507,6 +547,7 @@ describe('K.Entity', function () {
 
               return doneTest()
             })
+            .catch(doneTest)
         })
     })
 
@@ -514,15 +555,207 @@ describe('K.Entity', function () {
 
   describe('#hasAccessToVoice', function () {
 
-    it('Should...', function (doneTest) {
-      throw 'Not Written Yet'
+    it('Should throw an error when no Voice relations are found', function (doneTest) {
+      K.Entity.query()
+        .where('id', 1)
+        .then(function (result) {
+          var tyrion = result[0]
+
+          tyrion.hasAccessToVoice(new K.Voice({ id: 1 }))
+            .then(function (result) {
+              throw new Error('Shouldn\'t resolve')
+            })
+            .catch(function (err) {
+              expect(err).to.be.an('error')
+
+              return doneTest()
+            })
+        })
+    })
+
+    describe('Owned voices', function () {
+
+      it('Should return true for Tyrion having access to Valyrian Roads', function (doneTest) {
+        K.Entity.query()
+          .where('id', 1)
+          .include('voices')
+          .then(function (result) {
+            var tyrion = result[0]
+
+            tyrion.hasAccessToVoice(new K.Voice({ id: 4 }))
+              .then(function (result) {
+                expect(result).to.be.a('boolean')
+                expect(result).to.equal(true)
+
+                return doneTest()
+              })
+              .catch(doneTest)
+          })
+      })
+
+      it('Should return true for Tyrion having access to Second Trial by Combat (anonymous owner)', function (doneTest) {
+        K.Entity.query()
+          .where('id', 1)
+          .include('anonymousEntity.voices')
+          .then(function (result) {
+            var tyrion = result[0]
+
+            tyrion.hasAccessToVoice(new K.Voice({ id: 2 }))
+              .then(function (result) {
+                expect(result).to.be.a('boolean')
+                expect(result).to.equal(true)
+
+                return doneTest()
+              })
+              .catch(doneTest)
+          })
+      })
+
+      it('Should return false for Arya having access to Second Trial By Combat', function (doneTest) {
+        K.Entity.query()
+          .where('id', 11)
+          .include('contributedVoices')
+          .then(function (result) {
+            var arya = result[0]
+
+            arya.hasAccessToVoice(new K.Voice({ id: 2 }))
+              .then(function (result) {
+                expect(result).to.be.a('boolean')
+                expect(result).to.equal(false)
+
+                return doneTest()
+              })
+              .catch(doneTest)
+          })
+      })
+
+    })
+
+    describe('Contributed voices', function () {
+
+      it('Should return true for Arya having access to Valyrian Roads', function (doneTest) {
+        K.Entity.query()
+          .where('id', 11)
+          .include('contributedVoices')
+          .then(function (result) {
+            var arya = result[0]
+
+            arya.hasAccessToVoice(new K.Voice({ id: 4 }))
+              .then(function (result) {
+                expect(result).to.be.a('boolean')
+                expect(result).to.equal(false)
+
+                return doneTest()
+              })
+              .catch(doneTest)
+          })
+      })
+
+      it('Should return false for Arya having access to Robert\'s Rebellion', function (doneTest) {
+        K.Entity.query()
+          .where('id', 11)
+          .include('contributedVoices')
+          .then(function (result) {
+            var arya = result[0]
+
+            arya.hasAccessToVoice(new K.Voice({ id: 8 }))
+              .then(function (result) {
+                expect(result).to.be.a('boolean')
+                expect(result).to.equal(false)
+
+                return doneTest()
+              })
+              .catch(doneTest)
+          })
+      })
+
+    })
+
+    describe('Organization member voices', function () {
+
+      it('Should return true for Jaime having access to Casterly Rock', function (doneTest) {
+        K.Entity.query()
+          .where('id', 5)
+          .include('memberOrganizations.voices')
+          .then(function (result) {
+            var jaime = result[0]
+
+            jaime.hasAccessToVoice(new K.Voice({ id: 15 }))
+              .then(function (result) {
+                expect(result).to.be.a('boolean')
+                expect(result).to.equal(true)
+
+                return doneTest()
+              })
+              .catch(doneTest)
+          })
+      })
+
+      it('Should return false for Arya having access to Casterly Rock', function (doneTest) {
+        K.Entity.query()
+          .where('id', 11)
+          .include('memberOrganizations.voices')
+          .then(function (result) {
+            var arya = result[0]
+
+            arya.hasAccessToVoice(new K.Voice({ id: 15 }))
+              .then(function (result) {
+                expect(result).to.be.a('boolean')
+                expect(result).to.equal(false)
+
+                return doneTest()
+              })
+              .catch(doneTest)
+          })
+      })
+
+    })
+
+    describe('Organization owned voices', function () {
+
+      it('Should return true for Cersei having access to Casterly Rock', function (doneTest) {
+        K.Entity.query()
+          .where('id', 3)
+          .include('organizations.voices')
+          .then(function (result) {
+            var cersei = result[0]
+
+            cersei.hasAccessToVoice(new K.Voice({ id: 15 }))
+              .then(function (result) {
+                expect(result).to.be.a('boolean')
+                expect(result).to.equal(true)
+
+                return doneTest()
+              })
+              .catch(doneTest)
+          })
+      })
+
+      it('Should return false for Robert having access to Casterly Rock', function (doneTest) {
+        K.Entity.query()
+          .where('id', 17)
+          .include('organizations.voices')
+          .then(function (result) {
+            var robert = result[0]
+
+            robert.hasAccessToVoice(new K.Voice({ id: 15 }))
+              .then(function (result) {
+                expect(result).to.be.a('boolean')
+                expect(result).to.equal(false)
+
+                return doneTest()
+              })
+              .catch(doneTest)
+          })
+      })
+
     })
 
   })
 
   describe('#isFollowedBy', function () {
 
-    it('Should return true for Tyrion followed by Jamie', function (doneTest) {
+    it('Should return true for Tyrion followed by Jaime', function (doneTest) {
       K.Entity.query()
         .where('id', 1)
         .then(function (result) {
@@ -535,6 +768,7 @@ describe('K.Entity', function () {
 
               return doneTest()
             })
+            .catch(doneTest)
         })
     })
 
@@ -551,6 +785,7 @@ describe('K.Entity', function () {
 
               return doneTest()
             })
+            .catch(doneTest)
         })
     })
 
