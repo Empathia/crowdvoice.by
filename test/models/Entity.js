@@ -46,7 +46,7 @@ describe('K.Entity', function () {
 
     describe('anonymousEntity', function () {
 
-      it('Should return an array with with the Anonymous Entity', function (doneTest) {
+      it('Should return an array with the Anonymous Entity', function (doneTest) {
         K.Entity.query()
           .where('id', 1)
           .include('anonymousEntity')
