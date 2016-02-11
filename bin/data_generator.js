@@ -527,7 +527,7 @@ async.series([function(next) {
       slug  : 'blackwater-battle',
       topics : ['politics', 'environment'],
       collaborators: [],
-      relatedVoices: [data.voices['second-trial-by-combat']]
+      relatedVoices: [2]
     },
     {
       data : {
@@ -770,7 +770,7 @@ async.series([function(next) {
 
               async.each(voice.collaborators, function (collaborator, nextCollab) {
                 var collab = new VoiceCollaborator({
-                  voiceId: voice.id,
+                  voiceId: voiceInstance.id,
                   collaboratorId: collaborator.id,
                   is_anonymous: false
                 });
@@ -781,10 +781,10 @@ async.series([function(next) {
                   return nextVoice(err);
                 }
 
-                async.each(voice.relatedVoices, function (relatedVoice, nextRelated) {
+                async.each(voice.relatedVoices, function (relatedVoiceId, nextRelated) {
                   var related = new RelatedVoice({
                     voiceId: voiceInstance.id,
-                    relatedId: relatedVoice.id
+                    relatedId: relatedVoiceId
                   });
 
                   related.save(nextRelated);
