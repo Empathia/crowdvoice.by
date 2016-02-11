@@ -34,12 +34,12 @@ K.Voice.query()
           description: 'Just a random description for this post, you know...',
           ownerId: voice[0].ownerId,
           voiceId: voice[0].id,
-          approved: true,
+          approved: casual.random_element([true, false]),
           imageBaseUrl: '',
           imageMeta: {},
           sourceService: 'raw',
           sourceType: 'text',
-          sourceUrl: '',
+          sourceUrl: casual.url,
           publishedAt: new Date(),
           sourceDomain: null,
           faviconPath: null,
@@ -59,21 +59,21 @@ K.Voice.query()
   })
   .then(function () {
     return K.Post.query()
-      .select('*')
+      .where('voice_id', '=', voiceId)
       .then(function (posts) {
         return Promise.each(posts, function (post) {
-          var save = new K.SavedPost({
+          var saved = new K.SavedPost({
             entityId: 3,
             postId: post.id,
           })
 
-          return save.save()
+          return saved.save()
         })
       })
   })
   .then(function () {
     return K.Post.query()
-      .select('*')
+      .where('voice_id', '=', voiceId)
       .then(function (posts) {
         return Promise.each(posts, function (post) {
           var vote = new K.Vote({

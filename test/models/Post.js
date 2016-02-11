@@ -5,7 +5,7 @@
  *
  * DELETE FROM "Posts" WHERE voice_id = 15
  *
- * $ node bin/posts_generator.js 15 3
+ * $ node bin/posts_generator.js 15 20
  */
 
 'use strict'
