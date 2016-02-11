@@ -8,21 +8,21 @@ logger.log = function () {}
 
 var expect = require('chai').expect
 
-describe('K.VoiceTopic', function () {
+describe('K.VoiceVote', function () {
 
   describe('Relations', function () {
 
     describe('voice', function () {
 
-      it('Should return a proper Voice object', function (doneTest) {
-        K.VoiceTopic.query()
+      it('Should return a proper Post object', function (doneTest) {
+        K.Vote.query()
           .where('id', 1)
-          .include('voice')
+          .include('post')
           .then(function (result) {
-            var topic = result[0]
+            var vote = result[0]
 
-            expect(topic.voice).to.be.an('object')
-            expect(topic.voice.constructor.className).to.equal('Voice')
+            expect(vote.post).to.be.an('object')
+            expect(vote.post.constructor.className).to.equal('Post')
 
             return doneTest()
           })
@@ -31,17 +31,17 @@ describe('K.VoiceTopic', function () {
 
     })
 
-    describe('topic', function () {
+    describe('entity', function () {
 
       it('Should return a proper Topic object', function (doneTest) {
-        K.VoiceTopic.query()
+        K.Vote.query()
           .where('id', 1)
-          .include('topic')
+          .include('entity')
           .then(function (result) {
-            var topic = result[0]
+            var vote = result[0]
 
-            expect(topic.topic).to.be.an('object')
-            expect(topic.topic.constructor.className).to.equal('Topic')
+            expect(vote.entity).to.be.an('object')
+            expect(vote.entity.constructor.className).to.equal('Entity')
 
             return doneTest()
           })

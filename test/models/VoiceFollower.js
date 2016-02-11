@@ -31,7 +31,7 @@ describe('K.VoiceFollower', function () {
 
     })
 
-    describe('collaborator', function () {
+    describe('follower', function () {
 
       it('Should return a proper Entity object', function (doneTest) {
         K.VoiceFollower.query()
