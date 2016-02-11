@@ -85,7 +85,7 @@ Class(CV, 'VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
             this._updateValues()._addActions();
 
             // is new? no older than 21 days == 3 weeks
-            if (moment().diff(moment(this.data.updatedAt), 'days') <= 21) {
+            if (moment().diff(moment(this.data.createdAt), 'days') <= 21) {
                 this.addNewBadge();
             }
 

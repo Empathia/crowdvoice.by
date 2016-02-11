@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "keywords": [],
   "engines": {
-    "node": ">=0.10.33"
+    "node": ">=4.0.0"
   },
   "scripts": {
     "start": "nodemon --ext js,html --watch public/demo-data --watch views --watch controllers --watch middlewares --watch models --watch presenters --watch lib bin/server.js",
@@ -45,6 +45,7 @@
     "imagesize": "1.0.0",
     "imports-loader": "0.6.3",
     "jquery-colpick": "3.1.0",
+    "jsdom": "8.0.2",
     "jsdom-compat": "1.0.0",
     "jsx-transform-loader": "1.0.2",
     "keymaster": "1.6.2",
@@ -60,6 +61,7 @@
     "neon": "2.0.0",
     "neonode-core": "2.3.4",
     "neowidget": "2.0.0",
+    "oauth": "0.9.14",
     "parse-rss": "1.0.3",
     "parse5": "1.5.0",
     "passport-local": "1.0.0",
@@ -69,7 +71,7 @@
     "raf": "3.1.0",
     "readability": "git+https://git@github.com/mozilla/readability.git#7be3ccb57e9f16bc8ce70257e762b3b6ee8961ed",
     "redis": "0.12.1",
-    "request": "2.58.0",
+    "request": "2.69.0",
     "rome": "2.1.17",
     "sanitize-html": "1.6.1",
     "sanitize.css": "1.1.0",

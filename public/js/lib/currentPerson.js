@@ -8,7 +8,8 @@
  * ownedOrganizations() => returns {true|false} if person is owner of at least 1 organization
  */
 
-var PLACEHOLDERS = require('./placeholders');
+var PLACEHOLDERS = require('./placeholders')
+  , constants = require('./constants');
 
 module.exports = {
   _ : null,
@@ -104,6 +105,19 @@ module.exports = {
     return this.get().ownedOrganizations.length;
   },
 
+  canPostDirectlyOnVoice: function canPostDirectlyOnVoice(voiceEntity) {
+    if (!this.get()) return false;
+
+    if (this.ownerOf('voice', voiceEntity.id)) return true;
+
+    if (voiceEntity.owner.type === 'organization') {
+      return (this.memberOf('organization', voiceEntity.owner.id) ||
+        this.memberOf('voice', voiceEntity.id));
+    }
+
+    return false;
+  },
+
   /* Checks if an Entity can be invited either to a voice or to an organization.
    * @param {Object} entity - Entity's Model
    * @return {Boolean}
@@ -121,7 +135,7 @@ module.exports = {
     if (!this.get().voiceNames.length) { return false; }
 
     return (this.get().voiceNames.some(function(voice) {
-      if (voice.type === CV.VoiceView.TYPE_CLOSED) {
+      if (voice.type === constants.VOICE.TYPE_CLOSED) {
         return (entity.voiceIds.indexOf(voice.id) === -1);
       }
       return false;

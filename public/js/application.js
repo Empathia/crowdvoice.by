@@ -205,7 +205,7 @@ require('./widgets/view-feed/FeedDiscover');
 require('./widgets/view-feed/FeedSidebar');
 require('./widgets/view-feed/FeedOnboarding');
 
-require('./widgets/voice/PostsRegistry');
+require('./widgets/voice/registry/VoicePagesRegistry');
 require('./widgets/voice/publish-onboarding/VoicePublishOnboardingManager');
 require('./widgets/voice/publish-onboarding/VoicePublishOnboardingCannot');
 require('./widgets/voice/publish-onboarding/VoicePublishOnboardingCan');
@@ -234,7 +234,7 @@ require('./widgets/voice/layers/VoicePostsLayer');
 require('./widgets/voice/layers/VoicePostIndicator');
 require('./widgets/voice/VoiceAboutBox');
 
-require('./widgets/voice/moderate/ModeratePostsRegistry');
+require('./widgets/voice/registry/VoiceModeratePagesRegistry');
 require('./widgets/voice/moderate/VoiceModerateButton');
 require('./widgets/voice/moderate/VoiceModerateManager');
 require('./widgets/voice/moderate/VoiceModerateDoneButton');
@@ -264,6 +264,7 @@ require('./widgets/posts/PostImage');
 require('./widgets/posts/PostVideo');
 require('./widgets/posts/PostLink');
 require('./widgets/posts/PostText');
+require('./widgets/posts/PostTweet');
 require('./widgets/posts/actions/PostActionSave');
 require('./widgets/posts/actions/PostActionShare');
 
@@ -279,6 +280,7 @@ require('./widgets/post-details/PostDetailSidebarItem');
 require('./widgets/post-details/PostDetailInfo');
 require('./widgets/post-details/PostDetailInfoMedia');
 require('./widgets/post-details/PostDetailInfoArticle');
+require('./widgets/post-details/PostDetailInfoTweet');
 require('./widgets/post-details/actions/PostDetailActionsSave');
 require('./widgets/post-details/actions/PostDetailActionsShare');
 
@@ -288,6 +290,7 @@ require('./widgets/posts/edit/EditablePostLink');
 require('./widgets/posts/edit/EditablePostVideo');
 require('./widgets/posts/edit/EditablePostImage');
 require('./widgets/posts/edit/EditablePostText');
+require('./widgets/posts/edit/EditablePostTweet');
 require('./widgets/posts/edit/EditablePostImageControls');
 
 // moderate actions
@@ -315,8 +318,13 @@ require('./widgets/post-creators/from-sources/PostCreatorFromSourcesDropdown');
 require('./widgets/post-creators/from-sources/PostCreatorFromSourcesDropdownOption');
 require('./widgets/post-creators/from-sources/PostCreatorFromSourcesResults');
 require('./widgets/post-creators/from-sources/PostCreatorFromSourcesQueue');
-require('./widgets/post-creators/from-sources/PostCreatorFromSourcesYoutube');
-require('./widgets/post-creators/from-sources/PostCreatorFromSourcesGoogleNews');
+require('./widgets/post-creators/from-sources/sources/twitter/PostCreatorFromSourcesSourceTwitter');
+require('./widgets/post-creators/from-sources/sources/twitter/PostCreatorFromSourcesSourceTwitterItem');
+require('./widgets/post-creators/from-sources/sources/twitter/PopoverTwitterNotLoggedIn');
+require('./widgets/post-creators/from-sources/sources/youtube/PostCreatorFromSourcesSourceYoutube');
+require('./widgets/post-creators/from-sources/sources/youtube/PostCreatorFromSourcesSourceYoutubeItem');
+require('./widgets/post-creators/from-sources/sources/google-news/PostCreatorFromSourcesSourceGoogleNews');
+require('./widgets/post-creators/from-sources/sources/google-news/PostCreatorFromSourcesSourceGoogleNewsItem');
 
 require('./widgets/post-creators/upload-file/PostCreatorUploadFile');
 require('./widgets/post-creators/upload-file/PostCreatorUploadFileHeaderMessages');

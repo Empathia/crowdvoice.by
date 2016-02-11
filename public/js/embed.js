@@ -35,7 +35,7 @@ require('./widgets/PopoverBlocker');
 require('./widgets/popovers/PopoverShare');
 require('./widgets/popovers/PopoverUnsave');
 
-require('./widgets/voice/PostsRegistry');
+require('./widgets/voice/registry/VoicePagesRegistry');
 require('./embed/helpers/Voice');
 
 require('./embed/Embeddable');
@@ -60,6 +60,7 @@ require('./embed/posts/PostImage');
 require('./embed/posts/PostVideo');
 require('./embed/posts/PostLink');
 require('./embed/posts/PostText');
+require('./embed/posts/PostTweet');
 
 require('./embed/post-details/controllers/PostDetailController');
 require('./embed/post-details/PostDetail');
@@ -70,5 +71,6 @@ require('./embed/post-details/PostDetailSidebarItem');
 require('./embed/post-details/PostDetailInfo');
 require('./embed/post-details/PostDetailInfoMedia');
 require('./embed/post-details/PostDetailInfoArticle');
+require('./embed/post-details/PostDetailInfoTweet');
 require('./embed/post-details/actions/PostDetailActionsSave');
 require('./embed/post-details/actions/PostDetailActionsShare');

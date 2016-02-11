@@ -1,4 +1,4 @@
-.post-creator-from-sources__google-news {
+.pcfs__google-news {
   padding: 1.5rem 2rem;
   border-bottom: 1px solid @color-neutral-light;
 
@@ -11,18 +11,42 @@
 
   /* google news markup :/ */
   .source-description {
+    > table > tbody > tr > td:first-child {
+      display : block;
+      float : left;
+      width : 80px;
+
+      a > font {
+        display : none;
+      }
+    }
+
+   td.j {
+     display : block;
+     padding : 0 0 0 90px;
+
+     a {
+       display : none;
+     }
+   }
+
     td.j > font > div:first-of-type,
     td.j > font > br {
       display: none;
     }
 
-    > table > tbody > tr > td:first-child {
-      width: 0;
-    }
+    td.j div.lh br:first-of-type {
+      display : none;
 
-    > table > tbody > tr > td:first-child > font > a {
-      margin-right: 20px;
-      display: inline-block;
     }
+    //
+    // > table > tbody > tr > td:first-child {
+    //   width: 0;
+    // }
+    //
+    // > table > tbody > tr > td:first-child > font > a {
+    //   margin-right: 20px;
+    //   display: inline-block;
+    // }
   }
 }
