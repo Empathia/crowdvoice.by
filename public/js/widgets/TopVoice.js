@@ -2,7 +2,7 @@ Class(CV, 'TopVoice').inherits(Widget).includes(CV.WidgetUtils)({
   ELEMENT_CLASS: 'top-voice -full-height -full-width',
   HTML: '\
     <div>\
-      <div class="-abs -overflow-hidden -rel -full-height -full-width">\
+      <div class="top-voice__overflow -abs -overflow-hidden -rel -full-height -full-width">\
         <video class="top-voice__video" muted="true" autoplay loop>\
           <source type="video/mp4">\
           <source type="video/ogg">\
