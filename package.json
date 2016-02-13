@@ -72,11 +72,12 @@
     "readability": "git+https://git@github.com/mozilla/readability.git#7be3ccb57e9f16bc8ce70257e762b3b6ee8961ed",
     "redis": "0.12.1",
     "request": "2.69.0",
-    "rome": "2.1.17",
+    "rome": "2.1.22",
     "sanitize-html": "1.6.1",
     "sanitize.css": "1.1.0",
     "share-url": "1.0.0",
     "sharp": "0.12.2",
+    "slug": "0.9.1",
     "socket.io": "1.3.5",
     "soundmanager2": "git://github.com/scottschiller/SoundManager2.git#d0a4b70f244e71adde79c16e7ebab5025dc61c03",
     "style-loader": "0.9.0",
@@ -103,7 +104,6 @@
     "cli-table": "0.3.1",
     "clone": "1.0.2",
     "gemini-scrollbar": "1.3.1",
-    "slug": "0.9.1",
     "socket.io-client": "1.4.4",
     "tellurium": "git://github.com/benbeltran/tellurium.git"
   }
