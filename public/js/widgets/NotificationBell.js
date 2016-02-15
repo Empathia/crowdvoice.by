@@ -1,117 +1,100 @@
-var API = require('./../lib/api');
-var Person = require('./../lib/currentPerson');
-var Events = require('./../lib/events');
+var NotificationsStore = require('./../stores/NotificationsStore')
+  , Events = require('./../lib/events');
 
 Class('NotificationBell').inherits(Widget).includes(CV.WidgetUtils)({
-    HTML : '\
-        <button class="header-notification-button header-actions-button cv-button small rounded -p0 -rel ui-has-tooltip">\
-            <svg class="header-actions-svg -s17">\
-                <use xlink:href="#svg-notifications"></use>\
-            </svg>\
-            <span class="ui-badge -abs"></span>\
-            <span class="ui-tooltip -bottom -nw">Notifications</span>\
-        </button>',
+  HTML: '\
+    <button class="header-notification-button header-actions-button cv-button small rounded -p0 -rel ui-has-tooltip">\
+      <svg class="header-actions-svg -s17">\
+        <use xlink:href="#svg-notifications"></use>\
+      </svg>\
+      <span class="ui-badge -abs"></span>\
+      <span class="ui-tooltip -bottom -nw">Notifications</span>\
+    </button>',
 
-    prototype : {
-        /* Milliseconds to wait between each `getNotifications` request.
-         * @property _fetchNotificationsIntervalMS <private> [Number]
-         */
-        _fetchNotificationsIntervalMS : 30000,
-        _fetchNotificationsInterval : null,
+  prototype: {
+    init: function(config) {
+      Widget.prototype.init.call(this, config);
+      this.el = this.element[0];
+      this.badgeElement = this.el.querySelector('.ui-badge');
+      this._bindEvents();
+    },
 
-        init : function(config) {
-            Widget.prototype.init.call(this, config);
-            this.el = this.element[0];
-            this.badgeElement = this.el.querySelector('.ui-badge');
+    _bindEvents: function _bindEvents() {
+      this._unseenNotificationsHandlerRef = this._unseenNotificationsHandler.bind(this);
+      NotificationsStore.bind('unseenNotifications', this._unseenNotificationsHandlerRef);
 
-            this._setup()._bindEvents();
-        },
+      this._toggleNotificationsPopoverHandlerRef = this._toggleNotificationsPopoverHandler.bind(this);
+      Events.on(this.el, 'click', this._toggleNotificationsPopoverHandlerRef);
 
-        _setup : function _setup() {
-            this.appendChild(new CV.NotificationsManager({
-                name : 'notificationsManager'
-            })).render(document.body);
+      return this;
+    },
 
-            this._fetchNotificationsResponseHandlerRef = this._fetchNotificationsResponseHandler.bind(this);
-            this._fetchNotifications();
+    /* Button click event handler.
+     * Toggle the NotificationsPopover widget.
+     * @private
+     */
+    _toggleNotificationsPopoverHandler: function _toggleNotificationsPopoverHandler() {
+      NotificationsStore.deleteAllNewNotifications();
 
-            this._fetchNotificationsRef = this._fetchNotifications.bind(this);
-            this._fetchNotificationsInterval = window.setInterval(
-                this._fetchNotificationsRef,
-                this._fetchNotificationsIntervalMS
-            );
+      this.appendChild(new CV.PopoverBlocker({
+        name: 'notificationsPopover',
+        className: 'notifications-popover',
+        placement: 'bottom-right'
+      })).render(this.el);
 
-            return this;
-        },
+      this.appendChild(new CV.NotificationsPopover({
+        name: 'notificationsPopoverContent'
+      })).render(this.notificationsPopover.element);
 
-        _bindEvents : function _bindEvents() {
-            this._toggleNotificationsManagerRef = this._toggleNotificationsManager.bind(this);
-            Events.on(this.el, 'click', this._toggleNotificationsManagerRef);
+      this._destroyPopoverRef = this._destroyPopover.bind(this);
+      this.notificationsPopover.bind('afterDeactivate', this._destroyPopoverRef);
 
-            this._decreaseBubbleCounterRef = this._decreaseBubbleCounter.bind(this);
-            this.bind('notification:markAsRead', this._decreaseBubbleCounterRef);
+      requestAnimationFrame(function () {
+        this.notificationsPopover.activate();
+        this.notificationsPopoverContent.setup();
+      }.bind(this));
+    },
 
-            return this;
-        },
+    _destroyPopover: function _destroyPopover() {
+      this.notificationsPopover.unbind('afterDeactivate', this._destroyPopoverRef);
+      this._destroyPopoverRef = null;
+      while (this.children.length > 0) {
+        this.children[0].destroy();
+      }
+    },
 
-        /* Get currentPerson notifications, update the counter value and
-         * update the notificationsManager.
-         * @method _fetchNotifications <private> [Function]
-         * @return undefined
-         */
-        _fetchNotifications : function _fetchNotifications() {
-            API.getNotifications({
-                profileName: Person.get().profileName
-            }, this._fetchNotificationsResponseHandlerRef);
-        },
+    /* NotificationsStore 'unseenNotifications' event handler.
+     * @private
+     * @param {Object} res
+     * @prototype {number} res.unseen
+     */
+    _unseenNotificationsHandler: function _unseenNotificationsHandler(res) {
+      this._updateBubbleState(res.unseen);
+    },
 
-        /* Handles the `getNotifications` call response.
-         * @method _fetchNotificationsResponseHandler <private> [Function]
-         * @return undefined
-         */
-        _fetchNotificationsResponseHandler : function _fetchNotificationsResponseHandler(err, res) {
-            this._updateBubbleState(res.length);
-            this.notificationsManager.update(res.reverse());
-        },
+    /* Updates the bubble and button state.
+     * @private
+     */
+    _updateBubbleState: function _updateBubbleState(notificationsLength) {
+      this._notificationsLength = notificationsLength;
 
-        /* Updates the bubble and button state.
-         * @method _updateBubbleState <private> [Function]
-         * @return undefined
-         */
-        _updateBubbleState : function _updateBubbleState(notificationsLength) {
-            this._notificationsLength = notificationsLength;
+      if (this._notificationsLength) {
+        this.dom.updateText(this.badgeElement, this._notificationsLength);
+        this.dom.addClass(this.el, ['has-new-notifications']);
+      } else {
+        this.dom.removeClass(this.el, ['has-new-notifications']);
+      }
+    },
 
-            if (this._notificationsLength) {
-                this.dom.updateText(this.badgeElement, this._notificationsLength);
-                this.dom.addClass(this.el, ['has-new-notifications']);
-            } else {
-                this.dom.removeClass(this.el, ['has-new-notifications']);
-            }
-        },
+    destroy: function destroy() {
+      NotificationsStore.unbind('unseenNotifications', this._unseenNotificationsHandlerRef);
+      this._unseenNotificationsHandlerRef = null;
 
-        /* Show/hide the NotificationsManager.
-         * @method _toggleNotificationsManager <private> [Function]
-         * @return undefined
-         */
-        _toggleNotificationsManager : function _toggleNotificationsManager() {
-            this.notificationsManager.toggle();
-        },
+      Events.off(this.el, 'click', this._toggleNotificationsPopoverHandlerRef);
+      this._toggleNotificationsPopoverHandlerRef = null;
 
-        _decreaseBubbleCounter : function _decreaseBubbleCounter(ev) {
-            ev.preventDefault();
-            this._notificationsLength--;
-            this._updateBubbleState(this._notificationsLength);
-        },
-
-        destroy : function destroy() {
-            Events.off(this.el, 'click', this._toggleNotificationsManagerRef);
-            this._toggleNotificationsManagerRef = null;
-
-            window.clearInterval(this._fetchNotificationsInterval);
-            this._fetchNotificationsRef = null;
-
-            Widget.prototype.destroy.call(this);
-            return null;
-        }
+      Widget.prototype.destroy.call(this);
+      return null;
     }
+  }
 });

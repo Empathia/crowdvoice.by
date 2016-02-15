@@ -3,14 +3,17 @@
   background-color: @color-black;
 }
 
-.top-voice__overflow::after {
-  content: '';
-  background: rgba(0,0,0,0.6) url(/img/components/top-voice/bg-pattern.png) 0 0 repeat;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+.top-voice__overflow {
+  z-index: 0;
+  &::after {
+    content: '';
+    background: rgba(0,0,0,0.6) url(/img/components/top-voice/bg-pattern.png) 0 0 repeat;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
 }
 
 .top-voice__video {

@@ -28,6 +28,13 @@ Class(CV, 'FeedFollowedYou').inherits(CV.FeedItem)({
         href: this.getProfileUrl(),
         text: this.getName()
       }) + textSuffix);
+    },
+
+    /* Creates the notification url that makes more sense to redirect when clicked.
+     * @abstract
+     */
+    getLink: function getLink() {
+      return this.getProfileUrl();
     }
   }
 });

@@ -47,10 +47,13 @@ require('./widgets/ui/InputButtonResults');
 require('./widgets/ui/InputButtonResultsItem');
 
 // notifications
+require('./widgets/notifications/TabCounter');
 require('./widgets/notifications/NotificationsManager');
 require('./widgets/notifications/Notification');
 require('./widgets/notifications/NotificationItem');
 require('./widgets/notifications/NotificationReadMore');
+require('./widgets/notifications/NotificationsPopover');
+require('./widgets/notifications/NotificationsPopoverItem');
 // require('./widgets/notifications/notification-flash');
 
 // feed items
@@ -204,6 +207,10 @@ require('./widgets/view-feed/FeedRecommended');
 require('./widgets/view-feed/FeedDiscover');
 require('./widgets/view-feed/FeedSidebar');
 require('./widgets/view-feed/FeedOnboarding');
+require('./views/Notifications');
+require('./widgets/view-notifications/NotificationsPageItem');
+require('./views/PeopleFeed');
+require('./widgets/view-people-feed/PeopleFeedDropdown');
 
 require('./widgets/voice/registry/VoicePagesRegistry');
 require('./widgets/voice/publish-onboarding/VoicePublishOnboardingManager');

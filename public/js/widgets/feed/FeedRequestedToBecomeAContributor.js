@@ -20,6 +20,13 @@ Class(CV, 'FeedRequestedToBecomeAContributor').inherits(CV.FeedItem)({
         name: 'voice-cover',
         data: this.data.voice
       })).render(this.extraInfoElement);
+    },
+
+    /* Creates the notification url that makes more sense to redirect when clicked.
+     * @abstract
+     */
+    getLink: function getLink() {
+      return this.getVoiceUrl();
     }
   }
 });

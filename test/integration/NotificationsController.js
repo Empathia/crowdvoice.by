@@ -49,11 +49,11 @@ describe('NotificationsController', function () {
                 if (err) { return seriesNext(err) }
 
                 expect(res.status).to.equal(200)
-                expect(res.body.length).to.equal(2)
-                expect(res.body[0].notificationId).to.exist
-                expect(res.body[1].notificationId).to.exist
-                expect(res.body[0].action).to.exist
-                expect(res.body[1].action).to.exist
+                expect(res.body.notifications.length).to.equal(2)
+                expect(res.body.notifications[0].notificationId).to.exist
+                expect(res.body.notifications[1].notificationId).to.exist
+                expect(res.body.notifications[0].action).to.exist
+                expect(res.body.notifications[1].action).to.exist
 
                 return seriesNext()
               })
@@ -73,7 +73,7 @@ describe('NotificationsController', function () {
             if (err) { return doneTest(err) }
 
             expect(res.status).to.equal(200)
-            expect(res.body.length).to.equal(0)
+            expect(res.body.notifications.length).to.equal(0)
 
             return doneTest()
           })

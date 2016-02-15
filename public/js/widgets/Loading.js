@@ -86,7 +86,7 @@ Class(CV, 'Loading').inherits(Widget)({
       }
 
       transitionEnd(this.el, callback);
-      return this;
+      return null;
     }
   }
 });
