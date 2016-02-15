@@ -926,6 +926,37 @@ module.exports = {
     });
   },
 
+  /* Returns the profileName personal feed.
+   * @param {Object} args
+   * @property {string} args.profileName The entity profileName
+   * @param {function} callback
+   */
+  getFeed: function getFeed(args, callback) {
+    if (!args.profileName || !callback) {
+      throw new Error('Missing required params');
+    }
+
+    if ((typeof callback).toLowerCase() !== "function") {
+      throw new Error('Callback should be a function');
+    }
+
+    var params = '';
+    if (args.data) {
+      params = Object.keys(args.data).map(function (key) {
+        return encodeURIComponent(key) + '=' + encodeURIComponent(args.data[key]);
+      }).join('&');
+      params = ('?' + params);
+    }
+
+    $.ajax({
+      method: 'GET',
+      dataType: 'json',
+      url: '/' + args.profileName + '/feed' + params,
+      success: function success(data) {callback(false, data);},
+      error: function error(err) {callback(true, err);}
+    });
+  },
+
   /**************************************************************************
    * ORGANIZATIONS
    *************************************************************************/
@@ -1458,8 +1489,9 @@ module.exports = {
    * NOTIFICATIONS
    *************************************************************************/
   /* Get the current user/org's notifications.
-   * @argument args.profileName <required> [String] currentPerson profileName
-   * @argument callback <required> [Function]
+   * @param {string} args.profileName - currentPerson profileName
+   * @param {Object[]} args.data
+   * @param {function} callback
    */
   getNotifications: function getNotifications(args, callback) {
     if (!args.profileName || !callback) {
@@ -1470,10 +1502,18 @@ module.exports = {
       throw new Error('Callback should be a function');
     }
 
+    var params = '';
+    if (args.data) {
+      params = Object.keys(args.data).map(function (key) {
+        return encodeURIComponent(key) + '=' + encodeURIComponent(args.data[key]);
+      }).join('&');
+      params = ('?' + params);
+    }
+
     $.ajax({
       type: 'GET',
       dataType: 'json',
-      url: '/' + args.profileName + '/notifications',
+      url: '/' + args.profileName + '/notifications' + params,
       headers: {'csrf-token' : this.token},
       success: function success(data) {callback(false, data);},
       error: function error(err) {callback(true, err);}
@@ -1481,9 +1521,9 @@ module.exports = {
   },
 
   /* Mark a particular notification as read for the current user.
-   * @argument args.profileName <required> [String] currentPerson profileName
-   * @argument args.data.notificationId <required> [Function] Hashids.encode notificationId
-   * @argument callback <required> [Function]
+   * @param {string} args.profileName - currentPerson profileName
+   * @param {string} args.data.notificationId - Hashids.encode notificationId
+   * @param {function} callback
    */
   markNotificationAsRead: function markNotificationAsRead(args, callback) {
     if (!args.profileName || !args.data.notificationId || !callback) {
@@ -1499,6 +1539,28 @@ module.exports = {
       url: '/' + args.profileName + '/notifications/markAsRead?_method=DELETE',
       headers: {'csrf-token' : this.token},
       data: {notificationId: args.data.notificationId},
+      success: function success(data) {callback(false, data);},
+      error: function error(err) {callback(true, err);}
+    });
+  },
+
+  /* Mark all notifications for the current user (and his organizations) as read.
+   * @param {string} args.profileName - currentPerson profileName
+   * @param {function} callback
+   */
+  markAllNotificationsAsRead: function markAllNotificationsAsRead(args, callback) {
+    if (!args.profileName || !callback) {
+      throw new Error('Missing required params');
+    }
+
+    if ((typeof callback).toLowerCase() !== "function") {
+      throw new Error('Callback should be a function');
+    }
+
+    $.ajax({
+      type: 'POST',
+      url: '/' + args.profileName + '/notifications/markAllAsRead?_method=DELETE',
+      headers: {'csrf-token' : this.token},
       success: function success(data) {callback(false, data);},
       error: function error(err) {callback(true, err);}
     });

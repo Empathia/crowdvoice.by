@@ -1,7 +1,7 @@
 var Person = require('./../../lib/currentPerson')
   , Events = require('./../../lib/events');
 
-Class(CV.UI, 'FeedDropdown').inherits(Widget).includes(CV.WidgetUtils)({
+Class(CV.UI, 'PeopleFeedDropdown').inherits(Widget).includes(CV.WidgetUtils)({
   prototype: {
     _items: null,
 
@@ -11,11 +11,11 @@ Class(CV.UI, 'FeedDropdown').inherits(Widget).includes(CV.WidgetUtils)({
       this.appendChild(new CV.Dropdown({
         name: 'dropdown',
         showArrow: true,
-        className: 'dropdown-feed-accounts ui-dropdown-styled -sm',
-        arrowClassName: '-s10',
-        bodyClassName: 'ui-vertical-list hoverable -block'
+        className: 'people-feed-dropdown',
+        arrowClassName: '-s12',
+        bodyClassName: 'ui-vertical-list hoverable -block',
+        headClassName: 'h2',
       })).render(this.el);
-
       this._setup()._bindEvents();
     },
 
@@ -43,14 +43,11 @@ Class(CV.UI, 'FeedDropdown').inherits(Widget).includes(CV.WidgetUtils)({
      * @return FeedDropdown
      */
     _setup: function _setup() {
-      this._createItem(Person.get().name + '’s feed', Person.get().profileName);
-
-      Person.get().ownedOrganizations.forEach(function(organization) {
-        this._createItem(organization.name + '’s feed', organization.profileName);
+      this._createItem(Person.get('name'), Person.get('profileName'));
+      Person.get('ownedOrganizations').forEach(function(organization) {
+        this._createItem(organization.name, organization.profileName);
       }, this);
-
       this._items = [].slice.call(this.dropdown.getContent());
-
       return this;
     },
 
@@ -78,7 +75,7 @@ Class(CV.UI, 'FeedDropdown').inherits(Widget).includes(CV.WidgetUtils)({
       var target = ev.target;
       if (target.classList.contains('active') === false) {
         this.selectByElement(target);
-        window.location = '/' + target.dataset.value + '/home/';
+        window.location = '/' + target.dataset.value + '/feed/';
       }
     }
   }

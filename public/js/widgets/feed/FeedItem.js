@@ -52,6 +52,14 @@ Class(CV, 'FeedItem').inherits(Widget).includes(CV.WidgetUtils)({
       this.extraInfoElement = this.el.querySelector('.cv-feed-item__info-extra');
     },
 
+    /* Creates the notification url that makes more sense to redirect when clicked.
+     * All implementations should include this method.
+     * @abstract
+     */
+    getLink: function getLink() {
+      throw new Error('FeedItem.prototype.getLink not implemeted');
+    },
+
     /* Displays the createdAt date at the top-right using moment's
      * fromNow method to format it.
      * @public
@@ -74,10 +82,23 @@ Class(CV, 'FeedItem').inherits(Widget).includes(CV.WidgetUtils)({
 
     /* Returns the actionDoer profile url.
      * @protected
-     * @return {string} / + profileName
+     * @return {string}
      */
     getProfileUrl: function getProfileUrl() {
       return '/' + this.data.actionDoer.profileName + '/';
+    },
+
+    /* Returns the formated voice url.
+     * @protected
+     * @return {string}
+     */
+    getVoiceUrl: function getVoiceUrl() {
+      var url = ''
+        , voice = this.data.voice;
+      if (voice) {
+        url = '/' + voice.owner.profileName + '/' + voice.slug + '/';
+      }
+      return url;
     },
 
     /* Returns the actionDoer small avatar url.

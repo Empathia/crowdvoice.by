@@ -4,29 +4,29 @@ var FeedPresenter = require('./FeedPresenter.js')
 
 var NotificationsPresenter = Module('NotificationsPresenter')({
   build: function (notifications, currentPerson, callback) {
-    var result = [],
-      actionIds = notifications.map(function (notif) { return notif.actionId }),
-      itemToAdd = {}
+    var result = []
 
-    FeedAction.whereIn('id', actionIds, function (err, actions) {
+    async.eachLimit(notifications, 1, function (notification, nextNotif) {
+      FeedAction.find({ id: notification.actionId }, function (err, action) {
+        if (err) { return nextNotif(err) }
+
+        FeedPresenter.build(action, currentPerson, function (err, pres) {
+          if (err) { return nextNotif(err) }
+
+          result.push({
+            notificationId: hashids.encode(notification.id),
+            action: pres[0],
+            read: notification.read,
+          })
+
+          return nextNotif()
+        })
+      })
+    }, function (err) {
       if (err) { return callback(err) }
 
-      FeedPresenter.build(actions, currentPerson, function (err, presentedActions) {
-        if (err) { return callback(err) }
-
-        notifications.forEach(function (notification, index) {
-          itemToAdd = {} // reset
-
-          itemToAdd.notificationId = hashids.encode(notification.id)
-          itemToAdd.action = presentedActions[index]
-
-          result.push(itemToAdd)
-        })
-
-        return callback(null, result)
-      })
+      return callback(null, result)
     })
-
   },
 })
 

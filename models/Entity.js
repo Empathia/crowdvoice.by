@@ -138,6 +138,7 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
     createdAt: null,
     updatedAt: null,
     deleted: false,
+    lastNotificationDate : null,
 
     init : function init(config) {
       Argon.KnexModel.prototype.init.call(this, config);

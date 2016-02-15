@@ -225,6 +225,7 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
 
       transitionEnd(this.backdropElement, function() {
         this.container.removeChild(this.backdropElement);
+        this.dispatch('afterDeactivate');
       }.bind(this));
     },
 
@@ -255,7 +256,6 @@ Class(CV, 'PopoverBlocker').inherits(Widget)({
       this._backdropClickHandlerRef = null;
 
       Widget.prototype.destroy.call(this);
-
       return null;
     }
   }
