@@ -19,6 +19,7 @@ var NotificationsPresenter = Module('NotificationsPresenter')({
 
           itemToAdd.notificationId = hashids.encode(notification.id)
           itemToAdd.action = presentedActions[index]
+          itemToAdd.read = notification.read
 
           result.push(itemToAdd)
         })

@@ -1,6 +1,6 @@
 'use strict'
 
-var NotificationsPresenter = require(__dirname + '/../presenters/NotificationsPresenter.js')
+var NotificationsPresenter = require(path.join(process.cwd(), 'presenters', 'NotificationsPresenter.js'))
 
 var NotificationsController = Class('NotificationsController')({
 
@@ -40,21 +40,53 @@ var NotificationsController = Class('NotificationsController')({
             })
             ids.push(currentPerson.id)
 
-            db('Notifications')
-              .whereIn('follower_id', ids)
-              .andWhere('read', '=', false)
-              .andWhere('for_feed', '=', false)
-              .exec(function (err, result) {
-                if (err) { return next(err) }
+            return res.format({
+              html: function () {
+                db('Notifications')
+                  .count('*')
+                  .where('follower_id', 'in', ids)
+                  .andWhere('for_feed', '=', false)
+                  .then(function (count) {
+                    res.locals.totalNotifications = +count[0].count
 
-                var notifications = Argon.Storage.Knex.processors[0](result)
+                    return res.render('people/notifications')
+                  })
+                  .catch(next)
+              },
 
-                NotificationsPresenter.build(notifications, req.currentPerson, function (err, presentedNotifications) {
-                  if (err) { return next(err) }
+              json: function () {
+                db('Notifications')
+                  .select('*', function () {
+                    return this
+                      .count('*')
+                      .as('full_count')
+                      .from('Notifications')
+                      .where('follower_id', 'in', ids)
+                      .andWhere('for_feed', '=', false)
+                  })
+                  .where('follower_id', 'in', ids)
+                  .andWhere('for_feed', '=', false)
+                  .orderBy('created_at', 'desc')
+                  .offset(req.query.offset || 0)
+                  .limit(req.query.limit || 50)
+                  .exec(function (err, result) {
+                    if (err) { return next(err) }
 
-                  return res.json(presentedNotifications)
-                })
-              })
+                    var notifications = Argon.Storage.Knex.processors[0](result)
+
+                    NotificationsPresenter.build(notifications, req.currentPerson, function (err, presentedNotifications) {
+                      if (err) { return next(err) }
+
+                      console.log(result)
+
+                      return res.json({
+                        notifications: presentedNotifications,
+                        totalCount: +result[0].full_count,
+                      })
+                    })
+                  })
+              },
+            })
           })
         })
       })
