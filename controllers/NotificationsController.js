@@ -77,11 +77,9 @@ var NotificationsController = Class('NotificationsController')({
                     NotificationsPresenter.build(notifications, req.currentPerson, function (err, presentedNotifications) {
                       if (err) { return next(err) }
 
-                      console.log(result)
-
                       return res.json({
                         notifications: presentedNotifications,
-                        totalCount: +result[0].full_count,
+                        totalCount: (result[0] ? +result[0].full_count : 0),
                       })
                     })
                   })
