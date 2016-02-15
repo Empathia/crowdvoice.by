@@ -35,8 +35,8 @@ var NotificationsController = Class('NotificationsController')({
           }, function (err, entities) {
             if (err) { return next(err) }
 
-            var ids = entities.map(function (entity) {
-              return entity.id
+            var ids = entities.map(function (owner) {
+              return owner.ownedId
             })
             ids.push(currentPerson.id)
 
