@@ -5,6 +5,11 @@ var crypto = require('crypto');
 var fsextra = require('fs-extra');
 var http = require('http');
 var https = require('https');
+var sanitize = require("sanitize-html");
+var sanitizerOptions = {
+  allowedTags : [],
+  allowedAttributes : []
+}
 
 var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
 
@@ -165,6 +170,24 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
       Argon.KnexModel.prototype.init.call(this, config);
 
       var model = this;
+
+      this.constructor.storage.preprocessors.push(function(data) {
+        var sanitizedData, property;
+
+        sanitizedData = {};
+
+        for (property in data) {
+          if (data.hasOwnProperty(property)) {
+            if (property === 'title' || property === 'description') {
+              sanitizedData[property] = sanitize(data[property], sanitizerOptions);
+            } else {
+              sanitizedData[property] = data[property];
+            }
+          }
+        }
+
+        return sanitizedData;
+      });
 
       // Ensure publishedAt is present to prevent a validation error
       this.bind('beforeValidate', function() {
