@@ -38,10 +38,10 @@ Class(CV, 'NotificationsPopoverItem').inherits(Widget).includes(BubblingSupport)
     },
 
     _clickHandler: function _clickHandler(ev) {
-      ev.preventDefault();
-      var tag = ev.target.tagName.toUpperCase();
+      var tag = ev.target.tagName.toUpperCase()
+        , link = this.item.getLink();
       if (tag !== 'A') {
-        var link = this.item.getLink();
+        ev.preventDefault();
         if (this.read === false) {
           return this.dispatch('notification:markAsReadAndRedirect', {
             redirectUrl: link

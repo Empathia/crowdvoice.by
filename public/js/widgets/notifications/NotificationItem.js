@@ -73,10 +73,10 @@ Class(CV, 'NotificationItem').inherits(CV.Notification)({
     },
 
     _clickHandler: function _clickHandler(ev) {
-      ev.preventDefault();
-      var tag = ev.target.tagName.toUpperCase();
+      var tag = ev.target.tagName.toUpperCase()
+        , link = this.item.getLink();
       if (tag !== 'A') {
-        var link = this.item.getLink();
+        ev.preventDefault();
         if (link) window.location = link;
       }
     },
