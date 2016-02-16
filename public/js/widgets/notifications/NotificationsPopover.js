@@ -20,8 +20,8 @@ Class(CV, 'NotificationsPopover').inherits(Widget).includes(BubblingSupport)({
       </div>\
       <div class="notifications-popover__footer">\
         <div class="cv-button-group multiple -row -full-width">\
-          <button class="cv-button tiny -col-6 -font-bold -btlr0">Mark All As Read</button>\
-          <button class="cv-button tiny -col-6 -font-bold -btrr0">View All</button>\
+          <button class="cv-button tiny -col-6 -font-semi-bold -btlr0">Mark All As Read</button>\
+          <button class="cv-button tiny -col-6 -font-semi-bold -btrr0">View All</button>\
         </div>\
       </div>\
     </div>',
