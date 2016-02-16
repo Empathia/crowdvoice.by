@@ -7,11 +7,15 @@ var API = require('./../lib/api')
 module.exports = Class(CV, 'NotificationsStore').includes(CustomEventSupport)({
   _socket: null,
   _run: function _run() {
-    this._socket = CV.App.prototype.getSocket();
-    // TODO: fix, bind to socket event, this is fake to display the flying notifications
-    setTimeout(function (_this) {
-      _this._newNotifications();
-    }, 2000, this);
+    this._socket = CV.App.getSocket();
+    this._socket.on('newNotifications', function (res) {
+      console.log(res);
+      if (res.length) {
+        this._new_notifications = res;
+        this._emitNewNotifications();
+      }
+    }.bind(this));
+    this._newNotifications();
   },
 
   /* @property {Number} _unseen_count - Holds the unseen notifications total.
@@ -31,7 +35,7 @@ module.exports = Class(CV, 'NotificationsStore').includes(CustomEventSupport)({
       profileName: Person.get('profileName')
     }, function (err, res) {
       if (err) return console.log(err);
-      var len = res.length;
+      var len = res.totalCount;
       if (this._unseen_count !== len) {
         this._unseen_count = len;
         this._emitUnseen();
@@ -63,7 +67,7 @@ module.exports = Class(CV, 'NotificationsStore').includes(CustomEventSupport)({
       profileName: Person.get('profileName')
     }, function (err, res) {
       if (err) return console.log(err);
-      this._notifications = res;
+      this._notifications = res.notifications;
       this._emitNotifications();
     }.bind(this));
   },
@@ -77,16 +81,7 @@ module.exports = Class(CV, 'NotificationsStore').includes(CustomEventSupport)({
    * @emits 'newNotifications'
    */
   _newNotifications: function _newNotifications() {
-    // TODO: fix, use the socket event to emit, no API calls
-    API.getNotifications({
-      profileName: Person.get('profileName')
-    }, function (err, res) {
-      if (err) return console.log(err);
-      if (res.length) {
-        this._new_notifications = res;
-        this._emitNewNotifications();
-      }
-    }.bind(this));
+    this._socket.emit('getNotifications');
   },
 
   /* @emits 'newNotifications' {notifications: {array}}
