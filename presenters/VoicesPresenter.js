@@ -5,7 +5,7 @@ var TopicsPresenter = require('./TopicsPresenter.js');
 var VoicesPresenter = Module('VoicesPresenter')({
   build : function build(voices, currentPerson, callback) {
     var response = [];
-    async.each(voices, function(voice, nextVoice) {
+    async.eachLimit(voices, 1, function(voice, nextVoice) {
       var voiceInstance = new Voice(voice);
       voiceInstance.id = hashids.encode(voiceInstance.id);
       voiceInstance.ownerId = hashids.encode(voiceInstance.ownerId);
