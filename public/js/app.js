@@ -7,8 +7,38 @@ var Person = require('./lib/currentPerson')
   , Topics = require('./lib/registers/Topics');
 
 Class(CV, 'App').includes(NodeSupport)({
+  _socket: null,
+
+  /* Start socketio connection.
+   * @static
+   * @return CV.App [Object]
+   */
+  socketStart: function socketStart() {
+    if (!this._socket) {
+      this._socket = io(window.location.origin, {
+        'reconnection': true,
+        'reconnectionDelay': 1000,
+        'reconnectionDelayMax': 5000,
+        'reconnectionAttempts': 5
+      });
+    }
+    return this;
+  },
+
+  /* Return the socketio instance.
+   * @static
+   * @return {Object} this._socket
+   */
+  getSocket: function getSocket() {
+    if (this._socket) {
+      return this._socket;
+    }
+
+    this.socketStart();
+    return this.getSocket();
+  },
+
   prototype: {
-    _socket: null,
     _scrollableElement: null,
 
     /* Updates currentPerson Registry
@@ -54,14 +84,7 @@ Class(CV, 'App').includes(NodeSupport)({
      * @return CV.App [Object]
      */
     socketStart: function socketStart() {
-      if (!this._socket) {
-        this._socket = io(window.location.origin, {
-          'reconnection': true,
-          'reconnectionDelay': 1000,
-          'reconnectionDelayMax': 5000,
-          'reconnectionAttempts': 5
-        });
-      }
+      this.constructor.socketStart();
       return this;
     },
 
@@ -70,12 +93,7 @@ Class(CV, 'App').includes(NodeSupport)({
      * @return {Object} this._socket
      */
     getSocket: function getSocket() {
-      if (this._socket) {
-        return this._socket;
-      }
-
-      this.socketStart();
-      return this.getSocket();
+      return this.constructor.getSocket();
     },
 
     /* Make the sidebar interactive, expand on :hover.
