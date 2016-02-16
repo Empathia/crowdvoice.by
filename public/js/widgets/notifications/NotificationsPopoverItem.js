@@ -1,7 +1,7 @@
 var Events = require('./../../lib/events');
 
 Class(CV, 'NotificationsPopoverItem').inherits(Widget).includes(BubblingSupport)({
-  ELEMENT_CLASS: 'cv-notification-popover-item',
+  ELEMENT_CLASS: 'cv-notification-popover-item -clickable',
   prototype: {
     /* @property {object} data The notification model.
      * @property {string} data.id

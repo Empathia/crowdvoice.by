@@ -62,6 +62,7 @@ Class(CV, 'NotificationItem').inherits(CV.Notification)({
      */
     _mouseEnterHandler: function _mouseEnterHandler() {
       if (this.read === false) {
+        this.read = true;
         this.dispatch('notification:markAsRead');
       }
       this._stopLifeSpanCount();

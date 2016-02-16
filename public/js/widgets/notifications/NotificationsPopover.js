@@ -1,4 +1,5 @@
-var Person = require('./../../lib/currentPerson')
+var GeminiScrollbar = require('gemini-scrollbar')
+  , Person = require('./../../lib/currentPerson')
   , API = require('./../../lib/api')
   , NotificationsStore = require('./../../stores/NotificationsStore');
 
@@ -7,7 +8,16 @@ Class(CV, 'NotificationsPopover').inherits(Widget).includes(BubblingSupport)({
   HTML: '\
     <div>\
       <header class="notifications-popover__header -font-bold -upper">Notifications</header>\
-      <div class="notifications-popover__list -rel"></div>\
+      <div class="notifications-popover__list -rel">\
+        <div class="gm-scrollbar -vertical">\
+          <div class="thumb"></div>\
+        </div>\
+        <div class="gm-scrollbar -horizontal">\
+          <div class="thumb"></div>\
+        </div>\
+        <div class="notifications-popover__list-inner gm-scroll-view">\
+        </div>\
+      </div>\
       <div class="notifications-popover__footer">\
         <div class="cv-button-group multiple -row -full-width">\
           <button class="cv-button tiny -col-6 -font-bold -btlr0">Mark All As Read</button>\
@@ -25,9 +35,16 @@ Class(CV, 'NotificationsPopover').inherits(Widget).includes(BubblingSupport)({
     },
 
     _setup: function _setup() {
+      this.scrollbar = new GeminiScrollbar({
+        element: this.listElement,
+        createElements: false,
+        autoshow: true
+      }).create();
+
       this.appendChild(new CV.Loading({
         name: 'loader'
-      })).render(this.listElement).center();
+      })).render(this.scrollbar.getViewElement()).center();
+
       return this;
     },
 
@@ -54,7 +71,8 @@ Class(CV, 'NotificationsPopover').inherits(Widget).includes(BubblingSupport)({
           data: n.action,
           notificationId: n.notificationId,
           read: n.read
-        })).render(this.listElement);
+        })).render(this.scrollbar.getViewElement());
+        this.scrollbar.update();
       }, this);
     },
 
