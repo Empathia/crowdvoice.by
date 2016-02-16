@@ -12,6 +12,7 @@ module.exports = Class(CV, 'NotificationsStore').includes(CustomEventSupport)({
       console.log(res);
       if (res.length) {
         this._new_notifications = res;
+        this._unseen_count = res.length;
         this._emitNewNotifications();
       }
     }.bind(this));
@@ -25,22 +26,8 @@ module.exports = Class(CV, 'NotificationsStore').includes(CustomEventSupport)({
   _notifications: null,
   _new_notifications: null,
 
-  /* Fetch the unseen notifications total, updates _unseen_count and dispatch.
-   * @static
-   * @emits 'getUnseen'
-   */
   getUnseen: function getUnseen() {
-    // TODO: fix, update the api call so it calls the updated endpoint
-    API.getNotifications({
-      profileName: Person.get('profileName')
-    }, function (err, res) {
-      if (err) return console.log(err);
-      var len = res.totalCount;
-      if (this._unseen_count !== len) {
-        this._unseen_count = len;
-        this._emitUnseen();
-      }
-    }.bind(this));
+    this._newNotifications();
   },
 
   /* Decrease the _unseen_count by one and emits the getUnseen event.
@@ -50,7 +37,7 @@ module.exports = Class(CV, 'NotificationsStore').includes(CustomEventSupport)({
   decreaseUnseen: function decreaseUnseen() {
     if (this._unseen_count > 0) {
       this._unseen_count--;
-      this._emitUnseen();
+      this._emitNewNotifications();
     }
   },
 
@@ -87,7 +74,10 @@ module.exports = Class(CV, 'NotificationsStore').includes(CustomEventSupport)({
   /* @emits 'newNotifications' {notifications: {array}}
    */
   _emitNewNotifications: function _emitNewNotifications() {
-    this.dispatch('newNotifications', {notifications: this._new_notifications});
+    this.dispatch('newNotifications', {
+      notifications: this._new_notifications,
+      unseen: this._unseen_count
+    });
   }
 });
 

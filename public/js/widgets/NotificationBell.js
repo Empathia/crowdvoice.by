@@ -17,12 +17,11 @@ Class('NotificationBell').inherits(Widget).includes(CV.WidgetUtils)({
       this.el = this.element[0];
       this.badgeElement = this.el.querySelector('.ui-badge');
       this._bindEvents();
-      NotificationsStore.getUnseen();
     },
 
     _bindEvents: function _bindEvents() {
-      this._getUnseenHandlerRef = this._getUnseenHandler.bind(this);
-      NotificationsStore.bind('getUnseen', this._getUnseenHandlerRef);
+      this._newNotificationsHandlerRef = this._newNotificationsHandler.bind(this);
+      NotificationsStore.bind('newNotifications', this._newNotificationsHandlerRef);
 
       this._toggleNotificationsPopoverHandlerRef = this._toggleNotificationsPopoverHandler.bind(this);
       Events.on(this.el, 'click', this._toggleNotificationsPopoverHandlerRef);
@@ -50,12 +49,14 @@ Class('NotificationBell').inherits(Widget).includes(CV.WidgetUtils)({
       }.bind(this));
     },
 
-    /* Handles NotificationsStore 'getUnseen' event.
+    /* NotificationsStore 'newNotifications' event handler.
+     * @private
      * @param {Object} res
-     * @property {number} res.total
+     * @property {Array} res.notifications
+     * @prototype {number} res.unseen
      */
-    _getUnseenHandler: function _getUnseenHandler(res) {
-      this._updateBubbleState(res.total);
+    _newNotificationsHandler: function _newNotificationsHandler(res) {
+      this._updateBubbleState(res.unseen);
     },
 
     /* Updates the bubble and button state.

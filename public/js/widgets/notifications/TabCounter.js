@@ -8,7 +8,6 @@ Class(CV, 'TabCounter')({
 
     init: function init() {
       this._setup()._bindEvents();
-      NotificationsStore.getUnseen();
     },
 
     _setup: function _setup() {
@@ -23,17 +22,19 @@ Class(CV, 'TabCounter')({
      * @return {Object} this
      */
     _bindEvents: function _bindEvents() {
-      this._getUnseenHandlerRef = this._getUnseenHandler.bind(this);
-      NotificationsStore.bind('getUnseen', this._getUnseenHandlerRef);
+      this._newNotificationsHandlerRef = this._newNotificationsHandler.bind(this);
+      NotificationsStore.bind('newNotifications', this._newNotificationsHandlerRef);
       return this;
     },
 
-    /* Handles NotificationsStore 'getUnseen' event.
+    /* NotificationsStore 'newNotifications' event handler.
+     * @private
      * @param {Object} res
-     * @property {number} res.total
+     * @property {Array} res.notifications
+     * @prototype {number} res.unseen
      */
-    _getUnseenHandler: function _getUnseenHandler(res) {
-      var total = res.total;
+    _newNotificationsHandler: function _newNotificationsHandler(res) {
+      var total = res.unseen;
       if (this._unseen_total !== total) {
         this._unseen_total = total;
         this.favicon.badge(this._unseen_total);
