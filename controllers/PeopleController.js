@@ -31,8 +31,24 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
             });
 
             ownerIds.push(response.entity.id);
+
             done();
           })
+        }, function(done) {
+          // Get owner ids where I'm member of
+
+          EntityMembership.whereIn('member_id', ownerIds, function(err, response) {
+            if (err) {
+              return done(err);
+            }
+
+            response.forEach(function(item) {
+              ownerIds.push(item.entityId);
+            });
+
+            done();
+
+          });
         }, function(done) {
           Voice.whereIn('owner_id', ownerIds, function(err, response) {
             if (err) {
@@ -43,10 +59,48 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
 
             done();
           });
+        }, function(done) {
+          // Get Voice IDs where I'm a collaborator
+          VoiceCollaborator.whereIn('collaborator_id', ownerIds, function(err, response) {
+            if (err) {
+              return done(err);
+            }
+
+            var voicesIds = response.map(function(item) {
+              return item.voiceId;
+            });
+
+            Voice.whereIn('id', voicesIds, function(err, response) {
+              if (err) {
+                return done(err);
+              }
+
+              response.forEach(function(item) {
+                voices.push(item);
+              });
+
+              done();
+            });
+          });
         }], function(err) {
           if (err) {
             return next(err);
           }
+
+
+          function alphabetical(a, b) {
+            var A = a.title.toLowerCase();
+            var B = b.title.toLowerCase();
+            if (A < B) {
+              return -1;
+            } else if (A > B) {
+              return  1;
+            } else {
+              return 0;
+            }
+          }
+
+          voices = voices.sort(alphabetical);
 
           VoicesPresenter.build(voices, req.currentPerson, function (err, result) {
             if (err) { return next(err); }
