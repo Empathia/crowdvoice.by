@@ -28,7 +28,7 @@ describe('NotificationsController', function () {
   describe('#getNotifications', function () {
 
     it('Get notifications when in anonymous mode', function (testDone) {
-      login('cersei-lannister', function (err, agent, csrf) {
+      login('tyrion-lannister', function (err, agent, csrf) {
         if (err) { return testDone(err) }
 
         async.series([
@@ -48,17 +48,17 @@ describe('NotificationsController', function () {
           // getNotifications
           function (seriesNext) {
             agent
-              .get(urlBase + '/cersei-lannister/notifications')
+              .get(urlBase + '/tyrion-lannister/notifications')
               .accept('application/json')
               .end(function (err, res) {
                 if (err) { return seriesNext(err) }
 
                 expect(res.status).to.equal(200)
-                expect(res.body.length).to.equal(2)
-                expect(res.body[0].notificationId).to.exist
-                expect(res.body[1].notificationId).to.exist
-                expect(res.body[0].action).to.exist
-                expect(res.body[1].action).to.exist
+                expect(res.body.notifications.length).to.equal(2)
+                expect(res.body.notifications[0].notificationId).to.exist
+                expect(res.body.notifications[1].notificationId).to.exist
+                expect(res.body.notifications[0].action).to.exist
+                expect(res.body.notifications[1].action).to.exist
 
                 return seriesNext()
               })
@@ -67,16 +67,34 @@ describe('NotificationsController', function () {
       })
     })
 
+    it('Should get 0 notifications for Robert', function (doneTest) {
+      login('robert-baratheon', function (err, agent, csrf) {
+        if (err) { return testDone(err) }
+
+        agent
+          .get(urlBase + '/robert-baratheon/notifications')
+          .accept('application/json')
+          .end(function (err, res) {
+            if (err) { return doneTest(err) }
+
+            expect(res.status).to.equal(200)
+            expect(res.body.notifications.length).to.equal(0)
+
+            return doneTest()
+          })
+      })
+    })
+
   })
 
   describe('#markAllAsRead', function () {
 
     it('Mark as read all notifications "owned" by you', function (done) {
-      login('cersei-lannister', function (err, agent, csrf) {
+      login('jon-snow', function (err, agent, csrf) {
         if (err) { return done(err) }
 
         agent
-          .del(urlBase + '/cersei-lannister/notifications/markAllAsRead')
+          .del(urlBase + '/jon-snow/notifications/markAllAsRead')
           .accept('application/json')
           .send({
             _csrf: csrf,

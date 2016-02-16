@@ -10,7 +10,7 @@ exports.up = function(knex, Promise) {
 exports.down = function(knex, Promise) {
   return Promise.all([
     knex.schema.table('Posts', function(t) {
-      t.string('source_url', 1024).defaultTo(null).unique();
+      t.unique('source_url');
     })
   ]);
 };
