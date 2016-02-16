@@ -33,15 +33,13 @@ Class('NotificationBell').inherits(Widget).includes(CV.WidgetUtils)({
      * @private
      */
     _toggleNotificationsPopoverHandler: function _toggleNotificationsPopoverHandler() {
-      console.log('toggle notifications popover');
-
-      if (this.notificationsPopover) this.notificationsPopover = this.notificationsPopover.destroy();
+      if (this.notificationsPopover) this.notificationsPopover.destroy();
 
       this.appendChild(new CV.PopoverBlocker({
         name: 'notificationsPopover',
         className: 'notifications-popover',
         placement: 'bottom-right',
-        content: CV.NotificationsPopover
+        content: new CV.NotificationsPopover().element[0]
       })).render(this.el);
 
       requestAnimationFrame(function () {
