@@ -47,6 +47,7 @@ require('./widgets/ui/InputButtonResults');
 require('./widgets/ui/InputButtonResultsItem');
 
 // notifications
+require('./widgets/notifications/TabCounter');
 require('./widgets/notifications/NotificationsManager');
 require('./widgets/notifications/Notification');
 require('./widgets/notifications/NotificationItem');

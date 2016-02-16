@@ -32,6 +32,7 @@
     "decay": "^1.0.8",
     "dragula": "^3.5.1",
     "express": "^4.13.3",
+    "favico.js": "^0.3.10",
     "file-loader": "^0.8.1",
     "find-favicon": "^0.1.2",
     "follow-redirects": "0.0.3",
