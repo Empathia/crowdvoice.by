@@ -1,7 +1,9 @@
 var Scrapper = require(process.cwd() + '/lib/cvscrapper');
 var sanitizer = require('sanitize-html');
 var ReadabilityParser = require(path.join(__dirname, '../lib/ReadabilityParser.js'));
-var truncatise = require('truncatise');
+
+var downsize = require('downsize');
+
 var Twitter = require('twitter');
 
 var PostsController = Class('PostsController').includes(BlackListFilter)({
@@ -88,12 +90,10 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
             allowedTags: defaults.concat(['img'])
           });
 
-          readablePost.data.content = truncatise(readablePost.data.content, {
-            TruncateLength: 199, // seems to miscount upwards by one word, so give it one less word
-            TruncatedBy: 'words',
-            Strict: false,
-            StripHTML: false,
-            Suffix: '...',
+          readablePost.data.content = downsize(readablePost.data.content, {
+            words : 199,
+            append : "...",
+            round : false
           });
 
           readablePost.save(done)
