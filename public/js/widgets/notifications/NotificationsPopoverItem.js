@@ -23,7 +23,8 @@ Class(CV, 'NotificationsPopoverItem').inherits(Widget)({
     _setup: function _setup() {
       this.appendChild(CV.FeedItem.create({
         name: 'item',
-        data: this.data
+        data: this.data,
+        className: this.className
       })).render(this.element[0]);
       return this;
     },

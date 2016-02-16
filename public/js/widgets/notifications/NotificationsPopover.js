@@ -1,4 +1,4 @@
-var NotificationsStore = require('./../../stores/NotificationsStore')
+var NotificationsStore = require('./../../stores/NotificationsStore');
 
 Class(CV, 'NotificationsPopover').inherits(Widget)({
   ELEMENT_CLASS: 'notifications-popover-content',
@@ -42,7 +42,8 @@ Class(CV, 'NotificationsPopover').inherits(Widget)({
         this.appendChild(new CV.NotificationsPopoverItem({
           name: n.notificationId,
           data: n.action,
-          notificationId: n.notificationId
+          notificationId: n.notificationId,
+          className: (n.read === false ? '-is-unread' : '')
         })).render(this.listElement);
       }, this);
     },
