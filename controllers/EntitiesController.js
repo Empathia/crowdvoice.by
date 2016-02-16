@@ -817,14 +817,18 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
                 .exec(function (err, result) {
                   if (err) { return next(err) }
 
-                  var feed = Argon.Storage.Knex.processors[0](result)
+                  var notifications = Argon.Storage.Knex.processors[0](result)
 
-                  FeedPresenter.build(feed, req.currentPerson, function (err, pres) {
+                  FeedAction.whereIn('id', notifications.map(function (n) { return n.actionId }), function (err, actions) {
                     if (err) { return next(err) }
 
-                    return res.json({
-                      feedItems: pres,
-                      totalCount: (result[0] ? +result[0].full_count : 0),
+                    FeedPresenter.build(actions, req.currentPerson, function (err, pres) {
+                      if (err) { return next(err) }
+
+                      return res.json({
+                        feedItems: pres,
+                        totalCount: (result[0] ? +result[0].full_count : 0),
+                      });
                     });
                   });
                 });

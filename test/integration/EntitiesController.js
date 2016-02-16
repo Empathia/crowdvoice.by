@@ -56,7 +56,7 @@ describe('EntitiesController', function () {
             expect(res.status).to.equal(200)
             expect(res.body.feedItems).to.be.an('array')
             expect(res.body.feedItems.length).to.equal(2)
-            expect(res.body.totalCount)to.equal(2)
+            expect(res.body.totalCount).to.equal(2)
 
             return doneTest()
           })
