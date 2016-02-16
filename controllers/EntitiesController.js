@@ -760,12 +760,12 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
       });
     },
 
-    feed : function (req, res, next) {
+    home : function (req, res, next) {
       /* GET
        * req.query.page = Number of page
        */
 
-      ACL.isAllowed('feed', 'entities', req.role, {
+      ACL.isAllowed('home', 'entities', req.role, {
         entityProfileName: req.entity.profileName,
         currentPerson: req.currentPerson
       }, function (err, response) {
@@ -804,7 +804,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
                     html: function () {
                       req.feed = empty;
                       res.locals.feed = empty;
-                      res.render('people/feed');
+                      res.render('people/home');
                     },
                     json: function () {
                       res.json(empty);
@@ -831,7 +831,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
                       html: function () {
                         req.feed = empty;
                         res.locals.feed = empty;
-                        res.render('people/feed');
+                        res.render('people/home');
                       },
                       json: function () {
                         res.json(empty);
@@ -868,7 +868,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
                         html: function () {
                           req.feed = answer;
                           res.locals.feed = answer;
-                          res.render('people/feed');
+                          res.render('people/home');
                         },
                         json: function () {
                           res.json(answer);
@@ -895,7 +895,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
                           html: function () {
                             req.feed = answer;
                             res.locals.feed = answer;
-                            res.render('people/feed');
+                            res.render('people/home');
                           },
                           json: function () {
                             res.json(answer);
