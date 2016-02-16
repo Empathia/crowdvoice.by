@@ -1,6 +1,8 @@
-var NotificationsStore = require('./../../stores/NotificationsStore');
+var Person = require('./../../lib/currentPerson')
+  , API = require('./../../lib/api')
+  , NotificationsStore = require('./../../stores/NotificationsStore');
 
-Class(CV, 'NotificationsPopover').inherits(Widget)({
+Class(CV, 'NotificationsPopover').inherits(Widget).includes(BubblingSupport)({
   ELEMENT_CLASS: 'notifications-popover-content',
   HTML: '\
     <div>\
@@ -32,8 +34,16 @@ Class(CV, 'NotificationsPopover').inherits(Widget)({
     _bindEvents: function _bindEvents() {
       this._notificationsHandlerRef = this._notificationsHandler.bind(this);
       NotificationsStore.bind('notifications', this._notificationsHandlerRef);
+
+      this._notificationMarkAsReadHandlerRef = this._notificationMarkAsReadHandler.bind(this);
+      this.bind('notification:markAsRead', this._notificationMarkAsReadHandlerRef);
     },
 
+    /* NotificationsStore 'notifications' event handler.
+     * @private
+     * @param {Object} res
+     * @property {Array} res.notifications
+     */
     _notificationsHandler: function _notificationsHandler(res) {
       if (this.loader) {
         this.loader = this.loader.disable().remove();
@@ -46,6 +56,24 @@ Class(CV, 'NotificationsPopover').inherits(Widget)({
           className: (n.read === false ? '-is-unread' : '')
         })).render(this.listElement);
       }, this);
+    },
+
+    /* NotificationItem 'notification:markAsRead' event handler.
+     * @private
+     */
+    _notificationMarkAsReadHandler: function _notificationMarkAsReadHandler(ev) {
+      ev.stopPropagation();
+      NotificationsStore.decreaseUnseen();
+
+      API.markNotificationAsRead({
+        profileName: Person.get().profileName,
+        data: {notificationId: ev.target.notificationId}
+      }, function(err, res) {
+        console.log(err);
+        console.log(res);
+        if (err) return console.log(res);
+        NotificationsStore.getUnseen();
+      });
     },
 
     destroy: function destroy() {

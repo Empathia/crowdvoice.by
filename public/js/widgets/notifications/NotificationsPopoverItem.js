@@ -1,6 +1,6 @@
 var Events = require('./../../lib/events');
 
-Class(CV, 'NotificationsPopoverItem').inherits(Widget)({
+Class(CV, 'NotificationsPopoverItem').inherits(Widget).includes(BubblingSupport)({
   ELEMENT_CLASS: 'cv-notification-popover-item',
   prototype: {
     /* @property {object} data The notification model.
@@ -42,7 +42,10 @@ Class(CV, 'NotificationsPopoverItem').inherits(Widget)({
         console.log(this.data);
         var link = this.item.getLink();
         console.log(link);
-        // if (link) window.location = link;
+        if (link) {
+          this.dispatch('notification:markAsRead');
+          window.location = link;
+        }
       }
     },
 
