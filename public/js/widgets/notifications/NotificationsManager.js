@@ -52,8 +52,6 @@ Class(CV, 'NotificationsManager').inherits(Widget).includes(BubblingSupport)({
         profileName: Person.get().profileName,
         data: {notificationId: ev.target.notificationId}
       }, function(err, res) {
-        console.log(err);
-        console.log(res);
         if (err) return console.log(res);
         NotificationsStore.getUnseen();
       });
@@ -93,7 +91,8 @@ Class(CV, 'NotificationsManager').inherits(Widget).includes(BubblingSupport)({
         _this.appendChild(new CV.NotificationItem({
           name: n.notificationId,
           data: n.action,
-          notificationId: n.notificationId
+          notificationId: n.notificationId,
+          read: n.read
         })).render(fragment);
       });
       _this.elAll.appendChild(fragment);

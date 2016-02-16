@@ -36,20 +36,24 @@ Class(CV, 'NotificationItem').inherits(CV.Notification)({
 
     _setup: function _setup() {
       this.appendChild(CV.FeedItem.create({
+        name: 'item',
         data: this.data
       })).render(this.el.querySelector('.cv-notification__info'));
       return this;
     },
 
     _bindEvents: function _bindEvents() {
-      this._closeClickHandlerRef = this._closeClickHandler.bind(this);
-      Events.on(this.closeElement, 'click', this._closeClickHandlerRef);
-
       this._mouseEnterHandlerRef = this._mouseEnterHandler.bind(this);
       Events.on(this.el, 'mouseenter', this._mouseEnterHandlerRef);
 
       this._mouseLeaveHandlerRef = this._mouseLeaveHandler.bind(this);
       Events.on(this.el, 'mouseleave', this._mouseLeaveHandlerRef);
+
+      this._clickHandlerRef = this._clickHandler.bind(this);
+      Events.on(this.el, 'click', this._clickHandlerRef);
+
+      this._closeClickHandlerRef = this._closeClickHandler.bind(this);
+      Events.on(this.closeElement, 'click', this._closeClickHandlerRef);
       return this;
     },
 
@@ -57,8 +61,9 @@ Class(CV, 'NotificationItem').inherits(CV.Notification)({
      * @private
      */
     _mouseEnterHandler: function _mouseEnterHandler() {
-      // TODO: uncomment this so the notification is marked as read.
-      // this.dispatch('notification:markAsRead');
+      if (this.read === false) {
+        this.dispatch('notification:markAsRead');
+      }
       this._stopLifeSpanCount();
     },
 
@@ -66,11 +71,23 @@ Class(CV, 'NotificationItem').inherits(CV.Notification)({
       this._restartLifeSpanCount();
     },
 
+    _clickHandler: function _clickHandler(ev) {
+      ev.preventDefault();
+      var tag = ev.target.tagName.toUpperCase();
+      if (tag !== 'A') {
+        var link = this.item.getLink();
+        if (link) window.location = link;
+      }
+    },
+
     /* Notification close button click handler.
      * @private
      */
-    _closeClickHandler: function _closeClickHandler() {
-      this.dispatch('notification:markAsRead');
+    _closeClickHandler: function _closeClickHandler(ev) {
+      ev.stopImmediatePropagation();
+      if (this.read === false) {
+        this.dispatch('notification:markAsRead');
+      }
       this.destroy();
     },
 
