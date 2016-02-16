@@ -1,86 +1,132 @@
-var Person = require('./../../lib/currentPerson');
-var Velocity = require('velocity-animate');
+var Velocity = require('velocity-animate')
+  , API = require('./../../lib/api')
+  , Person = require('./../../lib/currentPerson')
+  , NotificationsStore = require('./../../stores/NotificationsStore');
 
 Class(CV, 'NotificationsManager').inherits(Widget).includes(BubblingSupport)({
-    ELEMENT_CLASS : 'cv-notifications',
+  ELEMENT_CLASS: 'cv-notifications',
 
-    HTML : '\
-        <div>\
-            <div class="cv-notifications-container">\
-                <div class="cv-notifications-all">\
-                </div>\
-            </div>\
-        </div>',
+  HTML: '\
+    <div>\
+      <div class="cv-notifications-container">\
+        <div class="cv-notifications-all"></div>\
+      </div>\
+    </div>',
 
-    prototype : {
-        init : function init(config) {
-            Widget.prototype.init.call(this, config);
-            this.el = this.element[0];
-            this.elAll = this.element[0].querySelector(".cv-notifications-all");
-        },
+  prototype: {
+    init: function init(config) {
+      Widget.prototype.init.call(this, config);
+      this.el = this.element[0];
+      this.elAll = this.element[0].querySelector(".cv-notifications-all");
+      this._bindEvents();
+    },
 
-        /* Updates the displayed notifications with the passed ones.
-         * @method update <public> [Function]
-         * @argument notifications <required> [Array] Array of Objects, each
-         *  Object should be a modified FeedPresenter, with an extra property
-         *  `notificationId` that holds the encoded notificationId.
-         * @return NotificationsManager
-         */
-        update : function update(notifications) {
-            this.empty();
+    _bindEvents: function _bindEvents() {
+      this._newNotificationsHandlerRef = this._newNotificationsHandler.bind(this);
+      NotificationsStore.bind('newNotifications', this._newNotificationsHandlerRef);
 
-            if (notifications.length > 4) {
-                notifications = notifications.splice(0, 4);
-            }
+      this._notificationMarkAsReadHandlerRef = this._notificationMarkAsReadHandler.bind(this);
+      this.bind('notification:markAsRead', this._notificationMarkAsReadHandlerRef);
 
-            notifications.forEach(function(n) {
-                this.appendChild(CV.Notification.create(n.action, n.notificationId)).render(this.elAll);
-            }, this);
+      this._notificationTimeSpanEndHandlerRef = this._notificationTimeSpanEndHandler.bind(this);
+      this.bind('notification:timeSpanEnd', this._notificationTimeSpanEndHandlerRef);
+    },
 
-            if (Person.anon() === false) {
-                this.appendChild(new CV.NotificationReadMore({
-                    name : 'read_more'
-                })).render(this.elAll);
-            }
+    /* NotificationsStore 'newNotifications' event handler.
+     * @private
+     * @param {Object} res
+     * @property {Array} res.notifications
+     */
+    _newNotificationsHandler: function _newNotificationsHandler(res) {
+      this._update(res.notifications).activate();
+    },
 
-            return this;
-        },
+    /* NotificationItem 'notification:markAsRead' event handler.
+     * @private
+     */
+    _notificationMarkAsReadHandler: function _notificationMarkAsReadHandler(ev) {
+      ev.stopPropagation();
+      NotificationsStore.decreaseUnseen();
 
-        /* Removes all the children `notifications`.
-         * @method empty <public> [Function]
-         * @return NotificationsManager
-         */
-        empty : function empty() {
-            while(this.children.length > 0) {
-                this.children[0].destroy();
-            }
-            return this;
-        },
+      API.markNotificationAsRead({
+        profileName: Person.get().profileName,
+        data: {notificationId: ev.target.notificationId}
+      }, function(err, res) {
+        console.log(err);
+        console.log(res);
+        if (err) return console.log(res);
+        NotificationsStore.getUnseen();
+      });
+    },
 
-        /* Show/hide the notifications.
-         * @method toggle <public> [Function]
-         * @return NotificationsManager
-         */
-        toggle : function toggle() {
-            if (this.active) {
-                return this.deactivate();
-            }
-
-            return this.activate();
-        },
-
-        _activate : function _activate() {
-            Widget.prototype._activate.call(this);
-            Velocity(this.el, 'fadeIn', {
-                duration: 120
-            });
-        },
-
-        _deactivate : function _deactivate() {
-            Widget.prototype._deactivate.call(this);
-            Velocity(this.el, 'fadeOut', {
-                duration: 120
-            });
+    /* NotificationItem 'notification:timeSpanEnd' event handler.
+     * @private
+     */
+    _notificationTimeSpanEndHandler: function _notificationTimeSpanEndHandler(ev) {
+      var child = ev.target
+        , _this = this;
+      ev.stopPropagation();
+      Velocity(ev.target.el, 'fadeOut', {
+        duration: 500,
+        complete: function () {
+          _this[child.notificationId] = child.destroy();
+          if (!_this.children.length) {
+            _this.deactivate();
+          }
         }
+      });
+    },
+
+    /* Updates the displayed notifications with the passed ones.
+     * @private
+     * @param {Array} notifications - Array of Objects, each Object should
+     * be a modified FeedPresenter, with an extra property `notificationId`
+     * that holds the encoded notificationId.
+     * @return NotificationsManager
+     */
+    _update: function _update(notifications) {
+      var _this = this
+        , fragment = document.createDocumentFragment();
+      _this._empty();
+      // if (notifications.length > 4) notifications = notifications.splice(0, 4);
+      notifications.forEach(function(n) {
+        _this.appendChild(new CV.NotificationItem({
+          name: n.notificationId,
+          data: n.action,
+          notificationId: n.notificationId
+        })).render(fragment);
+      });
+      _this.elAll.appendChild(fragment);
+      return _this;
+    },
+
+    /* Removes all the children `notifications`.
+     * @private
+     * @return NotificationsManager
+     */
+    _empty: function _empty() {
+      while(this.children.length > 0) {
+        this.children[0].destroy();
+      }
+      return this;
+    },
+
+    /* @override
+     */
+    _activate: function _activate() {
+      Widget.prototype._activate.call(this);
+      Velocity(this.el, 'fadeIn', {
+        duration: 120
+      });
+    },
+
+    /* @override
+     */
+    _deactivate: function _deactivate() {
+      Widget.prototype._deactivate.call(this);
+      Velocity(this.el, 'fadeOut', {
+        duration: 120
+      });
     }
+  }
 });

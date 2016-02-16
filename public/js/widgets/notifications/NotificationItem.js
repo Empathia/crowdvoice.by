@@ -1,61 +1,117 @@
-var API = require('./../../lib/api');
 var Events = require('./../../lib/events');
-var Person = require('./../../lib/currentPerson');
 
 Class(CV, 'NotificationItem').inherits(CV.Notification)({
-    HTML : '\
-        <div>\
-            <div class="cv-notification__info"></div>\
-            <div class="cv-notification__close -clickable -abs -full-height">\
-                <svg class="-s9">\
-                    <use xlink:href="#svg-close"></use>\
-                </svg>\
-            </div>\
-        </div>',
+  HTML: '\
+    <div>\
+      <div class="cv-notification__info"></div>\
+      <div class="cv-notification__close -clickable -abs -full-height">\
+        <svg class="-s9">\
+          <use xlink:href="#svg-close"></use>\
+        </svg>\
+      </div>\
+    </div>',
 
-    prototype : {
-        data: null,
+  LIFE_TIME_SPAN: 8000,
 
-        init : function init(config) {
-            CV.Notification.prototype.init.call(this, config);
-            this.el = this.element[0];
-            this.closeElement = this.el.querySelector('.cv-notification__close');
+  prototype: {
+    /* @property {object} data The notification model.
+     * @property {string} data.id
+     * @property {string} data.action @ex 'followed you'.
+     * @property {object} data.actionDoer The doer entity model.
+     * @property {string} data.itemType @ex 'entity', 'voice'
+     * @property {object[]} data.entity The affected entity model. (if itemType is 'entity')
+     * @property {object[]} data.voice The affected voice model. (if itemType  is 'voice')
+     * @property {date} data.createdAt
+     * @property {date} data.updatedAt
+     */
+    data: null,
+    _lifeTimeout: null,
 
-            this._setup()._bindEvents();
-        },
+    init: function init(config) {
+      CV.Notification.prototype.init.call(this, config);
+      this.el = this.element[0];
+      this.closeElement = this.el.querySelector('.cv-notification__close');
+      this._setup()._bindEvents();
+    },
 
-        _setup : function _setup() {
-            this.appendChild(
-                CV.FeedItem.create({data: this.data})
-            ).render(this.el.querySelector('.cv-notification__info'));
+    _setup: function _setup() {
+      this.appendChild(CV.FeedItem.create({
+        data: this.data
+      })).render(this.el.querySelector('.cv-notification__info'));
+      return this;
+    },
 
-            return this;
-        },
+    _bindEvents: function _bindEvents() {
+      this._closeClickHandlerRef = this._closeClickHandler.bind(this);
+      Events.on(this.closeElement, 'click', this._closeClickHandlerRef);
 
-        _bindEvents : function _bindEvents() {
-            this._closeRef = this._close.bind(this);
-            Events.on(this.closeElement, 'click', this._closeRef);
-            return this;
-        },
+      this._mouseEnterHandlerRef = this._mouseEnterHandler.bind(this);
+      Events.on(this.el, 'mouseenter', this._mouseEnterHandlerRef);
 
-        _close : function _close() {
-            this.dispatch('notification:markAsRead');
-            this.destroy();
+      this._mouseLeaveHandlerRef = this._mouseLeaveHandler.bind(this);
+      Events.on(this.el, 'mouseleave', this._mouseLeaveHandlerRef);
+      return this;
+    },
 
-            API.markNotificationAsRead({
-                profileName : Person.get().profileName,
-                data : {notificationId: this.notificationId}
-            }, function(err, res) {
-                console.log(err);
-                console.log(res);
-            });
-        },
+    /* Notification mouseenter event handler.
+     * @private
+     */
+    _mouseEnterHandler: function _mouseEnterHandler() {
+      // TODO: uncomment this so the notification is marked as read.
+      // this.dispatch('notification:markAsRead');
+      this._stopLifeSpanCount();
+    },
 
-        destroy : function destroy() {
-            CV.Notification.prototype.destroy.call(this);
+    _mouseLeaveHandler: function _mouseLeaveHandler() {
+      this._restartLifeSpanCount();
+    },
 
-            Events.off(this.closeElement, 'click', this._closeRef);
-            this._closeRef = null;
-         }
+    /* Notification close button click handler.
+     * @private
+     */
+    _closeClickHandler: function _closeClickHandler() {
+      this.dispatch('notification:markAsRead');
+      this.destroy();
+    },
+
+    _startLifeSpanCount: function _startLifeSpanCount() {
+      this._stopLifeSpanCount();
+      this._lifeTimeout = window.setTimeout(function (_this) {
+        window.clearTimeout(_this._lifeTimeout);
+        delete _this._lifeTimeout;
+        _this.dispatch('notification:timeSpanEnd');
+      }, this.constructor.LIFE_TIME_SPAN, this);
+    },
+
+    _stopLifeSpanCount: function _stopLifeSpanCount() {
+      if (this._lifeTimeout) {
+        window.clearTimeout(this._lifeTimeout);
+        delete this._lifeTimeout;
+      }
+    },
+
+    _restartLifeSpanCount: function _restartLifeSpanCount() {
+      this._stopLifeSpanCount();
+      this._startLifeSpanCount();
+    },
+
+    /* @override
+     */
+    render: function render(element, beforeElement) {
+      Widget.prototype.render.call(this, element, beforeElement);
+      this._startLifeSpanCount();
+      return this;
+    },
+
+    /* @override
+     */
+    destroy: function destroy() {
+      Events.off(this.closeElement, 'click', this._closeClickHandlerRef);
+      this._closeClickHandlerRef = null;
+      Events.off(this.el, 'mouseenter', this._mouseEnterHandlerRef);
+      this._mouseEnterHandlerRef = null;
+
+      CV.Notification.prototype.destroy.call(this);
     }
+  }
 });
