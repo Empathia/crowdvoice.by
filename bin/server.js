@@ -28,6 +28,80 @@ io.use(function(socket, next) {
 
 io.on('connection', require(path.join(process.cwd(), 'lib/socket.js')));
 
+
+io.on('connection', function(socket) {
+  var notificationHandler = function(data) {
+    var notification = data.data.model;
+
+    var followerId = notification.followerId;
+
+    var currentPerson = new Entity(socket.request.session.currentPerson);
+
+    if (notification.forFeed === true) {
+      return;
+    }
+
+    async.series([function(done) {
+      if (!socket.request.session.isAnonymous) {
+        return done();
+      }
+
+      currentPerson.owner(function(err, result) {
+        if (err) {
+          return done(err);
+        }
+
+        currentPerson = new Entity(result);
+
+        done();
+      });
+    }, function(done) {
+      if (hashids.decode(currentPerson.id)[0] !== followerId) {
+        return done();
+      }
+
+      Entity.find({id : hashids.decode(currentPerson.id)[0] }, function(err, res) {
+        if (err) {
+          return done(err);
+        }
+
+        currentPerson = new Entity(res[0]);
+        currentPerson.lastNotificationDate = new Date(notification.createdAt);
+
+        currentPerson.save(function(err, res) {
+          if (err) {
+            return done(err);
+          }
+
+          done();
+        })
+      });
+    }], function(err) {
+      if (err) {
+        logger.error(err);
+      }
+
+      if (currentPerson.id !== followerId) {
+        return;
+      }
+
+      NotificationsPresenter.build([notification], currentPerson, function(err, notifications) {
+        if (err) {
+          logger.error(err);
+        }
+
+        socket.emit('newNotifications', notifications);
+      });
+    })
+  }
+
+  Notification.bind('afterSave', notificationHandler);
+
+  socket.on('disconnect', function() {
+    Notification.unbind('afterSave', notificationHandler);
+  });
+});
+
 // MONKEY PATCH
 // This is in order to fix the issue where if you provide an updatedAt property
 // the updatedAt property will be set to what you provided, thus causing
