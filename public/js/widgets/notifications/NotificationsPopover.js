@@ -36,7 +36,7 @@ Class(CV, 'NotificationsPopover').inherits(Widget).includes(BubblingSupport)({
       NotificationsStore.bind('notifications', this._notificationsHandlerRef);
 
       this._notificationMarkAsReadHandlerRef = this._notificationMarkAsReadHandler.bind(this);
-      this.bind('notification:markAsRead', this._notificationMarkAsReadHandlerRef);
+      this.bind('notification:markAsReadAndRedirect', this._notificationMarkAsReadHandlerRef);
     },
 
     /* NotificationsStore 'notifications' event handler.
@@ -53,7 +53,7 @@ Class(CV, 'NotificationsPopover').inherits(Widget).includes(BubblingSupport)({
           name: n.notificationId,
           data: n.action,
           notificationId: n.notificationId,
-          className: (n.read === false ? '-is-unread' : '')
+          read: n.read
         })).render(this.listElement);
       }, this);
     },
@@ -69,10 +69,10 @@ Class(CV, 'NotificationsPopover').inherits(Widget).includes(BubblingSupport)({
         profileName: Person.get().profileName,
         data: {notificationId: ev.target.notificationId}
       }, function(err, res) {
-        console.log(err);
-        console.log(res);
         if (err) return console.log(res);
-        NotificationsStore.getUnseen();
+        if (ev.redirectUrl) {
+          window.location = ev.redirectUrl;
+        }
       });
     },
 

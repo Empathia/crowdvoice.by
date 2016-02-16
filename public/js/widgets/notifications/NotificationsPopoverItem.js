@@ -21,10 +21,13 @@ Class(CV, 'NotificationsPopoverItem').inherits(Widget).includes(BubblingSupport)
     },
 
     _setup: function _setup() {
+      if (this.read === false) {
+        this.element.addClass('-is-unread');
+      }
+
       this.appendChild(CV.FeedItem.create({
         name: 'item',
         data: this.data,
-        className: this.className
       })).render(this.element[0]);
       return this;
     },
@@ -38,14 +41,13 @@ Class(CV, 'NotificationsPopoverItem').inherits(Widget).includes(BubblingSupport)
       ev.preventDefault();
       var tag = ev.target.tagName.toUpperCase();
       if (tag !== 'A') {
-        console.log(this.data.action);
-        console.log(this.data);
         var link = this.item.getLink();
-        console.log(link);
-        if (link) {
-          this.dispatch('notification:markAsRead');
-          window.location = link;
+        if (this.read === false) {
+          return this.dispatch('notification:markAsReadAndRedirect', {
+            redirectUrl: link
+          });
         }
+        if (link) window.location = link;
       }
     },
 
