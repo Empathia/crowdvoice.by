@@ -21,3 +21,32 @@
     }
   }
 }
+
+.notifications-popover {
+  width: 520px;
+}
+.notifications-popover__header {
+  font-size: 11px;
+  padding: 10px 15px;
+  border-bottom: 1px solid @color-neutral-x-light;
+  color: @color-neutral-dark;
+}
+.notifications-popover__list {
+  min-height: 80px;
+  max-height: 420px;
+  overflow: auto;
+}
+.notifications-popover__footer {
+  margin: 0 -2px -1px -1px;
+}
+.cv-notification-popover-item {
+  padding: 20px 15px;
+  border-bottom: 1px solid @color-neutral-x-light;
+  &:last-child {border-bottom: none}
+
+  // TODO: remove this test
+  &:nth-child(odd),
+  &.-is-unread {
+    background-color: fadeout(@color-primary, 97%);
+  }
+}

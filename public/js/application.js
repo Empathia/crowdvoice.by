@@ -52,6 +52,8 @@ require('./widgets/notifications/NotificationsManager');
 require('./widgets/notifications/Notification');
 require('./widgets/notifications/NotificationItem');
 require('./widgets/notifications/NotificationReadMore');
+require('./widgets/notifications/NotificationsPopover');
+require('./widgets/notifications/NotificationsPopoverItem');
 // require('./widgets/notifications/notification-flash');
 
 // feed items
