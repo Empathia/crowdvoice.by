@@ -13,7 +13,7 @@ var HomeController = Class('HomeController')({
       if (req.currentPerson) {
         // commented because SessionsController has something similar
         //req.flash('success', 'Logged in to your account successfully.');
-        return res.redirect('/' + req.currentPerson.profileName + '/feed/');
+        return res.redirect('/' + req.currentPerson.profileName + '/home');
       }
 
       ACL.isAllowed('show', 'homepage', req.role, {}, function(err, isAllowed) {
