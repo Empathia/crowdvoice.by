@@ -3,11 +3,20 @@ var GeminiScrollbar = require('gemini-scrollbar')
   , API = require('./../../lib/api')
   , NotificationsStore = require('./../../stores/NotificationsStore');
 
-Class(CV, 'NotificationsPopover').inherits(Widget).includes(BubblingSupport)({
+Class(CV, 'NotificationsPopover').inherits(Widget).includes(BubblingSupport, CV.WidgetUtils)({
   ELEMENT_CLASS: 'notifications-popover-content',
   HTML: '\
     <div>\
-      <header class="notifications-popover__header -font-bold -upper">Notifications</header>\
+      <header class="notifications-popover__header -clearfix">\
+        <div class="-font-bold -upper -float-left">Notifications</div>\
+        <div class="-float-right">\
+          <a class="notifications-popover__header-settings" title="Manage notification settings">\
+            <svg class="-s16">\
+              <use xlink:href="#svg-settings"></use>\
+            </svg>\
+          </a>\
+        </div>\
+      </header>\
       <div class="notifications-popover__list -rel">\
         <div class="gm-scrollbar -vertical">\
           <div class="thumb"></div>\
@@ -44,6 +53,8 @@ Class(CV, 'NotificationsPopover').inherits(Widget).includes(BubblingSupport)({
       this.appendChild(new CV.Loading({
         name: 'loader'
       })).render(this.scrollbar.getViewElement()).center();
+
+      this.dom.updateAttr('href', this.element[0].querySelector('.notifications-popover__header-settings'), '/' + Person.get('profileName') + '/edit/#notifications');
 
       return this;
     },
