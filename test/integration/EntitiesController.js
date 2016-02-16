@@ -25,6 +25,26 @@ var urlBase = 'http://localhost:3000'
 
 describe('EntitiesController', function () {
 
+  describe('#home', function () {
+
+    it('Should open with no errors', function (doneTest) {
+      login('cersei-lannister', function (err, agent, csrf) {
+        if (err) { return doneTest(err) }
+
+        agent
+          .get(urlBase + '/cersei-lannister/home')
+          .end(function (err, res) {
+            if (err) { return doneTest(err) }
+
+            expect(res.status).to.equal(200)
+
+            return doneTest()
+          })
+      })
+    })
+
+  })
+
   describe('#edit', function () {
 
     it('Should open edit page', function (done) {
