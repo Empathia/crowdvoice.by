@@ -120,6 +120,8 @@ var SessionsController = Class('SessionsController')({
           req.logIn(user, function (err) {
             if (err) { return next(err); }
 
+            req.session.isAnonymous = false;
+
             if (req.query.reset) {
               req.flash('success', 'Welcome to CrowdVoice.by.');
               return res.render('sessions/resetPassword.html', {layout : 'login'});
@@ -166,6 +168,8 @@ var SessionsController = Class('SessionsController')({
 
             req.session.cookie.expires = expires;
           }
+
+          req.session.isAnonymous = false;
 
           req.flash('success', 'Welcome to CrowdVoice.by.');
           return res.redirect('/');

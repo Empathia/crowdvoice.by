@@ -28,6 +28,12 @@ Class(CV, 'App').includes(NodeSupport)({
     },
 
     setup: function setup() {
+      if (Person.get()) {
+        this.appendChild(new CV.NotificationsManager({
+          name: 'notificationsManager'
+        })).render(document.body.querySelector('.app-wrapper'));
+        this.tabCounter = new CV.TabCounter();
+      }
       window.CardHoverWidget = new CV.CardHover().render(document.body);
 
       this.appendChild(new CV.Header({

@@ -72,38 +72,47 @@ d.run(function() {
 
       fs.closeSync(fs.openSync(LOCK_FILE, 'w'));
 
-      Voice.find(["twitter_search IS NOT null AND (tweet_last_fetch_at IS null OR tweet_last_fetch_at <  '"  + moment().subtract(1, 'hour').format() +  "')", []], function(err, voices) {
-        async.eachLimit(voices, 1, function(voice, next) {
+      CONFIG.database.logQueries = true;
+      db('Voices')
+        .where('status', '!=', 'STATUS_ARCHIVED')
+        .andWhere('status', '!=', 'STATUS_UNLISTED')
+        .andWhere('twitter_search', 'IS NOT', null)
+        .andWhere('tweet_last_fetch_at', 'IS', null)
+        .orWhere('tweet_last_fetch_at', '<', moment().subtract(1, 'hour').format())
+        .exec(function(err, voices) {
+          voices = Argon.Storage.Knex.processors[0](voices);
 
-          var twitterFetcher = new TwitterFetcher({
-            voice : voice,
-            count : 100
-          });
+          async.eachLimit(voices, 1, function(voice, next) {
 
-          async.series([function(done) {
-            twitterFetcher.fetchTweets(done);
-          }, function(done) {
-            twitterFetcher.createPosts(done);
-          }, function(done) {
-            var voiceInstance = new Voice(voice);
-            voiceInstance.tweetLastFetchAt = new Date(Date.now());
-
-            voiceInstance.save(function(err, result) {
-              logger.log('Updated Voice.tweetLastFetchAt');
-              done();
+            var twitterFetcher = new TwitterFetcher({
+              voice : voice,
+              count : 100
             });
-          }], function(err) {
-            next(err);
-          });
-        }, function(err) {
-          if (err) {
-            logger.error(err);
-            console.log(err.stack);
-          }
 
-          fs.unlinkSync(LOCK_FILE);
+            async.series([function(done) {
+              twitterFetcher.fetchTweets(done);
+            }, function(done) {
+              twitterFetcher.createPosts(done);
+            }, function(done) {
+              var voiceInstance = new Voice(voice);
+              voiceInstance.tweetLastFetchAt = new Date(Date.now());
+
+              voiceInstance.save(function(err, result) {
+                logger.log('Updated Voice.tweetLastFetchAt');
+                done();
+              });
+            }], function(err) {
+              next(err);
+            });
+          }, function(err) {
+            if (err) {
+              logger.error(err);
+              console.log(err.stack);
+            }
+
+            fs.unlinkSync(LOCK_FILE);
+          });
         });
-      });
     },
     start: true,
     timeZone: 'UTC'
