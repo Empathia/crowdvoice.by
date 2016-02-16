@@ -1,3 +1,9 @@
+var sanitize = require("sanitize-html");
+var sanitizerOptions = {
+  allowedTags : [],
+  allowedAttributes : []
+}
+
 var Voice = Class('Voice').inherits(Argon.KnexModel).includes(ImageUploader)({
 
   STATUS_DRAFT:     'STATUS_DRAFT',
@@ -195,6 +201,24 @@ var Voice = Class('Voice').inherits(Argon.KnexModel).includes(ImageUploader)({
     init : function (config) {
       var model = this;
       Argon.KnexModel.prototype.init.call(this, config);
+
+      this.constructor.storage.preprocessors.push(function(data) {
+        var sanitizedData, property;
+
+        sanitizedData = {};
+
+        for (property in data) {
+          if (data.hasOwnProperty(property)) {
+            if (property === 'title' || property === 'description' || property === 'location_name' || property === 'twitter_search' || property === 'latitude' || property === 'longitude') {
+              sanitizedData[property] = sanitize(data[property], sanitizerOptions);
+            } else {
+              sanitizedData[property] = data[property];
+            }
+          }
+        }
+
+        return sanitizedData;
+      });
 
       // Add image attachment
       this.hasImage({
