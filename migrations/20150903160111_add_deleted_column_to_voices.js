@@ -13,5 +13,4 @@ exports.down = function(knex, Promise) {
       t.dropColumn('deleted');
     })
   ]);
-  knex.schema
 };
