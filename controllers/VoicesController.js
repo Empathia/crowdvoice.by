@@ -888,6 +888,43 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
       });
     },
 
+    fullDelete : function fullDelete(req, res, next) {
+      ACL.isAllowed('delete', 'voices', req.role, {
+        currentPerson : req.currentPerson,
+        voice : req.activeVoice
+      }, function(err, response) {
+        if (err) { return next(err); }
+
+        if (!response.isAllowed) {
+          return next(new ForbiddenError('Unauthorized.'));
+        }
+
+        async.series([function(done) {
+          db('Voices').where('id', req.activeVoice.id)
+            .del().exec(function(err, result) {
+              return done(err);
+            });
+        }, function(done) {
+          db('Posts').where('voice_id', req.activeVoice.id)
+            .del().exec(function(err, result) {
+              return done(err);
+            });
+        }, function(done) {
+          db('Slugs').where('voice_id', req.activeVoice.id)
+            .del().exec(function(err, result) {
+              return done(err);
+            })
+        }], function(err) {
+          if (err) {
+            return next(err);
+          }
+
+          req.flash('success', 'Voice has been deleted.');
+          res.redirect('/');
+        });
+      });
+    },
+
     follow : function follow(req, res, next) {
       ACL.isAllowed('followAs', 'entities', req.role, {
         currentPersonId: req.currentPerson.id,
