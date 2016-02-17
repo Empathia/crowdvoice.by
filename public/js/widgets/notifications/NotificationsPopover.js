@@ -181,7 +181,7 @@ Class(CV, 'NotificationsPopover').inherits(Widget).includes(BubblingSupport, CV.
       Events.off(this.scrollbar.getViewElement(), 'scroll', this._scrollHandlerRef);
       this._scrollHandlerRef = null;
 
-      Events.off(this.buttonMarkAllAsRead, 'click', this._markAllAsReadHandlerRef);
+      Events.off(this.buttonMarkAllAsRead.el, 'click', this._markAllAsReadHandlerRef);
       this._markAllAsReadHandlerRef = null;
 
       this.scrollbar = this.scrollbar.destroy();
