@@ -22,8 +22,11 @@ module.exports = Class(CV, 'NotificationsStore').includes(CustomEventSupport)({
   /* @property {Number} _unseen_count - Holds the unseen notifications total.
    * @private
    */
-  _unseen_count: 0,
   _notifications: null,
+  _notificationsTotalCount: 0,
+  _notificationsLimit: 10,
+  _notificationsRequests: 0,
+  _unseen_count: 0,
   _new_notifications: null,
 
   getUnseen: function getUnseen() {
@@ -48,15 +51,34 @@ module.exports = Class(CV, 'NotificationsStore').includes(CustomEventSupport)({
     this.dispatch('getUnseen', {total: this._unseen_count});
   },
 
-  getNotifications: function getNotifications() {
-    // TODO: fix, update the api call so it calls the updated endpoint
+  fetchNotifications: function fetchNotifications() {
+    if (this._notifications && this._notifications.length) {
+      if (this._notifications.length >= this._notificationsTotalCount) {
+        return;
+      }
+    }
+
     API.getNotifications({
-      profileName: Person.get('profileName')
+      profileName: Person.get('profileName'),
+      data: {
+        limit: this._notificationsLimit,
+        offset: this._notificationsRequests * this._notificationsLimit
+      }
     }, function (err, res) {
       if (err) return console.log(err);
-      this._notifications = res.notifications;
+      if (this._notifications) {
+        this._notifications = this._notifications.concat(res.notifications);
+      } else {
+        this._notifications = res.notifications;
+      }
+      this._notificationsRequests++;
+      this._notificationsTotalCount = res.totalCount;
       this._emitNotifications();
     }.bind(this));
+  },
+
+  getNotifications: function getNotifications() {
+    this._emitNotifications();
   },
 
   _emitNotifications: function _emitNewNotifications() {

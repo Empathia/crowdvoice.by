@@ -1458,8 +1458,9 @@ module.exports = {
    * NOTIFICATIONS
    *************************************************************************/
   /* Get the current user/org's notifications.
-   * @argument args.profileName <required> [String] currentPerson profileName
-   * @argument callback <required> [Function]
+   * @param {string} args.profileName - currentPerson profileName
+   * @param {Object[]} args.data
+   * @param {function} callback
    */
   getNotifications: function getNotifications(args, callback) {
     if (!args.profileName || !callback) {
@@ -1470,10 +1471,18 @@ module.exports = {
       throw new Error('Callback should be a function');
     }
 
+    var params = '';
+    if (args.data) {
+      params = Object.keys(args.data).map(function (key) {
+        return encodeURIComponent(key) + '=' + encodeURIComponent(args.data[key]);
+      }).join('&');
+      params = ('?' + params);
+    }
+
     $.ajax({
       type: 'GET',
       dataType: 'json',
-      url: '/' + args.profileName + '/notifications',
+      url: '/' + args.profileName + '/notifications' + params,
       headers: {'csrf-token' : this.token},
       success: function success(data) {callback(false, data);},
       error: function error(err) {callback(true, err);}

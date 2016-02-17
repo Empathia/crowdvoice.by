@@ -1,7 +1,8 @@
 var GeminiScrollbar = require('gemini-scrollbar')
   , Person = require('./../../lib/currentPerson')
   , API = require('./../../lib/api')
-  , NotificationsStore = require('./../../stores/NotificationsStore');
+  , NotificationsStore = require('./../../stores/NotificationsStore')
+  , Events = require('./../../lib/events');
 
 Class(CV, 'NotificationsPopover').inherits(Widget).includes(BubblingSupport, CV.WidgetUtils)({
   ELEMENT_CLASS: 'notifications-popover-content',
@@ -40,7 +41,6 @@ Class(CV, 'NotificationsPopover').inherits(Widget).includes(BubblingSupport, CV.
       Widget.prototype.init.call(this, config);
       this.listElement = this.element[0].querySelector('.notifications-popover__list');
       this._setup()._bindEvents();
-      NotificationsStore.getNotifications();
     },
 
     _setup: function _setup() {
@@ -65,6 +65,18 @@ Class(CV, 'NotificationsPopover').inherits(Widget).includes(BubblingSupport, CV.
 
       this._notificationMarkAsReadHandlerRef = this._notificationMarkAsReadHandler.bind(this);
       this.bind('notification:markAsReadAndRedirect', this._notificationMarkAsReadHandlerRef);
+
+      this._scrollHandlerRef = this._scrollHandler.bind(this);
+      Events.on(this.scrollbar.getViewElement(), 'scroll', this._scrollHandlerRef);
+    },
+
+    setup: function setup() {
+      if (NotificationsStore._notifications) {
+        NotificationsStore.getNotifications();
+      } else {
+        NotificationsStore.fetchNotifications();
+      }
+      return this;
     },
 
     /* NotificationsStore 'notifications' event handler.
@@ -76,6 +88,11 @@ Class(CV, 'NotificationsPopover').inherits(Widget).includes(BubblingSupport, CV.
       if (this.loader) {
         this.loader = this.loader.disable().remove();
       }
+
+      while (this.children.length > 0) {
+        this.children[0].destroy();
+      }
+
       res.notifications.forEach(function (n) {
         this.appendChild(new CV.NotificationsPopoverItem({
           name: n.notificationId,
@@ -83,8 +100,9 @@ Class(CV, 'NotificationsPopover').inherits(Widget).includes(BubblingSupport, CV.
           notificationId: n.notificationId,
           read: n.read
         })).render(this.scrollbar.getViewElement());
-        this.scrollbar.update();
       }, this);
+
+      this.scrollbar.update();
     },
 
     /* NotificationItem 'notification:markAsRead' event handler.
@@ -105,8 +123,20 @@ Class(CV, 'NotificationsPopover').inherits(Widget).includes(BubblingSupport, CV.
       });
     },
 
+    _scrollHandler: function _scrollHandler(ev) {
+      var el = ev.currentTarget;
+      if (el.scrollTop + el.clientHeight >= el.scrollHeight) {
+        NotificationsStore.fetchNotifications();
+      }
+    },
+
     destroy: function destroy() {
       Widget.prototype.destroy.call(this);
+      NotificationsStore.unbind('notifications', this._notificationsHandlerRef);
+      this._notificationsHandlerRef = null;
+      Events.on(this.scrollbar.getViewElement(), 'scroll', this._scrollHandlerRef);
+      this._scrollHandlerRef = null;
+      this.scrollbar = this.scrollbar.destroy();
       return null;
     }
   }

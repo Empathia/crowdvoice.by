@@ -25,6 +25,7 @@ Class('NotificationBell').inherits(Widget).includes(CV.WidgetUtils)({
 
       this._toggleNotificationsPopoverHandlerRef = this._toggleNotificationsPopoverHandler.bind(this);
       Events.on(this.el, 'click', this._toggleNotificationsPopoverHandlerRef);
+
       return this;
     },
 
@@ -33,18 +34,31 @@ Class('NotificationBell').inherits(Widget).includes(CV.WidgetUtils)({
      * @private
      */
     _toggleNotificationsPopoverHandler: function _toggleNotificationsPopoverHandler() {
-      if (this.notificationsPopover) this.notificationsPopover.destroy();
-
       this.appendChild(new CV.PopoverBlocker({
         name: 'notificationsPopover',
         className: 'notifications-popover',
-        placement: 'bottom-right',
-        content: new CV.NotificationsPopover().element[0]
+        placement: 'bottom-right'
       })).render(this.el);
+
+      this.appendChild(new CV.NotificationsPopover({
+        name: 'notificationsPopoverContent'
+      })).render(this.notificationsPopover.element);
+
+      this._destroyPopoverRef = this._destroyPopover.bind(this);
+      this.notificationsPopover.bind('afterDeactivate', this._destroyPopoverRef);
 
       requestAnimationFrame(function () {
         this.notificationsPopover.activate();
+        this.notificationsPopoverContent.setup();
       }.bind(this));
+    },
+
+    _destroyPopover: function _destroyPopover() {
+      this.notificationsPopover.unbind('afterDeactivate', this._destroyPopoverRef);
+      this._destroyPopoverRef = null;
+      while (this.children.length > 0) {
+        this.children[0].destroy();
+      }
     },
 
     /* NotificationsStore 'newNotifications' event handler.
