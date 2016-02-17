@@ -37,6 +37,7 @@ Class(CV, 'NotificationsPopover').inherits(Widget).includes(BubblingSupport, CV.
     </div>',
 
   prototype: {
+    _latestScrollTop: 0,
     init: function init(config) {
       Widget.prototype.init.call(this, config);
       this.listElement = this.element[0].querySelector('.notifications-popover__list');
@@ -89,6 +90,8 @@ Class(CV, 'NotificationsPopover').inherits(Widget).includes(BubblingSupport, CV.
         this.loader = this.loader.disable().remove();
       }
 
+      this._latestScrollTop = this.scrollbar.getViewElement().scrollTop;
+
       while (this.children.length > 0) {
         this.children[0].destroy();
       }
@@ -102,7 +105,7 @@ Class(CV, 'NotificationsPopover').inherits(Widget).includes(BubblingSupport, CV.
         })).render(this.scrollbar.getViewElement());
       }, this);
 
-      this.scrollbar.update();
+      this.scrollbar.update().getViewElement().scrollTop = this._latestScrollTop;
     },
 
     /* NotificationItem 'notification:markAsRead' event handler.
@@ -123,9 +126,12 @@ Class(CV, 'NotificationsPopover').inherits(Widget).includes(BubblingSupport, CV.
       });
     },
 
+    /* List scrollbar event handler.
+     * @private
+     */
     _scrollHandler: function _scrollHandler(ev) {
       var el = ev.currentTarget;
-      if (el.scrollTop + el.clientHeight >= el.scrollHeight) {
+      if ((el.scrollTop + el.clientHeight) >= el.scrollHeight) {
         NotificationsStore.fetchNotifications();
       }
     },
