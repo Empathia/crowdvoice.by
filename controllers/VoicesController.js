@@ -272,9 +272,13 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                           .count('*')
                           .where('voice_id', req.activeVoice.id)
                           .andWhere('approved', true)
-                          .andWhere(db.raw('to_char("Posts".published_at, \'MM\')'), row.month)
-                          .andWhere(db.raw('to_char("Posts".published_at, \'YYYY\')'), row.year)
+                          .andWhere(db.raw('to_char("Posts".published_at, \'MM\') = ?', row.month))
+                          .andWhere(db.raw('to_char("Posts".published_at, \'YYYY\') = ?', row.year))
                           .then(function (count) {
+                            if (!counts[row.year]) {
+                              counts[row.year] = {};
+                            }
+
                             counts[row.year][row.month] = {
                               page: row.page,
                               count: (count[0] ? +count[0].count : 0)
@@ -283,7 +287,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                             return doneEach();
                           })
                           .catch(doneEach);
-                      }, function () {
+                      }, function (err) {
                         if (err) { return reject(err); }
 
                         pagesForMonths.approved = counts;
@@ -314,9 +318,13 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                           .count('*')
                           .where('voice_id', req.activeVoice.id)
                           .andWhere('approved', false)
-                          .andWhere(db.raw('to_char("Posts".published_at, \'MM\')'), row.month)
-                          .andWhere(db.raw('to_char("Posts".published_at, \'YYYY\')'), row.year)
+                          .andWhere(db.raw('to_char("Posts".published_at, \'MM\') = ?', row.month))
+                          .andWhere(db.raw('to_char("Posts".published_at, \'YYYY\') = ?', row.year))
                           .then(function (count) {
+                            if (!counts[row.year]) {
+                              counts[row.year] = {};
+                            }
+
                             counts[row.year][row.month] = {
                               page: row.page,
                               count: (count[0] ? +count[0].count : 0)
@@ -325,7 +333,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                             return doneEach();
                           })
                           .catch(doneEach);
-                      }, function () {
+                      }, function (err) {
                         if (err) { return reject(err); }
 
                         pagesForMonths.unapproved = counts;
