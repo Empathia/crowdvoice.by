@@ -37,9 +37,9 @@ K.Voice.query()
           approved: casual.random_element([true, false]),
           imageBaseUrl: '',
           imageMeta: {},
-          sourceService: 'raw',
-          sourceType: 'text',
-          sourceUrl: casual.url,
+          sourceService: 'link',
+          sourceType: 'link',
+          sourceUrl: 'http://google.com/'  + '?' + casual.random,
           publishedAt: new Date(),
           sourceDomain: null,
           faviconPath: null,
@@ -94,6 +94,7 @@ K.Voice.query()
   .catch(function (err) {
     if (err) {
       logger.error(err)
+      console.log(err.stack);
       return process.exit(1)
     }
   })
