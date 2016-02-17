@@ -91,7 +91,7 @@
   App.addInteractiveSidebar();
   App.socketStart();
 
-  App.appendChild(new CV.HomeView({
+  App.appendChild(new CV.Views.Home({
     name: 'homeView',
     topVoiceData: <%= JSON.stringify(topVoice) %>,
     featuredVoicesData: <%= JSON.stringify(featuredVoices) %>,

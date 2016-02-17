@@ -1,4 +1,4 @@
-Class(CV, 'HomeView').includes(NodeSupport, CV.WidgetUtils)({
+Class(CV.Views, 'Home').includes(NodeSupport, CV.WidgetUtils)({
   prototype: {
     /* @property {Object} topVoice - the top voice data. */
     topVoiceData: null,

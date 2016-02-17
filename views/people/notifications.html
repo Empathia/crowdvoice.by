@@ -1,1 +1,15 @@
+<main role="main" class="cv-main-content notifications-page -rel">
+  <section class="page-heading">
+    <h1 class="page-heading__title -m0 -inline-block">Notifications View</h1>
+  </section>
+  <section class="profile-body -rel"></section>
+</main>
 
+<script>
+  var App = new CV.App().setup();
+  App.addInteractiveSidebar();
+
+  var NotificationsView = new CV.Views.Notifications({
+    el : document.querySelector('.cv-main-content'),
+  }).setup();
+</script>
