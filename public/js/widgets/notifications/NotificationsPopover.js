@@ -29,17 +29,18 @@ Class(CV, 'NotificationsPopover').inherits(Widget).includes(BubblingSupport, CV.
         </div>\
       </div>\
       <div class="notifications-popover__footer">\
-        <div class="cv-button-group multiple -row -full-width">\
-          <button class="cv-button tiny -col-6 -font-semi-bold -btlr0">Mark All As Read</button>\
+        <div data-footer-buttons-container class="cv-button-group multiple -row -full-width">\
           <button class="cv-button tiny -col-6 -font-semi-bold -btrr0">View All</button>\
         </div>\
       </div>\
     </div>',
 
   prototype: {
+    _notificationWidgets: null,
     _latestScrollTop: 0,
     init: function init(config) {
       Widget.prototype.init.call(this, config);
+      this._notificationWidgets = [];
       this.listElement = this.element[0].querySelector('.notifications-popover__list');
       this._setup()._bindEvents();
     },
@@ -57,6 +58,14 @@ Class(CV, 'NotificationsPopover').inherits(Widget).includes(BubblingSupport, CV.
 
       this.dom.updateAttr('href', this.element[0].querySelector('.notifications-popover__header-settings'), '/' + Person.get('profileName') + '/edit/#notifications');
 
+      this.appendChild(new CV.UI.Button({
+        name: 'buttonMarkAllAsRead',
+        className: 'cv-button tiny -col-6 -font-semi-bold -btlr0',
+        data: {
+          value: 'Mark All As Read'
+        }
+      })).render(this.element[0].querySelector('[data-footer-buttons-container]'));
+
       return this;
     },
 
@@ -69,6 +78,9 @@ Class(CV, 'NotificationsPopover').inherits(Widget).includes(BubblingSupport, CV.
 
       this._scrollHandlerRef = this._scrollHandler.bind(this);
       Events.on(this.scrollbar.getViewElement(), 'scroll', this._scrollHandlerRef);
+
+      this._markAllAsReadHandlerRef = this._markAllAsReadHandler.bind(this);
+      Events.on(this.buttonMarkAllAsRead.el, 'click', this._markAllAsReadHandlerRef);
     },
 
     setup: function setup() {
@@ -86,25 +98,31 @@ Class(CV, 'NotificationsPopover').inherits(Widget).includes(BubblingSupport, CV.
      * @property {Array} res.notifications
      */
     _notificationsHandler: function _notificationsHandler(res) {
+      var fragment = document.createDocumentFragment();
+
       if (this.loader) {
         this.loader = this.loader.disable().remove();
       }
 
       this._latestScrollTop = this.scrollbar.getViewElement().scrollTop;
 
-      while (this.children.length > 0) {
-        this.children[0].destroy();
-      }
+      this._notificationWidgets.forEach(function (widget) {
+        widget.destroy();
+      });
+      this._notificationWidgets = [];
 
       res.notifications.forEach(function (n) {
-        this.appendChild(new CV.NotificationsPopoverItem({
+        var item = new CV.NotificationsPopoverItem({
           name: n.notificationId,
           data: n.action,
           notificationId: n.notificationId,
           read: n.read
-        })).render(this.scrollbar.getViewElement());
+        }).render(fragment);
+        this._notificationWidgets.push(item);
+        this.appendChild(item);
       }, this);
 
+      this.scrollbar.getViewElement().appendChild(fragment);
       this.scrollbar.update().getViewElement().scrollTop = this._latestScrollTop;
     },
 
@@ -116,7 +134,7 @@ Class(CV, 'NotificationsPopover').inherits(Widget).includes(BubblingSupport, CV.
       NotificationsStore.decreaseUnseen();
 
       API.markNotificationAsRead({
-        profileName: Person.get().profileName,
+        profileName: Person.get('profileName'),
         data: {notificationId: ev.target.notificationId}
       }, function(err, res) {
         if (err) return console.log(res);
@@ -136,13 +154,29 @@ Class(CV, 'NotificationsPopover').inherits(Widget).includes(BubblingSupport, CV.
       }
     },
 
+    /* @private
+     */
+    _markAllAsReadHandler: function _markAllAsReadHandler() {
+      API.markAllNotificationsAsRead({
+        profileName: Person.get('profileName')
+      }, function () {
+        NotificationsStore.reFetchNotifications();
+      });
+    },
+
     destroy: function destroy() {
-      Widget.prototype.destroy.call(this);
       NotificationsStore.unbind('notifications', this._notificationsHandlerRef);
       this._notificationsHandlerRef = null;
-      Events.on(this.scrollbar.getViewElement(), 'scroll', this._scrollHandlerRef);
+
+      Events.off(this.scrollbar.getViewElement(), 'scroll', this._scrollHandlerRef);
       this._scrollHandlerRef = null;
+
+      Events.off(this.buttonMarkAllAsRead, 'click', this._markAllAsReadHandlerRef);
+      this._markAllAsReadHandlerRef = null;
+
       this.scrollbar = this.scrollbar.destroy();
+
+      Widget.prototype.destroy.call(this);
       return null;
     }
   }

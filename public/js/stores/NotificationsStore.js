@@ -77,6 +77,20 @@ module.exports = Class(CV, 'NotificationsStore').includes(CustomEventSupport)({
     }.bind(this));
   },
 
+  reFetchNotifications: function reFetchNotifications() {
+    API.getNotifications({
+      profileName: Person.get('profileName'),
+      data: {
+        limit: (this._notificationsLimit * this._notificationsRequests)
+      }
+    }, function (err, res) {
+      if (err) return console.log(err);
+      this._notifications = res.notifications;
+      this._notificationsTotalCount = res.totalCount;
+      this._emitNotifications();
+    }.bind(this));
+  },
+
   getNotifications: function getNotifications() {
     this._emitNotifications();
   },

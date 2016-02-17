@@ -1490,9 +1490,9 @@ module.exports = {
   },
 
   /* Mark a particular notification as read for the current user.
-   * @argument args.profileName <required> [String] currentPerson profileName
-   * @argument args.data.notificationId <required> [Function] Hashids.encode notificationId
-   * @argument callback <required> [Function]
+   * @param {string} args.profileName - currentPerson profileName
+   * @param {string} args.data.notificationId - Hashids.encode notificationId
+   * @param {function} callback
    */
   markNotificationAsRead: function markNotificationAsRead(args, callback) {
     if (!args.profileName || !args.data.notificationId || !callback) {
@@ -1508,6 +1508,28 @@ module.exports = {
       url: '/' + args.profileName + '/notifications/markAsRead?_method=DELETE',
       headers: {'csrf-token' : this.token},
       data: {notificationId: args.data.notificationId},
+      success: function success(data) {callback(false, data);},
+      error: function error(err) {callback(true, err);}
+    });
+  },
+
+  /* Mark all notifications for the current user (and his organizations) as read.
+   * @param {string} args.profileName - currentPerson profileName
+   * @param {function} callback
+   */
+  markAllNotificationsAsRead: function markAllNotificationsAsRead(args, callback) {
+    if (!args.profileName || !callback) {
+      throw new Error('Missing required params');
+    }
+
+    if ((typeof callback).toLowerCase() !== "function") {
+      throw new Error('Callback should be a function');
+    }
+
+    $.ajax({
+      type: 'POST',
+      url: '/' + args.profileName + '/notifications/markAllAsRead?_method=DELETE',
+      headers: {'csrf-token' : this.token},
       success: function success(data) {callback(false, data);},
       error: function error(err) {callback(true, err);}
     });
