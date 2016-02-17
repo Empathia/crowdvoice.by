@@ -337,6 +337,14 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                 });
               })
               .then(function () {
+                return K.VoicesPresenter.build([res.locals.voice], req.currentPerson)
+                  .then(function (pres) {
+                    res.locals.voice = pres[0];
+
+                    return Promise.resolve();
+                  });
+              })
+              .then(function () {
                 res.locals.pagesForMonths = pagesForMonths;
 
                 res.locals.voice.firstPostDate = postDates.firstPostDate;
