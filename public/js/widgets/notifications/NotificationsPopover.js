@@ -30,8 +30,7 @@ Class(CV, 'NotificationsPopover').inherits(Widget).includes(BubblingSupport, CV.
       </div>\
       <div class="notifications-popover__footer">\
         <div data-footer-buttons-container class="cv-button-group multiple -row -full-width">\
-          <button class="cv-button tiny -col-6 -font-semi-bold -btrr0">View All</button>\
-        </div>\
+      </div>\
       </div>\
     </div>',
 
@@ -46,6 +45,8 @@ Class(CV, 'NotificationsPopover').inherits(Widget).includes(BubblingSupport, CV.
     },
 
     _setup: function _setup() {
+      var buttonsWrapper = this.element[0].querySelector('[data-footer-buttons-container]');
+
       this.scrollbar = new GeminiScrollbar({
         element: this.listElement,
         createElements: false,
@@ -64,7 +65,16 @@ Class(CV, 'NotificationsPopover').inherits(Widget).includes(BubblingSupport, CV.
         data: {
           value: 'Mark All As Read'
         }
-      })).render(this.element[0].querySelector('[data-footer-buttons-container]'));
+      })).render(buttonsWrapper);
+
+      this.appendChild(new CV.UI.Button({
+        name: 'buttonViewAll',
+        className: 'cv-button tiny -col-6 -font-semi-bold -btrr0 -text-center',
+        data: {
+          value: 'View All',
+          href: '/' + Person.get('profileName') + '/notifications'
+        }
+      })).render(buttonsWrapper);
 
       return this;
     },
