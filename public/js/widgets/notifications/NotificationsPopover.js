@@ -12,7 +12,7 @@ Class(CV, 'NotificationsPopover').inherits(Widget).includes(BubblingSupport, CV.
         <div class="-font-bold -upper -float-left">Notifications</div>\
         <div class="-float-right">\
           <a class="notifications-popover__header-settings" title="Manage notification settings">\
-            <svg class="-s16">\
+            <svg class="notifications-popover__header-settings-svg -s16">\
               <use xlink:href="#svg-settings"></use>\
             </svg>\
           </a>\
