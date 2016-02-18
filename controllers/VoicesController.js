@@ -211,7 +211,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                 firstPostDate: null,
                 lastPostDate: null
               },
-              KVoice
+              fetchVoice
 
             Promise.resolve()
               .then(function () {
@@ -219,7 +219,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                   .where('id', req.activeVoice.id)
                   .include('owner')
                   .then(function (voice) {
-                    KVoice = voice[0];
+                    fetchVoice = voice[0];
 
                     return Promise.resolve();
                   })
@@ -358,7 +358,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                 res.locals.voice.firstPostDate = postDates.firstPostDate;
                 res.locals.voice.lastPostDate = postDates.lastPostDate;
 
-                res.locals.owner = KVoice.owner;
+                res.locals.owner = fetchVoice.owner;
 
                 return res.render('voices/show.html', {
                   pageName : 'page-inner page-voice'
