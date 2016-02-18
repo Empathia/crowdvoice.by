@@ -187,6 +187,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
     },
 
     show : function show(req, res, next) {
+      console.time('>>SHOW');
       ACL.isAllowed('show', 'voices', req.role, {
         currentPerson : req.currentPerson,
         voice : res.locals.voice,
@@ -359,7 +360,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                 res.locals.voice.lastPostDate = postDates.lastPostDate;
 
                 res.locals.owner = KVoice.owner;
-
+                console.timeEnd('>>SHOW');
                 return res.render('voices/show.html', {
                   pageName : 'page-inner page-voice'
                 });
