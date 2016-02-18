@@ -1,7 +1,9 @@
 var NotificationsStore = require('./../stores/NotificationsStore')
+  , Person = require('./../lib/currentPerson')
+  , API = require('./../lib/api')
   , Events = require('./../lib/events');
 
-Class(CV.Views, 'Notifications').includes(NodeSupport)({
+Class(CV.Views, 'Notifications').includes(NodeSupport, CustomEventSupport)({
   prototype: {
     _notificationWidgets: null,
     init: function init(config) {
@@ -28,6 +30,9 @@ Class(CV.Views, 'Notifications').includes(NodeSupport)({
       this._notificationsHandlerRef = this._notificationsHandler.bind(this);
       NotificationsStore.bind('notifications', this._notificationsHandlerRef);
 
+      this._notificationMarkAsReadHandlerRef = this._notificationMarkAsReadHandler.bind(this);
+      this.bind('notification:markAsReadAndRedirect', this._notificationMarkAsReadHandlerRef);
+
       this._scrollHandlerRef = this._scrollHandler.bind(this);
       Events.on(this._window, 'scroll', this._scrollHandlerRef);
     },
@@ -46,7 +51,7 @@ Class(CV.Views, 'Notifications').includes(NodeSupport)({
       this._notificationWidgets = [];
 
       res.notifications.forEach(function (n) {
-        var item = new CV.NotificationsPopoverItem({
+        var item = new CV.NotificationsPageItem({
           name: n.notificationId,
           data: n.action,
           notificationId: n.notificationId,
@@ -57,6 +62,24 @@ Class(CV.Views, 'Notifications').includes(NodeSupport)({
       }, this);
 
       this.profileBody.appendChild(fragment);
+    },
+
+    /* NotificationItem 'notification:markAsRead' event handler.
+     * @private
+     */
+    _notificationMarkAsReadHandler: function _notificationMarkAsReadHandler(ev) {
+      ev.stopPropagation();
+      NotificationsStore.decreaseUnseen();
+
+      API.markNotificationAsRead({
+        profileName: Person.get('profileName'),
+        data: {notificationId: ev.target.notificationId}
+      }, function(err, res) {
+        if (err) return console.log(res);
+        if (ev.redirectUrl) {
+          window.location = ev.redirectUrl;
+        }
+      });
     },
 
     /* Handle the _window scroll event.

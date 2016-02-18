@@ -208,6 +208,7 @@ require('./widgets/view-feed/FeedDiscover');
 require('./widgets/view-feed/FeedSidebar');
 require('./widgets/view-feed/FeedOnboarding');
 require('./views/Notifications');
+require('./widgets/view-notifications/NotificationsPageItem');
 
 require('./widgets/voice/registry/VoicePagesRegistry');
 require('./widgets/voice/publish-onboarding/VoicePublishOnboardingManager');
