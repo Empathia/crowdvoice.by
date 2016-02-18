@@ -1,4 +1,5 @@
 var NotificationsStore = require('./../stores/NotificationsStore')
+  , Events = require('./../lib/events');
 
 Class(CV.Views, 'Notifications').includes(NodeSupport)({
   prototype: {
@@ -9,6 +10,8 @@ Class(CV.Views, 'Notifications').includes(NodeSupport)({
       }, this);
       this._notificationWidgets = [];
       this.profileBody = this.el.querySelector('.profile-body');
+      this._window = window;
+      this._body = document.body;
       this._bindEvents();
     },
 
@@ -24,6 +27,9 @@ Class(CV.Views, 'Notifications').includes(NodeSupport)({
     _bindEvents: function _bindEvents() {
       this._notificationsHandlerRef = this._notificationsHandler.bind(this);
       NotificationsStore.bind('notifications', this._notificationsHandlerRef);
+
+      this._scrollHandlerRef = this._scrollHandler.bind(this);
+      Events.on(this._window, 'scroll', this._scrollHandlerRef);
     },
 
     /* NotificationsStore 'notifications' event handler.
@@ -51,6 +57,16 @@ Class(CV.Views, 'Notifications').includes(NodeSupport)({
       }, this);
 
       this.profileBody.appendChild(fragment);
+    },
+
+    /* Handle the _window scroll event.
+     * @private
+     */
+    _scrollHandler: function _scrollHandler(ev) {
+      var el = ev.currentTarget;
+      if ((el.scrollY + el.innerHeight) >= this._body.scrollHeight) {
+        NotificationsStore.fetchNotifications();
+      }
     }
   }
 });
