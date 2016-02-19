@@ -46,7 +46,8 @@ Class(CV, 'CreateOrganization').inherits(Widget).includes(CV.WidgetUtils)({
                     inputClassName : '-lg -block',
                     attr : {
                         type : 'text',
-                        maxlength: this.MAX_TITLE_LENGTH
+                        maxlength: this.MAX_TITLE_LENGTH,
+                        autofocus: true
                     },
                 }
             })).render(this.el.querySelector('.placeholder-main'));
