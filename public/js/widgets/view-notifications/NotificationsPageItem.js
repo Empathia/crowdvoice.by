@@ -53,10 +53,10 @@ Class(CV, 'NotificationsPageItem').inherits(Widget).includes(BubblingSupport)({
       }
     },
 
-    _markAsReadHandler: function _markAsReadHandler() {
+    _markAsReadHandler: function _markAsReadHandler(ev) {
+      ev.preventDefault();
       this._setReadState();
       this.dispatch('notification:markAsRead');
-      return false;
     },
 
     _setUnreadState: function _setUnreadState() {
