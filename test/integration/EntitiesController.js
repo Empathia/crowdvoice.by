@@ -25,6 +25,66 @@ var urlBase = 'http://localhost:3000'
 
 describe('EntitiesController', function () {
 
+  describe('#feed', function () {
+
+    it('Should open with no errors', function (doneTest) {
+      login('cersei-lannister', function (err, agent, csrf) {
+        if (err) { return doneTest(err) }
+
+        agent
+          .get(urlBase + '/cersei-lannister/feed')
+          .end(function (err, res) {
+            if (err) { return doneTest(err) }
+
+            expect(res.status).to.equal(200)
+
+            return doneTest()
+          })
+      })
+    })
+
+    it('Should return JSON', function (doneTest) {
+      login('cersei-lannister', function (err, agent, csrf) {
+        if (err) { return doneTest(err) }
+
+        agent
+          .get(urlBase + '/cersei-lannister/feed')
+          .accept('application/json')
+          .end(function (err, res) {
+            if (err) { return doneTest(err) }
+
+            expect(res.status).to.equal(200)
+            expect(res.body.feedItems).to.be.an('array')
+            expect(res.body.feedItems.length).to.equal(2)
+            expect(res.body.totalCount).to.equal(2)
+
+            return doneTest()
+          })
+      })
+    })
+
+  })
+
+  describe('#home', function () {
+
+    it('Should open with no errors', function (doneTest) {
+      login('cersei-lannister', function (err, agent, csrf) {
+        if (err) { return doneTest(err) }
+
+        agent
+          .get(urlBase + '/cersei-lannister/home')
+          .end(function (err, res) {
+            if (err) { return doneTest(err) }
+
+            expect(res.status).to.equal(200)
+
+            return doneTest()
+          })
+      })
+    })
+
+  })
+
   describe('#edit', function () {
 
     it('Should open edit page', function (done) {

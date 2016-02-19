@@ -760,12 +760,90 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
       });
     },
 
-    feed : function (req, res, next) {
+    feed: function (req, res, next) {
+      ACL.isAllowed('feed', 'entities', req.role, {
+        entityProfileName: req.entity.profileName,
+        currentPerson: req.currentPerson
+      }, function (err, response) {
+        if (err) { return next(err); }
+
+        if (!response.isAllowed) {
+          return next(new ForbiddenError());
+        }
+
+        var currentPerson,
+          person = new Entity(req.currentPerson)
+        person.id = hashids.decode(person.id)[0]
+
+        person.owner(function (err, result) {
+          if (err) { return next(err) }
+
+          if (req.currentPerson.isAnonymous) {
+            currentPerson = new Entity(result)
+          } else {
+            currentPerson = new Entity(person)
+          }
+
+          return res.format({
+            html: function () {
+              db('Notifications')
+                .count('*')
+                .where('follower_id', response.follower.id)
+                .andWhere('for_feed', true)
+                .then(function (count) {
+                  res.locals.totalFeedItems = +count[0].count
+
+                  return res.render('people/feed')
+                })
+                .catch(next)
+            },
+
+            json: function () {
+              db('Notifications')
+                .select('*', function () {
+                  this
+                    .count('*')
+                    .as('full_count')
+                    .from('Notifications')
+                    .where('follower_id', response.follower.id)
+                    .andWhere('for_feed', true)
+                })
+                .from('Notifications')
+                .where('follower_id', response.follower.id)
+                .andWhere('for_feed', true)
+                .orderBy('created_at', 'desc')
+                .offset(req.query.offset || 0)
+                .limit(req.query.limit || 50)
+                .exec(function (err, result) {
+                  if (err) { return next(err) }
+
+                  var notifications = Argon.Storage.Knex.processors[0](result)
+
+                  FeedAction.whereIn('id', notifications.map(function (n) { return n.actionId }), function (err, actions) {
+                    if (err) { return next(err) }
+
+                    FeedPresenter.build(actions, req.currentPerson, function (err, pres) {
+                      if (err) { return next(err) }
+
+                      return res.json({
+                        feedItems: pres,
+                        totalCount: (result[0] ? +result[0].full_count : 0),
+                      });
+                    });
+                  });
+                });
+            }
+          });
+        });
+      });
+    },
+
+    home : function (req, res, next) {
       /* GET
        * req.query.page = Number of page
        */
 
-      ACL.isAllowed('feed', 'entities', req.role, {
+      ACL.isAllowed('home', 'entities', req.role, {
         entityProfileName: req.entity.profileName,
         currentPerson: req.currentPerson
       }, function (err, response) {
@@ -804,7 +882,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
                     html: function () {
                       req.feed = empty;
                       res.locals.feed = empty;
-                      res.render('people/feed');
+                      res.render('people/home');
                     },
                     json: function () {
                       res.json(empty);
@@ -831,7 +909,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
                       html: function () {
                         req.feed = empty;
                         res.locals.feed = empty;
-                        res.render('people/feed');
+                        res.render('people/home');
                       },
                       json: function () {
                         res.json(empty);
@@ -868,7 +946,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
                         html: function () {
                           req.feed = answer;
                           res.locals.feed = answer;
-                          res.render('people/feed');
+                          res.render('people/home');
                         },
                         json: function () {
                           res.json(answer);
@@ -895,7 +973,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
                           html: function () {
                             req.feed = answer;
                             res.locals.feed = answer;
-                            res.render('people/feed');
+                            res.render('people/home');
                           },
                           json: function () {
                             res.json(answer);
