@@ -47,13 +47,13 @@ Class(CV, 'NotificationsManager').inherits(Widget).includes(BubblingSupport)({
     _notificationMarkAsReadHandler: function _notificationMarkAsReadHandler(ev) {
       ev.stopPropagation();
       NotificationsStore.decreaseUnseen();
+      NotificationsStore.deleteNewNotification(ev.target.notificationId);
 
       API.markNotificationAsRead({
         profileName: Person.get().profileName,
         data: {notificationId: ev.target.notificationId}
       }, function(err, res) {
         if (err) return console.log(res);
-        NotificationsStore.getUnseen();
       });
     },
 
@@ -61,16 +61,13 @@ Class(CV, 'NotificationsManager').inherits(Widget).includes(BubblingSupport)({
      * @private
      */
     _notificationTimeSpanEndHandler: function _notificationTimeSpanEndHandler(ev) {
-      var child = ev.target
-        , _this = this;
+      var child = ev.target;
       ev.stopPropagation();
-      Velocity(ev.target.el, 'fadeOut', {
+      NotificationsStore.deleteNewNotification(child.notificationId);
+      Velocity(child.el, {opacity: 0}, {
         duration: 500,
         complete: function () {
-          _this[child.notificationId] = child.destroy();
-          if (!_this.children.length) {
-            _this.deactivate();
-          }
+          child.el.style.visibility = 'hidden';
         }
       });
     },

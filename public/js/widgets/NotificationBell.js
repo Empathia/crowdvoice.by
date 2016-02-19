@@ -20,8 +20,8 @@ Class('NotificationBell').inherits(Widget).includes(CV.WidgetUtils)({
     },
 
     _bindEvents: function _bindEvents() {
-      this._newNotificationsHandlerRef = this._newNotificationsHandler.bind(this);
-      NotificationsStore.bind('newNotifications', this._newNotificationsHandlerRef);
+      this._unseenNotificationsHandlerRef = this._unseenNotificationsHandler.bind(this);
+      NotificationsStore.bind('unseenNotifications', this._unseenNotificationsHandlerRef);
 
       this._toggleNotificationsPopoverHandlerRef = this._toggleNotificationsPopoverHandler.bind(this);
       Events.on(this.el, 'click', this._toggleNotificationsPopoverHandlerRef);
@@ -34,6 +34,8 @@ Class('NotificationBell').inherits(Widget).includes(CV.WidgetUtils)({
      * @private
      */
     _toggleNotificationsPopoverHandler: function _toggleNotificationsPopoverHandler() {
+      NotificationsStore.deleteAllNewNotifications();
+
       this.appendChild(new CV.PopoverBlocker({
         name: 'notificationsPopover',
         className: 'notifications-popover',
@@ -61,13 +63,12 @@ Class('NotificationBell').inherits(Widget).includes(CV.WidgetUtils)({
       }
     },
 
-    /* NotificationsStore 'newNotifications' event handler.
+    /* NotificationsStore 'unseenNotifications' event handler.
      * @private
      * @param {Object} res
-     * @property {Array} res.notifications
      * @prototype {number} res.unseen
      */
-    _newNotificationsHandler: function _newNotificationsHandler(res) {
+    _unseenNotificationsHandler: function _unseenNotificationsHandler(res) {
       this._updateBubbleState(res.unseen);
     },
 
@@ -86,8 +87,8 @@ Class('NotificationBell').inherits(Widget).includes(CV.WidgetUtils)({
     },
 
     destroy: function destroy() {
-      NotificationsStore.unbind('getUnseen', this._getUnseenHandlerRef);
-      this._getUnseenHandlerRef = null;
+      NotificationsStore.unbind('unseenNotifications', this._unseenNotificationsHandlerRef);
+      this._unseenNotificationsHandlerRef = null;
 
       Events.off(this.el, 'click', this._toggleNotificationsPopoverHandlerRef);
       this._toggleNotificationsPopoverHandlerRef = null;

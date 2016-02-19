@@ -11,7 +11,7 @@ Class(CV, 'NotificationItem').inherits(CV.Notification)({
       </div>\
     </div>',
 
-  LIFE_TIME_SPAN: 8000,
+  LIFE_TIME_SPAN: 5000,
 
   prototype: {
     /* @property {object} data The notification model.
@@ -86,10 +86,9 @@ Class(CV, 'NotificationItem').inherits(CV.Notification)({
      */
     _closeClickHandler: function _closeClickHandler(ev) {
       ev.stopImmediatePropagation();
-      if (this.read === false) {
-        this.dispatch('notification:markAsRead');
-      }
-      this.destroy();
+      window.clearTimeout(this._lifeTimeout);
+      delete this._lifeTimeout;
+      this.dispatch('notification:timeSpanEnd');
     },
 
     _startLifeSpanCount: function _startLifeSpanCount() {

@@ -22,18 +22,17 @@ Class(CV, 'TabCounter')({
      * @return {Object} this
      */
     _bindEvents: function _bindEvents() {
-      this._newNotificationsHandlerRef = this._newNotificationsHandler.bind(this);
-      NotificationsStore.bind('newNotifications', this._newNotificationsHandlerRef);
+      this._unseenNotificationsHandlerRef = this._unseenNotificationsHandler.bind(this);
+      NotificationsStore.bind('unseenNotifications', this._unseenNotificationsHandlerRef);
       return this;
     },
 
-    /* NotificationsStore 'newNotifications' event handler.
+    /* NotificationsStore 'unseenNotifications' event handler.
      * @private
      * @param {Object} res
-     * @property {Array} res.notifications
      * @prototype {number} res.unseen
      */
-    _newNotificationsHandler: function _newNotificationsHandler(res) {
+    _unseenNotificationsHandler: function _unseenNotificationsHandler(res) {
       var total = res.unseen;
       if (this._unseen_total !== total) {
         this._unseen_total = total;

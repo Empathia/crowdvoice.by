@@ -8,48 +8,21 @@ module.exports = Class(CV, 'NotificationsStore').includes(CustomEventSupport)({
   _socket: null,
   _run: function _run() {
     this._socket = CV.App.getSocket();
-    this._socket.on('newNotifications', function (res) {
-      console.log(res);
-      if (res.length) {
-        this._new_notifications = res;
-        this._unseen_count = res.length;
-        this._emitNewNotifications();
-      }
-    }.bind(this));
-    this._newNotifications();
+    this._new_notifications = [];
+    this._socket.on('newNotifications', this._newNotificationsHandler.bind(this));
+    this._socket.emit('getNotifications');
   },
 
   /* @property {Number} _unseen_count - Holds the unseen notifications total.
    * @private
    */
   _notifications: null,
+  _notificationsFetched: false,
   _notificationsTotalCount: 0,
   _notificationsLimit: 10,
   _notificationsRequests: 0,
   _unseen_count: 0,
   _new_notifications: null,
-
-  getUnseen: function getUnseen() {
-    this._newNotifications();
-  },
-
-  /* Decrease the _unseen_count by one and emits the getUnseen event.
-   * @static
-   * @emits 'getUnseen'
-   */
-  decreaseUnseen: function decreaseUnseen() {
-    if (this._unseen_count > 0) {
-      this._unseen_count--;
-      this._emitNewNotifications();
-    }
-  },
-
-  /* @emits 'getUnseen' {total: {number}}
-   * @private
-   */
-  _emitUnseen: function _emitUnseen() {
-    this.dispatch('getUnseen', {total: this._unseen_count});
-  },
 
   fetchNotifications: function fetchNotifications() {
     if (this._notifications && this._notifications.length) {
@@ -57,6 +30,8 @@ module.exports = Class(CV, 'NotificationsStore').includes(CustomEventSupport)({
         return;
       }
     }
+
+    this._notificationsFetched = true;
 
     API.getNotifications({
       profileName: Person.get('profileName'),
@@ -99,21 +74,64 @@ module.exports = Class(CV, 'NotificationsStore').includes(CustomEventSupport)({
     this.dispatch('notifications', {notifications: this._notifications});
   },
 
-  /* Socket 'newNotifications' event handler
-   * @private
-   * @emits 'newNotifications'
+  /* Decrease the _unseen_count by one and emits the unseenNotifications event.
+   * @public, static
+   * @emits 'unseenNotifications'
    */
-  _newNotifications: function _newNotifications() {
-    this._socket.emit('getNotifications');
+  decreaseUnseen: function decreaseUnseen() {
+    if (this._unseen_count > 0) {
+      this._unseen_count--;
+      this._emitUnseenNotifications();
+    }
+  },
+
+  /* Deletes a new notification from the Store.
+   * @public, static
+   */
+  deleteNewNotification: function deleteNewNotification(id) {
+    if (!id) return;
+    this._new_notifications.some(function (n, i, a) {
+      if (n.notificationId === id) {
+        a.splice(i, 1);
+        return true;
+      }
+    });
+  },
+
+  /* Deletes all newNotifications from the Store.
+   * @public, static
+   */
+  deleteAllNewNotifications: function deleteAllNewNotifications() {
+    this._new_notifications = [];
+    this._unseen_count = 0;
+    this._emitUnseenNotifications();
+    this._emitNewNotifications();
+  },
+
+  _newNotificationsHandler: function _newNotificationsHandler(res) {
+    if (res.length) {
+      this._new_notifications = this._new_notifications.concat(res);
+      this._unseen_count += res.length;
+      this._emitNewNotifications();
+      this._emitUnseenNotifications();
+
+      if (this._notificationsFetched) {
+        this.reFetchNotifications();
+      }
+    }
+  },
+
+  /* @emits 'unseenNotifications' {unseen: {number}}
+   * @private
+   */
+  _emitUnseenNotifications: function _emitUnseenNotifications() {
+    this.dispatch('unseenNotifications', {unseen: this._unseen_count});
   },
 
   /* @emits 'newNotifications' {notifications: {array}}
    */
   _emitNewNotifications: function _emitNewNotifications() {
-    this.dispatch('newNotifications', {
-      notifications: this._new_notifications,
-      unseen: this._unseen_count
-    });
+    this.dispatch('newNotifications', {notifications: this._new_notifications});
   }
 });
 
