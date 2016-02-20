@@ -8,7 +8,6 @@ Class(CV, 'FeedSidebar').inherits(Widget)({
 
     init: function init(config) {
       Widget.prototype.init.call(this, config);
-
       this._setup()._updateFeed();
     },
 
@@ -43,15 +42,17 @@ Class(CV, 'FeedSidebar').inherits(Widget)({
 
       this._addWelcomeItem(feedList);
 
-      this.el.querySelector('.profile-sidebar').appendChild(feedList);
-
       if (this.feedItems && this.feedItems.feed.length === 0) {
         if (this._onboarding) {return;}
         this._onboarding = document.createElement('div');
         this._onboarding.className = 'feed__list-onboarding';
         this._onboarding.textContent = 'Activity from voices and people you follow will appear here';
         feedList.appendChild(this._onboarding);
+      } else {
+        this._addSeeAllButton(feedList);
       }
+
+      this.el.querySelector('.profile-sidebar').appendChild(feedList);
     },
 
     _addWelcomeItem: function _addWelcomeItem(feedList) {
@@ -70,8 +71,22 @@ Class(CV, 'FeedSidebar').inherits(Widget)({
           createdAt: currentEntityView.createdAt
         }
       })).render(feedList).showDate();
+    },
 
-      this.el.querySelector('.profile-sidebar').appendChild(feedList);
+    _addSeeAllButton: function _addSeeAllButton(renderTo) {
+      var currentEntityView = Person.get();
+      if (this.organization) {
+        currentEntityView = this.organization;
+      }
+
+      this.appendChild(new CV.UI.Button({
+        name: 'seeAllButton',
+        className: '-block -text-center small',
+        data: {
+          value: 'See All',
+          href: '/' + currentEntityView.profileName + '/feed/'
+        }
+      })).render(renderTo);
     }
   }
 });
