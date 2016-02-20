@@ -78,7 +78,7 @@ Class(CV.UI, 'FeedDropdown').inherits(Widget).includes(CV.WidgetUtils)({
       var target = ev.target;
       if (target.classList.contains('active') === false) {
         this.selectByElement(target);
-        window.location = '/' + target.dataset.value + '/feed/';
+        window.location = '/' + target.dataset.value + '/home/';
       }
     }
   }
