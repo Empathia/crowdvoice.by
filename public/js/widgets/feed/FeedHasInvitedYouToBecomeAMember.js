@@ -1,3 +1,5 @@
+var Person = require('./../../lib/currentPerson');
+
 Class(CV, 'FeedHasInvitedYouToBecomeAMember').inherits(CV.FeedItem)({
   ELEMENT_CLASS: 'cv-feed-item',
 
@@ -19,6 +21,13 @@ Class(CV, 'FeedHasInvitedYouToBecomeAMember').inherits(CV.FeedItem)({
         name: 'card',
         data: this.data.entity
       })).render(this.extraInfoElement);
+    },
+
+    /* Creates the notification url that makes more sense to redirect when clicked.
+     * @abstract
+     */
+    getLink: function getLink() {
+      return '/' + Person.get('profileName') + '/messages/';
     }
   }
 });
