@@ -1,1 +1,15 @@
+<main role="main" class="cv-main-content people-feed-page -rel">
+  <section class="page-heading cv-items-list">
+    <h1 class="page-heading__title -m0">Feed view for: <%= currentPerson.name %></h1>
+  </section>
+  <section class="profile-body -rel"></section>
+</main>
 
+<script>
+  var App = new CV.App().setup();
+  App.addInteractiveSidebar();
+  var Feed = new CV.Views.PeopleFeed({
+    el: document.querySelector('.cv-main-content'),
+    totalFeedItems: <%= JSON.stringify(totalFeedItems) %>
+  });
+</script>

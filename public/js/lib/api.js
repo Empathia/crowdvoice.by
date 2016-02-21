@@ -926,6 +926,37 @@ module.exports = {
     });
   },
 
+  /* Returns the profileName personal feed.
+   * @param {Object} args
+   * @property {string} args.profileName The entity profileName
+   * @param {function} callback
+   */
+  getFeed: function getFeed(args, callback) {
+    if (!args.profileName || !callback) {
+      throw new Error('Missing required params');
+    }
+
+    if ((typeof callback).toLowerCase() !== "function") {
+      throw new Error('Callback should be a function');
+    }
+
+    var params = '';
+    if (args.data) {
+      params = Object.keys(args.data).map(function (key) {
+        return encodeURIComponent(key) + '=' + encodeURIComponent(args.data[key]);
+      }).join('&');
+      params = ('?' + params);
+    }
+
+    $.ajax({
+      method: 'GET',
+      dataType: 'json',
+      url: '/' + args.profileName + '/feed' + params,
+      success: function success(data) {callback(false, data);},
+      error: function error(err) {callback(true, err);}
+    });
+  },
+
   /**************************************************************************
    * ORGANIZATIONS
    *************************************************************************/

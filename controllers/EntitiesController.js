@@ -793,7 +793,9 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
                 .then(function (count) {
                   res.locals.totalFeedItems = +count[0].count
 
-                  return res.render('people/feed')
+                  return res.render('people/feed', {
+                    pageName: 'page-people-feed page-inner'
+                  })
                 })
                 .catch(next)
             },
