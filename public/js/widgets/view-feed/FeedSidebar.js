@@ -1,4 +1,5 @@
-var Person = require('./../../lib/currentPerson');
+var GeminiScrollbar = require('gemini-scrollbar')
+  , Person = require('./../../lib/currentPerson');
 
 Class(CV, 'FeedSidebar').inherits(Widget)({
   prototype: {
@@ -8,7 +9,13 @@ Class(CV, 'FeedSidebar').inherits(Widget)({
 
     init: function init(config) {
       Widget.prototype.init.call(this, config);
+      this.scrollbar = new GeminiScrollbar({
+        element: this.el,
+        createElements: false,
+        autoshow: true
+      });
       this._setup()._updateFeed();
+      this.scrollbar.create();
     },
 
     _setup: function _setup() {
