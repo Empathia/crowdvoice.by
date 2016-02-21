@@ -40,7 +40,7 @@ Class(CV, 'FeedSidebar').inherits(Widget)({
       var feedList = document.createElement('div');
       feedList.className = 'feed__list';
 
-      this.feedItems.feed.reverse().forEach(function(item, index) {
+      this.feedItems.feed.forEach(function(item, index) {
         this.appendChild(CV.FeedItem.create({
           name: 'feed-item__' + index,
           data: item
