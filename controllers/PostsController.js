@@ -357,7 +357,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
         var transform = sharp(req.files.image.path)
           .resize(340)
-          .interpolateWith(sharp.interpolator.nohalo)
+          .interpolateWith(sharp.interpolator.locallyBoundedBicubic)
           .embed()
           .progressive()
           .flatten()
@@ -803,7 +803,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
         var transform = sharp(req.files.image.path)
           .resize(340)
-          .interpolateWith(sharp.interpolator.nohalo)
+          .interpolateWith(sharp.interpolator.locallyBoundedBicubic)
           .embed()
           .progressive()
           .flatten()

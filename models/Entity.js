@@ -157,7 +157,7 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
             return readStream.pipe(
               sharp()
                 .resize(16,16)
-                .interpolateWith(sharp.interpolator.nohalo)
+                .interpolateWith(sharp.interpolator.locallyBoundedBicubic)
                 .embed()
                 .crop(sharp.gravity.center)
                 .progressive()
@@ -170,7 +170,7 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
             return readStream.pipe(
               sharp()
                 .resize(28,28)
-                .interpolateWith(sharp.interpolator.nohalo)
+                .interpolateWith(sharp.interpolator.locallyBoundedBicubic)
                 .embed()
                 .crop(sharp.gravity.center)
                 .progressive()
@@ -183,7 +183,7 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
             return readStream.pipe(
               sharp()
                 .resize(36,36)
-                .interpolateWith(sharp.interpolator.nohalo)
+                .interpolateWith(sharp.interpolator.locallyBoundedBicubic)
                 .embed()
                 .crop(sharp.gravity.center)
                 .progressive()
@@ -196,7 +196,7 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
             return readStream.pipe(
               sharp()
               .resize(88,88)
-              .interpolateWith(sharp.interpolator.nohalo)
+              .interpolateWith(sharp.interpolator.locallyBoundedBicubic)
               .embed()
               .crop(sharp.gravity.center)
               .progressive()
@@ -209,7 +209,7 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
             return readStream.pipe(
               sharp()
               .resize(160,160)
-              .interpolateWith(sharp.interpolator.nohalo)
+              .interpolateWith(sharp.interpolator.locallyBoundedBicubic)
               .embed()
               .crop(sharp.gravity.center)
               .progressive()
@@ -231,7 +231,7 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
             return readStream.pipe(
               sharp()
                 .resize(440)
-                .interpolateWith(sharp.interpolator.nohalo)
+                .interpolateWith(sharp.interpolator.locallyBoundedBicubic)
                 .progressive()
                 .flatten()
                 .background('#FFFFFF')
@@ -242,7 +242,7 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
             return readStream.pipe(
               sharp()
                 .resize(440)
-                .interpolateWith(sharp.interpolator.nohalo)
+                .interpolateWith(sharp.interpolator.locallyBoundedBicubic)
                 .progressive()
                 .flatten()
                 .background('#FFFFFF')
@@ -254,7 +254,7 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
             return readStream.pipe(
               sharp()
                 .resize(2560, 1113)
-                .interpolateWith(sharp.interpolator.nohalo)
+                .interpolateWith(sharp.interpolator.locallyBoundedBicubic)
                 .progressive()
                 .flatten()
                 .background('#FFFFFF')
