@@ -210,6 +210,7 @@ require('./widgets/view-feed/FeedOnboarding');
 require('./views/Notifications');
 require('./widgets/view-notifications/NotificationsPageItem');
 require('./views/PeopleFeed');
+require('./widgets/view-people-feed/PeopleFeedDropdown');
 
 require('./widgets/voice/registry/VoicePagesRegistry');
 require('./widgets/voice/publish-onboarding/VoicePublishOnboardingManager');

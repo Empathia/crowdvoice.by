@@ -1,4 +1,5 @@
 var API = require('./../lib/api')
+  , Person = require('./../lib/currentPerson')
   , Events = require('./../lib/events');
 
 Class(CV.Views, 'PeopleFeed').includes(NodeSupport, CV.WidgetUtils)({
@@ -23,8 +24,19 @@ Class(CV.Views, 'PeopleFeed').includes(NodeSupport, CV.WidgetUtils)({
       this._body = document.body;
       this.profileBody = this.el.querySelector('.profile-body');
 
-      this._fetchItems();
+      this._setup()._fetchItems();
       this._bindEvents();
+    },
+
+    _setup: function _setup() {
+      if (Person.ownsOrganizations()) {
+        this.dropdownContainer.innerHTML = '';
+        this.appendChild(new CV.UI.PeopleFeedDropdown({
+          name: 'dropdown'
+        })).render(this.dropdownContainer);
+        this.dropdown.selectByEntity(this.entity);
+      }
+      return this;
     },
 
     _bindEvents: function _bindEvents() {
