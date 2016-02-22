@@ -5,6 +5,7 @@ var NotificationsStore = require('./../stores/NotificationsStore')
 
 Class(CV.Views, 'Notifications').includes(NodeSupport, CustomEventSupport)({
   prototype: {
+    _fetched: false,
     _notificationWidgets: null,
     init: function init(config) {
       Object.keys(config || {}).forEach(function (key) {
@@ -47,6 +48,20 @@ Class(CV.Views, 'Notifications').includes(NodeSupport, CustomEventSupport)({
      */
     _notificationsHandler: function _notificationsHandler(res) {
       var fragment = document.createDocumentFragment();
+
+      if (res.notifications.length === 0) {
+        if (this._fetched === false) {
+          this.appendChild(new CV.EmptyState({
+            name: 'empty',
+            className: '-pt4 -pb4',
+            message: 'no notifications to show yet.'
+          })).render(this.profileBody);
+        }
+      } else if (this.empty) {
+        this.empty = this.empty.destroy();
+      }
+
+      this._fetched = true;
 
       this._notificationWidgets.forEach(function (widget) {
         widget.destroy();
