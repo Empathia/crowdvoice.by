@@ -44,8 +44,6 @@ d.run(function () {
 
     onTick: function () {
 
-      throw new Error('OBOOOOOP')
-
       db('EmailLinks')
         .whereRaw("created_at < '" + moment().subtract(7, 'days').format() + "'")
         .then(function (records) {
