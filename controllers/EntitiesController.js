@@ -805,7 +805,6 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
                     .then(function (result) {
                       var entity = Argon.Storage.Knex.processors[0](result)
 
-                        console.log(entity)
                       res.locals.entity = entity[0];
 
                       return Promise.resolve()
@@ -835,24 +834,26 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
                 .orderBy('created_at', 'desc')
                 .offset(req.query.offset || 0)
                 .limit(req.query.limit || 50)
-                .exec(function (err, result) {
-                  if (err) { return next(err) }
-
+                .then(function (result) {
                   var notifications = Argon.Storage.Knex.processors[0](result)
 
-                  FeedAction.whereIn('id', notifications.map(function (n) { return n.actionId }), function (err, actions) {
-                    if (err) { return next(err) }
+                  return db('FeedActions')
+                    .whereIn('id', notifications.map(function (n) { return n.actionId }))
+                    .orderBy('created_at', 'desc')
+                    .then(function (result) {
+                      var actions = Argon.Storage.Knex.processors[0](result)
 
-                    FeedPresenter.build(actions, req.currentPerson, function (err, pres) {
-                      if (err) { return next(err) }
+                      FeedPresenter.build(actions, req.currentPerson, function (err, pres) {
+                        if (err) { return next(err) }
 
-                      return res.json({
-                        feedItems: pres,
-                        totalCount: (result[0] ? +result[0].full_count : 0),
+                        return res.json({
+                          feedItems: pres,
+                          totalCount: (result[0] ? +result[0].full_count : 0),
+                        });
                       });
                     });
-                  });
-                });
+                })
+                .catch(next);
             }
           });
         });
