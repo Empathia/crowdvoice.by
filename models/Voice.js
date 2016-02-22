@@ -4,6 +4,8 @@ var sanitizerOptions = {
   allowedAttributes : []
 }
 
+var ImageUploader = require(path.join(process.cwd(), 'lib', 'image_uploader.js'))
+
 var Voice = Class('Voice').inherits(Argon.KnexModel).includes(ImageUploader)({
 
   STATUS_DRAFT:     'STATUS_DRAFT',

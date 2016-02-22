@@ -1,13 +1,19 @@
 #!/usr/bin/env node
 
 global.Admin = {};
+global.K = {};
+
 require('neonode-core');
 
+require('krypton-orm');
+Krypton.Model.knex(db);
+require(path.join(process.cwd(), 'lib', 'krypton', 'load-models.js'));
+
 var repl = require("repl");
-var env    = process.env.NODE_ENV || "development";
+var env = process.env.NODE_ENV || "development";
 
 var replServer = repl.start({
-    prompt: "crowdvoice.by(" + env + ")> ",
+  prompt: "crowdvoice.by(" + env + ")> ",
 });
 
 replServer.context.Entity = Entity;
