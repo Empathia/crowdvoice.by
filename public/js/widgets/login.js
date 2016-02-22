@@ -24,7 +24,7 @@ Class(CV, 'Login').inherits(Widget)({
     ',
 
     FORM_SIGNUP : '\
-        <div class="cv-login__heading -font-light">It\'s time to raise your voice!</div>\
+        <div class="cv-login__heading -font-light">Amplify your cause!</div>\
         <p class="-mb3">Sign up and create Voices, post content, follow users, organizations and more!</p>\
         <form action="" method="post" accept-charset="utf-8">\
             <div class="form-field">\

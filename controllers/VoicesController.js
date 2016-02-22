@@ -212,7 +212,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                 firstPostDate: null,
                 lastPostDate: null
               },
-              KVoice
+              fetchVoice
 
             Promise.resolve()
               .then(function () {
@@ -220,7 +220,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                   .where('id', req.activeVoice.id)
                   .include('owner')
                   .then(function (voice) {
-                    KVoice = voice[0];
+                    fetchVoice = voice[0];
 
                     return Promise.resolve();
                   })
@@ -359,8 +359,8 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                 res.locals.voice.firstPostDate = postDates.firstPostDate;
                 res.locals.voice.lastPostDate = postDates.lastPostDate;
 
-                res.locals.owner = KVoice.owner;
-                console.timeEnd('>>SHOW');
+                res.locals.owner = fetchVoice.owner;
+
                 return res.render('voices/show.html', {
                   pageName : 'page-inner page-voice'
                 });
@@ -377,6 +377,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
     },
 
     create: function (req, res, next) {
+      console.log('>>CREATE', req.body)
       ACL.isAllowed('create', 'voices', req.role, {
         currentPerson : req.currentPerson,
         ownerId : req.params.ownerId
@@ -562,6 +563,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
     },
 
     update : function update(req, res, next) {
+      console.log('>>UPDATE', req.body)
       ACL.isAllowed('update', 'voices', req.role, {
         currentPerson : req.currentPerson,
         voice : req.activeVoice
@@ -600,6 +602,35 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
         // Check some requirements before being published
         async.series([
+
+          // From anonymous to known
+          function(nextSeries) {
+            if (req.body.anonymously === 'true') {
+              return nextSeries();
+            }
+
+            Entity.find({
+              id : voice.ownerId
+            }, function(err, result) {
+              if (err) {
+                return nextSeries(err);
+              }
+
+              var voiceOwner = new Entity(result[0]);
+
+              if (!voiceOwner.isAnonymous) {
+                return nextSeries();
+              }
+
+
+              voice.ownerId = hashids.decode(req.body.ownerId)[0];
+
+              voice.save(function(err, result) {
+                return nextSeries(err);
+              });
+            });
+          },
+
           // 20 posts
           function (nextSeries) {
             if (req.body.status !== Voice.STATUS_PUBLISHED

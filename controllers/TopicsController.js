@@ -197,7 +197,21 @@ var TopicsController = Class('TopicsController')({
           var topicId = hashids.decode(presenterTopic[0].id)[0];
           result.currentTopic = presenterTopic[0];
 
-          VoiceTopic.find({ topic_id: topicId }, callback);
+          db('VoiceTopic')
+            .where({topic_id : topicId})
+            .offset(req.query.offset || 0)
+            .limit(req.query.limit || 50)
+            .orderBy('created_at', 'desc')
+            .exec(function(err, result) {
+              if (err) {
+                return callback(err);
+              }
+
+              var voicesForTopic = Argon.Storage.Knex.processors[0](result);
+
+              callback(null, voicesForTopic);
+
+            });
         },
 
         function (voicesForTopic, callback) {

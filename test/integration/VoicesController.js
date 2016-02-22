@@ -8,6 +8,10 @@ require(path.join(__dirname, '../../presenters/PostsPresenter'))
 
 application._serverStart()
 
+var path = require('path')
+
+require(path.join(process.cwd(), 'bin', 'server.js'))
+
 // COMMENT IF YOU WANT LOGGER OUTPUT
 logger.log = function () {}
 

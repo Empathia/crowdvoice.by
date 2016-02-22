@@ -1,3 +1,5 @@
+var Events = require('./../lib/events');
+
 Class(CV.Views, 'Feed').includes(NodeSupport, CV.WidgetUtils)({
   prototype: {
     organization: null,
@@ -9,7 +11,9 @@ Class(CV.Views, 'Feed').includes(NodeSupport, CV.WidgetUtils)({
         this[propertyName] = config[propertyName];
       }, this);
 
-      this._setup();
+      this._window = window;
+      this._body = document.body;
+      this._setup()._bindEvents();
     },
 
     _setup: function _setup() {
@@ -53,6 +57,25 @@ Class(CV.Views, 'Feed').includes(NodeSupport, CV.WidgetUtils)({
         feedItems: this.feedItems,
         organization: this.organization
       }));
+
+      return this;
+    },
+
+    _bindEvents: function _bindEvents() {
+      this._scrollHandlerRef = this._scrollHandler.bind(this);
+      Events.on(this._window, 'scroll', this._scrollHandlerRef);
+    },
+
+    /* Handle the _window scroll event.
+     * @private
+     */
+    _scrollHandler: function _scrollHandler(ev) {
+      var el = ev.currentTarget;
+      if (el.scrollY >= 400) {
+        this.sidebar.el.classList.add('-is-fixed');
+      } else {
+        this.sidebar.el.classList.remove('-is-fixed');
+      }
     }
   }
 });

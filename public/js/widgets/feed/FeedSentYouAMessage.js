@@ -1,3 +1,5 @@
+var Person = require('./../../lib/currentPerson');
+
 Class(CV, 'FeedSentYouAMessage').inherits(CV.FeedItem)({
   ELEMENT_CLASS: 'cv-feed-item message',
 
@@ -20,6 +22,13 @@ Class(CV, 'FeedSentYouAMessage').inherits(CV.FeedItem)({
           return message.message;
         }).join(' ')
       );
+    },
+
+    /* Creates the notification url that makes more sense to redirect when clicked.
+     * @abstract
+     */
+    getLink: function getLink() {
+      return '/' + Person.get('profileName') + '/messages/#' + this.data.thread.id;
     }
   }
 });

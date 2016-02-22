@@ -1,4 +1,4 @@
-<main role="main" class="cv-main-content">
+<main role="main" class="cv-main-content -rel">
   <section class="homepage-intro -rel">
     <div class="top-voice -full-height -full-width">
     </div>
@@ -91,7 +91,7 @@
   App.addInteractiveSidebar();
   App.socketStart();
 
-  App.appendChild(new CV.HomeView({
+  App.appendChild(new CV.Views.Home({
     name: 'homeView',
     topVoiceData: <%= JSON.stringify(topVoice) %>,
     featuredVoicesData: <%= JSON.stringify(featuredVoices) %>,

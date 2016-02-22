@@ -786,14 +786,34 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
           return res.format({
             html: function () {
-              db('Notifications')
-                .count('*')
-                .where('follower_id', response.follower.id)
-                .andWhere('for_feed', true)
-                .then(function (count) {
-                  res.locals.totalFeedItems = +count[0].count
+              Promise.resolve()
+                .then(function () {
+                  return db('Notifications')
+                    .count('*')
+                    .where('follower_id', response.follower.id)
+                    .andWhere('for_feed', true)
+                    .then(function (count) {
+                      res.locals.totalFeedItems = +count[0].count
 
-                  return res.render('people/feed')
+                      return Promise.resolve()
+                    })
+                })
+                .then(function () {
+                  return db('Entities')
+                    .select('name', 'profile_name')
+                    .where('profile_name', req.params.profileName)
+                    .then(function (result) {
+                      var entity = Argon.Storage.Knex.processors[0](result)
+
+                      res.locals.entity = entity[0];
+
+                      return Promise.resolve()
+                    })
+                })
+                .then(function () {
+                  return res.render('people/feed', {
+                    pageName: 'page-people-feed page-inner'
+                  })
                 })
                 .catch(next)
             },
@@ -814,24 +834,26 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
                 .orderBy('created_at', 'desc')
                 .offset(req.query.offset || 0)
                 .limit(req.query.limit || 50)
-                .exec(function (err, result) {
-                  if (err) { return next(err) }
+                .then(function (result1) {
+                  var notifications = Argon.Storage.Knex.processors[0](result1)
 
-                  var notifications = Argon.Storage.Knex.processors[0](result)
+                  return db('FeedActions')
+                    .whereIn('id', notifications.map(function (n) { return n.actionId }))
+                    .orderBy('created_at', 'desc')
+                    .then(function (result2) {
+                      var actions = Argon.Storage.Knex.processors[0](result2)
 
-                  FeedAction.whereIn('id', notifications.map(function (n) { return n.actionId }), function (err, actions) {
-                    if (err) { return next(err) }
+                      FeedPresenter.build(actions, req.currentPerson, function (err, pres) {
+                        if (err) { return next(err) }
 
-                    FeedPresenter.build(actions, req.currentPerson, function (err, pres) {
-                      if (err) { return next(err) }
-
-                      return res.json({
-                        feedItems: pres,
-                        totalCount: (result[0] ? +result[0].full_count : 0),
+                        return res.json({
+                          feedItems: pres,
+                          totalCount: (result1[0] ? +result1[0].full_count : 0),
+                        });
                       });
                     });
-                  });
-                });
+                })
+                .catch(next);
             }
           });
         });
