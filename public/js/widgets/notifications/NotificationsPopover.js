@@ -34,7 +34,10 @@ Class(CV, 'NotificationsPopover').inherits(Widget).includes(BubblingSupport, CV.
       </div>\
     </div>',
 
+  ONBOARDING_HTML: 'onboarding',
+
   prototype: {
+    _fetched: false,
     _notificationWidgets: null,
     _latestScrollTop: 0,
     init: function init(config) {
@@ -113,6 +116,20 @@ Class(CV, 'NotificationsPopover').inherits(Widget).includes(BubblingSupport, CV.
       if (this.loader) {
         this.loader = this.loader.disable().remove();
       }
+
+      if (res.notifications.length === 0) {
+        if (this._fetched === false) {
+          this.appendChild(new CV.EmptyState({
+            name: 'empty',
+            className: '-pt4 -pb4',
+            message: 'no notifications to show yet.'
+          })).render(this.scrollbar.getViewElement());
+        }
+      } else if (this.empty) {
+        this.empty = this.empty.destroy();
+      }
+
+      this._fetched = true;
 
       this._latestScrollTop = this.scrollbar.getViewElement().scrollTop;
 
