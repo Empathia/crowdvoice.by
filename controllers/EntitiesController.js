@@ -786,13 +786,32 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
 
           return res.format({
             html: function () {
-              db('Notifications')
-                .count('*')
-                .where('follower_id', response.follower.id)
-                .andWhere('for_feed', true)
-                .then(function (count) {
-                  res.locals.totalFeedItems = +count[0].count
+              Promise.resolve()
+                .then(function () {
+                  return db('Notifications')
+                    .count('*')
+                    .where('follower_id', response.follower.id)
+                    .andWhere('for_feed', true)
+                    .then(function (count) {
+                      res.locals.totalFeedItems = +count[0].count
 
+                      return Promise.resolve()
+                    })
+                })
+                .then(function () {
+                  return db('Entities')
+                    .select('name', 'profile_name')
+                    .where('profile_name', req.params.profileName)
+                    .then(function (result) {
+                      var entity = Argon.Storage.Knex.processors[0](result)
+
+                        console.log(entity)
+                      res.locals.entity = entity[0];
+
+                      return Promise.resolve()
+                    })
+                })
+                .then(function () {
                   return res.render('people/feed', {
                     pageName: 'page-people-feed page-inner'
                   })
