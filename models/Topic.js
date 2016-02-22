@@ -83,7 +83,7 @@ var Topic = Class('Topic').inherits(Argon.KnexModel).includes(ImageUploader)({
             return readStream.pipe(
               sharp()
                 .resize(192, 192)
-                .interpolateWith(sharp.interpolator.nohalo)
+                .interpolateWith(sharp.interpolator.locallyBoundedBicubic)
                 .embed()
                 .png()
                 .quality(100)
