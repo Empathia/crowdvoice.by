@@ -1,9 +1,14 @@
 var API = require('./../lib/api')
-  , Person = require('./../lib/currentPerson')
   , Events = require('./../lib/events');
 
 Class(CV.Views, 'PeopleFeed').includes(NodeSupport, CV.WidgetUtils)({
   prototype: {
+    /* @property {Object} entity - currentEntity data
+     * @property {string} entity.name
+     * @property {string} entity.profileName
+     */
+    entity: null,
+
     _notificationsLimit: 10,
     _notificationsRequests: 0,
     _notificationsTotalCount: 0,
@@ -33,7 +38,7 @@ Class(CV.Views, 'PeopleFeed').includes(NodeSupport, CV.WidgetUtils)({
       }
 
       API.getFeed({
-        profileName: Person.get('profileName'),
+        profileName: this.entity.profileName,
         data: {
           limit: this._notificationsLimit,
           offset: this._notificationsRequests * this._notificationsLimit
