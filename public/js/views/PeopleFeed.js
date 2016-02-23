@@ -24,8 +24,17 @@ Class(CV.Views, 'PeopleFeed').includes(NodeSupport, CV.WidgetUtils)({
       this._body = document.body;
       this.profileBody = this.el.querySelector('.profile-body');
 
-      this._setup()._fetchItems();
-      this._bindEvents();
+      this._setup();
+
+      if (this.totalFeedItems === 0) {
+        new CV.EmptyState({
+          name: 'empty',
+          className: '-pt4 -pb4',
+          message: 'activity from voices and people you follow will appear here.'
+        }).render(this.profileBody);
+      } else {
+        this._fetchItems()._bindEvents();
+      }
     },
 
     _setup: function _setup() {
@@ -56,6 +65,8 @@ Class(CV.Views, 'PeopleFeed').includes(NodeSupport, CV.WidgetUtils)({
           offset: this._notificationsRequests * this._notificationsLimit
         }
       }, this._itemsHandler.bind(this));
+
+      return this;
     },
 
     _itemsHandler: function _itemsHandler(err, res) {
