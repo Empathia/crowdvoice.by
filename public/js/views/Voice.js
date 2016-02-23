@@ -325,6 +325,8 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
 
         if (err) return;
 
+        this.voiceFooter.updatePostCount(--this.data.postsCount);
+
         var layer = ev.data.parent.parent;
         layer.removePost(ev.data.parent);
       }.bind(this));
