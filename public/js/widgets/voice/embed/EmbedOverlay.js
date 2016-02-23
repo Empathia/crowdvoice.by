@@ -280,7 +280,7 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
         placeholder : 'Embedding code...'
       })).render(this.optionCode);
 
-      this.codeClipboard.inputEl[0].querySelector('textarea').innerText = '<iframe style="height: 400px; width: 100%;" src="' + this.iframeUrl +' "></iframe>';
+      this.codeClipboard.inputEl[0].querySelector('textarea').value = '<iframe style="height: 400px; width: 100%;" src="' + this.iframeUrl +' "></iframe>';
       this.codeClipboard.inputEl[0].querySelector('textarea').setAttribute('readonly', 'true');
 
       this.appendChild(new CV.UI.Button({
@@ -408,7 +408,7 @@ Class(CV.UI, 'EmbedOverlay').inherits(Widget)({
           this.iframeUrl = Origin + '/embed/' + App.Voice.data.owner.profileName + '/' + App.Voice.data.slug + '/?default_view=' + this.defaultViewValue + '&change_view=' + this.changeViewValue + '&description=' + this.voiceDescriptionValue + '&background=' + this.voiceBackgroundValue + '&share=' + this.enableShareValue + '&theme=' + this.widgetThemeValue + '&accent=' + this.accentValue;
           this.embedableIFrame.updateUrl(this.iframeUrl);
 
-          this.codeClipboard.inputEl[0].querySelector('textarea').innerText = '<iframe style="height:' + this.widgetHeightValue + 'px; width: 100%;" src="' + this.iframeUrl + ' " frameBorder="0"></iframe>';
+          this.codeClipboard.inputEl[0].querySelector('textarea').value = '<iframe style="height:' + this.widgetHeightValue + 'px; width: 100%;" src="' + this.iframeUrl + ' " frameBorder="0"></iframe>';
           this.codeClipboardButton.el.setAttribute('data-clipboard-text', '<iframe style="height:' + this.widgetHeightValue + 'px; width: 100%;" src="' + this.iframeUrl +' " frameBorder="0"></iframe>');
           this.codeClipboardButton.el.innerText = 'Copy to clipboard';
           this.codeClipboardButton.el.classList.add('primary');
