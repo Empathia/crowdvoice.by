@@ -287,9 +287,10 @@ Class(CV, 'UserProfileEditTab').inherits(Widget)({
                 this.profilenameInput.clearState().updateHint();
 
                 if (res.status === 'success') {
+                    var url = '/' + this.profilenameInput.getValue() + '/edit/#profile';
                     this._displaySuccessAlert('Your profile has been updated.');
                     setTimeout(function() {
-                        window.location.reload();
+                      window.location.replace(url);
                     }, 1000);
                 }
             }.bind(this));
