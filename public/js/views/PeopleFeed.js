@@ -31,9 +31,9 @@ Class(CV.Views, 'PeopleFeed').includes(NodeSupport, CV.WidgetUtils)({
     _setup: function _setup() {
       if (Person.ownsOrganizations()) {
         this.dropdownContainer.innerHTML = '';
-        this.appendChild(new CV.UI.PeopleFeedDropdown({
+        this.dropdown = new CV.UI.PeopleFeedDropdown({
           name: 'dropdown'
-        })).render(this.dropdownContainer);
+        }).render(this.dropdownContainer);
         this.dropdown.selectByEntity(this.entity);
       }
       return this;
