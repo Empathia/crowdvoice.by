@@ -43,10 +43,10 @@ Class(CV.UI, 'FeedDropdown').inherits(Widget).includes(CV.WidgetUtils)({
      * @return FeedDropdown
      */
     _setup: function _setup() {
-      this._createItem(Person.get().name + '’s feed', Person.get().profileName);
+      this._createItem(Person.get().name + '’s home', Person.get().profileName);
 
       Person.get().ownedOrganizations.forEach(function(organization) {
-        this._createItem(organization.name + '’s feed', organization.profileName);
+        this._createItem(organization.name + '’s home', organization.profileName);
       }, this);
 
       this._items = [].slice.call(this.dropdown.getContent());
