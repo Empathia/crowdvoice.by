@@ -13,8 +13,7 @@ exports.up = function(knex, Promise) {
 
 exports.down = function(knex, Promise) {
   return Promise.all([
-    knex.schema.table('Entities', function (t) {
-      t.timestamp('last_notification_date').defaultTo(null);
-    })
+    knex.schema.raw('ALTER TABLE "Entities" ALTER COLUMN last_notification_date DROP NOT NULL'),
+    knex.schema.raw('ALTER TABLE "Entities" ALTER COLUMN last_notification_date SET DEFAULT NULL')
   ]);
 };
