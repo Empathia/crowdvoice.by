@@ -56,7 +56,7 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
 
       window.CardHoverWidget.register(this.byAnchor, this.voice.owner);
 
-      this.dom.updateText(this.el.querySelector('[data-stats-post-count]'), this.format.numberUS(this.postCount) + ' posts');
+      this.updatePostCount(this.postCount);
 
       if (this.followerCount) {
         this.dom.updateText(this.el.querySelector('[data-stats-followers]'), this.format.numberUS(this.followerCount) + ' followers');
@@ -177,6 +177,15 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
           }
         });
       });
+      return this;
+    },
+
+    /* Updates the `n post` legend.
+     * @param {number} count - The post total
+     * @return this
+     */
+    updatePostCount: function updatePostCount(count) {
+      this.dom.updateText(this.el.querySelector('[data-stats-post-count]'), this.format.numberUS(count) + ' posts');
       return this;
     },
 
