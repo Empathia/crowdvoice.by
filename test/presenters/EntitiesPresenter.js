@@ -27,7 +27,7 @@ describe('K.EntitiesPresenter', function () {
           expect(tyrion.backgrounds).to.be.an('object')
           expect(tyrion.voicesCount).to.be.a('number')
           expect(tyrion.followersCount).to.be.a('number')
-          expect(tyrion.entityFollowingCount).to.be.a('number')
+          expect(tyrion.followingCount).to.be.a('number')
           expect(tyrion.membershipCount).to.be.a('number')
           expect(tyrion.organizationIds).to.be.an('array')
           expect(tyrion.voiceIds).to.be.an('array')
