@@ -8,7 +8,7 @@ Class(CV, 'PostCreatorFromSourcesSourceGoogleNews').inherits(Widget).includes(CV
           <p>You can search more extensively directly in Google News and add contet via URL</p>\
         </div>\
         <div>\
-          <a data-external-url class="cv-button tiny" href="#" target="_blank">Search in Google News</a>\
+          <a data-external-url class="cv-button tiny -nw" href="#" target="_blank">Search in Google News</a>\
         </div>\
       </div>\
     </div>',
