@@ -1,6 +1,6 @@
-var Person = require('./../../lib/currentPerson');
-var PLACEHOLDERS = require('./../../lib/placeholders');
-var Autolinker = require( 'autolinker' );
+var Person = require('./../../lib/currentPerson')
+  , PLACEHOLDERS = require('./../../lib/placeholders')
+  , Autolinker = require( 'autolinker' );
 
 Class(CV, 'CardSmall').inherits(Widget).includes(CV.WidgetUtils, BubblingSupport)({
   ELEMENT_CLASS: 'widget-card card-small',

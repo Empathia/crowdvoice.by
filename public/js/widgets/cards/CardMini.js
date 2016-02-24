@@ -1,9 +1,9 @@
 /* Mini Card Widget.
  * @argument data.person <required> [Object]
  */
-var moment = require('moment');
-var PLACEHOLDERS = require('./../../lib/placeholders');
-var Events = require('./../../lib/events');
+var moment = require('moment')
+  , PLACEHOLDERS = require('./../../lib/placeholders')
+  , Events = require('./../../lib/events');
 
 Class(CV, 'CardMini').inherits(Widget).includes(CV.WidgetUtils, BubblingSupport)({
   ELEMENT_CLASS: 'card-mini -rel',
@@ -50,7 +50,7 @@ Class(CV, 'CardMini').inherits(Widget).includes(CV.WidgetUtils, BubblingSupport)
      */
     _setup: function _setup() {
       this.authorAnchors.forEach(function(anchor) {
-        this.dom.updateAttr('href', anchor, '/' + this.data.profileName);
+        this.dom.updateAttr('href', anchor, '/' + this.data.profileName + '/');
         this.dom.updateAttr('title', anchor, this.data.profileName + '’s profile');
       }, this);
 
