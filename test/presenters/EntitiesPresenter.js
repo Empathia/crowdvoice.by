@@ -24,11 +24,7 @@ describe('K.EntitiesPresenter', function () {
           // Presenter
           expect(tyrion.id).to.be.a('string')
           expect(tyrion.images).to.be.an('object')
-          expect(tyrion.imageMeta).to.not.exist
-          expect(tyrion.imageBaseUrl).to.not.exist
           expect(tyrion.backgrounds).to.be.an('object')
-          expect(tyrion.backgroundMeta).to.not.exist
-          expect(tyrion.backgroundBaseUrl).to.not.exist
           expect(tyrion.voicesCount).to.be.a('number')
           expect(tyrion.followersCount).to.be.a('number')
           expect(tyrion.entityFollowingCount).to.be.a('number')
@@ -48,6 +44,10 @@ describe('K.EntitiesPresenter', function () {
           expect(tyrion.isAdmin).to.be.a('boolean')
           expect(tyrion.description).to.be.a('string')
           expect(tyrion.location).to.be.a('string')
+          expect(tyrion.imageMeta).to.not.exist
+          expect(tyrion.imageBaseUrl).to.not.exist
+          expect(tyrion.backgroundMeta).to.not.exist
+          expect(tyrion.backgroundBaseUrl).to.not.exist
           expect(tyrion.createdAt instanceof Date).to.equal(true)
           expect(tyrion.updatedAt instanceof Date).to.equal(true)
           expect(tyrion.deleted).to.be.a('boolean')
