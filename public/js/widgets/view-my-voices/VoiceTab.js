@@ -38,10 +38,11 @@ Class(CV, 'MyVoicesTab').inherits(Widget)({
         this.el.removeChild(this.el.firstChild);
       }
 
-      this.el.insertAdjacentHTML('beforeend', '\
-          <p class="onboarding-message">\
-          You have no '+ this.data.name +'. <a href="#">Create a Voice</a>.\
-          </p>');
+      this.appendChild(new CV.EmptyState({
+        name: 'empty',
+        className: '-pt4 -pb4',
+        messageHTML: 'You have no ' + this.data.name + '. <a href="#">Create a Voice</a>.'
+      })).render(this.el);
 
       Events.on(this.el.getElementsByTagName('a')[0], 'click', function(ev) {
         ev.preventDefault();
