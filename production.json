@@ -92,7 +92,7 @@
       name : "Clean old links from EmailLinks Worker",
       script : "bin/cleanEmailLinks.js",
       env : {
-        "NODE_ENV": "staging"
+        "NODE_ENV": "production"
       }
     }
   ],
