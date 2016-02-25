@@ -117,7 +117,7 @@ Class(CV, 'OrganizationProfileEditMembersTab').inherits(Widget)({
           }
         }
       })).render(this.el.querySelector('[data-main]'));
-      this.messageInput.setValue('Hey! We think you will be valuable asset for our organization. Let’s rise our voice together!');
+      this.messageInput.setValue('Hey! We think you will be a valuable asset for our organization. Let’s rise our voice together!');
 
       return this;
     },

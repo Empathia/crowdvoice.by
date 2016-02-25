@@ -41,7 +41,7 @@ Class(CV, 'MyVoicesTab').inherits(Widget)({
       this.appendChild(new CV.EmptyState({
         name: 'empty',
         className: '-pt4 -pb4',
-        messageHTML: 'You have no ' + this.data.name + '. <a href="#">Create a Voice</a>.'
+        messageHTML: 'You have no ' + this.data.name + ' voices. <a href="#">Create a Voice</a>.'
       })).render(this.el);
 
       Events.on(this.el.getElementsByTagName('a')[0], 'click', function(ev) {
