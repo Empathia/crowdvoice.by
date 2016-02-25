@@ -60,7 +60,7 @@ Class(CV, 'InviteToOrganization').inherits(Widget).includes(CV.WidgetUtils)({
           }
         }
       })).render(this.element.find('.placeholder-main'));
-      this.inviteMessage.setValue('Hey ' + this.data.name + '! We think you will be valuable asset for our organization. Let’s rise our voice together!');
+      this.inviteMessage.setValue('Hey ' + this.data.name + '! We think you will be a valuable asset for our organization. Let’s rise our voice together!');
 
       this.appendChild(new CV.UI.Button({
         name: 'buttonSend',
