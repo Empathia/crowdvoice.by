@@ -23,22 +23,14 @@ CV.Thread = Class(CV, 'Thread').includes(Widget)({
 
     setup : function setup() {
       var thread = this;
-      var senderOrReceiver = this.isSenderOrReceiver(Person.get());
+      var senderOrReceiver = this.isSenderOrReceiver();
 
       this.unreadCount = thread.data.unreadCount;
 
       if (senderOrReceiver === 'sender') {
         this.threadPartner = thread.data.receiverEntity;
-      } else {
-        this.threadPartner = thread.data.senderEntity;
-      }
-
-      if (Person.is(thread.data.receiverEntity.id) === false){
-        // person started the conversation (sender)
-        this.threadPartner = thread.data.receiverEntity;
         this.threadSender = thread.data.senderEntity;
       } else {
-        // person did not started the conversation (receiver)
         this.threadPartner = thread.data.senderEntity;
         this.threadSender = thread.data.receiverEntity;
       }
@@ -57,20 +49,14 @@ CV.Thread = Class(CV, 'Thread').includes(Widget)({
         this.element.find('.thread-list-item__avatar-partner').attr('src', PLACEHOLDERS.small);
       }
 
-      if (this.data.senderEntity.type === "person") {
+      if (this.threadSender.type === "person") {
         this.element.attr('is-organization', 'false');
-        this.element.find('.thread-type').text('As Myself');
         this.element.find('.thread-list-item__avatar-sender').remove();
+        this.element.find('.thread-type').text('As Myself');
       } else {
         this.element.attr('is-organization', 'true');
-
-        if (senderOrReceiver === 'sender') {
-          this.element.find('.thread-list-item__avatar-sender').attr('src', this.threadSender.images.notification.url);
-          this.element.find('.thread-type').text('As '+ this.data.senderEntity.name);
-        } else {
-          this.element.find('.thread-list-item__avatar-sender').remove();
-          this.element.find('.thread-type').text('As Myself');
-        }
+        this.element.find('.thread-list-item__avatar-sender').attr('src', this.threadSender.images.notification.url);
+        this.element.find('.thread-type').text('As '+ this.threadSender.name);
       }
 
       if (thread.data.unreadCount > 0) {
@@ -161,9 +147,11 @@ CV.Thread = Class(CV, 'Thread').includes(Widget)({
     },
 
     isSenderOrReceiver : function isSenderOrReceiver() {
-      var thread = this;
-
-      return thread.data.senderPerson ? 'sender' : 'receiver';
+      if ((Person.is(this.data.senderEntity.id)) ||
+          (Person.ownerOf('organization', this.data.senderEntity.id))) {
+        return 'sender';
+      }
+      return 'receiver';
     }
   }
 });
