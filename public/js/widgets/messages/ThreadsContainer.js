@@ -1,7 +1,7 @@
-var API = require('./../../lib/api');
-var Person = require('./../../lib/currentPerson');
-var Events = require('./../../lib/events');
-var KEYCODES = require('./../../lib/keycodes');
+var API = require('./../../lib/api')
+  , Person = require('./../../lib/currentPerson')
+  , Events = require('./../../lib/events')
+  , KEYCODES = require('./../../lib/keycodes');
 
 CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
     prototype : {
@@ -490,6 +490,8 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
                 })).setup().render(container.messageListEl);
 
                 thread.data.messages.push(res);
+
+                thread.updateLastMessage();
 
                 container.replyButton.button.enable();
                 container.refresh();
