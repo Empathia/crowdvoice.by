@@ -1,8 +1,3 @@
-/**
- * These tests require that there is at least one post in the DB (by the ID of
- * 1).
- */
-
 'use strict'
 
 var path = require('path')
@@ -19,7 +14,7 @@ describe('K.PostsPresenter', function () {
 
     it('Should return the correct properties with the correct types', function (doneTest) {
       K.Post.query()
-        .where('id', 1)
+        .limit(1)
         .then(function (post) {
           return K.PostsPresenter.build(post, null)
         })
