@@ -379,7 +379,6 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
     },
 
     create: function (req, res, next) {
-      console.log('>>CREATE', req.body)
       ACL.isAllowed('create', 'voices', req.role, {
         currentPerson : req.currentPerson,
         ownerId : req.params.ownerId
@@ -565,7 +564,6 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
     },
 
     update : function update(req, res, next) {
-      console.log('>>UPDATE', req.body)
       ACL.isAllowed('update', 'voices', req.role, {
         currentPerson : req.currentPerson,
         voice : req.activeVoice
@@ -585,7 +583,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         // This is here so that fields that can be empty (like locationName or
         // twitterSearch) CAN be empty.
         var useDefault = function (newVal, oldVal) {
-          if (newVal === undefined || newVal === 'undefined') {
+          if (_.isUndefined(newVal)) {
             return oldVal
           } else {
             return newVal
@@ -623,7 +621,6 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
               if (!voiceOwner.isAnonymous) {
                 return nextSeries();
               }
-
 
               voice.ownerId = hashids.decode(req.body.ownerId)[0];
 
