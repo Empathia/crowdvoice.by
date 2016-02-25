@@ -45,12 +45,9 @@ describe('K.VoicesPresenter', function () {
           expect(voice.status).to.be.a('string')
           expect(voice.type).to.be.a('string')
           expect(voice.twitterSearch).to.be.a('string')
-          expect(voice.tweetLastFetchAt).to.be.null
-          //expect(voice.tweetLastFetchAt).to.be.a('string')
-          expect(voice.rssUrl).to.be.null
-          //expect(voice.rssUrl).to.be.a('string')
-          expect(voice.rssLastFetchAt).to.be.null
-          //expect(voice.rssLastFetchAt instanceof Date).to.equal(true)
+          expect(voice.hasOwnProperty('tweetLastFetchAt')).to.equal(true)
+          expect(voice.hasOwnProperty('rssUrl')).to.equal(true)
+          expect(voice.hasOwnProperty('rssLastFetchAt')).to.equal(true)
           expect(voice.createdAt instanceof Date).to.equal(true)
           expect(voice.updatedAt instanceof Date).to.equal(true)
           expect(voice.deleted).to.be.a('boolean')

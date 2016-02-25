@@ -28,7 +28,7 @@ describe('K.PostsPresenter', function () {
           expect(post.title).to.be.a('string')
           expect(post.description).to.be.a('string')
           expect(post.postImages).to.be.an('object')
-          expect(post.faviconPath).to.be.a('string')
+          expect(post.hasOwnProperty('faviconPath')).to.equal(true)
           expect(post.voted).to.be.a('boolean')
           expect(post.saved).to.be.a('boolean')
           expect(post.totalSaves).to.be.a('number')
