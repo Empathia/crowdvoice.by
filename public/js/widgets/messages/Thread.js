@@ -1,5 +1,5 @@
-var Person = require('./../../lib/currentPerson');
-var PLACEHOLDERS = require('./../../lib/placeholders');
+var Person = require('./../../lib/currentPerson')
+  , PLACEHOLDERS = require('./../../lib/placeholders');
 
 CV.Thread = Class(CV, 'Thread').includes(Widget)({
   HTML : '\
@@ -7,8 +7,11 @@ CV.Thread = Class(CV, 'Thread').includes(Widget)({
       <img class="thread-list-item__avatar-partner -abs" src="/img/sample/avatars/org-06.png">\
       <img class="thread-list-item__avatar-sender -abs" src="/img/sample/avatars/org-06.png">\
       <div class="message-info">\
-        <h3 class="-font-normal"></h3>\
-        <span class="thread-type -ellipsis"></span>\
+        <p class="-font-normal -ellipsis">\
+          <span class="thread-list-item__partner-name"></span>\
+          <span class="thread-list-item__as -color-neutral-mid"></span>\
+        </p>\
+        <p class="thread-list-item__last-message -ellipsis"></p>\
       </div>\
       <div class="actions">\
         <span></span>\
@@ -26,6 +29,7 @@ CV.Thread = Class(CV, 'Thread').includes(Widget)({
       var senderOrReceiver = this.isSenderOrReceiver();
 
       this.unreadCount = thread.data.unreadCount;
+      this.lastMessageElement = this.element.find('.thread-list-item__last-message');
 
       if (senderOrReceiver === 'sender') {
         this.threadPartner = thread.data.receiverEntity;
@@ -41,7 +45,7 @@ CV.Thread = Class(CV, 'Thread').includes(Widget)({
 
       this.threadPartnerName = this.threadPartner.name;
 
-      this.element.find('h3').text(this.threadPartnerName);
+      this.element.find('.thread-list-item__partner-name').text(this.threadPartnerName);
 
       if (this.threadPartner.images.small) {
         this.element.find('.thread-list-item__avatar-partner').attr('src', this.threadPartner.images.small.url);
@@ -52,12 +56,20 @@ CV.Thread = Class(CV, 'Thread').includes(Widget)({
       if (this.threadSender.type === "person") {
         this.element.attr('is-organization', 'false');
         this.element.find('.thread-list-item__avatar-sender').remove();
-        this.element.find('.thread-type').text('As Myself');
+        this.element.find('.thread-list-item__as').text('(As Myself)');
       } else {
         this.element.attr('is-organization', 'true');
         this.element.find('.thread-list-item__avatar-sender').attr('src', this.threadSender.images.notification.url);
-        this.element.find('.thread-type').text('As '+ this.threadSender.name);
+        this.element.find('.thread-list-item__as').text('(As '+ this.threadSender.name +')');
       }
+
+      this.data.messages = this.data.messages.sort(function(a, b) {
+        if (a.createdAt < b.createdAt) return -1;
+        if (a.createdAt > b.createdAt) return 1;
+        return 0;
+      });
+
+      this.updateLastMessage();
 
       if (thread.data.unreadCount > 0) {
         this.element.find('.actions span').text(thread.data.unreadCount);
@@ -73,6 +85,15 @@ CV.Thread = Class(CV, 'Thread').includes(Widget)({
       });
 
       return this;
+    },
+
+    /* Updates the last message preview on the sidebar thread item.
+     * @public
+     */
+    updateLastMessage: function updateLastMessage() {
+      var len = this.data.messages.length
+        , msg = this.data.messages[len - 1].message;
+      this.lastMessageElement.text(msg);
     },
 
     _activate : function _activate() {

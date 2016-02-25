@@ -1,8 +1,8 @@
-var moment = require('moment');
-var API = require('./../../lib/api');
-var Person = require('./../../lib/currentPerson');
-var Events = require('./../../lib/events');
-var PLACEHOLDERS = require('./../../lib/placeholders');
+var moment = require('moment')
+  , API = require('./../../lib/api')
+  , Person = require('./../../lib/currentPerson')
+  , Events = require('./../../lib/events')
+  , PLACEHOLDERS = require('./../../lib/placeholders');
 
 CV.Message = new Class(CV, 'Message').inherits(Widget)({
   HTML : '\
@@ -41,7 +41,7 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
   INVITATION_REJECTED_ORGANIZATION_HTML : '<p>Invitation to {organizationName} rejected.</p>',
 
   prototype : {
-    data : {},
+    data : null,
     init : function init(config) {
       Widget.prototype.init.call(this, config);
       this.messageActionsWrapper =this.element.find('.message-notification-actions');

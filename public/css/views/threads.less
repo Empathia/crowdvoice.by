@@ -88,26 +88,10 @@
 
 /* list item */
 .thread-list-item {
+  min-height: 58px;
 	border-bottom: 1px solid @color-neutral-x-light;
 	padding: 10px 30px 10px 20px;
 
-	h3{
-		font-size: 13px;
-		margin: 0;
-		color: @color-neutral-x-dark;
-		line-height: 18px;
-	}
-	span{
-		font-size: 12px;
-
-	}
-	.thread-type{
-    font-size: 11px;
-    line-height: 14px;
-    padding-top: 5px;
-    color: @color-neutral-mid;
-    display: block;
-  }
   .message-info {
 		float: left;
     margin-left: 43px;
@@ -132,6 +116,24 @@
 	&.active{
 		background: @color-message-active;
 	}
+}
+
+.thread-list-item__partner-name {
+  font-size: 13px;
+  line-height: 18px;
+  margin-right: 6px;
+  color: @color-neutral-x-dark;
+}
+
+.thread-list-item__as {
+  font-size: 11px;
+}
+
+.thread-list-item__last-message {
+  font-size: 12px;
+  line-height: 14px;
+  padding-top: 2px;
+  color: @color-neutral-mid;
 }
 
 .thread-list-item__avatar-partner {
