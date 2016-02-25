@@ -124,7 +124,7 @@ Class(CV, 'ManageContributors').inherits(Widget).includes(CV.WidgetUtils)({
           }
         }
       })).render(this.el.querySelector('[data-main]'));
-      this.messageInput.setValue('Hey! Do you want to contribute in “' + this.data.voice.title + '”? Let’s rise our voice together!');
+      this.messageInput.setValue('Hey! Do you want to contribute to “' + this.data.voice.title + '”? Let’s rise our voice together!');
 
       this.appendChild(new CV.ManageContributorsList({
         name: 'list',
