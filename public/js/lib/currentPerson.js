@@ -102,7 +102,7 @@ module.exports = {
    * @return {Boolean}
    */
   ownsOrganizations : function ownsOrganizations() {
-    return this.get().ownedOrganizations.length;
+    return this.get('ownedOrganizations').length;
   },
 
   canPostDirectlyOnVoice: function canPostDirectlyOnVoice(voiceEntity) {
