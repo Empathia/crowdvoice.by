@@ -8,12 +8,6 @@ logger.log = function () {}
 
 var expect = require('chai').expect
 
-var constructorLoop = function (array, className) {
-  array.forEach(function (a) {
-    expect(a.constructor.className).to.equal(className)
-  })
-}
-
 describe('K.Message', function () {
 
   describe('Relations', function () {
