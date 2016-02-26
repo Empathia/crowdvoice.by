@@ -221,7 +221,8 @@ Module('ThreadsPresenter')({
                 return message;
               }
             }).sort(function (a, b) {
-              return b - a;
+              // order oldest updated to newest
+              return new Date(a.createdAt) - new Date(b.createdAt);
             });
 
             thread.messages = messages;
