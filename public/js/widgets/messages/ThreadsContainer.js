@@ -40,7 +40,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
                 name : 'searchField',
                 type : 'search',
                 style  : 'small',
-                placeholder : 'Filter'
+                placeholder : 'Search conversations'
             })).render(this.element.find('.messages-search'));
 
             this.appendChild(new CV.UI.InputButton({
@@ -97,9 +97,8 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
                 // Show normal button
                 this.newMessageButton = new CV.UI.Button({
                     name : 'newMessageButton',
-                    className : 'small',
-                    data : {value: 'New Conversation'}
-                }).render($('.messages-new'));
+                    className : 'small messages-sidebar-header__new-conversation-btn',
+                }).render($('.messages-new')).updateHTML('<svg class="-color-primary -s16"><use xlink:href="#svg-new-message"></use></svg>');
 
                 this.newMessageButton.element.on('click', function() {
                     container.newMessageAs(Person.get('id'));
@@ -132,15 +131,13 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
             this.searchField.element.find('input').on('keyup', function(ev){
                 var searchStr = ev.target.value.toLowerCase();
                 container.listElement.find('.thread-list-item').each(function() {
-
-                    var userStr = $(this).find('h3').text().toLowerCase();
-
+                    var _this = $(this)
+                      , userStr = _this.text().toLowerCase();
                     if (userStr.indexOf(searchStr) >= 0){
-                        $(this).show();
+                        _this.show();
                     } else {
-                        $(this).hide();
+                        _this.hide();
                     }
-
                 });
             });
 
