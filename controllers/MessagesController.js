@@ -267,15 +267,13 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
         res.format({
           json : function() {
             MessageThread.findById(threadId, function(err, thread) {
-              if (err) {
-                next(err); return;
-              }
+              if (err) { return next(err); }
 
-              if (thread.length === 0) {
+              if (thread.length < 1) {
                 return next(new NotFoundError('MessageThread Not Found'));
               }
 
-              thread =  new MessageThread(thread[0]);
+              thread = new MessageThread(thread[0]);
 
               thread.createMessage({
                 type : Message.TYPE_MESSAGE,
@@ -284,11 +282,13 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
               }, function(err, message) {
                 if (err) { return next(err); }
 
-                ThreadsPresenter.build([thread], req.currentPerson, function(err, threads) {
-                  if (err) { return next(err); }
+                return K.MessagesPresenter.build([message], req.currentPerson)
+                  .then(function(message) {
+                    if (err) { return next(err); }
 
-                  res.json(threads[0].messages[threads[0].messages.length - 1]);
-                });
+                    res.json(message[0]);
+                  })
+                  .catch(next);
               });
             });
           }
