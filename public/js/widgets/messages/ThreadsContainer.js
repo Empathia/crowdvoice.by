@@ -72,9 +72,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
             // Create Thread list
             if (this.threads.length > 0) {
               this.threads = this.threads.sort(function(a, b) {
-                if (a.createdAt < b.createdAt) return 1;
-                if (a.createdAt > b.createdAt) return -1;
-                return 0;
+                return a.createdAt < b.createdAt;
               });
 
                 this.threads.forEach(function(thread) {
