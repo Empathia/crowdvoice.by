@@ -21,7 +21,6 @@
 .messages-sidebar {
   width: 340px;
   border-right: 1px solid @color-menu-border;
-  z-index: 0;
 
   .cv-select {
     min-width: inherit;
@@ -72,6 +71,20 @@
   padding: 20px 20px 0px 20px;
 
   .form-field {margin: 0;}
+}
+
+.messages-sidebar-header__new-conversation-btn.cv-button {
+  padding: 0 8px;
+}
+
+.new-message-dropdown {
+  .ui-dropdown-label {
+    padding-top: 7px;
+    height: 100%;
+  }
+  .ui-dropdown__body {
+    min-width: 150px;
+  }
 }
 
 .messages-list {
@@ -251,14 +264,6 @@
 
   .m-new{
     display: none;
-    span{
-      text-align: right;
-      width: 100%;
-      display: inline-block;
-      padding-top: 6px;
-      padding-right: 5px;
-    }
-
     .search-users-result{
       display: none;
       margin-top: -9px;
@@ -293,6 +298,13 @@
         background-color: @color-dropdown-item-background-hover;
       }
     }
+  }
+  .m-new__label {
+    text-align: right;
+    width: 100%;
+    display: inline-block;
+    padding-top: 6px;
+    padding-right: 5px;
   }
 }
 
