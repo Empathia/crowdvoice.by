@@ -282,14 +282,10 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
                 senderPersonId : currentPersonId,
                 message : req.body.message
               }, function(err, message) {
-                if (err) {
-                  return next(err);
-                }
+                if (err) { return next(err); }
 
                 ThreadsPresenter.build([thread], req.currentPerson, function(err, threads) {
-                  if (err) {
-                    return next(err);
-                  }
+                  if (err) { return next(err); }
 
                   res.json(threads[0].messages[threads[0].messages.length - 1]);
                 });
