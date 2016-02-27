@@ -1,5 +1,4 @@
 var Person = require('./../../lib/currentPerson');
-var PLACEHOLDERS = require('./../../lib/placeholders');
 var Autolinker = require( 'autolinker' );
 
 Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
@@ -7,8 +6,8 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
   HTML : '\
     <article role="article">\
       <div class="card-inner">\
-        <a class="card_background-image-wrapper -img-cover -text-center" data-user-anchor>\
-          <img class="card_avatar -rounded" alt="{{author.full_name}}’s avatar image"/>\
+        <a class="card_background-image-wrapper -img-cover -color-bg-neutral-x-light -text-center" data-user-anchor>\
+          <img class="card_avatar -rounded -color-bg-neutral-x-light" alt="{{author.full_name}}’s avatar image"/>\
         </a>\
         <div class="card_info-wrapper">\
           <p class="card_username -rel -m0">\
@@ -80,12 +79,8 @@ Class(CV, 'Card').inherits(Widget).includes(CV.WidgetUtils)({
         this.profileCoverEl.classList.add('-colored-background');
       }
 
-      if (this.data.images.card && this.data.images.card.url) {
-        this.dom.updateAttr('src', this.avatarEl, this.data.images.card.url);
-        this.dom.updateAttr('alt', this.avatarEl, this.data.profileName + "’s avatar image");
-      } else {
-        this.dom.updateAttr('src', this.avatarEl, PLACEHOLDERS.card);
-      }
+      this.dom.updateAttr('src', this.avatarEl, this.data.images.card.url);
+      this.dom.updateAttr('alt', this.avatarEl, this.data.profileName + "’s avatar image");
 
       this.dom.updateText(this.el.querySelector('.card_username-link'), "@" + this.data.profileName);
 

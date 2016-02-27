@@ -4,7 +4,7 @@ Class(CV, 'AccountDropdownMenu').inherits(Widget)({
     ELEMENT_CLASS : '-inline-block -full-height',
 
     LABEL_TEMPLATE : '\
-        <img src="{avatar_source}" class="-rounded" width="28" height="28" alt="{alt}"/>\
+        <img src="{avatar_source}" class="-rounded -color-bg-neutral-x-light" width="28" height="28" alt="{alt}"/>\
         <span class="account-menu-label">{name}</span>',
 
     prototype : {

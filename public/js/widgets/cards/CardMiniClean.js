@@ -11,7 +11,7 @@ Class(CV, 'CardMiniClean').inherits(Widget).includes(CV.WidgetUtils, BubblingSup
 
     HTML : '\
         <article role="article">\
-            <img class="card-mini-avatar -rounded -float-left" alt="{{person.full_name}}’s avatar image" width="36" height="36"/>\
+            <img class="card-mini-avatar -color-bg-neutral-x-light -rounded -float-left" alt="{{person.full_name}}’s avatar image" width="36" height="36"/>\
             <div class="card-mini-info">\
                 <div>\
                     <p class="card-mini-fullname -font-semi-bold -tdn"></p>\

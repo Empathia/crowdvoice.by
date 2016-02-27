@@ -4,8 +4,8 @@ var Person = require('./../../lib/currentPerson')
 CV.Thread = Class(CV, 'Thread').includes(Widget)({
   HTML : '\
     <div class="thread-list-item -rel -clickable -clearfix">\
-      <img class="thread-list-item__avatar-partner -abs" src="/img/sample/avatars/org-06.png">\
-      <img class="thread-list-item__avatar-sender -abs" src="/img/sample/avatars/org-06.png">\
+      <img class="thread-list-item__avatar-partner -color-bg-neutral-x-light -abs" src="/img/sample/avatars/org-06.png">\
+      <img class="thread-list-item__avatar-sender -color-bg-neutral-x-light -abs" src="/img/sample/avatars/org-06.png">\
       <div class="message-info">\
         <p class="-font-normal -ellipsis">\
           <span class="thread-list-item__partner-name"></span>\
