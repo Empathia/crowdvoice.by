@@ -1,5 +1,3 @@
-require('./../presenters/ThreadsPresenter');
-
 var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
   prototype : {
     init : function (config){
@@ -20,44 +18,41 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
         }
 
         if (req.role === 'Anonymous') {
-          return res.render('threads/anonymous.html')
-        };
+          return res.render('threads/anonymous.html');
+        }
 
-        EntityOwner.find({
-          owner_id: hashids.decode(req.currentPerson.id)[0]
-        }, function (err, owners) {
-          if (err) { return next(err); }
+        var fetchCurrentPerson;
 
-          var ids = owners.map(function (owner) {
-            return owner.ownedId;
-          });
-          ids.push(hashids.decode(req.currentPerson.id)[0]);
-
-          db('MessageThreads')
-            .where('sender_person_id', '=', hashids.decode(req.currentPerson.id)[0])
-            .orWhereIn('receiver_entity_id', ids)
-            .exec(function (err, rows) {
-              if (err) { return next(err); }
-
-              var threads = Argon.Storage.Knex.processors[0](rows);
-
-              ThreadsPresenter.build(threads, req.currentPerson, function(err, threads) {
-                if (err) { return next(err); }
-
-                res.format({
-                  html : function() {
-                    return res.render('threads/index.html', {
-                      pageName : 'page-inner page-threads',
-                      threads : threads
-                    });
-                  },
-                  json : function() {
-                    return res.json(result);
-                  }
-                });
-              });
+        return K.EntityOwner.query()
+          .where('owner_id', hashids.decode(req.currentPerson.id)[0])
+          .then(function (owners) {
+            var ids = owners.map(function (o) {
+              return o.ownedId;
             });
-        });
+            ids.push(hashids.decode(req.currentPerson.id)[0]);
+
+            return K.MessageThread.query()
+              .where('sender_person_id', '=', hashids.decode(req.currentPerson.id)[0])
+              .orWhere('receiver_entity_id', 'in', ids)
+              .include('messages')
+              .then(function (threads) {
+                return K.ThreadsPresenter.build(threads, req.currentPerson)
+                  .then(function (pres) {
+                    return res.format({
+                      html: function () {
+                        return res.render('threads/index.html', {
+                          pageName: 'page-inner page-threads',
+                          threads: pres
+                        });
+                      },
+                      json: function () {
+                        return res.json(pres);
+                      }
+                    });
+                  });
+              });
+          })
+          .catch(next);
       });
     },
 
