@@ -248,7 +248,7 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
       })
     },
 
-    create : function create(req, res, next) {
+    create : function (req, res, next) {
       var threadId = hashids.decode(req.params.threadId)[0];
       var currentPersonId = hashids.decode(req.currentPerson.id)[0];
 
@@ -296,51 +296,8 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
       })
     },
 
-    destroy : function destroy(req, res, next) {
-      var messageId = hashids.decode(req.params.messageId)[0];
-      var currentPersonId = hashids.decode(req.currentPerson.id)[0];
+    show: function () {}
 
-      ACL.isAllowed('destroy', 'messages', req.role, {
-        messageId : messageId,
-        currentPersonId : currentPersonId
-      }, function(err, isAllowed) {
-        if (err) {
-          return next(err);
-        }
-
-        if (!isAllowed) {
-          return next(new ForbiddenError());
-        }
-
-        res.format({
-          json : function() {
-            Message.findById(messageId, function(err, message) {
-              if (err) {
-                return next(err);
-              }
-
-              if (message.length === 0) {
-                return next(new NotFoundError('Message Not Found'));
-              }
-
-              message = new Message(message[0]);
-
-              var senderOrReceiver = message.isPersonSender(currentPersonId) ? 'Sender' : 'Receiver';
-
-              message['hiddenFor' + senderOrReceiver] = true;
-
-              message.save(function(err, result) {
-                if (err) {
-                  return next(err);
-                }
-
-                res.json({status : 'ok'});
-              });
-            })
-          }
-        })
-      })
-    }
   }
 });
 
