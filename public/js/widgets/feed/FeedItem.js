@@ -6,7 +6,7 @@ Class(CV, 'FeedItem').inherits(Widget).includes(CV.WidgetUtils)({
     <div>\
       <div class="cv-feed-item__info">\
         <div class="cv-feed-item__info-main">\
-          <img class="main-avatar -rounded"/>\
+          <img class="main-avatar -rounded -color-bg-neutral-x-light"/>\
           <p class="main-text"></p>\
         </div>\
         <div class="cv-feed-item__info-extra"></div>\

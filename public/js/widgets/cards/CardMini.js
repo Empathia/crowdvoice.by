@@ -11,7 +11,7 @@ Class(CV, 'CardMini').inherits(Widget).includes(CV.WidgetUtils, BubblingSupport)
   HTML: '\
     <article role="article">\
       <a href="#" class="-float-left" data-author-anchor>\
-        <img class="card-mini-avatar -rounded" alt="{{person.full_name}}’s avatar image" width="36" height="36"/>\
+        <img class="card-mini-avatar -color-bg-neutral-x-light -rounded" alt="{{person.full_name}}’s avatar image" width="36" height="36"/>\
       </a>\
       <div class="card-mini-info">\
         <div>\
