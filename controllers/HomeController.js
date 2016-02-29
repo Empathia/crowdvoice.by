@@ -11,8 +11,6 @@ var HomeController = Class('HomeController')({
     index : function index(req, res, next) {
       // if the person is logged in, redirect to their feed
       if (req.currentPerson) {
-        // commented because SessionsController has something similar
-        //req.flash('success', 'Logged in to your account successfully.');
         return res.redirect('/' + req.currentPerson.profileName + '/home');
       }
 

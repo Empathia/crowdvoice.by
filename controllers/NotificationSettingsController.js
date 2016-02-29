@@ -52,6 +52,11 @@ var NotificationSettingsController = Class('NotificationSettingsController').inc
 
             setting.save(function (err) {
               if (err) { return next(err) }
+              req.flash('success', 'Email notification deactivated.');
+
+              if (req.currentPerson) {
+                return res.redirect('/' + req.currentPerson.profileName + '/home');
+              }
 
               return res.redirect('/')
             })
