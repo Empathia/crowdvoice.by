@@ -16,7 +16,7 @@ require(path.join(__dirname, '../../presenters/PostsPresenter'))
 application._serverStart()
 
 // COMMENT IF YOU WANT LOGGER OUTPUT
-logger.log = function () {}
+logger.info = function () {}
 
 var request = require('superagent'),
   expect = require('chai').expect

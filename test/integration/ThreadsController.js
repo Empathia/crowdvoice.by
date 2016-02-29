@@ -9,7 +9,7 @@ require(path.join(__dirname, '../../presenters/PostsPresenter'))
 application._serverStart()
 
 // COMMENT IF YOU WANT LOGGER OUTPUT
-logger.log = function () {}
+logger.info = function () {}
 
 var login = require(path.join(__dirname, 'login.js')),
   expect = require('chai').expect
@@ -352,7 +352,7 @@ describe('ThreadsController', function () {
         db('MessageThreads')
           .where('sender_entity_id', 'in', [23, 11])
           .andWhere('receiver_entity_id', 'in', [23, 11])
-          .exec(function(err, rows) {
+          .asCallback(function(err, rows) {
             if (err) { return doneTest(err) }
 
             expect(rows.length).to.equal(1)

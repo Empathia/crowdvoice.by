@@ -13,7 +13,7 @@ var path = require('path')
 require(path.join(process.cwd(), 'bin', 'server.js'))
 
 // COMMENT IF YOU WANT LOGGER OUTPUT
-logger.log = function () {}
+logger.info = function () {}
 
 var login = require(path.join(__dirname, 'login.js')),
   expect = require('chai').expect,

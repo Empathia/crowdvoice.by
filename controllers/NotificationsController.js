@@ -69,7 +69,7 @@ var NotificationsController = Class('NotificationsController')({
                   .orderBy('created_at', 'desc')
                   .offset(req.query.offset || 0)
                   .limit(req.query.limit || 50)
-                  .exec(function (err, result) {
+                  .asCallback(function (err, result) {
                     if (err) { return next(err) }
 
                     var notifications = Argon.Storage.Knex.processors[0](result)
@@ -149,7 +149,7 @@ var NotificationsController = Class('NotificationsController')({
             .whereIn('follower_id', ids)
             .andWhere('read', '=', false)
             .andWhere('for_feed', '=', false)
-            .exec(function (err, rows) {
+            .asCallback(function (err, rows) {
               if (err) { return next(err) }
 
               var ids = rows.map(function (row) {
@@ -161,7 +161,7 @@ var NotificationsController = Class('NotificationsController')({
                 .update({
                   read: true,
                 })
-                .exec(function (err, affectedRows) {
+                .asCallback(function (err, affectedRows) {
                   if (err) { return next(err) }
 
                   res.json({

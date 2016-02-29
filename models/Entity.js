@@ -39,11 +39,11 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
           .andWhere('type', '=', 'person')
           .andWhereRaw("(name like ? OR profile_name like ?)",['%' + reqObj.params.value + '%', '%' + reqObj.params.value + '%'])
           .andWhere('id', '!=', reqObj.params.currentPersonId)
-          .exec(callback)
+          .asCallback(callback)
       },
 
       whereIn : function(requestObj, callback) {
-        db(requestObj.model.storage.tableName).whereIn(requestObj.columnName, requestObj.array).exec(callback);
+        db(requestObj.model.storage.tableName).whereIn(requestObj.columnName, requestObj.array).asCallback(callback);
       }
     },
 
@@ -349,7 +349,7 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
         .select('Entities.*')
         .rightJoin('EntityFollower', 'Entities.id', 'EntityFollower.follower_id')
         .where('followed_id', '=', this.id)
-        .exec(done);
+        .asCallback(done);
     },
 
     /* Returns the followedEntities made by the current entity
@@ -360,7 +360,7 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
         .select('Entities.*')
         .rightJoin('EntityFollower', 'Entities.id', 'EntityFollower.followed_id')
         .where('follower_id', '=', this.id)
-        .exec(done);
+        .asCallback(done);
     },
 
     /* Follows a voice
@@ -411,7 +411,7 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
         .select('Voices.*')
         .rightJoin('VoiceFollowers', 'Voices.id', 'VoiceFollowers.voice_id')
         .where('entity_id', '=', this.id)
-        .exec(done);
+        .asCallback(done);
     },
 
     /* Invite another entity to join the organization
@@ -702,7 +702,7 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
         .leftJoin('EntityFollower', 'Voices.owner_id', 'EntityFollower.followed_id')
         .whereRaw('("VoiceFollowers".entity_id <> ? or "VoiceFollowers".entity_id is null)', [this.id])
         .andWhere('EntityFollower.follower_id', '=', this.id)
-        .exec(done);
+        .asCallback(done);
     },
 
     getAnonymousEntity : function getAnonymousEntity(callback) {
