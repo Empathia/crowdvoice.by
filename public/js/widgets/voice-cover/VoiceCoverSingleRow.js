@@ -1,9 +1,9 @@
-Class(CV, 'CardUserSingleRow').inherits(Widget).includes(CV.WidgetUtils, BubblingSupport)({
-  ELEMENT_CLASS: 'card-user-single-row',
+Class(CV, 'VoiceCoverSingleRow').inherits(Widget).includes(CV.WidgetUtils, BubblingSupport)({
+  ELEMENT_CLASS: 'voice-cover-single-row',
 
   HTML: '\
     <article role="article">\
-      <img class="card-user-single-row__img -s16 -rounded" width="16" height="16"/>\
+      <img class="voice-cover-single-row__img -s18" width="18" height="18"/>\
       <span></span>\
     </article>',
 
@@ -23,8 +23,12 @@ Class(CV, 'CardUserSingleRow').inherits(Widget).includes(CV.WidgetUtils, Bubblin
 
       if (this.labelClassName) this.dom.addClass(spanElement, this.labelClassName.split(/\s/));
 
-      this.dom.updateAttr('src', imageElement, this.data.images.icon.url);
-      this.dom.updateAttr('alt', imageElement, this.data.name + '’s avatar image');
+      if (this.data.images.small) {
+        this.dom.updateAttr('src', imageElement, this.data.images.small.url);
+        this.dom.updateAttr('alt', imageElement, this.data.name + '’s voice cover image');
+      } else {
+        this.dom.updateAttr('src', imageElement, '/img/placeholder-image.png');
+      }
       this.dom.updateText(spanElement, this.data.name);
     }
   }

@@ -246,10 +246,22 @@ module.exports = function(req, res, next) {
                 req.currentPerson.ownedVoices = result;
 
                 var voiceTitles = voices.map(function(item) {
+                  var voice = new Voice(item);
+
+                  var images = {}
+
+                  Object.keys(voice.imageMeta).forEach(function (version) {
+                    images[version] = {
+                      url: voice.image.url(version),
+                      meta: voice.image.meta(version),
+                    };
+                  });
+
                   return {
                     id : hashids.encode(item.id),
                     name : sanitize(item.title),
-                    type : item.type
+                    type : item.type,
+                    images: images
                   }
                 });
 

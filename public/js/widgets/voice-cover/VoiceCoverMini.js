@@ -5,7 +5,7 @@ Class(CV, 'VoiceCoverMini').inherits(Widget).includes(CV.WidgetUtils)({
   HTML: '\
     <article class="cv-voice-cover mini -clearfix" role="article">\
       <a href="#" class="-float-left" data-voice-anchor>\
-        <img class="voice-cover" width="36" height="36"/>\
+        <img class="voice-cover -color-bg-neutral-x-light" width="36" height="36"/>\
       </a>\
       <div class="voice-content">\
         <p class="voice-cover-title-wrapper">\

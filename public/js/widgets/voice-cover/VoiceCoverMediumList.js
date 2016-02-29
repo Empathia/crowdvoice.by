@@ -5,7 +5,7 @@ Class(CV, 'VoiceCoverMediumList').inherits(Widget).includes(CV.WidgetUtils)({
 
   HTML: '\
     <article role="article">\
-      <a href="#" class="voice-cover -img-cover -float-left" data-voice-anchor></a>\
+      <a href="#" class="voice-cover -img-cover -color-bg-neutral-x-light -float-left" data-voice-anchor></a>\
       <div class="voice-content -overflow-hidden">\
         <div class="author">\
           <a class="author-anchor -inline-block">\

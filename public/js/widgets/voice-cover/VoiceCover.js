@@ -27,7 +27,7 @@ Class(CV, 'VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
         <article class="cv-voice-cover" role="article">\
             <ul class="cv-tags -list-horizontal"></ul>\
             <div class="voice-cover">\
-                <div class="voice-cover-main-image-wrapper">\
+                <div class="voice-cover-main-image-wrapper -color-bg-neutral-x-light">\
                     <div class="voice-cover-main-image -img-cover"></div>\
                 </div>\
                 <a class="voice-cover-hover-overlay -tdn" data-voice-anchor href="">\
@@ -37,7 +37,7 @@ Class(CV, 'VoiceCover').inherits(Widget).includes(CV.WidgetUtils)({
             <div class="voice-content">\
                 <div class="author">\
                     <a class="author-anchor -inline-block">\
-                        <img class="author-avatar -rounded">\
+                        <img class="author-avatar -color-bg-neutral-x-light -rounded">\
                     </a>\
                     by <a class="author-anchor -inline-block">\
                         <span class="author-username"></span>\
