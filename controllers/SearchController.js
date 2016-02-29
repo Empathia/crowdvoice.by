@@ -155,7 +155,7 @@ var SearchController = Class('SearchController')({
         WHERE "Voices".status = ? AND "Voices".deleted = ? \
         ) search \
         WHERE search.document @@ to_tsquery(?) \
-        ORDER BY ts_rank(search.document, to_tsquery(?)) DESC;', [Voice.STATUS_PUBLISHED, false, searchQuery, searchQuery]).exec(function(err, result) {
+        ORDER BY ts_rank(search.document, to_tsquery(?)) DESC;', [Voice.STATUS_PUBLISHED, false, searchQuery, searchQuery]).asCallback(function(err, result) {
           if (err) {
             return callback(err);
           }
@@ -193,7 +193,7 @@ var SearchController = Class('SearchController')({
         FROM "Entities" \
         WHERE "Entities".is_anonymous = ? AND "Entities".type = ? AND "Entities".deleted = ?) search \
         WHERE search.document @@ to_tsquery(?) \
-        ORDER BY ts_rank(search.document, to_tsquery(?)) DESC;', [false, 'person', false, searchQuery, searchQuery]).exec(function(err, result) {
+        ORDER BY ts_rank(search.document, to_tsquery(?)) DESC;', [false, 'person', false, searchQuery, searchQuery]).asCallback(function(err, result) {
           if (err) {
             return callback(err);
           }
@@ -231,7 +231,7 @@ var SearchController = Class('SearchController')({
         FROM "Entities" \
         WHERE "Entities".is_anonymous = ? AND "Entities".type = ? AND "Entities".deleted = ?) search \
         WHERE search.document @@ to_tsquery(?) \
-        ORDER BY ts_rank(search.document, to_tsquery(?)) DESC;', [false, 'organization', false, searchQuery, searchQuery]).exec(function(err, result) {
+        ORDER BY ts_rank(search.document, to_tsquery(?)) DESC;', [false, 'organization', false, searchQuery, searchQuery]).asCallback(function(err, result) {
           if (err) {
             return callback(err);
           }

@@ -16,7 +16,7 @@ module.exports = function(req, res, next) {
   res.header("Access-Control-Allow-Headers", "X-Requested-With");
 
   res.on('finish', function() {
-    logger.log('RESPONSE TIME: ' + ((hrtime() - startTime).toFixed(4) + 'ms' + "\n"));
+    logger.info('RESPONSE TIME: ' + ((hrtime() - startTime).toFixed(4) + 'ms' + "\n"));
 
   })
   next();

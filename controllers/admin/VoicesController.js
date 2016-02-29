@@ -110,7 +110,7 @@ Admin.VoicesController = Class(Admin, 'VoicesController')({
         }], function(done) {
           if (err) {
             res.locals.errors = err;
-            logger.log(err);
+            logger.info(err);
             return res.render('admin/voices/new.html', { layout : 'admin' });
           }
 
@@ -205,7 +205,7 @@ Admin.VoicesController = Class(Admin, 'VoicesController')({
           }], function(err) {
             if (err) {
               res.locals.errors = err;
-              logger.log(err);
+              logger.info(err);
 
               return res.render('admin/voices/edit.html', { layout : 'admin' });
             }

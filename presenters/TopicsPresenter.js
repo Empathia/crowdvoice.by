@@ -35,7 +35,7 @@ var TopicsPresenter = Module('TopicsPresenter')({
         function (next) {
           db('VoiceTopic')
             .where('topic_id', '=', topic.id)
-            .exec(function (err, rows) {
+            .asCallback(function (err, rows) {
               if (err) { return next(err); }
 
               var voiceIds = rows.map(function (record) {
@@ -46,7 +46,7 @@ var TopicsPresenter = Module('TopicsPresenter')({
                 .count()
                 .whereIn('id', voiceIds)
                 .andWhere('status', Voice.STATUS_PUBLISHED)
-                .exec(function (err, rows) {
+                .asCallback(function (err, rows) {
                   if (err) { return next(err); }
 
                   topicInstance.voicesCount = rows[0].count;
