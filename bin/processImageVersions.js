@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-
-require('neonode-core');
+var path = require('path');
+require(path.join(process.cwd(), 'lib', 'neonode-core'));
 
 var models = [
   'Voice',

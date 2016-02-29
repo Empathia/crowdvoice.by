@@ -4,7 +4,9 @@ var domain = require('domain');
 
 var d = domain.create();
 
-var application = require('neonode-core');
+var path = require('path');
+
+var application = require(path.join(process.cwd(), 'lib', 'neonode-core'));
 require('./../lib/TwitterFetcher');
 
 CONFIG.database.logQueries = false;
