@@ -1,12 +1,6 @@
 var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
   prototype : {
-    init : function (config){
-      this.name = this.constructor.className.replace('Controller', '')
-
-      return this;
-    },
-
-    index : function index(req, res, next) {
+    index : function (req, res, next) {
       ACL.isAllowed('show', 'threads', req.role, {
         currentPerson: req.currentPerson,
         profileName: req.params.profileName
@@ -20,8 +14,6 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
         if (req.role === 'Anonymous') {
           return res.render('threads/anonymous.html');
         }
-
-        var fetchCurrentPerson;
 
         return K.EntityOwner.query()
           .where('owner_id', hashids.decode(req.currentPerson.id)[0])
@@ -56,7 +48,7 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
       });
     },
 
-    create : function create(req, res, next) {
+    create : function (req, res, next) {
       var payload = req.body;
 
       payload.type = payload.type || 'message';
@@ -194,7 +186,7 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
       })
     },
 
-    update : function update(req, res, next) {
+    update : function (req, res, next) {
       var threadId = hashids.decode(req.params.threadId)[0];
       var currentPersonId = hashids.decode(req.currentPerson.id)[0];
 
@@ -230,7 +222,7 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
       })
     },
 
-    destroy : function destroy(req, res, next) {
+    destroy : function (req, res, next) {
       var threadId = hashids.decode(req.params.threadId)[0];
       var currentPersonId = hashids.decode(req.currentPerson.id)[0];
 
@@ -312,7 +304,7 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
     // NOTE: Previously it only searched people as that was a limitation of
     //       threads and emssages in the past, name kept same for
     //       compatibility's sake, but it now searches all entities.
-    searchPeople : function searchPeople(req, res, next) {
+    searchPeople : function (req, res, next) {
       ACL.isAllowed('searchPeople', 'threads', req.role, {
         currentPerson : req.currentPerson
       }, function(err, isAllowed) {

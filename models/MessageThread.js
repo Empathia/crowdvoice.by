@@ -225,23 +225,11 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
     hiddenForReceiver: false,
     lastSeenSender: null,
     lastSeenReceiver: null,
-    messageCountSender: 0,
-    messageCountReceiver: 0,
 
     init: function init(config) {
       Argon.KnexModel.prototype.init.call(this, config);
 
       var thread = this;
-
-      this.bind('afterCreateMessage', function(data) {
-        thread.messageCountSender++;
-        thread.messageCountReceiver++;
-        thread.save(function(err, data) {
-          logger.info('afterCreateMessage');
-          logger.info('Thread ' + thread.id + ' updated');
-          logger.info(thread);
-        });
-      });
 
       this.bind('afterCreateMessage', function (msg) {
         // if message sender is the sender of thread
@@ -253,24 +241,19 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
         }
 
         thread.save(function (err) {
-          if (err) {
-            logger.error(err);
-            logger.error(err.stack);
-          }
+          if (err) { logger.error(err.stack); }
+          logger.log('afterCreateMessage');
+          logger.log('Thread ' + thread.id + ' updated');
+          logger.log(thread);
         })
       });
 
       this.bind('afterDestroyMessage', function(data) {
-        if (thread.isPersonSender(data.personId)) {
-          thread.messageCountSender--;
-        } else {
-          thread.messageCountReceiver--;
-        }
-
-        thread.save(function() {
-          logger.info('afterDestroyMessage');
-          logger.info('Thread ' + thread.id + ' updated');
-          logger.info(thread);
+        thread.save(function(err) {
+          if (err) { logger.error(err.stack); }
+          logger.log('afterDestroyMessage');
+          logger.log('Thread ' + thread.id + ' updated');
+          logger.log(thread);
         });
       });
     },
