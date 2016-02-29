@@ -1,12 +1,8 @@
 'use strict'
 
-var application = require('neonode-core')
-require(path.join(__dirname, '../../lib/routes.js'))
+var path = require('path')
 
-global.FeedInjector = require(path.join(__dirname, '../../lib/FeedInjector.js'))
-require(path.join(__dirname, '../../presenters/PostsPresenter'))
-
-application._serverStart()
+require(path.join(process.cwd(), 'bin', 'server.js'))
 
 // COMMENT IF YOU WANT LOGGER OUTPUT
 logger.info = function () {}

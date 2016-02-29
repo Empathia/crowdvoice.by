@@ -9,7 +9,7 @@ require(__dirname + '/../lib/ArgonPatches');
 // Load socket.io
 var io = require('socket.io')(application.server);
 
-require(path.join(process.cwd(), 'lib', 'FeedInjector.js'));
+global.FeedInjector = require(path.join(process.cwd(), 'lib', 'FeedInjector.js'));
 
 require(path.join(process.cwd(), 'lib', 'krypton', 'load-models.js'));
 

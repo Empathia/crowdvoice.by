@@ -21,7 +21,6 @@
 .messages-sidebar {
   width: 340px;
   border-right: 1px solid @color-menu-border;
-  z-index: 0;
 
   .cv-select {
     min-width: inherit;
@@ -74,6 +73,20 @@
   .form-field {margin: 0;}
 }
 
+.messages-sidebar-header__new-conversation-btn.cv-button {
+  padding: 0 8px;
+}
+
+.new-message-dropdown {
+  .ui-dropdown-label {
+    padding-top: 7px;
+    height: 100%;
+  }
+  .ui-dropdown__body {
+    min-width: 150px;
+  }
+}
+
 .messages-list {
   padding: 20px 0;
   height: e('calc(100% - 54px)');
@@ -88,26 +101,10 @@
 
 /* list item */
 .thread-list-item {
+  min-height: 58px;
 	border-bottom: 1px solid @color-neutral-x-light;
 	padding: 10px 30px 10px 20px;
 
-	h3{
-		font-size: 13px;
-		margin: 0;
-		color: @color-neutral-x-dark;
-		line-height: 18px;
-	}
-	span{
-		font-size: 12px;
-
-	}
-	.thread-type{
-    font-size: 11px;
-    line-height: 14px;
-    padding-top: 5px;
-    color: @color-neutral-mid;
-    display: block;
-  }
   .message-info {
 		float: left;
     margin-left: 43px;
@@ -132,6 +129,24 @@
 	&.active{
 		background: @color-message-active;
 	}
+}
+
+.thread-list-item__partner-name {
+  font-size: 13px;
+  line-height: 18px;
+  margin-right: 6px;
+  color: @color-neutral-x-dark;
+}
+
+.thread-list-item__as {
+  font-size: 11px;
+}
+
+.thread-list-item__last-message {
+  font-size: 12px;
+  line-height: 14px;
+  padding-top: 2px;
+  color: @color-neutral-mid;
 }
 
 .thread-list-item__avatar-partner {
@@ -249,14 +264,6 @@
 
   .m-new{
     display: none;
-    span{
-      text-align: right;
-      width: 100%;
-      display: inline-block;
-      padding-top: 6px;
-      padding-right: 5px;
-    }
-
     .search-users-result{
       display: none;
       margin-top: -9px;
@@ -291,6 +298,13 @@
         background-color: @color-dropdown-item-background-hover;
       }
     }
+  }
+  .m-new__label {
+    text-align: right;
+    width: 100%;
+    display: inline-block;
+    padding-top: 6px;
+    padding-right: 5px;
   }
 }
 

@@ -2,8 +2,8 @@
 <section class="messages-main -full-height">
   <div class="messages-sidebar -float-left -full-height -rel">
     <div class="messages-sidebar-header -clear-after">
-      <div class="messages-search -col-5"></div>
-      <div class="messages-new -pl1 -col-7"></div>
+      <div class="messages-new -float-right -pl1"></div>
+      <div class="messages-search -overflow-hidden"></div>
     </div>
     <div class="messages-list">
     </div>
@@ -26,11 +26,11 @@
             </svg>
           </div>
         </div>
-        <div class="m-new">
-          <div class="-col-3">
-            <span>New message to:</span>
+        <div class="m-new -clearfix">
+          <div class="-float-left">
+            <span class="m-new__label">New message from <span class="js-m-new__label-sender -font-bold">Myself</span> to:</span>
           </div>
-          <div class="-col-9">
+          <div class="-overflow-hidden">
             <div class="form-field">
               <div class="cv-input small hollow">
                 <input class="search-users" type="text" placeholder="Type name">

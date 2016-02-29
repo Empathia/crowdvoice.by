@@ -122,6 +122,7 @@ require('./widgets/cards/CardMini');
 require('./widgets/cards/CardMiniClean');
 require('./widgets/cards/CardHover');
 require('./widgets/cards/CardHoverItem');
+require('./widgets/cards/CardUserSingleRow');
 require('./widgets/cards/actions/CardActionFollow');
 require('./widgets/cards/actions/CardActionFollowMultiple');
 require('./widgets/cards/actions/CardActionMessage');
@@ -373,9 +374,10 @@ require('./widgets/elements/alert.js');
 require('./widgets/elements/detect-location.js');
 
 // threads and messages
-require('./widgets/messages/ThreadsContainer.js');
-require('./widgets/messages/Thread.js');
-require('./widgets/messages/Message.js');
+require('./widgets/messages/ThreadsContainer');
+require('./widgets/messages/Thread');
+require('./widgets/messages/Message');
+require('./widgets/messages/NewMessageDropdown');
 
 // generators
 require('./widgets/generators/feedGenerator.js');

@@ -5,7 +5,7 @@ Class(CV, 'PostCreatorFromSourcesSourceGoogleNews').inherits(Widget).includes(CV
       <div class="pcfs__google-news-notice">\
         <div class="-pr2">\
           <p class="-font-bold">Google News only allow us to search for the top 10 result</p>\
-          <p>You can search more extensively directly in Google News and add contet via URL</p>\
+          <p>You can search more extensively directly in Google News and add content via URL</p>\
         </div>\
         <div>\
           <a data-external-url class="cv-button tiny -nw" href="#" target="_blank">Search in Google News</a>\

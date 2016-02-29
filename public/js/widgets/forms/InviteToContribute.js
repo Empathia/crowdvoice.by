@@ -63,7 +63,7 @@ Class(CV, 'InviteToContribute').inherits(Widget).includes(CV.WidgetUtils)({
           }
         }
       })).render(this.el.querySelector('[data-placeholder-main]'));
-      this.inviteMessage.setValue('Hey ' + this.data.name + '! Do you want to become a contributor in our voice?. Let’s rise our voice together!');
+      this.inviteMessage.setValue('Hey ' + this.data.name + '! Do you want to become a contributor in our voice? Let’s rise our voice together!');
 
       this.appendChild(new CV.UI.Button({
         name: 'buttonSend',

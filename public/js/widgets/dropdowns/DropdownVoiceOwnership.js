@@ -44,38 +44,29 @@ Class(CV.UI, 'DropdownVoiceOwnership').inherits(Widget).includes(CV.WidgetUtils)
      * @return DropdownVoiceOwnership
      */
     _setup: function _setup() {
-      this._createItem(this.ownerEntity, false);
-
+      this.dropdown.addContent(this._createItem(this.ownerEntity, false));
       if (this.ownerEntity.ownedOrganizations) {
         this.ownerEntity.ownedOrganizations.forEach(function(organization) {
-          this._createItem(organization, true);
+          this.dropdown.addContent(this._createItem(organization, true));
         }, this);
       }
-
       this._items = [].slice.call(this.dropdown.getContent());
-
       return this;
     },
 
     _createItem: function _createItem(entity, isOrganization) {
-      var listElement = document.createElement('div')
-        , innerElement = listElement.cloneNode()
-        , imageElement = document.createElement('img')
-        , spanElement = document.createElement('span');
-
+      var listElement = document.createElement('div');
       listElement.className = 'ui-vertical-list-item -p0';
       this.dom.updateAttr('data-value', listElement, entity.id);
       this.dom.updateAttr('data-is-organization', listElement, isOrganization);
-      innerElement.className = 'dropdown-voice-ownership__item';
-      imageElement.className = 'dropdown-voice-ownership__item-image -s16 -rounded';
-      this.dom.updateAttr('src', imageElement, entity.images.icon.url);
-      this.dom.updateText(spanElement, entity.name);
-      spanElement.className = 'dropdown-voice-ownership__item-label';
 
-      listElement.appendChild(innerElement);
-      innerElement.appendChild(imageElement);
-      innerElement.appendChild(spanElement);
-      this.dropdown.addContent(listElement);
+      this.appendChild(new CV.CardUserSingleRow({
+        name: 'item_' + entity.id,
+        className: 'dropdown-voice-ownership__item',
+        data: entity
+      })).render(listElement);
+
+      return listElement;
     },
 
     _bindEvents: function _bindEvents() {

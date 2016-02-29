@@ -1,7 +1,7 @@
-var API = require('./../../lib/api');
-var Person = require('./../../lib/currentPerson');
-var Events = require('./../../lib/events');
-var KEYCODES = require('./../../lib/keycodes');
+var API = require('./../../lib/api')
+  , Person = require('./../../lib/currentPerson')
+  , Events = require('./../../lib/events')
+  , KEYCODES = require('./../../lib/keycodes');
 
 CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
     prototype : {
@@ -40,7 +40,7 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
                 name : 'searchField',
                 type : 'search',
                 style  : 'small',
-                placeholder : 'Filter'
+                placeholder : 'Search conversations'
             })).render(this.element.find('.messages-search'));
 
             this.appendChild(new CV.UI.InputButton({
@@ -58,56 +58,25 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
                 },
             })).render(this.element.find('.message-create'));
 
-            // New Conversation Button
             if (Person.ownsOrganizations()) {
-                // Show select widget if currentPerson owns or is member of organizations
-                this.newConversationOptions = {};
-
-                this.newConversationOptions[Person.get('id')] = {
-                    name : "myself",
-                    label: "Myself"
-                };
-
-                Person.get('ownedOrganizations').forEach(function(organization) {
-                    this.newConversationOptions[organization.id] = {
-                        label : organization.name,
-                        name : organization.profileName
-                    };
-                }, this);
-
-                this.newMessageButton = new CV.Select({
-                    label : 'New as...',
-                    name  : 'newMessageButton',
-                    style   : 'small',
-                    options: this.newConversationOptions
-                }).render($('.messages-new'));
-
-                this.newMessageButton.element.find('li:first-child').bind('click', function() {
-                    //console.log('myself');
-                    container.newMessageAs($(this).find('> div').attr('data-id'), false, '');
-                    return;
-                });
-
-                this.newMessageButton.element.find('li:not(:first-child)').bind('click', function() {
-                    //console.log('org');
-                    container.newMessageAs($(this).find('> div').attr('data-id'), true, $(this).find('> div').text() );
-                    return;
-                });
+              this.appendChild(new CV.UI.NewMessageDropdown({
+                name: 'newMessageDropdown'
+              })).render($('.messages-new'));
             } else {
-                // Show normal button
                 this.newMessageButton = new CV.UI.Button({
-                    name : 'newMessageButton',
-                    className : 'small',
-                    data : {value: 'New Conversation'}
-                }).render($('.messages-new'));
-
-                this.newMessageButton.element.on('click', function() {
-                    container.newMessageAs(Person.get('id'));
-                });
+                    name: 'newMessageButton',
+                    className: 'small messages-sidebar-header__new-conversation-btn',
+                }).render($('.messages-new')).updateHTML('<svg class="-color-primary -s16"><use xlink:href="#svg-new-message"></use></svg>');
             }
 
             // Create Thread list
             if (this.threads.length > 0) {
+              this.threads = this.threads.sort(function(a, b) {
+                if (a.createdAt < b.createdAt) return 1;
+                if (a.createdAt > b.createdAt) return -1;
+                return 0;
+              });
+
                 this.threads.forEach(function(thread) {
                     container.addThread(thread);
                 });
@@ -124,6 +93,16 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
             Events.on(this.replyButton.button.el, 'click', this._sendMessageHandler.bind(this));
             Events.on(this.replyButton.input.el, 'keyup', this._messageInputKeyUpHandler.bind(this));
 
+            if (this.newMessageButton) {
+              this._newMessageButtonClickHandlerRef = this._newMessageButtonClickHandler.bind(this);
+              Events.on(this.newMessageButton.el, 'click', this._newMessageButtonClickHandlerRef);
+            }
+
+            if (this.newMessageDropdown) {
+              this._newMessageDropdownChangeHandlerRef = this._newMessageDropdownChangeHandler.bind(this);
+              this.newMessageDropdown.bind('changed', this._newMessageDropdownChangeHandlerRef);
+            }
+
             this.element.find('a.new-message').on('click', function(){
                 container.newMessageAs(Person.get('id'));
                 return false;
@@ -132,15 +111,13 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
             this.searchField.element.find('input').on('keyup', function(ev){
                 var searchStr = ev.target.value.toLowerCase();
                 container.listElement.find('.thread-list-item').each(function() {
-
-                    var userStr = $(this).find('h3').text().toLowerCase();
-
+                    var _this = $(this)
+                      , userStr = _this.text().toLowerCase();
                     if (userStr.indexOf(searchStr) >= 0){
-                        $(this).show();
+                        _this.show();
                     } else {
-                        $(this).hide();
+                        _this.hide();
                     }
-
                 });
             });
 
@@ -166,6 +143,18 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
             });
 
             return this;
+        },
+
+        _newMessageButtonClickHandler: function _newMessageButtonClickHandler() {
+          this.newMessageAs(Person.get('id'));
+        },
+
+        _newMessageDropdownChangeHandler: function _newMessageDropdownChangeHandler(ev) {
+          ev.stopPropagation();
+          if (ev.data.dataset.isOrganization === "true") {
+            return this.newMessageAs(ev.data.dataset.value, true, ev.data.textContent);
+          }
+          this.newMessageAs(ev.data.dataset.value);
         },
 
         /* Reply input keyup handler.
@@ -287,6 +276,8 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
             this.messagesBodyContainerEl.addClass('active');
             this.messagesBodyHeaderEl.find('.m-action').hide();
             this.messagesBodyHeaderEl.find('.m-new').show();
+            var fromName = isOrganization ? orgName : 'Myself';
+            this.messagesBodyHeaderEl.find('.js-m-new__label-sender').text(fromName);
             this.messagesBodyHeaderEl.find('.m-new').find('input').focus();
             this.messageListEl.empty();
             this.refresh();
@@ -490,6 +481,8 @@ CV.ThreadsContainer = Class(CV, 'ThreadsContainer').inherits(Widget)({
                 })).setup().render(container.messageListEl);
 
                 thread.data.messages.push(res);
+
+                thread.updateLastMessage();
 
                 container.replyButton.button.enable();
                 container.refresh();
