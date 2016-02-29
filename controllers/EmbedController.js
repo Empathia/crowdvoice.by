@@ -49,7 +49,7 @@ var EmbedController = Class('EmbedController')({
                 AND \"Posts\".approved = true \
                 GROUP BY MONTH, YEAR \
                 ORDER BY YEAR DESC, MONTH DESC", [voice.id])
-              .exec(function (err, postsCount) {
+              .asCallback(function (err, postsCount) {
                 if (err) { return done(err); }
 
                 postsCount.rows.forEach(function (post) {
@@ -63,7 +63,7 @@ var EmbedController = Class('EmbedController')({
             function (done) {
               db('Posts').where({ 'voice_id': voice.id, approved: true })
               .orderBy('published_at', 'ASC').limit(1)
-              .exec(function (err, firstPost) {
+              .asCallback(function (err, firstPost) {
                 if (err) { return done(err); }
 
                 if (firstPost.length) { dates.firstPostDate = firstPost[0].published_at; }
@@ -74,7 +74,7 @@ var EmbedController = Class('EmbedController')({
             function (done) {
               db('Posts').where({ 'voice_id': voice.id, approved : true })
                 .orderBy('published_at', 'DESC').limit(1)
-                .exec(function (err, lastPost) {
+                .asCallback(function (err, lastPost) {
                   if (err) { return done(err); }
 
                   if (lastPost.length) { dates.lastPostDate = lastPost[0].published_at; }

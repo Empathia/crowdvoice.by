@@ -133,8 +133,8 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
           if (err) {
             res.locals.errors = err
             req.errors = err
-            logger.log(err)
-            logger.log(err.stack)
+            logger.info(err)
+            logger.info(err.stack)
             return res.render('admin/featured/entities/new.html', { layout: 'admin' })
           }
 
@@ -177,8 +177,8 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
             if (err) {
               res.locals.errors = err
               req.errors = err
-              logger.log(err)
-              logger.log(err.stack)
+              logger.info(err)
+              logger.info(err.stack)
               return res.render('admin/featured/entities/index.html', { layout: 'admin' })
             }
             console.log('xxx');
@@ -216,7 +216,7 @@ Admin.FeaturedEntitiesController = Class(Admin, 'FeaturedEntitiesController')({
 
         db('Featured' + inflection.transform(req.params.entityType, ['capitalize', 'pluralize']))
           .whereIn('entity_id', realIds)
-          .exec(function (err, result) {
+          .asCallback(function (err, result) {
             if (err) { return next(err) }
 
             var featuredEntities = Argon.Storage.Knex.processors[0](result)

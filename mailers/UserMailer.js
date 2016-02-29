@@ -39,8 +39,8 @@ var UserMailer = Module('UserMailer')({
     })
 
     client.messages.send({"message": message, "async": true}, function(result) {
-        logger.log('UserMailer new():');
-        logger.log(result);
+        logger.info('UserMailer new():');
+        logger.info(result);
         callback(null, result);
 
     }, function(e) {
@@ -74,8 +74,8 @@ var UserMailer = Module('UserMailer')({
     })
 
     client.messages.send({"message": message, "async": true}, function(result) {
-        logger.log('UserMailer forgotPassword():');
-        logger.log(result);
+        logger.info('UserMailer forgotPassword():');
+        logger.info(result);
         callback(null, result);
     }, function(e) {
         logger.error('UserMailer forgotPassword(): A mandrill error occurred: ' + e.name + ' - ' + e.message);
@@ -108,8 +108,8 @@ var UserMailer = Module('UserMailer')({
     ];
 
     client.messages.send({ message: message, async: true }, function (result) {
-      logger.log('UserMailer passwordReset():');
-      logger.log(result);
+      logger.info('UserMailer passwordReset():');
+      logger.info(result);
       callback(null, result);
     }, function (err) {
       logger.error('A Mandrill error ocurred: ' + err.name + ' - ' + err.message);

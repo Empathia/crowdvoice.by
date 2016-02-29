@@ -143,7 +143,7 @@ Admin.EntitiesController = Class(Admin, 'EntitiesController')({
             if (err) {
               res.locals.errors = err;
               req.errors = err;
-              logger.log(err);
+              logger.info(err);
               return res.render('admin/' + inflection.pluralize(req.entityType) + '/edit.html');
             }
 

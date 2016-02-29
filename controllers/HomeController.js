@@ -81,7 +81,7 @@ var HomeController = Class('HomeController')({
             'AND "Voices"."deleted" = ? ' +
             'GROUP BY "org_id" ' +
             'ORDER BY "voices_count" DESC, "members_count" DESC', ['organization', false, Voice.STATUS_PUBLISHED, false])
-            .exec(function (err, result) {
+            .asCallback(function (err, result) {
               if (err) { return done(err); }
 
               var orgIds = result.rows.map(function (org) { return org.org_id; });
