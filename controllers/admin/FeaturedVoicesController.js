@@ -132,8 +132,8 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
           if (err) {
             res.locals.errors = err
             req.errors = err
-            logger.log(err)
-            logger.log(err.stack)
+            logger.info(err)
+            logger.info(err.stack)
             return res.render('admin/featured/voices/new.html', { layout: 'admin' })
           }
 
@@ -176,8 +176,8 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
             if (err) {
               res.locals.errors = err
               req.errors = err
-              logger.log(err)
-              logger.log(err.stack)
+              logger.info(err)
+              logger.info(err.stack)
               return res.render('admin/featured/voices/index.html', { layout: 'admin' })
             }
 
@@ -214,7 +214,7 @@ Admin.FeaturedVoicesController = Class(Admin, 'FeaturedVoicesController')({
 
         db('FeaturedVoices')
           .whereIn('voice_id', realIds)
-          .exec(function (err, result) {
+          .asCallback(function (err, result) {
             if (err) { return next(err) }
 
             var featuredVoices = Argon.Storage.Knex.processors[0](result)

@@ -115,8 +115,8 @@ var NotificationMailer = Module('NotificationMailer')({
               })
 
               client.messages.send({ message: message, async: true }, function (result) {
-                logger.log('NotificationMailer newMessage():')
-                logger.log(result)
+                logger.info('NotificationMailer newMessage():')
+                logger.info(result)
 
                 return callback(null, result)
               }, function (err) {
@@ -228,8 +228,8 @@ var NotificationMailer = Module('NotificationMailer')({
               })
 
               client.messages.send({ message: message, async: true }, function (result) {
-                logger.log('NotificationMailer newInvitation():')
-                logger.log(result)
+                logger.info('NotificationMailer newInvitation():')
+                logger.info(result)
 
                 return callback(null, result)
               }, function (err) {
@@ -341,8 +341,8 @@ var NotificationMailer = Module('NotificationMailer')({
               })
 
               client.messages.send({ message: message, async: true }, function (result) {
-                logger.log('NotificationMailer newRequest():')
-                logger.log(result)
+                logger.info('NotificationMailer newRequest():')
+                logger.info(result)
 
                 return callback(null, result)
               }, function (err) {
@@ -406,8 +406,8 @@ var NotificationMailer = Module('NotificationMailer')({
             })
 
             client.messages.send({ message: message, async: true }, function (result) {
-              logger.log('NotificationMailer newVoiceFollower():')
-              logger.log(result)
+              logger.info('NotificationMailer newVoiceFollower():')
+              logger.info(result)
 
               return callback(null, result)
             }, function (err) {
@@ -466,8 +466,8 @@ var NotificationMailer = Module('NotificationMailer')({
           })
 
           client.messages.send({ message: message, async: true }, function (result) {
-            logger.log('NotificationMailer newEntityFollower():')
-            logger.log(result)
+            logger.info('NotificationMailer newEntityFollower():')
+            logger.info(result)
 
             return callback(null, result)
           }, function (err) {

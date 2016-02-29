@@ -112,7 +112,7 @@ module.exports = function(req, res, next) {
 
                   db.select('owned_id').from('EntityOwner')
                     .where('owner_id', '=', owner.id)
-                    .exec(function (err, orgs) {
+                    .asCallback(function (err, orgs) {
                       if (err) { return nextSeries(err); }
 
                       var entityIds = orgs.map(function (org) { return org.owned_id; });
@@ -120,7 +120,7 @@ module.exports = function(req, res, next) {
 
                       db.select('id').from('Voices')
                         .whereIn('owner_id', entityIds)
-                        .exec(function (err, rows) {
+                        .asCallback(function (err, rows) {
                           if (err) { return nextSeries(err); }
 
                           var voiceIds = rows.map(function (row) { return hashids.encode(row.id) });
@@ -216,7 +216,7 @@ module.exports = function(req, res, next) {
             db('Voices').count('*').where({
               'owner_id' : person.id,
               status : Voice.STATUS_PUBLISHED
-            }).exec(function(err, result) {
+            }).asCallback(function(err, result) {
               if (err) {
                 return done(err);
               }

@@ -214,7 +214,7 @@ var SearchFrom = Class('SearchFrom')({
             return next(new Error(err));
           }
 
-          logger.log('Got ' +  tweets.statuses.length + ' tweets...');
+          logger.info('Got ' +  tweets.statuses.length + ' tweets...');
 
           res.json(tweets.statuses);
         }

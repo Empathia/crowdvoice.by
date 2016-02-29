@@ -185,7 +185,7 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
         db('MessageThreads')
           .where('sender_entity_id', 'in', [params.senderEntity.id, params.receiverEntity.id])
           .andWhere('receiver_entity_id', 'in', [params.senderEntity.id, params.receiverEntity.id])
-          .exec(function(err, rows) {
+          .asCallback(function(err, rows) {
             if (err) { return done(err); }
 
             var result = Argon.Storage.Knex.processors[0](rows);
@@ -237,9 +237,9 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
         thread.messageCountSender++;
         thread.messageCountReceiver++;
         thread.save(function(err, data) {
-          logger.log('afterCreateMessage');
-          logger.log('Thread ' + thread.id + ' updated');
-          logger.log(thread);
+          logger.info('afterCreateMessage');
+          logger.info('Thread ' + thread.id + ' updated');
+          logger.info(thread);
         });
       });
 
@@ -268,9 +268,9 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
         }
 
         thread.save(function() {
-          logger.log('afterDestroyMessage');
-          logger.log('Thread ' + thread.id + ' updated');
-          logger.log(thread);
+          logger.info('afterDestroyMessage');
+          logger.info('Thread ' + thread.id + ' updated');
+          logger.info(thread);
         });
       });
     },

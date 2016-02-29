@@ -237,8 +237,8 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
             }
           ], function (err) {
             if (err) {
-              logger.log(err);
-              logger.log(err.stack);
+              logger.info(err);
+              logger.info(err.stack);
               return res.status(400).json({ error : err });
             }
 

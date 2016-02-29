@@ -235,7 +235,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
                 html: function() {
                   res.locals.errors = err;
                   req.errors = err;
-                  logger.log(err);
+                  logger.info(err);
                   res.render(inflection.pluralize(req.entityType) + '/edit.html');
                 },
                 json: function() {
@@ -301,7 +301,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
               html: function() {
                 res.locals.errors = err;
                 req.errors = err;
-                logger.log(err);
+                logger.info(err);
                 res.render(inflection.pluralize(req.entityType) + '/edit.html');
               },
               json: function() {
@@ -888,7 +888,7 @@ var EntitiesController = Class('EntitiesController').includes(BlackListFilter)({
           'ORDER BY created_at DESC ' +
           'LIMIT ? ' +
           'OFFSET ?', [response.follower.id, response.follower.id, true, pageLength, (page - 1) * pageLength])
-          .exec(function (err, result) {
+          .asCallback(function (err, result) {
             if (err) { return next(err); }
 
             // no results, i.e. no notifications or a blank page

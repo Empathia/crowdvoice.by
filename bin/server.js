@@ -1,6 +1,7 @@
 #!/usr/bin/env node
+var path = require('path');
 
-var application = require('neonode-core');
+var application = require(path.join(process.cwd(), 'lib', 'neonode-core'));
 
 // Argon Monkey patches
 require(__dirname + '/../lib/ArgonPatches');
