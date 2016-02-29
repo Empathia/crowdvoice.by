@@ -23,7 +23,7 @@ io.use(function(socket, next) {
 io.on('connection', require(path.join(process.cwd(), 'lib/socket.js')));
 
 // COMMENT IF YOU WANT LOGGER OUTPUT
-logger.log = function () {}
+logger.info = function () {}
 
 var expect = require('chai').expect,
   socket = require('socket.io-client')('http://localhost:3000');

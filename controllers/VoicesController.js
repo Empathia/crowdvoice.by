@@ -54,7 +54,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
               AND \"Posts\".approved = true \
               GROUP BY MONTH, YEAR \
               ORDER BY YEAR DESC, MONTH DESC", [voice.id])
-            .exec(function(err, postsCount) {
+            .asCallback(function(err, postsCount) {
               if (err) { return done(err); }
 
               var counts = {};
@@ -80,7 +80,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
               AND \"Posts\".approved = false \
               GROUP BY MONTH, YEAR \
               ORDER BY YEAR DESC, MONTH DESC", [voice.id])
-            .exec(function(err, postsCount) {
+            .asCallback(function(err, postsCount) {
               if (err) { return done(err); }
 
               var counts = {};
@@ -507,18 +507,18 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
 
               async.series([function(done) {
-                logger.log('Fetching Tweets');
+                logger.info('Fetching Tweets');
                 tf.fetchTweets(done);
               }, function(done) {
-                logger.log('Creating posts from tweets');
+                logger.info('Creating posts from tweets');
                 tf.createPosts(done);
               }, function(done) {
-                logger.log('Updating voice');
+                logger.info('Updating voice');
                 var voiceInstance = new Voice(voice);
                 voiceInstance.tweetLastFetchAt = new Date(Date.now());
 
                 voiceInstance.save(function(err, result) {
-                  logger.log('Updated Voice.tweetLastFetchAt');
+                  logger.info('Updated Voice.tweetLastFetchAt');
                   done();
                 });
               }], function(err) {
@@ -528,7 +528,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                   logger.error(err.stack);
                 }
 
-                logger.log('Finished Fetching tweets and saving posts.')
+                logger.info('Finished Fetching tweets and saving posts.')
               });
 
             });
@@ -734,7 +734,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
             db('VoiceTopic').where({
               'voice_id' : voice.id
-            }).del().exec(function(err, result) {
+            }).del().asCallback(function(err, result) {
               if (err) {
                 return done(err);
               }
@@ -787,18 +787,18 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
                 if (voice.twitterSearch !== null) {
                   async.series([function(done) {
-                    logger.log('Fetching Tweets');
+                    logger.info('Fetching Tweets');
                     tf.fetchTweets(done);
                   }, function(done) {
-                    logger.log('Creating posts from tweets');
+                    logger.info('Creating posts from tweets');
                     tf.createPosts(done);
                   }, function(done) {
-                    logger.log('Updating voice');
+                    logger.info('Updating voice');
                     var voiceInstance = new Voice(voice);
                     voiceInstance.tweetLastFetchAt = new Date(Date.now());
 
                     voiceInstance.save(function(err, result) {
-                      logger.log('Updated Voice.tweetLastFetchAt');
+                      logger.info('Updated Voice.tweetLastFetchAt');
                       done();
                     });
                   }], function(err) {
@@ -808,7 +808,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                       logger.error(err.stack);
                     }
 
-                    logger.log('Finished Fetching tweets and saving posts.')
+                    logger.info('Finished Fetching tweets and saving posts.')
                   });
                 }
               });
@@ -937,17 +937,17 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
         async.series([function(done) {
           db('Voices').where('id', req.activeVoice.id)
-            .del().exec(function(err, result) {
+            .del().asCallback(function(err, result) {
               return done(err);
             });
         }, function(done) {
           db('Posts').where('voice_id', req.activeVoice.id)
-            .del().exec(function(err, result) {
+            .del().asCallback(function(err, result) {
               return done(err);
             });
         }, function(done) {
           db('Slugs').where('voice_id', req.activeVoice.id)
-            .del().exec(function(err, result) {
+            .del().asCallback(function(err, result) {
               return done(err);
             })
         }], function(err) {
@@ -1182,7 +1182,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                     .andWhere('voice_id', '=', req.activeVoice.id)
                 })
                 .orderBy('created_at', 'desc')
-                .exec(function (err, rows) {
+                .asCallback(function (err, rows) {
                   if (err) { return next(err); }
 
                   var messages = Argon.Storage.Knex.processors[0](rows),

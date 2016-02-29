@@ -9,7 +9,7 @@ require(path.join(__dirname, '../../presenters/PostsPresenter'))
 application._serverStart()
 
 // COMMENT IF YOU WANT LOGGER OUTPUT
-logger.log = function () {}
+logger.info = function () {}
 
 var login = require(path.join(__dirname, 'login.js')),
   expect = require('chai').expect
@@ -129,7 +129,7 @@ describe('MessagesController', function () {
           db('Messages')
             .where('thread_id', '=', 3)
             .del()
-            .exec(nextSeries)
+            .asCallback(nextSeries)
         },
 
         function (nextSeries) {

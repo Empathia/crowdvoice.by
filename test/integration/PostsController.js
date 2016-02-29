@@ -9,7 +9,7 @@ require(path.join(__dirname, '../../presenters/PostsPresenter'))
 application._serverStart()
 
 // COMMENT IF YOU WANT LOGGER OUTPUT
-logger.log = function () {}
+logger.info = function () {}
 
 var login = require(path.join(__dirname, 'login.js')),
   expect = require('chai').expect,
@@ -301,7 +301,7 @@ describe('PostsController', function () {
       db('Voices')
         .update('type', Voice.TYPE_CLOSED)
         .where('owner_id', '=', 24)
-        .exec(function (err) {
+        .asCallback(function (err) {
           if (err) { return doneTest(err) }
 
           login('robert-baratheon', function (err, agent, csrf) {

@@ -83,7 +83,7 @@ Admin.HomepageTopVoicessController = Class(Admin, 'HomepageTopVoicesController')
           function (nextSeries) {
             db('HomepageTopVoices')
               .update({ active: false })
-              .exec(nextSeries)
+              .asCallback(nextSeries)
           },
 
           // Figure out videoUuid
@@ -141,20 +141,20 @@ Admin.HomepageTopVoicessController = Class(Admin, 'HomepageTopVoicesController')
               command = command.replace(/{output-dir}/g, outputBasePath)
               command = command.replace(/{output-file}/g, 'video')
 
-              logger.log('FFmpeg: Started working on ' + version + '...')
+              logger.info('FFmpeg: Started working on ' + version + '...')
 
               childExec(command, function (err, stdout, stderr) {
                 if (err) { return doneEach(err) }
 
-                logger.log('FFmpeg: STDOUT:', stdout)
-                logger.log('FFmpeg: STDERR:', stderr)
+                logger.info('FFmpeg: STDOUT:', stdout)
+                logger.info('FFmpeg: STDERR:', stderr)
 
                 return doneEach()
               })
             }, function (err) {
               if (err) { return nextSeries(err) }
 
-              logger.log('FFmpeg: Finished!')
+              logger.info('FFmpeg: Finished!')
 
               return nextSeries()
             })

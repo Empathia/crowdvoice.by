@@ -90,7 +90,7 @@ var User = Class('User').inherits(Argon.KnexModel)({
           .whereIn('id', db('EntityOwner').select('owned_id').where('owner_id', '=', model.entityId))
           .andWhere('is_anonymous', '=', true)
           .andWhere('type', '=', 'person')
-          .exec(function(err, result) {
+          .asCallback(function(err, result) {
             if (err) {
               return done(err);
             }

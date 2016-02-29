@@ -81,8 +81,8 @@ async.each(topics, function(topic, done) {
   });
 }, function(err) {
   if (err) {
-    logger.log(err);
-    logger.log(err.stack);
+    logger.info(err);
+    logger.info(err.stack);
   }
 
   process.exit(0);

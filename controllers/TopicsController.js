@@ -27,7 +27,7 @@ var TopicsController = Class('TopicsController')({
             .andWhere('deleted', false)
             .orderBy('created_at', 'desc')
             .limit(3)
-            .exec(function (err, rows) {
+            .asCallback(function (err, rows) {
               if (err) { return next(err) }
 
               return next(null, Argon.Storage.Knex.processors[0](rows))
@@ -68,7 +68,7 @@ var TopicsController = Class('TopicsController')({
             .whereIn('id', voicesIds)
             .andWhere('status', Voice.STATUS_PUBLISHED)
             .andWhere('deleted', false)
-            .exec(callback)
+            .asCallback(callback)
         },
 
         // get owners of voices
@@ -82,7 +82,7 @@ var TopicsController = Class('TopicsController')({
             .andWhere('is_anonymous', false)
             .andWhere('type', 'person')
             .andWhere('deleted', false)
-            .exec(callback)
+            .asCallback(callback)
         },
 
         function (entities, callback) {
@@ -127,7 +127,7 @@ var TopicsController = Class('TopicsController')({
             .whereIn('id', voicesIds)
             .andWhere('status', Voice.STATUS_PUBLISHED)
             .andWhere('deleted', false)
-            .exec(callback)
+            .asCallback(callback)
         },
 
         // get owners of voices
@@ -141,7 +141,7 @@ var TopicsController = Class('TopicsController')({
             .andWhere('is_anonymous', false)
             .andWhere('type', 'organization')
             .andWhere('deleted', false)
-            .exec(callback)
+            .asCallback(callback)
         },
 
         function (entities, callback) {
@@ -202,7 +202,7 @@ var TopicsController = Class('TopicsController')({
             .offset(req.query.offset || 0)
             .limit(req.query.limit || 50)
             .orderBy('created_at', 'desc')
-            .exec(function(err, result) {
+            .asCallback(function(err, result) {
               if (err) {
                 return callback(err);
               }
@@ -223,7 +223,7 @@ var TopicsController = Class('TopicsController')({
             .whereIn('id', voicesIds)
             .andWhere('status', Voice.STATUS_PUBLISHED)
             .andWhere('deleted', false)
-            .exec(callback);
+            .asCallback(callback);
         },
 
         function (voices, callback) {
