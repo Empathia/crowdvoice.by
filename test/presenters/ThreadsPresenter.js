@@ -38,6 +38,7 @@ describe('K.ThreadsPresenter', function () {
           expect(thread.senderEntity).to.be.an('object')
           expect(thread.senderPerson).to.be.an('object')
           expect(thread.receiverEntity).to.be.an('object')
+          expect(thread.firstMessageContent).to.be.a('string')
 
           expect(thread.createdAt instanceof Date).to.equal(true)
           expect(thread.updatedAt instanceof Date).to.equal(true)
