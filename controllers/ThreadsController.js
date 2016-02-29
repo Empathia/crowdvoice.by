@@ -15,8 +15,6 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
           return res.render('threads/anonymous.html');
         }
 
-        var fetchCurrentPerson;
-
         return K.EntityOwner.query()
           .where('owner_id', hashids.decode(req.currentPerson.id)[0])
           .then(function (owners) {
@@ -28,7 +26,6 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
             return K.MessageThread.query()
               .where('sender_person_id', '=', hashids.decode(req.currentPerson.id)[0])
               .orWhere('receiver_entity_id', 'in', ids)
-              .include('messages')
               .then(function (threads) {
                 return K.ThreadsPresenter.build(threads, req.currentPerson)
                   .then(function (pres) {

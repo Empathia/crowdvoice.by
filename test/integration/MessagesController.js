@@ -387,4 +387,27 @@ describe('MessagesController', function () {
 
   })
 
+  describe('#getMessages', function () {
+
+    it('Should return messages', function (doneTest) {
+      login('cersei-lannister', function (err, agent, csrf) {
+        if (err) { return doneTest(err) }
+
+        agent
+          .get(urlBase + '/cersei-lannister/messages/' + hashids.encode(1) + '/messages')
+          .accept('application/json')
+          .end(function (err, res) {
+            if (err) { return doneTest(err) }
+
+            expect(res.status).to.equal(200)
+            expect(res.body.messages).to.be.an('array')
+            expect(res.body.totalCount).to.be.a('number')
+
+            return doneTest()
+          })
+      })
+    })
+
+  })
+
 })
