@@ -14,7 +14,7 @@ var path = require('path')
 
 require(path.join(process.cwd(), 'bin', 'server.js'))
 
-logger.log = function () {}
+logger.info = function () {}
 
 var expect = require('chai').expect
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-
-var application = require('neonode-core');
+var path = require('path');
+var application = require(path.join(process.cwd(), 'lib', 'neonode-core'));
 
 require(path.join(process.cwd(), 'lib', 'krypton', 'load-models.js'));
 

@@ -14,7 +14,7 @@ var path = require('path'),
  * NEONODE
  */
 
-var application = require('neonode-core')
+var application = require(path.join(process.cwd(), 'lib', 'neonode-core'));
 require(path.join(__dirname, '../lib/routes.js'))
 
 // Load moment

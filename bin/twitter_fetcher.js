@@ -4,7 +4,9 @@ var domain = require('domain');
 
 var d = domain.create();
 
-var application = require('neonode-core');
+var path = require('path');
+
+var application = require(path.join(process.cwd(), 'lib', 'neonode-core'));
 require('./../lib/TwitterFetcher');
 
 CONFIG.database.logQueries = false;
@@ -16,8 +18,8 @@ var Scrapper = require(process.cwd() + '/lib/cvscrapper');
 var LOCK_FILE = '/tmp/fetching_tweets';
 
 process.on('SIGTERM', function() {
-  logger.log('Twitter Fetcher Terminated');
-  logger.log('Cleaning...');
+  logger.info('Twitter Fetcher Terminated');
+  logger.info('Cleaning...');
   if (fs.existsSync(LOCK_FILE)) {
     fs.unlinkSync(LOCK_FILE);
   }
@@ -26,8 +28,8 @@ process.on('SIGTERM', function() {
 });
 
 process.on('SIGINT', function() {
-  logger.log('Twitter Fetcher Terminated');
-  logger.log('Cleaning...');
+  logger.info('Twitter Fetcher Terminated');
+  logger.info('Cleaning...');
   if (fs.existsSync(LOCK_FILE)) {
     fs.unlinkSync(LOCK_FILE);
   }
@@ -64,7 +66,7 @@ d.run(function() {
       }
 
       if (fetching) {
-        logger.log('Fetcher is already running');
+        logger.info('Fetcher is already running');
         return false;
       }
 
@@ -77,7 +79,7 @@ d.run(function() {
         .andWhere('twitter_search', 'IS NOT', null)
         .andWhere('tweet_last_fetch_at', 'IS', null)
         .orWhere('tweet_last_fetch_at', '<', moment().subtract(1, 'hour').format())
-        .exec(function(err, voices) {
+        .asCallback(function(err, voices) {
           voices = Argon.Storage.Knex.processors[0](voices);
 
           async.eachLimit(voices, 1, function(voice, next) {
@@ -96,7 +98,7 @@ d.run(function() {
               voiceInstance.tweetLastFetchAt = new Date(Date.now());
 
               voiceInstance.save(function(err, result) {
-                logger.log('Updated Voice.tweetLastFetchAt');
+                logger.info('Updated Voice.tweetLastFetchAt');
                 done();
               });
             }], function(err) {

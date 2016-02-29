@@ -1,5 +1,5 @@
 // *************************************************************************
 //                            Cookie Parser
 // *************************************************************************
-logger.log("Setting cookieParser");
+logger.info("Setting cookieParser");
 module.exports = cookieParser(CONFIG.sessionSecret);

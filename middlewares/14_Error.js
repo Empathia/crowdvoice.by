@@ -1,17 +1,17 @@
 module.exports = function(err, req, res, next) {
 
-  logger.log('Route: ' + req.route.path);
+  logger.info('Route: ' + req.route.path);
 
   req.route.stack.forEach(function(item) {
-    logger.log('Method: ' + item.method);
-    logger.log('Params: ' + item.params);
-    logger.log('-------------------------------' + "\n");
+    logger.info('Method: ' + item.method);
+    logger.info('Params: ' + item.params);
+    logger.info('-------------------------------' + "\n");
   });
 
   logger.error(err.stack);
 
   if (err.errors) {
-    logger.log(err.errors);
+    logger.info(err.errors);
   }
 
   res.format({

@@ -1,7 +1,7 @@
 // *************************************************************************
 //                          CSRF
 // *************************************************************************
-logger.log("Setting CSRF");
+logger.info("Setting CSRF");
 
 if (CONFIG.enableRedis) {
   module.exports = global.csrf();

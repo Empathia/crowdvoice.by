@@ -185,7 +185,7 @@ var MessageThread = Class('MessageThread').inherits(Argon.KnexModel)({
         db('MessageThreads')
           .where('sender_entity_id', 'in', [params.senderEntity.id, params.receiverEntity.id])
           .andWhere('receiver_entity_id', 'in', [params.senderEntity.id, params.receiverEntity.id])
-          .exec(function(err, rows) {
+          .asCallback(function(err, rows) {
             if (err) { return done(err); }
 
             var result = Argon.Storage.Knex.processors[0](rows);

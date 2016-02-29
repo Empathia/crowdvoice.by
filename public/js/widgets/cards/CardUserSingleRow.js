@@ -3,7 +3,7 @@ Class(CV, 'CardUserSingleRow').inherits(Widget).includes(CV.WidgetUtils, Bubblin
 
   HTML: '\
     <article role="article">\
-      <img class="card-user-single-row__img -s16 -rounded" alt="{{person.full_name}}’s avatar image" width="36" height="36"/>\
+      <img class="card-user-single-row__img -s16 -rounded" width="16" height="16"/>\
       <span></span>\
     </article>',
 
@@ -24,6 +24,7 @@ Class(CV, 'CardUserSingleRow').inherits(Widget).includes(CV.WidgetUtils, Bubblin
       if (this.labelClassName) this.dom.addClass(spanElement, this.labelClassName.split(/\s/));
 
       this.dom.updateAttr('src', imageElement, this.data.images.icon.url);
+      this.dom.updateAttr('alt', imageElement, this.data.name + '’s avatar image');
       this.dom.updateText(spanElement, this.data.name);
     }
   }

@@ -189,12 +189,12 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
                     item.images.forEach(function(image) {
                       if (fs.existsSync(process.cwd() + '/public' + image)) {
                         fs.unlinkSync(process.cwd() + '/public' + image);
-                        logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image);
+                        logger.info('Deleted tmp image: ' + process.cwd() + '/public' + image);
                       }
 
                       if (fs.existsSync(process.cwd() + '/public' + image.replace(/preview_/, ''))) {
                         fs.unlinkSync(process.cwd() + '/public' + image.replace(/preview_/, ''));
-                        logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image.replace(/preview_/, ''));
+                        logger.info('Deleted tmp image: ' + process.cwd() + '/public' + image.replace(/preview_/, ''));
                       }
                     });
                   }
@@ -291,12 +291,12 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
                   body.images.forEach(function(image) {
                     if (fs.existsSync(process.cwd() + '/public' + image)) {
                       fs.unlinkSync(process.cwd() + '/public' + image);
-                      logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image);
+                      logger.info('Deleted tmp image: ' + process.cwd() + '/public' + image);
                     }
 
                     if (fs.existsSync(process.cwd() + '/public' + image.replace(/preview_/, ''))) {
                       fs.unlinkSync(process.cwd() + '/public' + image.replace(/preview_/, ''));
-                      logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image.replace(/preview_/, ''));
+                      logger.info('Deleted tmp image: ' + process.cwd() + '/public' + image.replace(/preview_/, ''));
                     }
                   });
                 }
@@ -706,7 +706,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
                   if (req.body.imagePath) {
                     fs.unlinkSync(process.cwd() + '/public' + req.body.imagePath);
-                    logger.log('Deleted tmp image: ' + process.cwd() + '/public' + req.body.imagePath);
+                    logger.info('Deleted tmp image: ' + process.cwd() + '/public' + req.body.imagePath);
                   }
 
                   return res.json(posts[0]);
@@ -741,7 +741,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           .andWhere('approved', false) // unmoderated
           .andWhereRaw("created_at < '" + moment(req.body.olderThanDate).format() + "'") // older than
           .del()
-          .exec(function (err, affectedRows) {
+          .asCallback(function (err, affectedRows) {
             if (err) { return next(err); }
 
             res.json({
@@ -770,7 +770,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
             approved: false
           })
           .del()
-          .exec(function (err, affectedRows) {
+          .asCallback(function (err, affectedRows) {
             if (err) { return next(err); }
 
             res.json({

@@ -1,6 +1,5 @@
 var Person = require('./../../lib/currentPerson')
   , API = require('./../../lib/api')
-  , constants = require('./../../lib/constants')
   , Events = require('./../../lib/events')
   , Checkit = require('checkit');
 
@@ -32,24 +31,12 @@ Class(CV, 'InviteToContribute').inherits(Widget).includes(CV.WidgetUtils)({
      * @private
      */
     _setup: function _setup() {
-      var allVoices = [];
-      Person.get().voiceNames.forEach(function(voice) {
-        if (voice.type === constants.VOICE.TYPE_CLOSED) {
-          if (this.data.voiceIds.indexOf(voice.id) === -1) {
-            allVoices.push({
-              label: voice.name,
-              value: voice.id
-            });
-          }
-        }
-      }, this);
-
-      this.appendChild(new CV.UI.DropdownRegular({
+      this.appendChild(new CV.UI.DropdownInviteToVoice({
         name: 'inviteVoicesDropdown',
         data: {
-          label: 'To which of your voices would you like to invite this user to?',
-          options: allVoices
-        }
+          label: 'To which of your voices would you like to invite this user to?'
+        },
+        entity: this.data
       })).render(this.el.querySelector('[data-placeholder-main]')).selectByIndex(0);
 
       this.appendChild(new CV.UI.Input({

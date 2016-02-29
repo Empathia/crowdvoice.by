@@ -132,7 +132,7 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
                   })
               })
               .orderBy('created_at', 'desc')
-              .exec(function (err, rows) {
+              .asCallback(function (err, rows) {
                 if (err) { return done(err); }
 
                 var messages = Argon.Storage.Knex.processors[0](rows),
@@ -321,7 +321,7 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
               .andWhere('is_anonymous', '=', false)
               .andWhere('deleted', '=', false)
               .andWhere('id', '!=', hashids.decode(req.currentPerson.id)[0])
-              .exec(function (err, rows) {
+              .asCallback(function (err, rows) {
                 if (err) { return next(err); }
 
                 var entities = Argon.Storage.Knex.processors[0](rows)

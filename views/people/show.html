@@ -7,7 +7,7 @@
     <% } %>
 
     <% if (person.image.exists('medium')){ %>
-      <img class="profile-image" src="<%= person.image.url('medium') %>" alt="<%= person.profileName %>’s profile image" width="160" height="160"/>
+      <img class="profile-image -color-bg-neutral-x-light" src="<%= person.image.url('medium') %>" alt="<%= person.profileName %>’s profile image" width="160" height="160"/>
     <% } else { %>
       <img class="profile-image" src="/img/entity-placeholder/image_medium.png" alt="<%= person.profileName %>’s profile image" width="160" height="160"/>
     <% } %>

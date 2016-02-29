@@ -64,7 +64,7 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
     tableName : 'Posts',
     queries : {
       whereIn : function(requestObj, callback) {
-        db(requestObj.model.storage.tableName).whereIn(requestObj.columnName, requestObj.array).exec(callback);
+        db(requestObj.model.storage.tableName).whereIn(requestObj.columnName, requestObj.array).asCallback(callback);
       }
     },
 

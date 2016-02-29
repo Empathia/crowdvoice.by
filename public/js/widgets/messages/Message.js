@@ -8,7 +8,7 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
   HTML : '\
     <div class="message-text">\
         <div class="message-info -rel">\
-            <img class="message-sender-image" src="/img/sample/avatars/org-06.png" alt="">\
+            <img class="message-sender-image -color-bg-neutral-x-light">\
             <div class="message-data">\
                 <h3 class="data-message-participant -font-normal"></h3>\
                 <span class="data-message-date"></span>\
