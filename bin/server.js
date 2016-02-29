@@ -18,8 +18,13 @@ require(path.join(process.cwd(), 'lib', 'routes.js'));
 require(path.join(process.cwd(), 'lib', 'TwitterFetcher.js'));
 
 require('glob').sync('lib/krypton/presenters/*.js').forEach(function (file) {
-  logger.info('Loading ' + file + '...')
-  var model = require(path.join(process.cwd(), file))
+  logger.log('Loading ' + file + '...')
+  require(path.join(process.cwd(), file))
+})
+
+require('glob').sync('presenters/*.js').forEach(function (file) {
+  logger.log('Loading ' + file + '...')
+  require(path.join(process.cwd(), file))
 })
 
 application._serverStart();

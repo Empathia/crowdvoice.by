@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-
-var application = require('neonode-core');
+var path = require('path');
+var application = require(path.join(process.cwd(), 'lib', 'neonode-core'));
 
 var printRoutes = function (baseUrl, routes) {
 var Table = require('cli-table');
