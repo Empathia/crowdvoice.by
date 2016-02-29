@@ -31,22 +31,12 @@ Class(CV, 'InviteToOrganization').inherits(Widget).includes(CV.WidgetUtils)({
      * @private
      */
     _setup: function _setup() {
-      var allOrgs = [];
-      Person.get().ownedOrganizations.forEach(function(org) {
-        if (this.data.organizationIds.indexOf(org.id) === -1) {
-          allOrgs.push({
-            label: org.name,
-            value: org.id
-          });
-        }
-      }, this);
-
-      this.appendChild(new CV.UI.DropdownRegular({
+      this.appendChild(new CV.UI.DropdownInviteToOrganization({
         name: 'inviteOrganizationDropdown',
         data: {
-          label: 'To which of your organizations would you like to invite this user to?',
-          options: allOrgs
-        }
+          label: 'To which of your organizations would you like to invite this user to?'
+        },
+        entity: this.data
       })).render(this.element.find('.placeholder-main')).selectByIndex(0);
 
       this.appendChild(new CV.UI.Input({
