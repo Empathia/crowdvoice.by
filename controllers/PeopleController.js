@@ -189,7 +189,7 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
                     };
 
                     return Promise.resolve();
-                  })
+                  });
               })
               .then(function () {
                 res.locals.pagesForMonths = {
