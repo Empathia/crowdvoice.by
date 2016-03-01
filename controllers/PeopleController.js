@@ -157,28 +157,54 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
           return next(new ForbiddenError());
         }
 
-        K.SavedPost.query()
-          .where('entity_id', response.entity.id)
-          .include('post')
-          .orderBy('created_at', 'desc')
-          .then(function (savedPosts) {
-            var posts = savedPosts.map(function (p) { return p.post; });
+        var counts = {};
 
-            return Promise.resolve(posts)
-          })
-          .then(function (posts) {
-            return K.PostsPresenter.build(posts, req.currentPerson)
+        K.SavedPost.knex()
+          .select(
+            db.raw('distinct on (MONTH, YEAR) to_char("SavedPosts".created_at, \'MM\') as MONTH'),
+            db.raw('to_char("SavedPosts".created_at, \'YYYY\') as YEAR'),
+            db.raw('row_number() over (order by "SavedPosts".created_at desc) / ? as page', VoicesController.POSTS_PER_PAGE)
+          )
+          .from('SavedPosts')
+          .where('SavedPosts.entity_id', response.entity.id)
+          .orderByRaw('YEAR desc, MONTH desc')
+          .then(function (result) {
+            var counts = {};
+
+            return Promise.each(result,
+              function (row) {
+                return K.SavedPost.query()
+                  .count('*')
+                  .where('entity_id', response.entity.id)
+                  .andWhere(db.raw('to_char("SavedPosts".created_at, \'MM\') = ?', row.month))
+                  .andWhere(db.raw('to_char("SavedPosts".created_at, \'YYYY\') = ?', row.year))
+                  .then(function (count) {
+                    if (!counts[row.year]) {
+                      counts[row.year] = {};
+                    }
+
+                    counts[row.year][row.month] = {
+                      page: row.page,
+                      count: (count[0] ? +count[0].count : 0)
+                    };
+
+                    return Promise.resolve();
+                  })
+              })
+              .then(function () {
+                res.locals.pagesForMonths = {
+                  approved: counts
+                };
+
+                return Promise.resolve();
+              });
           })
           .then(function (pres) {
-            res.format({
+            return res.format({
               html: function () {
-                res.locals.savedPosts = pres
                 res.render('people/savedPosts.html')
-              },
-              json: function () {
-                res.json(pres)
               }
-            })
+            });
           })
           .catch(next);
       });
@@ -196,7 +222,7 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
         if (err) { return next(err); }
 
         if (!response.isAllowed) {
-          return next(new ForbiddenError('Unauthorized.'));
+          return next(new ForbiddenError());
         }
 
         async.series([
