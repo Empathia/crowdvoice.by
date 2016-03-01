@@ -27,4 +27,19 @@ describe('Sockets', function () {
 
   })
 
+  describe('getSavedPostsPage', function () {
+
+    it('Should return with no errors', function (doneTest) {
+      socket.emit('getSavedPostsPage', hashids.encode(11), 0)
+
+      socket.on('savedPostsPage', function (posts, page, scrollDirection) {
+        expect(posts).to.be.an('array')
+        expect(page).to.be.a('number')
+
+        return doneTest()
+      })
+    })
+
+  })
+
 })
