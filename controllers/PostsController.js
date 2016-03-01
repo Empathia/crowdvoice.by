@@ -249,9 +249,10 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
             post.publishedAt = (body.publishedAt ? new Date(new Date(body.publishedAt).toUTCString()) : new Date(post.publishedAt));
 
             post.save().then(function() {
-              var imagePath = '';
+              var imagePath = body.imagePath.trim();
+
               if (body.imagePath && body.imagePath.length > 0) {
-                if (imagePath.trim().match(/^https?/) === null) {
+                if (/^https?/.test(body.imagePath.trim()) === false) {
                   imagePath = path.join(process.cwd(), 'public', body.imagePath.replace(/preview_/, ''));
                 }
               }
@@ -676,10 +677,12 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         });
 
         post.save().then(function() {
-          var imagePath = '';
+          var imagePath = req.body.imagePath.trim();
 
-          if (req.body.imagePath && req.body.imagePath !== '') {
-            imagePath = process.cwd() + '/public' + req.body.imagePath;
+          if (req.body.imagePath && req.body.imagePath.length > 0) {
+            if (/^https?/.test(req.body.imagePath.trim()) === false) {
+              imagePath = path.join(process.cwd(), 'public', req.body.imagePath.replace(/preview_/, ''));
+            }
           }
 
           post.uploadImage('image', imagePath, function() {
