@@ -33,7 +33,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
               return done(new NotFoundError('Post Not Found'));
             }
 
-            K.PostPresenter.build(result, req.currentPerson)
+            K.PostsPresenter.build(result, req.currentPerson)
               .then(function(posts) {
                 post = post[0];
 
