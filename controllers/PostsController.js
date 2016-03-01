@@ -35,7 +35,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
             K.PostsPresenter.build(result, req.currentPerson)
               .then(function(posts) {
-                post = post[0];
+                post = posts[0];
 
                 return done();
               }).catch(done);
