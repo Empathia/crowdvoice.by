@@ -250,7 +250,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           post.description = body.description || post.description;
           post.sourceUrl = body.sourceUrl || post.sourceUrl;
           post.approved = body.approved || post.approved;
-          post.publishedAt = (body.publishedAt ? new Date(body.publishedAt) : new Date(post.publishedAt));
+          post.publishedAt = (body.publishedAt ? new Date(new Date(body.publishedAt).toUTCString()) : new Date(post.publishedAt));
 
           post.save(function(err, result) {
             if (err) { return next(err); }
@@ -678,7 +678,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           description: sanitizer(req.body.content),
           ownerId: response.postOwner.id,
           voiceId: req.activeVoice.id,
-          publishedAt : req.body.publishedAt,
+          publishedAt : new Date(req.body.publishedAt),
           approved: approved,
           sourceType: Post.SOURCE_TYPE_TEXT,
           sourceUrl: null, // required if sourceType !== Post.SOURCE_TYPE_TEXT
