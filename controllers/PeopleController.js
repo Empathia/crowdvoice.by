@@ -146,50 +146,41 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
       });
     },
 
-    savedPosts : function savedPosts(req, res, next) {
+    savedPosts: function (req, res, next) {
       ACL.isAllowed('savedPosts', 'entities', req.role, {
-        currentEntity : req.entity,
-        currentPerson : req.currentPerson
+        currentEntity: req.entity,
+        currentPerson: req.currentPerson
       }, function(err, response) {
-        if (err) {
-          return next(err);
-        }
+        if (err) { return next(err); }
 
         if (!response.isAllowed) {
-          return next(new ForbiddenError);
+          return next(new ForbiddenError());
         }
 
-        SavedPost.find({ 'entity_id' : response.entity.id }, function(err, result) {
-          if (err) { next(err); return; }
+        K.SavedPost.query()
+          .where('entity_id', response.entity.id)
+          .include('post')
+          .orderBy('created_at', 'desc')
+          .then(function (savedPosts) {
+            var posts = savedPosts.map(function (p) { return p.post; });
 
-          var posts = [];
-
-          async.each(result, function(sp, done) {
-            var sp = new SavedPost(sp);
-            sp.post(function(err, post) {
-              posts.push(post);
-              done();
-            });
-          }, function(err) {
-            if (err) { next(err); return; }
-
-            PostsPresenter.build(posts, req.currentPerson, function(err, result) {
-              if (err) {
-                return next(err);
+            return Promise.resolve(posts)
+          })
+          .then(function (posts) {
+            return K.PostsPresenter.build(posts, req.currentPerson)
+          })
+          .then(function (pres) {
+            res.format({
+              html: function () {
+                res.locals.savedPosts = pres
+                res.render('people/savedPosts.html')
+              },
+              json: function () {
+                res.json(pres)
               }
-
-              res.format({
-                html : function() {
-                  res.locals.savedPosts = result;
-                  res.render('people/savedPosts.html');
-                },
-                json : function() {
-                  res.json(result);
-                }
-              });
-            });
-          });
-        });
+            })
+          })
+          .catch(next);
       });
     },
 
