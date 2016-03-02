@@ -1,12 +1,12 @@
 
 exports.up = function(knex, Promise) {
   return knex.schema.table('Posts', function (table) {
-    table.integer('repost_of_id');
+    table.json('repost_info');
   });
 };
 
 exports.down = function(knex, Promise) {
   return knex.schema.table('Posts', function (table) {
-    table.dropColumn('repost_of_id');
+    table.dropColumn('repost_info');
   });
 };
