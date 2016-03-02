@@ -60,7 +60,7 @@ d.run(function () {
               .where('voice_id', '=', voiceId)
               .andWhere('approved', '=', false)
               // Older than one day
-              .andWhereRaw("created_at < '" + moment().subtract(1, 'days').format() + "'")
+              //.andWhereRaw("created_at < '" + moment().subtract(1, 'days').format() + "'")
           }))
         })
         .then(function (postsPerVoice) { // GET RANKS FOR EACH VOICE'S POSTS

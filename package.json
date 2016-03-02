@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "keywords": [],
   "engines": {
-    "node": ">=0.10.33"
+    "node": ">=4.0.0"
   },
   "scripts": {
     "start": "nodemon --ext js,html --watch public/demo-data --watch views --watch controllers --watch middlewares --watch models --watch presenters --watch lib bin/server.js",
