@@ -2,7 +2,7 @@ var Scrapper = require(process.cwd() + '/lib/cvscrapper');
 var sanitizer = require('sanitize-html');
 var ReadabilityParser = require(path.join(__dirname, '../lib/ReadabilityParser.js'));
 
-require(path.join(process.cwd(), 'lib', 'krypton', 'presenters', 'PostsPresenter.js'))
+var _ = require('underscore');
 
 var downsize = require('downsize');
 
@@ -836,6 +836,122 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
           res.json(imageInfo);
         });
+      });
+    },
+
+    // /:profileName/:voiceSlug/:postId/repost
+    repost: function (req, res, next) {
+      /**
+       * POST {
+       *   voicesIds
+       * }
+       */
+
+      ACL.isAllowed('repost', 'posts', req.role, {}, function (err, isAllowed) {
+        if (err) { return next(err); }
+
+        if (!isAllowed) {
+          return next(new ForbiddenError());
+        }
+
+        var repostedPost;
+        var fetchVoices;
+        var fetchCurrentPerson;
+        var reposts = [];
+
+        Promise.resolve()
+          .then(function () { // repostedPost
+            return K.Post.query()
+              .where('id', hashids.decode(req.params.postId)[0])
+              .then(function (post) {
+                repostedPost = post[0];
+
+                return Promise.resolve();
+              })
+          })
+          .then(function () { // fetchVoices
+            var voiceIds = req.body.voicesIds.map(function (id) {
+              return hashids.decode(id)[0];
+            });
+
+            return K.Voice.query()
+              .whereIn('id', voiceIds)
+              .then(function (voices) {
+                fetchVoices = voices;
+
+                return Promise.resolve();
+              })
+          })
+          .then(function () { // fetchCurrentPerson
+            if (!req.currentPerson) {
+              fetchCurrentPerson = null;
+              return Promise.resolve();
+            }
+
+            return K.Entity.query()
+              .where('id', hashids.decode(req.currentPerson.id)[0])
+              .include('organizations.[voices,viewableVoices,contributedVoices]' +
+                       ',owner.[voices,viewableVoices,contributedVoices]' +
+                       ',anonymousEntity.[voices,viewableVoices,contributedVoices]')
+              .then(function (currentPerson) {
+                fetchCurrentPerson = currentPerson[0];
+
+                return Promise.resolve();
+              });
+          })
+          .then(function () { // reposts
+            var postOwnerId;
+
+            if (!fetchCurrentPerson) {
+              postOwnerId = 0;
+            } else {
+              postOwnerId = (fetchCurrentPerson.owner
+                             ? fetchCurrentPerson.owner[0].id
+                             : fetchCurrentPerson.id);
+            }
+
+            fetchVoices.forEach(function (voice) {
+              var post = new K.Post(repostedPost);
+
+              delete post.id;
+              post.voiceId = voice.id;
+              post.ownerId = postOwnerId;
+              post.approved = false;
+              post.repostInfo = {
+                originalPostId: repostedPost.id,
+              };
+
+              reposts.push(post);
+            });
+
+            return Promise.resolve();
+          })
+          .then(function () { // reposts.approved
+            return Promise.each(reposts,
+              function (post) {
+                if (!fetchCurrentPerson) {
+                  post.approved = false;
+                  return Promise.resolve();
+                }
+
+                if (fetchCurrentPerson.isAdmin) {
+                  post.approved = true;
+                  return Promise.resolve();
+                }
+
+                var voice = _.find(voices, function (voice) {
+                  return voice.id === post.voiceId;
+                });
+
+                post.approved = fetchCurrentPerson.hasAccessToVoice(voice);
+
+                return Promise.resolve();
+              });
+          })
+          .then(function () { // reposts.save()
+            return Promise.all(reposts.map(function (r) { return r.save(); }));
+          })
+          .catch(next);
       });
     },
 
