@@ -562,15 +562,12 @@ describe('K.Entity', function () {
         .then(function (result) {
           var tyrion = result[0]
 
-          tyrion.hasAccessToVoice(new K.Voice({ id: 1 }))
-            .then(function (result) {
-              throw new Error('Shouldn\'t resolve')
-            })
-            .catch(function (err) {
-              expect(err).to.be.an('error')
-
-              return doneTest()
-            })
+          try {
+            tyrion.hasAccessToVoice(new K.Voice({ id: 1 }))
+            throw 'We shouldn\'t get here'
+          } catch (err) {
+            return doneTest()
+          }
         })
     })
 
@@ -583,15 +580,14 @@ describe('K.Entity', function () {
           .then(function (result) {
             var tyrion = result[0]
 
-            tyrion.hasAccessToVoice(new K.Voice({ id: 4 }))
-              .then(function (result) {
-                expect(result).to.be.a('boolean')
-                expect(result).to.equal(true)
+            var result = tyrion.hasAccessToVoice(new K.Voice({ id: 4 }))
 
-                return doneTest()
-              })
-              .catch(doneTest)
+            expect(result).to.be.a('boolean')
+            expect(result).to.equal(true)
+
+            return doneTest()
           })
+          .catch(doneTest)
       })
 
       it('Should return true for Tyrion having access to Second Trial by Combat (anonymous owner)', function (doneTest) {
@@ -601,15 +597,14 @@ describe('K.Entity', function () {
           .then(function (result) {
             var tyrion = result[0]
 
-            tyrion.hasAccessToVoice(new K.Voice({ id: 2 }))
-              .then(function (result) {
-                expect(result).to.be.a('boolean')
-                expect(result).to.equal(true)
+            var result = tyrion.hasAccessToVoice(new K.Voice({ id: 2 }))
 
-                return doneTest()
-              })
-              .catch(doneTest)
+            expect(result).to.be.a('boolean')
+            expect(result).to.equal(true)
+
+            return doneTest()
           })
+          .catch(doneTest)
       })
 
       it('Should return false for Arya having access to Second Trial By Combat', function (doneTest) {
@@ -619,15 +614,14 @@ describe('K.Entity', function () {
           .then(function (result) {
             var arya = result[0]
 
-            arya.hasAccessToVoice(new K.Voice({ id: 2 }))
-              .then(function (result) {
-                expect(result).to.be.a('boolean')
-                expect(result).to.equal(false)
+            var result = arya.hasAccessToVoice(new K.Voice({ id: 2 }))
 
-                return doneTest()
-              })
-              .catch(doneTest)
+            expect(result).to.be.a('boolean')
+            expect(result).to.equal(false)
+
+            return doneTest()
           })
+          .catch(doneTest)
       })
 
     })
@@ -641,15 +635,14 @@ describe('K.Entity', function () {
           .then(function (result) {
             var arya = result[0]
 
-            arya.hasAccessToVoice(new K.Voice({ id: 4 }))
-              .then(function (result) {
-                expect(result).to.be.a('boolean')
-                expect(result).to.equal(false)
+            var result = arya.hasAccessToVoice(new K.Voice({ id: 4 }))
 
-                return doneTest()
-              })
-              .catch(doneTest)
+            expect(result).to.be.a('boolean')
+            expect(result).to.equal(false)
+
+            return doneTest()
           })
+          .catch(doneTest)
       })
 
       it('Should return false for Arya having access to Robert\'s Rebellion', function (doneTest) {
@@ -659,15 +652,14 @@ describe('K.Entity', function () {
           .then(function (result) {
             var arya = result[0]
 
-            arya.hasAccessToVoice(new K.Voice({ id: 8 }))
-              .then(function (result) {
-                expect(result).to.be.a('boolean')
-                expect(result).to.equal(false)
+            var result = arya.hasAccessToVoice(new K.Voice({ id: 8 }))
 
-                return doneTest()
-              })
-              .catch(doneTest)
+            expect(result).to.be.a('boolean')
+            expect(result).to.equal(false)
+
+            return doneTest()
           })
+          .catch(doneTest)
       })
 
     })
@@ -681,15 +673,14 @@ describe('K.Entity', function () {
           .then(function (result) {
             var jaime = result[0]
 
-            jaime.hasAccessToVoice(new K.Voice({ id: 15 }))
-              .then(function (result) {
-                expect(result).to.be.a('boolean')
-                expect(result).to.equal(true)
+            var result = jaime.hasAccessToVoice(new K.Voice({ id: 15 }))
 
-                return doneTest()
-              })
-              .catch(doneTest)
+            expect(result).to.be.a('boolean')
+            expect(result).to.equal(true)
+
+            return doneTest()
           })
+          .catch(doneTest)
       })
 
       it('Should return false for Arya having access to Casterly Rock', function (doneTest) {
@@ -699,15 +690,14 @@ describe('K.Entity', function () {
           .then(function (result) {
             var arya = result[0]
 
-            arya.hasAccessToVoice(new K.Voice({ id: 15 }))
-              .then(function (result) {
-                expect(result).to.be.a('boolean')
-                expect(result).to.equal(false)
+            var result = arya.hasAccessToVoice(new K.Voice({ id: 15 }))
 
-                return doneTest()
-              })
-              .catch(doneTest)
+            expect(result).to.be.a('boolean')
+            expect(result).to.equal(false)
+
+            return doneTest()
           })
+          .catch(doneTest)
       })
 
     })
@@ -721,15 +711,14 @@ describe('K.Entity', function () {
           .then(function (result) {
             var cersei = result[0]
 
-            cersei.hasAccessToVoice(new K.Voice({ id: 15 }))
-              .then(function (result) {
-                expect(result).to.be.a('boolean')
-                expect(result).to.equal(true)
+            var result = cersei.hasAccessToVoice(new K.Voice({ id: 15 }))
 
-                return doneTest()
-              })
-              .catch(doneTest)
+            expect(result).to.be.a('boolean')
+            expect(result).to.equal(true)
+
+            return doneTest()
           })
+          .catch(doneTest)
       })
 
       it('Should return false for Robert having access to Casterly Rock', function (doneTest) {
@@ -739,15 +728,35 @@ describe('K.Entity', function () {
           .then(function (result) {
             var robert = result[0]
 
-            robert.hasAccessToVoice(new K.Voice({ id: 15 }))
-              .then(function (result) {
-                expect(result).to.be.a('boolean')
-                expect(result).to.equal(false)
+            var result = robert.hasAccessToVoice(new K.Voice({ id: 15 }))
 
-                return doneTest()
-              })
-              .catch(doneTest)
+            expect(result).to.be.a('boolean')
+            expect(result).to.equal(false)
+
+            return doneTest()
           })
+          .catch(doneTest)
+      })
+
+    })
+
+    describe('Owner owned voices', function () {
+
+      it('Should return true for Tyrion\'s anon entity having access to Valyrian Roads', function (doneTest) {
+        K.Entity.query()
+          .where('id', 2)
+          .include('owner.voices')
+          .then(function (result) {
+            var tyrionAnon = result[0]
+
+            var result = tyrionAnon.hasAccessToVoice(new K.Voice({ id: 4 }))
+
+            expect(result).to.be.a('boolean')
+            expect(result).to.equal(true)
+
+            return doneTest()
+          })
+          .catch(doneTest)
       })
 
     })
