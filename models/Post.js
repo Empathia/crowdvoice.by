@@ -165,6 +165,7 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
     createdAt     : null,
     updatedAt     : null,
     extras        : {},
+    respostInfo   : {},
 
     init : function init(config) {
       Argon.KnexModel.prototype.init.call(this, config);
