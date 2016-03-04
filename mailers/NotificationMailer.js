@@ -480,16 +480,31 @@ var NotificationMailer = Module('NotificationMailer')({
   },
 
   newRepost: function (receiver, reposter, repostedPost, callback) {
+    var presReposter, presPost
+
     K.NotificationSetting.query()
       .where('entity_id', (receiver.entity.isAnonymous ? receiver.realEntity.id : receiver.entity.id))
       .then(function (setting) {
         if (!setting[0].emailSettings.selfNewRepost) {
-          return Promise.resolve()
+          return Promise.reject(new Error('abort mission'))
         }
 
         return K.EntitiesPresenter.build([reposter], null)
+          .then(function (pres) {
+            presReposter = pres[0]
+
+            return Promise.resolve()
+          })
       })
-      .then(function (pres) {
+      .then(function () {
+        return K.PostsPresenter.build([repostedPost], null)
+          .then(function (pres) {
+            presPost = pres[0]
+
+            return Promise.resolve()
+          })
+      })
+      .then(function () {
         return new Promise(function (resolve, reject) {
           NotificationSettingsController.createEmailLink(receiver.realEntity.id, function (err, uuid) {
             if (err) { return reject(err) }
@@ -509,7 +524,8 @@ var NotificationMailer = Module('NotificationMailer')({
             template.parseSync().renderSync({
               params: {
                 receiver: receiver,
-                follower: pres[0],
+                reposter: presReposter,
+                repostedPost: presPost,
                 uuid: uuid,
               },
             })
@@ -537,9 +553,15 @@ var NotificationMailer = Module('NotificationMailer')({
         })
       })
       .then(function (result) {
-        return callback(result)
+        return callback(null, result)
       })
-      .catch(callback)
+      .catch(function (err) {
+        if (err.message === 'abort mission') {
+          return callback()
+        }
+
+        return callback(err)
+      })
   },
 })
 
