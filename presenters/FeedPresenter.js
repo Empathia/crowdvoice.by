@@ -88,6 +88,23 @@ var FeedPresenter = Module('FeedPresenter')({
                 })
               })
             },
+
+            // post (reposts)
+            function (next) {
+              if (action.itemType !== 'post') {
+                return next()
+              }
+
+              K.Post.query()
+                .where('id', action.itemId)
+                .then(function (post) {
+                  return K.PostsPresenter.build(post, currentPerson)
+                })
+                .then(function (pres) {
+                  actionInst.post = pres[0]
+                })
+                .catch(next)
+            }
           ], next)
         },
 
