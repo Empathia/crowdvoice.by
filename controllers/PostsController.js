@@ -847,11 +847,13 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
        * }
        */
 
-      ACL.isAllowed('repost', 'posts', req.role, {}, function (err, isAllowed) {
+      ACL.isAllowed('repost', 'posts', req.role, {
+        voicesIds: req.body.voicesIds
+      }, function (err, isAllowed) {
         if (err) { return next(err); }
 
         if (!isAllowed) {
-          return next(new ForbiddenError());
+          return res.status(403).json({ error: 'at least one of the voices you provided is closed' });
         }
 
         var repostedPost;
