@@ -1,7 +1,3 @@
-var VoicesPresenter = require(path.join(process.cwd(), '/presenters/VoicesPresenter.js'));
-
-var EntitiesPresenter = require(path.join(process.cwd(), '/presenters/EntitiesPresenter.js'));
-
 var SearchController = Class('SearchController')({
   prototype : {
     index : function(req, res, next) {
@@ -92,16 +88,10 @@ var SearchController = Class('SearchController')({
 
     searchVoices : function searchVoices(req, res, next) {
       var query = req.body.query;
-      var exclude = req.body.exclude;
-
-      if (!exclude) {
-        exclude = [];
-      }
+      var exclude = req.body.exclude || [];
 
       SearchController.prototype._searchVoices(query, exclude, req.currentPerson, function(err, result) {
-        if (err) {
-          return next(err);
-        }
+        if (err) { return next(err); }
 
         res.json({voices : result});
       });
@@ -115,7 +105,7 @@ var SearchController = Class('SearchController')({
         exclude = [];
       }
 
-      SearchController.prototype._searchPeople(query, exclude, req.currentPerson, function(err, result) {
+      SearchController.prototype._searchPeople(query, null, exclude, function(err, result) {
         if (err) {
           return next(err);
         }
@@ -141,46 +131,38 @@ var SearchController = Class('SearchController')({
       });
     },
 
-    _searchVoices : function _searchVoices(query, exclude, currentPerson, callback) {
-      var searchQuery = query.toLowerCase().trim().split(/[ ]+/).join(':* | ') + ':*';
+    _searchVoices : function _searchVoices(queryString, whereQuery, excludeIds, callback) {
+      var searchQuery = '%' + queryString.toLowerCase().trim() + '%';
 
-      db.raw('SELECT * FROM ( \
-        SELECT "Voices".*, \
-        setweight(to_tsvector("Voices".title), \'A\') || \
-        setweight(to_tsvector(coalesce(("Voices".description), \'\')), \'B\') || \
-        setweight(to_tsvector(coalesce(("Voices".location_name), \'\')), \'C\') || \
-        setweight(to_tsvector("Entities".name), \'C\') AS document \
-        FROM "Voices" \
-        JOIN "Entities" ON "Entities".id = "Voices".owner_id \
-        WHERE "Voices".status = ? AND "Voices".deleted = ? \
-        ) search \
-        WHERE search.document @@ to_tsquery(?) \
-        ORDER BY ts_rank(search.document, to_tsquery(?)) DESC;', [Voice.STATUS_PUBLISHED, false, searchQuery, searchQuery]).asCallback(function(err, result) {
-          if (err) {
-            return callback(err);
-          }
+      var dbQuery = K.Voice.query()
+        .select('Voices.*')
+        .join('Entities', 'Entities.id', 'Voices.owner_id')
+        .where('Voices.title', 'ilike', searchQuery)
+        .orWhere('Voices.description', 'ilike', searchQuery)
+        .orWhere('Voices.location_name', 'ilike', searchQuery)
+        .orWhere('Entities.name', searchQuery)
+        .andWhere('Voices.status', K.Voice.STATUS_PUBLISHED)
+        .andWhere('Voices.deleted', false);
 
-          result = Argon.Storage.Knex.processors[0](result.rows);
+      if (whereQuery) {
+        dbQuery.andWhere(whereQuery)
+      }
 
-          VoicesPresenter.build(result, currentPerson, function(err, voices) {
-            if (err) {
-              return callback(err);
-            }
+      if (excludeIds.length > 0) {
+        dbQuery.andWhere('Voices.id', 'not in', excludeIds)
+      }
 
-            if (exclude.length > 0) {
-              voices = voices.filter(function(item) {
-                if (exclude.indexOf(item.id) === -1) {
-                  return true;
-                }
-              });
-            }
-
-            callback(null, voices);
-          });
-        });
+      dbQuery
+        .then(function (result) {
+          return K.VoicesPresenter.build(result, null);
+        })
+        .then(function (pres) {
+          return callback(null, pres);
+        })
+        .catch(callback);
     },
 
-    _searchPeople : function _searchPeople(query, exclude, currentPerson, callback) {
+    _searchPeople : function (query, exclude, currentPerson, callback) {
       var searchQuery = query.toLowerCase().trim();
 
       K.Entity.query()
