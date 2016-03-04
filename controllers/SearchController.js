@@ -142,13 +142,14 @@ var SearchController = Class('SearchController')({
         dbQuery.andWhere(whereQuery)
       }
 
-      if (excludeIds.length > 0) {
-        dbQuery.andWhere('Voices.id', 'not in', excludeIds);
-      }
-
       dbQuery
         .then(function (result) {
-          return K.VoicesPresenter.build(result, null);
+          return Promise.resolve(result.filter(function (r) {
+            return excludeIds.indexOf(r.id) === -1;
+          }));
+        })
+        .then(function (filtered) {
+          return K.VoicesPresenter.build(filtered, null);
         })
         .then(function (pres) {
           return callback(null, pres);
@@ -160,7 +161,7 @@ var SearchController = Class('SearchController')({
       var searchQuery = '%' + queryString.toLowerCase().trim() + '%';
 
       var dbQuery = K.Entity.query()
-        .where('name', 'ilike', searchQuery)
+        .andWhere('name', 'ilike', searchQuery)
         .orWhere('profile_name', 'ilike', searchQuery)
         .orWhere('description', 'ilike', searchQuery)
         .orWhere('location', 'ilike', searchQuery)
@@ -172,13 +173,14 @@ var SearchController = Class('SearchController')({
         dbQuery.andWhere(whereQuery);
       }
 
-      if (excludeIds.length > 0) {
-        dbQuery.andWhere('id', 'not in', excludeIds);
-      }
-
       dbQuery
         .then(function (result) {
-          return K.EntitiesPresenter.build(result, null);
+          return Promise.resolve(result.filter(function (r) {
+            return excludeIds.indexOf(r.id) === -1;
+          }));
+        })
+        .then(function (filtered) {
+          return K.EntitiesPresenter.build(filtered, null);
         })
         .then(function (pres) {
           return callback(null, pres);
@@ -202,13 +204,14 @@ var SearchController = Class('SearchController')({
         dbQuery.andWhere(whereQuery);
       }
 
-      if (excludeIds.length > 0) {
-        dbQuery.andWhere('id', 'not in', excludeIds);
-      }
-
       dbQuery
         .then(function (result) {
-          return K.EntitiesPresenter.build(result, null);
+          return Promise.resolve(result.filter(function (r) {
+            return excludeIds.indexOf(r.id) === -1;
+          }));
+        })
+        .then(function (filtered) {
+          return K.EntitiesPresenter.build(filtered, null);
         })
         .then(function (pres) {
           return callback(null, pres);
