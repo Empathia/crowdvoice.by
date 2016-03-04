@@ -88,11 +88,12 @@ var SearchController = Class('SearchController')({
 
     searchVoices : function (req, res, next) {
       var query = req.body.query;
+      var whereQuery = req.body.where || null;
       var exclude = req.body.exclude.map(function (i) {
         return hashids.decode(i)[0];
       }) || [];
 
-      SearchController.prototype._searchVoices(query, null, exclude, function(err, result) {
+      SearchController.prototype._searchVoices(query, whereQuery, exclude, function(err, result) {
         if (err) { return next(err); }
 
         res.json({voices : result});
@@ -101,11 +102,12 @@ var SearchController = Class('SearchController')({
 
     searchPeople : function (req, res, next) {
       var query = req.body.query;
+      var whereQuery = req.body.where || null;
       var exclude = req.body.exclude.map(function (i) {
         return hashids.decode(i)[0];
       }) || [];
 
-      SearchController.prototype._searchPeople(query, null, exclude, function(err, result) {
+      SearchController.prototype._searchPeople(query, whereQuery, exclude, function(err, result) {
         if (err) { return next(err); }
 
         res.json({people : result});
@@ -114,11 +116,12 @@ var SearchController = Class('SearchController')({
 
     searchOrganizations : function (req, res, next) {
       var query = req.body.query;
+      var whereQuery = req.body.where || null;
       var exclude = req.body.exclude.map(function (i) {
         return hashids.decode(i)[0];
       }) || [];
 
-      SearchController.prototype._searchOrganizations(query, null, exclude, function(err, result) {
+      SearchController.prototype._searchOrganizations(query, whereQuery, exclude, function(err, result) {
         if (err) { return next(err); }
 
         res.json({organizations : result});
