@@ -5,12 +5,12 @@ var mandrill = require('mandrill-api/mandrill'),
 var EntitiesPresenter = require(path.join(__dirname, '../presenters/EntitiesPresenter.js')),
   VoicesPresenter = require(path.join(__dirname, '../presenters/VoicesPresenter.js'))
 
-var notificationViewFile = fs.readFileSync('./views/mailers/notification/notification.html', 'utf8'),
-  newMessageViewFile = fs.readFileSync('./views/mailers/notification/newMessage.html', 'utf8'),
+var newMessageViewFile = fs.readFileSync('./views/mailers/notification/newMessage.html', 'utf8'),
   newInvitationViewFile = fs.readFileSync('./views/mailers/notification/newInvitation.html', 'utf8'),
   newRequestViewFile = fs.readFileSync('./views/mailers/notification/newRequest.html', 'utf8'),
   newEntityFollowerViewFile = fs.readFileSync('./views/mailers/notification/newEntityFollower.html', 'utf8'),
-  newVoiceFollowerViewFile = fs.readFileSync('./views/mailers/notification/newVoiceFollower.html', 'utf8')
+  newVoiceFollowerViewFile = fs.readFileSync('./views/mailers/notification/newVoiceFollower.html', 'utf8'),
+  newRepostViewFile = fs.readFileSync('./views/mailers/notification/newRepost.html', 'utf8')
 
 var NotificationMailer = Module('NotificationMailer')({
 
@@ -435,7 +435,7 @@ var NotificationMailer = Module('NotificationMailer')({
         NotificationSettingsController.createEmailLink(receiver.realEntity.id, function (err, uuid) {
           if (err) { return callback(err) }
 
-          var template = new Thulium({ template: newEntityFollowerViewFile }),
+          var template = new Thulium({ template: newRepostViewFile }),
             message = {
               html: '',
               subject: 'CrowdVoice.by - You have a new follower',
