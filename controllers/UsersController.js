@@ -145,7 +145,8 @@ var UsersController = Class('UsersController')({
                 selfNewInvitation: true,
                 selfNewRequest: true,
                 selfNewVoiceFollower: true,
-                selfNewEntityFollower: true
+                selfNewEntityFollower: true,
+                selfNewRepost: true
               }
 
               var setting = new NotificationSetting({

@@ -415,7 +415,8 @@ async.series([function(next) {
     selfNewInvitation: true,
     selfNewRequest: true,
     selfNewVoiceFollower: true,
-    selfNewEntityFollower: true
+    selfNewEntityFollower: true,
+    selfNewRepost: true,
   }
 
   Entity.find({ is_anonymous: false }, function (err, entities) {
