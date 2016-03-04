@@ -86,11 +86,13 @@ var SearchController = Class('SearchController')({
       });
     },
 
-    searchVoices : function searchVoices(req, res, next) {
+    searchVoices : function (req, res, next) {
       var query = req.body.query;
-      var exclude = req.body.exclude || [];
+      var exclude = req.body.exclude.map(function (i) {
+        return hashids.decode(i)[0];
+      }) || [];
 
-      SearchController.prototype._searchVoices(query, exclude, req.currentPerson, function(err, result) {
+      SearchController.prototype._searchVoices(query, null, exclude, function(err, result) {
         if (err) { return next(err); }
 
         res.json({voices : result});
@@ -99,16 +101,12 @@ var SearchController = Class('SearchController')({
 
     searchPeople : function (req, res, next) {
       var query = req.body.query;
-      var exclude = req.body.exclude;
-
-      if (!exclude) {
-        exclude = [];
-      }
+      var exclude = req.body.exclude.map(function (i) {
+        return hashids.decode(i)[0];
+      }) || [];
 
       SearchController.prototype._searchPeople(query, null, exclude, function(err, result) {
-        if (err) {
-          return next(err);
-        }
+        if (err) { return next(err); }
 
         res.json({people : result});
       });
@@ -116,22 +114,18 @@ var SearchController = Class('SearchController')({
 
     searchOrganizations : function (req, res, next) {
       var query = req.body.query;
-      var exclude = req.body.exclude;
+      var exclude = req.body.exclude.map(function (i) {
+        return hashids.decode(i)[0];
+      }) || [];
 
-      if (!exclude) {
-        exclude = [];
-      }
-
-      SearchController.prototype._searchOrganizations(query, exclude, req.currentPerson, function(err, result) {
-        if (err) {
-          return next(err);
-        }
+      SearchController.prototype._searchOrganizations(query, null, exclude, function(err, result) {
+        if (err) { return next(err); }
 
         res.json({organizations : result});
       });
     },
 
-    _searchVoices : function _searchVoices(queryString, whereQuery, excludeIds, callback) {
+    _searchVoices : function (queryString, whereQuery, excludeIds, callback) {
       var searchQuery = '%' + queryString.toLowerCase().trim() + '%';
 
       var dbQuery = K.Voice.query()
@@ -149,7 +143,7 @@ var SearchController = Class('SearchController')({
       }
 
       if (excludeIds.length > 0) {
-        dbQuery.andWhere('Voices.id', 'not in', excludeIds)
+        dbQuery.andWhere('Voices.id', 'not in', excludeIds);
       }
 
       dbQuery
@@ -162,66 +156,64 @@ var SearchController = Class('SearchController')({
         .catch(callback);
     },
 
-    _searchPeople : function (query, exclude, currentPerson, callback) {
-      var searchQuery = query.toLowerCase().trim();
+    _searchPeople : function (queryString, whereQuery, excludeIds, callback) {
+      var searchQuery = '%' + queryString.toLowerCase().trim() + '%';
 
-      K.Entity.query()
-      .where({
-        is_anonymous : false,
-        type : 'person',
-        deleted : false
-      })
-      .andWhere(function() {
-        this.whereRaw('name ilike ? OR profile_name ilike ? OR description ilike ? OR location ilike ?', ['%' + searchQuery + '%', '%' + searchQuery + '%', '%' + searchQuery + '%', '%' + searchQuery + '%'])
-      })
-      .then(function(result) {
-        EntitiesPresenter.build(result, currentPerson, function(err, people) {
-          if (err) {
-            return callback(err);
-          }
+      var dbQuery = K.Entity.query()
+        .where('name', 'ilike', searchQuery)
+        .orWhere('profile_name', 'ilike', searchQuery)
+        .orWhere('description', 'ilike', searchQuery)
+        .orWhere('location', 'ilike', searchQuery)
+        .andWhere('is_anonymous', false)
+        .andWhere('type', 'person')
+        .andWhere('deleted', false);
 
-          if (exclude.length > 0) {
-            people = people.filter(function(item) {
-              if (exclude.indexOf(item.id) === -1) {
-                return true;
-              }
-            });
-          }
+      if (whereQuery) {
+        dbQuery.andWhere(whereQuery);
+      }
 
-          callback(null, people);
-        });
-      });
+      if (excludeIds.length > 0) {
+        dbQuery.andWhere('id', 'not in', excludeIds);
+      }
+
+      dbQuery
+        .then(function (result) {
+          return K.EntitiesPresenter.build(result, null);
+        })
+        .then(function (pres) {
+          return callback(null, pres);
+        })
+        .catch(callback);
     },
 
-    _searchOrganizations : function _searchOrganizations(query, exclude, currentPerson, callback) {
-      var searchQuery = query.toLowerCase().trim();
+    _searchOrganizations : function (queryString, whereQuery, excludeIds, callback) {
+      var searchQuery = '%' + queryString.toLowerCase().trim() + '%';
 
-      K.Entity.query()
-      .where({
-        is_anonymous : false,
-        type : 'organization',
-        deleted : false
-      })
-      .andWhere(function() {
-        this.whereRaw('name ilike ? OR profile_name ilike ? OR description ilike ? OR location ilike ?', ['%' + searchQuery + '%', '%' + searchQuery + '%', '%' + searchQuery + '%', '%' + searchQuery + '%'])
-      })
-      .then(function(result) {
-        EntitiesPresenter.build(result, currentPerson, function(err, people) {
-          if (err) {
-            return callback(err);
-          }
+      var dbQuery = K.Entity.query()
+        .where('name', 'ilike', searchQuery)
+        .orWhere('profile_name', 'ilike', searchQuery)
+        .orWhere('description', 'ilike', searchQuery)
+        .orWhere('location', 'ilike', searchQuery)
+        .andWhere('is_anonymous', false)
+        .andWhere('type', 'organization')
+        .andWhere('deleted', false);
 
-          if (exclude.length > 0) {
-            people = people.filter(function(item) {
-              if (exclude.indexOf(item.id) === -1) {
-                return true;
-              }
-            });
-          }
+      if (whereQuery) {
+        dbQuery.andWhere(whereQuery);
+      }
 
-          callback(null, people);
-        });
-      });
+      if (excludeIds.length > 0) {
+        dbQuery.andWhere('id', 'not in', excludeIds);
+      }
+
+      dbQuery
+        .then(function (result) {
+          return K.EntitiesPresenter.build(result, null);
+        })
+        .then(function (pres) {
+          return callback(null, pres);
+        })
+        .catch(callback);
     }
   }
 });
