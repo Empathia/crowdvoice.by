@@ -478,6 +478,69 @@ var NotificationMailer = Module('NotificationMailer')({
       })
     })
   },
+
+  newRepost: function (receiver, reposter, repostedPost, callback) {
+    K.NotificationSetting.query()
+      .where('entity_id', (receiver.entity.isAnonymous ? receiver.realEntity.id : receiver.entity.id))
+      .then(function (setting) {
+        if (!setting[0].emailSettings.selfNewRepost) {
+          return Promise.resolve()
+        }
+
+        return K.EntitiesPresenter.build([reposter], null)
+      })
+      .then(function (pres) {
+        return new Promise(function (resolve, reject) {
+          NotificationSettingsController.createEmailLink(receiver.realEntity.id, function (err, uuid) {
+            if (err) { return reject(err) }
+
+            var template = new Thulium({ template: newEntityFollowerViewFile }),
+              message = {
+                html: '',
+                subject: 'CrowdVoice.by - You have a new follower',
+                from_email: 'notifications@crowdvoice.by',
+                from_name: 'CrowdVoice.by',
+                to: [],
+                important: true,
+                auto_text: true,
+                inline_css: true,
+              }
+
+            template.parseSync().renderSync({
+              params: {
+                receiver: receiver,
+                follower: pres[0],
+                uuid: uuid,
+              },
+            })
+
+            var view = template.view
+
+            message.html = view
+
+            message.to.push({
+              email: receiver.user.email,
+              name: receiver.user.name,
+              type: 'to',
+            })
+
+            client.messages.send({ message: message, async: true }, function (result) {
+              logger.info('NotificationMailer newRepost():')
+              logger.info(result)
+
+              return resolve(result)
+            }, function (err) {
+              logger.error('NotificationMailer newRepost(): A mandrill error occurred: ' + err.name + ' - ' + err.message)
+              return reject(err)
+            })
+          })
+        })
+      })
+      .then(function (result) {
+        return callback(result)
+      })
+      .catch(callback)
+  },
 })
 
 module.exports = NotificationMailer
