@@ -953,7 +953,23 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           .then(function () { // reposts.save()
             return Promise.all(reposts.map(function (r) { return r.save(); }));
           })
-          .catch(next);
+          .then(function () {
+            res.json({ status: 'ok' });
+
+            return Promise.resolve();
+          })
+          .then(function () {
+            return new Promise(function (resolve, reject) {
+              FeedInjector.injectNotification(hashids.decode(req.currentPerson.id)[0], 'notifNewRepost', repostedPost, function (err) {
+                if (err) { return reject(err); }
+
+                return resolve();
+              });
+            });
+          })
+          .catch(function (err) {
+            logger.error(err.stack);
+          });
       });
     },
 
