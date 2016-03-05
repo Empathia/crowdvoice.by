@@ -677,9 +677,9 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         });
 
         post.save().then(function() {
-          var imagePath = req.body.imagePath.trim();
+          var imagePath = req.body.imagePath;
 
-          if (req.body.imagePath && req.body.imagePath.length > 0) {
+          if (req.body.imagePath && req.body.imagePath.trim().length > 0) {
             if (/^https?/.test(req.body.imagePath.trim()) === false) {
               imagePath = path.join(process.cwd(), 'public', req.body.imagePath.replace(/preview_/, ''));
             }
@@ -960,7 +960,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           })
           .then(function () {
             return new Promise(function (resolve, reject) {
-              FeedInjector.injectNotification(hashids.decode(req.currentPerson.id)[0], 'notifNewRepost', repostedPost, function (err) {
+              FeedInjector().injectNotification(hashids.decode(req.currentPerson.id)[0], 'notifNewRepost', repostedPost, function (err) {
                 if (err) { return reject(err); }
 
                 return resolve();
