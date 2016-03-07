@@ -17,6 +17,7 @@ Class(CV, 'FeedSentYouAMessage').inherits(CV.FeedItem)({
         text: this.getName()
       }) + ':');
 
+      this.dom.addClass(this.extraInfoElement, ['-ellipsis']);
       this.dom.updateText(this.extraInfoElement,
         this.data.thread.messages.map(function(message) {
           return message.message;
