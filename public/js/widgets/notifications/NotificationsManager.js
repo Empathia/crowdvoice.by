@@ -61,13 +61,23 @@ Class(CV, 'NotificationsManager').inherits(Widget).includes(BubblingSupport)({
      * @private
      */
     _notificationTimeSpanEndHandler: function _notificationTimeSpanEndHandler(ev) {
-      var child = ev.target;
+      var _self = this
+        , child = ev.target;
+
       ev.stopPropagation();
       NotificationsStore.deleteNewNotification(child.notificationId);
+
+      function checkIfShouldRemoveChildren() {
+        if (_self.children.every(function _isDeactivated(child) {
+          return child.active === false;
+        })) _self._empty();
+      }
+
       Velocity(child.el, {opacity: 0}, {
         duration: 500,
         complete: function () {
           child.el.style.visibility = 'hidden';
+          checkIfShouldRemoveChildren();
         }
       });
     },
