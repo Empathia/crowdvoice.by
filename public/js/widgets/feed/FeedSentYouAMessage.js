@@ -29,7 +29,7 @@ Class(CV, 'FeedSentYouAMessage').inherits(CV.FeedItem)({
      * @abstract
      */
     getLink: function getLink() {
-      return '/' + Person.get('profileName') + '/messages/#' + this.data.thread.id;
+      return '/' + Person.get('profileName') + '/messages/#' + this.data.thread.messages[0].threadId;
     }
   }
 });
