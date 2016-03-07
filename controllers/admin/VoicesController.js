@@ -175,7 +175,7 @@ Admin.VoicesController = Class(Admin, 'VoicesController')({
           }
 
           var useDefault = function (newVal, oldVal) {
-            if (_.isUndefined(newVal)) {
+            if (_.isUndefined(newVal) || newVal === 'undefined') {
               return oldVal
             } else {
               return newVal
