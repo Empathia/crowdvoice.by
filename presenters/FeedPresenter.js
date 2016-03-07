@@ -66,27 +66,18 @@ var FeedPresenter = Module('FeedPresenter')({
                 return next()
               }
 
-              Message.find({ id: action.itemId }, function (err, message) {
-                if (err) { return next(err) }
-
-                MessageThread.find({ id: message[0].threadId }, function (err, thread) {
-                  if (err) { return next(err) }
-
-                  ThreadsPresenter.build(thread, currentPerson, function (err, presented) {
-                    if (err) { return next(err) }
-
-                    var thread = presented[0]
-
-                    thread.messages = thread.messages.filter(function (val) {
-                      return (val.id === hashids.encode(message[0].id))
-                    })
-
-                    actionInst.thread = thread
-
-                    return next()
-                  })
+              K.Message.query()
+                .where('id', action.itemId)
+                .then(function (result) {
+                  return K.MessagesPresenter(result, currentPerson);
                 })
-              })
+                .then(function (pres) {
+                  actionInst.thread.messages = pres;
+
+                  return Promise.resolve();
+                })
+                .then(next)
+                .catch(next);
             },
           ], next)
         },
