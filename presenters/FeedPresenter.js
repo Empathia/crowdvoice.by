@@ -69,7 +69,7 @@ var FeedPresenter = Module('FeedPresenter')({
               K.Message.query()
                 .where('id', action.itemId)
                 .then(function (result) {
-                  return K.MessagesPresenter(result, currentPerson);
+                  return K.MessagesPresenter.build(result, currentPerson);
                 })
                 .then(function (pres) {
                   actionInst.thread.messages = pres;
