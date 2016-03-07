@@ -328,7 +328,7 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
           .then(function (messages) {
             count = (messages[0] ? +messages[0].fullCount : 0)
 
-            return K.MessagesPresenter.build(messages, req.currentPerson)
+            return K.MessagesPresenter.build(messages.reverse(), req.currentPerson)
           })
           .then(function (pres) {
             res.json({

@@ -23,8 +23,8 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
   INVITATION_ORGANIZATION_HTML : '<p>You were invited to become a member of {organizationName}. \
     Accepting this invitation will grant you privilege of posting and moderating content on all the Voices by <a href="{url}">{organizationName}</a.</p>',
 
-  INVITATION_VOICE_HTML : '<p>You were invited to become a contributor of {organizationName}. \
-    Accepting this invitation will grant you privilege of posting and moderating content on the Voices <a href="{url}">{organizationName}</a.</p>',
+  INVITATION_VOICE_HTML : '<p>You were invited to become a contributor of <a href="{url}">{voiceName}</a>. \
+    Accepting this invitation will grant you privilege of posting and moderating content on the Voices <a href="{url}">{voiceName}</a>.</p>',
 
   REQUEST_ORGANIZATION_HTML : '<p>{name} has requested to become a member of {organizationName}. \
     If you grant access, {name} will be able to post and moderate content on all the Voices of {organizationName}. <a href="{url}">Go to this Organization\'s settings ›</a></p>',
@@ -93,8 +93,8 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
                       .replace(/{url}/, '/' + message.data.organization.profileName);
               break;
             case 'invitation_voice':
-              text = text.replace(/{organizationName}/g, message.data.voice.title)
-                      .replace(/{url}/, '/' + message.data.voice.slug);
+              text = text.replace(/{voiceName}/g, message.data.voice.title)
+                      .replace(/{url}/g, '/' + message.data.voice.slug);
               break;
             case 'request_organization':
               text = text

@@ -1062,8 +1062,101 @@ module.exports = {
   },
 
   /**************************************************************************
-   * THREATS
+   * THREADS
    *************************************************************************/
+  /* Returns currentPerson threads.
+   * @param {Object} args
+   * @property {string} args.profileName - User thread profileName
+   * @param {function} callback
+   */
+  getThreads: function getThreads(args, callback) {
+    if (!args.profileName || !callback) {
+      throw new Error('Missing required params');
+    }
+
+    if ((typeof callback).toLowerCase() !== "function") {
+      throw new Error('Callback should be a function');
+    }
+
+    $.ajax({
+      type: 'GET',
+      dataType: 'json',
+      url: '/' + args.profileName + '/messages',
+      success: function success(data) {callback(false, data);},
+      error: function error(err) {callback(true, err);}
+    });
+  },
+
+  /* Get messages with a query string to specify offset and limit.
+   * @param {Object} args
+   * @property {string} args.profileName - User thread profileName
+   * @property {string} args.threadId - Thread id
+   * @property {number[0]} args.data.offset
+   * @property {number[20]} args.data.limit
+   * @param {function} callback
+   */
+  getThreadMessages: function getThreadMessages(args, callback) {
+    if (!args.profileName || !args.threadId || !callback) {
+      throw new Error('Missing required params');
+    }
+
+    if ((typeof callback).toLowerCase() !== "function") {
+      throw new Error('Callback should be a function');
+    }
+
+    var params = '';
+    if (args.data) {
+      params = Object.keys(args.data).map(function (key) {
+        return encodeURIComponent(key) + '=' + encodeURIComponent(args.data[key]);
+      }).join('&');
+      params = ('?' + params);
+    }
+
+    $.ajax({
+      type: 'GET',
+      url: '/' + args.profileName + '/messages/' + args.threadId + '/messages' + params,
+      success: function success(data) {callback(false, data);},
+      error: function error(err) {callback(true, err);}
+    });
+  },
+
+  deleteThread: function deleteThread(args, callback) {
+    if (!args.profileName || !args.threadId || !callback) {
+      throw new Error('Missing required params');
+    }
+
+    if ((typeof callback).toLowerCase() !== "function") {
+      throw new Error('Callback should be a function');
+    }
+
+    $.ajax({
+      type: 'POST',
+      headers: {'csrf-token' : this.token},
+      url: '/' + args.profileName + '/messages/' + args.threadId +'?_method=DELETE',
+      success: function success(data) {callback(false, data);},
+      error: function error(err) {callback(true, err);}
+    });
+  },
+
+  markThreadMessagesAsRead: function markThreadMessagesAsRead(args, callback) {
+    if (!args.profileName || !args.threadId || !callback) {
+      throw new Error('Missing required params');
+    }
+
+    if ((typeof callback).toLowerCase() !== "function") {
+      throw new Error('Callback should be a function');
+    }
+
+    $.ajax({
+      type: 'PUT',
+      headers: {'csrf-token' : this.token},
+      url: '/' + args.profileName + '/messages/' + args.threadId,
+      success: function success(data) {callback(false, data);},
+      error: function error(err) {callback(true, err);}
+    });
+
+  },
+
   /* Creates a thread or insert a message in an existing thread.
    * @argument args.profileName <required> [String] currentPerson profileName
    * @argument args.data.type <required> [String] Message type ('message')
