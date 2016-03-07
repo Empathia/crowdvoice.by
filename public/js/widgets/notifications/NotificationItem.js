@@ -39,6 +39,7 @@ Class(CV, 'NotificationItem').inherits(CV.Notification)({
         name: 'item',
         data: this.data
       })).render(this.el.querySelector('.cv-notification__info'));
+      this.activate();
       return this;
     },
 
@@ -86,18 +87,21 @@ Class(CV, 'NotificationItem').inherits(CV.Notification)({
      */
     _closeClickHandler: function _closeClickHandler(ev) {
       ev.stopImmediatePropagation();
-      window.clearTimeout(this._lifeTimeout);
-      delete this._lifeTimeout;
-      this.dispatch('notification:timeSpanEnd');
+      this._dispatchTimeEnd();
     },
 
     _startLifeSpanCount: function _startLifeSpanCount() {
       this._stopLifeSpanCount();
       this._lifeTimeout = window.setTimeout(function (_this) {
-        window.clearTimeout(_this._lifeTimeout);
-        delete _this._lifeTimeout;
-        _this.dispatch('notification:timeSpanEnd');
+        _this._dispatchTimeEnd();
       }, this.constructor.LIFE_TIME_SPAN, this);
+    },
+
+    _dispatchTimeEnd: function _dispatchTimeEnd() {
+      window.clearTimeout(this._lifeTimeout);
+      delete this._lifeTimeout;
+      this.deactivate();
+      this.dispatch('notification:timeSpanEnd');
     },
 
     _stopLifeSpanCount: function _stopLifeSpanCount() {
@@ -123,6 +127,11 @@ Class(CV, 'NotificationItem').inherits(CV.Notification)({
     /* @override
      */
     destroy: function destroy() {
+      if (this._lifeTimeout) {
+        window.clearTimeout(this._lifeTimeout);
+        delete this._lifeTimeout;
+      }
+
       Events.off(this.closeElement, 'click', this._closeClickHandlerRef);
       this._closeClickHandlerRef = null;
       Events.off(this.el, 'mouseenter', this._mouseEnterHandlerRef);
