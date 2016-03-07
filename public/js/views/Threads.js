@@ -100,7 +100,7 @@ Class(CV.Views, 'Threads').includes(NodeSupport, CV.WidgetUtils)({
         return n.action.thread;
       });
 
-      _.unique(threads.reverse(), 'id').map(function (thread) {
+      _.unique(threads, 'id').map(function (thread) {
         var _threadInstanceFound = this.sidebarUIContainer.getThreadById(thread.id)
           , lastMessage = thread.messages[0];
 
