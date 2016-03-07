@@ -20,11 +20,11 @@ describe('PostsController', function () {
   describe('#repost', function () {
 
     it('Should repost with no errors', function (doneTest) {
-      login('tyrion-lannister', function (err, agent, csrf) {
+      login('cersei-lannister', function (err, agent, csrf) {
         if (err) { return doneTest() }
 
         agent
-          .post(urlBase + '/tyrion-lannister/valyrian-roads/' + hashids.encode(15) + '/repost')
+          .post(urlBase + '/cersei-lannister/valyrian-roads/' + hashids.encode(15) + '/repost')
           .send({
             _csrf: csrf,
             voicesIds: [hashids.encode(1)] // blackwater-battle

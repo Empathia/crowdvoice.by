@@ -958,6 +958,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
             return Promise.resolve();
           })
+          .catch(next)
           .then(function () {
             return new Promise(function (resolve, reject) {
               FeedInjector().injectNotification(hashids.decode(req.currentPerson.id)[0], 'notifNewRepost', repostedPost, function (err) {
