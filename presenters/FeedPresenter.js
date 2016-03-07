@@ -72,12 +72,14 @@ var FeedPresenter = Module('FeedPresenter')({
                   return K.MessagesPresenter.build(result, currentPerson);
                 })
                 .then(function (pres) {
-                  actionInst.thread.messages = pres;
+                  actionInst.thread = {
+                    messages: pres,
+                  }
 
-                  return Promise.resolve();
+                  return Promise.resolve()
                 })
                 .then(next)
-                .catch(next);
+                .catch(next)
             },
           ], next)
         },
