@@ -153,7 +153,10 @@ Class(CV, 'ThreadSelectedContainer').inherits(Widget).includes(CV.WidgetUtils)({
      * reply button.
      */
     _sendMessageHandler: function _sendMessageHandler() {
+      if (this.disabled === true) return;
+
       var message = this.replyButton.input.getValue();
+
       this.disable();
 
       if (!message.trim()) {
@@ -207,7 +210,6 @@ Class(CV, 'ThreadSelectedContainer').inherits(Widget).includes(CV.WidgetUtils)({
     _disable: function _disable() {
       Widget.prototype._disable.call(this);
       this.replyButton.button.disable();
-      this.replyButton.input.disable();
     },
 
     _enable: function _enable() {
