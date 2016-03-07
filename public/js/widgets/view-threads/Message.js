@@ -23,8 +23,8 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
   INVITATION_ORGANIZATION_HTML : '<p>You were invited to become a member of {organizationName}. \
     Accepting this invitation will grant you privilege of posting and moderating content on all the Voices by <a href="{url}">{organizationName}</a.</p>',
 
-  INVITATION_VOICE_HTML : '<p>You were invited to become a contributor of {organizationName}. \
-    Accepting this invitation will grant you privilege of posting and moderating content on the Voices <a href="{url}">{organizationName}</a.</p>',
+  INVITATION_VOICE_HTML : '<p>You were invited to become a contributor of <a href="{url}">{voiceName}</a>. \
+    Accepting this invitation will grant you privilege of posting and moderating content on the Voice <a href="{url}">{voiceName}</a>.</p>',
 
   REQUEST_ORGANIZATION_HTML : '<p>{name} has requested to become a member of {organizationName}. \
     If you grant access, {name} will be able to post and moderate content on all the Voices of {organizationName}. <a href="{url}">Go to this Organization\'s settings ›</a></p>',
@@ -90,22 +90,22 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
           switch(message.type) {
             case 'invitation_organization':
               text = text.replace(/{organizationName}/g, message.data.organization.name)
-                      .replace(/{url}/, '/' + message.data.organization.profileName);
+                      .replace(/{url}/, '/' + message.data.organization.profileName + '/');
               break;
             case 'invitation_voice':
-              text = text.replace(/{organizationName}/g, message.data.voice.title)
-                      .replace(/{url}/, '/' + message.data.voice.slug);
+              text = text.replace(/{voiceName}/g, message.data.voice.title)
+                      .replace(/{url}/g, '/' + message.data.voice.owner.profileName + '/' + message.data.voice.slug + '/');
               break;
             case 'request_organization':
               text = text
                       .replace(/{name}/g, message.data.senderEntity.name)
                       .replace(/{organizationName}/g, message.data.organization.name)
-                      .replace(/{url}/, '/' + message.data.organization.profileName + '/edit');
+                      .replace(/{url}/, '/' + message.data.organization.profileName + '/edit/');
               break;
             case 'request_voice':
               text = text.replace(/{name}/g, message.data.senderEntity.name)
                       .replace(/{voiceTitle}/g, message.data.voice.title)
-                      .replace(/{url}/g, '/' + Person.get().profileName + '/' + message.data.voice.slug);
+                      .replace(/{url}/g, '/' + Person.get().profileName + '/' + message.data.voice.slug + '/');
               break;
             case 'invitation_accepted_voice':
               text = text.replace(/{voiceTitle}/, message.data.voice.title);

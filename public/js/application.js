@@ -27,7 +27,7 @@ window.dragula = require('dragula');
 // JS » Our stack, namespace, lib
 require('neon');
 require('neon/stdlib');
-window.CV = {UI: {}, Views: {}, Forms: {}};
+window.CV = {Store: {}, UI: {}, Views: {}, Forms: {}};
 require('./lib/widget-utils.js');
 require('./lib/Widget.js');
 require('./lib/image-halt');
@@ -35,6 +35,7 @@ require('./lib/ResponsiveWidth');
 require('./app');
 
 // Global Widgets
+require('./widgets/ui/Badge');
 require('./widgets/ui/Modal');
 require('./widgets/ui/CenterModal');
 require('./widgets/ui/Input');
@@ -215,6 +216,14 @@ require('./views/Notifications');
 require('./widgets/view-notifications/NotificationsPageItem');
 require('./views/PeopleFeed');
 require('./widgets/view-people-feed/PeopleFeedDropdown');
+require('./views/Threads');
+require('./widgets/view-threads/ThreadsSidebarUIContainer');
+require('./widgets/view-threads/ThreadSidebarItem');
+require('./widgets/view-threads/ThreadsMainUIContainer');
+require('./widgets/view-threads/ThreadNewContainer');
+require('./widgets/view-threads/ThreadSelectedContainer');
+require('./widgets/view-threads/NewMessageDropdown');
+require('./widgets/view-threads/Message');
 
 require('./widgets/voice/registry/VoicePagesRegistry');
 require('./widgets/voice/publish-onboarding/VoicePublishOnboardingManager');
@@ -376,15 +385,8 @@ require('./widgets/elements/select.js');
 require('./widgets/elements/alert.js');
 require('./widgets/elements/detect-location.js');
 
-// threads and messages
-require('./widgets/messages/ThreadsContainer');
-require('./widgets/messages/Thread');
-require('./widgets/messages/Message');
-require('./widgets/messages/NewMessageDropdown');
-
 // generators
 require('./widgets/generators/feedGenerator.js');
-
 
 require('./widgets/audio.js');
 
