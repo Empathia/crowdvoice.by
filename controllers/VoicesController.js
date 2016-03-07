@@ -583,7 +583,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         // This is here so that fields that can be empty (like locationName or
         // twitterSearch) CAN be empty.
         var useDefault = function (newVal, oldVal) {
-          if (_.isUndefined(newVal)) {
+          if (_.isUndefined(newVal) || newVal === 'undefined') {
             return oldVal
           } else {
             return newVal
