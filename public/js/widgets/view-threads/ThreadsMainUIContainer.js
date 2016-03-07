@@ -98,6 +98,17 @@ Class(CV, 'ThreadMainUIContainer').inherits(Widget).includes(CV.WidgetUtils)({
 
     enableMessageInput: function enableMessageInput() {
       this.threadSelectedContainer.enable().focus();
+      return this;
+    },
+
+    showDeleteThreadButton: function showDeleteThreadButton() {
+      this.threadSelectedContainer.showDeleteThreadButton();
+      return this;
+    },
+
+    hideDeleteThreadButton: function hideDeleteThreadButton() {
+      this.threadSelectedContainer.hideDeleteThreadButton();
+      return this;
     },
 
     updateSenderLabel: function updateSenderLabel(label) {

@@ -90,8 +90,6 @@ Class(CV, 'ThreadSelectedContainer').inherits(Widget).includes(CV.WidgetUtils)({
 
     /* Handles the popover 'cancel' custom event.
      * Just close the popover.
-     * @method _popOverCancelClickHandler <private> [Function]
-     * @return undefined
      */
     _popOverCancelClickHandler: function _popOverCancelClickHandler(ev) {
       ev.stopPropagation();
@@ -99,8 +97,6 @@ Class(CV, 'ThreadSelectedContainer').inherits(Widget).includes(CV.WidgetUtils)({
     },
 
     /* Handles the popover 'confirm' custom event.
-     * @method _popOverConfirmClickHandler <private> [Function]
-     * @return undefined
      */
     _popOverConfirmClickHandler: function _popOverConfirmClickHandler(ev) {
       ev.stopPropagation();
@@ -126,6 +122,16 @@ Class(CV, 'ThreadSelectedContainer').inherits(Widget).includes(CV.WidgetUtils)({
         messagesLength--;
       }
       this._messages = [];
+      return this;
+    },
+
+    showDeleteThreadButton: function showDeleteThreadButton() {
+      this.dom.removeClass(this.deleteThreadButton, ['-hide']);
+      return this;
+    },
+
+    hideDeleteThreadButton: function hideDeleteThreadButton() {
+      this.dom.addClass(this.deleteThreadButton, ['-hide']);
       return this;
     },
 

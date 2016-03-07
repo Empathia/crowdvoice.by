@@ -145,6 +145,7 @@ Class(CV.Views, 'Threads').includes(NodeSupport, CV.WidgetUtils)({
       this.mainUIContainer
         .clearMessages()
         .updateConversationTitle(partnerName)
+        .showDeleteThreadButton()
         .showSelectedThreadState()
         .appendMessages(res.messages, this._getActiveThread())
         .hideThreadLoader();
@@ -188,6 +189,7 @@ Class(CV.Views, 'Threads').includes(NodeSupport, CV.WidgetUtils)({
       this.mainUIContainer
         .clearMessages()
         .updateConversationTitle(ev.entity.name)
+        .hideDeleteThreadButton()
         .showSelectedThreadState();
     },
 
