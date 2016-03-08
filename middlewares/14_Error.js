@@ -8,7 +8,7 @@ module.exports = function(err, req, res, next) {
     logger.info('-------------------------------' + "\n");
   });
 
-  logger.error(err.stack);
+  logger.error(err, err.stack);
 
   if (err.errors) {
     logger.info(err.errors);

@@ -26,7 +26,6 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
             return K.MessageThread.query()
               .where('sender_person_id', '=', hashids.decode(req.currentPerson.id)[0])
               .orWhere('receiver_entity_id', 'in', ids)
-              .include('messages')
               .then(function (threads) {
                 return K.ThreadsPresenter.build(threads, req.currentPerson)
                   .then(function (pres) {
@@ -312,29 +311,51 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
 
         if (!isAllowed) { return next(new ForbiddenError()); }
 
-        var value = req.body.value.toLowerCase().trim();
+        var query = req.body.value.toLowerCase().trim();
+        var exclude = req.body.exclude;
 
-        res.format({
-          json : function() {
-            db('Entities')
-              .where('name', 'like', value)
-              .orWhere('profile_name', 'like', '%' + value + '%')
-              .andWhere('is_anonymous', '=', false)
-              .andWhere('deleted', '=', false)
-              .andWhere('id', '!=', hashids.decode(req.currentPerson.id)[0])
-              .asCallback(function (err, rows) {
-                if (err) { return next(err); }
+        if (!exclude) {
+          exclude = [];
+        }
 
-                var entities = Argon.Storage.Knex.processors[0](rows)
+        var entities = [];
 
-                entities.forEach(function(entity) {
-                  entity.id = hashids.encode(entity.id);
-                })
+        async.series([function(done) {
+          SearchController.prototype._searchPeople(query, exclude, req.currentPerson, function(err, result) {
+            if (err) {
+              return next(err);
+            }
 
-                res.json(entities);
-              });
+            result.forEach(function(item) {
+              entities.push(item);
+            });
+
+            done();
+          });
+        }, function(done) {
+          SearchController.prototype._searchOrganizations(query, exclude, req.currentPerson, function(err, result) {
+            if (err) {
+              return next(err);
+            }
+
+            result.forEach(function(item) {
+              entities.push(item);
+            });
+
+            done();
+          });
+        }], function(err) {
+          if (err) {
+            return next(err);
           }
-        })
+
+          res.format({
+            json : function() {
+              res.json(entities);
+            }
+          });
+
+        });
       })
     }
   }

@@ -258,10 +258,6 @@ var UsersController = Class('UsersController')({
           });
         });
       })
-    },
-
-    checkUsername : function checkUsername(req, res, next) {
-      return false;
     }
   }
 });
