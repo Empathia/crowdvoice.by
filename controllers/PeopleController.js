@@ -183,9 +183,23 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
                       counts[row.year] = {};
                     }
 
+                    var pages = [],
+                       steps = 0,
+                       count = (count[0] ? +count[0].count : 0);
+
+                    do {
+                      steps += VoicesController.POSTS_PER_PAGE;
+
+                      if (pages.length < 1) {
+                        pages.push(+row.page);
+                      } else {
+                        pages.push(pages[pages.length - 1] + 1);
+                      }
+                    } while (steps < count)
+
                     counts[row.year][row.month] = {
-                      page: row.page,
-                      count: (count[0] ? +count[0].count : 0)
+                      pages: pages,
+                      count: count
                     };
 
                     return Promise.resolve();
