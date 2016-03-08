@@ -149,84 +149,128 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
     savedPosts: function (req, res, next) {
       ACL.isAllowed('savedPosts', 'entities', req.role, {
         currentEntity: req.entity,
-        currentPerson: req.currentPerson
+        currentPerson: req.currentPerson,
       }, function(err, response) {
-        if (err) { return next(err); }
+        if (err) { return next(err) }
 
         if (!response.isAllowed) {
-          return next(new ForbiddenError());
+          return next(new ForbiddenError())
         }
 
-        var counts = {};
+        var pagesPerMonths = {
+          approved: {}
+        }
 
-        K.SavedPost.knex()
-          .select(
-            db.raw('distinct on (MONTH, YEAR) to_char("SavedPosts".created_at, \'MM\') as MONTH'),
-            db.raw('to_char("SavedPosts".created_at, \'YYYY\') as YEAR')
-          )
-          .from('SavedPosts')
-          .where('SavedPosts.entity_id', response.entity.id)
-          .orderByRaw('YEAR desc, MONTH desc')
-          .then(function (result) {
-            var counts = {};
+        return Promise.resolve()
+          .then(function () {
+            return K.SavedPost.query()
+              .count()
+              .where('entity_id', hashids.decode(req.currentPerson.id)[0])
+              .then(function (count) {
+                var intCount = count[0] ? +count[0].count : 0
 
-            var currentPage = 0;
+                res.locals.totalCount = intCount
 
-            return Promise.each(result,
-              function (row) {
-                return new Promise(function (resolve, reject) {
-                  return K.SavedPost.query()
-                    .count('*')
-                    .where('entity_id', response.entity.id)
-                    .andWhere(db.raw('to_char("SavedPosts".created_at, \'MM\') = ?', row.month))
-                    .andWhere(db.raw('to_char("SavedPosts".created_at, \'YYYY\') = ?', row.year))
-                    .then(function (count) {
-                      if (!counts[row.year]) {
-                        counts[row.year] = {};
-                      }
+                return Promise.resolve(intCount)
+              })
+          })
+          .then(function (postsCount) {
+            // full blocks of 50, e.g. 3
+            var fullParts = Math.floor(postsCount / VoicesController.POSTS_PER_PAGE)
+            // remainder that didn't fit in a full block, e.g. 49
+            var remainder = postsCount % VoicesController.POSTS_PER_PAGE
 
-                      var pages = [],
-                         steps = 0,
-                         count = (count[0] ? +count[0].count : 0);
+            // amount of offsets
+            return Promise.resolve(fullParts + (remainder > 0 ? 1 : 0))
+          })
+          .then(function (offsetsNum) {
+            var offsets = []
 
-                      do {
-                        steps += VoicesController.POSTS_PER_PAGE;
+            for (var i = 0; i < offsetsNum; i += 1) {
+              offsets.push(i * VoicesController.POSTS_PER_PAGE)
+            }
 
-                        pages.push(currentPage);
+            return Promise.resolve(offsets)
+          })
+          .then(function (offsets) {
+            var postIdsPerPage = []
 
-                        currentPage += 1;
-                      } while (steps < count)
+            return Promise.each(offsets,
+              function (offset) {
+                return K.SavedPost.query()
+                  .select('id')
+                  .where('entity_id', hashids.decode(req.currentPerson.id)[0])
+                  .orderBy('created_at', 'desc')
+                  .limit(VoicesController.POSTS_PER_PAGE)
+                  .offset(offset)
+                  .pluck('id')
+                  .then(function (pageIds) {
+                    postIdsPerPage.push(pageIds)
 
-                      counts[row.year][row.month] = {
-                        pages: pages,
-                        count: count
-                      };
-
-                      return Promise.resolve();
-                    })
-                    .then(resolve)
-                    .catch(reject);
-                });
+                    return Promise.resolve()
+                  })
               })
               .then(function () {
-                res.locals.pagesForMonths = {
-                  approved: counts
-                };
-
-                return Promise.resolve();
-              });
+                return Promise.resolve(postIdsPerPage)
+              })
           })
-          .then(function (pres) {
+          .then(function (pagesIds) {
+            var pagesDates = []
+
+            return Promise.each(pagesIds,
+              function (ids) {
+                return K.SavedPost.query()
+                  .select(
+                    db.raw('distinct on (MONTH, YEAR) to_char("SavedPosts".created_at, \'MM\') as MONTH'),
+                    db.raw('to_char("SavedPosts".created_at, \'YYYY\') as YEAR')
+                  )
+                  .from('SavedPosts')
+                  .where('id', 'in', ids)
+                  .then(function (dates) {
+                    pagesDates.push(dates)
+
+                    return Promise.resolve()
+                  })
+              })
+              .then(function () {
+                return Promise.resolve(pagesDates)
+              })
+          })
+          .then(function (datesPerPage) {
+            return Promise.each(datesPerPage, function (pageDates, pageNumber) {
+              return Promise.each(pageDates, function (dates) {
+                var p = pagesPerMonths.approved
+
+                if (!p[dates.year]) {
+                  p[dates.year] = {}
+                }
+
+                if (!p[dates.year][dates.month]) {
+                  p[dates.year][dates.month] = {
+                    count: 0,
+                    pages: [],
+                  }
+                }
+
+                p[dates.year][dates.month].pages.push(pageNumber)
+
+                return Promise.resolve()
+              })
+            })
+          })
+          .then(function () {
+            res.locals.pagesForMonths = pagesPerMonths
+
             return res.format({
               html: function () {
                 res.render('people/savedPosts.html', {
-                  pageName: 'page-inner page-saved-posts'
-                });
-              }
-            });
+                  pageName: 'page-inner page-saved-posts',
+                })
+              },
+            })
           })
-          .catch(next);
-      });
+          .catch(next)
+      })
     },
 
     getOrganizations : function getOrganizations(req, res, next) {
