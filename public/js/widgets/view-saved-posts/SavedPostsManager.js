@@ -2,7 +2,7 @@ var SavedPostsStore = require('../../stores/SavedPostsStore')
   , Events = require('../../lib/events');
 
 Class(CV, 'SavedPostsManager').inherits(Widget)({
-  ELEMENT_CLASS: 'saved-posts-wrapper',
+  ELEMENT_CLASS: 'saved-posts-wrapper -rel',
   MIN_LAYERS_POST: 20,
 
   prototype: {
@@ -13,11 +13,13 @@ Class(CV, 'SavedPostsManager').inherits(Widget)({
     /* layer offset left to perform hit-test on layer elements
      * sidebar = 60, main-container-padding-left = 40
      */
-    _layersOffsetLeft: 80,
+    _layersOffsetLeft: 79,
     _lastScrollTop: 0,
 
     _resizeTimer: null,
     _resizeTime: 500,
+
+    _listenScrollEvent: true,
 
     init: function init(config) {
       Widget.prototype.init.call(this, config);
@@ -27,10 +29,9 @@ Class(CV, 'SavedPostsManager').inherits(Widget)({
       this._averageLayerHeight = 0;
       this._currentPageNumber = 0;
 
-      this.appendChild(new CV.SavedPostsFooter({
-        name: 'footer',
+      this.footer = new CV.SavedPostsFooter({
         totalPosts: this.totalPosts
-      })).render(document.querySelector('.cv-main-content'));
+      }).render(document.querySelector('.cv-main-content'));
 
       this._updateGlobalVars();
       SavedPostsStore.run();
@@ -65,8 +66,42 @@ Class(CV, 'SavedPostsManager').inherits(Widget)({
       if (this._currentPageNumber !== res.pageNumber) return;
 
       var layer = this.getCurrentMonthLayer();
+      if (layer.getPosts().length) return;
+
+      var prev = layer.getPreviousSibling();
+      var next = layer.getNextSibling();
+      var calculateScrollDiff = false;
+      var oldScrollHeight = 0;
+      var oldScrollY = 0;
+
       this.addPosts(layer, res.posts);
       this.registry.set(this._currentPageNumber, res.posts);
+
+      // scrolling down
+      if (res.scrollDirection === false) {
+        var prev2 = prev && prev.getPreviousSibling();
+        if (prev2 && this._canRemovePosts(prev2)) {
+          this.removePosts(prev2);
+        }
+        return;
+      }
+
+      var next2 = next && next.getNextSibling();
+      if (next2 && this._canRemovePosts(next2)) {
+        this.removePosts(next2);
+      }
+
+      if (calculateScrollDiff) {
+        var newScrollHeight = this._body.clientHeight;
+        var newScrollY = this._body.scrollTop;
+        var scrollHeightDiff = (oldScrollHeight - newScrollHeight);
+        var scrollYDiff = (oldScrollY - newScrollY);
+        var diff = (newScrollY - (scrollHeightDiff - scrollYDiff));
+
+        this._listenScrollEvent = false;
+        this._window.scrollTo(0, diff);
+        this._listenScrollEvent = true;
+      }
     },
 
     _scrollHandler: function _scrollHandler() {
@@ -75,7 +110,20 @@ Class(CV, 'SavedPostsManager').inherits(Widget)({
         , y = 0
         , el, page;
 
-      if (!scrollingUp) y = (this._windowInnerHeight - 1);
+      if (this._listenScrollEvent === false) return;
+
+      var layer = this.getCurrentMonthLayer().arrangeReset()
+        , next = layer.getNextSibling()
+        , prev = layer.getPreviousSibling();
+
+      if (!scrollingUp) {
+        next && next.arrangeBringToFront();
+        prev && prev.arrangeReset();
+        y = (this._windowInnerHeight - 1);
+      } else {
+        prev && prev.arrangeBringToFront();
+        next && next.arrangeReset();
+      }
       el = document.elementFromPoint(this._layersOffsetLeft, y);
       page = el.dataset.page;
 

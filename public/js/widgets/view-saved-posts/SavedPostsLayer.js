@@ -23,7 +23,8 @@ Class(CV, 'SavedPostsLayer').inherits(Widget).includes(BubblingSupport)({
       this.waterfall = new Waterfall({
         containerElement: this.postsContainer,
         columnWidth: 300,
-        gutter: 20
+        gutter: 20,
+        positioning: 'xy'
       });
     },
 
@@ -151,6 +152,16 @@ Class(CV, 'SavedPostsLayer').inherits(Widget).includes(BubblingSupport)({
       }
       this.waterfall.flushItems();
       this._postWidgets = [];
+      return this;
+    },
+
+    arrangeBringToFront: function arrangeBringToFront() {
+      this.el.style.zIndex = 1;
+      return this;
+    },
+
+    arrangeReset: function arrangeReset() {
+      this.el.style.zIndex = "";
       return this;
     }
   }

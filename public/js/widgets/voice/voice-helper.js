@@ -27,6 +27,23 @@ Module(CV, 'VoiceHelper')({
       });
     },
 
+    _formatPagesObject2: function _formatPagesObject2(data) {
+      var pages = [];
+
+      Object.keys(data).forEach(function(year) {
+        Object.keys(data[year]).forEach(function(month) {
+          pages = pages.concat(data[year][month].pages);
+        });
+      });
+
+      return pages.reduce(function (a, b) {
+        if (a.indexOf(b) < 0) a.push(b);
+        return a;
+      }, []).sort(function (a, b) {
+        return a - b;
+      });
+    },
+
     /* Returns the total of posts count.
      * @param {Object} data - locals.pagesForMonths[approved||unapproved]
      *  {"2015":
