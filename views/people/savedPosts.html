@@ -2,12 +2,13 @@
 </main>
 
 <script>
-  var App = new CV.App().setup();
+  var App = new CV.App().setup().socketStart();
   App.addInteractiveSidebar();
 
-  App.appendChild(new CV.SavedPosts({
-    name : 'savedPosts',
-    posts : <%= JSON.stringify(savedPosts) %>,
-    container : document.querySelector('.cv-main-content')
-  }));
+  var SavedPosts = new CV.SavedPosts({
+    name: 'savedPosts',
+    pagesForMonths: <%= JSON.stringify(pagesForMonths) %>,
+    container: document.querySelector('.cv-main-content'),
+    socket: App.getSocket()
+  });
 </script>

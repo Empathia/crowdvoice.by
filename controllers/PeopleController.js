@@ -202,7 +202,9 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
           .then(function (pres) {
             return res.format({
               html: function () {
-                res.render('people/savedPosts.html')
+                res.render('people/savedPosts.html', {
+                  pageName: 'page-inner page-saved-posts'
+                });
               }
             });
           })

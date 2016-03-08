@@ -3,12 +3,12 @@
 
   <section class="voice-intro -rel">
     <h1 class="voice-heading -font-bold -color-white -m0"><%= voice.title %></h1>
-    <div class="voice-info__author -inline-block -clickable">
-      <img class="-rounded" width="18" height="18" src="<%= voice.owner.images.small.url %>">
+    <a href="/<%= voice.owner.profileName %>/" class="voice-info__author -inline-block -clickable -tdn">
+      <img alt="<%= voice.owner.name %>’s profile picture" class="-rounded" width="18" height="18" src="<%= voice.owner.images.small.url %>"/>
       <span class="voice-info__author-name -inline-block">
         by <%= voice.owner.name %>
       </span>
-    </div>
+    </a>
     <button class="voice-about-show-btn cv-button micro -m0">About</button>
   </section>
 </main>

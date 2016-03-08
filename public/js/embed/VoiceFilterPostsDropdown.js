@@ -2,7 +2,8 @@ var Options = [
   {label: 'Images', value: 'image'},
   {label: 'Videos', value: 'video'},
   {label: 'Links', value: 'link'},
-  {label: 'Articles', value: 'text'}
+  {label: 'Articles', value: 'text'},
+  {label: 'Tweets', value: 'tweet'}
 ];
 
 Class(CV, 'VoiceFilterPostsDropdown').inherits(Widget).includes(BubblingSupport)({
