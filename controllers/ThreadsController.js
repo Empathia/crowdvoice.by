@@ -315,12 +315,27 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
         var exclude = req.body.exclude;
 
         if (!exclude) {
-          exclude = [];
+          exclude = [req.currentPerson.id];
         }
 
         var entities = [];
 
         async.series([function(done) {
+          K.EntityOwner.query()
+          .where({
+            owner_id : hashids.decode(req.currentPerson.id)[0]
+          }).then(function(owners) {
+
+            K.Entity.query().whereIn('id', owners.map(function(item) {return item.ownedId})).then(function(entities) {
+              entities.forEach(function(entity) {
+                exclude.push(hashids.encode(entity.id));
+              });
+
+              done();
+            });
+          }).catch(done);
+
+        }, function(done) {
           SearchController.prototype._searchPeople(query, exclude, req.currentPerson, function(err, result) {
             if (err) {
               return next(err);

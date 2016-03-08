@@ -111,6 +111,7 @@ var SearchController = Class('SearchController')({
       var query = req.body.query;
       var exclude = req.body.exclude;
 
+
       if (!exclude) {
         exclude = [];
       }
