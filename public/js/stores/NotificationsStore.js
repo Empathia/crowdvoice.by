@@ -131,7 +131,7 @@ module.exports = Class(CV, 'NotificationsStore').includes(CustomEventSupport)({
   /* @emits 'newNotifications' {notifications: {array}}
    */
   _emitNewNotifications: function _emitNewNotifications() {
-    this.dispatch('newNotifications', {notifications: this._new_notifications});
+    this.dispatch('newNotifications', {notifications: this._new_notifications.reverse()});
   }
 });
 

@@ -68,7 +68,7 @@ var Voice = Class('Voice').inherits(Argon.KnexModel).includes(ImageUploader)({
     tableName : 'Voices',
     queries : {
       whereIn : function(requestObj, callback) {
-        db(requestObj.model.storage.tableName).whereIn(requestObj.columnName, requestObj.array).exec(callback);
+        db(requestObj.model.storage.tableName).whereIn(requestObj.columnName, requestObj.array).asCallback(callback);
       }
     },
     whereIn : function whereIn(requestObj, callback) {
@@ -160,7 +160,7 @@ var Voice = Class('Voice').inherits(Argon.KnexModel).includes(ImageUploader)({
       }
     });
 
-    kxquery.exec(function(err, data) {
+    kxquery.asCallback(function(err, data) {
       for (i = 0; i < model.storage.processors.length; i++) {
         data = model.storage.processors[i](data);
       }
@@ -313,7 +313,7 @@ var Voice = Class('Voice').inherits(Argon.KnexModel).includes(ImageUploader)({
           db('VoiceTopic').insert({
             voice_id: voice.id,
             topic_id: result[0].id
-          }).exec(function (err, result) {
+          }).asCallback(function (err, result) {
             done(err);
           });
         });
@@ -346,7 +346,7 @@ var Voice = Class('Voice').inherits(Argon.KnexModel).includes(ImageUploader)({
         subquery.orderBy('created_at', 'desc');
         subquery.limit(3);
 
-        subquery.exec(function () {
+        subquery.asCallback(function () {
           console.log(arguments);
         });
 
@@ -354,7 +354,7 @@ var Voice = Class('Voice').inherits(Argon.KnexModel).includes(ImageUploader)({
         query.where({voice_id: voice.id});
         query.where('id', 'not in', subquery);
         query.del();
-        query.exec(done);
+        query.asCallback(done);
       });
     }
   }

@@ -2,6 +2,8 @@ var Scrapper = require(process.cwd() + '/lib/cvscrapper');
 var sanitizer = require('sanitize-html');
 var ReadabilityParser = require(path.join(__dirname, '../lib/ReadabilityParser.js'));
 
+require(path.join(process.cwd(), 'lib', 'krypton', 'presenters', 'PostsPresenter.js'))
+
 var downsize = require('downsize');
 
 var Twitter = require('twitter');
@@ -15,9 +17,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
     },
 
     index : function index (req, res, next) {
-      Post.all(function (err, posts) {
-        res.render('posts/index.html', {posts: posts});
-      });
+      return next(new NotFoundError('Not Implemented'));
     },
 
     show : function show(req, res, next) {
@@ -26,21 +26,20 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         already = false;
 
       async.series([function(done) {
-        Post.findById(hashids.decode(req.params.postId)[0], function(err, result) {
-          if (err) { return done(err); }
+        K.Post.query()
+          .where({id : hashids.decode(req.params.postId)[0]})
+          .then(function(result) {
+            if (result.length === 0) {
+              return done(new NotFoundError('Post Not Found'));
+            }
 
-          if (result.length === 0) {
-            return done(new NotFoundError('Post Not Found'));
-          }
+            K.PostsPresenter.build(result, req.currentPerson)
+              .then(function(posts) {
+                post = posts[0];
 
-          PostsPresenter.build(result, req.currentPerson, function (err, posts) {
-            if (err) { return done(err); }
-
-            post = new Post(posts[0]);
-
-            return done();
-          });
-        });
+                return done();
+              }).catch(done);
+          }).catch(done);
       }, function(done) {
         if (post.sourceType !== Post.SOURCE_TYPE_LINK && post.sourceService !== Post.SOURCE_SERVICE_LINK) {
           return done();
@@ -158,7 +157,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           postData.approved = approved;
           postData.ownerId = response.postOwner.id;
           postData.voiceId = req.activeVoice.id;
-          postData.publishedAt = item.publishedAt;
+          postData.publishedAt = new Date(item.publishedAt);
           postData.extras = item.extras;
 
           if (postData.sourceUrl === 'local_image') {
@@ -166,60 +165,54 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
             postData.sourceUrl = 'local_image_' + hashids.encode(parseInt(hrtime[0] + '' + hrtime[1], 10));
           }
 
-          var post = new Post(postData);
+          var post = new K.Post(postData);
 
-          post.save(function(err, result) {
-            if (err) {
-              return nextPost(err);
-            }
-
+          post.save().then(function() {
             var imagePath = '';
             if (item.imagePath && item.imagePath.length > 0) {
               imagePath = path.join(process.cwd(), 'public', item.imagePath.replace(/preview_/, ''));
             }
 
             post.uploadImage('image', imagePath, function() {
-              post.save(function(err, resave) {
-                if (err) { return nextPost(err); }
+              post.save().then(function() {
+                K.Voice.query()
+                  .where({id : post.voiceId})
+                  .then(function(voice) {
+                    voice = voice[0];
 
-                Voice.findById(post.voiceId, function (err, voice) {
-                  if (err) { return nextPost(err); }
+                    if (item.images) {
+                      item.images.forEach(function(image) {
+                        if (fs.existsSync(process.cwd() + '/public' + image)) {
+                          fs.unlinkSync(process.cwd() + '/public' + image);
+                          logger.info('Deleted tmp image: ' + process.cwd() + '/public' + image);
+                        }
 
-                  if (item.images) {
-                    item.images.forEach(function(image) {
-                      if (fs.existsSync(process.cwd() + '/public' + image)) {
-                        fs.unlinkSync(process.cwd() + '/public' + image);
-                        logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image);
-                      }
+                        if (fs.existsSync(process.cwd() + '/public' + image.replace(/preview_/, ''))) {
+                          fs.unlinkSync(process.cwd() + '/public' + image.replace(/preview_/, ''));
+                          logger.info('Deleted tmp image: ' + process.cwd() + '/public' + image.replace(/preview_/, ''));
+                        }
+                      });
+                    }
 
-                      if (fs.existsSync(process.cwd() + '/public' + image.replace(/preview_/, ''))) {
-                        fs.unlinkSync(process.cwd() + '/public' + image.replace(/preview_/, ''));
-                        logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image.replace(/preview_/, ''));
-                      }
+                    FeedInjector().inject(voice.ownerId, 'item voiceNewPosts', voice, function (err) {
+                      if (err) { return nextPost(err); }
+
+                      results.push(post);
+
+                      return nextPost();
                     });
-                  }
+                  }).catch(nextPost);
+              }).catch(nextPost);
 
-                  FeedInjector().inject(voice[0].ownerId, 'item voiceNewPosts', voice[0], function (err) {
-                    if (err) { return nextPost(err); }
-
-                    results.push(post);
-
-                    return nextPost();
-                  });
-                });
-              });
             });
-          });
+          }).catch(nextPost);
+
         }, function(err) {
           if (err) { return next(err); }
 
-          PostsPresenter.build(results, req.currentPerson, function(err, result) {
-            if (err) {
-              return next(err);
-            }
-
+          K.PostsPresenter.build(results, req.currentPerson).then(function(result) {
             return res.json(result);
-          });
+          }).catch(next);
         });
       });
     },
@@ -238,74 +231,78 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
         if (!response.isAllowed) { return next(new ForbiddenError()); }
 
-        var postData = {};
         var body = req.body;
 
-        Post.find({ id : hashids.decode(req.params.postId)[0] }, function(err, result) {
-          if (err) { return next(err); }
-
-          var post = new Post(result[0]);
-
-          post.title = body.title || post.title;
-          post.description = body.description || post.description;
-          post.sourceUrl = body.sourceUrl || post.sourceUrl;
-          post.approved = body.approved || post.approved;
-          post.publishedAt = (body.publishedAt ? new Date(body.publishedAt) : new Date(post.publishedAt));
-
-          post.save(function(err, result) {
-            if (err) { return next(err); }
-
-            var imagePath = '';
-            if (body.imagePath && body.imagePath.length > 0) {
-              if (imagePath.trim().match(/^https?/) === null) {
-                imagePath = path.join(process.cwd(), 'public', body.imagePath.replace(/preview_/, ''));
-              }
+        K.Post.query()
+          .where({ id : hashids.decode(req.params.postId)[0] })
+          .then(function(result) {
+            if (result.length === 0) {
+              return next(new NotFoundError('Post Not Found'));
             }
 
-            async.series([function(done) {
-              if (imagePath === '') {
-                return done();
+            var post = result[0];
+
+            post.title = body.title || post.title;
+            post.description = body.description || post.description;
+            post.sourceUrl = body.sourceUrl || post.sourceUrl;
+            post.approved = body.approved || post.approved;
+            post.publishedAt = (body.publishedAt ? new Date(new Date(body.publishedAt).toUTCString()) : new Date(post.publishedAt));
+
+            post.save().then(function() {
+              var imagePath = body.imagePath.trim();
+
+              if (body.imagePath && body.imagePath.length > 0) {
+                if (/^https?/.test(body.imagePath.trim()) === false) {
+                  imagePath = path.join(process.cwd(), 'public', body.imagePath.replace(/preview_/, ''));
+                }
               }
 
-              // NOTE: .uploadImage does not return err, thus if you just pass done
-              //       to it directly it'll always return error
-              post.uploadImage('image', imagePath, function () {
-                done();
-              });
-            }, function(done) {
-              if (imagePath === '') {
-                post.imageBaseUrl = '';
-                post.imageMeta = {};
-              }
-
-              done();
-            }, function(done) {
-              post.save(done);
-            }], function(err) {
-              if (err) { return next(err); }
-
-              PostsPresenter.build([post], req.currentPerson, function(err, posts) {
-                if (err) { return next(err); }
-
-                if (body.images) {
-                  body.images.forEach(function(image) {
-                    if (fs.existsSync(process.cwd() + '/public' + image)) {
-                      fs.unlinkSync(process.cwd() + '/public' + image);
-                      logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image);
-                    }
-
-                    if (fs.existsSync(process.cwd() + '/public' + image.replace(/preview_/, ''))) {
-                      fs.unlinkSync(process.cwd() + '/public' + image.replace(/preview_/, ''));
-                      logger.log('Deleted tmp image: ' + process.cwd() + '/public' + image.replace(/preview_/, ''));
-                    }
-                  });
+              async.series([function(done) {
+                if (imagePath === '') {
+                  return done();
                 }
 
-                return res.json(posts[0]);
+                // NOTE: .uploadImage does not return err, thus if you just pass done
+                //       to it directly it'll always return error
+                post.uploadImage('image', imagePath, function () {
+                  done();
+                });
+              }, function(done) {
+                if (imagePath === '') {
+                  post.imageBaseUrl = '';
+                  post.imageMeta = {};
+                }
+                done();
+              }, function(done) {
+                post.save().then(function() {
+                  done();
+                }).catch(function(err) {
+                  logger.error(err);
+                  done(err);
+                });
+              }], function(err) {
+                if (err) { return next(err); }
+
+                K.PostsPresenter.build([post], req.currentPerson).then(function(posts) {
+                  if (body.images) {
+                    body.images.forEach(function(image) {
+                      if (fs.existsSync(process.cwd() + '/public' + image)) {
+                        fs.unlinkSync(process.cwd() + '/public' + image);
+                        logger.info('Deleted tmp image: ' + process.cwd() + '/public' + image);
+                      }
+
+                      if (fs.existsSync(process.cwd() + '/public' + image.replace(/preview_/, ''))) {
+                        fs.unlinkSync(process.cwd() + '/public' + image.replace(/preview_/, ''));
+                        logger.info('Deleted tmp image: ' + process.cwd() + '/public' + image.replace(/preview_/, ''));
+                      }
+                    });
+                  }
+
+                  res.json(posts[0]);
+                }).catch(next);
               });
             });
-          });
-        });
+          }).catch(next);
       });
     },
 
@@ -319,21 +316,19 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
         if (!response.isAllowed) { return next(new ForbiddenError()); }
 
-        Post.find({ id : hashids.decode(req.params.postId)[0] }, function(err, result) {
-          if (err) { return next(err); }
+        K.Post.query()
+          .where({ id : hashids.decode(req.params.postId)[0] })
+          .then(function(result) {
+            if (result.length === 0) {
+              return next(new NotFoundError('Post not found'));
+            }
 
-          if (result.length === 0) {
-            return next(new NotFoundError('Post not found'));
-          }
+            var post = result[0];
 
-          var post = new Post(result[0]);
-
-          post.destroy(function(err) {
-            if (err) { return next(err); }
-
-            res.json({ status : 'deleted' });
-          });
-        })
+            post.destroy().then(function() {
+              res.json({ status : 'deleted' });
+            });
+          }).catch(next);
       });
     },
 
@@ -461,7 +456,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
         var posts = [];
 
-        var tweetPost = Post.buildFromTweet(tweet);
+        var tweetPost = K.Post.buildFromTweet(tweet);
         tweetPost.images = [];
 
         posts.push(tweetPost);
@@ -591,20 +586,18 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
         if (!response.isAllowed) { return next(new ForbiddenError('Unauthorized.')); }
 
-        var sp = new SavedPost({
+        var sp = new K.SavedPost({
           entityId: response.person.id,
           postId: hashids.decode(req.params.postId)[0]
         });
 
-        sp.save(function(err) {
-          if (err) { return next(err); }
-
+        sp.save().then(function() {
           res.format({
             json : function() {
               res.json({ status : 'saved' });
             }
           });
-        });
+        }).catch(next);
       });
     },
 
@@ -622,23 +615,21 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
         var person = req.currentPerson;
 
-        SavedPost.find({
-          'entity_id' : response.person.id,
-          'post_id' : hashids.decode(req.params.postId)[0]
-        }, function(err, result) {
-          if (err) { next(err); return; }
-          if (result.length === 0) { next(new Error('Saved Post Not found')); }
+        K.SavedPost.query()
+          .where({
+            'entity_id' : response.person.id,
+            'post_id' : hashids.decode(req.params.postId)[0]
+          }).then(function(result) {
+            if (result.length === 0) { next(new Error('Saved Post Not found')); }
 
-          var sp = new SavedPost(result[0]);
-          sp.destroy(function(err) {
-            if (err) { next(err); return; }
-            res.format({
-              json: function() {
-                res.json({ status : 'removed' });
-              }
+            result[0].destroy().then(function() {
+              res.format({
+                json: function() {
+                  res.json({ status : 'removed' });
+                }
+              });
             });
-          });
-        });
+          }).catch(next);
       });
     },
 
@@ -673,48 +664,44 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           approved = true;
         }
 
-        var post = new Post({
+        var post = new K.Post({
           title: req.body.title,
           description: sanitizer(req.body.content),
           ownerId: response.postOwner.id,
           voiceId: req.activeVoice.id,
-          publishedAt : req.body.publishedAt,
+          publishedAt : new Date(req.body.publishedAt),
           approved: approved,
           sourceType: Post.SOURCE_TYPE_TEXT,
           sourceUrl: null, // required if sourceType !== Post.SOURCE_TYPE_TEXT
           sourceService: Post.SOURCE_SERVICE_LOCAL
         });
 
-        post.save(function (err) {
-          if (err) { return next(err); }
+        post.save().then(function() {
+          var imagePath = req.body.imagePath.trim();
 
-          var imagePath = '';
-
-          if (req.body.imagePath && req.body.imagePath !== '') {
-            imagePath = process.cwd() + '/public' + req.body.imagePath;
+          if (req.body.imagePath && req.body.imagePath.length > 0) {
+            if (/^https?/.test(req.body.imagePath.trim()) === false) {
+              imagePath = path.join(process.cwd(), 'public', req.body.imagePath.replace(/preview_/, ''));
+            }
           }
 
           post.uploadImage('image', imagePath, function() {
-            post.save(function(err, resave) {
-              if (err) { return next(err); }
-
+            post.save().then(function() {
               FeedInjector().inject(req.activeVoice.ownerId, 'item voiceNewPosts', req.activeVoice, function (err) {
                 if (err) { return next(err); }
 
-                PostsPresenter.build([post], req.currentPerson, function(err, posts) {
-                  if (err) { return next(err); }
-
+                K.PostsPresenter.build([post], req.currentPerson).then(function(posts) {
                   if (req.body.imagePath) {
                     fs.unlinkSync(process.cwd() + '/public' + req.body.imagePath);
-                    logger.log('Deleted tmp image: ' + process.cwd() + '/public' + req.body.imagePath);
+                    logger.info('Deleted tmp image: ' + process.cwd() + '/public' + req.body.imagePath);
                   }
 
                   return res.json(posts[0]);
-                });
+                }).catch(next);
               });
-            });
+            }).catch(next);
           });
-        });
+        }).catch(next);
       });
     },
 
@@ -736,19 +723,17 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           return next(new ForbiddenError('Unauthorized'));
         }
 
-        db('Posts')
-          .where('voice_id', req.activeVoice.id) // correct voice
-          .andWhere('approved', false) // unmoderated
-          .andWhereRaw("created_at < '" + moment(req.body.olderThanDate).format() + "'") // older than
+        K.Post.query()
+          .where('voice_id', req.activeVoice.id)
+          .andWhere('approved', false)
+          .andWhereRaw("created_at < '" + moment(req.body.olderThanDate).format() + "'")
           .del()
-          .exec(function (err, affectedRows) {
-            if (err) { return next(err); }
-
+          .then(function(affectedRows) {
             res.json({
               status: 'ok',
               deletedPostsCount: affectedRows
             });
-          });
+          }).catch(next);
       });
     },
 
@@ -764,20 +749,18 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           return next(new ForbiddenError('Unauthorized.'));
         }
 
-        db('Posts')
+        K.Post.query()
           .where({
             voice_id: req.activeVoice.id,
             approved: false
           })
           .del()
-          .exec(function (err, affectedRows) {
-            if (err) { return next(err); }
-
+          .then(function(affectedRows) {
             res.json({
               status: 'ok',
               deletedPostsCount: affectedRows
             });
-          });
+          }).catch(next);
       });
     },
 

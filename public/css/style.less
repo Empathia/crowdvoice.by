@@ -29,9 +29,14 @@
 // + .-color-{name} [color, fill]
 // + .-color-bg-{name} [background-color]
 // + .-color-border-{name} [border-color]
+.mixin-color(@color-neutral-x-light, neutral-x-light);
 .mixin-color(@color-neutral-mid, neutral-mid);
 .mixin-color(@color-negative, negative);
 .mixin-color(@color-positive, positive);
+
+:root {
+  -webkit-font-smoothing: antialiased;
+}
 
 header{
   &.-is-admin{
@@ -218,6 +223,7 @@ a {
 @import './components/dropdowns/account-dropdown-menu';
 @import './components/dropdowns/topics';
 @import './components/dropdowns/entities-checkboxes';
+@import './components/dropdowns/voice-ownership';
 @import './components/captions';
 @import './components/badge';
 @import './components/badge-follows';

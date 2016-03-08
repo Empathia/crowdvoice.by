@@ -9,7 +9,7 @@ var VoiceCollaborator = Class('VoiceCollaborator').inherits(Argon.KnexModel)({
     tableName : 'VoiceCollaborator',
     queries : {
       whereIn : function(requestObj, callback) {
-        db(requestObj.model.storage.tableName).whereIn(requestObj.columnName, requestObj.array).exec(callback);
+        db(requestObj.model.storage.tableName).whereIn(requestObj.columnName, requestObj.array).asCallback(callback);
       }
     },
     whereIn : function whereIn(requestObj, callback) {

@@ -1,14 +1,6 @@
-require('./../presenters/ThreadsPresenter');
-
 var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
   prototype : {
-    init : function (config){
-      this.name = this.constructor.className.replace('Controller', '')
-
-      return this;
-    },
-
-    index : function index(req, res, next) {
+    index : function (req, res, next) {
       ACL.isAllowed('show', 'threads', req.role, {
         currentPerson: req.currentPerson,
         profileName: req.params.profileName
@@ -20,48 +12,42 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
         }
 
         if (req.role === 'Anonymous') {
-          return res.render('threads/anonymous.html')
-        };
+          return res.render('threads/anonymous.html');
+        }
 
-        EntityOwner.find({
-          owner_id: hashids.decode(req.currentPerson.id)[0]
-        }, function (err, owners) {
-          if (err) { return next(err); }
-
-          var ids = owners.map(function (owner) {
-            return owner.ownedId;
-          });
-          ids.push(hashids.decode(req.currentPerson.id)[0]);
-
-          db('MessageThreads')
-            .where('sender_person_id', '=', hashids.decode(req.currentPerson.id)[0])
-            .orWhereIn('receiver_entity_id', ids)
-            .exec(function (err, rows) {
-              if (err) { return next(err); }
-
-              var threads = Argon.Storage.Knex.processors[0](rows);
-
-              ThreadsPresenter.build(threads, req.currentPerson, function(err, threads) {
-                if (err) { return next(err); }
-
-                res.format({
-                  html : function() {
-                    return res.render('threads/index.html', {
-                      pageName : 'page-inner page-threads',
-                      threads : threads
-                    });
-                  },
-                  json : function() {
-                    return res.json(result);
-                  }
-                });
-              });
+        return K.EntityOwner.query()
+          .where('owner_id', hashids.decode(req.currentPerson.id)[0])
+          .then(function (owners) {
+            var ids = owners.map(function (o) {
+              return o.ownedId;
             });
-        });
+            ids.push(hashids.decode(req.currentPerson.id)[0]);
+
+            return K.MessageThread.query()
+              .where('sender_person_id', '=', hashids.decode(req.currentPerson.id)[0])
+              .orWhere('receiver_entity_id', 'in', ids)
+              .then(function (threads) {
+                return K.ThreadsPresenter.build(threads, req.currentPerson)
+                  .then(function (pres) {
+                    return res.format({
+                      html: function () {
+                        return res.render('threads/index.html', {
+                          pageName: 'page-inner page-threads',
+                          threads: pres
+                        });
+                      },
+                      json: function () {
+                        return res.json(pres);
+                      }
+                    });
+                  });
+              });
+          })
+          .catch(next);
       });
     },
 
-    create : function create(req, res, next) {
+    create : function (req, res, next) {
       var payload = req.body;
 
       payload.type = payload.type || 'message';
@@ -146,7 +132,7 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
                   })
               })
               .orderBy('created_at', 'desc')
-              .exec(function (err, rows) {
+              .asCallback(function (err, rows) {
                 if (err) { return done(err); }
 
                 var messages = Argon.Storage.Knex.processors[0](rows),
@@ -199,7 +185,7 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
       })
     },
 
-    update : function update(req, res, next) {
+    update : function (req, res, next) {
       var threadId = hashids.decode(req.params.threadId)[0];
       var currentPersonId = hashids.decode(req.currentPerson.id)[0];
 
@@ -235,7 +221,7 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
       })
     },
 
-    destroy : function destroy(req, res, next) {
+    destroy : function (req, res, next) {
       var threadId = hashids.decode(req.params.threadId)[0];
       var currentPersonId = hashids.decode(req.currentPerson.id)[0];
 
@@ -317,7 +303,7 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
     // NOTE: Previously it only searched people as that was a limitation of
     //       threads and emssages in the past, name kept same for
     //       compatibility's sake, but it now searches all entities.
-    searchPeople : function searchPeople(req, res, next) {
+    searchPeople : function (req, res, next) {
       ACL.isAllowed('searchPeople', 'threads', req.role, {
         currentPerson : req.currentPerson
       }, function(err, isAllowed) {
@@ -325,29 +311,66 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
 
         if (!isAllowed) { return next(new ForbiddenError()); }
 
-        var value = req.body.value.toLowerCase().trim();
+        var query = req.body.value.toLowerCase().trim();
+        var exclude = req.body.exclude;
 
-        res.format({
-          json : function() {
-            db('Entities')
-              .where('name', 'like', value)
-              .orWhere('profile_name', 'like', '%' + value + '%')
-              .andWhere('is_anonymous', '=', false)
-              .andWhere('deleted', '=', false)
-              .andWhere('id', '!=', hashids.decode(req.currentPerson.id)[0])
-              .exec(function (err, rows) {
-                if (err) { return next(err); }
+        if (!exclude) {
+          exclude = [req.currentPerson.id];
+        }
 
-                var entities = Argon.Storage.Knex.processors[0](rows)
+        var entities = [];
 
-                entities.forEach(function(entity) {
-                  entity.id = hashids.encode(entity.id);
-                })
+        async.series([function(done) {
+          K.EntityOwner.query()
+          .where({
+            owner_id : hashids.decode(req.currentPerson.id)[0]
+          }).then(function(owners) {
 
-                res.json(entities);
+            K.Entity.query().whereIn('id', owners.map(function(item) {return item.ownedId})).then(function(entities) {
+              entities.forEach(function(entity) {
+                exclude.push(hashids.encode(entity.id));
               });
+
+              done();
+            });
+          }).catch(done);
+
+        }, function(done) {
+          SearchController.prototype._searchPeople(query, exclude, req.currentPerson, function(err, result) {
+            if (err) {
+              return next(err);
+            }
+
+            result.forEach(function(item) {
+              entities.push(item);
+            });
+
+            done();
+          });
+        }, function(done) {
+          SearchController.prototype._searchOrganizations(query, exclude, req.currentPerson, function(err, result) {
+            if (err) {
+              return next(err);
+            }
+
+            result.forEach(function(item) {
+              entities.push(item);
+            });
+
+            done();
+          });
+        }], function(err) {
+          if (err) {
+            return next(err);
           }
-        })
+
+          res.format({
+            json : function() {
+              res.json(entities);
+            }
+          });
+
+        });
       })
     }
   }

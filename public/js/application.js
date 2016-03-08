@@ -27,7 +27,7 @@ window.dragula = require('dragula');
 // JS » Our stack, namespace, lib
 require('neon');
 require('neon/stdlib');
-window.CV = {UI: {}, Views: {}, Forms: {}};
+window.CV = {Store: {}, UI: {}, Views: {}, Forms: {}};
 require('./lib/widget-utils.js');
 require('./lib/Widget.js');
 require('./lib/image-halt');
@@ -35,6 +35,7 @@ require('./lib/ResponsiveWidth');
 require('./app');
 
 // Global Widgets
+require('./widgets/ui/Badge');
 require('./widgets/ui/Modal');
 require('./widgets/ui/CenterModal');
 require('./widgets/ui/Input');
@@ -106,6 +107,8 @@ require('./widgets/dropdowns/DropdownTopics');
 require('./widgets/dropdowns/DropdownVoiceTypes');
 require('./widgets/dropdowns/DropdownVoiceStatus');
 require('./widgets/dropdowns/DropdownVoiceOwnership');
+require('./widgets/dropdowns/DropdownInviteToOrganization');
+require('./widgets/dropdowns/DropdownInviteToVoice');
 require('./widgets/dropdowns/CurrentPersonEntitiesCheckboxes');
 require('./widgets/tabs/TabsManager');
 require('./widgets/tabs/Tab');
@@ -122,6 +125,7 @@ require('./widgets/cards/CardMini');
 require('./widgets/cards/CardMiniClean');
 require('./widgets/cards/CardHover');
 require('./widgets/cards/CardHoverItem');
+require('./widgets/cards/CardUserSingleRow');
 require('./widgets/cards/actions/CardActionFollow');
 require('./widgets/cards/actions/CardActionFollowMultiple');
 require('./widgets/cards/actions/CardActionMessage');
@@ -135,6 +139,7 @@ require('./widgets/voice-cover/VoiceCoverMediumList');
 require('./widgets/voice-cover/VoiceCoverMini');
 require('./widgets/voice-cover/VoiceCoverMiniClean');
 require('./widgets/voice-cover/VoiceCoverTitle');
+require('./widgets/voice-cover/VoiceCoverSingleRow');
 require('./widgets/voice-cover/actions/VoiceCoverActions');
 require('./widgets/voice-cover/actions/VoiceCoverActionsEdit');
 require('./widgets/voice-cover/actions/VoiceCoverActionsArchive');
@@ -211,6 +216,14 @@ require('./views/Notifications');
 require('./widgets/view-notifications/NotificationsPageItem');
 require('./views/PeopleFeed');
 require('./widgets/view-people-feed/PeopleFeedDropdown');
+require('./views/Threads');
+require('./widgets/view-threads/ThreadsSidebarUIContainer');
+require('./widgets/view-threads/ThreadSidebarItem');
+require('./widgets/view-threads/ThreadsMainUIContainer');
+require('./widgets/view-threads/ThreadNewContainer');
+require('./widgets/view-threads/ThreadSelectedContainer');
+require('./widgets/view-threads/NewMessageDropdown');
+require('./widgets/view-threads/Message');
 
 require('./widgets/voice/registry/VoicePagesRegistry');
 require('./widgets/voice/publish-onboarding/VoicePublishOnboardingManager');
@@ -372,14 +385,8 @@ require('./widgets/elements/select.js');
 require('./widgets/elements/alert.js');
 require('./widgets/elements/detect-location.js');
 
-// threads and messages
-require('./widgets/messages/ThreadsContainer.js');
-require('./widgets/messages/Thread.js');
-require('./widgets/messages/Message.js');
-
 // generators
 require('./widgets/generators/feedGenerator.js');
-
 
 require('./widgets/audio.js');
 

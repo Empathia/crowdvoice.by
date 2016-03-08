@@ -1,7 +1,7 @@
 // error handler middleware for CSRF
 
 if (CONFIG.enableRedis) {
-  logger.log("Setting error handler for CSRF");
+  logger.info("Setting error handler for CSRF");
 
   module.exports = function (err, req, res, next) {
     logger.error('CSRF', err, res.locals._csrf)

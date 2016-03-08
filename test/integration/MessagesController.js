@@ -1,15 +1,11 @@
 'use strict'
 
-var application = require('neonode-core')
-require(path.join(__dirname, '../../lib/routes.js'))
+var path = require('path')
 
-global.FeedInjector = require(path.join(__dirname, '../../lib/FeedInjector.js'))
-require(path.join(__dirname, '../../presenters/PostsPresenter'))
-
-application._serverStart()
+require(path.join(process.cwd(), 'bin', 'server.js'))
 
 // COMMENT IF YOU WANT LOGGER OUTPUT
-logger.log = function () {}
+logger.info = function () {}
 
 var login = require(path.join(__dirname, 'login.js')),
   expect = require('chai').expect
@@ -129,7 +125,7 @@ describe('MessagesController', function () {
           db('Messages')
             .where('thread_id', '=', 3)
             .del()
-            .exec(nextSeries)
+            .asCallback(nextSeries)
         },
 
         function (nextSeries) {
@@ -387,6 +383,29 @@ describe('MessagesController', function () {
         },
 
       ], done)
+    })
+
+  })
+
+  describe('#getMessages', function () {
+
+    it('Should return messages', function (doneTest) {
+      login('cersei-lannister', function (err, agent, csrf) {
+        if (err) { return doneTest(err) }
+
+        agent
+          .get(urlBase + '/cersei-lannister/messages/' + hashids.encode(1) + '/messages')
+          .accept('application/json')
+          .end(function (err, res) {
+            if (err) { return doneTest(err) }
+
+            expect(res.status).to.equal(200)
+            expect(res.body.messages).to.be.an('array')
+            expect(res.body.totalCount).to.be.a('number')
+
+            return doneTest()
+          })
+      })
     })
 
   })

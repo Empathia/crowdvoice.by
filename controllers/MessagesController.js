@@ -237,8 +237,8 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
             }
           ], function (err) {
             if (err) {
-              logger.log(err);
-              logger.log(err.stack);
+              logger.info(err);
+              logger.info(err.stack);
               return res.status(400).json({ error : err });
             }
 
@@ -248,7 +248,7 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
       })
     },
 
-    create : function create(req, res, next) {
+    create : function (req, res, next) {
       var threadId = hashids.decode(req.params.threadId)[0];
       var currentPersonId = hashids.decode(req.currentPerson.id)[0];
 
@@ -267,32 +267,28 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
         res.format({
           json : function() {
             MessageThread.findById(threadId, function(err, thread) {
-              if (err) {
-                next(err); return;
-              }
+              if (err) { return next(err); }
 
-              if (thread.length === 0) {
+              if (thread.length < 1) {
                 return next(new NotFoundError('MessageThread Not Found'));
               }
 
-              thread =  new MessageThread(thread[0]);
+              thread = new MessageThread(thread[0]);
 
               thread.createMessage({
                 type : Message.TYPE_MESSAGE,
                 senderPersonId : currentPersonId,
                 message : req.body.message
               }, function(err, message) {
-                if (err) {
-                  return next(err);
-                }
+                if (err) { return next(err); }
 
-                ThreadsPresenter.build([thread], req.currentPerson, function(err, threads) {
-                  if (err) {
-                    return next(err);
-                  }
+                return K.MessagesPresenter.build([message], req.currentPerson)
+                  .then(function(message) {
+                    if (err) { return next(err); }
 
-                  res.json(threads[0].messages[threads[0].messages.length - 1]);
-                });
+                    res.json(message[0]);
+                  })
+                  .catch(next);
               });
             });
           }
@@ -300,51 +296,50 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
       })
     },
 
-    destroy : function destroy(req, res, next) {
-      var messageId = hashids.decode(req.params.messageId)[0];
-      var currentPersonId = hashids.decode(req.currentPerson.id)[0];
-
-      ACL.isAllowed('destroy', 'messages', req.role, {
-        messageId : messageId,
-        currentPersonId : currentPersonId
-      }, function(err, isAllowed) {
-        if (err) {
-          return next(err);
-        }
+    getMessages: function (req, res, next) {
+      ACL.isAllowed('show', 'threads', req.role, {
+        currentPerson: req.currentPerson,
+        profileName: req.params.profileName
+      }, function (err, isAllowed) {
+        if (err) { return next(err); }
 
         if (!isAllowed) {
           return next(new ForbiddenError());
         }
 
-        res.format({
-          json : function() {
-            Message.findById(messageId, function(err, message) {
-              if (err) {
-                return next(err);
-              }
+        if (req.role === 'Anonymous') {
+          return res.render('threads/anonymous.html');
+        }
 
-              if (message.length === 0) {
-                return next(new NotFoundError('Message Not Found'));
-              }
+        var count
 
-              message = new Message(message[0]);
+        return K.Message.query()
+          .select('*', function () {
+            return this
+              .count('*')
+              .as('full_count')
+              .from('Messages')
+              .where('thread_id', hashids.decode(req.params.threadId)[0])
+          })
+          .where('thread_id', hashids.decode(req.params.threadId)[0])
+          .orderBy('created_at', 'desc')
+          .offset(req.query.offset || 0)
+          .limit(req.query.limit || 20)
+          .then(function (messages) {
+            count = (messages[0] ? +messages[0].fullCount : 0)
 
-              var senderOrReceiver = message.isPersonSender(currentPersonId) ? 'Sender' : 'Receiver';
-
-              message['hiddenFor' + senderOrReceiver] = true;
-
-              message.save(function(err, result) {
-                if (err) {
-                  return next(err);
-                }
-
-                res.json({status : 'ok'});
-              });
+            return K.MessagesPresenter.build(messages.reverse(), req.currentPerson)
+          })
+          .then(function (pres) {
+            res.json({
+              messages: pres,
+              totalCount: count
             })
-          }
-        })
+          })
+          .catch(next);
       })
     }
+
   }
 });
 

@@ -110,7 +110,7 @@ Admin.VoicesController = Class(Admin, 'VoicesController')({
         }], function(done) {
           if (err) {
             res.locals.errors = err;
-            logger.log(err);
+            logger.info(err);
             return res.render('admin/voices/new.html', { layout : 'admin' });
           }
 
@@ -161,35 +161,38 @@ Admin.VoicesController = Class(Admin, 'VoicesController')({
 
     update : function update(req, res, next) {
       ACL.isAllowed('update', 'admin.voices', req.role, { currentPerson: req.currentPerson }, function(err, isAllowed) {
-
-        if (err) {
-          return next(err);
-        }
+        if (err) { return next(err); }
 
         if (!isAllowed) {
           return next(new ForbiddenError());
         }
 
         Voice.find({ id : hashids.decode(req.params.voiceId)[0] }, function(err, result) {
-          if (err) {
-            return next(err);
-          }
+          if (err) { return next(err); }
 
           if (result.length === 0) {
-            return next(new NotFoundError());
+            return next(new NotFoundError('Voice not found'));
           }
+
+          var useDefault = function (newVal, oldVal) {
+            if (_.isUndefined(newVal) || newVal === 'undefined') {
+              return oldVal
+            } else {
+              return newVal
+            }
+          };
 
           var voice = new Voice(result[0]);
 
-          voice.title = req.body.title;
-          voice.status = req.body.status;
-          voice.description = req.body.description;
-          voice.type = req.body.type;
-          voice.ownerId = hashids.decode(req.body.ownerId)[0];
-          voice.twitterSearch = req.body.twitterSearch;
-          voice.rssUrl = req.body.rssUrl;
-          voice.latitude = req.body.latitude;
-          voice.longitude = req.body.longitude;
+          voice.title = useDefault(req.body.title, voice.title);
+          voice.status = useDefault(req.body.status, voice.status);
+          voice.description = useDefault(req.body.description, voice.description);
+          voice.type = useDefault(req.body.type, voice.type);
+          voice.ownerId = useDefault(hashids.decode(req.body.ownerId)[0], voice.ownerId);
+          voice.twitterSearch = useDefault(req.body.twitterSearch, voice.twitterSearch);
+          voice.rssUrl = useDefault(req.body.rssUrl, voice.rssUrl);
+          voice.latitude = useDefault(req.body.latitude, voice.latitude);
+          voice.longitude = useDefault(req.body.longitude, voice.longitude);
 
           async.series([function(done) {
             if (!req.files.image) {
@@ -202,7 +205,7 @@ Admin.VoicesController = Class(Admin, 'VoicesController')({
           }], function(err) {
             if (err) {
               res.locals.errors = err;
-              logger.log(err);
+              logger.info(err);
 
               return res.render('admin/voices/edit.html', { layout : 'admin' });
             }
@@ -216,10 +219,7 @@ Admin.VoicesController = Class(Admin, 'VoicesController')({
 
               req.flash('success', 'Voice has been updated.');
 
-              //res.redirect('/admin/voices');
-
               res.json(voices[0]);
-
             });
           });
         });

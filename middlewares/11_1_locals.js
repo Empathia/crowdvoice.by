@@ -112,7 +112,7 @@ module.exports = function(req, res, next) {
 
                   db.select('owned_id').from('EntityOwner')
                     .where('owner_id', '=', owner.id)
-                    .exec(function (err, orgs) {
+                    .asCallback(function (err, orgs) {
                       if (err) { return nextSeries(err); }
 
                       var entityIds = orgs.map(function (org) { return org.owned_id; });
@@ -120,7 +120,7 @@ module.exports = function(req, res, next) {
 
                       db.select('id').from('Voices')
                         .whereIn('owner_id', entityIds)
-                        .exec(function (err, rows) {
+                        .asCallback(function (err, rows) {
                           if (err) { return nextSeries(err); }
 
                           var voiceIds = rows.map(function (row) { return hashids.encode(row.id) });
@@ -216,7 +216,7 @@ module.exports = function(req, res, next) {
             db('Voices').count('*').where({
               'owner_id' : person.id,
               status : Voice.STATUS_PUBLISHED
-            }).exec(function(err, result) {
+            }).asCallback(function(err, result) {
               if (err) {
                 return done(err);
               }
@@ -246,10 +246,22 @@ module.exports = function(req, res, next) {
                 req.currentPerson.ownedVoices = result;
 
                 var voiceTitles = voices.map(function(item) {
+                  var voice = new Voice(item);
+
+                  var images = {}
+
+                  Object.keys(voice.imageMeta).forEach(function (version) {
+                    images[version] = {
+                      url: voice.image.url(version),
+                      meta: voice.image.meta(version),
+                    };
+                  });
+
                   return {
                     id : hashids.encode(item.id),
                     name : sanitize(item.title),
-                    type : item.type
+                    type : item.type,
+                    images: images
                   }
                 });
 

@@ -111,6 +111,7 @@ var SearchController = Class('SearchController')({
       var query = req.body.query;
       var exclude = req.body.exclude;
 
+
       if (!exclude) {
         exclude = [];
       }
@@ -155,7 +156,7 @@ var SearchController = Class('SearchController')({
         WHERE "Voices".status = ? AND "Voices".deleted = ? \
         ) search \
         WHERE search.document @@ to_tsquery(?) \
-        ORDER BY ts_rank(search.document, to_tsquery(?)) DESC;', [Voice.STATUS_PUBLISHED, false, searchQuery, searchQuery]).exec(function(err, result) {
+        ORDER BY ts_rank(search.document, to_tsquery(?)) DESC;', [Voice.STATUS_PUBLISHED, false, searchQuery, searchQuery]).asCallback(function(err, result) {
           if (err) {
             return callback(err);
           }
@@ -181,79 +182,65 @@ var SearchController = Class('SearchController')({
     },
 
     _searchPeople : function _searchPeople(query, exclude, currentPerson, callback) {
-      var searchQuery = query.toLowerCase().trim().split(/[ ]+/).join(':* | ') + ':*';
+      var searchQuery = query.toLowerCase().trim();
 
-      db.raw('SELECT * FROM ( \
-        SELECT "Entities".*, \
-        setweight(to_tsvector("Entities".name), \'A\') || \
-        setweight(to_tsvector("Entities".profile_name), \'B\') || \
-        setweight(to_tsvector(coalesce(("Entities".description), \'\')), \'C\') || \
-        setweight(to_tsvector(coalesce(("Entities".location), \'\')), \'D\') \
-        AS document \
-        FROM "Entities" \
-        WHERE "Entities".is_anonymous = ? AND "Entities".type = ? AND "Entities".deleted = ?) search \
-        WHERE search.document @@ to_tsquery(?) \
-        ORDER BY ts_rank(search.document, to_tsquery(?)) DESC;', [false, 'person', false, searchQuery, searchQuery]).exec(function(err, result) {
+      K.Entity.query()
+      .where({
+        is_anonymous : false,
+        type : 'person',
+        deleted : false
+      })
+      .andWhere(function() {
+        this.whereRaw('name ilike ? OR profile_name ilike ? OR description ilike ? OR location ilike ?', ['%' + searchQuery + '%', '%' + searchQuery + '%', '%' + searchQuery + '%', '%' + searchQuery + '%'])
+      })
+      .then(function(result) {
+        EntitiesPresenter.build(result, currentPerson, function(err, people) {
           if (err) {
             return callback(err);
           }
 
-          result = Argon.Storage.Knex.processors[0](result.rows);
+          if (exclude.length > 0) {
+            people = people.filter(function(item) {
+              if (exclude.indexOf(item.id) === -1) {
+                return true;
+              }
+            });
+          }
 
-          EntitiesPresenter.build(result, currentPerson, function(err, people) {
-            if (err) {
-              return callback(err);
-            }
-
-            if (exclude.length > 0) {
-              people = people.filter(function(item) {
-                if (exclude.indexOf(item.id) === -1) {
-                  return true;
-                }
-              });
-            }
-
-            callback(null, people);
-          });
+          callback(null, people);
         });
+      });
     },
 
     _searchOrganizations : function _searchOrganizations(query, exclude, currentPerson, callback) {
-      var searchQuery = query.toLowerCase().trim().split(/[ ]+/).join(':* | ') + ':*';
+      var searchQuery = query.toLowerCase().trim();
 
-      db.raw('SELECT * FROM ( \
-        SELECT "Entities".*, \
-        setweight(to_tsvector("Entities".name), \'A\') || \
-        setweight(to_tsvector("Entities".profile_name), \'B\') || \
-        setweight(to_tsvector(coalesce(("Entities".description), \'\')), \'C\') || \
-        setweight(to_tsvector(coalesce(("Entities".location), \'\')), \'D\') \
-        AS document \
-        FROM "Entities" \
-        WHERE "Entities".is_anonymous = ? AND "Entities".type = ? AND "Entities".deleted = ?) search \
-        WHERE search.document @@ to_tsquery(?) \
-        ORDER BY ts_rank(search.document, to_tsquery(?)) DESC;', [false, 'organization', false, searchQuery, searchQuery]).exec(function(err, result) {
+      K.Entity.query()
+      .where({
+        is_anonymous : false,
+        type : 'organization',
+        deleted : false
+      })
+      .andWhere(function() {
+        this.whereRaw('name ilike ? OR profile_name ilike ? OR description ilike ? OR location ilike ?', ['%' + searchQuery + '%', '%' + searchQuery + '%', '%' + searchQuery + '%', '%' + searchQuery + '%'])
+      })
+      .then(function(result) {
+        EntitiesPresenter.build(result, currentPerson, function(err, people) {
           if (err) {
             return callback(err);
           }
 
-          result = Argon.Storage.Knex.processors[0](result.rows);
+          if (exclude.length > 0) {
+            people = people.filter(function(item) {
+              if (exclude.indexOf(item.id) === -1) {
+                return true;
+              }
+            });
+          }
 
-          EntitiesPresenter.build(result, currentPerson, function(err, organizations) {
-            if (err) {
-              return callback(err);
-            }
-
-            if (exclude.length > 0) {
-              organizations = organizations.filter(function(item) {
-                if (exclude.indexOf(item.id) === -1) {
-                  return true;
-                }
-              });
-            }
-
-            callback(null, organizations);
-          });
+          callback(null, people);
         });
+      });
     }
   }
 });

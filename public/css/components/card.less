@@ -38,11 +38,11 @@
 
 .card_avatar {
   width: 88px;
+  height: 88px;
   position: absolute;
   right: 20px;
   bottom: -22px;
   border: 2px solid @color-white;
-  background-color: @color-white;
 }
 
 .card_username {}
@@ -323,4 +323,15 @@
   width: 230px;
   padding: 10px 0;
   display: none;
+}
+
+/* =========================================================================== *
+ * card-user-single-row
+ * =========================================================================== */
+.card-user-single-row {
+  display: flex;
+  align-items: center;
+  &__img {
+    margin-right: .7em;
+  }
 }

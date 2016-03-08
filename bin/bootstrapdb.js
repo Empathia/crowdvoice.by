@@ -1,4 +1,6 @@
-var application = require('neonode-core');
+var path = require('path');
+
+var application = require(path.join(process.cwd(), 'lib', 'neonode-core'));
 
 global.useGM = true;
 
@@ -81,8 +83,8 @@ async.each(topics, function(topic, done) {
   });
 }, function(err) {
   if (err) {
-    logger.log(err);
-    logger.log(err.stack);
+    logger.info(err);
+    logger.info(err.stack);
   }
 
   process.exit(0);

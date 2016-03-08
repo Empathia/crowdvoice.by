@@ -1,4 +1,4 @@
-var ImageUploader = require(path.join(process.cwd(), 'lib', 'image_uploader.js'));
+require(path.join(process.cwd(), 'lib', 'image_uploader.js'));
 var url = require('url');
 var favicon = require('find-favicon');
 var crypto = require('crypto');
@@ -64,7 +64,7 @@ var Post = Class('Post').inherits(Argon.KnexModel).includes(ImageUploader)({
     tableName : 'Posts',
     queries : {
       whereIn : function(requestObj, callback) {
-        db(requestObj.model.storage.tableName).whereIn(requestObj.columnName, requestObj.array).exec(callback);
+        db(requestObj.model.storage.tableName).whereIn(requestObj.columnName, requestObj.array).asCallback(callback);
       }
     },
 

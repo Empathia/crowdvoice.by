@@ -46,7 +46,7 @@ var EntitiesPresenter = Module('EntitiesPresenter')({
         db('Voices').count('*').where({
           'owner_id' : entity.id,
           status : 'STATUS_PUBLISHED'
-        }).exec(function(err, result) {
+        }).asCallback(function(err, result) {
           if (err) {
             return done(err);
           }
@@ -58,7 +58,7 @@ var EntitiesPresenter = Module('EntitiesPresenter')({
       }, function(done) {
         db('EntityFollower').count('*').where({
           'followed_id' :  entity.id
-        }).exec(function(err, result) {
+        }).asCallback(function(err, result) {
           if (err) {
             return done(err);
           }
@@ -70,7 +70,7 @@ var EntitiesPresenter = Module('EntitiesPresenter')({
       }, function(done) {
         db('EntityFollower').count('*').where({
           'follower_id' : entity.id
-        }).exec(function(err, result) {
+        }).asCallback(function(err, result) {
           if (err) {
             return done(err);
           }
@@ -133,7 +133,7 @@ var EntitiesPresenter = Module('EntitiesPresenter')({
       }, function(done) {
         db('EntityMembership').count('*').where({
           'entity_id' : entity.id
-        }).exec(function(err, result) {
+        }).asCallback(function(err, result) {
           if (err) {
             return done(err);
           }
@@ -317,7 +317,7 @@ var EntitiesPresenter = Module('EntitiesPresenter')({
             db('EntityFollower')
               .whereIn('follower_id', ownedIds)
               .andWhere('followed_id', entity.id)
-              .exec(function (err, rows) {
+              .asCallback(function (err, rows) {
                 if (err) { return done(err); }
 
                 result = rows.map(function (row) {
@@ -342,7 +342,7 @@ var EntitiesPresenter = Module('EntitiesPresenter')({
         db('EntityFollower')
           .where('follower_id', entity.id)
           .andWhere('followed_id', hashids.decode(currentPerson.id)[0])
-          .exec(function (err, rows) {
+          .asCallback(function (err, rows) {
             if (err) { return nextSeries(err); }
 
             if (rows.length > 0) {

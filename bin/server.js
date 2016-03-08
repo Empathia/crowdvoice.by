@@ -1,6 +1,7 @@
 #!/usr/bin/env node
+var path = require('path');
 
-var application = require('neonode-core');
+var application = require(path.join(process.cwd(), 'lib', 'neonode-core'));
 
 // Argon Monkey patches
 require(__dirname + '/../lib/ArgonPatches');
@@ -8,7 +9,7 @@ require(__dirname + '/../lib/ArgonPatches');
 // Load socket.io
 var io = require('socket.io')(application.server);
 
-global.FeedInjector = require(__dirname + '/../lib/FeedInjector.js');
+global.FeedInjector = require(path.join(process.cwd(), 'lib', 'FeedInjector.js'));
 
 require(path.join(process.cwd(), 'lib', 'krypton', 'load-models.js'));
 
@@ -16,7 +17,15 @@ require(path.join(process.cwd(), 'lib', 'routes.js'));
 
 require(path.join(process.cwd(), 'lib', 'TwitterFetcher.js'));
 
-require(path.join(process.cwd(), 'presenters', 'PostsPresenter.js'));
+require('glob').sync('lib/krypton/presenters/*.js').forEach(function (file) {
+  logger.log('Loading ' + file + '...')
+  require(path.join(process.cwd(), file))
+})
+
+require('glob').sync('presenters/*.js').forEach(function (file) {
+  logger.log('Loading ' + file + '...')
+  require(path.join(process.cwd(), file))
+})
 
 application._serverStart();
 
