@@ -162,8 +162,7 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
         K.SavedPost.knex()
           .select(
             db.raw('distinct on (MONTH, YEAR) to_char("SavedPosts".created_at, \'MM\') as MONTH'),
-            db.raw('to_char("SavedPosts".created_at, \'YYYY\') as YEAR'),
-            db.raw('row_number() over (order by "SavedPosts".created_at desc) / ? as page', VoicesController.POSTS_PER_PAGE)
+            db.raw('to_char("SavedPosts".created_at, \'YYYY\') as YEAR')
           )
           .from('SavedPosts')
           .where('SavedPosts.entity_id', response.entity.id)
@@ -171,39 +170,43 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
           .then(function (result) {
             var counts = {};
 
+            var currentPage = 0;
+
             return Promise.each(result,
               function (row) {
-                return K.SavedPost.query()
-                  .count('*')
-                  .where('entity_id', response.entity.id)
-                  .andWhere(db.raw('to_char("SavedPosts".created_at, \'MM\') = ?', row.month))
-                  .andWhere(db.raw('to_char("SavedPosts".created_at, \'YYYY\') = ?', row.year))
-                  .then(function (count) {
-                    if (!counts[row.year]) {
-                      counts[row.year] = {};
-                    }
-
-                    var pages = [],
-                       steps = 0,
-                       count = (count[0] ? +count[0].count : 0);
-
-                    do {
-                      steps += VoicesController.POSTS_PER_PAGE;
-
-                      if (pages.length < 1) {
-                        pages.push(+row.page);
-                      } else {
-                        pages.push(pages[pages.length - 1] + 1);
+                return new Promise(function (resolve, reject) {
+                  return K.SavedPost.query()
+                    .count('*')
+                    .where('entity_id', response.entity.id)
+                    .andWhere(db.raw('to_char("SavedPosts".created_at, \'MM\') = ?', row.month))
+                    .andWhere(db.raw('to_char("SavedPosts".created_at, \'YYYY\') = ?', row.year))
+                    .then(function (count) {
+                      if (!counts[row.year]) {
+                        counts[row.year] = {};
                       }
-                    } while (steps < count)
 
-                    counts[row.year][row.month] = {
-                      pages: pages,
-                      count: count
-                    };
+                      var pages = [],
+                         steps = 0,
+                         count = (count[0] ? +count[0].count : 0);
 
-                    return Promise.resolve();
-                  });
+                      do {
+                        steps += VoicesController.POSTS_PER_PAGE;
+
+                        pages.push(currentPage);
+
+                        currentPage += 1;
+                      } while (steps < count)
+
+                      counts[row.year][row.month] = {
+                        pages: pages,
+                        count: count
+                      };
+
+                      return Promise.resolve();
+                    })
+                    .then(resolve)
+                    .catch(reject);
+                });
               })
               .then(function () {
                 res.locals.pagesForMonths = {
