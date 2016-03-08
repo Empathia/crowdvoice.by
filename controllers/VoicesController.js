@@ -510,7 +510,28 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                 tf.fetchTweets(done);
               }, function(done) {
                 logger.info('Creating posts from tweets');
-                tf.createPosts(done);
+                tf.createPosts(function(err, result) {
+                  if (err) {
+                    return done(err);
+                  }
+
+                  result.forEach(function(item) {
+                    item.title = item.title.substr(0, 64);
+                    item.description = item.description.substr(0, 179);
+
+                    if (item.images.length > 0) {
+                      item.imagePath = item.images[0].path;
+                    }
+                  });
+
+                  PostsController.prototype.createPosts(result, false, voice.ownerId, voice.id, function(err, result) {
+                    if (err) {
+                      return done(err);
+                    }
+
+                    done();
+                  });
+                });
               }, function(done) {
                 logger.info('Updating voice');
                 var voiceInstance = new Voice(voice);
@@ -788,7 +809,28 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                     tf.fetchTweets(done);
                   }, function(done) {
                     logger.info('Creating posts from tweets');
-                    tf.createPosts(done);
+                    tf.createPosts(function(err, result) {
+                      if (err) {
+                        return done(err);
+                      }
+
+                      result.forEach(function(item) {
+                        item.title = item.title.substr(0, 64);
+                        item.description = item.description.substr(0, 179);
+
+                        if (item.images.length > 0) {
+                          item.imagePath = item.images[0].path;
+                        }
+                      });
+
+                      PostsController.prototype.createPosts(result, false, voice.ownerId, voice.id, function(err, result) {
+                        if (err) {
+                          return done(err);
+                        }
+
+                        done();
+                      });
+                    });
                   }, function(done) {
                     logger.info('Updating voice');
                     var voiceInstance = new Voice(voice);
