@@ -229,9 +229,7 @@ var ThreadsController = Class('ThreadsController').includes(BlackListFilter)({
         threadId : threadId,
         currentPersonId : currentPersonId
       }, function(err, isAllowed) {
-        if (err) {
-          return next(err);
-        }
+        if (err) { return next(err); }
 
         if (!isAllowed) {
           return next(new ForbiddenError());
