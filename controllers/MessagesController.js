@@ -328,7 +328,12 @@ var MessagesController = Class('MessagesController').includes(BlackListFilter)({
           .then(function (messages) {
             count = (messages[0] ? +messages[0].fullCount : 0)
 
-            return K.MessagesPresenter.build(messages.reverse(), req.currentPerson)
+            // Get rid of hidden messages
+            var filteredMessages = messages.filter(function (m) {
+              return !m['hiddenFor' + (m.isPersonSender(hashids.decode(req.currentPerson.id)[0]) ? 'Sender' : 'Receiver')]
+            })
+
+            return K.MessagesPresenter.build(filteredMessages.reverse(), req.currentPerson)
           })
           .then(function (pres) {
             res.json({
