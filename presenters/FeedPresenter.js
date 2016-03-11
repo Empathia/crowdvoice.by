@@ -1,9 +1,5 @@
 'use strict'
 
-var EntitiesPresenter = require('./EntitiesPresenter.js')
-var VoicesPresenter = require('./VoicesPresenter.js')
-var ThreadsPresenter = require('./ThreadsPresenter.js')
-
 var FeedPresenter = Module('FeedPresenter')({
   build: function (feedActions, currentPerson, callback) {
     var result = []
