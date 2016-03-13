@@ -143,6 +143,7 @@ require('./widgets/voice-cover/VoiceCoverSingleRow');
 require('./widgets/voice-cover/actions/VoiceCoverActions');
 require('./widgets/voice-cover/actions/VoiceCoverActionsEdit');
 require('./widgets/voice-cover/actions/VoiceCoverActionsArchive');
+require('./widgets/voice-cover/actions/VoiceCoverActionsDelete');
 require('./widgets/voice-cover/actions/VoiceCoverActionsPublish');
 require('./widgets/CategoryCover');
 require('./widgets/TopicCard');

@@ -23,11 +23,21 @@ Class(CV, 'VoiceCoverActions').inherits(Widget).includes(CV.WidgetUtils)({
       })).render(this.el);
 
       if (this.voiceEntity.status !== constants.VOICE.STATUS_ARCHIVED) {
-        this.appendChild(new CV.VoiceCoverActionsArchive({
-          name: 'archive',
-          voiceEntity: this.voiceEntity,
-          data: {value: 'Archive'}
-        })).render(this.el);
+        if (this.voiceEntity.status === constants.VOICE.STATUS_DRAFT) {
+          this.appendChild(new CV.VoiceCoverActionsDelete({
+            name: 'delete',
+            voiceEntity: this.voiceEntity,
+            data: {value: 'Delete'}
+          })).render(this.el);
+        }
+        else
+        {
+          this.appendChild(new CV.VoiceCoverActionsArchive({
+            name: 'archive',
+            voiceEntity: this.voiceEntity,
+            data: {value: 'Archive'}
+          })).render(this.el);
+        }
       }
     }
   }
