@@ -21,6 +21,7 @@ Class(CV, 'VoiceModerateButton').inherits(Widget).includes(CV.WidgetUtils)({
         this.el.querySelector('.ui-bubble').innerHTML = this.unapprovedPostsCount;
         this._bindEvents();
       } else {
+        this.el.querySelector('.ui-tooltip').innerHTML = 'No content to moderate';
         this.disable();
       }
     },
