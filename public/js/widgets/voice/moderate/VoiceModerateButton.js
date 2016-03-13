@@ -4,6 +4,7 @@ Class(CV, 'VoiceModerateButton').inherits(Widget).includes(CV.WidgetUtils)({
       <svg class="voice-footer-svg">\
         <use xlink:href="#svg-moderate"></use>\
       </svg>\
+      <span class="ui-bubble -bottom-right -hidden"></span>\
       <span class="ui-tooltip -bottom-right -nw">Moderate Content</span>\
     </button>',
 
@@ -16,8 +17,11 @@ Class(CV, 'VoiceModerateButton').inherits(Widget).includes(CV.WidgetUtils)({
       this.el = this.element[0];
 
       if (this.unapprovedPostsCount) {
+        this.el.querySelector('.ui-bubble').classList.remove('-hidden');
+        this.el.querySelector('.ui-bubble').innerHTML = this.unapprovedPostsCount;
         this._bindEvents();
       } else {
+        this.el.querySelector('.ui-tooltip').innerHTML = 'No content to moderate';
         this.disable();
       }
     },

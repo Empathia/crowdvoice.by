@@ -1,0 +1,55 @@
+@diameter: 20px;
+@parent-offset: -5px;
+.ui-bubble {
+  position: absolute;
+  font-size: 9px;
+  line-height: 2.15;
+  display: inline-block;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 100%;
+  background-color: @color-negative;
+  background-clip: padding-box;
+  color: @color-white;
+  height: @diameter;
+  min-width: @diameter;
+  text-align: center;
+  &.-hidden
+  {
+    display: none;
+  }
+  &.-top-right
+  {
+    right: @parent-offset;
+    top: @parent-offset;
+  }
+  &.-top-left
+  {
+    left: @parent-offset;
+    top: @parent-offset;
+  }
+  &.-center-right
+  {
+    right: @parent-offset;
+    top: 0;
+    bottom: 0;
+    margin: auto 0;
+  }
+  &.-center-left
+  {
+    left: @parent-offset;
+    top: 0;
+    bottom: 0;
+    margin: auto 0;
+  }
+  &.-bottom-left
+  {
+    left: @parent-offset;
+    bottom: @parent-offset;
+  }
+  &.-bottom-right
+  {
+    right: @parent-offset;
+    bottom: @parent-offset;
+  }
+}
