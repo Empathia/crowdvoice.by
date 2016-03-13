@@ -157,7 +157,7 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
           return next(new ForbiddenError())
         }
 
-        var pagesPerMonths = {
+        var pagesForMonths = {
           approved: {}
         }
 
@@ -239,7 +239,7 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
           .then(function (datesPerPage) {
             return Promise.each(datesPerPage, function (pageDates, pageNumber) {
               return Promise.each(pageDates, function (dates) {
-                var p = pagesPerMonths.approved
+                var p = pagesForMonths.approved
 
                 if (!p[dates.year]) {
                   p[dates.year] = {}
@@ -259,7 +259,7 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
             })
           })
           .then(function () {
-            res.locals.pagesForMonths = pagesPerMonths
+            res.locals.pagesForMonths = pagesForMonths
 
             return res.format({
               html: function () {
