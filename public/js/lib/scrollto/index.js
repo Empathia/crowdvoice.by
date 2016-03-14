@@ -9,6 +9,7 @@ scrollto(nodeElement, {
 
 var TWEEN = require('tween.js');
 var raf = require('raf');
+var previousTween = null
 
 function _scroll(element) {
     var x, y;
@@ -29,7 +30,12 @@ module.exports = function scrollTo(element, options) {
 
     var start = _scroll(element);
 
-    var tween = new TWEEN.Tween(start)
+    if (previousTween)
+    {
+        previousTween.stop()
+    }
+
+    var tween = previousTween = new TWEEN.Tween(start)
     .easing(options.easing || TWEEN.Easing.Circular.Out)
     .to({x: options.x, y: options.y}, options.duration || 300)
     .onUpdate(function() {
@@ -45,6 +51,7 @@ module.exports = function scrollTo(element, options) {
         element.scrollTop = y;
     })
     .onComplete(function() {
+        previousTween = null
         animate = function(){};
         options.onComplete && options.onComplete();
     })
