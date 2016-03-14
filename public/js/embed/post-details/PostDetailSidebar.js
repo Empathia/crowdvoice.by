@@ -39,8 +39,6 @@ Class(CV, 'PostDetailSidebar').inherits(Widget).includes(BubblingSupport)({
     },
 
     _bindEvents : function _bindEvents() {
-      this._renderHandlerRef = this._renderHandler.bind(this);
-      this.bind('render', this._renderHandlerRef);
       this.bind('deactivate', this._bubbledDeactivate);
 
       this._filterSelectionUpdatedRef = this._filterSelectionUpdated.bind(this);
@@ -112,15 +110,6 @@ Class(CV, 'PostDetailSidebar').inherits(Widget).includes(BubblingSupport)({
 
       if (showAll) { this.children.forEach(showAllFn); }
       else { this.children.forEach(filterFn); }
-    },
-
-    /* Render event handler.
-     * @private
-     */
-    _renderHandler : function _renderHandler () {
-      window.setTimeout(function (that) {
-        that.scrollbar.update();
-      }, 0, this);
     },
 
     /* Prevent the `deactiveate` event to be bubbled up.

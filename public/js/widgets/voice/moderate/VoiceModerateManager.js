@@ -11,6 +11,7 @@ Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
     </div>',
 
   prototype: {
+    unapprovedPostsCount: 0,
     el: null,
     layersManager: null,
     _window: null,
@@ -43,7 +44,7 @@ Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
       this.appendChild(new CV.VoiceModerateFooter({
         name: 'footer',
         scrollableArea: this.voicePostsWrapper,
-        totalPosts: App.Voice.unapprovedPostsCount
+        totalPosts: this.unapprovedPostsCount
       })).render(this.el);
       return this._bindEvents();
     },
@@ -86,7 +87,7 @@ Class(CV, 'VoiceModerateManager').inherits(Widget).includes(CV.VoiceHelper)({
         id: App.Voice.data.id,
         registry: CV.VoiceModeratePagesRegistry,
         pages: App.Voice.pagesUnapproved,
-        postCount: App.Voice.data.postsCountUnapproved,
+        postCount: this.unapprovedPostsCount,
         scrollableArea: this.voicePostsWrapper,
         allowPostEditing: App.Voice.allowPostEditing,
         _socket: App.Voice._socket,
