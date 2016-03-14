@@ -4,7 +4,7 @@ var ReadabilityParser = require(path.join(__dirname, '../lib/ReadabilityParser.j
 
 require(path.join(process.cwd(), 'lib', 'krypton', 'presenters', 'PostsPresenter.js'))
 
-var sa = require('superagent');
+var requestjs = require('request');
 
 var downsize = require('downsize');
 
@@ -544,12 +544,15 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         errorLog.save(callback);
       };
 
-      request({
+      requestjs({
         followAllRedirects : true,
         followRedirect : true,
         removeRefererHeader : true,
         url : originalURL,
-        jar : true
+        jar : true,
+        headers: {
+          'User-Agent': 'Mozilla/5.0'
+        }
       }, function(err, response) {
         if (err) {
           return logScrapperError(originalURL, err, function (err) {
@@ -563,7 +566,9 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           });
         }
 
-        Scrapper.processUrl(response.request.uri.href, response, function (err, result) {
+        var expandedURL = response.request.uri.href;
+        logger.info(originalURL, expandedURL)
+        Scrapper.processUrl(expandedURL, response, function (err, result) {
           if (err) {
             return logScrapperError(expandedURL, err, function (err) {
               // if (err) { return callback(err); }
