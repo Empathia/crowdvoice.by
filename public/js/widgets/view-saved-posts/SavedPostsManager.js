@@ -36,7 +36,6 @@ Class(CV, 'SavedPostsManager').inherits(Widget)({
       this._updateGlobalVars();
       SavedPostsStore.run();
       this._createEmptyLayers(this.pagesApproved)._bindEvents();
-      this.registry.setup(this.pagesApproved);
       SavedPostsStore.getSavedPostsPage(this._currentPageNumber);
     },
 
@@ -75,7 +74,6 @@ Class(CV, 'SavedPostsManager').inherits(Widget)({
       var oldScrollY = 0;
 
       this.addPosts(layer, res.posts);
-      this.registry.set(this._currentPageNumber, res.posts);
 
       // scrolling down
       if (res.scrollDirection === false) {
@@ -147,15 +145,13 @@ Class(CV, 'SavedPostsManager').inherits(Widget)({
         this.postDetailController = this.postDetailController.destroy();
       }
 
-      this.postDetailController = new CV.PostDetailController({
+      this.postDetailController = new CV.PostDetailControllerSaved({
         socket: this.socket,
         postData: ev.data,
-        registry: CV.VoicePagesRegistry,
-        requestPostsSocketEventName: 'savedPostsPage',
-        responsePostsSocketEventName: 'getSavedPostsPage'
+        pages: this.pagesApproved
       });
 
-      this.postDetailController.postDetailWidget.bind('deactivate', function() {
+      this.postDetailController.widget.bind('deactivate', function() {
         this.postDetailController = this.postDetailController.destroy();
       }.bind(this));
     },

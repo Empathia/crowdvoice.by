@@ -15,23 +15,6 @@ Module(CV, 'VoiceHelper')({
 
       Object.keys(data).forEach(function(year) {
         Object.keys(data[year]).forEach(function(month) {
-          pages.push(data[year][month].page);
-        });
-      });
-
-      return pages.reduce(function (a, b) {
-        if (a.indexOf(b) < 0) a.push(b);
-        return a;
-      }, []).sort(function (a, b) {
-        return a - b;
-      });
-    },
-
-    _formatPagesObject2: function _formatPagesObject2(data) {
-      var pages = [];
-
-      Object.keys(data).forEach(function(year) {
-        Object.keys(data[year]).forEach(function(month) {
           pages = pages.concat(data[year][month].pages);
         });
       });

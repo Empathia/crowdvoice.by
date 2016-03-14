@@ -9,6 +9,20 @@ module.exports = Class(CV.Store, 'SavedPosts').includes(CustomEventSupport)({
     this._socket.on('savedPostsPage', this._savedPostsHandler.bind(this));
   },
 
+  /* Return the specific posts by page.
+   * @param {number}
+   */
+  get: function get(pageNumber) {
+    var cached = this._data[pageNumber];
+    if (cached) {
+      return cached;
+    }
+  },
+
+  getAll: function getAll() {
+    return this._data;
+  },
+
   getSavedPostsPage: function getSavedPostsPage(pageNumber, scrollDirection) {
     var cached = this._data[pageNumber];
     if (cached) return this._emitSavedPosts(pageNumber, scrollDirection);

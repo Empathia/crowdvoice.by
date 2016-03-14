@@ -8,6 +8,7 @@
   var SavedPosts = new CV.SavedPosts({
     name: 'savedPosts',
     pagesForMonths: <%= JSON.stringify(pagesForMonths) %>,
+    totalCount: <%= totalCount %>,
     container: document.querySelector('.cv-main-content'),
     socket: App.getSocket()
   });

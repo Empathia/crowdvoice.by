@@ -5,8 +5,7 @@ Class(CV, 'SavedPosts').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport
         this[propertyName] = config[propertyName];
       }, this);
 
-      this.pagesApproved = this._formatPagesObject2(this.pagesForMonths.approved);
-      this.totalPosts = this._getTotalPostCount(this.pagesForMonths.approved);
+      this.pagesApproved = this._formatPagesObject(this.pagesForMonths.approved);
 
       if (this.pagesApproved.length) {
         return this._addManager();
@@ -23,9 +22,8 @@ Class(CV, 'SavedPosts').includes(CV.WidgetUtils, NodeSupport, CustomEventSupport
 
       this.appendChild(new CV.SavedPostsManager({
         name: 'manager',
-        registry: CV.VoicePagesRegistry,
         pagesApproved: this.pagesApproved,
-        totalPosts: this.totalPosts,
+        totalPosts: this.totalCount,
         socket: this.socket
       })).render(this.container);
     },
