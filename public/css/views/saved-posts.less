@@ -1,14 +1,57 @@
-.saved-posts-onboarding {}
+.page-saved-posts {
+  .cv-main-header {
+    top: 1px;
+  }
+}
 
+.saved-posts-onboarding {}
 .saved-posts-onboarding__msg {
   max-width: 550px;
   margin: 0 auto 2em;
 }
 
 .saved-posts-wrapper {
+  z-index: 0;
   margin: 0 -20px;
+  padding-bottom: 60px;
+
+  .cv-voice-posts-layer {
+    padding: 0;
+  }
+
+  .cv-voice-posts-layer__posts {
+    margin: 0;
+  }
 
   .post-card {
     width: 300px;
+  }
+}
+
+.saved-posts-layer__detector {
+  position: absolute;
+  top: -100px;
+  left: -1px;
+  bottom: -100px;
+  width: 20px;
+}
+
+.saved-posts-footer {
+  position: fixed;
+  z-index: 1;
+  bottom: 1px;
+  left: 60px;
+  right: 0;
+  height: 52px;
+  background-color: @color-neutral-xx-light;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1), 0 1px 0 @color-neutral-xx-light;
+  transform: translateZ(0);
+
+  &__inner {
+    padding: 0 40px;
+  }
+
+  &__right {
+    padding-top: 1.35em;
   }
 }

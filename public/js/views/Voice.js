@@ -52,7 +52,6 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
       this._body = document.body;
       this.pagesApproved = this._formatPagesObject(this.pagesForMonths.approved);
       this.pagesUnapproved = this._formatPagesObject(this.pagesForMonths.unapproved);
-      this.unapprovedPostsCount = this._getTotalPostCount(this.pagesForMonths.unapproved);
 
       this._setup()._updateVoiceInfo()._setupVoiceWidgets();
     },
@@ -141,7 +140,7 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
         allowPostEditing : this.allowPostEditing,
         voiceScrollableArea : this.scrollableArea,
         postCount : this.data.postsCount,
-        unapprovedPostsCount: this.unapprovedPostsCount,
+        unapprovedPostsCount: this.data.unapprovedPostsCount,
         followerCount : this.data.followers.length,
         relatedVoices : this.relatedVoices,
         contributors : this.contributors

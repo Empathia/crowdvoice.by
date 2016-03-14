@@ -65,7 +65,7 @@
 .voice-background-cover {
   position: absolute;
   left: 0;
-  top: -@cv-header-height;
+  top: -@cv-voice-footer-height;
   right: 0;
   transform: translate3d(0,0,0);
   will-change: transform;
@@ -115,6 +115,8 @@
 /******************************************************************************
  * POST LAYERS WRAPPER
  *****************************************************************************/
+.voice-posts { z-index: 0 }
+
 .voice-about-show-btn.cv-button {
   padding: 0 11px;
   border: 1px solid fade(@color-white, 70%);
@@ -277,12 +279,6 @@
 .dropdown-post-source-types {
   width: 100px;
   display: inline-block;
-
-  .ui-dropdown__head {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
 
   .ui-checkbox label {
     padding: 5px 20px 5px 10px;
