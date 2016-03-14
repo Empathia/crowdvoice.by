@@ -1,5 +1,5 @@
 Class(CV, 'FeedMessage').inherits(CV.FeedItem)({
-  ELEMENT_CLASS: 'cv-feed-item message',
+  ELEMENT_CLASS: 'cv-feed-item',
 
   prototype: {
     /* FeedPresenter Result.

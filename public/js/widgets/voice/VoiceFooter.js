@@ -44,7 +44,7 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
       if (this.voice.owner.isAnonymous) {
         this.dom.updateAttr('href', this.byAnchor, '/anonymous');
       } else {
-        this.dom.updateAttr('href', this.byAnchor, '/' + this.voice.owner.profileName);
+        this.dom.updateAttr('href', this.byAnchor, '/' + this.voice.owner.profileName + '/');
       }
 
       this.dom.updateAttr('title', this.byAnchor, this.voice.owner.name + '’s profile page');

@@ -37,6 +37,7 @@ Class(CV, 'Dropdown').inherits(Widget).includes(CV.WidgetUtils)({
     showArrow: true,
     arrowClassName: '',
     headClassName: '',
+    labelClassName: '',
     bodyClassName: '',
 
     /* private */
@@ -77,6 +78,7 @@ Class(CV, 'Dropdown').inherits(Widget).includes(CV.WidgetUtils)({
       }
 
       this.head.className += ' ' + this.headClassName;
+      this.labelElement.className += ' ' + this.labelClassName;
       this.body.className += ' ' + this.bodyClassName;
 
       return this;

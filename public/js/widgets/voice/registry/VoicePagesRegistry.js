@@ -23,7 +23,7 @@ Module(CV, 'VoicePagesRegistry')({
    * @return {Array|Object} the page’s posts data or the whole registry data.
    */
   get: function get(page) {
-    if (page) return this._[page];
+    if (typeof page !== 'undefined') return this._[page];
     return this._;
   },
 

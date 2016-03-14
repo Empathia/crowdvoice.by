@@ -146,51 +146,131 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
       });
     },
 
-    savedPosts : function savedPosts(req, res, next) {
+    savedPosts: function (req, res, next) {
       ACL.isAllowed('savedPosts', 'entities', req.role, {
-        currentEntity : req.entity,
-        currentPerson : req.currentPerson
+        currentEntity: req.entity,
+        currentPerson: req.currentPerson,
       }, function(err, response) {
-        if (err) {
-          return next(err);
-        }
+        if (err) { return next(err) }
 
         if (!response.isAllowed) {
-          return next(new ForbiddenError);
+          return next(new ForbiddenError())
         }
 
-        SavedPost.find({ 'entity_id' : response.entity.id }, function(err, result) {
-          if (err) { next(err); return; }
+        var pagesForMonths = {
+          approved: {}
+        }
 
-          var posts = [];
+        return Promise.resolve()
+          .then(function () {
+            return K.SavedPost.query()
+              .count()
+              .where('entity_id', hashids.decode(req.currentPerson.id)[0])
+              .then(function (count) {
+                var intCount = count[0] ? +count[0].count : 0
 
-          async.each(result, function(sp, done) {
-            var sp = new SavedPost(sp);
-            sp.post(function(err, post) {
-              posts.push(post);
-              done();
-            });
-          }, function(err) {
-            if (err) { next(err); return; }
+                res.locals.totalCount = intCount
 
-            PostsPresenter.build(posts, req.currentPerson, function(err, result) {
-              if (err) {
-                return next(err);
-              }
+                return Promise.resolve(intCount)
+              })
+          })
+          .then(function (postsCount) {
+            // full blocks of 50, e.g. 3
+            var fullParts = Math.floor(postsCount / VoicesController.POSTS_PER_PAGE)
+            // remainder that didn't fit in a full block, e.g. 49
+            var remainder = postsCount % VoicesController.POSTS_PER_PAGE
 
-              res.format({
-                html : function() {
-                  res.locals.savedPosts = result;
-                  res.render('people/savedPosts.html');
-                },
-                json : function() {
-                  res.json(result);
+            // amount of offsets
+            return Promise.resolve(fullParts + (remainder > 0 ? 1 : 0))
+          })
+          .then(function (offsetsNum) {
+            var offsets = []
+
+            for (var i = 0; i < offsetsNum; i += 1) {
+              offsets.push(i * VoicesController.POSTS_PER_PAGE)
+            }
+
+            return Promise.resolve(offsets)
+          })
+          .then(function (offsets) {
+            var postIdsPerPage = []
+
+            return Promise.each(offsets,
+              function (offset) {
+                return K.SavedPost.query()
+                  .select('id')
+                  .where('entity_id', hashids.decode(req.currentPerson.id)[0])
+                  .orderBy('created_at', 'desc')
+                  .limit(VoicesController.POSTS_PER_PAGE)
+                  .offset(offset)
+                  .pluck('id')
+                  .then(function (pageIds) {
+                    postIdsPerPage.push(pageIds)
+
+                    return Promise.resolve()
+                  })
+              })
+              .then(function () {
+                return Promise.resolve(postIdsPerPage)
+              })
+          })
+          .then(function (pagesIds) {
+            var pagesDates = []
+
+            return Promise.each(pagesIds,
+              function (ids) {
+                return K.SavedPost.query()
+                  .select(
+                    db.raw('distinct on (MONTH, YEAR) to_char("SavedPosts".created_at, \'MM\') as MONTH'),
+                    db.raw('to_char("SavedPosts".created_at, \'YYYY\') as YEAR')
+                  )
+                  .from('SavedPosts')
+                  .where('id', 'in', ids)
+                  .then(function (dates) {
+                    pagesDates.push(dates)
+
+                    return Promise.resolve()
+                  })
+              })
+              .then(function () {
+                return Promise.resolve(pagesDates)
+              })
+          })
+          .then(function (datesPerPage) {
+            return Promise.each(datesPerPage, function (pageDates, pageNumber) {
+              return Promise.each(pageDates, function (dates) {
+                var p = pagesForMonths.approved
+
+                if (!p[dates.year]) {
+                  p[dates.year] = {}
                 }
-              });
-            });
-          });
-        });
-      });
+
+                if (!p[dates.year][dates.month]) {
+                  p[dates.year][dates.month] = {
+                    count: 0,
+                    pages: [],
+                  }
+                }
+
+                p[dates.year][dates.month].pages.push(pageNumber)
+
+                return Promise.resolve()
+              })
+            })
+          })
+          .then(function () {
+            res.locals.pagesForMonths = pagesForMonths
+
+            return res.format({
+              html: function () {
+                res.render('people/savedPosts.html', {
+                  pageName: 'page-inner page-saved-posts',
+                })
+              },
+            })
+          })
+          .catch(next)
+      })
     },
 
     getOrganizations : function getOrganizations(req, res, next) {
@@ -205,7 +285,7 @@ var PeopleController = Class('PeopleController').inherits(EntitiesController)({
         if (err) { return next(err); }
 
         if (!response.isAllowed) {
-          return next(new ForbiddenError('Unauthorized.'));
+          return next(new ForbiddenError());
         }
 
         async.series([
