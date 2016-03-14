@@ -27,6 +27,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         res.locals.voice = new Voice(voice);
         req.activeVoice = new Voice(voice);
 
+        // NOTE: No longer in use.
         res.locals.postsCount = {
           approved : {},
           unapproved : {}
@@ -45,6 +46,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         var fetchVoice;
 
         async.series([
+          // NOTE: No longer in use.
           function(done) {
             db.raw("SELECT COUNT (*), \
               to_char(\"Posts\".published_at, 'MM') AS MONTH, \
@@ -71,6 +73,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
               done();
             });
           },
+          // NOTE: No longer in use.
           function(done) {
             db.raw("SELECT COUNT (*), \
               to_char(\"Posts\".published_at, 'MM') AS MONTH, \
@@ -96,7 +99,8 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
               res.locals.postsCount.unapproved = counts;
               done();
             });
-          }, function(done) {
+          },
+          function(done) {
             // Followers
             VoiceFollower.find({ 'voice_id' : voice.id }, function(err, voiceFollowers) {
               var followerIds = voiceFollowers.map(function(item) {
@@ -104,13 +108,10 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
               });
 
               Entity.whereIn('id', followerIds, function(err, result) {
-                if (err) {
-                  return done(err);
-                }
+                if (err) { return done(err); }
+
                 EntitiesPresenter.build(result, req.currentPerson, function(err, followers) {
-                  if (err) {
-                    return done(err);
-                  }
+                  if (err) { return done(err); }
 
                   res.locals.voice.followers = followers;
 
@@ -118,11 +119,10 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                 });
               });
             });
-          }, function(done) {
+          },
+          function(done) {
             Slug.find(['voice_id = ? ORDER BY created_at DESC LIMIT 1', [req.activeVoice.id]], function(err, result) {
-              if (err) {
-                return done(err);
-              }
+              if (err) { return done(err); }
 
               if (result.length === 0) {
                 return done(new NotFoundError('Slug not found'));
@@ -132,7 +132,8 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
               done();
             });
-          }, function (next) {
+          },
+          function (next) {
             VoiceCollaborator.find({
               voice_id: req.activeVoice.id,
               is_anonymous: false
@@ -153,7 +154,8 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                 });
               });
             });
-          }, function (next) {
+          },
+          function (next) {
             RelatedVoice.find({ voice_id: req.activeVoice.id }, function (err, related) {
               if (err) { return next(err); }
 
@@ -171,7 +173,8 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                 });
               });
             });
-          }, function(done) {
+          },
+          function(done) {
 
             // approved pagesForMonths
             return Promise.resolve()
@@ -277,7 +280,8 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
               })
               .catch(done)
 
-          }, function(done) {
+          },
+          function(done) {
 
             // unapproved pagesForMonths
             return Promise.resolve()
@@ -383,7 +387,8 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
               })
               .catch(done)
 
-          }, function(done) {
+          },
+          function(done) {
 
             K.Post.query()
               .where('voice_id', req.activeVoice.id)
@@ -398,7 +403,8 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                 return done();
               })
               .catch(done);
-          }, function(done) {
+          },
+          function(done) {
             K.Post.query()
               .where('voice_id', req.activeVoice.id)
               .andWhere('approved', true)
@@ -412,7 +418,8 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                 return done();
               })
               .catch(done);
-          }, function(done) {
+          },
+          function(done) {
             K.Voice.query()
               .where('id', req.activeVoice.id)
               .include('owner')
@@ -422,16 +429,30 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                 return done();
               })
               .catch(done);
-          }], function(err) {
-            if (err) { return next(err); }
+          },
+          function(done) {
+            K.Post.query()
+              .count()
+              .where('voice_id', req.activeVoice.id)
+              .andWhere('approved', false)
+              .then(function (count) {
+                res.locals.voice.unapprovedPostsCount = count[0] ? +count[0].count : 0;
 
-            res.locals.pagesForMonths = pagesForMonths;
-            res.locals.voice.firstPostDate = postDates.firstPostDate;
-            res.locals.voice.lastPostDate = postDates.lastPostDate;
-            res.locals.owner = fetchVoice.owner;
+                return Promise.resolve();
+              })
+              .then(done)
+              .catch(done);
+          }
+        ], function(err) {
+          if (err) { return next(err); }
 
-            next();
-          });
+          res.locals.pagesForMonths = pagesForMonths;
+          res.locals.voice.firstPostDate = postDates.firstPostDate;
+          res.locals.voice.lastPostDate = postDates.lastPostDate;
+          res.locals.owner = fetchVoice.owner;
+
+          next();
+        });
       });
     },
 
