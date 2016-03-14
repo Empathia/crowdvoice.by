@@ -39,6 +39,7 @@ Class(CV, 'VoiceFilterPostsDropdown').inherits(Widget)({
                 showArrow: true,
                 className: dropdownClassName,
                 arrowClassName: '-s10',
+                labelClassName: '-ellipsis',
                 bodyClassName: 'ui-vertical-list hoverable -block'
             })).render(this.el);
 
