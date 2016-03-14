@@ -505,7 +505,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
               var tf = new TwitterFetcher({
                 voice : voice,
                 count : 100,
-                credentials : item.twitterCredentials
+                credentials : twitterCredentials
               });
 
 
@@ -807,7 +807,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                 var tf = new TwitterFetcher({
                   voice : voice,
                   count : 100,
-                  credentials : item.twitterCredentials
+                  credentials : twitterCredentials
                 });
 
                 if (voice.twitterSearch !== null) {

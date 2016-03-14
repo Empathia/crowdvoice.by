@@ -567,7 +567,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         }
 
         var expandedURL = response.request.uri.href;
-        logger.info(originalURL, expandedURL)
+
         Scrapper.processUrl(expandedURL, response, function (err, result) {
           if (err) {
             return logScrapperError(expandedURL, err, function (err) {
