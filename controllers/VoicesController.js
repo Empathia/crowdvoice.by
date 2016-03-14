@@ -500,9 +500,13 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           // Load tweets in the background
           if (voice.twitterSearch) {
             d.run(function() {
+
+              var twitterCredentials = req.user.twitterCredentials;
+
               var tf = new TwitterFetcher({
                 voice : voice,
-                count : 100
+                count : 100,
+                credentials : twitterCredentials
               });
 
 
@@ -799,9 +803,12 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
             // Load tweets in the background
             if (req.body.twitterSearch && req.body.twitterSearch !== '') {
               d.run(function() {
+                var twitterCredentials = req.user.twitterCredentials;
+
                 var tf = new TwitterFetcher({
                   voice : voice,
-                  count : 100
+                  count : 100,
+                  credentials : twitterCredentials
                 });
 
                 if (voice.twitterSearch !== null) {
