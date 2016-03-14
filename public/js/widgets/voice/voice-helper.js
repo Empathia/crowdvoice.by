@@ -15,7 +15,7 @@ Module(CV, 'VoiceHelper')({
 
       Object.keys(data).forEach(function(year) {
         Object.keys(data[year]).forEach(function(month) {
-          pages.push(data[year][month].page);
+          pages = pages.concat(data[year][month].pages);
         });
       });
 

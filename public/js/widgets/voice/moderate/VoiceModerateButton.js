@@ -41,7 +41,8 @@ Class(CV, 'VoiceModerateButton').inherits(Widget).includes(CV.WidgetUtils)({
 
       this.appendChild(new CV.VoiceModerateManager({
         name: 'moderateManager',
-        allowPostEditing : this.allowPostEditing
+        allowPostEditing : this.allowPostEditing,
+        unapprovedPostsCount: this.unapprovedPostsCount
       })).render(document.body).setup();
     },
 

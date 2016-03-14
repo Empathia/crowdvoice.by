@@ -2,35 +2,14 @@
 
 'use strict'
 
-var application = require('neonode-core')
-require(path.join(__dirname, '../lib/routes.js'))
+var path = require('path')
 
-// Load socket.io
-var io = require('socket.io')(application.server);
+require(path.join(process.cwd(), 'bin', 'server.js'))
 
-// Load moment
-global.moment = require('moment')
-
-global.FeedInjector = require(path.join(__dirname, '../lib/FeedInjector.js'))
-require(path.join(__dirname, '../presenters/PostsPresenter'))
-
-application._serverStart()
-
-io.use(function(socket, next) {
-  sessionMiddleWare(socket.request, socket.request.res, next);
-});
-
-io.on('connection', require(path.join(process.cwd(), 'lib/socket.js')));
-
-// COMMENT IF YOU WANT LOGGER OUTPUT
 logger.info = function () {}
 
 var expect = require('chai').expect,
   socket = require('socket.io-client')('http://localhost:3000');
-
-CONFIG.database.logQueries = false
-
-var urlBase = 'http://localhost:3000'
 
 describe('Sockets', function () {
 
@@ -41,6 +20,21 @@ describe('Sockets', function () {
 
       socket.on('stats', function (stats) {
         expect(parseInt(stats.cities)).to.equal(13)
+
+        return doneTest()
+      })
+    })
+
+  })
+
+  describe('getSavedPostsPage', function () {
+
+    it('Should return with no errors', function (doneTest) {
+      socket.emit('getSavedPostsPage', hashids.encode(11), 0)
+
+      socket.on('savedPostsPage', function (posts, page, scrollDirection) {
+        expect(posts).to.be.an('array')
+        expect(page).to.be.a('number')
 
         return doneTest()
       })

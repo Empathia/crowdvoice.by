@@ -27,6 +27,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         res.locals.voice = new Voice(voice);
         req.activeVoice = new Voice(voice);
 
+        // NOTE: No longer in use.
         res.locals.postsCount = {
           approved : {},
           unapproved : {}
@@ -45,6 +46,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
         var fetchVoice;
 
         async.series([
+          // NOTE: No longer in use.
           function(done) {
             db.raw("SELECT COUNT (*), \
               to_char(\"Posts\".published_at, 'MM') AS MONTH, \
@@ -71,6 +73,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
               done();
             });
           },
+          // NOTE: No longer in use.
           function(done) {
             db.raw("SELECT COUNT (*), \
               to_char(\"Posts\".published_at, 'MM') AS MONTH, \
@@ -96,7 +99,8 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
               res.locals.postsCount.unapproved = counts;
               done();
             });
-          }, function(done) {
+          },
+          function(done) {
             // Followers
             VoiceFollower.find({ 'voice_id' : voice.id }, function(err, voiceFollowers) {
               var followerIds = voiceFollowers.map(function(item) {
@@ -104,13 +108,10 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
               });
 
               Entity.whereIn('id', followerIds, function(err, result) {
-                if (err) {
-                  return done(err);
-                }
+                if (err) { return done(err); }
+
                 EntitiesPresenter.build(result, req.currentPerson, function(err, followers) {
-                  if (err) {
-                    return done(err);
-                  }
+                  if (err) { return done(err); }
 
                   res.locals.voice.followers = followers;
 
@@ -118,11 +119,10 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                 });
               });
             });
-          }, function(done) {
+          },
+          function(done) {
             Slug.find(['voice_id = ? ORDER BY created_at DESC LIMIT 1', [req.activeVoice.id]], function(err, result) {
-              if (err) {
-                return done(err);
-              }
+              if (err) { return done(err); }
 
               if (result.length === 0) {
                 return done(new NotFoundError('Slug not found'));
@@ -132,7 +132,8 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
 
               done();
             });
-          }, function (next) {
+          },
+          function (next) {
             VoiceCollaborator.find({
               voice_id: req.activeVoice.id,
               is_anonymous: false
@@ -153,7 +154,8 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                 });
               });
             });
-          }, function (next) {
+          },
+          function (next) {
             RelatedVoice.find({ voice_id: req.activeVoice.id }, function (err, related) {
               if (err) { return next(err); }
 
@@ -171,94 +173,223 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                 });
               });
             });
-          }, function(done) {
+          },
+          function(done) {
 
-            K.Post.knex()
-              .select(
-                db.raw('distinct on (MONTH, YEAR) to_char("Posts".published_at, \'MM\') as MONTH'),
-                db.raw('to_char("Posts".published_at, \'YYYY\') as YEAR'),
-                db.raw('row_number() over (order by "Posts".published_at desc) / ? as page', VoicesController.POSTS_PER_PAGE)
-              )
-              .from('Posts')
-              .where('Posts.voice_id', req.activeVoice.id)
-              .andWhere('Posts.approved', true)
-              .orderByRaw('YEAR desc, MONTH desc')
-              .then(function (result) {
-                var counts = {}
+            // approved pagesForMonths
+            return Promise.resolve()
+              .then(function () {
+                return K.Post.query()
+                  .count()
+                  .where('voice_id', req.activeVoice.id)
+                  .andWhere('approved', true)
+                  .then(function (count) {
+                    var intCount = count[0] ? +count[0].count : 0
 
-                async.each(result, function (row, doneEach) {
-                  K.Post.query()
-                    .count('*')
-                    .where('voice_id', req.activeVoice.id)
-                    .andWhere('approved', true)
-                    .andWhere(db.raw('to_char("Posts".published_at, \'MM\') = ?', row.month))
-                    .andWhere(db.raw('to_char("Posts".published_at, \'YYYY\') = ?', row.year))
-                    .then(function (count) {
-                      if (!counts[row.year]) {
-                        counts[row.year] = {};
-                      }
-
-                      counts[row.year][row.month] = {
-                        page: row.page,
-                        count: (count[0] ? +count[0].count : 0)
-                      };
-
-                      return doneEach();
-                    })
-                    .catch(doneEach);
-                }, function (err) {
-                  if (err) { return done(err); }
-
-                  pagesForMonths.approved = counts;
-
-                  return done();
-                });
+                    return Promise.resolve(intCount)
+                  })
               })
-              .catch(done);
-          }, function(done) {
-            K.Post.knex()
-              .select(
-                db.raw('distinct on (MONTH, YEAR) to_char("Posts".published_at, \'MM\') as MONTH'),
-                db.raw('to_char("Posts".published_at, \'YYYY\') as YEAR'),
-                db.raw('row_number() over (order by "Posts".published_at desc) / ? as page', VoicesController.POSTS_PER_PAGE)
-              )
-              .from('Posts')
-              .where('Posts.voice_id', req.activeVoice.id)
-              .andWhere('Posts.approved', false)
-              .orderByRaw('YEAR desc, MONTH desc')
-              .then(function (result) {
-                var counts = {}
+              .then(function (postsCount) {
+                // full blocks of 50, e.g. 3
+                var fullParts = Math.floor(postsCount / VoicesController.POSTS_PER_PAGE)
+                // remainder that didn't fit in a full block, e.g. 49
+                var remainder = postsCount % VoicesController.POSTS_PER_PAGE
 
-                async.each(result, function (row, doneEach) {
-                  K.Post.query()
-                    .count('*')
-                    .where('voice_id', req.activeVoice.id)
-                    .andWhere('approved', false)
-                    .andWhere(db.raw('to_char("Posts".published_at, \'MM\') = ?', row.month))
-                    .andWhere(db.raw('to_char("Posts".published_at, \'YYYY\') = ?', row.year))
-                    .then(function (count) {
-                      if (!counts[row.year]) {
-                        counts[row.year] = {};
-                      }
-
-                      counts[row.year][row.month] = {
-                        page: row.page,
-                        count: (count[0] ? +count[0].count : 0)
-                      };
-
-                      return doneEach();
-                    })
-                    .catch(doneEach);
-                }, function (err) {
-                  if (err) { return done(err); }
-
-                  pagesForMonths.unapproved = counts;
-
-                  return done();
-                });
+                // amount of offsets
+                return Promise.resolve(fullParts + (remainder > 0 ? 1 : 0))
               })
-              .catch(done);
-          }, function(done) {
+              .then(function (offsetsNum) {
+                var offsets = []
+
+                for (var i = 0; i < offsetsNum; i += 1) {
+                  offsets.push(i * VoicesController.POSTS_PER_PAGE)
+                }
+
+                return Promise.resolve(offsets)
+              })
+              .then(function (offsets) {
+                var postIdsPerPage = []
+
+                return Promise.each(offsets,
+                  function (offset) {
+                    return K.Post.query()
+                      .select('id')
+                      .where('voice_id', req.activeVoice.id)
+                      .andWhere('approved', true)
+                      .orderBy('created_at', 'desc')
+                      .limit(VoicesController.POSTS_PER_PAGE)
+                      .offset(offset)
+                      .pluck('id')
+                      .then(function (pageIds) {
+                        postIdsPerPage.push(pageIds)
+
+                        return Promise.resolve()
+                      })
+                  })
+                  .then(function () {
+                    return Promise.resolve(postIdsPerPage)
+                  })
+              })
+              .then(function (pagesIds) {
+                var pagesDates = []
+
+                return Promise.each(pagesIds,
+                  function (ids) {
+                    return K.Post.query()
+                      .select(
+                        db.raw('distinct on (MONTH, YEAR) to_char("Posts".published_at, \'MM\') as MONTH'),
+                        db.raw('to_char("Posts".published_at, \'YYYY\') as YEAR')
+                      )
+                      .from('Posts')
+                      .where('id', 'in', ids)
+                      .andWhere('approved', true)
+                      .then(function (dates) {
+                        pagesDates.push(dates)
+
+                        return Promise.resolve()
+                      })
+                  })
+                  .then(function () {
+                    return Promise.resolve(pagesDates)
+                  })
+              })
+              .then(function (datesPerPage) {
+                return Promise.each(datesPerPage, function (pageDates, pageNumber) {
+                  return Promise.each(pageDates, function (dates) {
+                    var p = pagesForMonths.approved
+
+                    if (!p[dates.year]) {
+                      p[dates.year] = {}
+                    }
+
+                    if (!p[dates.year][dates.month]) {
+                      p[dates.year][dates.month] = {
+                        count: 0,
+                        pages: [],
+                      }
+                    }
+
+                    p[dates.year][dates.month].pages.push(pageNumber)
+
+                    return Promise.resolve()
+                  })
+                })
+              })
+              .then(function () {
+                return done()
+              })
+              .catch(done)
+
+          },
+          function(done) {
+
+            // unapproved pagesForMonths
+            return Promise.resolve()
+              .then(function () {
+                return K.Post.query()
+                  .count()
+                  .where('voice_id', req.activeVoice.id)
+                  .andWhere('approved', false)
+                  .then(function (count) {
+                    var intCount = count[0] ? +count[0].count : 0
+
+                    return Promise.resolve(intCount)
+                  })
+              })
+              .then(function (postsCount) {
+                // full blocks of 50, e.g. 3
+                var fullParts = Math.floor(postsCount / VoicesController.POSTS_PER_PAGE)
+                // remainder that didn't fit in a full block, e.g. 49
+                var remainder = postsCount % VoicesController.POSTS_PER_PAGE
+
+                // amount of offsets
+                return Promise.resolve(fullParts + (remainder > 0 ? 1 : 0))
+              })
+              .then(function (offsetsNum) {
+                var offsets = []
+
+                for (var i = 0; i < offsetsNum; i += 1) {
+                  offsets.push(i * VoicesController.POSTS_PER_PAGE)
+                }
+
+                return Promise.resolve(offsets)
+              })
+              .then(function (offsets) {
+                var postIdsPerPage = []
+
+                return Promise.each(offsets,
+                  function (offset) {
+                    return K.Post.query()
+                      .select('id')
+                      .where('voice_id', req.activeVoice.id)
+                      .andWhere('approved', false)
+                      .orderBy('created_at', 'desc')
+                      .limit(VoicesController.POSTS_PER_PAGE)
+                      .offset(offset)
+                      .pluck('id')
+                      .then(function (pageIds) {
+                        postIdsPerPage.push(pageIds)
+
+                        return Promise.resolve()
+                      })
+                  })
+                  .then(function () {
+                    return Promise.resolve(postIdsPerPage)
+                  })
+              })
+              .then(function (pagesIds) {
+                var pagesDates = []
+
+                return Promise.each(pagesIds,
+                  function (ids) {
+                    return K.Post.query()
+                      .select(
+                        db.raw('distinct on (MONTH, YEAR) to_char("Posts".published_at, \'MM\') as MONTH'),
+                        db.raw('to_char("Posts".published_at, \'YYYY\') as YEAR')
+                      )
+                      .from('Posts')
+                      .where('id', 'in', ids)
+                      .andWhere('approved', false)
+                      .then(function (dates) {
+                        pagesDates.push(dates)
+
+                        return Promise.resolve()
+                      })
+                  })
+                  .then(function () {
+                    return Promise.resolve(pagesDates)
+                  })
+              })
+              .then(function (datesPerPage) {
+                return Promise.each(datesPerPage, function (pageDates, pageNumber) {
+                  return Promise.each(pageDates, function (dates) {
+                    var p = pagesForMonths.unapproved
+
+                    if (!p[dates.year]) {
+                      p[dates.year] = {}
+                    }
+
+                    if (!p[dates.year][dates.month]) {
+                      p[dates.year][dates.month] = {
+                        count: 0,
+                        pages: [],
+                      }
+                    }
+
+                    p[dates.year][dates.month].pages.push(pageNumber)
+
+                    return Promise.resolve()
+                  })
+                })
+              })
+              .then(function () {
+                return done()
+              })
+              .catch(done)
+
+          },
+          function(done) {
+
             K.Post.query()
               .where('voice_id', req.activeVoice.id)
               .andWhere('approved', true)
@@ -272,7 +403,8 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                 return done();
               })
               .catch(done);
-          }, function(done) {
+          },
+          function(done) {
             K.Post.query()
               .where('voice_id', req.activeVoice.id)
               .andWhere('approved', true)
@@ -286,7 +418,8 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                 return done();
               })
               .catch(done);
-          }, function(done) {
+          },
+          function(done) {
             K.Voice.query()
               .where('id', req.activeVoice.id)
               .include('owner')
@@ -296,18 +429,30 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                 return done();
               })
               .catch(done);
-          }], function(err) {
-            if (err) {
-              return next(err);
-            }
+          },
+          function(done) {
+            K.Post.query()
+              .count()
+              .where('voice_id', req.activeVoice.id)
+              .andWhere('approved', false)
+              .then(function (count) {
+                res.locals.voice.unapprovedPostsCount = count[0] ? +count[0].count : 0;
 
-            res.locals.pagesForMonths = pagesForMonths;
-            res.locals.voice.firstPostDate = postDates.firstPostDate;
-            res.locals.voice.lastPostDate = postDates.lastPostDate;
-            res.locals.owner = fetchVoice.owner;
+                return Promise.resolve();
+              })
+              .then(done)
+              .catch(done);
+          }
+        ], function(err) {
+          if (err) { return next(err); }
 
-            next();
-          });
+          res.locals.pagesForMonths = pagesForMonths;
+          res.locals.voice.firstPostDate = postDates.firstPostDate;
+          res.locals.voice.lastPostDate = postDates.lastPostDate;
+          res.locals.owner = fetchVoice.owner;
+
+          next();
+        });
       });
     },
 

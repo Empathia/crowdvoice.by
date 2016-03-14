@@ -32,6 +32,7 @@ Class(CV.UI, 'DropdownTopics').inherits(Widget)({
                 showArrow : true,
                 className : 'dropdown-topics ui-dropdown-styled -lg',
                 arrowClassName : '-s10 -color-grey',
+                labelClassName: '-ellipsis',
                 bodyClassName : 'ui-vertical-list hoverable -full-width'
             })).render(this.el).disable();
 
