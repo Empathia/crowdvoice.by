@@ -87,8 +87,7 @@ var FeedPresenter = Module('FeedPresenter')({
 
                 })
                 .then(function () {
-                  console.log(currentPerson)
-                  return K.ThreadsPresenter.build([thread], currentPerson)
+                  return K.ThreadsPresenter.build([thread], currentPerson, true)
                 })
                 .then(function (pres) {
                   actionInst.thread = pres[0]
