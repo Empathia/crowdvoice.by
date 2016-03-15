@@ -152,7 +152,8 @@
 }(document, "script", "twitter-wjs"));</script>
 
 
-    <!-- Start of StatCounter Code for Default Guide -->
+  <!-- Start of StatCounter Code for Default Guide -->
+  <% if (CONFIG.environment === 'production') { %>
     <script type="text/javascript">
     var sc_project=10825689;
     var sc_invisible=1;
@@ -168,6 +169,7 @@
     target="_blank"><img class="statcounter"
     src="http://c.statcounter.com/10825689/0/8ec62beb/1/"
     alt="website statistics"></a></div></noscript>
-    <!-- End of StatCounter Code for Default Guide -->
+  <% } %>
+  <!-- End of StatCounter Code for Default Guide -->
 </body>
 </html>
