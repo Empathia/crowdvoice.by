@@ -793,7 +793,9 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
                 return nextSeries();
               }
 
-              voice.ownerId = hashids.decode(req.body.ownerId)[0];
+              if (req.body.ownerId) {
+                voice.ownerId = hashids.decode(req.body.ownerId)[0];
+              }
 
               voice.save(function(err, result) {
                 return nextSeries(err);
