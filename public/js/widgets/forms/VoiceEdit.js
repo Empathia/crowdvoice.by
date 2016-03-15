@@ -326,22 +326,10 @@ Class(CV, 'VoiceEdit').inherits(CV.VoiceBase)({
      * @private
      */
     _setSuccessState: function _setSuccessState(res) {
-      var message = "“" + res.title + '” was updated! You will be redirected to your voices in a couple of seconds.'
-        , url = '/' + Person.get('profileName') + '/myvoices/';
-
-      switch(res.status) {
-        case constants.VOICE.STATUS_ARCHIVED: url += '#archived'; break;
-        case constants.VOICE.STATUS_DRAFT: url += '#drafts'; break;
-        case constants.VOICE.STATUS_PUBLISHED: url += '#published'; break;
-        case constants.VOICE.STATUS_UNLISTED: url += '#unlisted'; break;
-      }
+      var message = "“" + res.title + '” was updated! The page will refresh in a couple of seconds.';
 
       window.setTimeout(function() {
-        window.location = url;
-
-        if ((window.location.pathname + window.location.hash) === url) {
-          window.location.reload();
-        }
+        window.location.reload();
       }, this.constructor.REDIRECT_DELAY);
 
       if (this._flashMessage) {
