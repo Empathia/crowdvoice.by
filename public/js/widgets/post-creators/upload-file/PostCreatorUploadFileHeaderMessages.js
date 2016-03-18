@@ -17,7 +17,6 @@ Class(CV, 'PostCreatorUploadFileHeaderMessages').inherits(Widget)({
                     <use xlink:href="#svg-image"></use>\
                 </svg>\
                 <span class="upload-file-msg-text -font-bold">You uploaded an image.</span>\
-                <button class="cv-button tiny -float-right -m0">Upload something else</button>\
             </div>\
         </div>\
     ',
