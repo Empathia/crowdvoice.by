@@ -62,15 +62,35 @@ var FeedPresenter = Module('FeedPresenter')({
                 return next()
               }
 
-              K.Message.query()
-                .where('id', action.itemId)
-                .then(function (result) {
-                  return K.MessagesPresenter.build(result, currentPerson);
+              var thread, message
+
+              Promise.resolve()
+                .then(function () {
+                  return K.Message.query()
+                    .where('id', action.itemId)
+                    .then(function (result) {
+                      message = result[0]
+
+                      return Promise.resolve()
+                    })
+                })
+                .then(function () {
+                  return K.MessageThread.query()
+                    .where('id', message.threadId)
+                    .then(function (result) {
+                      thread = result[0]
+
+                      thread.messages = [message]
+
+                      return Promise.resolve()
+                    })
+
+                })
+                .then(function () {
+                  return K.ThreadsPresenter.build([thread], currentPerson, true)
                 })
                 .then(function (pres) {
-                  actionInst.thread = {
-                    messages: pres,
-                  }
+                  actionInst.thread = pres[0]
 
                   return Promise.resolve()
                 })

@@ -75,7 +75,7 @@ Class(CV, 'VoiceCoverMini').inherits(Widget).includes(CV.WidgetUtils)({
      * @public
      */
     addActions: function addActions() {
-      if (!Person.get()) return;
+      if (!Person.get()) return this;
 
       if (Person.ownerOf('voice', this.data.id)) {
         this.appendChild(new CV.VoiceCoverActions({
@@ -83,6 +83,7 @@ Class(CV, 'VoiceCoverMini').inherits(Widget).includes(CV.WidgetUtils)({
           voiceEntity: this.data
         })).render(this.actionsElement);
       }
+      return this;
     },
 
     /* Show the location, joined at and inline name, username

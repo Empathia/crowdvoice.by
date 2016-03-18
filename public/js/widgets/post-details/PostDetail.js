@@ -19,6 +19,7 @@ Class(CV, 'PostDetail').inherits(Widget).includes(CV.WidgetUtils, BubblingSuppor
   prototype: {
     /* @param config.data - PostInstance
     */
+    _data: null,
     init: function init(config) {
       Widget.prototype.init.call(this, config);
       this.el = this.element[0];
@@ -89,8 +90,16 @@ Class(CV, 'PostDetail').inherits(Widget).includes(CV.WidgetUtils, BubblingSuppor
      * @param {Object} data - PostEntity
      */
     update: function update(data) {
+      if (this._data) {
+        if (this._data.id !== data.id) {
+          this.info.update(data);
+        }
+      } else {
+        this._data = data;
+        this.info.update(data);
+      }
+
       this.sidebar.activateItem(data);
-      this.info.update(data);
       if (this.timeline) this.timeline.update(data);
     },
 

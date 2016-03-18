@@ -86,11 +86,13 @@ Class(CV, 'CardSmall').inherits(Widget).includes(CV.WidgetUtils, BubblingSupport
       this._totalCountActions++;
 
       if (this.data.type === "organization") {
-        this.appendChild(new CV.CardActionJoin({
-          name: 'joinButton',
-          entity: this.data
-        })).render(this.actionsEl);
-        this._totalCountActions++;
+        if (Person.memberOf('organization', this.data.id) === false) {
+          this.appendChild(new CV.CardActionJoin({
+            name : 'joinButton',
+            entity : this.data
+          })).render(actionsEl);
+          this._totalCountActions++;
+        }
       } else {
         this.appendChild(new CV.CardActionMessage({
           name: 'messageButton',
