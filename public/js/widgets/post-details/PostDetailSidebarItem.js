@@ -20,6 +20,7 @@ Class(CV, 'PostDetailSidebarItem').inherits(Widget).includes(CV.WidgetUtils, Bub
         image: '<svg class="pd-sidebar-item-meta__icon"><use xlink:href="#svg-image"></use></svg>',
         video: '<svg class="pd-sidebar-item-meta__icon"><use xlink:href="#svg-video"></use></svg>',
         text: '<svg class="pd-sidebar-item-meta__icon"><use xlink:href="#svg-article"></use></svg>',
+        tweet: '<svg class="pd-sidebar-item-meta__icon"><use xlink:href="#svg-twitter-bird"></use></svg>'
     },
     THUMB_TEMPLATE : '\
         <div class="pd-sidebar-item__cover-wrapper -float-left -img-cover" style="background-image: url({source});"></div>',

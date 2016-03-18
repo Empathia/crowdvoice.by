@@ -1,7 +1,5 @@
 'use strict'
 
-var FeedPresenter = require('./FeedPresenter.js')
-
 var NotificationsPresenter = Module('NotificationsPresenter')({
   build: function (notifications, currentPerson, callback) {
     var result = []

@@ -4,6 +4,8 @@ var ReadabilityParser = require(path.join(__dirname, '../lib/ReadabilityParser.j
 
 require(path.join(process.cwd(), 'lib', 'krypton', 'presenters', 'PostsPresenter.js'))
 
+var requestjs = require('request');
+
 var downsize = require('downsize');
 
 var Twitter = require('twitter');
@@ -114,7 +116,87 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
       });
     },
 
+    createPosts : function createPosts(posts, approved, ownerId, voiceId, callback) {
+      var results = [];
+
+      approved = approved || false;
+
+      async.each(posts, function(item, nextPost) {
+        var postData = {};
+
+        postData.title = item.title;
+        postData.description = item.description;
+        postData.sourceUrl = item.sourceUrl;
+        postData.sourceService = item.sourceService;
+        postData.sourceType = item.sourceType;
+        postData.approved = approved;
+        postData.ownerId = ownerId;
+        postData.voiceId = voiceId;
+
+        if (item.publishedAt) {
+          postData.publishedAt = new Date(item.publishedAt);
+        }
+
+        postData.extras = item.extras;
+
+        if (postData.sourceUrl === 'local_image') {
+          var hrtime = process.hrtime();
+          postData.sourceUrl = 'local_image_' + hashids.encode(parseInt(hrtime[0] + '' + hrtime[1], 10));
+        }
+
+        var post = new K.Post(postData);
+
+        post.save().then(function() {
+          var imagePath = '';
+          if (item.imagePath && item.imagePath.length > 0) {
+            imagePath = path.join(process.cwd(), 'public', item.imagePath.replace(/preview_/, ''));
+          }
+
+          post.uploadImage('image', imagePath, function() {
+            post.save().then(function() {
+              K.Voice.query()
+                .where({id : post.voiceId})
+                .then(function(voice) {
+                  voice = voice[0];
+
+                  if (item.images) {
+                    item.images.forEach(function(image) {
+                      if (fs.existsSync(process.cwd() + '/public' + image.path)) {
+                        fs.unlinkSync(process.cwd() + '/public' + image.path);
+                        logger.info('Deleted tmp image: ' + process.cwd() + '/public' + image.path);
+                      }
+
+                      if (fs.existsSync(process.cwd() + '/public' + image.path.replace(/preview_/, ''))) {
+                        fs.unlinkSync(process.cwd() + '/public' + image.path.replace(/preview_/, ''));
+                        logger.info('Deleted tmp image: ' + process.cwd() + '/public' + image.path.replace(/preview_/, ''));
+                      }
+                    });
+                  }
+
+                  FeedInjector().inject(voice.ownerId, 'item voiceNewPosts', voice, function (err) {
+                    if (err) { return nextPost(err); }
+
+                    results.push(post);
+
+                    return nextPost();
+                  });
+                }).catch(nextPost);
+            }).catch(nextPost);
+
+          });
+        }).catch(nextPost);
+
+      }, function(err) {
+        if (err) { return callback(err); }
+
+        callback(err, results);
+
+      });
+    },
+
     create : function create(req, res, next) {
+      var controller = this;
+
       ACL.isAllowed('create', 'posts', req.role, {
         currentPerson: req.currentPerson,
         activeVoice: req.activeVoice,
@@ -144,72 +226,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           posts = [posts];
         }
 
-        var results = [];
-
-        async.each(posts, function(item, nextPost) {
-          var postData = {};
-
-          postData.title = item.title;
-          postData.description = item.description;
-          postData.sourceUrl = item.sourceUrl;
-          postData.sourceService = item.sourceService;
-          postData.sourceType = item.sourceType;
-          postData.approved = approved;
-          postData.ownerId = response.postOwner.id;
-          postData.voiceId = req.activeVoice.id;
-          postData.publishedAt = new Date(item.publishedAt);
-          postData.extras = item.extras;
-
-          if (postData.sourceUrl === 'local_image') {
-            var hrtime = process.hrtime();
-            postData.sourceUrl = 'local_image_' + hashids.encode(parseInt(hrtime[0] + '' + hrtime[1], 10));
-          }
-
-          var post = new K.Post(postData);
-
-          post.save().then(function() {
-            var imagePath = '';
-            if (item.imagePath && item.imagePath.length > 0) {
-              imagePath = path.join(process.cwd(), 'public', item.imagePath.replace(/preview_/, ''));
-            }
-
-            post.uploadImage('image', imagePath, function() {
-              post.save().then(function() {
-                K.Voice.query()
-                  .where({id : post.voiceId})
-                  .then(function(voice) {
-                    voice = voice[0];
-
-                    if (item.images) {
-                      item.images.forEach(function(image) {
-                        if (fs.existsSync(process.cwd() + '/public' + image)) {
-                          fs.unlinkSync(process.cwd() + '/public' + image);
-                          logger.info('Deleted tmp image: ' + process.cwd() + '/public' + image);
-                        }
-
-                        if (fs.existsSync(process.cwd() + '/public' + image.replace(/preview_/, ''))) {
-                          fs.unlinkSync(process.cwd() + '/public' + image.replace(/preview_/, ''));
-                          logger.info('Deleted tmp image: ' + process.cwd() + '/public' + image.replace(/preview_/, ''));
-                        }
-                      });
-                    }
-
-                    FeedInjector().inject(voice.ownerId, 'item voiceNewPosts', voice, function (err) {
-                      if (err) { return nextPost(err); }
-
-                      results.push(post);
-
-                      return nextPost();
-                    });
-                  }).catch(nextPost);
-              }).catch(nextPost);
-
-            });
-          }).catch(nextPost);
-
-        }, function(err) {
-          if (err) { return next(err); }
-
+        controller.createPosts(posts, approved, response.postOwner.id, req.activeVoice.id, function(err, results) {
           K.PostsPresenter.build(results, req.currentPerson).then(function(result) {
             return res.json(result);
           }).catch(next);
@@ -286,14 +303,14 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
                 K.PostsPresenter.build([post], req.currentPerson).then(function(posts) {
                   if (body.images) {
                     body.images.forEach(function(image) {
-                      if (fs.existsSync(process.cwd() + '/public' + image)) {
-                        fs.unlinkSync(process.cwd() + '/public' + image);
-                        logger.info('Deleted tmp image: ' + process.cwd() + '/public' + image);
+                      if (fs.existsSync(process.cwd() + '/public' + image.path)) {
+                        fs.unlinkSync(process.cwd() + '/public' + image.path);
+                        logger.info('Deleted tmp image: ' + process.cwd() + '/public' + image.path);
                       }
 
-                      if (fs.existsSync(process.cwd() + '/public' + image.replace(/preview_/, ''))) {
-                        fs.unlinkSync(process.cwd() + '/public' + image.replace(/preview_/, ''));
-                        logger.info('Deleted tmp image: ' + process.cwd() + '/public' + image.replace(/preview_/, ''));
+                      if (fs.existsSync(process.cwd() + '/public' + image.path.replace(/preview_/, ''))) {
+                        fs.unlinkSync(process.cwd() + '/public' + image.path.replace(/preview_/, ''));
+                        logger.info('Deleted tmp image: ' + process.cwd() + '/public' + image.path.replace(/preview_/, ''));
                       }
                     });
                   }
@@ -513,6 +530,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
     },
 
     _processURL : function _processURL(originalURL, callback) {
+
       var logScrapperError = function (url, error, callback) {
         var errorLog = new ScrapperError({
           url: url,
@@ -526,10 +544,18 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         errorLog.save(callback);
       };
 
-      request.get(originalURL, function (err, response) {
+      requestjs({
+        followAllRedirects : true,
+        followRedirect : true,
+        removeRefererHeader : true,
+        url : originalURL,
+        jar : true,
+        headers: {
+          'User-Agent': 'Chrome'
+        }
+      }, function(err, response) {
         if (err) {
           return logScrapperError(originalURL, err, function (err) {
-            if (err) { return callback(err);; }
 
             return callback(err, {
               status : 400,
@@ -539,10 +565,12 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           });
         }
 
-        Scrapper.processUrl(response.request.uri.href, response, function (err, result) {
+        var expandedURL = response.request.uri.href;
+
+        Scrapper.processUrl(expandedURL, response, function (err, result) {
           if (err) {
-            return logScrapperError(response.request.uri.href, err, function (err) {
-              if (err) { return callback(err); }
+            return logScrapperError(expandedURL, err, function (err) {
+              // if (err) { return callback(err); }
 
               return callback(err, {
                 status : 400,

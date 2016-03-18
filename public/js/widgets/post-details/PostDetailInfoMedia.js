@@ -32,7 +32,7 @@ Class(CV, 'PostDetailInfoMedia').inherits(Widget).includes(CV.WidgetUtils)({
             <iframe class="pd__info-media-iframe -abs -full-width -full-height" frameborder="0" allowfullscreen="true"></iframe>\
         </div>',
 
-    reYouTubeVideo : new RegExp('v=((\\w+-?)+)'),
+    reYouTubeVideo : new RegExp('v=((\\w|-)+-?)'),
     reVimeoVideo : new RegExp('[0-9]+'),
 
     FAVICON : '<img class="pd-sidebar-item-meta__icon-image" src="{src}"/>',
