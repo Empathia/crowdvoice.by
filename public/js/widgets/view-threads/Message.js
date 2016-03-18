@@ -86,6 +86,12 @@ CV.Message = new Class(CV, 'Message').inherits(Widget)({
           }
         }
 
+        if (Person.is(message.thread.data.receiverEntity.id))
+        {
+          message.thread.data.receiverEntity = message.thread.data.senderEntity
+          message.thread.data.senderEntity = Person.get()
+        }
+
         if (sender === false) {
           switch(message.type) {
             case 'invitation_organization':
