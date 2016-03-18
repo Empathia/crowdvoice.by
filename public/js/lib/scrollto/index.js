@@ -14,7 +14,7 @@ var previousTween = null
 function _scroll(element) {
     var x, y;
 
-    if (element.scrollTo) {
+    if (element.pageXOffset) {
         x = element.pageXOffset;
         y = element.pageYOffset;
     } else {
