@@ -551,12 +551,11 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         url : originalURL,
         jar : true,
         headers: {
-          'User-Agent': 'Mozilla/5.0'
+          'User-Agent': 'Chrome'
         }
       }, function(err, response) {
         if (err) {
           return logScrapperError(originalURL, err, function (err) {
-            // if (err) { return callback(err);; }
 
             return callback(err, {
               status : 400,
