@@ -33,7 +33,6 @@ Class(CV, 'EditablePost').includes(CV.WidgetUtils, CustomEventSupport, NodeSuppo
      */
     create : function create(config) {
         var type = this.prototype.format.capitalizeFirstLetter(config.sourceType);
-
         return new window.CV['EditablePost' + type](config);
     },
 

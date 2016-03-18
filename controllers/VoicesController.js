@@ -480,6 +480,7 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
     },
 
     show : function show(req, res, next) {
+      console.time('>>SHOW');
       ACL.isAllowed('show', 'voices', req.role, {
         currentPerson : req.currentPerson,
         voice : res.locals.voice,

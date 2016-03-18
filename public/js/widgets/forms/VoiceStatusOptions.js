@@ -103,6 +103,11 @@ Class(CV, 'VoiceStatusOptions').inherits(Widget).includes(CV.WidgetUtils)({
     error: function error() {
       this.dom.addClass(this.el, ['-is-error']);
       return this;
+    },
+
+    destroy: function destroy() {
+      Widget.prototype.destroy.call(this);
+      return null;
     }
   }
 });
