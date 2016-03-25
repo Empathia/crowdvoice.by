@@ -102,7 +102,7 @@ Class(CV, 'Slider').inherits(Widget)({
 
       ScrollTo(this.sliderElement.parentNode, {
         x: x,
-        duration: 400
+        duration: (769/400) * Math.abs(x - this.sliderElement.parentNode.scrollLeft)
       });
     },
 

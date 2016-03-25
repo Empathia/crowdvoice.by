@@ -33,6 +33,12 @@ Class(CV.Views, 'MyVoices').includes(NodeSupport, CV.WidgetUtils)({
     },
 
     _setupTabs: function _setupTabs() {
+      var ARCHIVED_KEY = 'archived'
+        , archivedVoices = {}
+        , currentVoices = {}
+        , totalArchivedVoices = 0
+        , totalCurrentVoices = 0;
+
       this.appendChild(new CV.TabsManager({
         name: 'tabs',
         useHash: true,
@@ -40,22 +46,38 @@ Class(CV.Views, 'MyVoices').includes(NodeSupport, CV.WidgetUtils)({
         content: document.querySelector('.profile-menu-content')
       }));
 
-      Object.keys(this.voices).forEach(function (propertyName) {
-        var tab = {};
-        tab.name = propertyName;
-        tab.content = CV.MyVoicesTab;
-        tab.contentData = {
-          name: propertyName,
-          voices: this.voices[propertyName]
-        };
-        tab.title = this.format.capitalizeFirstLetter(propertyName);
+      archivedVoices[ARCHIVED_KEY] = this.voices[ARCHIVED_KEY];
+      totalArchivedVoices = archivedVoices[ARCHIVED_KEY].length;
 
-        if (tab.contentData.voices.length) {
-          tab.title += ' (' + tab.contentData.voices.length + ')';
+      Object.keys(this.voices).forEach(function (key) {
+        if (key !== ARCHIVED_KEY) {
+          var voices = this.voices[key];
+          currentVoices[key] = voices;
+          totalCurrentVoices += voices.length;
         }
-
-        this.tabs.addTab(tab);
       }, this);
+
+      this.tabs.addTab({
+        name: 'voices',
+        content: CV.MyVoicesTab,
+        title: 'Voices (' + totalCurrentVoices + ')',
+        contentData: {
+          voices: currentVoices,
+          totalVoices: totalCurrentVoices,
+          emptyMessage: 'You have no voices. <a href="#">Create a Voice</a>'
+        }
+      });
+
+      this.tabs.addTab({
+        name: 'archived',
+        content: CV.MyVoicesTab,
+        title: 'Archived (' + totalArchivedVoices + ')',
+        contentData: {
+          voices: archivedVoices,
+          totalVoices: totalArchivedVoices,
+          emptyMessage: 'You haven’t archived any voice yet.'
+        }
+      });
 
       this.tabs.addTabIndicator().start();
     }
