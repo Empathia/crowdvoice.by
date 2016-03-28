@@ -112,11 +112,43 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
             this._inputKeyUpTimer = window.setTimeout(this._validateInputValue.bind(this), 500);
         },
 
+        /**
+        * Checkit module at `https://github.com/tgriesser/checkit/blob/master/core.js`
+        * has uses a regular expression to validate a url, their regex is faulty as a url
+        * without protocol is considered invalid, and so is a protoco-less url.
+        *
+        * Fixes a url so it passes Checkit by patching the right protocol.
+        *
+        * @method _prepUrlForCheckit
+        * @param url {String}
+        * @return {String}
+        */
+        _prepUrlForCheckit: function _prepUrlForCheckit(url)
+        {
+            // 0: original, 1: procotol, 2: `://`, 3: everything else.
+            var matches = /^(http|https)?(:\/\/)?(.*)/.exec(url)
+            if (matches && matches[0])
+            {
+                if (!matches[1]) // no explicit protocol
+                {
+                    if (matches[2]) // has auto-protocol e.g `://google.com`
+                    {
+                        url = window.location.protocol + '//' + matches[3]
+                    }
+                    else // no protocol, default to `http`
+                    {
+                        url = 'http://' + url
+                    }
+                }
+            }
+            return url
+        },
+
         _validateInputValue : function _validateInputValue() {
             var inputValue, checkitResponse;
 
             this._inputKeyUpTimer = null;
-            inputValue = this.input.getValue();
+            inputValue = this._prepUrlForCheckit(this.input.getValue());
 
             if (inputValue === this._inputLastValue) {
                 return;
