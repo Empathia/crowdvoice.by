@@ -301,7 +301,7 @@ Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
             $('.cv-voice-posts-layer').prepend(
               new CV.Alert({
                 name : 'Server Error',
-                text : 'Posts could not be loaded, refresh the page to try',
+                text : 'Posts could not be loaded, please refresh the page',
                 type : 'error'
               }).element
             )
