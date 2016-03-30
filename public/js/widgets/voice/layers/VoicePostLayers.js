@@ -292,6 +292,29 @@ Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
      * @return undefined
      */
     loadLayer: function loadLayer(postsData, dateString, scrollDirection) {
+      if (postsData.error)
+      {
+        this.getLayers().forEach(function(layer){
+          layer.hideLoaders();
+          if (!$('.cv-voice-posts-layer .cv-alert.-error').length) 
+          {
+            $('.cv-voice-posts-layer').prepend(
+              new CV.Alert({
+                name : 'Server Error',
+                text : 'Posts could not be loaded, please refresh the page',
+                type : 'error'
+              }).element
+            )
+            $('.cv-voice-posts-layer').css({
+              'height': 300,
+              'overflow': 'hidden',
+            })
+            console.error(postsData);
+          }
+        })
+        return
+      }
+
       this.registry.set(dateString, postsData);
 
       if (dateString !== this._currentMonthString) {
