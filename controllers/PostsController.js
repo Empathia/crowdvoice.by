@@ -755,7 +755,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           .where('voice_id', req.activeVoice.id)
           .andWhere('approved', false)
           .andWhereRaw("created_at < '" + moment(req.body.olderThanDate).format() + "'")
-          .del()
+          .delete()
           .then(function(affectedRows) {
             res.json({
               status: 'ok',
@@ -782,7 +782,7 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
             voice_id: req.activeVoice.id,
             approved: false
           })
-          .del()
+          .delete()
           .then(function(affectedRows) {
             res.json({
               status: 'ok',
