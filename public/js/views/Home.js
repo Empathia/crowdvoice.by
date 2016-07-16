@@ -76,7 +76,7 @@ Class(CV.Views, 'Home').includes(NodeSupport, CV.WidgetUtils)({
 
       new CV.Slider({
         element: $(orgsHolder),
-        itemsWidth: 340,
+        itemsWidth: 320,
         appendArrowsTo: document.querySelector('.homepage-organization-cards .arrows-wrapper'),
         appendDotsTo: document.querySelector('.homepage-organization-cards .dots-wrapper')
       }).update();
