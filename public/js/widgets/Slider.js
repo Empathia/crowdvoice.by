@@ -1,5 +1,5 @@
 var Events = require('./../lib/events');
-var ScrollTo = require('./../lib/scrollto');
+var Pisces = require('pisces');
 
 Class(CV, 'Slider').inherits(Widget)({
   ARROWS_HTML: '\
@@ -45,6 +45,7 @@ Class(CV, 'Slider').inherits(Widget)({
       this.sliderElement = this.el.querySelector('.slider-list');
       this.itemElements = this.sliderElement.querySelectorAll('.slider-item');
       this.itemsLen = this.itemElements.length;
+      this.pisces = new Pisces(this.sliderElement.parentNode, {duration: 400});
 
       return this;
     },
@@ -93,16 +94,15 @@ Class(CV, 'Slider').inherits(Widget)({
       var x = Math.abs(this.index * 100);
 
       if (this.index > 0) {
-        x = (this._slidesShown * this.index + 1);
+        x = (this._slidesShown * this.index);
       }
 
       x = (x * this.itemsWidth);
 
       this._updateControls();
 
-      ScrollTo(this.sliderElement.parentNode, {
-        x: x,
-        duration: (769/400) * Math.abs(x - this.sliderElement.parentNode.scrollLeft)
+      this.pisces.scrollToPosition({
+        x: x
       });
     },
 
