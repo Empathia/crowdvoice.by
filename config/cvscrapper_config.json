@@ -8,6 +8,7 @@
     "html"
   ],
   "scrappers": [
+    "facebook_video",
     "imgur",
     "youtube",
     "vimeo",

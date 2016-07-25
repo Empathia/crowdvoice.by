@@ -96,7 +96,7 @@
     "sanitize-html": "1.6.1",
     "sanitize.css": "1.1.0",
     "share-url": "1.0.0",
-    "sharp": "^0.13.1",
+    "sharp": "0.15.1",
     "slug": "0.9.1",
     "socket.io": "1.3.5",
     "soundmanager2": "git://github.com/scottschiller/SoundManager2.git#d0a4b70f244e71adde79c16e7ebab5025dc61c03",
