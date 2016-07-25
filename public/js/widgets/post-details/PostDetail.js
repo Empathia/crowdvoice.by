@@ -92,6 +92,7 @@ Class(CV, 'PostDetail').inherits(Widget).includes(CV.WidgetUtils, BubblingSuppor
     update: function update(data) {
       if (this._data) {
         if (this._data.id !== data.id) {
+          this._data = data;
           this.info.update(data);
         }
       } else {
