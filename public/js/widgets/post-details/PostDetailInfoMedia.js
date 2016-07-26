@@ -125,6 +125,10 @@ Class(CV, 'PostDetailInfoMedia').inherits(Widget).includes(CV.WidgetUtils)({
         this.dom.updateAttr('src', iframe, url);
       }
 
+      if (data.sourceService === 'periscope') {
+        this.dom.updateAttr('src', iframe, data.sourceUrl);
+      }
+
       id = iframe = null;
     }
   }
