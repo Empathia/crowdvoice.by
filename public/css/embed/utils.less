@@ -12,7 +12,8 @@
 .-inline-block {display: inline-block}
 .-table {display: table}
 .-table-cell {display: table-cell}
-.-dn {display: none}
+.-dn,
+.-hide {display: none}
 
 .-abs {position: absolute}
 .-rel {position: relative}
@@ -22,7 +23,7 @@
   top: 0;
   left: 0;
   right: 0;
-  bottom: 0;
+  bottom: -1px;
 }
 
 .-abs-full-before::before {

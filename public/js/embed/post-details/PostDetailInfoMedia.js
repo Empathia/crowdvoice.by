@@ -118,6 +118,17 @@ Class(CV, 'PostDetailInfoMedia').inherits(Widget).includes(CV.WidgetUtils)({
         this.dom.updateAttr('src', iframe, 'https://player.vimeo.com/video/' + id + '?autoplay=1');
       }
 
+      if (data.sourceService === 'facebook') {
+        // var url = 'https://www.facebook.com/video/embed?video_id=10153231379946729';
+        // var url = 'https://www.facebook.com/v2.3/plugins/video.php?allowfullscreen=true&autoplay=true&href=https%3A%2F%2Fwww.facebook.com%2Fredbull%2Fvideos%2F10155801793140352%2F&locale=en_US';
+        var url = 'https://www.facebook.com/v2.3/plugins/video.php?allowfullscreen=true&autoplay=true&href=' + data.sourceUrl;
+        this.dom.updateAttr('src', iframe, url);
+      }
+
+      if (data.sourceService === 'periscope') {
+        this.dom.updateAttr('src', iframe, data.sourceUrl);
+      }
+
       id = iframe = null;
     }
   }

@@ -8,6 +8,8 @@
     "html"
   ],
   "scrappers": [
+    "facebook_video",
+    "periscope",
     "imgur",
     "youtube",
     "vimeo",
