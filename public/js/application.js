@@ -114,7 +114,6 @@ require('./widgets/tabs/Tab');
 require('./widgets/tabs/TabNav');
 require('./widgets/tabs/TabContent');
 require('./widgets/tabs/TabIndicator');
-require('./widgets/HelpDeskOverlay');
 require('./widgets/DiscoverCover');
 
 // components
