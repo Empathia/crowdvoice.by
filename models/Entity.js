@@ -482,21 +482,21 @@ var Entity = Class('Entity').inherits(Argon.KnexModel).includes(ImageUploader)({
       if (!done) { return; }
 
       var entity = this;
-      EntityOwner.find({
-        owned_id: entity.id
-      }, function (err, result) {
-        if (err) { done(err); return; }
 
-        if (result.length === 0) {
-          done(null, [])
-        } else {
-          Entity.find({id: result[0].ownerId}, function (err, result) {
+      K.EntityOwner.query()
+        .where('owned_id', owner.id)
+        .then(function(result) {
+          if (result.length === 0) {
+            done(null, [])
+          } else {
+            Entity.find({id: result[0].ownerId}, function (err, result) {
 
-            if (err) { done(err); return; }
-            done(null, result[0]);
-          });
-        }
-      });
+              if (err) { done(err); return; }
+              done(null, result[0]);
+            });
+          }
+        })
+        .catch(done);
     },
 
     isOwnerOf : function isOwnerOf(entityId, callback) {
