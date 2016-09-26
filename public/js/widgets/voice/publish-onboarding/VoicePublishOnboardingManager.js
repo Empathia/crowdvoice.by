@@ -35,7 +35,7 @@ Class(CV, 'VoicePublishOnboardingManager').includes(NodeSupport)({
     },
 
     _canPublishVoice: function _canPublishVoice() {
-      return ((this.voiceData.postsCount >= 20) && (Object.keys(this.voiceData.images).length >= 1));
+      return ((this.voiceData.postsCount >= 0) && (Object.keys(this.voiceData.images).length >= 1));
     },
 
     showOnboarding: function showOnboarding() {

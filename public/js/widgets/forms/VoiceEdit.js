@@ -5,7 +5,7 @@ var Person = require('./../../lib/currentPerson')
   , Checkit = require('checkit');
 
 Class(CV, 'VoiceEdit').inherits(CV.VoiceBase)({
-  MIN_POST_REQUIRED_TO_PUBLISH: 20,
+  MIN_POST_REQUIRED_TO_PUBLISH: 0,
   prototype: {
     isAdmin: null,
 
@@ -258,12 +258,12 @@ Class(CV, 'VoiceEdit').inherits(CV.VoiceBase)({
      * @private
      */
     _appendStatusOptions: function _appendStatusOptions() {
-      if (this._canBePublished() === false) {
-        return this.el.insertAdjacentHTML('beforeend', '\
-            <p class="form-create-voice__bottom-help-text -mt2 -text-center">\
-            To be able to publish the voice and share it, you need to add at least 20 posts and a cover image.\
-            </p>');
-      }
+      // if (this._canBePublished() === false) {
+      //   return this.el.insertAdjacentHTML('beforeend', '\
+      //       <p class="form-create-voice__bottom-help-text -mt2 -text-center">\
+      //       To be able to publish the voice and share it, you need to add at least 20 posts and a cover image.\
+      //       </p>');
+      // }
 
       this.appendChild(new CV.VoiceStatusOptions({
         name: 'voiceStatus'

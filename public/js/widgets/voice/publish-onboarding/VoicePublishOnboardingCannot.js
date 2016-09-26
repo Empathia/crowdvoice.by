@@ -52,11 +52,11 @@ Class(CV, 'VoicePublishOnboardingCannot').inherits(Widget)({
         this._addConstraint('Add a cover image');
       }
 
-      if (this.data.voice.postsCount >= 20) {
-        this._addConstraint('Add at least 20 posts', true);
-      } else  {
-        this._addConstraint('Add at least 20 posts');
-      }
+      // if (this.data.voice.postsCount >= 20) {
+      //   this._addConstraint('Add at least 20 posts', true);
+      // } else  {
+      //   this._addConstraint('Add at least 20 posts');
+      // }
     },
 
     _addConstraint: function _addConstraint(text, checked) {

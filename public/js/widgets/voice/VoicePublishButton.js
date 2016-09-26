@@ -72,7 +72,7 @@ Class(CV, 'VoicePublishButton').inherits(Widget).includes(CV.WidgetUtils)({
     },
 
     _canBePublish: function _canBePublish() {
-      var hasPosts = (this.data.voice.postsCount >= 20)
+      var hasPosts = (this.data.voice.postsCount >= 0)
         , hasImage = (Object.keys(this.data.voice.images).length >= 1);
       return (hasPosts && hasImage);
     },

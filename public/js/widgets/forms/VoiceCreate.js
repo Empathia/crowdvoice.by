@@ -174,10 +174,10 @@ Class(CV, 'VoiceCreate').inherits(CV.VoiceBase)({
         data: {value: 'Create Voice'}
       })).render(this.sendElement);
 
-      this.el.insertAdjacentHTML('beforeend', '\
-        <p class="form-create-voice__bottom-help-text -mt2 -text-center">\
-        Voice will be created as a <b>Draft</b>. To be able to publish the voice and share it, you need to add at least 20 posts and a cover image.\
-        </p>');
+      // this.el.insertAdjacentHTML('beforeend', '\
+      //   <p class="form-create-voice__bottom-help-text -mt2 -text-center">\
+      //   Voice will be created as a <b>Draft</b>. To be able to publish the voice and share it, you need to add at least 20 posts and a cover image.\
+      //   </p>');
 
       return this;
     },
@@ -344,7 +344,7 @@ Class(CV, 'VoiceCreate').inherits(CV.VoiceBase)({
      */
     _getCurrentData: function _getCurrentData() {
       var body = CV.VoiceBase.prototype._getCurrentData.call(this);
-      body.status = constants.VOICE.STATUS_DRAFT;
+      body.status = constants.VOICE.STATUS_UNLISTED;
       return body;
     },
 
@@ -366,7 +366,7 @@ Class(CV, 'VoiceCreate').inherits(CV.VoiceBase)({
         data.append('ownerId', Person.get().id);
       }
 
-      data.append('status', constants.VOICE.STATUS_DRAFT);
+      data.append('status', constants.VOICE.STATUS_UNLISTED);
 
       return data;
     },
