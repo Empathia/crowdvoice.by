@@ -803,26 +803,26 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           },
 
           // 20 posts
-          function (nextSeries) {
-            if (req.body.status !== Voice.STATUS_PUBLISHED
-              && req.body.status !== Voice.STATUS_UNLISTED) {
-
-              return nextSeries();
-            }
-
-            Post.find({
-              voice_id: voice.id,
-              approved: true
-            }, function (err, posts) {
-              if (err) { return nextSeries(err); }
-
-              if (posts.length < 20) {
-                publishErrors.push('Voice does not have 20 posts.');
-              }
-
-              return nextSeries();
-            });
-          },
+          // function (nextSeries) {
+          //   if (req.body.status !== Voice.STATUS_PUBLISHED
+          //     && req.body.status !== Voice.STATUS_UNLISTED) {
+          //
+          //     return nextSeries();
+          //   }
+          //
+          //   Post.find({
+          //     voice_id: voice.id,
+          //     approved: true
+          //   }, function (err, posts) {
+          //     if (err) { return nextSeries(err); }
+          //
+          //     if (posts.length < 20) {
+          //       publishErrors.push('Voice does not have 20 posts.');
+          //     }
+          //
+          //     return nextSeries();
+          //   });
+          // },
 
           // Background image
           function (nextSeries) {
@@ -840,19 +840,19 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           },
 
           // Can't change to draft once PUBLISHED or UNLISTED
-          function (nextSeries) {
-            if (req.activeVoice.status !== Voice.STATUS_PUBLISHED
-              && req.activeVoice.status !== Voice.STATUS_UNLISTED) {
-
-              return nextSeries();
-            }
-
-            if (req.body.status === Voice.STATUS_DRAFT) {
-              publishErrors.push('Voice cannot be a Draft once Published or Unlisted.');
-            }
-
-            return nextSeries();
-          },
+          // function (nextSeries) {
+          //   if (req.activeVoice.status !== Voice.STATUS_PUBLISHED
+          //     && req.activeVoice.status !== Voice.STATUS_UNLISTED) {
+          //
+          //     return nextSeries();
+          //   }
+          //
+          //   if (req.body.status === Voice.STATUS_DRAFT) {
+          //     publishErrors.push('Voice cannot be a Draft once Published or Unlisted.');
+          //   }
+          //
+          //   return nextSeries();
+          // },
         ], function (err) {
           if (err) { return next(err); }
 
