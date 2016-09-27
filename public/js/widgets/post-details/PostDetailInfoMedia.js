@@ -121,8 +121,12 @@ Class(CV, 'PostDetailInfoMedia').inherits(Widget).includes(CV.WidgetUtils)({
       if (data.sourceService === 'facebook') {
         // var url = 'https://www.facebook.com/video/embed?video_id=10153231379946729';
         // var url = 'https://www.facebook.com/v2.3/plugins/video.php?allowfullscreen=true&autoplay=true&href=https%3A%2F%2Fwww.facebook.com%2Fredbull%2Fvideos%2F10155801793140352%2F&locale=en_US';
-        var url = 'https://www.facebook.com/v2.3/plugins/video.php?allowfullscreen=true&autoplay=true&href=' + data.sourceUrl;
+        var url = 'https://www.facebook.com/v2.3/plugins/video.php?allowfullscreen=true&href=' + data.sourceUrl;
         this.dom.updateAttr('src', iframe, url);
+
+        if (data.imageMeta.original.width === data.imageMeta.original.height) {
+          this.dom.addClass(iframe, ['-square-1-1']);
+        }
       }
 
       if (data.sourceService === 'periscope') {
