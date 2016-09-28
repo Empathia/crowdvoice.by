@@ -478,54 +478,60 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
         posts.push(tweetPost);
 
-        // Extract URLs from tweet;
-        var hasUrls = false;
-
-        if (tweet.entities && tweet.entities.urls && tweet.entities.urls.length > 0) {
-          hasUrls = true;
+        if (err) {
+          return res.status(500).json(err);
         }
 
-        var hasMedia = false;
+        return res.json(posts);
 
-        if (tweet.entities && tweet.entities.media && tweet.entities.media.length > 0) {
-          hasMedia = true;
-        }
-
-        async.series([function(done) {
-          if (!hasUrls) {
-            return done();
-          }
-
-          async.each(tweet.entities.urls, function(entity, doneEach) {
-            controller._processURL(entity.url, function(err, result) {
-              if (result.status === 200) {
-                posts.push(result.result);
-              }
-
-              return doneEach();
-            });
-          }, done);
-        }, function(done) {
-          if (!hasMedia) {
-            return done();
-          }
-
-          async.each(tweet.entities.media, function(entity, doneEach) {
-            controller._processURL(entity.media_url, function(err, result) {
-              if (result.status === 200) {
-                posts.push(result.result);
-              }
-
-              return doneEach();
-            });
-          }, done);
-        }], function(err) {
-          if (err) {
-            return res.status(500).json(err);
-          }
-
-          return res.json(posts);
-        });
+        // // Extract URLs from tweet;
+        // var hasUrls = false;
+        //
+        // if (tweet.entities && tweet.entities.urls && tweet.entities.urls.length > 0) {
+        //   hasUrls = true;
+        // }
+        //
+        // var hasMedia = false;
+        //
+        // if (tweet.entities && tweet.entities.media && tweet.entities.media.length > 0) {
+        //   hasMedia = true;
+        // }
+        //
+        // async.series([function(done) {
+        //   if (!hasUrls) {
+        //     return done();
+        //   }
+        //
+        //   async.each(tweet.entities.urls, function(entity, doneEach) {
+        //     controller._processURL(entity.url, function(err, result) {
+        //       if (result.status === 200) {
+        //         posts.push(result.result);
+        //       }
+        //
+        //       return doneEach();
+        //     });
+        //   }, done);
+        // }, function(done) {
+        //   if (!hasMedia) {
+        //     return done();
+        //   }
+        //
+        //   async.each(tweet.entities.media, function(entity, doneEach) {
+        //     controller._processURL(entity.media_url, function(err, result) {
+        //       if (result.status === 200) {
+        //         posts.push(result.result);
+        //       }
+        //
+        //       return doneEach();
+        //     });
+        //   }, done);
+        // }], function(err) {
+        //   if (err) {
+        //     return res.status(500).json(err);
+        //   }
+        //
+        //   return res.json(posts);
+        // });
       });
     },
 
