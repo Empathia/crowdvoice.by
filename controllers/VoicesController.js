@@ -562,7 +562,8 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           rssUrl: req.body.rssUrl,
           locationName : req.body.locationName,
           latitude: req.body.latitude,
-          longitude: req.body.longitude
+          longitude: req.body.longitude,
+          deleted: false,
         });
 
         async.series([function(done) {

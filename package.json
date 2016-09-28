@@ -88,7 +88,7 @@
     "pisces": "0.0.11",
     "prompt": "0.2.14",
     "raf": "3.1.0",
-    "readability": "git+https://git@github.com/mozilla/readability.git#7be3ccb57e9f16bc8ce70257e762b3b6ee8961ed",
+    "readability": "git+https://git@github.com/mozilla/readability.git",
     "redis": "0.12.1",
     "req-flash": "0.0.2",
     "request": "2.69.0",
