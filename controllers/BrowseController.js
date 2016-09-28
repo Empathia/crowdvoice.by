@@ -1,41 +1,31 @@
 var BrowseController = Class('BrowseController')({
   prototype: {
     featuredVoices: function (req, res, next) {
-      async.waterfall([
-        function (callback) {
-          FeaturedVoice.all(callback)
-        },
+      K.FeaturedVoice.query()
+        .orderBy('position', 'ASC')
+        .include('voice')
+        .then(function(featured) {
+          var voices = featured.map(function(item) {
+            return item.voice;
+          });
 
-        function (allFeaturedVoices, callback) {
-          var featuredVoicesIds = allFeaturedVoices.map(function (val) {
-            return val.voiceId
-          })
-          Voice.whereIn('id', featuredVoicesIds, callback)
-        },
+          voices = voices.filter(function(voice) {
+            return voice.status === Voice.STATUS_PUBLISHED;
+          });
 
-        function (featuredVoices, callback) {
-          callback(null, featuredVoices.filter(function (val) {
-            return val.status === Voice.STATUS_PUBLISHED
-          }))
-        },
-
-        function (publishedFeaturedVoices, callback) {
-          VoicesPresenter.build(publishedFeaturedVoices, req.currentPerson, callback)
-        },
-      ], function (err, result) {
-        if (err) { return next(err) }
-
-        res.format({
-          html: function () {
-            res.locals.featuredVoices = result
-            req.featuredVoices = result
-            res.render('browse/featured/voices')
-          },
-          json: function () {
-            res.json(result)
-          },
-        })
-      })
+          VoicesPresenter.build(voices, req.currentPerson, function (err, _voices) {
+            res.format({
+              html: function () {
+                res.locals.featuredVoices = _voices
+                req.featuredVoices = _voices
+                res.render('browse/featured/voices')
+              },
+              json: function () {
+                res.json(_voices)
+              },
+            })
+          });
+        });
     },
 
     featuredPeople: function (req, res, next) {
