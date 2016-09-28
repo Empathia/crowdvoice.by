@@ -37,7 +37,7 @@ Class(CV, 'PostDetailInfoTweet').inherits(Widget).includes(CV.WidgetUtils)({
       var el = this.element[0]
         , dateTimeElement = el.querySelector('.pd__info-tweet-meta > time')
         , actionsGroup = el.querySelector('.pd__info-tweet-actions .multiple')
-        , tweetId = (this.data.extras.id_str || this.data.sourceUrl.match(/(\d*)$/)[0]);
+        , tweetId = ((this.data.extras && this.data.extras.id_str) || this.data.sourceUrl.match(/(\d*)$/)[0]);
 
       twttr.widgets.createTweet(tweetId, el.querySelector('.pd__info-tweet-header'));
       this.dom.updateText(dateTimeElement, moment(this.data.publishedAt).format('MMM DD, YYYY'));
