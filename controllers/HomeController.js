@@ -23,29 +23,28 @@ var HomeController = Class('HomeController')({
 
         async.series([function(done) {
           // FeaturedVoices
-          FeaturedVoice.all(function(err, result) {
-            if (err) { return done(err); }
+          K.FeaturedVoice.query()
+            .orderBy('position', 'ASC')
+            .include('voice')
+            .then(function(featured) {
+              var voices = featured.map(function(item) {
+                return item.voice;
+              });
 
-            var featuredIds = result.map(function(item) {
-              return item.voiceId;
-            });
-
-            Voice.whereIn('id', featuredIds, function(err, voicesResult) {
-              if (err) { return done(err); }
-
-              var publishedVoices = voicesResult.filter(function (voice) {
+              voices = voices.filter(function(voice) {
                 return voice.status === Voice.STATUS_PUBLISHED;
               });
 
-              VoicesPresenter.build(publishedVoices, req.currentPerson, function (err, voices) {
+              VoicesPresenter.build(voices, req.currentPerson, function (err, _voices) {
+                console.log(err, voices)
                 if (err) { return done(err); }
 
-                res.locals.featuredVoices = voices;
+                res.locals.featuredVoices = _voices;
 
                 done();
               });
-            });
-          });
+            })
+            .catch(done);
         }, function(done) {
           Topic.all(function(err, result) {
             if (err) {

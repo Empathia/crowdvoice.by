@@ -10,6 +10,7 @@
   "scrappers": [
     "facebook_video",
     "periscope",
+    "twitter",
     "imgur",
     "youtube",
     "vimeo",
