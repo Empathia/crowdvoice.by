@@ -826,19 +826,19 @@ var VoicesController = Class('VoicesController').includes(BlackListFilter)({
           // },
 
           // Background image
-          function (nextSeries) {
-            if (req.body.status !== Voice.STATUS_PUBLISHED
-              && req.body.status !== Voice.STATUS_UNLISTED) {
-
-              return nextSeries();
-            }
-
-            if (voice.imageBaseUrl.length === 0 && !req.files.image) {
-              publishErrors.push('Voice does not have a background image.');
-            }
-
-            return nextSeries();
-          },
+          // function (nextSeries) {
+          //   if (req.body.status !== Voice.STATUS_PUBLISHED
+          //     && req.body.status !== Voice.STATUS_UNLISTED) {
+          //
+          //     return nextSeries();
+          //   }
+          //
+          //   if (voice.imageBaseUrl.length === 0 && !req.files.image) {
+          //     publishErrors.push('Voice does not have a background image.');
+          //   }
+          //
+          //   return nextSeries();
+          // },
 
           // Can't change to draft once PUBLISHED or UNLISTED
           // function (nextSeries) {
