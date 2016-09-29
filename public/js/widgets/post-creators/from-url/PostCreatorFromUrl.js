@@ -141,14 +141,14 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
                     }
                 }
             }
-            return url
+            return url.trim();
         },
 
         _validateInputValue : function _validateInputValue() {
             var inputValue, checkitResponse;
 
             this._inputKeyUpTimer = null;
-            inputValue = this._prepUrlForCheckit(this.input.getValue());
+            inputValue = this._prepUrlForCheckit(this.input.getValue().trim());
 
             if (inputValue === this._inputLastValue) {
                 return;
