@@ -246,23 +246,6 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
         }
       }
 
-      if (date && /^\d{4}-\d{2}/.test(date)) {
-        var _date = date.split('-')
-          , year = _date[0]
-          , month = _date[1]
-          , _year = this.pagesForMonths.approved[year];
-
-        if (_year) {
-          var _month = _year[month];
-          if (_month) {
-            return this.voicePostLayersManager._jumpToHandlerRef({
-              dateString: month,
-              page: _month.page
-            });
-          }
-        }
-      }
-
       this.voicePostLayersManager.loadDefaultLayer();
     },
 
@@ -483,11 +466,12 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
       }
 
       if (this._showContentViewer) {
+        var registry = data.target.registry;
+        var pages = registry.getKeys();
         var postInstance;
-        this._showContentViewer = false;
 
-        data.target.getLayers().some(function(layer) {
-          return layer.getPosts().some(function(post) {
+        pages.some(function(page) {
+          return (registry.get(page) || []).some(function(post) {
             if (post.id === _this._showContentViewerPostId) {
               postInstance = post;
               return true;
@@ -495,7 +479,12 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
           });
         });
 
-        if (postInstance) this._displayGallery({data: postInstance});
+        if (postInstance) {
+          this._showContentViewer = false;
+          this._displayGallery({
+            data: postInstance
+          });
+        }
       }
     },
 

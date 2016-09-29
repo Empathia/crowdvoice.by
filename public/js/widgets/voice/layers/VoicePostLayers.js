@@ -316,6 +316,9 @@ Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
       }
 
       this.registry.set(dateString, postsData);
+      this.dispatch('layerLoaded', {
+        dateString: dateString
+      });
 
       if (dateString !== this._currentMonthString) {
         return;
@@ -353,8 +356,6 @@ Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
         this.loadImagesVisibleOnViewport();
         this.dispatch('ready', {layer: currentLayer});
       }
-
-      this.dispatch('layerLoaded', {dateString: dateString});
 
       currentLayer.arrangeReset();
 
