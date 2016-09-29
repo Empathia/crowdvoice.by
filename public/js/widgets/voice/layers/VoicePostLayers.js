@@ -56,8 +56,8 @@ Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
     _bindEvents: function _bindEvents() {
       this._loadLayerRef = this.loadLayer.bind(this);
 
-      this._jumpToHandlerRef = this._jumpToHandler.bind(this);
-      CV.VoiceTimelineJumpToDateItem.bind('itemClicked', this._jumpToHandlerRef);
+      // this._jumpToHandlerRef = this._jumpToHandler.bind(this);
+      // CV.VoiceTimelineJumpToDateItem.bind('itemClicked', this._jumpToHandlerRef);
 
       CV.VoiceAboutBox.bind('activate', function() {
         this._layers[0].waterfall.layout();
@@ -296,7 +296,7 @@ Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
       {
         this.getLayers().forEach(function(layer){
           layer.hideLoaders();
-          if (!$('.cv-voice-posts-layer .cv-alert.-error').length) 
+          if (!$('.cv-voice-posts-layer .cv-alert.-error').length)
           {
             $('.cv-voice-posts-layer').prepend(
               new CV.Alert({
@@ -440,8 +440,8 @@ Class(CV, 'VoicePostLayers').inherits(Widget).includes(BubblingSupport)({
     destroy: function destroy() {
       Widget.prototype.destroy.call(this);
       this.__destroy();
-      CV.VoiceTimelineJumpToDateItem.unbind('itemClicked', this._jumpToHandlerRef);
-      this._jumpToHandlerRef = null;
+      // CV.VoiceTimelineJumpToDateItem.unbind('itemClicked', this._jumpToHandlerRef);
+      // this._jumpToHandlerRef = null;
       return null;
     }
   }

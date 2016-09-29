@@ -448,7 +448,7 @@ Class(CV, 'VoiceView').includes(CV.WidgetUtils, CV.VoiceHelper, NodeSupport, Cus
 
       if (this.voiceFooter) {
         this.voiceFooter.setTimelineInitialDate(timestamp);
-        this.voiceFooter.createJumpToDateBubble(this.pagesForMonths.approved);
+        // this.voiceFooter.createJumpToDateBubble(this.pagesForMonths.approved);
       }
 
       this.voicePostLayersManager.unbind('ready', this.layerManagerReadyRef);

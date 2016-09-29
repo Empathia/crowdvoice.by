@@ -208,8 +208,8 @@ Class(CV, 'VoiceFooter').inherits(Widget).includes(CV.WidgetUtils)({
     /* Instantiate and append the jump to date widget on its timeline chidlren.
      * @public
      */
-    createJumpToDateBubble: function createJumpToDateBubble(totalLayers) {
-      this.voiceTimelineFeedback.createJumpToDateBubble(totalLayers);
-    }
+    // createJumpToDateBubble: function createJumpToDateBubble(totalLayers) {
+    //   this.voiceTimelineFeedback.createJumpToDateBubble(totalLayers);
+    // }
   }
 });

@@ -243,9 +243,9 @@ require('./widgets/voice/follow/VoiceFollowSingleButton');
 require('./widgets/voice/follow/VoiceFollowMultipleButton');
 
 require('./widgets/voice/timeline/VoiceTimelineFeedback');
-require('./widgets/voice/timeline/VoiceTimelineJumpToDate');
-require('./widgets/voice/timeline/VoiceTimelineJumpToDateLabel');
-require('./widgets/voice/timeline/VoiceTimelineJumpToDateItem');
+// require('./widgets/voice/timeline/VoiceTimelineJumpToDate');
+// require('./widgets/voice/timeline/VoiceTimelineJumpToDateLabel');
+// require('./widgets/voice/timeline/VoiceTimelineJumpToDateItem');
 
 require('./widgets/voice/layers/VoicePostLayers');
 require('./widgets/voice/layers/VoicePostLayersVoiceAbstract');
