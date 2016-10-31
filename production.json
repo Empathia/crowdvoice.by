@@ -108,7 +108,7 @@
       user : "deploy",
       host : "104.239.193.165",
       ref  : "origin/master",
-      repo : "git@github.com:Empathya/crowdvoice.by.git",
+      repo : "git@gitlab.com:empathya/CrowdVoice.by.git",
       path : "/home/deploy/cv.by",
       "post-deploy" : "npm install && npm install webpack@1.7.3 knex@0.8.6 -g && webpack -p -c --progress && cp ../shared/config.js ./config/config.js && cp ../shared/knexfile.js ./knexfile.js && NODE_ENV=production knex migrate:latest && rm -f /tmp/fetching_tweets && pm2 startOrRestart production.json --env production"
     }
