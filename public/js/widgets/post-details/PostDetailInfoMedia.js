@@ -106,31 +106,37 @@ Class(CV, 'PostDetailInfoMedia').inherits(Widget).includes(CV.WidgetUtils)({
       this.headerElement.insertAdjacentHTML('afterbegin', this.constructor.IFRAME_STRING);
       iframe = this.headerElement.querySelector('iframe');
 
-      if (data.sourceService === 'youtube') {
-        // https://www.youtube.com/embed/Opktm709TJo
-        id = data.sourceUrl.match(this.constructor.reYouTubeVideo)[1];
-        this.dom.updateAttr('src', iframe, 'https://www.youtube.com/embed/' + id + '?autoplay=1');
-      }
+      switch(data.sourceService) {
+        case 'youtube':
+          // https://www.youtube.com/embed/Opktm709TJo
+          id = data.sourceUrl.match(this.constructor.reYouTubeVideo)[1];
+          this.dom.updateAttr('src', iframe, 'https://www.youtube.com/embed/' + id + '?autoplay=1');
+          break;
 
-      if (data.sourceService === 'vimeo') {
-        // https://player.vimeo.com/video/20729832?title=0&byline=0&portrait=0
-        id = data.sourceUrl.match(this.constructor.reVimeoVideo)[0];
-        this.dom.updateAttr('src', iframe, 'https://player.vimeo.com/video/' + id + '?autoplay=1');
-      }
+        case 'vimeo':
+          // https://player.vimeo.com/video/20729832?title=0&byline=0&portrait=0
+          id = data.sourceUrl.match(this.constructor.reVimeoVideo)[0];
+          this.dom.updateAttr('src', iframe, 'https://player.vimeo.com/video/' + id + '?autoplay=1');
+          break;
 
-      if (data.sourceService === 'facebook') {
-        // var url = 'https://www.facebook.com/video/embed?video_id=10153231379946729';
-        // var url = 'https://www.facebook.com/v2.3/plugins/video.php?allowfullscreen=true&autoplay=true&href=https%3A%2F%2Fwww.facebook.com%2Fredbull%2Fvideos%2F10155801793140352%2F&locale=en_US';
-        var url = 'https://www.facebook.com/v2.3/plugins/video.php?allowfullscreen=true&href=' + data.sourceUrl;
-        this.dom.updateAttr('src', iframe, url);
+        case 'facebook':
+          // https://www.facebook.com/video/embed?video_id=10153231379946729
+          // https://www.facebook.com/v2.3/plugins/video.php?allowfullscreen=true&autoplay=true&href=https%3A%2F%2Fwww.facebook.com%2Fredbull%2Fvideos%2F10155801793140352%2F&locale=en_US
+          var url = 'https://www.facebook.com/v2.3/plugins/video.php?allowfullscreen=true&href=' + data.sourceUrl;
+          this.dom.updateAttr('src', iframe, url);
 
-        if (data.imageMeta.original.width === data.imageMeta.original.height) {
-          this.dom.addClass(iframe, ['-square-1-1']);
-        }
-      }
+          if (data.imageMeta.original.width === data.imageMeta.original.height) {
+            this.dom.addClass(iframe, ['-square-1-1']);
+          }
+          break;
 
-      if (data.sourceService === 'periscope') {
-        this.dom.updateAttr('src', iframe, data.sourceUrl);
+        case 'periscope':
+          return this.dom.updateAttr('src', iframe, data.sourceUrl);
+          break;
+
+        default:
+          return this.dom.updateAttr('src', iframe, data.sourceUrl);
+          break;
       }
 
       id = iframe = null;
