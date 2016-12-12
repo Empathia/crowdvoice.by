@@ -97,3 +97,7 @@ npm i -g webpack
 webpack -d
 npm start
 ```
+
+## SSL (letsencrypt)
+
+Guide/troubleshooting: https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-14-04
