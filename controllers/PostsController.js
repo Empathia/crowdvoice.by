@@ -78,7 +78,10 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
             });
 
             var sanitize = function(content) {
-              content = sanitizer(content);
+              content = sanitizer(content, {
+                allowedTags: ['img', 'h2'].concat(sanitizer.defaults.allowedTags)
+              });
+
               content = downsize(content, {
                 words : 199,
                 append : "...",
