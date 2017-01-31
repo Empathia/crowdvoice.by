@@ -70,29 +70,31 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         }
 
         new ReadabilityParser(post.sourceUrl)
-          .then(function(readability) {
+          .then(function(result) {
             readablePost = new ReadablePost({
               post_id: hashids.decode(post.id)[0],
-              data: readability.parse(),
-              readerable: readability.isProbablyReaderable(),
+              data: result,
+              readerable: true,
             });
 
-            if (!readablePost.data) {
-              return readablePost.save(done);
+            var sanitize = function(content) {
+              content = sanitizer(content);
+              content = downsize(content, {
+                words : 199,
+                append : "...",
+                round : false
+              });
+
+              // instead of removing links, normalize them appending
+              // rel="noopener noreferrer" and target="_blank" as proper
+              content = content.replace(/<a([^<>]+?)>/g, function(_, attrs) {
+                return '<a' + attrs + ' rel="noopener noreferrer" target="_blank">';
+              });
+
+              return content;
             }
 
-            var defaults = _.clone(sanitizer.defaults.allowedTags);
-            defaults.splice(sanitizer.defaults.allowedTags.indexOf('a'), 1);
-
-            readablePost.data.content = sanitizer(readablePost.data.content, {
-              allowedTags: defaults.concat(['img'])
-            });
-
-            readablePost.data.content = downsize(readablePost.data.content, {
-              words : 199,
-              append : "...",
-              round : false
-            });
+            readablePost.data.content = sanitize(readablePost.data.content);
 
             readablePost.save(done)
           })
