@@ -574,15 +574,18 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
         var expandedURL = response.request.uri.href;
 
+        // follow meta-redirects
+        if (response.body.indexOf(';URL=') > -1) {
+          return self._processURL(response.body.match(/;URL=([^"]+)/)[1], callback);
+        }
+
         Scrapper.processUrl(expandedURL, response, function (err, result) {
           if (err) {
-            return logScrapperError(expandedURL, err, function (err) {
-              // if (err) { return callback(err); }
-
-              return callback(err, {
+            return logScrapperError(expandedURL, err, function (_err) {
+              return callback(_err, {
                 status : 400,
-                message: 'There was an error in the request',
-                error: err
+                message: 'There was an error in the request. ' + err.message,
+                error: err,
               });
             });
           }
