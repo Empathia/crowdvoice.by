@@ -69,36 +69,36 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           return done();
         }
 
-        var parser = new ReadabilityParser(post.sourceUrl);
+        new ReadabilityParser(post.sourceUrl)
+          .then(function(readability) {
+            readablePost = new ReadablePost({
+              post_id: hashids.decode(post.id)[0],
+              data: readability.parse(),
+              readerable: readability.isProbablyReaderable(),
+            });
 
-        parser.fetch(function(err, readability) {
-          if (err) { return done(err); }
+            if (!readablePost.data) {
+              return readablePost.save(done);
+            }
 
-          readablePost = new ReadablePost({
-            post_id: hashids.decode(post.id)[0],
-            data: readability.parse(),
-            readerable: readability.isProbablyReaderable(),
+            var defaults = _.clone(sanitizer.defaults.allowedTags);
+            defaults.splice(sanitizer.defaults.allowedTags.indexOf('a'), 1);
+
+            readablePost.data.content = sanitizer(readablePost.data.content, {
+              allowedTags: defaults.concat(['img'])
+            });
+
+            readablePost.data.content = downsize(readablePost.data.content, {
+              words : 199,
+              append : "...",
+              round : false
+            });
+
+            readablePost.save(done)
+          })
+          .catch(function(error) {
+            done(error);
           });
-
-          if (!readablePost.data) {
-            return readablePost.save(done);
-          }
-
-          var defaults = _.clone(sanitizer.defaults.allowedTags);
-          defaults.splice(sanitizer.defaults.allowedTags.indexOf('a'), 1);
-
-          readablePost.data.content = sanitizer(readablePost.data.content, {
-            allowedTags: defaults.concat(['img'])
-          });
-
-          readablePost.data.content = downsize(readablePost.data.content, {
-            words : 199,
-            append : "...",
-            round : false
-          });
-
-          readablePost.save(done)
-        });
       }], function(err) {
         if (err) { return next(err); }
 
