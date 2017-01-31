@@ -187,12 +187,12 @@ Class(CV, 'PostCreatorFromUrl').inherits(CV.PostCreator)({
             var post = {};
 
             if (err || response.error) {
-                if (response.responseJSON) {
+                if (response.responseJSON && typeof response.responseJSON === 'object') {
                     errorMessage = response.responseJSON.status;
                 } else if (typeof response.error === 'string') {
                     errorMessage = response.error;
                 } else {
-                    errorMessage = response.status + ' - ' + response.statusText;
+                    errorMessage = response.status + ' - ' + (response.responseText || response.statusText);
                 }
 
                 return this._setErrorState({message: errorMessage}).enable();
