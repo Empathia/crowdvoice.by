@@ -69,36 +69,41 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
           return done();
         }
 
-        var parser = new ReadabilityParser(post.sourceUrl);
+        new ReadabilityParser(post.sourceUrl)
+          .then(function(result) {
+            readablePost = new ReadablePost({
+              post_id: hashids.decode(post.id)[0],
+              data: result,
+              readerable: true,
+            });
 
-        parser.fetch(function(err, readability) {
-          if (err) { return done(err); }
+            var sanitize = function(content) {
+              content = sanitizer(content, {
+                allowedTags: ['img', 'h2'].concat(sanitizer.defaults.allowedTags)
+              });
 
-          readablePost = new ReadablePost({
-            post_id: hashids.decode(post.id)[0],
-            data: readability.parse(),
-            readerable: readability.isProbablyReaderable(),
+              content = downsize(content, {
+                words : 199,
+                append : "...",
+                round : false
+              });
+
+              // instead of removing links, normalize them appending
+              // rel="noopener noreferrer" and target="_blank" as proper
+              content = content.replace(/<a([^<>]+?)>/g, function(_, attrs) {
+                return '<a' + attrs + ' rel="noopener noreferrer" target="_blank">';
+              });
+
+              return content;
+            }
+
+            readablePost.data.content = sanitize(readablePost.data.content);
+
+            readablePost.save(done)
+          })
+          .catch(function(error) {
+            done(error);
           });
-
-          if (!readablePost.data) {
-            return readablePost.save(done);
-          }
-
-          var defaults = _.clone(sanitizer.defaults.allowedTags);
-          defaults.splice(sanitizer.defaults.allowedTags.indexOf('a'), 1);
-
-          readablePost.data.content = sanitizer(readablePost.data.content, {
-            allowedTags: defaults.concat(['img'])
-          });
-
-          readablePost.data.content = downsize(readablePost.data.content, {
-            words : 199,
-            append : "...",
-            round : false
-          });
-
-          readablePost.save(done)
-        });
       }], function(err) {
         if (err) { return next(err); }
 
@@ -569,15 +574,18 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
         var expandedURL = response.request.uri.href;
 
+        // follow meta-redirects
+        if (response.body.indexOf(';URL=') > -1) {
+          return self._processURL(response.body.match(/;URL=([^"]+)/)[1], callback);
+        }
+
         Scrapper.processUrl(expandedURL, response, function (err, result) {
           if (err) {
-            return logScrapperError(expandedURL, err, function (err) {
-              // if (err) { return callback(err); }
-
-              return callback(err, {
+            return logScrapperError(expandedURL, err, function (_err) {
+              return callback(_err, {
                 status : 400,
-                message: 'There was an error in the request',
-                error: err
+                message: 'There was an error in the request. ' + err.message,
+                error: err,
               });
             });
           }
