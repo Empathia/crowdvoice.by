@@ -4,7 +4,7 @@ var ReadabilityParser = require(path.join(__dirname, '../lib/ReadabilityParser.j
 
 require(path.join(process.cwd(), 'lib', 'krypton', 'presenters', 'PostsPresenter.js'))
 
-var CROWD_BOT_SERVICE_URL = process.env.CROWD_BOT_SERVICE_URL || 'http://localhost:5500';
+var CROWD_BOT_SERVICE_URL = process.env.CROWD_BOT_SERVICE_URL || 'https://x-crowd-bot.herokuapp.com' || 'http://localhost:5500';
 
 var reqFast = require('req-fast');
 var requestjs = require('request');
@@ -157,18 +157,27 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
         post.save()
         .then(function() {
           // transform periscope links into tweets
-          if (post.sourceDomain.indexOf('periscope.tv') > -1) {
+          if (post.sourceService === 'periscope' || post.sourceDomain.indexOf('periscope.tv') > -1) {
             return K.Voice.query().select('title').where({id : post.voiceId})
               .then(function(results) {
-                return reqFast(CROWD_BOT_SERVICE_URL
-                  + '?url=' + encodeURIComponent(post.sourceUrl)
-                  + '&subject=' + encodeURIComponent(results[0].title) + ':', function(err, response) {
-                  if (!err && response.body && response.body.url) {
-                    post.sourceUrl = response.body.url;
-                    post.sourceType = 'link';
-                    post.sourceService = 'link';
-                    return post.save();
-                  }
+                return new Promise(function(resolve, reject) {
+                  var url = CROWD_BOT_SERVICE_URL
+                    + '?url=' + encodeURIComponent(post.sourceUrl)
+                    + '&subject=' + encodeURIComponent(results[0].title) + ':';
+
+                  reqFast(url, function(err, response) {
+                    if (err) {
+                      return reject(err);
+                    }
+
+                    if (response.body && response.body.url) {
+                      post.sourceUrl = response.body.url;
+                      post.sourceType = 'link';
+                      post.sourceService = 'link';
+                    }
+
+                    resolve(post.save());
+                  });
                 });
               });
           }

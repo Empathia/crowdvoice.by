@@ -5,6 +5,7 @@ var reqFast = require('req-fast');
 exports.up = function(knex, Promise) {
   return knex('Posts')
   .where('source_url', 'like', 'https://www.periscope.tv%')
+  .orWhere('source_service', 'periscope')
   .then(function(results) {
     return Promise.all(results.map(function(post) {
       return knex('Voices')
