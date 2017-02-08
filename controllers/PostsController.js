@@ -4,6 +4,9 @@ var ReadabilityParser = require(path.join(__dirname, '../lib/ReadabilityParser.j
 
 require(path.join(process.cwd(), 'lib', 'krypton', 'presenters', 'PostsPresenter.js'))
 
+var CROWD_BOT_SERVICE_URL = process.env.CROWD_BOT_SERVICE_URL || 'http://localhost:5500';
+
+var reqFast = require('req-fast');
 var requestjs = require('request');
 
 var downsize = require('downsize');
@@ -151,7 +154,26 @@ var PostsController = Class('PostsController').includes(BlackListFilter)({
 
         var post = new K.Post(postData);
 
-        post.save().then(function() {
+        post.save()
+        .then(function() {
+          // transform periscope links into tweets
+          if (post.sourceDomain.indexOf('periscope.tv') > -1) {
+            return K.Voice.query().select('title').where({id : post.voiceId})
+              .then(function(results) {
+                return reqFast(CROWD_BOT_SERVICE_URL
+                  + '?url=' + encodeURIComponent(post.sourceUrl)
+                  + '&subject=' + encodeURIComponent(results[0].title) + ':', function(err, response) {
+                  if (!err && response.body && response.body.url) {
+                    post.sourceUrl = response.body.url;
+                    post.sourceType = 'link';
+                    post.sourceService = 'link';
+                    return post.save();
+                  }
+                });
+              });
+          }
+        })
+        .then(function() {
           var imagePath = '';
           if (item.imagePath && item.imagePath.length > 0) {
             imagePath = path.join(process.cwd(), 'public', item.imagePath.replace(/preview_/, ''));
